@@ -191,24 +191,6 @@ export function TrainingPrograms() {
           </p>
         </div>
 
-        {/* Core Learning Objectives Banner */}
-        <Card className="mb-12 p-8 bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20">
-          <h3 className="font-display text-2xl font-bold mb-6 text-center">Core Learning Objectives</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: "🎯", title: "Master AI Fundamentals", desc: "Understanding LLMs, AI agents, and prompt engineering" },
-              { icon: "📚", title: "Immediate Academic Impact", desc: "Apply AI to real homework, essays, research, and exam preparation" },
-              { icon: "⚡", title: "Boost Productivity", desc: "Practical hands-on usage of various Generative AI Tools" },
-              { icon: "🤖", title: "Ethical AI Usage", desc: "Build responsible AI habits and maintain academic integrity" }
-            ].map((objective, index) => (
-              <div key={index} className="text-center">
-                <div className="text-3xl mb-3">{objective.icon}</div>
-                <h4 className="font-semibold mb-2">{objective.title}</h4>
-                <p className="text-sm text-muted-foreground">{objective.desc}</p>
-              </div>
-            ))}
-          </div>
-        </Card>
 
         {/* Filters */}
         <div className="bg-card rounded-2xl p-6 mb-12 shadow-sm border">
