@@ -31,7 +31,7 @@ const audiences = [
     subtitle: "Career Growth",
     description: "AI skills for advancing your career",
     icon: Briefcase,
-    image: "/lovable-uploads/ea754477-6d41-40d8-824f-5d0275f282c7.png",
+    image: "/lovable-uploads/ce815291-0430-4cf1-b0ca-c223bc962ef6.png",
     color: "from-green-300 to-emerald-300", 
     features: ["Industry Skills", "Certifications", "Real Projects", "Networking"]
   },
@@ -41,7 +41,7 @@ const audiences = [
     subtitle: "Enterprise",
     description: "Transform your business with AI training",
     icon: Building2,
-    image: "/lovable-uploads/ce815291-0430-4cf1-b0ca-c223bc962ef6.png",
+    image: "/lovable-uploads/ea754477-6d41-40d8-824f-5d0275f282c7.png",
     color: "from-orange-300 to-red-300",
     features: ["Team Training", "Custom Programs", "ROI Tracking", "Expert Support"]
   }
@@ -150,7 +150,7 @@ export function HeroSection() {
                       <div className={`transition-all duration-300 ${
                         isSelected ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0'
                       }`}>
-                        <p className="text-white/90 text-sm mb-4">
+                        <p className="text-white/90 text-sm mb-4 leading-relaxed">
                           {audience.description}
                         </p>
                         
