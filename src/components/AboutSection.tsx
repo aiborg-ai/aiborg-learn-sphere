@@ -18,10 +18,10 @@ import {
 } from "lucide-react";
 
 const statistics = [
-  { label: "Active Students", value: "5,000+", icon: Users, color: "text-blue-600" },
-  { label: "Courses Completed", value: "15,000+", icon: Award, color: "text-green-600" },
-  { label: "Countries Reached", value: "150+", icon: Globe, color: "text-purple-600" },
-  { label: "Success Rate", value: "94%", icon: TrendingUp, color: "text-orange-600" }
+  { label: "Active Students", value: "5,000+", icon: Users, color: "text-blue-300" },
+  { label: "Courses Completed", value: "15,000+", icon: Award, color: "text-green-300" },
+  { label: "Countries Reached", value: "150+", icon: Globe, color: "text-purple-300" },
+  { label: "Success Rate", value: "94%", icon: TrendingUp, color: "text-orange-300" }
 ];
 
 const coreValues = [
@@ -29,28 +29,28 @@ const coreValues = [
     title: "Hands-on Learning",
     description: "Practical application and project-based education that you can immediately apply",
     icon: Zap,
-    color: "from-yellow-400 to-orange-500",
+    color: "from-yellow-300 to-orange-300",
     features: ["Real-world Projects", "Interactive Sessions", "Immediate Application", "Skill Building"]
   },
   {
     title: "Ethical AI",
     description: "Responsible AI development and deployment principles for a better future",
     icon: Shield,
-    color: "from-green-400 to-emerald-500",
+    color: "from-green-300 to-emerald-300",
     features: ["Academic Integrity", "Responsible Usage", "Privacy Protection", "Fair AI Practices"]
   },
   {
     title: "Future-ready Skills",
     description: "Curriculum aligned with industry trends and emerging AI technologies",
     icon: Brain,
-    color: "from-purple-400 to-indigo-500",
+    color: "from-purple-300 to-indigo-300",
     features: ["Industry Alignment", "Latest Technologies", "Career Focused", "Market Relevant"]
   },
   {
     title: "Practical Applications",
     description: "Real-world problem-solving approaches that make AI accessible to everyone",
     icon: Target,
-    color: "from-blue-400 to-cyan-500",
+    color: "from-blue-300 to-cyan-300",
     features: ["Problem Solving", "Use Cases", "Implementation", "Results Driven"]
   }
 ];
@@ -159,7 +159,7 @@ export function AboutSection() {
                   <div className="grid grid-cols-2 gap-2">
                     {value.features.map((feature, featureIndex) => (
                       <div key={featureIndex} className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <CheckCircle className="h-4 w-4 text-green-300" />
                         <span className="text-sm text-muted-foreground">{feature}</span>
                       </div>
                     ))}

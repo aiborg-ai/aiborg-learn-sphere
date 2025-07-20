@@ -11,7 +11,7 @@ const audiences = [
     subtitle: "Ages 6-11",
     description: "Fun, interactive AI learning for young minds",
     icon: GraduationCap,
-    color: "from-pink-400 to-purple-500",
+    color: "from-pink-300 to-purple-300",
     features: ["Visual Learning", "Games & Puzzles", "Safe Environment", "Parent Dashboard"]
   },
   {
@@ -20,7 +20,7 @@ const audiences = [
     subtitle: "Ages 12-18",
     description: "Advanced AI concepts for future innovators",
     icon: Brain,
-    color: "from-blue-400 to-indigo-500",
+    color: "from-blue-300 to-indigo-300",
     features: ["Coding Projects", "AI Ethics", "Career Paths", "Peer Learning"]
   },
   {
@@ -29,7 +29,7 @@ const audiences = [
     subtitle: "Career Growth",
     description: "AI skills for advancing your career",
     icon: Briefcase,
-    color: "from-green-400 to-emerald-500", 
+    color: "from-green-300 to-emerald-300", 
     features: ["Industry Skills", "Certifications", "Real Projects", "Networking"]
   },
   {
@@ -38,7 +38,7 @@ const audiences = [
     subtitle: "Enterprise",
     description: "Transform your business with AI training",
     icon: Building2,
-    color: "from-orange-400 to-red-500",
+    color: "from-orange-300 to-red-300",
     features: ["Team Training", "Custom Programs", "ROI Tracking", "Expert Support"]
   }
 ];
@@ -58,17 +58,19 @@ export function HeroSection() {
       <div className="relative z-10 container mx-auto px-4 pt-20 pb-12">
         {/* Main Brand Section */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 mb-8">
-            <Sparkles className="h-5 w-5 text-accent animate-pulse" />
+          <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-white/20">
+            <Sparkles className="h-5 w-5 text-secondary animate-pulse" />
             <span className="text-white font-medium">Revolutionary AI Education Platform</span>
           </div>
           
           <h1 className="font-display text-7xl md:text-8xl lg:text-9xl font-bold mb-6">
-            <span className="block text-secondary">aiborg</span>
-            <span className="text-sm text-white/80 font-normal">™</span>
+            <span className="block text-secondary">
+              aiborg
+              <sup className="text-2xl md:text-3xl lg:text-4xl text-primary/80 font-normal ml-1">™</sup>
+            </span>
           </h1>
           
-          <p className="text-2xl md:text-3xl text-accent font-semibold mb-4 font-display">
+          <p className="text-2xl md:text-3xl text-primary font-semibold mb-4 font-display drop-shadow-sm">
             AI-augmented Human
           </p>
           
@@ -132,7 +134,7 @@ export function HeroSection() {
                     <div className="mt-4 space-y-2 animate-fade-in">
                       {audience.features.map((feature, index) => (
                         <div key={index} className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-primary rounded-full"></div>
+                          <div className="w-2 h-2 bg-secondary rounded-full"></div>
                           <span className="text-sm text-muted-foreground">{feature}</span>
                         </div>
                       ))}
@@ -151,7 +153,7 @@ export function HeroSection() {
                         }}
                       >
                         Explore Programs
-                        <ArrowRight className="ml-2 h-4 w-4" />
+                        <ArrowRight className="ml-2 h-4 w-4 text-white" />
                       </Button>
                     </div>
                   )}
@@ -163,14 +165,14 @@ export function HeroSection() {
           {selectedAudience && (
             <div className="text-center">
               <div className={`inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-3 ${getPersonalizedStyles({
-                primary: "bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-orange-300/30",
-                secondary: "bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-purple-300/30",
-                professional: "bg-gradient-to-r from-slate-500/20 to-gray-500/20 border border-slate-300/30",
-                business: "bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-300/30",
-                default: "bg-white/10"
+                primary: "bg-gradient-to-r from-pink-200/25 to-peach-200/25 border border-pink-300/40",
+                secondary: "bg-gradient-to-r from-blue-200/25 to-purple-200/25 border border-purple-300/40",
+                professional: "bg-gradient-to-r from-slate-200/25 to-gray-200/25 border border-slate-300/40",
+                business: "bg-gradient-to-r from-green-200/25 to-teal-200/25 border border-emerald-300/40",
+                default: "bg-white/15 border border-white/25"
               })}`}>
-                <Brain className="h-5 w-5 text-accent" />
-                <span className="text-white">
+                <Brain className="h-5 w-5 text-primary" />
+                <span className="text-white drop-shadow-sm">
                   {getPersonalizedContent({
                     primary: `🎉 Fun learning mode activated for ${audiences.find(a => a.id === selectedAudience)?.title}!`,
                     secondary: `🚀 Advanced learning mode activated for ${audiences.find(a => a.id === selectedAudience)?.title}!`,
