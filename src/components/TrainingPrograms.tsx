@@ -1545,7 +1545,15 @@ export function TrainingPrograms() {
                          program.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          program.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()));
     
-    const matchesAudience = activeAudience === "all" || program.audience === activeAudience;
+    // Fix audience matching - convert tab value to proper case
+    const audienceMap: { [key: string]: string } = {
+      "primary": "Primary",
+      "secondary": "Secondary", 
+      "professional": "Professional",
+      "business": "SME"
+    };
+    const expectedAudience = audienceMap[activeAudience] || activeAudience;
+    const matchesAudience = activeAudience === "all" || program.audience === expectedAudience;
     const matchesMode = selectedMode === "all" || program.mode === selectedMode;
     const matchesLevel = selectedLevel === "all" || program.level === selectedLevel;
     
@@ -1610,10 +1618,15 @@ export function TrainingPrograms() {
               <BookOpen className="h-4 w-4" />
               All Programs
             </TabsTrigger>
-            {Object.entries(AUDIENCE_CONFIG).map(([key, config]) => (
+            {[
+              { key: "primary", label: "Young Learners" },
+              { key: "secondary", label: "Teens & Students" },
+              { key: "professional", label: "Professionals" },
+              { key: "business", label: "SMEs" }
+            ].map(({ key, label }) => (
               <TabsTrigger key={key} value={key} className="flex items-center gap-2">
                 <span>{getAudienceIcon(key)}</span>
-                <span className="hidden sm:inline">{getAudienceLabel(key)}</span>
+                <span className="hidden sm:inline">{label}</span>
                 <span className="sm:hidden">{key}</span>
               </TabsTrigger>
             ))}
