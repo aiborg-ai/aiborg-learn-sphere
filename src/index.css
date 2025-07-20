@@ -193,7 +193,7 @@
   .course-card {
     @apply bg-card rounded-2xl p-6 border border-border
            hover:border-[hsl(var(--primary-light))] hover:shadow-[var(--shadow-primary)]
-           transition-[var(--transition-smooth)] group hover:transform hover:scale-[1.02];
+           transition-[var(--transition-smooth)] hover:transform hover:scale-[1.02];
   }
 
   /* Chat Interface */
