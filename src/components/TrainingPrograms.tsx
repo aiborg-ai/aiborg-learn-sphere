@@ -157,7 +157,9 @@ export function TrainingPrograms() {
   });
 
   return (
-    <section className={`py-20 ${getPersonalizedStyles({
+    <section 
+      id="training-programs" 
+      className={`py-20 ${getPersonalizedStyles({
       primary: "bg-gradient-to-br from-yellow-50/50 to-orange-50/50 dark:from-yellow-950/10 dark:to-orange-950/10",
       secondary: "bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-blue-950/10 dark:to-purple-950/10",
       professional: "bg-gradient-to-br from-slate-50/50 to-gray-50/50 dark:from-slate-950/10 dark:to-gray-950/10",

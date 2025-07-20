@@ -136,7 +136,20 @@ export function HeroSection() {
                           <span className="text-sm text-muted-foreground">{feature}</span>
                         </div>
                       ))}
-                      <Button size="sm" className="w-full mt-4 btn-hero">
+                      <Button 
+                        size="sm" 
+                        className="w-full mt-4 btn-hero"
+                        onClick={() => {
+                          // Smooth scroll to Training Programs section
+                          const element = document.getElementById('training-programs');
+                          if (element) {
+                            element.scrollIntoView({ 
+                              behavior: 'smooth',
+                              block: 'start'
+                            });
+                          }
+                        }}
+                      >
                         Explore Programs
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
