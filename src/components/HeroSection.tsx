@@ -1,10 +1,8 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Brain, GraduationCap, Briefcase, Building2, ArrowRight, Sparkles } from "lucide-react";
-
-type Audience = "primary" | "secondary" | "professional" | "business" | null;
+import { usePersonalization, AUDIENCE_CONFIG } from "@/contexts/PersonalizationContext";
 
 const audiences = [
   {
@@ -46,7 +44,7 @@ const audiences = [
 ];
 
 export function HeroSection() {
-  const [selectedAudience, setSelectedAudience] = useState<Audience>(null);
+  const { selectedAudience, setSelectedAudience, getPersonalizedContent, getPersonalizedStyles } = usePersonalization();
 
   return (
     <section className="relative min-h-screen bg-gradient-hero overflow-hidden">
@@ -151,10 +149,22 @@ export function HeroSection() {
 
           {selectedAudience && (
             <div className="text-center">
-              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
+              <div className={`inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-3 ${getPersonalizedStyles({
+                primary: "bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-orange-300/30",
+                secondary: "bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-purple-300/30",
+                professional: "bg-gradient-to-r from-slate-500/20 to-gray-500/20 border border-slate-300/30",
+                business: "bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-300/30",
+                default: "bg-white/10"
+              })}`}>
                 <Brain className="h-5 w-5 text-accent" />
                 <span className="text-white">
-                  Personalized experience for {audiences.find(a => a.id === selectedAudience)?.title} activated
+                  {getPersonalizedContent({
+                    primary: `🎉 Fun learning mode activated for ${audiences.find(a => a.id === selectedAudience)?.title}!`,
+                    secondary: `🚀 Advanced learning mode activated for ${audiences.find(a => a.id === selectedAudience)?.title}!`,
+                    professional: `✨ Professional training mode activated for ${audiences.find(a => a.id === selectedAudience)?.title}!`,
+                    business: `💼 Enterprise mode activated for ${audiences.find(a => a.id === selectedAudience)?.title}!`,
+                    default: `Personalized experience for ${audiences.find(a => a.id === selectedAudience)?.title} activated`
+                  })}
                 </span>
               </div>
             </div>

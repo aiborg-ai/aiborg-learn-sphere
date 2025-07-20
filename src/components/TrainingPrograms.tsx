@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { usePersonalization, AUDIENCE_CONFIG } from "@/contexts/PersonalizationContext";
 import { 
   Search, 
   Filter, 
@@ -139,8 +140,9 @@ const getAudienceColor = (audience: string) => {
 };
 
 export function TrainingPrograms() {
+  const { selectedAudience: globalAudience, getPersonalizedContent, getPersonalizedStyles } = usePersonalization();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedAudience, setSelectedAudience] = useState("all");
+  const [selectedAudience, setSelectedAudience] = useState(globalAudience || "all");
   const [selectedMode, setSelectedMode] = useState("all");
   const [selectedLevel, setSelectedLevel] = useState("all");
 
@@ -155,16 +157,35 @@ export function TrainingPrograms() {
   });
 
   return (
-    <section className="py-20 bg-background">
+    <section className={`py-20 ${getPersonalizedStyles({
+      primary: "bg-gradient-to-br from-yellow-50/50 to-orange-50/50 dark:from-yellow-950/10 dark:to-orange-950/10",
+      secondary: "bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-blue-950/10 dark:to-purple-950/10",
+      professional: "bg-gradient-to-br from-slate-50/50 to-gray-50/50 dark:from-slate-950/10 dark:to-gray-950/10",
+      business: "bg-gradient-to-br from-emerald-50/50 to-teal-50/50 dark:from-emerald-950/10 dark:to-teal-950/10",
+      default: "bg-background"
+    })}`}>
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
-            <span className="gradient-text">Training Programs</span>
+            <span className="gradient-text">
+              {getPersonalizedContent({
+                primary: "🎓 Fun AI Learning Adventures",
+                secondary: "🚀 AI Training Programs",
+                professional: "🎯 Professional AI Certification",
+                business: "💼 Enterprise AI Training Solutions",
+                default: "Training Programs"
+              })}
+            </span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Discover our comprehensive AI education programs designed for every learning journey. 
-            New batches start every month with flexible learning options.
+            {getPersonalizedContent({
+              primary: "Discover amazing AI adventures through fun games, colorful activities, and interactive learning designed just for you!",
+              secondary: "Master cutting-edge AI technology with hands-on projects, career guidance, and future-ready skills development.",
+              professional: "Advance your career with industry-leading AI certifications, expert insights, and practical applications.",
+              business: "Transform your organization with comprehensive AI training solutions, team development, and measurable business impact.",
+              default: "Discover our comprehensive AI education programs designed for every learning journey. New batches start every month with flexible learning options."
+            })}
           </p>
         </div>
 

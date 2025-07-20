@@ -12,6 +12,8 @@
     --primary: 258 84% 24%;           /* Deep purple from logo */
     --primary-light: 258 84% 35%;     /* Lighter purple variant */
     --primary-glow: 258 84% 45%;      /* Glowing purple for effects */
+    --primary-dark: 258 84% 18%;      /* Darker purple for professional */
+    --primary-enterprise: 160 50% 40%; /* Enterprise green */
     --primary-foreground: 0 0% 100%;  /* White text on purple */
 
     /* Secondary Brand Colors - Peach/Salmon Accents */
@@ -23,6 +25,9 @@
     /* AI-themed Accent Colors */
     --accent: 180 100% 70%;           /* Cyan for AI elements */
     --accent-light: 180 100% 85%;     /* Light cyan */
+    --accent-playful: 45 100% 65%;    /* Playful yellow-orange for primary */
+    --accent-professional: 210 50% 60%; /* Professional blue */
+    --accent-enterprise: 160 60% 50%; /* Enterprise green accent */
     --accent-foreground: 258 84% 24%; /* Purple text on cyan */
 
     /* Neutral Colors */
@@ -205,5 +210,26 @@
   .chat-bubble-ai {
     @apply bg-gradient-to-r from-[hsl(var(--accent))] to-[hsl(var(--accent-light))]
            text-[hsl(var(--accent-foreground))] rounded-2xl rounded-bl-sm px-4 py-2 max-w-xs;
+  }
+
+  /* Audience-specific body classes for global personalization */
+  body.audience-primary {
+    --primary: var(--primary-light);
+    --accent: var(--accent-playful);
+  }
+
+  body.audience-secondary {
+    --primary: 260 70% 55%;
+    --accent: 220 100% 70%;
+  }
+
+  body.audience-professional {
+    --primary: var(--primary-dark);
+    --accent: var(--accent-professional);
+  }
+
+  body.audience-business {
+    --primary: var(--primary-enterprise);
+    --accent: var(--accent-enterprise);
   }
 }
