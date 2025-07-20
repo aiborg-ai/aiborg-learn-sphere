@@ -2,41 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Aiborg™ Design System - AI-augmented Human Learning Platform */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
+    /* Primary Brand Colors - Purple/Violet Gradients */
+    --primary: 258 84% 24%;           /* Deep purple from logo */
+    --primary-light: 258 84% 35%;     /* Lighter purple variant */
+    --primary-glow: 258 84% 45%;      /* Glowing purple for effects */
+    --primary-foreground: 0 0% 100%;  /* White text on purple */
+
+    /* Secondary Brand Colors - Peach/Salmon Accents */
+    --secondary: 15 85% 75%;          /* Peach from logo text */
+    --secondary-light: 15 85% 85%;    /* Light peach variant */
+    --secondary-dark: 15 85% 65%;     /* Darker peach */
+    --secondary-foreground: 258 84% 24%; /* Purple text on peach */
+
+    /* AI-themed Accent Colors */
+    --accent: 180 100% 70%;           /* Cyan for AI elements */
+    --accent-light: 180 100% 85%;     /* Light cyan */
+    --accent-foreground: 258 84% 24%; /* Purple text on cyan */
+
+    /* Neutral Colors */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: 222 84% 4.9%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222 84% 4.9%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 258 84% 24%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* AI-themed Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-light)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-light)) 50%, hsl(var(--accent)) 100%);
+    --gradient-ai: linear-gradient(45deg, hsl(var(--accent)), hsl(var(--primary-glow)));
+    
+    /* Advanced Shadows */
+    --shadow-primary: 0 10px 40px -10px hsl(var(--primary) / 0.3);
+    --shadow-secondary: 0 10px 40px -10px hsl(var(--secondary) / 0.3);
+    --shadow-glow: 0 0 50px hsl(var(--primary-glow) / 0.4);
+    --shadow-ai: 0 0 60px hsl(var(--accent) / 0.3);
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Typography */
+    --font-primary: 'Inter', system-ui, sans-serif;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +120,90 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-primary;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  /* Hero Button Variants */
+  .btn-hero {
+    @apply relative bg-gradient-to-r from-[hsl(var(--secondary))] to-[hsl(var(--secondary-light))] 
+           text-[hsl(var(--secondary-foreground))] font-semibold px-8 py-4 rounded-xl
+           shadow-[var(--shadow-secondary)] hover:shadow-[var(--shadow-glow)]
+           transition-[var(--transition-smooth)] transform hover:scale-105
+           before:absolute before:inset-0 before:bg-gradient-to-r 
+           before:from-[hsl(var(--primary))] before:to-[hsl(var(--primary-light))]
+           before:rounded-xl before:opacity-0 before:transition-opacity
+           hover:before:opacity-100 hover:text-[hsl(var(--primary-foreground))];
+  }
+
+  .btn-outline-ai {
+    @apply border-2 border-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))]
+           bg-transparent hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))]
+           px-6 py-3 rounded-xl font-medium
+           transition-[var(--transition-smooth)] hover:shadow-[var(--shadow-ai)];
+  }
+
+  /* Audience Cards */
+  .audience-card {
+    @apply relative bg-card border-2 border-transparent rounded-2xl p-6
+           hover:border-[hsl(var(--primary-light))] hover:shadow-[var(--shadow-primary)]
+           transition-[var(--transition-smooth)] cursor-pointer group
+           hover:transform hover:scale-[1.02];
+  }
+
+  .audience-card.selected {
+    @apply border-[hsl(var(--primary))] shadow-[var(--shadow-primary)]
+           bg-gradient-to-br from-[hsl(var(--primary)_/_0.05)] to-[hsl(var(--accent)_/_0.05)];
+  }
+
+  /* AI Glow Effects */
+  .ai-glow {
+    @apply relative;
+  }
+
+  .ai-glow::before {
+    @apply absolute inset-0 bg-gradient-to-r from-[hsl(var(--accent))] to-[hsl(var(--primary-glow))]
+           rounded-full blur-xl opacity-30 animate-pulse;
+    content: '';
+    z-index: -1;
+  }
+
+  /* Floating Animation */
+  .float-animation {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-[hsl(var(--primary))] via-[hsl(var(--primary-light))] to-[hsl(var(--accent))]
+           bg-clip-text text-transparent;
+  }
+
+  /* Course Cards */
+  .course-card {
+    @apply bg-card rounded-2xl p-6 border border-border
+           hover:border-[hsl(var(--primary-light))] hover:shadow-[var(--shadow-primary)]
+           transition-[var(--transition-smooth)] group hover:transform hover:scale-[1.02];
+  }
+
+  /* Chat Interface */
+  .chat-bubble-user {
+    @apply bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--primary-light))]
+           text-[hsl(var(--primary-foreground))] rounded-2xl rounded-br-sm px-4 py-2 max-w-xs ml-auto;
+  }
+
+  .chat-bubble-ai {
+    @apply bg-gradient-to-r from-[hsl(var(--accent))] to-[hsl(var(--accent-light))]
+           text-[hsl(var(--accent-foreground))] rounded-2xl rounded-bl-sm px-4 py-2 max-w-xs;
   }
 }
