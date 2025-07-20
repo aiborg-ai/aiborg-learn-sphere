@@ -11,6 +11,7 @@ const audiences = [
     subtitle: "Ages 6-11",
     description: "Fun, interactive AI learning for young minds",
     icon: GraduationCap,
+    image: "/lovable-uploads/fd4d8f4b-a05e-497b-baa1-b38b134dddd3.png",
     color: "from-pink-300 to-purple-300",
     features: ["Visual Learning", "Games & Puzzles", "Safe Environment", "Parent Dashboard"]
   },
@@ -20,6 +21,7 @@ const audiences = [
     subtitle: "Ages 12-18",
     description: "Advanced AI concepts for future innovators",
     icon: Brain,
+    image: "/lovable-uploads/a7179cc3-d562-480e-bb31-34c805ea7621.png",
     color: "from-blue-300 to-indigo-300",
     features: ["Coding Projects", "AI Ethics", "Career Paths", "Peer Learning"]
   },
@@ -29,6 +31,7 @@ const audiences = [
     subtitle: "Career Growth",
     description: "AI skills for advancing your career",
     icon: Briefcase,
+    image: "/lovable-uploads/ea754477-6d41-40d8-824f-5d0275f282c7.png",
     color: "from-green-300 to-emerald-300", 
     features: ["Industry Skills", "Certifications", "Real Projects", "Networking"]
   },
@@ -38,6 +41,7 @@ const audiences = [
     subtitle: "Enterprise",
     description: "Transform your business with AI training",
     icon: Building2,
+    image: "/lovable-uploads/ce815291-0430-4cf1-b0ca-c223bc962ef6.png",
     color: "from-orange-300 to-red-300",
     features: ["Team Training", "Custom Programs", "ROI Tracking", "Expert Support"]
   }
@@ -109,54 +113,77 @@ export function HeroSection() {
               return (
                 <Card
                   key={audience.id}
-                  className={`audience-card p-6 cursor-pointer transition-all duration-300 ${
-                    isSelected ? 'selected' : ''
+                  className={`relative overflow-hidden cursor-pointer transition-all duration-500 group hover:scale-105 hover:shadow-2xl ${
+                    isSelected ? 'ring-2 ring-primary shadow-lg scale-105' : ''
                   }`}
                   onClick={() => setSelectedAudience(audience.id)}
                 >
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${audience.color} p-4 mb-4 mx-auto`}>
-                    <Icon className="h-8 w-8 text-white" />
-                  </div>
-                  
-                  <h3 className="font-display font-bold text-xl text-center mb-2">
-                    {audience.title}
-                  </h3>
-                  
-                  <Badge variant="secondary" className="mx-auto mb-3 block w-fit">
-                    {audience.subtitle}
-                  </Badge>
-                  
-                  <p className="text-muted-foreground text-center text-sm mb-4">
-                    {audience.description}
-                  </p>
-
-                  {isSelected && (
-                    <div className="mt-4 space-y-2 animate-fade-in">
-                      {audience.features.map((feature, index) => (
-                        <div key={index} className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-secondary rounded-full"></div>
-                          <span className="text-sm text-muted-foreground">{feature}</span>
-                        </div>
-                      ))}
-                      <Button 
-                        size="sm" 
-                        className="w-full mt-4 btn-hero"
-                        onClick={() => {
-                          // Smooth scroll to Training Programs section
-                          const element = document.getElementById('training-programs');
-                          if (element) {
-                            element.scrollIntoView({ 
-                              behavior: 'smooth',
-                              block: 'start'
-                            });
-                          }
-                        }}
-                      >
-                        Explore Programs
-                        <ArrowRight className="ml-2 h-4 w-4 text-white" />
-                      </Button>
+                  {/* Background Image */}
+                  <div className="relative h-80 overflow-hidden">
+                    <img 
+                      src={audience.image} 
+                      alt={`${audience.title} representative`}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    
+                    {/* Gradient Overlay */}
+                    <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent transition-opacity duration-300 ${
+                      isSelected ? 'opacity-60' : 'opacity-40 group-hover:opacity-60'
+                    }`}></div>
+                    
+                    {/* Icon Badge */}
+                    <div className={`absolute top-4 right-4 w-12 h-12 rounded-full bg-gradient-to-br ${audience.color} p-3 shadow-lg transition-transform duration-300 group-hover:scale-110`}>
+                      <Icon className="h-6 w-6 text-white" />
                     </div>
-                  )}
+                    
+                    {/* Content Overlay */}
+                    <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
+                      <Badge variant="secondary" className="self-start mb-2 bg-white/20 backdrop-blur-sm text-white border-white/30">
+                        {audience.subtitle}
+                      </Badge>
+                      
+                      <h3 className="font-display font-bold text-2xl mb-2">
+                        {audience.title}
+                      </h3>
+                      
+                      {/* Hover Content */}
+                      <div className={`transition-all duration-300 ${
+                        isSelected ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0'
+                      }`}>
+                        <p className="text-white/90 text-sm mb-4">
+                          {audience.description}
+                        </p>
+                        
+                        <div className="space-y-2 mb-4">
+                          {audience.features.slice(0, 3).map((feature, index) => (
+                            <div key={index} className="flex items-center gap-2">
+                              <div className="w-2 h-2 bg-secondary rounded-full"></div>
+                              <span className="text-xs text-white/80">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <Button 
+                          size="sm" 
+                          className="w-full btn-hero"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Smooth scroll to Training Programs section
+                            const element = document.getElementById('training-programs');
+                            if (element) {
+                              element.scrollIntoView({ 
+                                behavior: 'smooth',
+                                block: 'start'
+                              });
+                            }
+                          }}
+                        >
+                          Explore Programs
+                          <ArrowRight className="ml-2 h-4 w-4 text-white" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </Card>
               );
             })}
