@@ -152,7 +152,7 @@
   .audience-card {
     @apply relative bg-card border-2 border-transparent rounded-2xl p-6
            hover:border-[hsl(var(--primary-light))] hover:shadow-[var(--shadow-primary)]
-           transition-[var(--transition-smooth)] cursor-pointer group
+           transition-[var(--transition-smooth)] cursor-pointer
            hover:transform hover:scale-[1.02];
   }
 
