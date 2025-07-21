@@ -31,13 +31,15 @@ const getCoreValues = (getPersonalizedContent: (content: any) => any) => [
       primary: "Learning by Doing",
       secondary: "Hands-on Learning",
       professional: "Practical Application",
-      business: "Implementation Excellence"
+      business: "Implementation Excellence",
+      default: "Practical Application"
     }),
     description: getPersonalizedContent({
       primary: "Fun activities and cool projects where you get to build awesome AI stuff yourself!",
       secondary: "Interactive projects and real coding that you can show off to friends and use right away",
       professional: "Practical application and project-based education that directly enhances your work performance",
-      business: "Strategic implementation of AI solutions that deliver measurable business impact and ROI"
+      business: "Strategic implementation of AI solutions that deliver measurable business impact and ROI",
+      default: "Practical application and project-based education that directly enhances your work performance"
     }),
     icon: Zap,
     color: "from-yellow-300 to-orange-300",
@@ -45,7 +47,8 @@ const getCoreValues = (getPersonalizedContent: (content: any) => any) => [
       primary: ["Fun AI Projects", "Cool Experiments", "Build & Create", "Show & Tell"],
       secondary: ["Real Projects", "Code Portfolio", "Creative Apps", "Tech Skills"],
       professional: ["Real-world Projects", "Career Building", "Skill Enhancement", "Portfolio Development"],
-      business: ["Enterprise Solutions", "Team Training", "Process Optimization", "Performance Metrics"]
+      business: ["Enterprise Solutions", "Team Training", "Process Optimization", "Performance Metrics"],
+      default: ["Real-world Projects", "Career Building", "Skill Enhancement", "Portfolio Development"]
     })
   },
   {
@@ -53,13 +56,15 @@ const getCoreValues = (getPersonalizedContent: (content: any) => any) => [
       primary: "Being Good with AI",
       secondary: "Responsible AI",
       professional: "Ethical AI Practices",
-      business: "AI Governance & Compliance"
+      business: "AI Governance & Compliance",
+      default: "Ethical AI Practices"
     }),
     description: getPersonalizedContent({
       primary: "Learning how to use AI in the right way, being fair and kind to everyone",
       secondary: "Understanding how to use AI responsibly and make sure it helps everyone fairly",
       professional: "Professional standards for responsible AI development and deployment in workplace environments",
-      business: "Comprehensive AI governance frameworks ensuring regulatory compliance and ethical business practices"
+      business: "Comprehensive AI governance frameworks ensuring regulatory compliance and ethical business practices",
+      default: "Professional standards for responsible AI development and deployment in workplace environments"
     }),
     icon: Shield,
     color: "from-green-300 to-emerald-300",
@@ -67,7 +72,8 @@ const getCoreValues = (getPersonalizedContent: (content: any) => any) => [
       primary: ["Be Fair & Kind", "Help Everyone", "Stay Safe", "Do the Right Thing"],
       secondary: ["Fair Use", "Digital Ethics", "Privacy Respect", "Honest Work"],
       professional: ["Professional Ethics", "Workplace Standards", "Data Privacy", "Responsible Deployment"],
-      business: ["Regulatory Compliance", "Risk Management", "Corporate Governance", "Stakeholder Trust"]
+      business: ["Regulatory Compliance", "Risk Management", "Corporate Governance", "Stakeholder Trust"],
+      default: ["Professional Ethics", "Workplace Standards", "Data Privacy", "Responsible Deployment"]
     })
   },
   {
@@ -75,13 +81,15 @@ const getCoreValues = (getPersonalizedContent: (content: any) => any) => [
       primary: "Super Cool Future Skills",
       secondary: "Future-ready Skills",
       professional: "Industry-Leading Expertise",
-      business: "Strategic AI Capabilities"
+      business: "Strategic AI Capabilities",
+      default: "Industry-Leading Expertise"
     }),
     description: getPersonalizedContent({
       primary: "Learning the most amazing AI tricks that will make you super smart in the future!",
       secondary: "Master cutting-edge AI technologies that will give you an edge in college and your future career",
       professional: "Advanced AI competencies aligned with current industry demands and emerging market opportunities",
-      business: "Executive-level AI strategy and implementation capabilities for competitive organizational advantage"
+      business: "Executive-level AI strategy and implementation capabilities for competitive organizational advantage",
+      default: "Advanced AI competencies aligned with current industry demands and emerging market opportunities"
     }),
     icon: Brain,
     color: "from-purple-300 to-indigo-300",
@@ -89,7 +97,8 @@ const getCoreValues = (getPersonalizedContent: (content: any) => any) => [
       primary: ["Amazing AI Tricks", "Future Tech", "Be Super Smart", "Wow Your Friends"],
       secondary: ["Latest AI Tools", "College Prep", "Career Advantage", "Innovation Skills"],
       professional: ["Industry Alignment", "Market Relevance", "Career Advancement", "Technical Leadership"],
-      business: ["Strategic Planning", "Market Leadership", "Innovation Management", "Competitive Edge"]
+      business: ["Strategic Planning", "Market Leadership", "Innovation Management", "Competitive Edge"],
+      default: ["Industry Alignment", "Market Relevance", "Career Advancement", "Technical Leadership"]
     })
   },
   {
@@ -97,13 +106,15 @@ const getCoreValues = (getPersonalizedContent: (content: any) => any) => [
       primary: "Solving Real Problems",
       secondary: "Real-world Applications",
       professional: "Professional Solutions",
-      business: "Enterprise Applications"
+      business: "Enterprise Applications",
+      default: "Professional Solutions"
     }),
     description: getPersonalizedContent({
       primary: "Using AI to help solve everyday problems and make life easier for everyone around you",
       secondary: "Apply AI to solve real challenges in school, hobbies, and prepare for future career success",
       professional: "Develop practical AI solutions that address workplace challenges and improve professional outcomes",
-      business: "Deploy enterprise-grade AI applications that solve complex organizational challenges and drive growth"
+      business: "Deploy enterprise-grade AI applications that solve complex organizational challenges and drive growth",
+      default: "Develop practical AI solutions that address workplace challenges and improve professional outcomes"
     }),
     icon: Target,
     color: "from-blue-300 to-cyan-300",
@@ -111,7 +122,8 @@ const getCoreValues = (getPersonalizedContent: (content: any) => any) => [
       primary: ["Help Family & Friends", "Make Life Easier", "Solve Fun Puzzles", "Create Cool Stuff"],
       secondary: ["School Projects", "Problem Solving", "Creative Solutions", "Future Planning"],
       professional: ["Workplace Solutions", "Process Improvement", "Client Value", "Career Impact"],
-      business: ["Revenue Growth", "Cost Reduction", "Market Expansion", "Operational Excellence"]
+      business: ["Revenue Growth", "Cost Reduction", "Market Expansion", "Operational Excellence"],
+      default: ["Workplace Solutions", "Process Improvement", "Client Value", "Career Impact"]
     })
   }
 ];
@@ -198,7 +210,8 @@ export function AboutSection() {
                 primary: "To help kids learn super cool AI stuff so they can become amazing problem-solvers and help make the world a better place! We want AI to be your best friend that helps you learn and create awesome things.",
                 secondary: "To help teenagers master AI skills that will give them superpowers for college and their future careers. We want you to be the person everyone comes to when they need help with cool tech stuff!",
                 professional: "To empower working professionals with practical AI knowledge that enhances career performance and opens new opportunities. We believe AI should augment your expertise and accelerate your professional growth.",
-                business: "To enable organizational leaders and SMEs with strategic AI capabilities that drive innovation, efficiency, and competitive advantage. We focus on enterprise-grade solutions that deliver measurable business impact and ROI."
+                business: "To enable organizational leaders and SMEs with strategic AI capabilities that drive innovation, efficiency, and competitive advantage. We focus on enterprise-grade solutions that deliver measurable business impact and ROI.",
+                default: "To empower working professionals with practical AI knowledge that enhances career performance and opens new opportunities. We believe AI should augment your expertise and accelerate your professional growth."
               })}
             </blockquote>
             <div className="flex items-center justify-center gap-2 text-primary">
@@ -208,7 +221,8 @@ export function AboutSection() {
                   primary: "Built with love for young explorers",
                   secondary: "Designed for future innovators",
                   professional: "Founded on career-focused AI principles",
-                  business: "Established on enterprise excellence standards"
+                  business: "Established on enterprise excellence standards",
+                  default: "Founded on career-focused AI principles"
                 })}
               </span>
             </div>
