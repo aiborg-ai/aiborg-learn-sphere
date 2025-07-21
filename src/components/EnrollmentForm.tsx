@@ -220,11 +220,18 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
             </div>
 
             <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-              <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Payment Instructions</h4>
-              <p className="text-sm text-blue-800 dark:text-blue-200">
-                After submitting this form, you will receive payment details via email and WhatsApp. 
-                Payment can be made via bank transfer to aiborg's account.
-              </p>
+              <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-3">Payment Instructions</h4>
+              <div className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
+                <p>Please transfer the course fee to aiborg's bank account:</p>
+                <div className="bg-white dark:bg-blue-900/50 p-3 rounded border font-mono">
+                  <p><strong>Account Name:</strong> aiborg</p>
+                  <p><strong>Sort Code:</strong> 60-06-33</p>
+                  <p><strong>Account Number:</strong> 34933018</p>
+                </div>
+                <p className="mt-2">
+                  After submitting this form, you will receive confirmation via email and WhatsApp with your enrollment details.
+                </p>
+              </div>
             </div>
           </div>
 
