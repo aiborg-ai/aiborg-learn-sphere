@@ -137,25 +137,73 @@ const achievements = [
   "Continuous innovation and improvement"
 ];
 
-const learningOutcomes = [
+const getLearningOutcomes = (getPersonalizedContent: (content: any) => any) => [
   {
-    title: "Master AI Fundamentals",
-    description: "Understanding LLMs, AI agents, and prompt engineering",
+    title: getPersonalizedContent({
+      primary: "Learn Cool AI Tricks",
+      secondary: "Master AI Fundamentals", 
+      professional: "Master AI Fundamentals",
+      business: "Strategic AI Leadership",
+      default: "Master AI Fundamentals"
+    }),
+    description: getPersonalizedContent({
+      primary: "Learn about smart computer helpers, how to talk to them, and make them do awesome things!",
+      secondary: "Understanding LLMs, AI agents, and prompt engineering to build cool projects",
+      professional: "Understanding LLMs, AI agents, and prompt engineering for workplace applications",
+      business: "Executive understanding of AI technologies, implementation strategies, and organizational impact",
+      default: "Understanding LLMs, AI agents, and prompt engineering for workplace applications"
+    }),
     progress: 95
   },
   {
-    title: "Immediate Academic Impact", 
-    description: "Apply AI to real homework, essays, research, and exam preparation",
+    title: getPersonalizedContent({
+      primary: "Get Better at School",
+      secondary: "Immediate Academic Impact",
+      professional: "Enhanced Work Performance", 
+      business: "Operational Excellence",
+      default: "Enhanced Work Performance"
+    }),
+    description: getPersonalizedContent({
+      primary: "Use AI to help with homework, projects, and learning new things faster and better!",
+      secondary: "Apply AI to real homework, essays, research, and exam preparation",
+      professional: "Apply AI to daily work tasks, presentations, analysis, and professional development",
+      business: "Implement AI solutions for strategic planning, decision-making, and organizational efficiency",
+      default: "Apply AI to daily work tasks, presentations, analysis, and professional development"
+    }),
     progress: 88
   },
   {
-    title: "Boost Productivity",
-    description: "Practical hands-on usage of various Generative AI Tools",
+    title: getPersonalizedContent({
+      primary: "Do Things Super Fast",
+      secondary: "Boost Productivity",
+      professional: "Boost Productivity",
+      business: "ROI & Performance Metrics",
+      default: "Boost Productivity"
+    }),
+    description: getPersonalizedContent({
+      primary: "Learn to use AI tools that help you finish tasks quickly so you have more time to play!",
+      secondary: "Practical hands-on usage of various Generative AI Tools for school and personal projects",
+      professional: "Practical hands-on usage of various Generative AI Tools for enhanced work efficiency",
+      business: "Measurable productivity gains and cost reduction through strategic AI tool implementation",
+      default: "Practical hands-on usage of various Generative AI Tools for enhanced work efficiency"
+    }),
     progress: 92
   },
   {
-    title: "Ethical AI Usage",
-    description: "Build responsible AI habits and maintain academic integrity",
+    title: getPersonalizedContent({
+      primary: "Be Good and Fair",
+      secondary: "Ethical AI Usage",
+      professional: "Ethical AI Usage",
+      business: "Governance & Compliance",
+      default: "Ethical AI Usage"
+    }),
+    description: getPersonalizedContent({
+      primary: "Learn how to use AI in nice ways that help everyone and don't hurt anyone's feelings!",
+      secondary: "Build responsible AI habits and maintain academic integrity in all projects",
+      professional: "Build responsible AI habits and maintain professional integrity and workplace standards",
+      business: "Establish comprehensive AI governance frameworks ensuring regulatory compliance and risk management",
+      default: "Build responsible AI habits and maintain professional integrity and workplace standards"
+    }),
     progress: 96
   }
 ];
@@ -163,6 +211,7 @@ const learningOutcomes = [
 export function AboutSection() {
   const { getPersonalizedContent } = usePersonalization();
   const coreValues = getCoreValues(getPersonalizedContent);
+  const learningOutcomes = getLearningOutcomes(getPersonalizedContent);
   
   return (
     <section className="py-20 bg-background">
