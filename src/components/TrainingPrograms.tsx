@@ -25,7 +25,8 @@ import {
   Briefcase,
   Building2,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  X
 } from "lucide-react";
 
 export const TrainingPrograms = () => {
@@ -164,8 +165,18 @@ export const TrainingPrograms = () => {
                 placeholder="Search programs..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 pr-10"
               />
+              {searchTerm && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-muted"
+                  onClick={() => setSearchTerm("")}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              )}
             </div>
             <div className="flex gap-2">
               <Button
