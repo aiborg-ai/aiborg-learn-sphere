@@ -1758,11 +1758,11 @@ export function TrainingPrograms() {
                           </div>
 
                           <div className="flex gap-2">
-                            <Button className="flex-1 btn-hero group">
+                            <Button className="flex-1 btn-hero group" onClick={() => handleEnrollNow(program)}>
                               Enroll Now
                               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                             </Button>
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline" size="sm" onClick={() => handleLearnMore(program)}>
                               Learn More
                             </Button>
                           </div>
