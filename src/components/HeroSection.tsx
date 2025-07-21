@@ -168,8 +168,9 @@ export function HeroSection() {
                           className="w-full btn-hero"
                           onClick={(e) => {
                             e.stopPropagation();
-                            // Set URL hash to pass audience filter and scroll to section
+                            // Set URL hash to pass audience filter
                             window.location.hash = `audience-${audience.id}`;
+                            // Scroll to section with a slight delay to ensure hash is processed
                             setTimeout(() => {
                               const element = document.getElementById('training-programs');
                               if (element) {
@@ -178,7 +179,7 @@ export function HeroSection() {
                                   block: 'start'
                                 });
                               }
-                            }, 100);
+                            }, 200);
                           }}
                         >
                           Explore Programs
