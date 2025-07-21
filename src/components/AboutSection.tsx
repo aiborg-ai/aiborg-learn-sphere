@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { usePersonalization } from "@/contexts/PersonalizationContext";
 import { 
   Users, 
   Award, 
@@ -24,34 +25,94 @@ const statistics = [
   { label: "Success Rate", value: "94%", icon: TrendingUp, color: "text-orange-300" }
 ];
 
-const coreValues = [
+const getCoreValues = (getPersonalizedContent: (content: any) => any) => [
   {
-    title: "Hands-on Learning",
-    description: "Practical application and project-based education that you can immediately apply",
+    title: getPersonalizedContent({
+      primary: "Learning by Doing",
+      secondary: "Hands-on Learning",
+      professional: "Practical Application",
+      business: "Implementation Excellence"
+    }),
+    description: getPersonalizedContent({
+      primary: "Fun activities and cool projects where you get to build awesome AI stuff yourself!",
+      secondary: "Interactive projects and real coding that you can show off to friends and use right away",
+      professional: "Practical application and project-based education that directly enhances your work performance",
+      business: "Strategic implementation of AI solutions that deliver measurable business impact and ROI"
+    }),
     icon: Zap,
     color: "from-yellow-300 to-orange-300",
-    features: ["Real-world Projects", "Interactive Sessions", "Immediate Application", "Skill Building"]
+    features: getPersonalizedContent({
+      primary: ["Fun AI Projects", "Cool Experiments", "Build & Create", "Show & Tell"],
+      secondary: ["Real Projects", "Code Portfolio", "Creative Apps", "Tech Skills"],
+      professional: ["Real-world Projects", "Career Building", "Skill Enhancement", "Portfolio Development"],
+      business: ["Enterprise Solutions", "Team Training", "Process Optimization", "Performance Metrics"]
+    })
   },
   {
-    title: "Ethical AI",
-    description: "Responsible AI development and deployment principles for a better future",
+    title: getPersonalizedContent({
+      primary: "Being Good with AI",
+      secondary: "Responsible AI",
+      professional: "Ethical AI Practices",
+      business: "AI Governance & Compliance"
+    }),
+    description: getPersonalizedContent({
+      primary: "Learning how to use AI in the right way, being fair and kind to everyone",
+      secondary: "Understanding how to use AI responsibly and make sure it helps everyone fairly",
+      professional: "Professional standards for responsible AI development and deployment in workplace environments",
+      business: "Comprehensive AI governance frameworks ensuring regulatory compliance and ethical business practices"
+    }),
     icon: Shield,
     color: "from-green-300 to-emerald-300",
-    features: ["Academic Integrity", "Responsible Usage", "Privacy Protection", "Fair AI Practices"]
+    features: getPersonalizedContent({
+      primary: ["Be Fair & Kind", "Help Everyone", "Stay Safe", "Do the Right Thing"],
+      secondary: ["Fair Use", "Digital Ethics", "Privacy Respect", "Honest Work"],
+      professional: ["Professional Ethics", "Workplace Standards", "Data Privacy", "Responsible Deployment"],
+      business: ["Regulatory Compliance", "Risk Management", "Corporate Governance", "Stakeholder Trust"]
+    })
   },
   {
-    title: "Future-ready Skills",
-    description: "Curriculum aligned with industry trends and emerging AI technologies",
+    title: getPersonalizedContent({
+      primary: "Super Cool Future Skills",
+      secondary: "Future-ready Skills",
+      professional: "Industry-Leading Expertise",
+      business: "Strategic AI Capabilities"
+    }),
+    description: getPersonalizedContent({
+      primary: "Learning the most amazing AI tricks that will make you super smart in the future!",
+      secondary: "Master cutting-edge AI technologies that will give you an edge in college and your future career",
+      professional: "Advanced AI competencies aligned with current industry demands and emerging market opportunities",
+      business: "Executive-level AI strategy and implementation capabilities for competitive organizational advantage"
+    }),
     icon: Brain,
     color: "from-purple-300 to-indigo-300",
-    features: ["Industry Alignment", "Latest Technologies", "Career Focused", "Market Relevant"]
+    features: getPersonalizedContent({
+      primary: ["Amazing AI Tricks", "Future Tech", "Be Super Smart", "Wow Your Friends"],
+      secondary: ["Latest AI Tools", "College Prep", "Career Advantage", "Innovation Skills"],
+      professional: ["Industry Alignment", "Market Relevance", "Career Advancement", "Technical Leadership"],
+      business: ["Strategic Planning", "Market Leadership", "Innovation Management", "Competitive Edge"]
+    })
   },
   {
-    title: "Practical Applications",
-    description: "Real-world problem-solving approaches that make AI accessible to everyone",
+    title: getPersonalizedContent({
+      primary: "Solving Real Problems",
+      secondary: "Real-world Applications",
+      professional: "Professional Solutions",
+      business: "Enterprise Applications"
+    }),
+    description: getPersonalizedContent({
+      primary: "Using AI to help solve everyday problems and make life easier for everyone around you",
+      secondary: "Apply AI to solve real challenges in school, hobbies, and prepare for future career success",
+      professional: "Develop practical AI solutions that address workplace challenges and improve professional outcomes",
+      business: "Deploy enterprise-grade AI applications that solve complex organizational challenges and drive growth"
+    }),
     icon: Target,
     color: "from-blue-300 to-cyan-300",
-    features: ["Problem Solving", "Use Cases", "Implementation", "Results Driven"]
+    features: getPersonalizedContent({
+      primary: ["Help Family & Friends", "Make Life Easier", "Solve Fun Puzzles", "Create Cool Stuff"],
+      secondary: ["School Projects", "Problem Solving", "Creative Solutions", "Future Planning"],
+      professional: ["Workplace Solutions", "Process Improvement", "Client Value", "Career Impact"],
+      business: ["Revenue Growth", "Cost Reduction", "Market Expansion", "Operational Excellence"]
+    })
   }
 ];
 
@@ -88,6 +149,9 @@ const learningOutcomes = [
 ];
 
 export function AboutSection() {
+  const { getPersonalizedContent } = usePersonalization();
+  const coreValues = getCoreValues(getPersonalizedContent);
+  
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
