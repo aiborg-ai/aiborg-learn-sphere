@@ -8,7 +8,7 @@ const audiences = [
   {
     id: "primary" as const,
     title: "Young Learners",
-    subtitle: "Ages 6-11",
+    subtitle: "Ages 8-11",
     description: "Fun, interactive AI learning for young minds",
     icon: GraduationCap,
     image: "/lovable-uploads/fd4d8f4b-a05e-497b-baa1-b38b134dddd3.png",

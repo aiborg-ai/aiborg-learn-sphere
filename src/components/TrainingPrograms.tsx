@@ -1613,7 +1613,7 @@ export function TrainingPrograms() {
   const getAudienceLabel = (audience: string) => {
     switch (audience) {
       case "Primary":
-        return "Young Learners (Ages 5-11)";
+        return "Young Learners (Ages 8-11)";
       case "Secondary":
         return "Teenagers (Ages 12-18)";
       case "Professional":
