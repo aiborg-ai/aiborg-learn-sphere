@@ -4,8 +4,9 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { usePersonalization } from "@/contexts/PersonalizationContext";
 import { 
-  MessageCircle, 
+  MessageCircle,
   Send, 
   X, 
   Bot, 
@@ -59,7 +60,34 @@ const courseRecommendations = [
   }
 ];
 
+// Course data for accurate recommendations
+const professionalCourses = [
+  { title: "AI Fundamentals for Professionals", price: "£89", duration: "8 weeks", level: "Intermediate" },
+  { title: "Advanced Prompt Engineering", price: "£129", duration: "6 weeks", level: "Advanced" },
+  { title: "AI Strategy & Implementation", price: "£199", duration: "10 weeks", level: "Advanced" },
+  { title: "Machine Learning for Business", price: "£159", duration: "8 weeks", level: "Intermediate" }
+];
+
+const businessCourses = [
+  { title: "AI Leadership & Strategy", price: "£299", duration: "12 weeks", level: "Executive" },
+  { title: "Enterprise AI Implementation", price: "£499", duration: "16 weeks", level: "Executive" },
+  { title: "AI ROI & Analytics", price: "£199", duration: "8 weeks", level: "Advanced" }
+];
+
+const secondaryCourses = [
+  { title: "Ultimate Academic Advantage by AI", price: "£39", duration: "6 weeks", level: "Intermediate" },
+  { title: "Teen Machine Learning Bootcamp", price: "£39", duration: "6 weeks", level: "Intermediate" },
+  { title: "Code Your Own ChatGPT", price: "£39", duration: "6 weeks", level: "Intermediate" }
+];
+
+const primaryCourses = [
+  { title: "Kickstarter AI Adventures", price: "£25", duration: "4 weeks", level: "Beginner" },
+  { title: "Creative Robots Coding Jam", price: "£25", duration: "4 weeks", level: "Beginner" },
+  { title: "AI Storytellers' Studio", price: "£25", duration: "4 weeks", level: "Beginner" }
+];
+
 export function AIChatbot() {
+  const { selectedAudience, getPersonalizedContent } = usePersonalization();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [inputValue, setInputValue] = useState("");
@@ -77,31 +105,75 @@ export function AIChatbot() {
   const generateAIResponse = (userMessage: string): string => {
     const lowerMessage = userMessage.toLowerCase();
     
+    // Get audience-specific content
+    const getCourseRecommendations = () => {
+      switch (selectedAudience) {
+        case "professional":
+          return professionalCourses;
+        case "business": 
+          return businessCourses;
+        case "secondary":
+          return secondaryCourses;
+        case "primary":
+          return primaryCourses;
+        default:
+          return professionalCourses; // Default to professional if no audience selected
+      }
+    };
+
+    const courses = getCourseRecommendations();
+    
     if (lowerMessage.includes("cost") || lowerMessage.includes("price")) {
-      return "Our courses range from £25 to £199, with most programs around £49. This includes full access to materials, live sessions, certificates, and community support. We also offer flexible payment options and group discounts for businesses.";
+      const priceRange = selectedAudience === "business" ? "£199 to £499" :
+                        selectedAudience === "professional" ? "£89 to £199" :
+                        selectedAudience === "secondary" ? "£39" :
+                        selectedAudience === "primary" ? "£25" : "£25 to £499";
+      
+      return getPersonalizedContent({
+        primary: `Our fun AI courses are just ${priceRange}! Each course includes games, projects, and certificates. Parents love our affordable pricing!`,
+        secondary: `Our courses are ${priceRange} and include everything you need: live sessions, coding projects, certificates, and access to our teen community. Perfect for college prep!`,
+        professional: `Our professional courses range from ${priceRange}. This includes CPE credits, industry certificates, networking opportunities, and practical skills you can use immediately at work.`,
+        business: `Our enterprise programs range from ${priceRange} and include custom training, team analytics, ROI tracking, and dedicated support for implementation across your organization.`,
+        default: `Our courses range from ${priceRange} and include comprehensive materials, certificates, and ongoing support.`
+      });
+    }
+    
+    if (lowerMessage.includes("professional") || (lowerMessage.includes("software") && lowerMessage.includes("recommend"))) {
+      return `As a software professional, I recommend these courses based on your background:\n\n1. **${courses[0].title}** (${courses[0].price}, ${courses[0].duration}) - Perfect for your technical background\n2. **${courses[1].title}** (${courses[1].price}, ${courses[1].duration}) - Advanced skills for immediate application\n3. **${courses[2].title}** (${courses[2].price}, ${courses[2].duration}) - Strategic implementation\n\nAll include CPE credits and industry certificates. Which interests you most?`;
+    }
+
+    if (lowerMessage.includes("intermediate") && selectedAudience === "professional") {
+      return `For intermediate-level professionals, I specifically recommend:\n\n**${courses[0].title}** (${courses[0].price}, ${courses[0].duration})\n- Advanced prompt engineering techniques\n- Real-world implementation scenarios\n- Industry best practices\n- CPE credits included\n\nThis builds perfectly on your existing technical foundation. Would you like more details about the curriculum?`;
     }
     
     if (lowerMessage.includes("beginner") || lowerMessage.includes("start")) {
-      return "For beginners, I recommend starting with 'AI Fundamentals: Understanding LLMs' (£49) or 'Boost Productivity with AI Tools' (£29). Both are designed for newcomers and include hands-on projects. Would you like me to show you more details about these courses?";
+      const beginnerCourse = courses[0];
+      return getPersonalizedContent({
+        primary: `Perfect! Start with "${beginnerCourse.title}" - it's super fun and easy! You'll learn through games and creative projects. No experience needed!`,
+        secondary: `Great choice! "${beginnerCourse.title}" is perfect for beginners. You'll build real projects and get ready for advanced studies. No coding experience required!`,
+        professional: `I recommend "${beginnerCourse.title}" (${beginnerCourse.price}, ${beginnerCourse.duration}). It's designed for professionals new to AI and includes practical applications you can use at work immediately.`,
+        business: `For executives new to AI, "${beginnerCourse.title}" provides strategic foundations without technical complexity. Focus on implementation and ROI.`,
+        default: `Start with "${beginnerCourse.title}" - it's designed for beginners with hands-on projects and comprehensive support.`
+      });
     }
     
     if (lowerMessage.includes("certificate") || lowerMessage.includes("certification")) {
-      return "Yes! All our programs include industry-recognized certificates upon completion. You'll also gain practical skills through real projects and can showcase your achievements on LinkedIn. Professional courses offer CPE credits too.";
+      return getPersonalizedContent({
+        primary: "Yes! You'll get awesome certificates to show your family and friends how smart you are with AI!",
+        secondary: "Absolutely! Our certificates are recognized by universities and look great on college applications. Perfect for your academic portfolio!",
+        professional: "Yes! All courses include industry-recognized certificates with CPE credits. Showcase your AI expertise on LinkedIn and advance your career.",
+        business: "Our executive certificates demonstrate strategic AI leadership to stakeholders and boards. Includes completion verification for HR systems.",
+        default: "Yes, all programs include certificates upon completion with practical skills verification."
+      });
     }
     
-    if (lowerMessage.includes("objective") || lowerMessage.includes("learn")) {
-      return "Our core learning objectives include: 1) Master AI Fundamentals (LLMs, agents, prompt engineering), 2) Immediate Academic Impact (apply AI to homework and research), 3) Boost Productivity (hands-on AI tools), and 4) Ethical AI Usage (responsible practices). Which area interests you most?";
-    }
-    
-    if (lowerMessage.includes("include") || lowerMessage.includes("what")) {
-      return "Each program includes: Live interactive sessions, practical hands-on projects, downloadable resources, community access, instructor support, completion certificates, and lifetime access to materials. Premium courses also include 1-on-1 mentoring sessions.";
-    }
-    
-    if (lowerMessage.includes("business") || lowerMessage.includes("enterprise")) {
-      return "Our business programs offer team training, custom curriculum development, ROI tracking, and dedicated support. We work with companies to implement AI strategies and upskill teams. Interested in a consultation for your organization?";
-    }
-    
-    return "I'd be happy to help you with that! Our AI education programs are designed to be practical and immediately applicable. You can browse our course catalog above, or I can recommend specific programs based on your background and goals. What's your current experience with AI?";
+    return getPersonalizedContent({
+      primary: "I'm here to help you learn AI in a fun way! What would you like to know about our exciting AI adventures?",
+      secondary: "I can help you find the perfect AI course for your academic goals and college prep. What's your experience level?",
+      professional: "I can recommend AI courses tailored to your professional needs. Our programs focus on practical skills you can implement immediately. What's your current role?",
+      business: "I help executives understand AI implementation strategies and ROI. Our programs focus on leadership and organizational transformation. What are your business goals?",
+      default: "I'm here to help you find the perfect AI course! What's your background and what would you like to achieve?"
+    });
   };
 
   const sendMessage = async (content: string) => {
