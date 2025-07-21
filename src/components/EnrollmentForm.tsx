@@ -56,7 +56,9 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
@@ -78,13 +80,40 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
       return;
     }
 
-    // TODO: Submit enrollment data
-    toast({
-      title: "Enrollment Submitted",
-      description: "Your enrollment has been submitted successfully. We'll contact you soon with payment details.",
-    });
+    setIsProcessing(true);
 
-    onClose();
+    try {
+      const { supabase } = await import("@/integrations/supabase/client");
+      
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: {
+          courseName,
+          coursePrice,
+          studentInfo: formData
+        }
+      });
+
+      if (error) throw error;
+
+      // Open Stripe checkout in a new tab
+      window.open(data.url, '_blank');
+      
+      toast({
+        title: "Redirecting to Payment",
+        description: "Opening secure payment page in a new tab...",
+      });
+
+      onClose();
+    } catch (error) {
+      console.error('Payment error:', error);
+      toast({
+        title: "Payment Error",
+        description: "Failed to create payment session. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -220,18 +249,15 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               <p className="text-sm text-muted-foreground">Price: {coursePrice}</p>
             </div>
 
-            <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-              <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-3">Payment Instructions</h4>
-              <div className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
-                <p>Please transfer the course fee to aiborg's bank account:</p>
-                <div className="bg-white dark:bg-blue-900/50 p-3 rounded border font-mono">
-                  <p><strong>Account Name:</strong> aiborg</p>
-                  <p><strong>Sort Code:</strong> 60-06-33</p>
-                  <p><strong>Account Number:</strong> 34933018</p>
-                </div>
-                <p className="mt-2">
-                  After submitting this form, you will receive confirmation via email and WhatsApp with your enrollment details.
-                </p>
+            <div className="bg-green-50 dark:bg-green-950/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+              <h4 className="font-medium text-green-900 dark:text-green-100 mb-3">Secure Online Payment</h4>
+              <div className="space-y-2 text-sm text-green-800 dark:text-green-200">
+                <p>Click "Proceed to Payment" to complete your enrollment with secure card payment.</p>
+                <ul className="space-y-1 ml-4">
+                  <li>• Secure payment powered by Stripe</li>
+                  <li>• Instant enrollment confirmation</li>
+                  <li>• Course details sent immediately</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -240,8 +266,18 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">
               Cancel
             </Button>
-            <Button type="submit" className="flex-1">
-              Submit Enrollment
+            <Button type="submit" className="flex-1" disabled={isProcessing}>
+              {isProcessing ? (
+                <>
+                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <CreditCard className="mr-2 h-4 w-4" />
+                  Proceed to Payment
+                </>
+              )}
             </Button>
           </div>
         </form>
