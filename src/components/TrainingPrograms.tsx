@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePersonalization, AUDIENCE_CONFIG, Audience } from "@/contexts/PersonalizationContext";
 import { EnrollmentForm } from "@/components/EnrollmentForm";
 import { CourseDetailsModal } from "@/components/CourseDetailsModal";
+import { useCourses, Course } from "@/hooks/useCourses";
 import { 
   Search, 
   Filter, 
@@ -22,649 +23,129 @@ import {
   Baby,
   GraduationCap,
   Briefcase,
-  Building2
+  Building2,
+  Loader2,
+  AlertCircle
 } from "lucide-react";
 
-const programs = [
-  // Primary School Courses (1-25)
-  {
-    id: 1,
-    title: "Kickstarter AI Adventures",
-    description: "Fun, hands-on intro to AI concepts with creative projects.",
-    audience: "Primary",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Beginner",
-    startDate: "4th August",
-    features: ["What is AI?", "Train a mini model", "Build & test project", "Showcase & ethics"],
-    category: "AI Fundamentals",
-    keywords: ["games", "robots", "ethics"],
-    prerequisites: "None"
-  },
-  {
-    id: 2,
-    title: "Ethical AI for Young Minds",
-    description: "Fun, hands-on intro to AI concepts with creative projects.",
-    audience: "Primary",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Beginner",
-    startDate: "Enquire for start date",
-    features: ["What is AI?", "Train a mini model", "Build & test project", "Showcase & ethics"],
-    category: "Cybersecurity",
-    keywords: ["games", "robots", "ethics"],
-    prerequisites: "None"
-  },
-  {
-    id: 24,
-    title: "Build a Voice Assistant Jr.",
-    description: "Fun, hands-on intro to AI concepts with creative projects.",
-    audience: "Primary",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Beginner",
-    startDate: "Enquire for start date",
-    features: ["What is AI?", "Train a mini model", "Build & test project", "Showcase & ethics"],
-    category: "Robotics",
-    keywords: ["games", "robots", "ethics"],
-    prerequisites: "None"
-  },
-
-  // Secondary School Courses (26-50)
-  {
-    id: 26,
-    title: "Ultimate Academic Advantage by AI",
-    description: "Build industry-aligned AI skills and showcase portfolio pieces.",
-    audience: "Secondary",
-    mode: "Online",
-    duration: "6 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Data & ML crash-course", "Model building hands-on", "Deployment & apps", "Ethics & career paths"],
-    category: "Finance",
-    keywords: ["python", "ml", "projects"],
-    prerequisites: "None"
-  },
-  {
-    id: 47,
-    title: "AI Journalism Workshop",
-    description: "Build industry-aligned AI skills and showcase portfolio pieces.",
-    audience: "Secondary",
-    mode: "Online",
-    duration: "6 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Data & ML crash-course", "Model building hands-on", "Deployment & apps", "Ethics & career paths"],
-    category: "Creative AI",
-    keywords: ["python", "ml", "projects"],
-    prerequisites: "None"
-  },
-
-  // Professional Courses (51-75)
-  {
-    id: 51,
-    title: "Boost Productivity with Generative AI",
-    description: "Apply AI to real workplace challenges for measurable impact.",
-    audience: "Professional",
-    mode: "Online",
-    duration: "8 weeks",
-    price: "£69",
-    level: "Beginner",
-    startDate: "Enquire for start date",
-    features: ["Opportunity mapping", "Tool deep-dive & demos", "Build solution prototype", "Metrics & governance"],
-    category: "Strategy",
-    keywords: ["llms", "deployment", "governance"],
-    prerequisites: "Basic IT literacy"
-  },
-
-  // SME Courses (76-100)
-  {
-    id: 76,
-    title: "AI Opportunity Assessment",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Beginner",
-    startDate: "4th August",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Business Assessment",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 77,
-    title: "AI for Business Transformation",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "4th August",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Business Transformation",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 78,
-    title: "No-Code AI Automations",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Beginner",
-    startDate: "4th August",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Automation",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 79,
-    title: "Small Business Chatbot Builder",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Beginner",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Chatbots",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 80,
-    title: "E-commerce Personalization Quick-Win",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Beginner",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "E-commerce",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 81,
-    title: "AI-Enhanced Customer Support",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Beginner",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Customer Support",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 82,
-    title: "Predictive Inventory for Retail",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Beginner",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Inventory Management",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 83,
-    title: "Fraud Detection for SMEs",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Beginner",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Fraud Detection",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 84,
-    title: "Local Marketing with AI Insights",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Beginner",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Marketing",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 85,
-    title: "Workflow Automation Blueprint",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Beginner",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Workflow Automation",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 86,
-    title: "Predictive Maintenance for SMB Manufacturing",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Predictive Maintenance",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 87,
-    title: "AI-Driven Sales Funnel Optimizer",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Sales Optimization",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 88,
-    title: "HR Chatbot for Hiring",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Beginner",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "HR Automation",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 89,
-    title: "Decision Dashboards with AutoML",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Business Intelligence",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 90,
-    title: "Generative Content for Branding",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Content Generation",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 91,
-    title: "AI-Powered Email Campaigns",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Beginner",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Email Marketing",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 92,
-    title: "Voice Commerce Enablement",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Voice Commerce",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 93,
-    title: "Store Traffic Analytics via Vision AI",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Retail Analytics",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 94,
-    title: "Financial Risk Scoring Lite",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Risk Management",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 95,
-    title: "Sustainability Tracking AI",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Sustainability",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 96,
-    title: "AI ROI Measurement Clinic",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "ROI Measurement",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 97,
-    title: "Personalized Training Bots for Staff",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Training & Development",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 98,
-    title: "Data Readiness Workshop",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Data Strategy",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 99,
-    title: "AI Compliance Essentials",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Compliance",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  },
-  {
-    id: 100,
-    title: "Future-proof Your Business with AI",
-    description: "Unlock immediate business value through practical AI solutions.",
-    audience: "SME",
-    mode: "Online",
-    duration: "4 weeks",
-    price: "£49",
-    level: "Intermediate",
-    startDate: "Enquire for start date",
-    features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
-    category: "Future Strategy",
-    keywords: ["automation", "roi", "no-code"],
-    prerequisites: "Basic IT literacy"
-  }
-];
-
-export function TrainingPrograms() {
-  const { selectedAudience, setSelectedAudience } = usePersonalization();
+export const TrainingPrograms = () => {
+  const { courses, loading, error } = useCourses();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedMode, setSelectedMode] = useState("all");
-  const [selectedLevel, setSelectedLevel] = useState("all");
-  const [localSelectedAudience, setLocalSelectedAudience] = useState("currently-enrolling");
-  const [enrollmentOpen, setEnrollmentOpen] = useState(false);
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [selectedLevel, setSelectedLevel] = useState("All Levels");
+  const [showFilters, setShowFilters] = useState(false);
+  const [enrollmentFormOpen, setEnrollmentFormOpen] = useState(false);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const { selectedAudience } = usePersonalization();
 
-  // Check for URL hash parameter to set initial audience filter
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '');
-      console.log('Hash detected:', hash);
-      if (hash.startsWith('audience-')) {
-        const audience = hash.replace('audience-', '');
-        console.log('Audience extracted:', audience);
-        if (['primary', 'secondary', 'professional', 'business'].includes(audience)) {
-          console.log('Setting audience to:', audience);
-          setLocalSelectedAudience(audience);
-          setSelectedAudience(audience as Audience);
-        }
-      }
-    };
+  // Convert database courses to the format expected by the component
+  const programs = courses.map(course => ({
+    id: course.id,
+    title: course.title,
+    description: course.description,
+    audience: course.audience,
+    mode: course.mode,
+    duration: course.duration,
+    price: course.price,
+    level: course.level,
+    startDate: course.start_date,
+    features: course.features,
+    category: course.category,
+    keywords: course.keywords,
+    prerequisites: course.prerequisites
+  }));
 
-    // Check hash on component mount
-    handleHashChange();
-    
-    // Listen for hash changes
-    window.addEventListener('hashchange', handleHashChange);
-    
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-    };
-  }, []);
-
-  // Use local state for audience selection
-  const activeAudience = localSelectedAudience;
-
-  const filteredPrograms = programs.filter(program => {
+  // Filter programs based on selected audience and search criteria
+  const filteredPrograms = programs.filter((program) => {
+    const matchesAudience = (selectedAudience as string) === "All" || program.audience === selectedAudience;
     const matchesSearch = program.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          program.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         program.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          program.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesCategory = selectedCategory === "All Categories" || program.category === selectedCategory;
+    const matchesLevel = selectedLevel === "All Levels" || program.level === selectedLevel;
     
-    // Fix audience matching - convert tab value to proper case
-    const audienceMap: { [key: string]: string } = {
-      "primary": "Primary",
-      "secondary": "Secondary", 
-      "professional": "Professional",
-      "business": "SME"
-    };
-    const expectedAudience = audienceMap[activeAudience] || activeAudience;
-    const matchesAudience = activeAudience === "all" || activeAudience === "currently-enrolling" || program.audience === expectedAudience;
-    const matchesMode = selectedMode === "all" || program.mode === selectedMode;
-    const matchesLevel = selectedLevel === "all" || program.level === selectedLevel;
-    
-    // Add debug logging for professional audience
-    if (activeAudience === "professional") {
-      console.log(`Program: ${program.title}, Audience: ${program.audience}, Expected: ${expectedAudience}, Matches: ${matchesAudience}`);
-    }
-    
-    return matchesSearch && matchesAudience && matchesMode && matchesLevel;
+    return matchesAudience && matchesSearch && matchesCategory && matchesLevel;
   });
 
-  const handleLearnMore = (course: any) => {
-    setSelectedCourse(course);
-    setDetailsOpen(true);
-  };
-
-  const handleEnrollNow = (course: any) => {
-    setSelectedCourse(course);
-    setEnrollmentOpen(true);
-  };
-
-  const getAudienceLabel = (audience: string) => {
-    switch (audience) {
-      case "Primary":
-        return "Young Learners (Ages 8-11)";
-      case "Secondary":
-        return "Teenagers (Ages 12-18)";
-      case "Professional":
-        return "Professionals";
-      case "SME":
-        return "SMEs";
-      default:
-        return audience;
-    }
-  };
+  // Get unique categories and levels for filter options
+  const categories = ["All Categories", ...Array.from(new Set(programs.map(p => p.category)))];
+  const levels = ["All Levels", ...Array.from(new Set(programs.map(p => p.level)))];
 
   const getAudienceIcon = (audience: string) => {
     switch (audience) {
-      case "Primary":
-      case "primary":
-        return <Baby className="h-5 w-5" />;
-      case "Secondary":
-      case "secondary":
-        return <GraduationCap className="h-5 w-5" />;
-      case "Professional":
-      case "professional":
-        return <Briefcase className="h-5 w-5" />;
-      case "SME":
-      case "business":
-        return <Building2 className="h-5 w-5" />;
-      default:
-        return <BookOpen className="h-5 w-5" />;
+      case "Primary": return Baby;
+      case "Secondary": return GraduationCap;
+      case "Professional": return Briefcase;
+      case "Business": return Building2;
+      default: return BookOpen;
     }
   };
 
-  // Group programs by audience
-  const programsByAudience = {
-    Primary: programs.filter(p => p.audience === "Primary"),
-    Secondary: programs.filter(p => p.audience === "Secondary"),
-    Professional: programs.filter(p => p.audience === "Professional"),
-    SME: programs.filter(p => p.audience === "SME")
+  const handleEnrollClick = (program: any) => {
+    setSelectedCourse(program as Course);
+    setEnrollmentFormOpen(true);
   };
 
-  // Get programs that are currently enrolling (have specific start dates, not "Enquire for start date")
-  const currentlyEnrollingPrograms = programs.filter(program => 
-    program.startDate !== "Enquire for start date" && program.startDate.trim() !== ""
-  );
+  const handleDetailsClick = (program: any) => {
+    setSelectedCourse(program as Course);
+    setDetailsModalOpen(true);
+  };
+
+  if (loading) {
+    return (
+      <section className="py-20 px-4 bg-gradient-to-br from-background to-background/50">
+        <div className="container mx-auto text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading courses...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-20 px-4 bg-gradient-to-br from-background to-background/50">
+        <div className="container mx-auto text-center">
+          <AlertCircle className="h-8 w-8 text-destructive mx-auto mb-4" />
+          <p className="text-destructive mb-4">Error loading courses: {error}</p>
+          <Button onClick={() => window.location.reload()}>Try Again</Button>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section className="py-20 bg-gradient-to-b from-background via-background/95 to-secondary/5">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+    <section className="py-20 px-4 bg-gradient-to-br from-background to-background/50">
+      <div className="container mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             AI Training Programs
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Choose from our comprehensive range of AI courses designed for every skill level and industry.
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Comprehensive AI education designed for different learning levels and career goals
           </p>
         </div>
 
-        {/* Audience Tabs */}
-        <Tabs value={activeAudience} onValueChange={setLocalSelectedAudience} className="mb-12">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6 mb-8">
-            <TabsTrigger value="all" className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4" />
-              All Programs
-            </TabsTrigger>
-            <TabsTrigger value="currently-enrolling" className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              <span className="hidden sm:inline">Currently Enrolling</span>
-              <span className="sm:hidden">Enrolling</span>
-            </TabsTrigger>
-            {[
-              { key: "primary", label: "Young Learners" },
-              { key: "secondary", label: "Teenagers" },
-              { key: "professional", label: "Professionals" },
-              { key: "business", label: "SMEs" }
-            ].map(({ key, label }) => (
-              <TabsTrigger key={key} value={key} className="flex items-center gap-2">
-                {getAudienceIcon(key)}
-                <span className="hidden sm:inline">{label}</span>
-                <span className="sm:hidden">{key}</span>
-              </TabsTrigger>
-            ))}
+        {/* Audience Selection Tabs */}
+        <Tabs value={selectedAudience} onValueChange={() => {}} className="mb-8">
+          <TabsList className="grid w-full grid-cols-5 max-w-2xl mx-auto">
+            {(Object.keys(AUDIENCE_CONFIG) as Audience[]).map((audience) => {
+              const Icon = getAudienceIcon(audience);
+              return (
+                <TabsTrigger key={audience} value={audience} className="flex items-center gap-2">
+                  <Icon className="h-4 w-4" />
+                  <span className="hidden sm:inline">{audience}</span>
+                </TabsTrigger>
+              );
+            })}
           </TabsList>
+        </Tabs>
 
-          {/* Filters */}
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <div className="flex-1 relative">
+        {/* Search and Filter Controls */}
+        <div className="mb-8 space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 placeholder="Search programs..."
@@ -673,299 +154,143 @@ export function TrainingPrograms() {
                 className="pl-10"
               />
             </div>
-            
-            <Select value={selectedMode} onValueChange={setSelectedMode}>
-              <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="Delivery Mode" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Modes</SelectItem>
-                <SelectItem value="Online">Online</SelectItem>
-                <SelectItem value="Hybrid">Hybrid</SelectItem>
-                <SelectItem value="In-person">In-person</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={selectedLevel} onValueChange={setSelectedLevel}>
-              <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="Difficulty Level" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Levels</SelectItem>
-                <SelectItem value="Beginner">Beginner</SelectItem>
-                <SelectItem value="Intermediate">Intermediate</SelectItem>
-                <SelectItem value="Advanced">Advanced</SelectItem>
-              </SelectContent>
-            </Select>
+            <Button
+              variant="outline"
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center gap-2"
+            >
+              <Filter className="h-4 w-4" />
+              Filters
+            </Button>
           </div>
 
-          {/* Programs Grid */}
-          <TabsContent value={activeAudience} className="space-y-8">
-            {activeAudience === "all" ? (
-              // Show all programs grouped by audience
-              Object.entries(programsByAudience).map(([audienceKey, audiencePrograms]) => (
-                <div key={audienceKey} className="space-y-6">
-                  <div className="flex items-center gap-3 pb-4 border-b">
-                    <div className="text-primary">{getAudienceIcon(audienceKey)}</div>
-                    <h3 className="text-2xl font-bold">{getAudienceLabel(audienceKey)}</h3>
-                    <Badge variant="secondary">{audiencePrograms.length} courses</Badge>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {audiencePrograms
-                      .filter(program => {
-                        const matchesSearch = program.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                           program.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                           program.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                           program.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()));
-                        const matchesMode = selectedMode === "all" || program.mode === selectedMode;
-                        const matchesLevel = selectedLevel === "all" || program.level === selectedLevel;
-                        return matchesSearch && matchesMode && matchesLevel;
-                      })
-                      .map((program) => (
-                        <Card key={program.id} className="p-6 hover:shadow-lg transition-all duration-300 border-primary/10 hover:border-primary/30 bg-card/50 backdrop-blur-sm">
-                          <div className="space-y-4">
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                                    {program.category}
-                                  </Badge>
-                                  <div className="flex items-center gap-1">
-                                    <Monitor className="h-3 w-3" />
-                                    <span className="text-xs text-muted-foreground">{program.mode}</span>
-                                  </div>
-                                </div>
-                                <h3 className="text-lg font-semibold mb-2 line-clamp-2">{program.title}</h3>
-                                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{program.description}</p>
-                              </div>
-                              <div className="text-right ml-4">
-                                <div className="text-2xl font-bold text-primary">{program.price}</div>
-                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                  <Clock className="h-3 w-3" />
-                                  {program.duration}
-                                </div>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-center justify-between text-sm">
-                              <Badge variant="outline">{program.level}</Badge>
-                              <span className="text-muted-foreground">
-                                {program.startDate}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="mb-4">
-                            <div className="flex flex-wrap gap-1 mt-4">
-                              {program.keywords.map((keyword, index) => (
-                                <Badge key={index} variant="secondary" className="text-xs">
-                                  {keyword}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="flex gap-2">
-                            <Button className="flex-1 btn-hero group" onClick={() => handleEnrollNow(program)}>
-                              Enroll Now
-                              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={() => handleLearnMore(program)}>
-                              Learn More
-                            </Button>
-                          </div>
-                        </Card>
-                      ))}
-                  </div>
-                </div>
-              ))
-            ) : activeAudience === "currently-enrolling" ? (
-              // Show currently enrolling programs
-              <>
-                <div className="flex items-center gap-3 pb-4 border-b mb-6">
-                  <Calendar className="h-6 w-6 text-primary" />
-                  <h3 className="text-2xl font-bold">Currently Enrolling Programs</h3>
-                  <Badge variant="secondary">{currentlyEnrollingPrograms.length} courses</Badge>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {currentlyEnrollingPrograms.map((program) => (
-                    <Card key={program.id} className="p-6 hover:shadow-lg transition-all duration-300 border-primary/10 hover:border-primary/30 bg-card/50 backdrop-blur-sm">
-                      <div className="space-y-4">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                                {program.category}
-                              </Badge>
-                              <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">
-                                Starts {program.startDate}
-                              </Badge>
-                            </div>
-                            <h3 className="text-lg font-semibold mb-2 text-foreground line-clamp-2">{program.title}</h3>
-                            <p className="text-sm text-muted-foreground mb-3 line-clamp-3">{program.description}</p>
-                          </div>
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <Clock className="h-3 w-3" />
-                            {program.duration}
-                          </div>
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <Monitor className="h-3 w-3" />
-                            {program.mode}
-                          </div>
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <Award className="h-3 w-3" />
-                            {program.level}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between pt-2">
-                          <span className="text-lg font-bold text-primary">{program.price}</span>
-                          <Badge variant="outline" className="text-xs">
-                            {getAudienceLabel(program.audience)}
-                          </Badge>
-                        </div>
-
-                        <div className="flex gap-2">
-                          <Button className="flex-1 btn-hero group" onClick={() => handleEnrollNow(program)}>
-                            Enroll Now
-                            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                          </Button>
-                          <Button variant="outline" size="sm" onClick={() => handleLearnMore(program)}>
-                            Learn More
-                          </Button>
-                        </div>
-                      </div>
-                    </Card>
+          {showFilters && (
+            <div className="flex flex-col sm:flex-row gap-4 p-4 bg-muted rounded-lg">
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
                   ))}
-                </div>
-              </>
-            ) : (
-              // Show filtered programs for specific audience
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredPrograms.map((program) => (
-                  <Card key={program.id} className="p-6 hover:shadow-lg transition-all duration-300 border-primary/10 hover:border-primary/30 bg-card/50 backdrop-blur-sm">
-                    <div className="space-y-4">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                              {program.category}
-                            </Badge>
-                            <div className="flex items-center gap-1">
-                              <Monitor className="h-3 w-3" />
-                              <span className="text-xs text-muted-foreground">{program.mode}</span>
-                            </div>
-                          </div>
-                          <h3 className="text-lg font-semibold mb-2 line-clamp-2">{program.title}</h3>
-                          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{program.description}</p>
-                        </div>
-                        <div className="text-right ml-4">
-                          <div className="text-2xl font-bold text-primary">{program.price}</div>
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <Clock className="h-3 w-3" />
-                            {program.duration}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between text-sm">
-                        <Badge variant="outline">{program.level}</Badge>
-                        <span className="text-muted-foreground">
-                          {program.startDate}
-                        </span>
-                      </div>
-                    </div>
+                </SelectContent>
+              </Select>
 
-                    <div className="mb-4">
-                      <div className="flex flex-wrap gap-1 mt-4">
-                        {program.keywords.map((keyword, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
-                            {keyword}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
+              <Select value={selectedLevel} onValueChange={setSelectedLevel}>
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="Level" />
+                </SelectTrigger>
+                <SelectContent>
+                  {levels.map((level) => (
+                    <SelectItem key={level} value={level}>
+                      {level}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        </div>
 
-                    <div className="flex gap-2">
-                      <Button className="flex-1 btn-hero group" onClick={() => handleEnrollNow(program)}>
-                        Enroll Now
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleLearnMore(program)}>
-                        Learn More
-                      </Button>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+        {/* Results Count */}
+        <div className="mb-6 text-sm text-muted-foreground">
+          Showing {filteredPrograms.length} of {programs.length} programs
+          {(selectedAudience as string) !== "All" && ` for ${selectedAudience} audience`}
+        </div>
 
-        {filteredPrograms.length === 0 && (
+        {/* Programs Grid */}
+        {filteredPrograms.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-muted-foreground mb-4">No programs found matching your criteria.</p>
-            <Button variant="outline" onClick={() => {
-              setSearchTerm("");
-              setLocalSelectedAudience("all");
-              setSelectedMode("all");
-              setSelectedLevel("all");
-            }}>
-              Clear Filters
-            </Button>
+            <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No programs found</h3>
+            <p className="text-muted-foreground">
+              Try adjusting your search terms or filters to find relevant programs.
+            </p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredPrograms.map((program) => {
+              const AudienceIcon = getAudienceIcon(program.audience);
+              return (
+                <Card key={program.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <Badge variant="secondary" className="flex items-center gap-1">
+                        <AudienceIcon className="h-3 w-3" />
+                        {program.audience}
+                      </Badge>
+                      <Badge variant="outline">{program.level}</Badge>
+                    </div>
+                    
+                    <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">
+                      {program.title}
+                    </h3>
+                    
+                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                      {program.description}
+                    </p>
+
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Clock className="h-4 w-4" />
+                        {program.duration}
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Calendar className="h-4 w-4" />
+                        {program.startDate}
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Monitor className="h-4 w-4" />
+                        {program.mode}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-bold text-primary">{program.price}</span>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDetailsClick(program)}
+                        >
+                          Details
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => handleEnrollClick(program)}
+                          className="group/btn"
+                        >
+                          Enroll
+                          <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
           </div>
         )}
 
-        {/* Pricing Notice */}
-        <div className="text-center mt-16">
-          <Card className="inline-block p-6 bg-gradient-to-r from-secondary/10 to-accent/10 border-secondary/20">
-            <div className="flex items-center gap-2 text-2xl font-bold text-secondary mb-2">
-              <Award className="h-6 w-6" />
-              £49
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Average course price • Full access • Certification included
-            </p>
-          </Card>
-        </div>
-      </div>
+        {/* Enrollment Form Modal */}
+        <EnrollmentForm
+          isOpen={enrollmentFormOpen}
+          onClose={() => setEnrollmentFormOpen(false)}
+          courseName={selectedCourse?.title || ""}
+          coursePrice={selectedCourse?.price}
+        />
 
-      {/* Modals */}
-      {selectedCourse && (
-        <>
-          <CourseDetailsModal
-            isOpen={detailsOpen}
-            onClose={() => setDetailsOpen(false)}
-            onEnroll={() => handleEnrollNow(selectedCourse)}
-            course={{
-              name: selectedCourse.title,
-              category: selectedCourse.category,
-              audience: selectedCourse.audience,
-              level: selectedCourse.level,
-              duration: selectedCourse.duration,
-              mode: selectedCourse.mode,
-              keywords: selectedCourse.keywords,
-              description: selectedCourse.description,
-              point1: selectedCourse.features[0] || "",
-              point2: selectedCourse.features[1] || "",
-              point3: selectedCourse.features[2] || "",
-              point4: selectedCourse.features[3] || "",
-              startDate: selectedCourse.startDate,
-              price: selectedCourse.price
-            }}
-          />
-          <EnrollmentForm
-            isOpen={enrollmentOpen}
-            onClose={() => setEnrollmentOpen(false)}
-            courseName={selectedCourse.title}
-            coursePrice={selectedCourse.price}
-          />
-        </>
-      )}
+        {/* Course Details Modal */}
+        <CourseDetailsModal
+          isOpen={detailsModalOpen}
+          onClose={() => setDetailsModalOpen(false)}
+          course={selectedCourse as any}
+          onEnroll={handleEnrollClick}
+        />
+      </div>
     </section>
   );
-}
+};
