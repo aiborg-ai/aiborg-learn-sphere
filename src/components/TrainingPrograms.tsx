@@ -1546,7 +1546,7 @@ export function TrainingPrograms() {
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
 
   // Check for URL hash parameter to set initial audience filter
-  React.useEffect(() => {
+  useEffect(() => {
     const hash = window.location.hash.replace('#', '');
     if (hash.startsWith('audience-')) {
       const audience = hash.replace('audience-', '');
