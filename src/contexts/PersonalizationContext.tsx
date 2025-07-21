@@ -41,7 +41,20 @@ interface PersonalizationProviderProps {
 
 export const PersonalizationProvider: React.FC<PersonalizationProviderProps> = ({ children }) => {
   const [selectedAudience, setSelectedAudience] = useState<Audience>(() => {
-    // Start with "All" by default
+    // Check URL hash for audience selection
+    const hash = window.location.hash;
+    if (hash.startsWith('#audience-')) {
+      const audienceFromHash = hash.replace('#audience-', '') as Audience;
+      if (['primary', 'secondary', 'professional', 'business'].includes(audienceFromHash)) {
+        return audienceFromHash;
+      }
+    }
+    // Check localStorage for previously selected audience
+    const stored = localStorage.getItem('aiborg-selected-audience');
+    if (stored && ['primary', 'secondary', 'professional', 'business'].includes(stored)) {
+      return stored as Audience;
+    }
+    // Default to "All"
     return "All";
   });
 
@@ -56,6 +69,22 @@ export const PersonalizationProvider: React.FC<PersonalizationProviderProps> = (
       document.body.className = document.body.className.replace(/audience-\w+/g, '');
     }
   }, [selectedAudience]);
+
+  // Listen for hash changes to update audience selection
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#audience-')) {
+        const audienceFromHash = hash.replace('#audience-', '') as Audience;
+        if (['primary', 'secondary', 'professional', 'business'].includes(audienceFromHash)) {
+          setSelectedAudience(audienceFromHash);
+        }
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   const getPersonalizedContent = (content: PersonalizedContent) => {
     if (!selectedAudience || selectedAudience === "All" || !content[selectedAudience]) {
