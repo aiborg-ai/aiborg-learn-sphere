@@ -1588,9 +1588,14 @@ export function TrainingPrograms() {
       "business": "SME"
     };
     const expectedAudience = audienceMap[activeAudience] || activeAudience;
-    const matchesAudience = activeAudience === "all" || program.audience === expectedAudience;
+    const matchesAudience = activeAudience === "all" || activeAudience === "currently-enrolling" || program.audience === expectedAudience;
     const matchesMode = selectedMode === "all" || program.mode === selectedMode;
     const matchesLevel = selectedLevel === "all" || program.level === selectedLevel;
+    
+    // Add debug logging for professional audience
+    if (activeAudience === "professional") {
+      console.log(`Program: ${program.title}, Audience: ${program.audience}, Expected: ${expectedAudience}, Matches: ${matchesAudience}`);
+    }
     
     return matchesSearch && matchesAudience && matchesMode && matchesLevel;
   });
