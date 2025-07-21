@@ -288,7 +288,7 @@ export const TrainingPrograms = () => {
           isOpen={detailsModalOpen}
           onClose={() => setDetailsModalOpen(false)}
           course={selectedCourse as any}
-          onEnroll={handleEnrollClick}
+          onEnroll={() => selectedCourse && handleEnrollClick(selectedCourse)}
         />
       </div>
     </section>
