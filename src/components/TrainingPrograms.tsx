@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePersonalization, AUDIENCE_CONFIG } from "@/contexts/PersonalizationContext";
+import { EnrollmentForm } from "@/components/EnrollmentForm";
+import { CourseDetailsModal } from "@/components/CourseDetailsModal";
 import { 
   Search, 
   Filter, 
@@ -1535,6 +1537,9 @@ export function TrainingPrograms() {
   const [selectedMode, setSelectedMode] = useState("all");
   const [selectedLevel, setSelectedLevel] = useState("all");
   const [localSelectedAudience, setLocalSelectedAudience] = useState("all");
+  const [enrollmentOpen, setEnrollmentOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
 
   // Use local state for audience selection
   const activeAudience = localSelectedAudience;
@@ -1559,6 +1564,16 @@ export function TrainingPrograms() {
     
     return matchesSearch && matchesAudience && matchesMode && matchesLevel;
   });
+
+  const handleLearnMore = (course: any) => {
+    setSelectedCourse(course);
+    setDetailsOpen(true);
+  };
+
+  const handleEnrollNow = (course: any) => {
+    setSelectedCourse(course);
+    setEnrollmentOpen(true);
+  };
 
   const getAudienceLabel = (audience: string) => {
     switch (audience) {
@@ -1798,11 +1813,11 @@ export function TrainingPrograms() {
                     </div>
 
                     <div className="flex gap-2">
-                      <Button className="flex-1 btn-hero group">
+                      <Button className="flex-1 btn-hero group" onClick={() => handleEnrollNow(program)}>
                         Enroll Now
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" onClick={() => handleLearnMore(program)}>
                         Learn More
                       </Button>
                     </div>
@@ -1840,6 +1855,39 @@ export function TrainingPrograms() {
           </Card>
         </div>
       </div>
+
+      {/* Modals */}
+      {selectedCourse && (
+        <>
+          <CourseDetailsModal
+            isOpen={detailsOpen}
+            onClose={() => setDetailsOpen(false)}
+            onEnroll={() => handleEnrollNow(selectedCourse)}
+            course={{
+              name: selectedCourse.title,
+              category: selectedCourse.category,
+              audience: selectedCourse.audience,
+              level: selectedCourse.level,
+              duration: selectedCourse.duration,
+              mode: selectedCourse.mode,
+              keywords: selectedCourse.keywords,
+              description: selectedCourse.description,
+              point1: selectedCourse.features[0] || "",
+              point2: selectedCourse.features[1] || "",
+              point3: selectedCourse.features[2] || "",
+              point4: selectedCourse.features[3] || "",
+              startDate: selectedCourse.startDate,
+              price: selectedCourse.price
+            }}
+          />
+          <EnrollmentForm
+            isOpen={enrollmentOpen}
+            onClose={() => setEnrollmentOpen(false)}
+            courseName={selectedCourse.title}
+            coursePrice={selectedCourse.price}
+          />
+        </>
+      )}
     </section>
   );
 }
