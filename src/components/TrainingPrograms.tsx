@@ -37,7 +37,8 @@ export const TrainingPrograms = () => {
   const [enrollmentFormOpen, setEnrollmentFormOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const { selectedAudience } = usePersonalization();
+  const [currentlyEnrolling, setCurrentlyEnrolling] = useState(false);
+  const { selectedAudience, setSelectedAudience } = usePersonalization();
 
   // Convert database courses to the format expected by the component
   const programs = courses.map(course => ({
@@ -73,8 +74,9 @@ export const TrainingPrograms = () => {
                          program.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = selectedCategory === "All Categories" || program.category === selectedCategory;
     const matchesLevel = selectedLevel === "All Levels" || program.level === selectedLevel;
+    const matchesCurrentlyEnrolling = !currentlyEnrolling || (program.startDate && program.startDate !== "Ongoing" && program.startDate !== "Flexible");
     
-    return matchesAudience && matchesSearch && matchesCategory && matchesLevel;
+    return matchesAudience && matchesSearch && matchesCategory && matchesLevel && matchesCurrentlyEnrolling;
   });
 
   // Get unique categories and levels for filter options
@@ -137,15 +139,16 @@ export const TrainingPrograms = () => {
         </div>
 
         {/* Audience Selection Tabs */}
-        <Tabs value={selectedAudience} onValueChange={(value) => {}} className="mb-8">
+        <Tabs value={selectedAudience} onValueChange={(value) => setSelectedAudience(value as Audience)} className="mb-8">
           <TabsList className="grid w-full grid-cols-5 max-w-2xl mx-auto">
             {(Object.keys(AUDIENCE_CONFIG) as Audience[]).map((audience) => {
               const config = AUDIENCE_CONFIG[audience];
-              const Icon = audience === "All" ? BookOpen : getAudienceIcon(config.name);
+              const displayName = 'displayName' in config ? config.displayName : config.name;
+              const Icon = audience === "All" ? BookOpen : getAudienceIcon(displayName);
               return (
                 <TabsTrigger key={audience} value={audience} className="flex items-center gap-2">
                   <Icon className="h-4 w-4" />
-                  <span className="hidden sm:inline">{config.name}</span>
+                  <span className="hidden sm:inline">{displayName}</span>
                 </TabsTrigger>
               );
             })}
@@ -164,14 +167,24 @@ export const TrainingPrograms = () => {
                 className="pl-10"
               />
             </div>
-            <Button
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2"
-            >
-              <Filter className="h-4 w-4" />
-              Filters
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant={currentlyEnrolling ? "default" : "outline"}
+                onClick={() => setCurrentlyEnrolling(!currentlyEnrolling)}
+                className="flex items-center gap-2"
+              >
+                <Calendar className="h-4 w-4" />
+                Currently Enrolling
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-2"
+              >
+                <Filter className="h-4 w-4" />
+                Filters
+              </Button>
+            </div>
           </div>
 
           {showFilters && (
@@ -208,7 +221,12 @@ export const TrainingPrograms = () => {
         {/* Results Count */}
         <div className="mb-6 text-sm text-muted-foreground">
           Showing {filteredPrograms.length} of {programs.length} programs
-          {selectedAudience !== "All" && ` for ${AUDIENCE_CONFIG[selectedAudience]?.name} audience`}
+          {selectedAudience !== "All" && (() => {
+            const config = AUDIENCE_CONFIG[selectedAudience];
+            const displayName = config && 'displayName' in config ? config.displayName : config?.name;
+            return ` for ${displayName} audience`;
+          })()}
+          {currentlyEnrolling && " (Currently Enrolling)"}
         </div>
 
         {/* Programs Grid */}

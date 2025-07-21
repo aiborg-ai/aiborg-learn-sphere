@@ -60,7 +60,7 @@ export const PersonalizedContent: React.FC<PersonalizedContentProps> = ({ sectio
     return iconMap[feature] || Trophy;
   };
 
-  if (section === 'hero' && config.features) {
+  if (section === 'hero' && config && 'features' in config && config.features) {
     return (
       <Card className={`mt-8 p-6 rounded-2xl border animate-fade-in ${getPersonalizedStyles({
         primary: "bg-gradient-to-br from-yellow-50 to-orange-50 border-orange-200 dark:from-yellow-950/20 dark:to-orange-950/20 dark:border-orange-800",
@@ -101,7 +101,7 @@ export const PersonalizedContent: React.FC<PersonalizedContentProps> = ({ sectio
         </p>
 
         <div className="grid grid-cols-2 gap-3">
-          {Object.entries(config.features)
+          {config && 'features' in config && Object.entries(config.features)
             .filter(([_, enabled]) => enabled)
             .slice(0, 4)
             .map(([feature, _]) => {
@@ -120,7 +120,7 @@ export const PersonalizedContent: React.FC<PersonalizedContentProps> = ({ sectio
         <div className="mt-4 pt-3 border-t border-border/50">
           <div className="flex items-center justify-between">
             <Badge variant="secondary" className="text-xs">
-              {config.language.level.toUpperCase()} LEVEL
+              {config && 'language' in config ? config.language.level.toUpperCase() : 'GENERAL'} LEVEL
             </Badge>
             <Badge variant="outline" className="text-xs">
               {config.theme.toUpperCase()} THEME
