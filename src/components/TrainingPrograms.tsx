@@ -18,7 +18,11 @@ import {
   BookOpen,
   Video,
   Monitor,
-  MapPin
+  MapPin,
+  Baby,
+  GraduationCap,
+  Briefcase,
+  Building2
 } from "lucide-react";
 
 const programs = [
@@ -1593,15 +1597,19 @@ export function TrainingPrograms() {
   const getAudienceIcon = (audience: string) => {
     switch (audience) {
       case "Primary":
-        return "🎨";
+      case "primary":
+        return <Baby className="h-5 w-5" />;
       case "Secondary":
-        return "🚀";
+      case "secondary":
+        return <GraduationCap className="h-5 w-5" />;
       case "Professional":
-        return "💼";
+      case "professional":
+        return <Briefcase className="h-5 w-5" />;
       case "SME":
-        return "🏢";
+      case "business":
+        return <Building2 className="h-5 w-5" />;
       default:
-        return "📚";
+        return <BookOpen className="h-5 w-5" />;
     }
   };
 
@@ -1650,7 +1658,7 @@ export function TrainingPrograms() {
               { key: "business", label: "SMEs" }
             ].map(({ key, label }) => (
               <TabsTrigger key={key} value={key} className="flex items-center gap-2">
-                <span>{getAudienceIcon(key)}</span>
+                {getAudienceIcon(key)}
                 <span className="hidden sm:inline">{label}</span>
                 <span className="sm:hidden">{key}</span>
               </TabsTrigger>
@@ -1701,7 +1709,7 @@ export function TrainingPrograms() {
               Object.entries(programsByAudience).map(([audienceKey, audiencePrograms]) => (
                 <div key={audienceKey} className="space-y-6">
                   <div className="flex items-center gap-3 pb-4 border-b">
-                    <span className="text-2xl">{getAudienceIcon(audienceKey)}</span>
+                    <div className="text-primary">{getAudienceIcon(audienceKey)}</div>
                     <h3 className="text-2xl font-bold">{getAudienceLabel(audienceKey)}</h3>
                     <Badge variant="secondary">{audiencePrograms.length} courses</Badge>
                   </div>
