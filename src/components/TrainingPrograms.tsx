@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -1544,6 +1544,17 @@ export function TrainingPrograms() {
   const [enrollmentOpen, setEnrollmentOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
+
+  // Check for URL hash parameter to set initial audience filter
+  React.useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash.startsWith('audience-')) {
+      const audience = hash.replace('audience-', '');
+      if (['primary', 'secondary', 'professional', 'business'].includes(audience)) {
+        setLocalSelectedAudience(audience);
+      }
+    }
+  }, []);
 
   // Use local state for audience selection
   const activeAudience = localSelectedAudience;

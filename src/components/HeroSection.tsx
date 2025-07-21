@@ -168,14 +168,17 @@ export function HeroSection() {
                           className="w-full btn-hero"
                           onClick={(e) => {
                             e.stopPropagation();
-                            // Smooth scroll to Training Programs section
-                            const element = document.getElementById('training-programs');
-                            if (element) {
-                              element.scrollIntoView({ 
-                                behavior: 'smooth',
-                                block: 'start'
-                              });
-                            }
+                            // Set URL hash to pass audience filter and scroll to section
+                            window.location.hash = `audience-${audience.id}`;
+                            setTimeout(() => {
+                              const element = document.getElementById('training-programs');
+                              if (element) {
+                                element.scrollIntoView({ 
+                                  behavior: 'smooth',
+                                  block: 'start'
+                                });
+                              }
+                            }, 100);
                           }}
                         >
                           Explore Programs
