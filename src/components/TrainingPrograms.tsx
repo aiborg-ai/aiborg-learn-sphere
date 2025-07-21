@@ -1536,7 +1536,7 @@ export function TrainingPrograms() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMode, setSelectedMode] = useState("all");
   const [selectedLevel, setSelectedLevel] = useState("all");
-  const [localSelectedAudience, setLocalSelectedAudience] = useState("all");
+  const [localSelectedAudience, setLocalSelectedAudience] = useState("currently-enrolling");
   const [enrollmentOpen, setEnrollmentOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
