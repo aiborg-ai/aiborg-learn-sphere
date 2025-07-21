@@ -4,9 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { usePersonalization } from "@/contexts/PersonalizationContext";
-import { ChatProvider, useChatContext, Message } from "@/components/chat/ChatContext";
-import { ChatResponseGenerator } from "@/components/chat/ChatResponseGenerator";
+import { usePersonalization, Audience } from "@/contexts/PersonalizationContext";
 import { 
   MessageCircle, 
   Send, 
@@ -20,31 +18,75 @@ import {
   ArrowUp
 } from "lucide-react";
 
-// Chatbot implementation with context awareness
-function AIChatbotContent() {
+interface Message {
+  id: string;
+  content: string;
+  sender: "user" | "ai";
+  timestamp: Date;
+  type?: "text" | "suggestion" | "course_recommendation";
+}
+
+interface ConversationContext {
+  askedAboutExperience: boolean;
+  askedAboutGoals: boolean;
+  userExperienceLevel?: 'beginner' | 'intermediate' | 'advanced';
+  userRole?: string;
+  userGoals?: string[];
+  recommendedCourses?: string[];
+  lastTopic?: string;
+  followUpQuestions: string[];
+}
+
+// Course data for accurate recommendations
+const professionalCourses = [
+  { title: "AI Fundamentals for Professionals", price: "£89", duration: "8 weeks", level: "Intermediate" },
+  { title: "Advanced Prompt Engineering", price: "£129", duration: "6 weeks", level: "Advanced" },
+  { title: "AI Strategy & Implementation", price: "£199", duration: "10 weeks", level: "Advanced" },
+  { title: "Machine Learning for Business", price: "£159", duration: "8 weeks", level: "Intermediate" }
+];
+
+const businessCourses = [
+  { title: "AI Leadership & Strategy", price: "£299", duration: "12 weeks", level: "Executive" },
+  { title: "Enterprise AI Implementation", price: "£499", duration: "16 weeks", level: "Executive" },
+  { title: "AI ROI & Analytics", price: "£199", duration: "8 weeks", level: "Advanced" }
+];
+
+const secondaryCourses = [
+  { title: "Ultimate Academic Advantage by AI", price: "£39", duration: "6 weeks", level: "Intermediate" },
+  { title: "Teen Machine Learning Bootcamp", price: "£39", duration: "6 weeks", level: "Intermediate" },
+  { title: "Code Your Own ChatGPT", price: "£39", duration: "6 weeks", level: "Intermediate" }
+];
+
+const primaryCourses = [
+  { title: "Kickstarter AI Adventures", price: "£25", duration: "4 weeks", level: "Beginner" },
+  { title: "Creative Robots Coding Jam", price: "£25", duration: "4 weeks", level: "Beginner" },
+  { title: "AI Storytellers' Studio", price: "£25", duration: "4 weeks", level: "Beginner" }
+];
+
+const initialConversationContext: ConversationContext = {
+  askedAboutExperience: false,
+  askedAboutGoals: false,
+  followUpQuestions: []
+};
+
+export function AIChatbot() {
   const { selectedAudience, getPersonalizedContent } = usePersonalization();
-  const { 
-    messages, 
-    setMessages, 
-    conversationContext, 
-    updateConversationContext 
-  } = useChatContext();
-  
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [conversationContext, setConversationContext] = useState<ConversationContext>(initialConversationContext);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize welcome message based on audience
   useEffect(() => {
-    const responseGenerator = new ChatResponseGenerator(
-      selectedAudience,
-      getPersonalizedContent,
-      conversationContext,
-      updateConversationContext
-    );
-    
-    const welcomeContent = responseGenerator.generateResponse("", true);
+    const welcomeContent = getPersonalizedContent({
+      primary: "Hi there! I'm aiborg chat! 🤖 I'm super excited to help you learn about AI in fun ways! What's your name, and do you like playing games or building things?",
+      secondary: "Hey! I'm aiborg chat, your AI learning companion! 🚀 I can help you discover awesome AI courses that'll boost your grades and prepare you for the future. What subjects are you most interested in?",
+      professional: "Hello! I'm aiborg chat, your professional AI learning assistant. I can help you find courses that will enhance your career and provide practical AI skills for your workplace. What's your current role, and what would you like to achieve with AI?",
+      business: "Welcome! I'm aiborg chat, your strategic AI learning advisor. I help executives and business leaders understand AI implementation, ROI, and organizational transformation. What are your primary business objectives with AI?",
+      default: "Hello! I'm aiborg chat, your AI learning assistant. I can help you find the perfect course and answer questions about our programs. What would you like to learn about AI?"
+    });
     
     setMessages([{
       id: "1",
@@ -53,7 +95,225 @@ function AIChatbotContent() {
       timestamp: new Date(),
       type: "text"
     }]);
-  }, [selectedAudience]); // Re-initialize when audience changes
+  }, [selectedAudience, getPersonalizedContent]);
+
+  const updateConversationContext = (updates: Partial<ConversationContext>) => {
+    setConversationContext(prev => ({ ...prev, ...updates }));
+  };
+
+  const getCourseRecommendations = () => {
+    switch (selectedAudience) {
+      case "professional":
+        return professionalCourses;
+      case "business": 
+        return businessCourses;
+      case "secondary":
+        return secondaryCourses;
+      case "primary":
+        return primaryCourses;
+      default:
+        return professionalCourses;
+    }
+  };
+
+  const getPriceRange = (): string => {
+    switch (selectedAudience) {
+      case "business": return "£199 to £499";
+      case "professional": return "£89 to £199";
+      case "secondary": return "£39";
+      case "primary": return "£25";
+      default: return "£25 to £499";
+    }
+  };
+
+  const detectUserExperience = (userMessage: string): 'beginner' | 'intermediate' | 'advanced' | undefined => {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    if (lowerMessage.includes("no experience") || lowerMessage.includes("beginner") || 
+        lowerMessage.includes("new to") || lowerMessage.includes("never used")) {
+      return 'beginner';
+    }
+    
+    if (lowerMessage.includes("some experience") || lowerMessage.includes("intermediate") || 
+        lowerMessage.includes("used before") || lowerMessage.includes("familiar")) {
+      return 'intermediate';
+    }
+    
+    if (lowerMessage.includes("advanced") || lowerMessage.includes("expert") || 
+        lowerMessage.includes("professional experience") || lowerMessage.includes("years of")) {
+      return 'advanced';
+    }
+    
+    return undefined;
+  };
+
+  const detectUserRole = (userMessage: string): string | undefined => {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    if (lowerMessage.includes("developer") || lowerMessage.includes("programmer")) return "developer";
+    if (lowerMessage.includes("manager") || lowerMessage.includes("lead")) return "manager";
+    if (lowerMessage.includes("analyst") || lowerMessage.includes("data")) return "analyst";
+    if (lowerMessage.includes("teacher") || lowerMessage.includes("educator")) return "educator";
+    if (lowerMessage.includes("student")) return "student";
+    if (lowerMessage.includes("ceo") || lowerMessage.includes("executive")) return "executive";
+    
+    return undefined;
+  };
+
+  const getContextualFollowUp = (userMessage: string): string => {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    if (selectedAudience === "primary") {
+      if (lowerMessage.includes("game") || lowerMessage.includes("play")) {
+        return "I love that you like games! 🎮 Our AI courses are designed like fun games with challenges, rewards, and cool projects. What's your favorite type of game?";
+      }
+      if (lowerMessage.includes("draw") || lowerMessage.includes("art")) {
+        return "That's amazing! 🎨 We have AI courses where you can teach computers to make art, create stories with pictures, and even design your own characters! Would you like to hear about our AI art adventures?";
+      }
+      return "That sounds really cool! 🌟 What other things do you like to do for fun?";
+    }
+    
+    if (selectedAudience === "secondary") {
+      if (lowerMessage.includes("college") || lowerMessage.includes("university")) {
+        return "Smart thinking! 🎓 AI skills are becoming essential for almost every field. Which subjects or careers are you considering? I can show you how AI applies to everything from medicine to gaming!";
+      }
+      if (lowerMessage.includes("project") || lowerMessage.includes("code")) {
+        return "Perfect! 💻 Our courses include portfolio-worthy projects that really impress colleges and employers. Are you interested in web development, data science, or maybe AI game development?";
+      }
+      return "That's a great direction! 🚀 How do you see AI fitting into your future plans?";
+    }
+    
+    if (selectedAudience === "professional") {
+      if (lowerMessage.includes("manager") || lowerMessage.includes("lead")) {
+        return "Excellent! As a leader, you'll benefit from understanding both technical implementation and team management aspects of AI. Are you looking to upskill your team or integrate AI into existing workflows?";
+      }
+      if (lowerMessage.includes("developer") || lowerMessage.includes("engineer")) {
+        return "Perfect! With your technical background, we can focus on advanced AI applications and implementation strategies. Are you interested in LLMs, machine learning, or AI system architecture?";
+      }
+      return "That's valuable context! How do you envision AI enhancing your current role or opening new opportunities?";
+    }
+    
+    if (selectedAudience === "business") {
+      if (lowerMessage.includes("ceo") || lowerMessage.includes("executive")) {
+        return "Strategic AI leadership is crucial for competitive advantage. Are you focused on operational efficiency, new product development, or market positioning with AI?";
+      }
+      if (lowerMessage.includes("transform") || lowerMessage.includes("strategy")) {
+        return "Digital transformation requires the right approach. Are you looking to transform customer experience, internal operations, or create new AI-powered revenue streams?";
+      }
+      return "Understanding the business impact is key. What are your primary objectives for AI implementation in your organization?";
+    }
+    
+    return "That's helpful to know! What specific aspects of AI interest you most?";
+  };
+
+  const generateAIResponse = (userMessage: string): string => {
+    const lowerMessage = userMessage.toLowerCase();
+
+    // Detect and store user information
+    const experience = detectUserExperience(userMessage);
+    const role = detectUserRole(userMessage);
+    
+    if (experience && !conversationContext.userExperienceLevel) {
+      updateConversationContext({ userExperienceLevel: experience });
+    }
+    
+    if (role && !conversationContext.userRole) {
+      updateConversationContext({ userRole: role });
+    }
+
+    const courses = getCourseRecommendations();
+
+    // Handle specific queries with context
+    if (lowerMessage.includes("cost") || lowerMessage.includes("price")) {
+      const priceRange = getPriceRange();
+      updateConversationContext({ lastTopic: "pricing" });
+      return getPersonalizedContent({
+        primary: `Our fun AI courses are just ${priceRange}! 🎨 That's less than a video game, but you learn skills that last forever! Each course has games, fun projects, certificates, and you get to show your family all the cool things you build! Plus, if you don't love it, we'll give your money back!`,
+        secondary: `Our courses are ${priceRange}, which is amazing value compared to other tech programs! 📊 You get everything: live sessions with instructors, hands-on coding projects, industry certificates that colleges love, access to our teen community, and lifetime access to materials. Many students say it's the best investment they've made for their future!`,
+        professional: `Our professional courses range from ${priceRange} and deliver exceptional ROI. 📈 This includes CPE credits (worth $200+ alone), industry-recognized certificates, practical skills that increase earning potential by 15-30%, networking opportunities, and implementation support. Most professionals see career advancement within 6 months. Payment plans available.`,
+        business: `Our enterprise programs range from ${priceRange} with proven ROI of 300-500% within 12 months. 💼 This includes custom training for your team, analytics dashboards, dedicated success manager, implementation support, and measurable performance metrics. We also offer volume discounts for larger teams and flexible enterprise contracts.`,
+        default: `Our courses range from ${priceRange} and include comprehensive materials, certificates, and ongoing support.`
+      });
+    }
+
+    // Professional asking about intermediate courses
+    if (lowerMessage.includes("intermediate") && selectedAudience === "professional") {
+      const course = courses[0];
+      updateConversationContext({ 
+        lastTopic: "course_recommendation",
+        recommendedCourses: [course.title]
+      });
+      return getPersonalizedContent({
+        professional: `For intermediate-level professionals, I specifically recommend:\n\n**${course.title}** (${course.price}, ${course.duration})\n- Advanced prompt engineering techniques\n- Real-world implementation scenarios\n- Industry best practices\n- CPE credits included\n\nThis builds perfectly on your existing technical foundation. Would you like more details about the curriculum?`,
+        default: `I recommend **${course.title}** (${course.price}, ${course.duration}) for intermediate learners. Would you like more information?`
+      });
+    }
+
+    // Course recommendations with context
+    if (lowerMessage.includes("recommend") || lowerMessage.includes("suggest") || 
+        (lowerMessage.includes("course") && lowerMessage.includes("which"))) {
+      
+      const course = courses[0]; // Primary recommendation
+      
+      updateConversationContext({ 
+        lastTopic: "course_recommendation",
+        recommendedCourses: [course.title]
+      });
+
+      // Professional with specific background
+      if (selectedAudience === "professional" && 
+          (lowerMessage.includes("software") || conversationContext.userRole === "developer")) {
+        
+        return `As a software professional, I recommend these courses based on your background:\n\n1. **${courses[0].title}** (${courses[0].price}, ${courses[0].duration}) - Perfect for your technical background\n2. **${courses[1].title}** (${courses[1].price}, ${courses[1].duration}) - Advanced skills for immediate application\n3. **${courses[2].title}** (${courses[2].price}, ${courses[2].duration}) - Strategic implementation\n\nAll include CPE credits and industry certificates. Which interests you most?`;
+      }
+
+      return getPersonalizedContent({
+        primary: `I think you'd love **${course.title}**! 🎮 It's only ${course.price} and takes ${course.duration} of fun learning! You'll get to play games, create cool projects, and even get a special certificate to show everyone how smart you are! Would you like me to tell you more about the fun activities?`,
+        secondary: `I'd definitely recommend **${course.title}** (${course.price}, ${course.duration})! 🚀 This course is perfect for your level and includes hands-on coding projects that look amazing on college applications. Plus, you'll join our active teen community where you can collaborate on projects. Want to know more about the curriculum?`,
+        professional: `Based on your background, I highly recommend **${course.title}** (${course.price}, ${course.duration}). This course provides practical skills you can implement immediately at work, includes CPE credits, and offers networking opportunities with other professionals. The ROI is typically seen within the first month. Would you like details about the specific modules?`,
+        business: `For your strategic objectives, **${course.title}** (${course.price}, ${course.duration}) would be ideal. This executive-level program focuses on implementation strategy, team leadership, and measurable business outcomes. Includes analytics dashboard and dedicated support for organizational rollout. Shall I outline the business case and expected ROI?`,
+        default: `I recommend **${course.title}** (${course.price}, ${course.duration}). This course includes comprehensive materials and practical applications. Would you like more information?`
+      });
+    }
+
+    // Certificate inquiry
+    if (lowerMessage.includes("certificate") || lowerMessage.includes("certification")) {
+      updateConversationContext({ lastTopic: "certification" });
+      return getPersonalizedContent({
+        primary: "Yes! You'll get awesome certificates to show your family and friends how smart you are with AI! 🏆",
+        secondary: "Absolutely! Our certificates are recognized by universities and look great on college applications. Perfect for your academic portfolio! 📜",
+        professional: "Yes! All courses include industry-recognized certificates with CPE credits. Showcase your AI expertise on LinkedIn and advance your career. 💼",
+        business: "Our executive certificates demonstrate strategic AI leadership to stakeholders and boards. Includes completion verification for HR systems. 📊",
+        default: "Yes, all programs include certificates upon completion with practical skills verification."
+      });
+    }
+
+    // Contextual follow-up based on conversation
+    if (conversationContext.lastTopic === "course_recommendation") {
+      if (lowerMessage.includes("yes") || lowerMessage.includes("interested") || 
+          lowerMessage.includes("more")) {
+        return getPersonalizedContent({
+          primary: "Yay! 🎉 This course has super fun activities like building your first AI friend, creating magic art, and solving puzzles! You'll even get to show your projects to other kids! When would you like to start?",
+          secondary: "Awesome! 🚀 The course includes 6 hands-on projects, live coding sessions, access to our teen community, and a portfolio piece for college applications. We have sessions starting every 2 weeks. What's your preferred schedule?",
+          professional: "Excellent! The program includes 8 modules covering LLM fundamentals, prompt engineering, implementation strategies, and real-world case studies. You'll also get access to our professional network and job placement assistance. When would you like to begin?",
+          business: "Perfect! This executive program includes strategic planning workshops, ROI calculators, team training materials, and a dedicated success manager. We'll also create a custom implementation roadmap for your organization. Shall we schedule a consultation?",
+          default: "Great! I can provide more details about the curriculum and help you get started."
+        });
+      }
+    }
+
+    // Generate contextual follow-up based on user input
+    const followUp = getContextualFollowUp(userMessage);
+    
+    // Default personalized response with context
+    return getPersonalizedContent({
+      primary: followUp || "That's super interesting! 🌟 Tell me more about what you like to do!",
+      secondary: followUp || "That's great! 🎯 How do you think AI could help with your interests?",
+      professional: followUp || "I understand. How can AI best support your professional objectives?",
+      business: followUp || "That's valuable insight. What are your key success metrics for AI implementation?",
+      default: "I'd be happy to help you with that! What specific aspects would you like to explore?"
+    });
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -79,16 +339,9 @@ function AIChatbotContent() {
 
     // Simulate AI thinking time
     setTimeout(() => {
-      const responseGenerator = new ChatResponseGenerator(
-        selectedAudience,
-        getPersonalizedContent,
-        conversationContext,
-        updateConversationContext
-      );
-
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: responseGenerator.generateResponse(content),
+        content: generateAIResponse(content),
         sender: "ai", 
         timestamp: new Date()
       };
@@ -270,14 +523,5 @@ function AIChatbotContent() {
         </div>
       </Card>
     </div>
-  );
-}
-
-// Main component with ChatProvider wrapper
-export function AIChatbot() {
-  return (
-    <ChatProvider>
-      <AIChatbotContent />
-    </ChatProvider>
   );
 }
