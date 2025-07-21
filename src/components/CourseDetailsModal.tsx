@@ -9,7 +9,7 @@ interface CourseDetailsModalProps {
   onClose: () => void;
   onEnroll: () => void;
   course: {
-    name: string;
+    title: string;
     category: string;
     audience: string;
     level: string;
@@ -17,13 +17,12 @@ interface CourseDetailsModalProps {
     mode: string;
     keywords: string[];
     description: string;
-    point1: string;
-    point2: string;
-    point3: string;
-    point4: string;
-    startDate: string;
+    features: string[];
+    startDate?: string;
+    start_date?: string;
     price?: string;
-  };
+    prerequisites?: string;
+  } | null;
 }
 
 export const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({
@@ -32,17 +31,19 @@ export const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({
   onEnroll,
   course
 }) => {
-  console.log("CourseDetailsModal rendered with isOpen:", isOpen, "course:", course?.name);
+  console.log("CourseDetailsModal rendered with isOpen:", isOpen, "course:", course?.title);
   const handleEnrollClick = () => {
     onClose();
     onEnroll();
   };
 
+  if (!course) return null;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">{course.name}</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">{course.title}</DialogTitle>
           <DialogDescription className="text-lg">
             {course.description}
           </DialogDescription>
@@ -84,10 +85,10 @@ export const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({
                 <Badge variant="outline">{course.mode}</Badge>
               </div>
               
-              <div className="flex items-center gap-2">
-                <span className="font-medium">Start Date:</span>
-                <span>{course.startDate}</span>
-              </div>
+               <div className="flex items-center gap-2">
+                 <span className="font-medium">Start Date:</span>
+                 <span>{course.startDate || course.start_date}</span>
+               </div>
             </div>
           </div>
 
@@ -110,10 +111,10 @@ export const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({
               What You'll Learn
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[course.point1, course.point2, course.point3, course.point4].map((point, index) => (
+              {course.features.map((feature, index) => (
                 <div key={index} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
                   <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">{point}</span>
+                  <span className="text-sm">{feature}</span>
                 </div>
               ))}
             </div>
