@@ -194,13 +194,23 @@ export function AboutSection() {
           <div className="text-center max-w-4xl mx-auto">
             <h3 className="font-display text-3xl font-bold mb-6">Our Mission</h3>
             <blockquote className="text-lg md:text-xl text-muted-foreground leading-relaxed italic mb-6">
-              "To empower individuals and organizations with practical AI knowledge that enhances human 
-              capability while maintaining ethical standards. We believe AI should augment human potential, 
-              not replace it."
+              {getPersonalizedContent({
+                primary: "To help kids learn super cool AI stuff so they can become amazing problem-solvers and help make the world a better place! We want AI to be your best friend that helps you learn and create awesome things.",
+                secondary: "To help teenagers master AI skills that will give them superpowers for college and their future careers. We want you to be the person everyone comes to when they need help with cool tech stuff!",
+                professional: "To empower working professionals with practical AI knowledge that enhances career performance and opens new opportunities. We believe AI should augment your expertise and accelerate your professional growth.",
+                business: "To enable organizational leaders and SMEs with strategic AI capabilities that drive innovation, efficiency, and competitive advantage. We focus on enterprise-grade solutions that deliver measurable business impact and ROI."
+              })}
             </blockquote>
             <div className="flex items-center justify-center gap-2 text-primary">
               <Heart className="h-5 w-5" />
-              <span className="font-medium">Founded on human-centered AI principles</span>
+              <span className="font-medium">
+                {getPersonalizedContent({
+                  primary: "Built with love for young explorers",
+                  secondary: "Designed for future innovators",
+                  professional: "Founded on career-focused AI principles",
+                  business: "Established on enterprise excellence standards"
+                })}
+              </span>
             </div>
           </div>
         </Card>
