@@ -1547,13 +1547,28 @@ export function TrainingPrograms() {
 
   // Check for URL hash parameter to set initial audience filter
   useEffect(() => {
-    const hash = window.location.hash.replace('#', '');
-    if (hash.startsWith('audience-')) {
-      const audience = hash.replace('audience-', '');
-      if (['primary', 'secondary', 'professional', 'business'].includes(audience)) {
-        setLocalSelectedAudience(audience);
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      console.log('Hash detected:', hash);
+      if (hash.startsWith('audience-')) {
+        const audience = hash.replace('audience-', '');
+        console.log('Audience extracted:', audience);
+        if (['primary', 'secondary', 'professional', 'business'].includes(audience)) {
+          console.log('Setting audience to:', audience);
+          setLocalSelectedAudience(audience);
+        }
       }
-    }
+    };
+
+    // Check hash on component mount
+    handleHashChange();
+    
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+    
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
   }, []);
 
   // Use local state for audience selection
