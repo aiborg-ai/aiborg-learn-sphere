@@ -56,9 +56,18 @@ export const TrainingPrograms = () => {
     prerequisites: course.prerequisites
   }));
 
+  // Map database audience names to internal IDs for filtering
+  const audienceMapping = {
+    "Young Learners": "primary",
+    "Teenagers": "secondary", 
+    "Professionals": "professional",
+    "SMEs": "business"
+  };
+
   // Filter programs based on selected audience and search criteria
   const filteredPrograms = programs.filter((program) => {
-    const matchesAudience = (selectedAudience as string) === "All" || program.audience === selectedAudience;
+    const programAudienceId = audienceMapping[program.audience as keyof typeof audienceMapping];
+    const matchesAudience = selectedAudience === "All" || programAudienceId === selectedAudience;
     const matchesSearch = program.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          program.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          program.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -74,10 +83,10 @@ export const TrainingPrograms = () => {
 
   const getAudienceIcon = (audience: string) => {
     switch (audience) {
-      case "Primary": return Baby;
-      case "Secondary": return GraduationCap;
-      case "Professional": return Briefcase;
-      case "Business": return Building2;
+      case "Young Learners": return Baby;
+      case "Teenagers": return GraduationCap;
+      case "Professionals": return Briefcase;
+      case "SMEs": return Building2;
       default: return BookOpen;
     }
   };
@@ -128,14 +137,15 @@ export const TrainingPrograms = () => {
         </div>
 
         {/* Audience Selection Tabs */}
-        <Tabs value={selectedAudience} onValueChange={() => {}} className="mb-8">
+        <Tabs value={selectedAudience} onValueChange={(value) => {}} className="mb-8">
           <TabsList className="grid w-full grid-cols-5 max-w-2xl mx-auto">
             {(Object.keys(AUDIENCE_CONFIG) as Audience[]).map((audience) => {
-              const Icon = getAudienceIcon(audience);
+              const config = AUDIENCE_CONFIG[audience];
+              const Icon = audience === "All" ? BookOpen : getAudienceIcon(config.name);
               return (
                 <TabsTrigger key={audience} value={audience} className="flex items-center gap-2">
                   <Icon className="h-4 w-4" />
-                  <span className="hidden sm:inline">{audience}</span>
+                  <span className="hidden sm:inline">{config.name}</span>
                 </TabsTrigger>
               );
             })}
@@ -198,7 +208,7 @@ export const TrainingPrograms = () => {
         {/* Results Count */}
         <div className="mb-6 text-sm text-muted-foreground">
           Showing {filteredPrograms.length} of {programs.length} programs
-          {(selectedAudience as string) !== "All" && ` for ${selectedAudience} audience`}
+          {selectedAudience !== "All" && ` for ${AUDIENCE_CONFIG[selectedAudience]?.name} audience`}
         </div>
 
         {/* Programs Grid */}

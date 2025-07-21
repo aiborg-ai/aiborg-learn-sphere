@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type Audience = "primary" | "secondary" | "professional" | "business" | null;
+export type Audience = "All" | "primary" | "secondary" | "professional" | "business";
 
 interface PersonalizationContextType {
   selectedAudience: Audience;
@@ -41,12 +41,12 @@ interface PersonalizationProviderProps {
 
 export const PersonalizationProvider: React.FC<PersonalizationProviderProps> = ({ children }) => {
   const [selectedAudience, setSelectedAudience] = useState<Audience>(() => {
-    // Start with no selection by default
-    return null;
+    // Start with "All" by default
+    return "All";
   });
 
   useEffect(() => {
-    if (selectedAudience) {
+    if (selectedAudience && selectedAudience !== "All") {
       localStorage.setItem('aiborg-selected-audience', selectedAudience);
       // Apply audience-specific body classes for global styling
       document.body.className = document.body.className.replace(/audience-\w+/g, '');
@@ -58,14 +58,14 @@ export const PersonalizationProvider: React.FC<PersonalizationProviderProps> = (
   }, [selectedAudience]);
 
   const getPersonalizedContent = (content: PersonalizedContent) => {
-    if (!selectedAudience || !content[selectedAudience]) {
+    if (!selectedAudience || selectedAudience === "All" || !content[selectedAudience]) {
       return content.default || content;
     }
     return content[selectedAudience];
   };
 
   const getPersonalizedStyles = (styles: PersonalizedStyles) => {
-    if (!selectedAudience || !styles[selectedAudience]) {
+    if (!selectedAudience || selectedAudience === "All" || !styles[selectedAudience]) {
       return styles.default || '';
     }
     return styles[selectedAudience];
@@ -87,8 +87,13 @@ export const PersonalizationProvider: React.FC<PersonalizationProviderProps> = (
 
 // Personalization configuration
 export const AUDIENCE_CONFIG = {
+  All: {
+    name: "All Audiences",
+    theme: "default",
+  },
   primary: {
-    name: "Primary School",
+    name: "Young Learners",
+    displayName: "Young Learners",
     theme: "playful",
     colors: {
       primary: "var(--primary-light)",
@@ -97,7 +102,7 @@ export const AUDIENCE_CONFIG = {
     },
     language: {
       level: "simple",
-      tone: "friendly",
+      tone: "friendly", 
       vocabulary: "basic",
     },
     features: {
@@ -109,7 +114,8 @@ export const AUDIENCE_CONFIG = {
     },
   },
   secondary: {
-    name: "Secondary School",
+    name: "Teenagers",
+    displayName: "Teenagers",
     theme: "modern",
     colors: {
       primary: "var(--primary)",
@@ -130,7 +136,8 @@ export const AUDIENCE_CONFIG = {
     },
   },
   professional: {
-    name: "Professional",
+    name: "Professionals",
+    displayName: "Professionals",
     theme: "clean",
     colors: {
       primary: "var(--primary-dark)",
@@ -152,7 +159,8 @@ export const AUDIENCE_CONFIG = {
     },
   },
   business: {
-    name: "Business",
+    name: "SMEs",
+    displayName: "SMEs", 
     theme: "enterprise",
     colors: {
       primary: "var(--primary-enterprise)",
