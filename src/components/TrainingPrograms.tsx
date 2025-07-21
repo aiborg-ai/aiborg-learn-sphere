@@ -1567,6 +1567,7 @@ export function TrainingPrograms() {
 
   const handleLearnMore = (course: any) => {
     console.log("Learn More clicked for course:", course.title);
+    alert("Learn More clicked for: " + course.title); // Very obvious debug
     setSelectedCourse(course);
     setDetailsOpen(true);
     console.log("Details modal should open, detailsOpen:", true);
@@ -1574,6 +1575,7 @@ export function TrainingPrograms() {
 
   const handleEnrollNow = (course: any) => {
     console.log("Enroll Now clicked for course:", course.title);
+    alert("Enroll Now clicked for: " + course.title); // Very obvious debug
     setSelectedCourse(course);
     setEnrollmentOpen(true);
     console.log("Enrollment modal should open, enrollmentOpen:", true);
