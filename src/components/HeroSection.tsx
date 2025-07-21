@@ -64,19 +64,16 @@ export function HeroSection() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-white/20">
             <Sparkles className="h-5 w-5 text-secondary animate-pulse" />
-            <span className="text-white font-medium">Revolutionary AI Education Platform</span>
+            <span className="text-white font-medium">We train aiborgs</span>
           </div>
           
-          <h1 className="font-display text-7xl md:text-8xl lg:text-9xl font-bold mb-6">
-            <span className="block text-secondary">
-              aiborg
-              <sup className="text-2xl md:text-3xl lg:text-4xl text-secondary/80 font-normal ml-1">™</sup>
-            </span>
-          </h1>
-          
-          <p className="text-2xl md:text-3xl text-accent font-semibold mb-4 font-display drop-shadow-sm">
-            AI-augmented Human
-          </p>
+          <div className="mb-6">
+            <img 
+              src="/lovable-uploads/6f3c3c38-f6ef-4824-a8e4-e44014511089.png" 
+              alt="Aiborg Logo" 
+              className="mx-auto max-w-md w-full h-auto"
+            />
+          </div>
           
           <p className="text-xl text-white/90 max-w-2xl mx-auto mb-12 leading-relaxed">
             Transform your future with cutting-edge AI education. Personalized learning paths 
