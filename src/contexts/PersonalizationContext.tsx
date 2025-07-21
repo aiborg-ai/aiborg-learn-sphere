@@ -41,9 +41,8 @@ interface PersonalizationProviderProps {
 
 export const PersonalizationProvider: React.FC<PersonalizationProviderProps> = ({ children }) => {
   const [selectedAudience, setSelectedAudience] = useState<Audience>(() => {
-    // Persist audience selection in localStorage
-    const saved = localStorage.getItem('aiborg-selected-audience');
-    return saved ? (saved as Audience) : null;
+    // Start with no selection by default
+    return null;
   });
 
   useEffect(() => {
