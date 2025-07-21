@@ -17,14 +17,14 @@
     --primary-foreground: 0 0% 100%;  /* White text on purple */
 
     /* Secondary Brand Colors - Soft Pastel Peach */
-    --secondary: 25 60% 80%;          /* Soft peachy pink */
-    --secondary-light: 25 55% 85%;    /* Light peach variant */
-    --secondary-dark: 25 65% 75%;     /* Deeper soft peach */
-    --secondary-foreground: 280 45% 25%; /* Dark purple text on peach */
+    --secondary: 15 70% 85%;          /* Soft peachy pink like logo */
+    --secondary-light: 15 65% 90%;    /* Light peach variant */
+    --secondary-dark: 15 75% 80%;     /* Deeper soft peach */
+    --secondary-foreground: 250 45% 25%; /* Dark purple text on peach */
 
     /* AI-themed Accent Colors - Soft Pastels */
-    --accent: 200 40% 75%;            /* Soft sky blue */
-    --accent-light: 200 35% 82%;      /* Light pastel blue */
+    --accent: 180 50% 80%;            /* Soft cyan like logo */
+    --accent-light: 180 45% 85%;      /* Light pastel cyan */
     --accent-playful: 45 50% 78%;     /* Soft yellow-peach for primary */
     --accent-professional: 210 35% 70%; /* Soft professional blue */
     --accent-enterprise: 160 35% 70%; /* Soft mint green accent */
@@ -44,7 +44,7 @@
     /* Pastel Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
     --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-light)));
-    --gradient-hero: linear-gradient(135deg, hsl(280 45% 75%) 0%, hsl(25 55% 75%) 30%, hsl(200 40% 75%) 70%, hsl(160 35% 75%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(250 35% 65%) 0%, hsl(240 40% 70%) 50%, hsl(250 35% 65%) 100%);
     --gradient-ai: linear-gradient(45deg, hsl(var(--accent)), hsl(var(--primary-glow)));
     
     /* Soft Pastel Shadows */

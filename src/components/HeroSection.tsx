@@ -70,11 +70,11 @@ export function HeroSection() {
           <h1 className="font-display text-7xl md:text-8xl lg:text-9xl font-bold mb-6">
             <span className="block text-secondary">
               aiborg
-              <sup className="text-2xl md:text-3xl lg:text-4xl text-primary/80 font-normal ml-1">™</sup>
+              <sup className="text-2xl md:text-3xl lg:text-4xl text-secondary/80 font-normal ml-1">™</sup>
             </span>
           </h1>
           
-          <p className="text-2xl md:text-3xl text-primary font-semibold mb-4 font-display drop-shadow-sm">
+          <p className="text-2xl md:text-3xl text-accent font-semibold mb-4 font-display drop-shadow-sm">
             AI-augmented Human
           </p>
           
