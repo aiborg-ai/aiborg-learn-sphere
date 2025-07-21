@@ -231,7 +231,7 @@ export function AboutSection() {
                   <p className="text-muted-foreground mb-6 leading-relaxed">{value.description}</p>
                   
                   <div className="grid grid-cols-2 gap-2">
-                    {value.features.map((feature, featureIndex) => (
+                    {Array.isArray(value.features) && value.features.map((feature, featureIndex) => (
                       <div key={featureIndex} className="flex items-center gap-2">
                         <CheckCircle className="h-4 w-4 text-green-300" />
                         <span className="text-sm text-muted-foreground">{feature}</span>
