@@ -32,7 +32,7 @@ const programs = [
     duration: "4 weeks",
     price: "£25",
     level: "Beginner",
-    startDate: "Enquire for start date",
+    startDate: "4th August",
     features: ["What is AI?", "Train a mini model", "Build & test project", "Showcase & ethics"],
     category: "AI Fundamentals",
     keywords: ["games", "robots", "ethics"],
@@ -409,7 +409,7 @@ const programs = [
     duration: "6 weeks",
     price: "£39",
     level: "Intermediate",
-    startDate: "Enquire for start date",
+    startDate: "4th August",
     features: ["Data & ML crash-course", "Model building hands-on", "Deployment & apps", "Ethics & career paths"],
     category: "Academic Enhancement",
     keywords: ["python", "ml", "projects"],
@@ -786,7 +786,7 @@ const programs = [
     duration: "8 weeks",
     price: "£79",
     level: "Intermediate",
-    startDate: "Enquire for start date",
+    startDate: "4th August",
     features: ["Opportunity mapping", "Tool deep-dive & demos", "Build solution prototype", "Metrics & governance"],
     category: "Productivity",
     keywords: ["llms", "deployment", "governance"],
@@ -801,7 +801,7 @@ const programs = [
     duration: "8 weeks",
     price: "£79",
     level: "Advanced",
-    startDate: "Enquire for start date",
+    startDate: "4th August",
     features: ["Opportunity mapping", "Tool deep-dive & demos", "Build solution prototype", "Metrics & governance"],
     category: "Software Development",
     keywords: ["llms", "deployment", "governance"],
@@ -816,7 +816,7 @@ const programs = [
     duration: "8 weeks",
     price: "£79",
     level: "Intermediate",
-    startDate: "Enquire for start date",
+    startDate: "4th August",
     features: ["Opportunity mapping", "Tool deep-dive & demos", "Build solution prototype", "Metrics & governance"],
     category: "Product Management",
     keywords: ["llms", "deployment", "governance"],
@@ -1163,7 +1163,7 @@ const programs = [
     duration: "4 weeks",
     price: "£49",
     level: "Beginner",
-    startDate: "Enquire for start date",
+    startDate: "4th August",
     features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
     category: "Business Assessment",
     keywords: ["automation", "roi", "no-code"],
@@ -1178,7 +1178,7 @@ const programs = [
     duration: "4 weeks",
     price: "£49",
     level: "Intermediate",
-    startDate: "Enquire for start date",
+    startDate: "4th August",
     features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
     category: "Business Transformation",
     keywords: ["automation", "roi", "no-code"],
@@ -1193,7 +1193,7 @@ const programs = [
     duration: "4 weeks",
     price: "£49",
     level: "Beginner",
-    startDate: "Enquire for start date",
+    startDate: "4th August",
     features: ["Identify pain points", "Quick-win prototypes", "Implementation planning", "ROI & next steps"],
     category: "Automation",
     keywords: ["automation", "roi", "no-code"],
@@ -1566,19 +1566,13 @@ export function TrainingPrograms() {
   });
 
   const handleLearnMore = (course: any) => {
-    console.log("Learn More clicked for course:", course.title);
-    alert("Learn More clicked for: " + course.title); // Very obvious debug
     setSelectedCourse(course);
     setDetailsOpen(true);
-    console.log("Details modal should open, detailsOpen:", true);
   };
 
   const handleEnrollNow = (course: any) => {
-    console.log("Enroll Now clicked for course:", course.title);
-    alert("Enroll Now clicked for: " + course.title); // Very obvious debug
     setSelectedCourse(course);
     setEnrollmentOpen(true);
-    console.log("Enrollment modal should open, enrollmentOpen:", true);
   };
 
   const getAudienceLabel = (audience: string) => {
@@ -1619,6 +1613,11 @@ export function TrainingPrograms() {
     SME: programs.filter(p => p.audience === "SME")
   };
 
+  // Get programs that are currently enrolling (have specific start dates, not "Enquire for start date")
+  const currentlyEnrollingPrograms = programs.filter(program => 
+    program.startDate !== "Enquire for start date" && program.startDate.trim() !== ""
+  );
+
   return (
     <section className="py-20 bg-gradient-to-b from-background via-background/95 to-secondary/5">
       <div className="container mx-auto px-4">
@@ -1634,10 +1633,15 @@ export function TrainingPrograms() {
 
         {/* Audience Tabs */}
         <Tabs value={activeAudience} onValueChange={setLocalSelectedAudience} className="mb-12">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 mb-8">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6 mb-8">
             <TabsTrigger value="all" className="flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
               All Programs
+            </TabsTrigger>
+            <TabsTrigger value="currently-enrolling" className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              <span className="hidden sm:inline">Currently Enrolling</span>
+              <span className="sm:hidden">Enrolling</span>
             </TabsTrigger>
             {[
               { key: "primary", label: "Young Learners" },
@@ -1771,6 +1775,69 @@ export function TrainingPrograms() {
                   </div>
                 </div>
               ))
+            ) : activeAudience === "currently-enrolling" ? (
+              // Show currently enrolling programs
+              <>
+                <div className="flex items-center gap-3 pb-4 border-b mb-6">
+                  <Calendar className="h-6 w-6 text-primary" />
+                  <h3 className="text-2xl font-bold">Currently Enrolling Programs</h3>
+                  <Badge variant="secondary">{currentlyEnrollingPrograms.length} courses</Badge>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {currentlyEnrollingPrograms.map((program) => (
+                    <Card key={program.id} className="p-6 hover:shadow-lg transition-all duration-300 border-primary/10 hover:border-primary/30 bg-card/50 backdrop-blur-sm">
+                      <div className="space-y-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                                {program.category}
+                              </Badge>
+                              <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">
+                                Starts {program.startDate}
+                              </Badge>
+                            </div>
+                            <h3 className="text-lg font-semibold mb-2 text-foreground line-clamp-2">{program.title}</h3>
+                            <p className="text-sm text-muted-foreground mb-3 line-clamp-3">{program.description}</p>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Clock className="h-3 w-3" />
+                            {program.duration}
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Monitor className="h-3 w-3" />
+                            {program.mode}
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Award className="h-3 w-3" />
+                            {program.level}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-2">
+                          <span className="text-lg font-bold text-primary">{program.price}</span>
+                          <Badge variant="outline" className="text-xs">
+                            {getAudienceLabel(program.audience)}
+                          </Badge>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Button className="flex-1 btn-hero group" onClick={() => handleEnrollNow(program)}>
+                            Enroll Now
+                            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={() => handleLearnMore(program)}>
+                            Learn More
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </>
             ) : (
               // Show filtered programs for specific audience
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
