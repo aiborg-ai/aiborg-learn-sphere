@@ -1615,11 +1615,11 @@ export function TrainingPrograms() {
       case "Primary":
         return "Young Learners (Ages 5-11)";
       case "Secondary":
-        return "Teens & Students (Ages 12-18)";
+        return "Teenagers (Ages 12-18)";
       case "Professional":
-        return "Working Professionals";
+        return "Professionals";
       case "SME":
-        return "Small & Medium Enterprises";
+        return "SMEs";
       default:
         return audience;
     }
@@ -1684,7 +1684,7 @@ export function TrainingPrograms() {
             </TabsTrigger>
             {[
               { key: "primary", label: "Young Learners" },
-              { key: "secondary", label: "Teens & Students" },
+              { key: "secondary", label: "Teenagers" },
               { key: "professional", label: "Professionals" },
               { key: "business", label: "SMEs" }
             ].map(({ key, label }) => (

@@ -7,7 +7,7 @@ import { usePersonalization, AUDIENCE_CONFIG } from "@/contexts/PersonalizationC
 const audiences = [
   {
     id: "primary" as const,
-    title: "Primary School",
+    title: "Young Learners",
     subtitle: "Ages 6-11",
     description: "Fun, interactive AI learning for young minds",
     icon: GraduationCap,
@@ -17,7 +17,7 @@ const audiences = [
   },
   {
     id: "secondary" as const,
-    title: "Secondary School", 
+    title: "Teenagers", 
     subtitle: "Ages 12-18",
     description: "Advanced AI concepts for future innovators",
     icon: Brain,
@@ -37,7 +37,7 @@ const audiences = [
   },
   {
     id: "business" as const,
-    title: "Business",
+    title: "SMEs",
     subtitle: "Enterprise",
     description: "Transform your business with AI training",
     icon: Building2,
