@@ -64,7 +64,7 @@ export function HeroSection() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-white/20">
             <Sparkles className="h-5 w-5 text-secondary animate-pulse" />
-            <span className="text-white font-medium">Revolutionary AI Education Platform</span>
+            <span className="text-white font-medium">Convert AI Opportunity !</span>
           </div>
           
           <h1 className="font-display text-7xl md:text-8xl lg:text-9xl font-bold mb-6">
