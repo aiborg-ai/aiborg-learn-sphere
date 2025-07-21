@@ -61,8 +61,11 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('Form submission started');
+    
     // Basic validation
     if (!formData.studentName || !formData.dateOfBirth || !formData.email || !formData.whatsappNumber || !formData.homeAddress) {
+      console.log('Validation failed - missing fields');
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
@@ -72,6 +75,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
     }
 
     if (showGuardianField && !formData.guardianName) {
+      console.log('Validation failed - missing guardian');
       toast({
         title: "Guardian Required",
         description: "Guardian information is required for students under 18.",
@@ -80,10 +84,18 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
       return;
     }
 
+    console.log('Validation passed, starting payment process');
     setIsProcessing(true);
 
     try {
+      console.log('Importing supabase client...');
       const { supabase } = await import("@/integrations/supabase/client");
+      
+      console.log('Calling create-payment function with data:', {
+        courseName,
+        coursePrice,
+        studentInfo: formData
+      });
       
       const { data, error } = await supabase.functions.invoke('create-payment', {
         body: {
@@ -93,8 +105,19 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
         }
       });
 
-      if (error) throw error;
+      console.log('Payment function response:', { data, error });
 
+      if (error) {
+        console.error('Payment function error:', error);
+        throw error;
+      }
+
+      if (!data || !data.url) {
+        console.error('No payment URL received:', data);
+        throw new Error('No payment URL received');
+      }
+
+      console.log('Opening payment URL:', data.url);
       // Open Stripe checkout in a new tab
       window.open(data.url, '_blank');
       
@@ -108,7 +131,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
       console.error('Payment error:', error);
       toast({
         title: "Payment Error",
-        description: "Failed to create payment session. Please try again.",
+        description: `Failed to create payment session: ${error.message}`,
         variant: "destructive"
       });
     } finally {
