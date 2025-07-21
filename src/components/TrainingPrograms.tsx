@@ -75,7 +75,7 @@ export const TrainingPrograms = () => {
                          program.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = selectedCategory === "All Categories" || program.category === selectedCategory;
     const matchesLevel = selectedLevel === "All Levels" || program.level === selectedLevel;
-    const matchesCurrentlyEnrolling = !currentlyEnrolling || (program.startDate && program.startDate !== "Ongoing" && program.startDate !== "Flexible");
+    const matchesCurrentlyEnrolling = !currentlyEnrolling || (program.startDate && program.startDate !== "Ongoing" && program.startDate !== "Flexible" && program.startDate !== "Enquire for start date");
     
     return matchesAudience && matchesSearch && matchesCategory && matchesLevel && matchesCurrentlyEnrolling;
   });
