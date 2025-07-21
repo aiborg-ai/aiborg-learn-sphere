@@ -28,7 +28,7 @@ interface Message {
 const initialMessages: Message[] = [
   {
     id: "1",
-    content: "Hello! I'm AiBorg Chat, your AI learning assistant. I can help you find the perfect course, answer questions about our programs, or guide you through your learning journey. What would you like to know?",
+    content: "Hello! I'm aiborg chat, your AI learning assistant. I can help you find the perfect course, answer questions about our programs, or guide you through your learning journey. What would you like to know?",
     sender: "ai",
     timestamp: new Date(),
     type: "text"
@@ -171,7 +171,7 @@ export function AIChatbot() {
               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
             </div>
             <div>
-              <h3 className="font-semibold text-white">AiBorg Chat</h3>
+              <h3 className="font-semibold text-white">aiborg chat</h3>
               <p className="text-xs text-white/80">Online • Ready to help</p>
             </div>
           </div>
