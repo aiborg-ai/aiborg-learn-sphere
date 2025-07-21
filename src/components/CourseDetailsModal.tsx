@@ -155,3 +155,4 @@ export const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({
     </Dialog>
   );
 };
+

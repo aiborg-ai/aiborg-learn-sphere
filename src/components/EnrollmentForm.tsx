@@ -248,3 +248,4 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
     </Dialog>
   );
 };
+
