@@ -24,6 +24,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
   courseName,
   coursePrice = "Contact for pricing"
 }) => {
+  console.log("EnrollmentForm rendered with isOpen:", isOpen, "courseName:", courseName);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     studentName: '',

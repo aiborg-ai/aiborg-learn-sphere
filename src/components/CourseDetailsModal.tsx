@@ -32,6 +32,7 @@ export const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({
   onEnroll,
   course
 }) => {
+  console.log("CourseDetailsModal rendered with isOpen:", isOpen, "course:", course?.name);
   const handleEnrollClick = () => {
     onClose();
     onEnroll();
