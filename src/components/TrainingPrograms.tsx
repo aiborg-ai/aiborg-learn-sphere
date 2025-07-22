@@ -41,11 +41,6 @@ export const TrainingPrograms = () => {
   const [currentlyEnrolling, setCurrentlyEnrolling] = useState(false);
   const { selectedAudience, setSelectedAudience } = usePersonalization();
 
-  // Automatically refetch data when component mounts to ensure fresh data
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
-
   // Convert database courses to the format expected by the component
   const programs = courses.map(course => ({
     id: course.id,
