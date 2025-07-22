@@ -76,7 +76,7 @@ export const TrainingPrograms = () => {
       // Parse date string (assuming format like "15 Oct 2025")
       const courseDate = new Date(dateString);
       const now = new Date();
-      const currentMonth = now.getMonth();
+      const currentMonth = now.getMonth(); // 0-11 (July = 6)
       const currentYear = now.getFullYear();
       const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
       const nextMonthYear = currentMonth === 11 ? currentYear + 1 : currentYear;
@@ -84,6 +84,7 @@ export const TrainingPrograms = () => {
       const courseMonth = courseDate.getMonth();
       const courseYear = courseDate.getFullYear();
       
+      // Check if course is in current month (July 2025) or next month (August 2025)
       return (courseYear === currentYear && courseMonth === currentMonth) ||
              (courseYear === nextMonthYear && courseMonth === nextMonth);
     } catch {
