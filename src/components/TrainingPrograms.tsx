@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 
 export const TrainingPrograms = () => {
-  const { courses, loading, error } = useCourses();
+  const { courses, loading, error, refetch } = useCourses();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedLevel, setSelectedLevel] = useState("All Levels");
@@ -40,6 +40,11 @@ export const TrainingPrograms = () => {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [currentlyEnrolling, setCurrentlyEnrolling] = useState(false);
   const { selectedAudience, setSelectedAudience } = usePersonalization();
+
+  // Automatically refetch data when component mounts to ensure fresh data
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   // Convert database courses to the format expected by the component
   const programs = courses.map(course => ({
@@ -121,7 +126,7 @@ export const TrainingPrograms = () => {
         <div className="container mx-auto text-center">
           <AlertCircle className="h-8 w-8 text-destructive mx-auto mb-4" />
           <p className="text-destructive mb-4">Error loading courses: {error}</p>
-          <Button onClick={() => window.location.reload()}>Try Again</Button>
+          <Button onClick={refetch}>Try Again</Button>
         </div>
       </section>
     );

@@ -26,31 +26,37 @@ export const useCourses = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from('courses')
-          .select('*')
-          .eq('is_active', true)
-          .order('sort_order', { ascending: true });
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const { data, error } = await supabase
+        .from('courses')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true });
 
-        if (error) {
-          throw error;
-        }
-
-        setCourses(data || []);
-      } catch (err) {
-        console.error('Error fetching courses:', err);
-        setError(err instanceof Error ? err.message : 'Failed to fetch courses');
-      } finally {
-        setLoading(false);
+      if (error) {
+        throw error;
       }
-    };
 
+      setCourses(data || []);
+    } catch (err) {
+      console.error('Error fetching courses:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch courses');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchCourses();
   }, []);
 
-  return { courses, loading, error, refetch: () => window.location.reload() };
+  return { 
+    courses, 
+    loading, 
+    error, 
+    refetch: fetchCourses
+  };
 };
