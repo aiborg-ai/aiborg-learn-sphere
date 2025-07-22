@@ -13,14 +13,44 @@ serve(async (req) => {
   }
 
   try {
-    const { courseName, coursePrice, studentInfo } = await req.json();
+    const requestBody = await req.json();
+    
+    // Input validation and sanitization
+    const { courseName, coursePrice, studentInfo } = requestBody;
+    
+    if (!courseName || typeof courseName !== 'string' || courseName.trim().length === 0) {
+      throw new Error('Invalid course name provided');
+    }
+    
+    if (!coursePrice || typeof coursePrice !== 'string') {
+      throw new Error('Invalid course price provided');
+    }
+    
+    if (!studentInfo || typeof studentInfo !== 'object') {
+      throw new Error('Invalid student information provided');
+    }
+    
+    if (!studentInfo.email || typeof studentInfo.email !== 'string' || !studentInfo.email.includes('@')) {
+      throw new Error('Valid email address is required');
+    }
+    
+    if (!studentInfo.studentName || typeof studentInfo.studentName !== 'string' || studentInfo.studentName.trim().length === 0) {
+      throw new Error('Student name is required');
+    }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_KEY") || "", {
       apiVersion: "2023-10-16",
     });
 
-    // Convert price to cents
-    const priceInCents = Math.round(parseFloat(coursePrice.replace('£', '')) * 100);
+    // Sanitize and validate price conversion
+    const sanitizedPrice = coursePrice.replace(/[^0-9.£]/g, '').replace('£', '');
+    const priceFloat = parseFloat(sanitizedPrice);
+    
+    if (isNaN(priceFloat) || priceFloat <= 0 || priceFloat > 10000) {
+      throw new Error('Invalid price amount');
+    }
+    
+    const priceInCents = Math.round(priceFloat * 100);
 
     // Create a one-time payment session
     const session = await stripe.checkout.sessions.create({
@@ -54,7 +84,21 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("Payment creation error:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    
+    // Determine if this is a validation error or system error
+    const isValidationError = error.message.includes('Invalid') || 
+                             error.message.includes('required') || 
+                             error.message.includes('Valid email');
+    
+    if (isValidationError) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
+    }
+    
+    // For system errors, don't expose internal details
+    return new Response(JSON.stringify({ error: "Payment processing unavailable. Please try again later." }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
