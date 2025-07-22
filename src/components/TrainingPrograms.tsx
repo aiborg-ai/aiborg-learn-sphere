@@ -66,6 +66,31 @@ export const TrainingPrograms = () => {
     "SMEs": "business"
   };
 
+  // Helper function to check if a date is in current or next month
+  const isInCurrentOrNextMonth = (dateString: string) => {
+    if (!dateString || dateString === "Ongoing" || dateString === "Flexible" || dateString === "Enquire for start date") {
+      return false;
+    }
+    
+    try {
+      // Parse date string (assuming format like "15 Oct 2025")
+      const courseDate = new Date(dateString);
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+      const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+      const nextMonthYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+      
+      const courseMonth = courseDate.getMonth();
+      const courseYear = courseDate.getFullYear();
+      
+      return (courseYear === currentYear && courseMonth === currentMonth) ||
+             (courseYear === nextMonthYear && courseMonth === nextMonth);
+    } catch {
+      return false;
+    }
+  };
+
   // Filter programs based on selected audience and search criteria
   const filteredPrograms = programs.filter((program) => {
     const programAudienceId = audienceMapping[program.audience as keyof typeof audienceMapping];
@@ -75,7 +100,7 @@ export const TrainingPrograms = () => {
                          program.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = selectedCategory === "All Categories" || program.category === selectedCategory;
     const matchesLevel = selectedLevel === "All Levels" || program.level === selectedLevel;
-    const matchesCurrentlyEnrolling = !currentlyEnrolling || (program.startDate && program.startDate !== "Ongoing" && program.startDate !== "Flexible" && program.startDate !== "Enquire for start date");
+    const matchesCurrentlyEnrolling = !currentlyEnrolling || isInCurrentOrNextMonth(program.startDate);
     
     return matchesAudience && matchesSearch && matchesCategory && matchesLevel && matchesCurrentlyEnrolling;
   });
