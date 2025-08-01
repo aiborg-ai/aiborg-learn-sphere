@@ -102,7 +102,7 @@ export function HeroSection() {
             Choose Your Learning Journey
           </h2>
           <p className="text-lg text-white/80 text-center mb-12">
-            Select your audience to discover personalized AI education programs
+            Discover personalized AI education programs
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { usePersonalization, Audience } from "@/contexts/PersonalizationContext";
+import { useCourses } from "@/hooks/useCourses";
 import { 
   MessageCircle, 
   Send, 
@@ -71,6 +72,7 @@ const initialConversationContext: ConversationContext = {
 
 export function AIChatbot() {
   const { selectedAudience, getPersonalizedContent } = usePersonalization();
+  const { courses, loading: coursesLoading } = useCourses();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -102,18 +104,28 @@ export function AIChatbot() {
   };
 
   const getCourseRecommendations = () => {
-    switch (selectedAudience) {
-      case "professional":
-        return professionalCourses;
-      case "business": 
-        return businessCourses;
-      case "secondary":
-        return secondaryCourses;
-      case "primary":
-        return primaryCourses;
-      default:
-        return professionalCourses;
+    if (coursesLoading || !courses.length) {
+      // Fallback to static data if courses are loading or unavailable
+      switch (selectedAudience) {
+        case "professional":
+          return professionalCourses;
+        case "business": 
+          return businessCourses;
+        case "secondary":
+          return secondaryCourses;
+        case "primary":
+          return primaryCourses;
+        default:
+          return professionalCourses;
+      }
     }
+    
+    // Filter actual courses by audience
+    return courses.filter(course => 
+      !selectedAudience || 
+      selectedAudience === "All" || 
+      course.audience.toLowerCase() === selectedAudience.toLowerCase()
+    ).slice(0, 4); // Limit to 4 recommendations
   };
 
   const getPriceRange = (): string => {
@@ -221,7 +233,7 @@ export function AIChatbot() {
       updateConversationContext({ userRole: role });
     }
 
-    const courses = getCourseRecommendations();
+    const recommendedCourses = getCourseRecommendations();
 
     // Handle specific queries with context
     if (lowerMessage.includes("cost") || lowerMessage.includes("price")) {
@@ -238,7 +250,7 @@ export function AIChatbot() {
 
     // Professional asking about intermediate courses
     if (lowerMessage.includes("intermediate") && selectedAudience === "professional") {
-      const course = courses[0];
+      const course = recommendedCourses[0];
       updateConversationContext({ 
         lastTopic: "course_recommendation",
         recommendedCourses: [course.title]
@@ -253,7 +265,7 @@ export function AIChatbot() {
     if (lowerMessage.includes("recommend") || lowerMessage.includes("suggest") || 
         (lowerMessage.includes("course") && lowerMessage.includes("which"))) {
       
-      const course = courses[0]; // Primary recommendation
+      const course = recommendedCourses[0]; // Primary recommendation
       
       updateConversationContext({ 
         lastTopic: "course_recommendation",
@@ -264,7 +276,10 @@ export function AIChatbot() {
       if (selectedAudience === "professional" && 
           (lowerMessage.includes("software") || conversationContext.userRole === "developer")) {
         
-        return `As a software professional, I recommend these courses based on your background:\n\n1. **${courses[0].title}** (${courses[0].price}, ${courses[0].duration}) - Perfect for your technical background\n2. **${courses[1].title}** (${courses[1].price}, ${courses[1].duration}) - Advanced skills for immediate application\n3. **${courses[2].title}** (${courses[2].price}, ${courses[2].duration}) - Strategic implementation\n\nAll include CPE credits and industry certificates. Which interests you most?`;
+        const courseList = recommendedCourses.slice(0, 3).map((course, index) => 
+          `${index + 1}. **${course.title}** (${course.price}, ${course.duration}) - ${(course as any).description ? (course as any).description.slice(0, 50) + '...' : course.level + ' level'}`
+        ).join('\n');
+        return `As a software professional, I recommend these courses based on your background:\n\n${courseList}\n\nAll include certificates and practical applications. Which interests you most?`;
       }
 
       return getPersonalizedContent({
