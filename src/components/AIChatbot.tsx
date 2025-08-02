@@ -235,16 +235,23 @@ export function AIChatbot() {
 
     const recommendedCourses = getCourseRecommendations();
 
+    // Check for complex queries that might need human assistance
+    if (lowerMessage.includes('help') || lowerMessage.includes('support') || 
+        lowerMessage.includes('speak to someone') || lowerMessage.includes('human') || 
+        lowerMessage.includes('agent') || lowerMessage.includes('contact')) {
+      return `I'd be happy to connect you with our human support team for personalized assistance!\n\nYou can reach us on WhatsApp at: +44 7404568207\n\nOur team can help with course selection, pricing, scheduling, and any specific questions about our AI training programs.`;
+    }
+
     // Handle specific queries with context
     if (lowerMessage.includes("cost") || lowerMessage.includes("price")) {
       const priceRange = getPriceRange();
       updateConversationContext({ lastTopic: "pricing" });
       return getPersonalizedContent({
-        primary: `Our fun AI courses are just ${priceRange}! 🎨 That's less than a video game, but you learn skills that last forever! Each course has games, fun projects, certificates, and you get to show your family all the cool things you build! Plus, if you don't love it, we'll give your money back!`,
-        secondary: `Our courses are ${priceRange}, which is amazing value compared to other tech programs! 📊 You get everything: live sessions with instructors, hands-on coding projects, industry certificates that colleges love, access to our teen community, and lifetime access to materials. Many students say it's the best investment they've made for their future!`,
-        professional: `Our professional courses range from ${priceRange} and deliver exceptional ROI. 📈 This includes CPE credits (worth $200+ alone), industry-recognized certificates, practical skills that increase earning potential by 15-30%, networking opportunities, and implementation support. Most professionals see career advancement within 6 months. Payment plans available.`,
-        business: `Our enterprise programs range from ${priceRange} with proven ROI of 300-500% within 12 months. 💼 This includes custom training for your team, analytics dashboards, dedicated success manager, implementation support, and measurable performance metrics. We also offer volume discounts for larger teams and flexible enterprise contracts.`,
-        default: `Our courses range from ${priceRange} and include comprehensive materials, certificates, and ongoing support.`
+        primary: `Our fun AI courses are just ${priceRange}! 🎨 That's less than a video game, but you learn skills that last forever! Each course has games, fun projects, certificates, and you get to show your family all the cool things you build! Plus, if you don't love it, we'll give your money back!\n\nFor detailed pricing or payment plans, contact us on WhatsApp: +44 7404568207`,
+        secondary: `Our courses are ${priceRange}, which is amazing value compared to other tech programs! 📊 You get everything: live sessions with instructors, hands-on coding projects, industry certificates that colleges love, access to our teen community, and lifetime access to materials. Many students say it's the best investment they've made for their future!\n\nFor payment plans or group discounts, WhatsApp us: +44 7404568207`,
+        professional: `Our professional courses range from ${priceRange} and deliver exceptional ROI. 📈 This includes CPE credits (worth $200+ alone), industry-recognized certificates, practical skills that increase earning potential by 15-30%, networking opportunities, and implementation support. Most professionals see career advancement within 6 months. Payment plans available.\n\nContact our team on WhatsApp for corporate rates: +44 7404568207`,
+        business: `Our enterprise programs range from ${priceRange} with proven ROI of 300-500% within 12 months. 💼 This includes custom training for your team, analytics dashboards, dedicated success manager, implementation support, and measurable performance metrics. We also offer volume discounts for larger teams and flexible enterprise contracts.\n\nFor enterprise pricing, contact us on WhatsApp: +44 7404568207`,
+        default: `Our courses range from ${priceRange} and include comprehensive materials, certificates, and ongoing support.\n\nFor personalized guidance, contact us on WhatsApp: +44 7404568207`
       });
     }
 

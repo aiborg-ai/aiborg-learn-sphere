@@ -9,6 +9,8 @@ import { usePersonalization, AUDIENCE_CONFIG, Audience } from "@/contexts/Person
 import { EnrollmentForm } from "@/components/EnrollmentForm";
 import { CourseDetailsModal } from "@/components/CourseDetailsModal";
 import { useCourses, Course } from "@/hooks/useCourses";
+import { useEnrollments } from "@/hooks/useEnrollments";
+import { useAuth } from "@/hooks/useAuth";
 import { 
   Search, 
   Filter, 
@@ -26,11 +28,14 @@ import {
   Building2,
   Loader2,
   AlertCircle,
-  X
+  X,
+  CheckCircle
 } from "lucide-react";
 
 export const TrainingPrograms = () => {
   const { courses, loading, error, refetch } = useCourses();
+  const { getEnrollmentStatus } = useEnrollments();
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedLevel, setSelectedLevel] = useState("All Levels");
@@ -121,6 +126,10 @@ export const TrainingPrograms = () => {
   };
 
   const handleEnrollClick = (program: any) => {
+    if (!user) {
+      window.location.href = '/auth';
+      return;
+    }
     setSelectedCourse(program as Course);
     setEnrollmentFormOpen(true);
   };
@@ -323,14 +332,47 @@ export const TrainingPrograms = () => {
                         >
                           Details
                         </Button>
-                        <Button
-                          size="sm"
-                          onClick={() => handleEnrollClick(program)}
-                          className="group/btn"
-                        >
-                          Enroll
-                          <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-                        </Button>
+                        {user ? (
+                          (() => {
+                            const status = getEnrollmentStatus(program.id, program.startDate);
+                            switch (status) {
+                              case 'enrolled':
+                                return (
+                                  <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" disabled>
+                                    <CheckCircle className="mr-1 h-4 w-4" />
+                                    Enrolled
+                                  </Button>
+                                );
+                              case 'completed':
+                                return (
+                                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white" disabled>
+                                    <CheckCircle className="mr-1 h-4 w-4" />
+                                    Completed
+                                  </Button>
+                                );
+                              default:
+                                return (
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleEnrollClick(program)}
+                                    className="group/btn"
+                                  >
+                                    Enroll
+                                    <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                                  </Button>
+                                );
+                            }
+                          })()
+                        ) : (
+                          <Button
+                            size="sm"
+                            onClick={() => handleEnrollClick(program)}
+                            className="group/btn"
+                          >
+                            Enroll
+                            <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>

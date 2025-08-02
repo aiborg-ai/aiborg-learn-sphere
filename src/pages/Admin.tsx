@@ -1,26 +1,31 @@
 import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, Shield, Users, BookOpen, Megaphone, Trash2, Edit, Plus } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Loader2, Users, BookOpen, Megaphone, Trash2, Shield, Eye, Edit, Plus, UserCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 interface UserProfile {
   id: string;
   user_id: string;
-  display_name: string;
-  email: string;
+  display_name: string | null;
+  email: string | null;
   role: string;
   created_at: string;
+  updated_at: string;
 }
 
 interface Course {
@@ -28,10 +33,19 @@ interface Course {
   title: string;
   description: string;
   audience: string;
-  price: string;
+  mode: string;
   duration: string;
+  price: string;
   level: string;
+  start_date: string;
+  features: string[];
+  category: string;
+  keywords: string[];
+  prerequisites: string | null;
   is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
 }
 
 interface Announcement {
@@ -40,87 +54,136 @@ interface Announcement {
   content: string;
   is_active: boolean;
   priority: number;
+  created_by: string | null;
   created_at: string;
+  updated_at: string;
+}
+
+interface Enrollment {
+  id: string;
+  user_id: string;
+  course_id: number;
+  enrolled_at: string;
+  payment_status: string;
+  payment_amount: number | null;
+  created_at: string;
+  updated_at: string;
+  profiles: {
+    display_name: string | null;
+    email: string | null;
+  } | null;
+  courses: {
+    title: string;
+    start_date: string;
+    price: string;
+  } | null;
 }
 
 export default function Admin() {
-  const { user, isAdmin, loading } = useAuth();
-  const { toast } = useToast();
-  const navigate = useNavigate();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [newAnnouncement, setNewAnnouncement] = useState({ title: '', content: '', priority: 1 });
+  const [isEditingCourse, setIsEditingCourse] = useState(false);
+  const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+  const [isAddingCourse, setIsAddingCourse] = useState(false);
+  const { user, profile } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  
+  const courseForm = useForm({
+    defaultValues: {
+      title: '',
+      description: '',
+      audience: 'Professionals',
+      mode: 'Online',
+      duration: '6 hrs/4 sessions',
+      price: '£99',
+      level: 'Intermediate',
+      start_date: 'Enquire for start date',
+      features: '',
+      category: 'AI Fundamentals',
+      keywords: '',
+      prerequisites: 'None',
+    }
+  });
 
   useEffect(() => {
-    if (!loading && (!user || !isAdmin)) {
+    if (!user) {
       navigate('/auth');
       return;
     }
     
-    if (isAdmin) {
-      fetchUsers();
-      fetchCourses();
-      fetchAnnouncements();
+    if (profile && profile.role !== 'admin') {
+      navigate('/');
+      return;
     }
-  }, [user, isAdmin, loading, navigate]);
+    
+    if (profile?.role === 'admin') {
+      fetchData();
+    }
+  }, [user, profile, navigate]);
 
-  const fetchUsers = async () => {
+  const fetchData = async () => {
     try {
-      const { data, error } = await supabase
+      setLoading(true);
+
+      // Fetch users
+      const { data: usersData, error: usersError } = await supabase
         .from('profiles')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setUsers(data || []);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch users",
-        variant: "destructive",
-      });
-    }
-  };
+      if (usersError) throw usersError;
+      setUsers(usersData || []);
 
-  const fetchCourses = async () => {
-    try {
-      const { data, error } = await supabase
+      // Fetch courses
+      const { data: coursesData, error: coursesError } = await supabase
         .from('courses')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('sort_order', { ascending: true });
 
-      if (error) throw error;
-      setCourses(data || []);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch courses",
-        variant: "destructive",
-      });
-    }
-  };
+      if (coursesError) throw coursesError;
+      setCourses(coursesData || []);
 
-  const fetchAnnouncements = async () => {
-    try {
-      const { data, error } = await supabase
+      // Fetch announcements
+      const { data: announcementsData, error: announcementsError } = await supabase
         .from('announcements')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setAnnouncements(data || []);
+      if (announcementsError) throw announcementsError;
+      setAnnouncements(announcementsData || []);
+
+      // Fetch enrollments with user and course details
+      const { data: enrollmentsData, error: enrollmentsError } = await supabase
+        .from('enrollments')
+        .select(`
+          *,
+          profiles(display_name, email),
+          courses(title, start_date, price)
+        `)
+        .order('enrolled_at', { ascending: false });
+
+      if (enrollmentsError) throw enrollmentsError;
+      setEnrollments(enrollmentsData as any || []);
+
     } catch (error) {
+      console.error('Error fetching admin data:', error);
       toast({
         title: "Error",
-        description: "Failed to fetch announcements",
+        description: "Failed to fetch admin data",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const deleteUser = async (userId: string) => {
-    if (!confirm('Are you sure you want to delete this user?')) return;
+    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
 
     try {
       const { error } = await supabase
@@ -136,6 +199,7 @@ export default function Admin() {
         description: "User deleted successfully",
       });
     } catch (error) {
+      console.error('Error deleting user:', error);
       toast({
         title: "Error",
         description: "Failed to delete user",
@@ -162,6 +226,7 @@ export default function Admin() {
         description: "User role updated successfully",
       });
     } catch (error) {
+      console.error('Error updating user role:', error);
       toast({
         title: "Error",
         description: "Failed to update user role",
@@ -170,9 +235,150 @@ export default function Admin() {
     }
   };
 
+  const createCourse = async (data: any) => {
+    try {
+      const courseData = {
+        title: data.title,
+        description: data.description,
+        audience: data.audience,
+        mode: data.mode,
+        duration: data.duration,
+        price: data.price,
+        level: data.level,
+        start_date: data.start_date,
+        features: data.features.split(',').map((f: string) => f.trim()).filter((f: string) => f),
+        category: data.category,
+        keywords: data.keywords.split(',').map((k: string) => k.trim()).filter((k: string) => k),
+        prerequisites: data.prerequisites || 'None',
+        is_active: true,
+        sort_order: courses.length + 1
+      };
+
+      const { error } = await supabase
+        .from('courses')
+        .insert(courseData);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Course created successfully",
+      });
+      
+      setIsAddingCourse(false);
+      courseForm.reset();
+      fetchData();
+    } catch (error) {
+      console.error('Error creating course:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create course",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const updateCourse = async (data: any) => {
+    if (!editingCourse) return;
+
+    try {
+      const courseData = {
+        title: data.title,
+        description: data.description,
+        audience: data.audience,
+        mode: data.mode,
+        duration: data.duration,
+        price: data.price,
+        level: data.level,
+        start_date: data.start_date,
+        features: data.features.split(',').map((f: string) => f.trim()).filter((f: string) => f),
+        category: data.category,
+        keywords: data.keywords.split(',').map((k: string) => k.trim()).filter((k: string) => k),
+        prerequisites: data.prerequisites || 'None',
+      };
+
+      const { error } = await supabase
+        .from('courses')
+        .update(courseData)
+        .eq('id', editingCourse.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Course updated successfully",
+      });
+      
+      setIsEditingCourse(false);
+      setEditingCourse(null);
+      courseForm.reset();
+      fetchData();
+    } catch (error) {
+      console.error('Error updating course:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update course",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const deleteCourse = async (courseId: number) => {
+    if (!confirm('Are you sure you want to delete this course? This action cannot be undone.')) return;
+
+    try {
+      const { error } = await supabase
+        .from('courses')
+        .delete()
+        .eq('id', courseId);
+
+      if (error) throw error;
+
+      setCourses(courses.filter(c => c.id !== courseId));
+      toast({
+        title: "Success",
+        description: "Course deleted successfully",
+      });
+    } catch (error) {
+      console.error('Error deleting course:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete course",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const toggleCourseStatus = async (courseId: number, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('courses')
+        .update({ is_active: !currentStatus })
+        .eq('id', courseId);
+
+      if (error) throw error;
+
+      setCourses(courses.map(c => 
+        c.id === courseId ? { ...c, is_active: !currentStatus } : c
+      ));
+      
+      toast({
+        title: "Success",
+        description: `Course ${!currentStatus ? 'activated' : 'deactivated'} successfully`,
+      });
+    } catch (error) {
+      console.error('Error updating course status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update course status",
+        variant: "destructive",
+      });
+    }
+  };
+
   const createAnnouncement = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
 
     const formData = new FormData(e.target as HTMLFormElement);
     const title = formData.get('title') as string;
@@ -196,16 +402,17 @@ export default function Admin() {
         description: "Announcement created successfully",
       });
       
-      fetchAnnouncements();
+      fetchData();
       (e.target as HTMLFormElement).reset();
     } catch (error) {
+      console.error('Error creating announcement:', error);
       toast({
         title: "Error",
         description: "Failed to create announcement",
         variant: "destructive",
       });
     }
-    setIsLoading(false);
+    setLoading(false);
   };
 
   const toggleAnnouncementStatus = async (id: string, currentStatus: boolean) => {
@@ -226,12 +433,32 @@ export default function Admin() {
         description: "Announcement status updated",
       });
     } catch (error) {
+      console.error('Error updating announcement:', error);
       toast({
         title: "Error",
         description: "Failed to update announcement",
         variant: "destructive",
       });
     }
+  };
+
+  const openEditCourse = (course: Course) => {
+    setEditingCourse(course);
+    courseForm.reset({
+      title: course.title,
+      description: course.description,
+      audience: course.audience,
+      mode: course.mode,
+      duration: course.duration,
+      price: course.price,
+      level: course.level,
+      start_date: course.start_date,
+      features: course.features.join(', '),
+      category: course.category,
+      keywords: course.keywords.join(', '),
+      prerequisites: course.prerequisites || 'None',
+    });
+    setIsEditingCourse(true);
   };
 
   if (loading) {
@@ -242,7 +469,7 @@ export default function Admin() {
     );
   }
 
-  if (!user || !isAdmin) {
+  if (!user || profile?.role !== 'admin') {
     return null;
   }
 
@@ -265,15 +492,19 @@ export default function Admin() {
           <TabsList className="bg-white/10 border-white/20">
             <TabsTrigger value="users" className="text-white data-[state=active]:bg-white/20">
               <Users className="h-4 w-4 mr-2" />
-              Users
+              Users ({users.length})
             </TabsTrigger>
             <TabsTrigger value="courses" className="text-white data-[state=active]:bg-white/20">
               <BookOpen className="h-4 w-4 mr-2" />
-              Courses
+              Courses ({courses.length})
+            </TabsTrigger>
+            <TabsTrigger value="enrollments" className="text-white data-[state=active]:bg-white/20">
+              <UserCheck className="h-4 w-4 mr-2" />
+              Enrollments ({enrollments.length})
             </TabsTrigger>
             <TabsTrigger value="announcements" className="text-white data-[state=active]:bg-white/20">
               <Megaphone className="h-4 w-4 mr-2" />
-              Announcements
+              Announcements ({announcements.length})
             </TabsTrigger>
           </TabsList>
 
@@ -286,76 +517,479 @@ export default function Admin() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {users.map((user) => (
-                    <div key={user.id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
-                      <div>
-                        <p className="text-white font-medium">{user.display_name}</p>
-                        <p className="text-white/60 text-sm">{user.email}</p>
-                        <p className="text-white/60 text-xs">
-                          Role: {user.role} • Created: {new Date(user.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Select
-                          value={user.role}
-                          onValueChange={(newRole) => updateUserRole(user.user_id, newRole)}
-                        >
-                          <SelectTrigger className="w-32 bg-white/10 border-white/20 text-white">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="user">User</SelectItem>
-                            <SelectItem value="admin">Admin</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => deleteUser(user.user_id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-white">Name</TableHead>
+                      <TableHead className="text-white">Email</TableHead>
+                      <TableHead className="text-white">Role</TableHead>
+                      <TableHead className="text-white">Created</TableHead>
+                      <TableHead className="text-white">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {users.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell className="text-white">{user.display_name || 'N/A'}</TableCell>
+                        <TableCell className="text-white/80">{user.email}</TableCell>
+                        <TableCell>
+                          <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
+                            {user.role}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-white/80">
+                          {new Date(user.created_at).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Select
+                              value={user.role}
+                              onValueChange={(newRole) => updateUserRole(user.user_id, newRole)}
+                            >
+                              <SelectTrigger className="w-24 bg-white/10 border-white/20 text-white">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="user">User</SelectItem>
+                                <SelectItem value="admin">Admin</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => deleteUser(user.user_id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="courses">
+            <div className="space-y-6">
+              <Card className="bg-white/10 backdrop-blur-md border-white/20">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-white">Course Management</CardTitle>
+                      <CardDescription className="text-white/80">
+                        Create, edit, and manage courses
+                      </CardDescription>
+                    </div>
+                    <Dialog open={isAddingCourse} onOpenChange={setIsAddingCourse}>
+                      <DialogTrigger asChild>
+                        <Button className="btn-hero">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Course
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl bg-card/95 backdrop-blur-md">
+                        <DialogHeader>
+                          <DialogTitle>Add New Course</DialogTitle>
+                        </DialogHeader>
+                        <Form {...courseForm}>
+                          <form onSubmit={courseForm.handleSubmit(createCourse)} className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                              <FormField
+                                control={courseForm.control}
+                                name="title"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Title</FormLabel>
+                                    <FormControl>
+                                      <Input {...field} placeholder="Course title" />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={courseForm.control}
+                                name="audience"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Audience</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                      <FormControl>
+                                        <SelectTrigger>
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        <SelectItem value="Young Learners">Young Learners</SelectItem>
+                                        <SelectItem value="Teenagers">Teenagers</SelectItem>
+                                        <SelectItem value="Professionals">Professionals</SelectItem>
+                                        <SelectItem value="SMEs">SMEs</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                            
+                            <FormField
+                              control={courseForm.control}
+                              name="description"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Description</FormLabel>
+                                  <FormControl>
+                                    <Textarea {...field} placeholder="Course description" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <div className="grid grid-cols-3 gap-4">
+                              <FormField
+                                control={courseForm.control}
+                                name="price"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Price</FormLabel>
+                                    <FormControl>
+                                      <Input {...field} placeholder="£99" />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={courseForm.control}
+                                name="duration"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Duration</FormLabel>
+                                    <FormControl>
+                                      <Input {...field} placeholder="6 hrs/4 sessions" />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={courseForm.control}
+                                name="level"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Level</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                      <FormControl>
+                                        <SelectTrigger>
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        <SelectItem value="Beginner">Beginner</SelectItem>
+                                        <SelectItem value="Intermediate">Intermediate</SelectItem>
+                                        <SelectItem value="Advanced">Advanced</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                              <FormField
+                                control={courseForm.control}
+                                name="mode"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Mode</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                      <FormControl>
+                                        <SelectTrigger>
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        <SelectItem value="Online">Online</SelectItem>
+                                        <SelectItem value="Hybrid">Hybrid</SelectItem>
+                                        <SelectItem value="In-person">In-person</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={courseForm.control}
+                                name="start_date"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Start Date</FormLabel>
+                                    <FormControl>
+                                      <Input {...field} placeholder="Enquire for start date" />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                              <FormField
+                                control={courseForm.control}
+                                name="category"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Category</FormLabel>
+                                    <FormControl>
+                                      <Input {...field} placeholder="AI Fundamentals" />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={courseForm.control}
+                                name="prerequisites"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Prerequisites</FormLabel>
+                                    <FormControl>
+                                      <Input {...field} placeholder="None" />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+
+                            <FormField
+                              control={courseForm.control}
+                              name="features"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Features (comma-separated)</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} placeholder="Interactive lessons, Hands-on projects, Certificates" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={courseForm.control}
+                              name="keywords"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Keywords (comma-separated)</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} placeholder="AI, machine learning, python" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <div className="flex justify-end gap-2">
+                              <Button type="button" variant="outline" onClick={() => setIsAddingCourse(false)}>
+                                Cancel
+                              </Button>
+                              <Button type="submit" className="btn-hero">
+                                Create Course
+                              </Button>
+                            </div>
+                          </form>
+                        </Form>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-white">Title</TableHead>
+                        <TableHead className="text-white">Audience</TableHead>
+                        <TableHead className="text-white">Price</TableHead>
+                        <TableHead className="text-white">Level</TableHead>
+                        <TableHead className="text-white">Status</TableHead>
+                        <TableHead className="text-white">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {courses.map((course) => (
+                        <TableRow key={course.id}>
+                          <TableCell className="text-white font-medium">{course.title}</TableCell>
+                          <TableCell className="text-white/80">{course.audience}</TableCell>
+                          <TableCell className="text-white/80">{course.price}</TableCell>
+                          <TableCell className="text-white/80">{course.level}</TableCell>
+                          <TableCell>
+                            <Badge variant={course.is_active ? 'default' : 'secondary'}>
+                              {course.is_active ? 'Active' : 'Inactive'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => openEditCourse(course)}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant={course.is_active ? "secondary" : "default"}
+                                size="sm"
+                                onClick={() => toggleCourseStatus(course.id, course.is_active)}
+                              >
+                                {course.is_active ? 'Deactivate' : 'Activate'}
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => deleteCourse(course.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+
+              {/* Edit Course Dialog */}
+              <Dialog open={isEditingCourse} onOpenChange={setIsEditingCourse}>
+                <DialogContent className="max-w-2xl bg-card/95 backdrop-blur-md">
+                  <DialogHeader>
+                    <DialogTitle>Edit Course</DialogTitle>
+                  </DialogHeader>
+                  <Form {...courseForm}>
+                    <form onSubmit={courseForm.handleSubmit(updateCourse)} className="space-y-4">
+                      {/* Same form fields as Add Course */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          control={courseForm.control}
+                          name="title"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Title</FormLabel>
+                              <FormControl>
+                                <Input {...field} placeholder="Course title" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={courseForm.control}
+                          name="audience"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Audience</FormLabel>
+                              <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="Young Learners">Young Learners</SelectItem>
+                                  <SelectItem value="Teenagers">Teenagers</SelectItem>
+                                  <SelectItem value="Professionals">Professionals</SelectItem>
+                                  <SelectItem value="SMEs">SMEs</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      
+                      <FormField
+                        control={courseForm.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Description</FormLabel>
+                            <FormControl>
+                              <Textarea {...field} placeholder="Course description" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="flex justify-end gap-2">
+                        <Button type="button" variant="outline" onClick={() => setIsEditingCourse(false)}>
+                          Cancel
+                        </Button>
+                        <Button type="submit" className="btn-hero">
+                          Update Course
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="enrollments">
             <Card className="bg-white/10 backdrop-blur-md border-white/20">
               <CardHeader>
-                <CardTitle className="text-white">Course Management</CardTitle>
+                <CardTitle className="text-white">Course Enrollments</CardTitle>
                 <CardDescription className="text-white/80">
-                  Manage courses and programs
+                  View all user enrollments and payment status
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {courses.slice(0, 10).map((course) => (
-                    <div key={course.id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
-                      <div>
-                        <p className="text-white font-medium">{course.title}</p>
-                        <p className="text-white/60 text-sm">{course.audience} • {course.price} • {course.duration}</p>
-                        <p className="text-white/60 text-xs">
-                          Level: {course.level} • Status: {course.is_active ? 'Active' : 'Inactive'}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" className="btn-outline-ai">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  {courses.length > 10 && (
-                    <p className="text-white/60 text-sm text-center">
-                      Showing first 10 courses. Total: {courses.length}
-                    </p>
-                  )}
-                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-white">User</TableHead>
+                      <TableHead className="text-white">Course</TableHead>
+                      <TableHead className="text-white">Enrolled Date</TableHead>
+                      <TableHead className="text-white">Payment</TableHead>
+                      <TableHead className="text-white">Amount</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {enrollments.map((enrollment) => (
+                      <TableRow key={enrollment.id}>
+                        <TableCell className="text-white">
+                          <div>
+                            <p className="font-medium">{enrollment.profiles?.display_name || 'N/A'}</p>
+                            <p className="text-white/60 text-sm">{enrollment.profiles?.email}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-white">
+                          <div>
+                            <p className="font-medium">{enrollment.courses?.title}</p>
+                            <p className="text-white/60 text-sm">Starts: {enrollment.courses?.start_date}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-white/80">
+                          {new Date(enrollment.enrolled_at).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={enrollment.payment_status === 'completed' ? 'default' : 'secondary'}>
+                            {enrollment.payment_status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-white/80">
+                          {enrollment.payment_amount ? `£${enrollment.payment_amount}` : enrollment.courses?.price || 'N/A'}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </CardContent>
             </Card>
           </TabsContent>
@@ -401,8 +1035,8 @@ export default function Admin() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <Button type="submit" className="btn-hero" disabled={isLoading}>
-                      {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    <Button type="submit" className="btn-hero" disabled={loading}>
+                      {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       <Plus className="mr-2 h-4 w-4" />
                       Create Announcement
                     </Button>
@@ -415,28 +1049,48 @@ export default function Admin() {
                   <CardTitle className="text-white">Existing Announcements</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {announcements.map((announcement) => (
-                      <div key={announcement.id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
-                        <div>
-                          <p className="text-white font-medium">{announcement.title}</p>
-                          <p className="text-white/60 text-sm">{announcement.content}</p>
-                          <p className="text-white/60 text-xs">
-                            Priority: {announcement.priority} • 
-                            Status: {announcement.is_active ? 'Active' : 'Inactive'} • 
-                            Created: {new Date(announcement.created_at).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <Button
-                          variant={announcement.is_active ? "destructive" : "default"}
-                          size="sm"
-                          onClick={() => toggleAnnouncementStatus(announcement.id, announcement.is_active)}
-                        >
-                          {announcement.is_active ? 'Deactivate' : 'Activate'}
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-white">Title</TableHead>
+                        <TableHead className="text-white">Content</TableHead>
+                        <TableHead className="text-white">Priority</TableHead>
+                        <TableHead className="text-white">Status</TableHead>
+                        <TableHead className="text-white">Created</TableHead>
+                        <TableHead className="text-white">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {announcements.map((announcement) => (
+                        <TableRow key={announcement.id}>
+                          <TableCell className="text-white font-medium">{announcement.title}</TableCell>
+                          <TableCell className="text-white/80 max-w-xs truncate">{announcement.content}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline">
+                              Priority {announcement.priority}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={announcement.is_active ? 'default' : 'secondary'}>
+                              {announcement.is_active ? 'Active' : 'Inactive'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-white/80">
+                            {new Date(announcement.created_at).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant={announcement.is_active ? "destructive" : "default"}
+                              size="sm"
+                              onClick={() => toggleAnnouncementStatus(announcement.id, announcement.is_active)}
+                            >
+                              {announcement.is_active ? 'Deactivate' : 'Activate'}
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </CardContent>
               </Card>
             </div>
