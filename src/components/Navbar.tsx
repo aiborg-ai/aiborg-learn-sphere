@@ -4,9 +4,13 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { Brain, Menu, X, User, Shield, LogOut } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { FAQModal } from '@/components/FAQModal';
+import { TermsModal } from '@/components/TermsModal';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isFAQOpen, setIsFAQOpen] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
   const { user, profile, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
 
@@ -30,12 +34,18 @@ export function Navbar() {
             <Link to="/#training-programs" className="text-white/80 hover:text-white transition-colors">
               Programs
             </Link>
-            <Link to="/#faq" className="text-white/80 hover:text-white transition-colors">
+            <button 
+              onClick={() => setIsFAQOpen(true)}
+              className="text-white/80 hover:text-white transition-colors"
+            >
               FAQ
-            </Link>
-            <Link to="/#terms" className="text-white/80 hover:text-white transition-colors">
+            </button>
+            <button 
+              onClick={() => setIsTermsOpen(true)}
+              className="text-white/80 hover:text-white transition-colors"
+            >
               Terms
-            </Link>
+            </button>
             
             {user ? (
               <DropdownMenu>
@@ -103,20 +113,24 @@ export function Navbar() {
             >
               Programs
             </Link>
-            <Link 
-              to="/#faq" 
-              className="block text-white/80 hover:text-white transition-colors"
-              onClick={() => setIsOpen(false)}
+            <button 
+              onClick={() => {
+                setIsFAQOpen(true);
+                setIsOpen(false);
+              }}
+              className="block text-white/80 hover:text-white transition-colors text-left"
             >
               FAQ
-            </Link>
-            <Link 
-              to="/#terms" 
-              className="block text-white/80 hover:text-white transition-colors"
-              onClick={() => setIsOpen(false)}
+            </button>
+            <button 
+              onClick={() => {
+                setIsTermsOpen(true);
+                setIsOpen(false);
+              }}
+              className="block text-white/80 hover:text-white transition-colors text-left"
             >
               Terms
-            </Link>
+            </button>
             
             {user ? (
               <div className="space-y-2 pt-4 border-t border-white/20">
@@ -161,6 +175,10 @@ export function Navbar() {
           </div>
         )}
       </div>
+      
+      {/* FAQ and Terms Modals */}
+      <FAQModal isOpen={isFAQOpen} onClose={() => setIsFAQOpen(false)} />
+      <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
     </nav>
   );
 }

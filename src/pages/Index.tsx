@@ -5,8 +5,6 @@ import { TrainingPrograms } from "@/components/TrainingPrograms";
 import { AIChatbot } from "@/components/AIChatbot";
 import { ContactSection } from "@/components/ContactSection";
 import { AboutSection } from "@/components/AboutSection";
-import { FAQ } from "@/components/FAQ";
-import { Terms } from "@/components/Terms";
 
 const Index = () => {
   return (
@@ -16,8 +14,6 @@ const Index = () => {
       <HeroSection />
       <AboutSection />
       <TrainingPrograms />
-      <FAQ />
-      <Terms />
       <ContactSection />
       <AIChatbot />
     </div>

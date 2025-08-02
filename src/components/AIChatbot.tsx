@@ -16,7 +16,9 @@ import {
   HelpCircle,
   BookOpen,
   Clock,
-  ArrowUp
+  ArrowUp,
+  Phone,
+  QrCode
 } from "lucide-react";
 
 interface Message {
@@ -77,6 +79,7 @@ export function AIChatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [showWhatsApp, setShowWhatsApp] = useState(false);
   const [conversationContext, setConversationContext] = useState<ConversationContext>(initialConversationContext);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -212,6 +215,7 @@ export function AIChatbot() {
       if (lowerMessage.includes("transform") || lowerMessage.includes("strategy")) {
         return "Digital transformation requires the right approach. Are you looking to transform customer experience, internal operations, or create new AI-powered revenue streams?";
       }
+      updateConversationContext({ lastTopic: "business_objectives" });
       return "Understanding the business impact is key. What are your primary objectives for AI implementation in your organization?";
     }
     
@@ -234,6 +238,20 @@ export function AIChatbot() {
     }
 
     const recommendedCourses = getCourseRecommendations();
+    
+    // Handle specific follow-up scenarios to avoid repetition
+    if (conversationContext.lastTopic && lowerMessage.length < 20) {
+      // User gave a short answer, provide meaningful follow-up
+      if (conversationContext.lastTopic === "business_objectives" && lowerMessage.includes("productivity")) {
+        updateConversationContext({ lastTopic: "productivity_followup" });
+        return "Excellent! Productivity gains are often the most immediate ROI from AI implementation. Are you looking to automate specific tasks, enhance decision-making processes, or improve team collaboration? Understanding your specific productivity challenges helps me recommend the most relevant training approach.";
+      }
+      
+      if (conversationContext.lastTopic === "course_recommendation" && (lowerMessage.includes("yes") || lowerMessage.includes("more"))) {
+        const course = recommendedCourses[0];
+        return `Great! Here's what **${course.title}** covers:\n\n• Week 1-2: Foundation concepts and practical applications\n• Week 3-4: Hands-on implementation and real-world scenarios\n• Week 5-6: Advanced techniques and portfolio projects\n\nNext start date: [Next Monday]\nSchedule: [Flexible online sessions]\n\nWould you like me to check availability or connect you with our enrollment team?`;
+      }
+    }
 
     // Check for complex queries that might need human assistance
     if (lowerMessage.includes('help') || lowerMessage.includes('support') || 
@@ -521,6 +539,54 @@ export function AIChatbot() {
           </div>
         )}
 
+        {/* WhatsApp Contact */}
+        {showWhatsApp && (
+          <div className="p-4 border-t bg-green-50 dark:bg-green-900/20">
+            <div className="text-center space-y-3">
+              <div className="flex items-center justify-center gap-2">
+                <Phone className="h-5 w-5 text-green-600" />
+                <h4 className="font-semibold text-green-700 dark:text-green-400">Connect on WhatsApp</h4>
+              </div>
+              
+              <p className="text-sm text-green-600 dark:text-green-300">
+                Get instant support from our team!
+              </p>
+              
+              <div className="flex items-center justify-center gap-4">
+                {/* WhatsApp Direct Link */}
+                <Button
+                  onClick={() => window.open('https://wa.me/447404568207?text=Hi! I need help with AI courses', '_blank')}
+                  className="bg-green-500 hover:bg-green-600 text-white flex items-center gap-2"
+                >
+                  <Phone className="h-4 w-4" />
+                  Chat Now
+                </Button>
+                
+                {/* QR Code for Group */}
+                <div className="flex flex-col items-center">
+                  <div className="bg-white p-2 rounded-lg border">
+                    <QrCode className="h-16 w-16 text-green-600" />
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">Scan to join group</p>
+                </div>
+              </div>
+              
+              <p className="text-xs text-green-600 dark:text-green-400">
+                +44 7404568207 • Available 9 AM - 6 PM GMT
+              </p>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowWhatsApp(false)}
+                className="text-green-600 hover:text-green-700"
+              >
+                Back to Chat
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Input */}
         <div className="p-4 border-t">
           <div className="flex gap-2">
@@ -531,6 +597,14 @@ export function AIChatbot() {
               onKeyPress={(e) => e.key === "Enter" && sendMessage(inputValue)}
               className="flex-1"
             />
+            <Button
+              onClick={() => setShowWhatsApp(!showWhatsApp)}
+              variant="outline"
+              className="px-3 text-green-600 border-green-200 hover:bg-green-50"
+              title="WhatsApp Support"
+            >
+              <Phone className="h-4 w-4" />
+            </Button>
             <Button
               onClick={() => sendMessage(inputValue)}
               disabled={!inputValue.trim() || isTyping}
