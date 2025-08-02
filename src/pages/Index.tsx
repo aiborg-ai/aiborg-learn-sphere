@@ -12,9 +12,15 @@ const Index = () => {
       <AnnouncementTicker />
       <Navbar />
       <HeroSection />
-      <AboutSection />
-      <TrainingPrograms />
-      <ContactSection />
+      <div id="about">
+        <AboutSection />
+      </div>
+      <div id="training-programs">
+        <TrainingPrograms />
+      </div>
+      <div id="contact">
+        <ContactSection />
+      </div>
       <AIChatbot />
     </div>
   );

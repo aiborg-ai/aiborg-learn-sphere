@@ -44,6 +44,7 @@ export const TrainingPrograms = () => {
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [currentlyEnrolling, setCurrentlyEnrolling] = useState(false);
+  const [showEnrolledOnly, setShowEnrolledOnly] = useState(!!user); // Default to enrolled filter for logged in users
   const { selectedAudience, setSelectedAudience } = usePersonalization();
 
   // Convert database courses to the format expected by the component
@@ -108,7 +109,10 @@ export const TrainingPrograms = () => {
     const matchesLevel = selectedLevel === "All Levels" || program.level === selectedLevel;
     const matchesCurrentlyEnrolling = !currentlyEnrolling || isInCurrentOrNextMonth(program.startDate);
     
-    return matchesAudience && matchesSearch && matchesCategory && matchesLevel && matchesCurrentlyEnrolling;
+    // Filter for enrolled courses if the user is logged in and showEnrolledOnly is true
+    const matchesEnrolledFilter = !showEnrolledOnly || !user || getEnrollmentStatus(program.id, program.startDate) !== 'not_enrolled';
+    
+    return matchesAudience && matchesSearch && matchesCategory && matchesLevel && matchesCurrentlyEnrolling && matchesEnrolledFilter;
   });
 
   // Get unique categories and levels for filter options
@@ -214,6 +218,16 @@ export const TrainingPrograms = () => {
               )}
             </div>
             <div className="flex gap-2">
+              {user && (
+                <Button
+                  variant={showEnrolledOnly ? "default" : "outline"}
+                  onClick={() => setShowEnrolledOnly(!showEnrolledOnly)}
+                  className="flex items-center gap-2"
+                >
+                  <CheckCircle className="h-4 w-4" />
+                  Already Enrolled
+                </Button>
+              )}
               <Button
                 variant={currentlyEnrolling ? "default" : "outline"}
                 onClick={() => setCurrentlyEnrolling(!currentlyEnrolling)}
@@ -279,10 +293,24 @@ export const TrainingPrograms = () => {
         {filteredPrograms.length === 0 ? (
           <div className="text-center py-12">
             <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No programs found</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              {showEnrolledOnly && user ? "No enrolled programs" : "No programs found"}
+            </h3>
             <p className="text-muted-foreground">
-              Try adjusting your search terms or filters to find relevant programs.
+              {showEnrolledOnly && user 
+                ? "You currently have no enrolled programs. Browse available courses and enroll to start your learning journey!" 
+                : "Try adjusting your search terms or filters to find relevant programs."
+              }
             </p>
+            {showEnrolledOnly && user && (
+              <Button 
+                onClick={() => setShowEnrolledOnly(false)} 
+                className="mt-4"
+                variant="outline"
+              >
+                Browse All Programs
+              </Button>
+            )}
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

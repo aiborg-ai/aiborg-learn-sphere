@@ -31,9 +31,15 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/#training-programs" className="text-white/80 hover:text-white transition-colors">
+            <a href="#training-programs" className="text-white/80 hover:text-white transition-colors">
               Programs
-            </Link>
+            </a>
+            <a href="#about" className="text-white/80 hover:text-white transition-colors">
+              About
+            </a>
+            <a href="#contact" className="text-white/80 hover:text-white transition-colors">
+              Contact
+            </a>
             <button 
               onClick={() => setIsFAQOpen(true)}
               className="text-white/80 hover:text-white transition-colors"
@@ -106,13 +112,27 @@ export function Navbar() {
         {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden py-4 space-y-4 border-t border-white/20">
-            <Link 
-              to="/#training-programs" 
+            <a 
+              href="#training-programs" 
               className="block text-white/80 hover:text-white transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Programs
-            </Link>
+            </a>
+            <a 
+              href="#about" 
+              className="block text-white/80 hover:text-white transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              About
+            </a>
+            <a 
+              href="#contact" 
+              className="block text-white/80 hover:text-white transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              Contact
+            </a>
             <button 
               onClick={() => {
                 setIsFAQOpen(true);
