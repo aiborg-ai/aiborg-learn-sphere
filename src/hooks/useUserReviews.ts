@@ -1,0 +1,57 @@
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import type { Review } from '@/hooks/useReviews';
+
+export const useUserReviews = () => {
+  const [userReviews, setUserReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
+
+  const fetchUserReviews = useCallback(async () => {
+    if (!user) {
+      setUserReviews([]);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      const { data: reviewsData, error: reviewsError } = await supabase
+        .from('reviews')
+        .select(`
+          *,
+          courses!left(title),
+          profiles!left(display_name)
+        `)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (reviewsError) {
+        console.error('User reviews query error:', reviewsError);
+        throw reviewsError;
+      }
+
+      setUserReviews((reviewsData || []) as unknown as Review[]);
+    } catch (err) {
+      console.error('Error fetching user reviews:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch user reviews');
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    fetchUserReviews();
+  }, [fetchUserReviews]);
+
+  return { 
+    userReviews, 
+    loading, 
+    error, 
+    refetch: fetchUserReviews 
+  };
+};

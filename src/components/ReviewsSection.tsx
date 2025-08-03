@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,25 +18,38 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 
-export function ReviewsSection() {
+export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
   const { reviews, loading, error } = useReviews();
   const [showForm, setShowForm] = useState(false);
   const [filterRating, setFilterRating] = useState<number | null>(null);
+  const [activeCourseFilter, setActiveCourseFilter] = useState<number | null>(courseFilter || null);
 
-  console.log('ReviewsSection render:', { reviews, loading, error, reviewCount: reviews.length });
+  console.log('ReviewsSection render:', { reviews, loading, error, reviewCount: reviews.length, courseFilter, activeCourseFilter });
 
-  const filteredReviews = filterRating 
-    ? reviews.filter(review => review.rating === filterRating)
-    : reviews;
+  // Listen for course filter events
+  useEffect(() => {
+    const handleCourseFilter = (event: CustomEvent) => {
+      setActiveCourseFilter(event.detail.courseId);
+    };
 
-  const averageRating = reviews.length > 0 
-    ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length 
+    window.addEventListener('filterReviewsByCourse', handleCourseFilter as EventListener);
+    return () => window.removeEventListener('filterReviewsByCourse', handleCourseFilter as EventListener);
+  }, []);
+
+  const filteredReviews = reviews.filter(review => {
+    const matchesCourse = !activeCourseFilter || review.course_id === activeCourseFilter;
+    const matchesRating = !filterRating || review.rating === filterRating;
+    return matchesCourse && matchesRating;
+  });
+
+  const averageRating = filteredReviews.length > 0 
+    ? filteredReviews.reduce((sum, review) => sum + review.rating, 0) / filteredReviews.length 
     : 0;
 
   const ratingDistribution = [5, 4, 3, 2, 1].map(rating => ({
     rating,
-    count: reviews.filter(r => r.rating === rating).length,
-    percentage: reviews.length > 0 ? (reviews.filter(r => r.rating === rating).length / reviews.length) * 100 : 0
+    count: filteredReviews.filter(r => r.rating === rating).length,
+    percentage: filteredReviews.length > 0 ? (filteredReviews.filter(r => r.rating === rating).length / filteredReviews.length) * 100 : 0
   }));
 
   const renderStars = (rating: number) => {
@@ -111,13 +124,26 @@ export function ReviewsSection() {
           </div>
           
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
-            <span className="gradient-text">What Our Students Say</span>
+            <span className="gradient-text">
+              {activeCourseFilter ? 'Course Reviews' : 'What Our Students Say'}
+            </span>
           </h2>
           
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Real feedback from our AI education community. Read authentic experiences from learners 
-            who have transformed their careers through our programs.
+            {activeCourseFilter 
+              ? `Reviews specifically for this course from our learning community.`
+              : 'Real feedback from our AI education community. Read authentic experiences from learners who have transformed their careers through our programs.'
+            }
           </p>
+          
+          {activeCourseFilter && (
+            <button
+              onClick={() => setActiveCourseFilter(null)}
+              className="mt-4 text-primary hover:underline"
+            >
+              View all reviews
+            </button>
+          )}
         </div>
 
         {/* Overall Rating Stats */}

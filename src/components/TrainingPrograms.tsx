@@ -10,6 +10,7 @@ import { EnrollmentForm } from "@/components/EnrollmentForm";
 import { CourseDetailsModal } from "@/components/CourseDetailsModal";
 import { useCourses, Course } from "@/hooks/useCourses";
 import { useEnrollments } from "@/hooks/useEnrollments";
+import { useReviewCounts } from "@/hooks/useReviewCounts";
 import { useAuth } from "@/hooks/useAuth";
 import { 
   Search, 
@@ -30,7 +31,9 @@ import {
   AlertCircle,
   X,
   CheckCircle,
-  Play
+  Play,
+  Star,
+  MessageSquare
 } from "lucide-react";
 import { ShareButton } from "@/components/ShareButton";
 import { CourseRecordingsModal } from "@/components/CourseRecordingsModal";
@@ -38,6 +41,7 @@ import { CourseRecordingsModal } from "@/components/CourseRecordingsModal";
 export const TrainingPrograms = () => {
   const { courses, loading, error, refetch } = useCourses();
   const { getEnrollmentStatus } = useEnrollments();
+  const { getReviewCount, loading: reviewCountsLoading } = useReviewCounts();
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
@@ -152,6 +156,16 @@ export const TrainingPrograms = () => {
     if (originalCourse) {
       setSelectedCourse(originalCourse);
       setDetailsModalOpen(true);
+    }
+  };
+
+  const handleReviewsClick = (courseId: number) => {
+    // Scroll to reviews section with course filter
+    const reviewsSection = document.getElementById('reviews');
+    if (reviewsSection) {
+      reviewsSection.scrollIntoView({ behavior: 'smooth' });
+      // We'll need to pass the course filter to the reviews section
+      window.dispatchEvent(new CustomEvent('filterReviewsByCourse', { detail: { courseId } }));
     }
   };
 
@@ -359,8 +373,18 @@ export const TrainingPrograms = () => {
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Monitor className="h-4 w-4" />
                         {program.mode}
-                      </div>
-                    </div>
+                       </div>
+                       {/* Reviews count display */}
+                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                         <Star className="h-4 w-4" />
+                         <button 
+                           onClick={() => handleReviewsClick(program.id)}
+                           className="hover:text-primary hover:underline cursor-pointer"
+                         >
+                           {getReviewCount(program.id)} review{getReviewCount(program.id) !== 1 ? 's' : ''}
+                         </button>
+                       </div>
+                     </div>
 
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-2xl font-bold text-primary">{program.price}</span>
