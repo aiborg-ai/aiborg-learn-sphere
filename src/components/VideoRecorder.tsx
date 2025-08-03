@@ -177,6 +177,7 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
           <video
             ref={previewRef}
             className="w-full h-full object-cover"
+            autoPlay
             muted
             playsInline
           />
