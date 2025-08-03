@@ -14,12 +14,13 @@ import {
   Mic,
   Video,
   Plus,
-  Filter
+  Filter,
+  RefreshCw
 } from "lucide-react";
 import { format } from "date-fns";
 
 export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
-  const { reviews, loading, error } = useReviews();
+  const { reviews, loading, error, refetch } = useReviews();
   const [showForm, setShowForm] = useState(false);
   const [filterRating, setFilterRating] = useState<number | null>(null);
   const [activeCourseFilter, setActiveCourseFilter] = useState<number | null>(courseFilter || null);
@@ -192,13 +193,22 @@ export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
         {/* Action Buttons */}
         <div className="text-center mb-12">
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              onClick={() => setShowForm(!showForm)}
-              className="btn-hero"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              {showForm ? 'Hide Review Form' : 'Write a Review'}
-            </Button>
+                  <Button 
+                    onClick={() => setShowForm(!showForm)}
+                    className="btn-hero"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    {showForm ? 'Hide Review Form' : 'Write a Review'}
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={refetch}
+                    className="flex items-center gap-2"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    Refresh Reviews
+                  </Button>
             
             {reviews.length > 0 && (
               <div className="flex items-center gap-2">

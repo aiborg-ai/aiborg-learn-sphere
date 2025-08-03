@@ -1,76 +1,82 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { DataService } from '@/services/ReviewsDataService';
 import { useAuth } from '@/hooks/useAuth';
 import type { Review } from '@/hooks/useReviews';
 
+interface UseUserReviewsState {
+  userReviews: Review[];
+  loading: boolean;
+  error: string | null;
+  lastFetched: number | null;
+}
+
 export const useUserReviews = () => {
-  const [userReviews, setUserReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [state, setState] = useState<UseUserReviewsState>({
+    userReviews: [],
+    loading: true,
+    error: null,
+    lastFetched: null
+  });
+  
   const { user } = useAuth();
 
-  const fetchUserReviews = useCallback(async () => {
+  const updateState = useCallback((updates: Partial<UseUserReviewsState>) => {
+    setState(prev => ({ ...prev, ...updates }));
+  }, []);
+
+  const fetchUserReviews = useCallback(async (force = false) => {
     if (!user) {
-      setUserReviews([]);
-      setLoading(false);
+      console.log('👤 No user logged in, clearing user reviews');
+      updateState({ userReviews: [], loading: false, error: null });
       return;
     }
 
-    try {
-      setLoading(true);
-      setError(null);
+    const now = Date.now();
+    const timeSinceLastFetch = state.lastFetched ? now - state.lastFetched : Infinity;
+    const shouldRefresh = force || timeSinceLastFetch > 15000; // 15 seconds throttle for user data
 
-      // Get user reviews without joins first
-      const { data: reviewsData, error: reviewsError } = await supabase
-        .from('reviews')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (reviewsError) {
-        console.error('User reviews query error:', reviewsError);
-        throw reviewsError;
-      }
-
-      // Enrich with course data
-      const enrichedReviews = [];
-      for (const review of reviewsData || []) {
-        let courseData = null;
-        try {
-          const { data: course } = await supabase
-            .from('courses')
-            .select('title')
-            .eq('id', review.course_id)
-            .maybeSingle();
-          courseData = course;
-        } catch (error) {
-          console.warn('Failed to fetch course data for user review:', review.id, error);
-        }
-
-        enrichedReviews.push({
-          ...review,
-          courses: courseData,
-          profiles: null // User's own profile not needed for display
-        });
-      }
-
-      setUserReviews(enrichedReviews as unknown as Review[]);
-    } catch (err) {
-      console.error('Error fetching user reviews:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch user reviews');
-    } finally {
-      setLoading(false);
+    if (!shouldRefresh && state.userReviews.length > 0) {
+      console.log('⏭️ Skipping user reviews fetch - too recent');
+      return;
     }
-  }, [user]);
+
+    console.log('🔄 Fetching user reviews...', { userId: user.id, force });
+    updateState({ loading: true, error: null });
+
+    try {
+      const reviews = await DataService.getUserReviews(user.id);
+      console.log(`✅ Fetched ${reviews.length} user reviews`);
+      
+      updateState({ 
+        userReviews: reviews as Review[], 
+        loading: false, 
+        error: null,
+        lastFetched: now
+      });
+    } catch (err) {
+      console.error('❌ Error fetching user reviews:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch user reviews';
+      updateState({ 
+        loading: false, 
+        error: errorMessage 
+      });
+    }
+  }, [user, state.lastFetched, state.userReviews.length, updateState]);
 
   useEffect(() => {
     fetchUserReviews();
   }, [fetchUserReviews]);
 
+  const refetch = useCallback(() => {
+    console.log('🔄 Manual user reviews refetch triggered');
+    return fetchUserReviews(true);
+  }, [fetchUserReviews]);
+
   return { 
-    userReviews, 
-    loading, 
-    error, 
-    refetch: fetchUserReviews 
+    userReviews: state.userReviews, 
+    loading: state.loading, 
+    error: state.error, 
+    refetch,
+    lastFetched: state.lastFetched
   };
 };

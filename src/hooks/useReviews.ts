@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { DataService, subscribeToReviewChanges } from '@/services/ReviewsDataService';
 
 export interface Review {
   id: string;
@@ -25,83 +26,62 @@ export interface Review {
   };
 }
 
+interface UseReviewsState {
+  reviews: Review[];
+  loading: boolean;
+  error: string | null;
+  lastFetched: number | null;
+}
+
 export const useReviews = () => {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [state, setState] = useState<UseReviewsState>({
+    reviews: [],
+    loading: true,
+    error: null,
+    lastFetched: null
+  });
 
-  const fetchReviews = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      console.log('Fetching reviews...');
-      
-      // First get approved reviews without joins
-      const { data: reviewsData, error: reviewsError } = await supabase
-        .from('reviews')
-        .select('*')
-        .eq('approved', true)
-        .order('created_at', { ascending: false });
-
-      console.log('Reviews query result:', { reviewsData, reviewsError });
-
-      if (reviewsError) {
-        console.error('Reviews query error:', reviewsError);
-        throw reviewsError;
-      }
-
-      // Enrich reviews with course and profile data separately
-      const enrichedReviews = [];
-      
-      for (const review of reviewsData || []) {
-        let courseData = null;
-        let profileData = null;
-
-        // Try to get course data
-        try {
-          const { data: course } = await supabase
-            .from('courses')
-            .select('title')
-            .eq('id', review.course_id)
-            .maybeSingle();
-          courseData = course;
-        } catch (error) {
-          console.warn('Failed to fetch course data for review:', review.id, error);
-        }
-
-        // Try to get profile data
-        try {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('display_name')
-            .eq('user_id', review.user_id)
-            .maybeSingle();
-          profileData = profile;
-        } catch (error) {
-          console.warn('Failed to fetch profile data for review:', review.id, error);
-        }
-
-        enrichedReviews.push({
-          ...review,
-          courses: courseData,
-          profiles: profileData
-        });
-      }
-
-      console.log('Setting enriched reviews data:', enrichedReviews);
-      setReviews(enrichedReviews as unknown as Review[]);
-    } catch (err) {
-      console.error('Error fetching reviews:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch reviews');
-    } finally {
-      setLoading(false);
-    }
+  const updateState = useCallback((updates: Partial<UseReviewsState>) => {
+    setState(prev => ({ ...prev, ...updates }));
   }, []);
 
-  const submitReview = async (reviewData: Omit<Review, 'id' | 'created_at' | 'updated_at' | 'approved' | 'profiles' | 'courses'>) => {
+  const fetchReviews = useCallback(async (force = false) => {
+    const now = Date.now();
+    const timeSinceLastFetch = state.lastFetched ? now - state.lastFetched : Infinity;
+    const shouldRefresh = force || timeSinceLastFetch > 30000; // 30 seconds throttle
+
+    if (!shouldRefresh && state.reviews.length > 0) {
+      console.log('⏭️ Skipping reviews fetch - too recent');
+      return;
+    }
+
+    console.log('🔄 Fetching reviews...', { force, timeSinceLastFetch });
+    updateState({ loading: true, error: null });
+
     try {
-      // Submit review with approved: false for admin review
+      const reviews = await DataService.getApprovedReviews();
+      console.log(`✅ Fetched ${reviews.length} approved reviews`);
+      
+      updateState({ 
+        reviews: reviews as Review[], 
+        loading: false, 
+        error: null,
+        lastFetched: now
+      });
+    } catch (err) {
+      console.error('❌ Error fetching reviews:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch reviews';
+      updateState({ 
+        loading: false, 
+        error: errorMessage 
+      });
+    }
+  }, [state.lastFetched, state.reviews.length, updateState]);
+
+  const submitReview = useCallback(async (reviewData: Omit<Review, 'id' | 'created_at' | 'updated_at' | 'approved' | 'profiles' | 'courses'>) => {
+    console.log('📝 Submitting review...', { type: reviewData.review_type, course: reviewData.course_id });
+    
+    try {
       const reviewToSubmit = {
         ...reviewData,
         approved: false // Reviews need admin approval
@@ -121,6 +101,8 @@ export const useReviews = () => {
         throw error;
       }
 
+      console.log('✅ Review submitted successfully:', data.id);
+
       // Send email notification to admin
       try {
         // Get user profile for notification
@@ -139,27 +121,54 @@ export const useReviews = () => {
             userName: profile?.display_name || profile?.email || 'Anonymous User'
           }
         });
+        
+        console.log('📧 Review notification sent to admin');
       } catch (notificationError) {
-        console.error('Failed to send notification email:', notificationError);
+        console.error('⚠️ Failed to send notification email:', notificationError);
         // Don't fail the review submission if notification fails
       }
 
+      // Invalidate cache but don't refetch immediately (admin needs to approve first)
+      DataService.invalidateReviewsCache();
+
       return data;
     } catch (err) {
-      console.error('Error submitting review:', err);
+      console.error('❌ Error submitting review:', err);
       throw err;
     }
-  };
-
-  useEffect(() => {
-    fetchReviews();
   }, []);
 
+  // Set up real-time subscriptions
+  useEffect(() => {
+    console.log('👂 Setting up review subscriptions...');
+    
+    const unsubscribe = subscribeToReviewChanges(() => {
+      console.log('🔔 Review change detected, refetching...');
+      fetchReviews(true); // Force refetch on changes
+    });
+
+    return () => {
+      console.log('🔌 Cleaning up review subscriptions');
+      unsubscribe();
+    };
+  }, [fetchReviews]);
+
+  // Initial fetch
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
+
+  const refetch = useCallback(() => {
+    console.log('🔄 Manual refetch triggered');
+    return fetchReviews(true);
+  }, [fetchReviews]);
+
   return { 
-    reviews, 
-    loading, 
-    error, 
-    refetch: fetchReviews,
-    submitReview
+    reviews: state.reviews,
+    loading: state.loading,
+    error: state.error,
+    refetch,
+    submitReview,
+    lastFetched: state.lastFetched
   };
 };

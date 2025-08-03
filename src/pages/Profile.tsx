@@ -10,14 +10,14 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserReviews } from '@/hooks/useUserReviews';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, User, ArrowLeft, Save, Star, MessageSquare, Mic, Video } from 'lucide-react';
+import { Loader2, User, ArrowLeft, Save, Star, MessageSquare, Mic, Video, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Profile() {
   const [isLoading, setIsLoading] = useState(false);
   const [displayName, setDisplayName] = useState('');
   const { user, profile, updateProfile, loading } = useAuth();
-  const { userReviews, loading: reviewsLoading } = useUserReviews();
+  const { userReviews, loading: reviewsLoading, refetch: refetchReviews } = useUserReviews();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -190,10 +190,23 @@ export default function Profile() {
           <TabsContent value="reviews">
             <Card className="bg-white/10 backdrop-blur-md border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-center">Reviews Given</CardTitle>
-                <CardDescription className="text-white/80 text-center">
-                  Your reviews and feedback on AI courses
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-white text-center">Reviews Given</CardTitle>
+                    <CardDescription className="text-white/80 text-center">
+                      Your reviews and feedback on AI courses
+                    </CardDescription>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={refetchReviews}
+                    disabled={reviewsLoading}
+                    className="ml-4"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${reviewsLoading ? 'animate-spin' : ''}`} />
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 {reviewsLoading ? (
