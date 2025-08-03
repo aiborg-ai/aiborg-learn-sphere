@@ -37,55 +37,25 @@ export const useReviews = () => {
       
       console.log('Fetching reviews...');
       
-      // First get approved reviews
       const { data: reviewsData, error: reviewsError } = await supabase
         .from('reviews')
-        .select('*')
+        .select(`
+          *,
+          courses!left(title),
+          profiles!left(display_name)
+        `)
         .eq('approved', true)
         .order('created_at', { ascending: false });
+
+      console.log('Reviews query result:', { reviewsData, reviewsError });
 
       if (reviewsError) {
         console.error('Reviews query error:', reviewsError);
         throw reviewsError;
       }
 
-      // Then get course and profile data separately and merge
-      const enrichedReviews = [];
-      
-      for (const review of reviewsData || []) {
-        // Get course data
-        const { data: courseData } = await supabase
-          .from('courses')
-          .select('title')
-          .eq('id', review.course_id)
-          .single();
-
-        // Get profile data  
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('display_name')
-          .eq('user_id', review.user_id)
-          .single();
-
-        enrichedReviews.push({
-          ...review,
-          courses: courseData,
-          profiles: profileData
-        });
-      }
-
-      const data = enrichedReviews;
-      const error = null;
-
-      console.log('Reviews query result:', { data, error });
-
-      if (error) {
-        console.error('Reviews query error:', error);
-        throw error;
-      }
-
-      console.log('Setting reviews data:', data);
-      setReviews((data || []) as unknown as Review[]);
+      console.log('Setting reviews data:', reviewsData);
+      setReviews((reviewsData || []) as unknown as Review[]);
     } catch (err) {
       console.error('Error fetching reviews:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch reviews');
