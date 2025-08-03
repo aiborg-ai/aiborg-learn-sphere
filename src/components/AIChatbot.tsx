@@ -565,7 +565,11 @@ export function AIChatbot() {
                 {/* QR Code for Group */}
                 <div className="flex flex-col items-center">
                   <div className="bg-white p-2 rounded-lg border">
-                    <QrCode className="h-16 w-16 text-green-600" />
+                    <img 
+                      src="/lovable-uploads/062b8b8d-3c09-41cf-92a4-d274f73d56d7.png" 
+                      alt="WhatsApp QR Code" 
+                      className="h-16 w-16 object-contain"
+                    />
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">Scan to join group</p>
                 </div>
