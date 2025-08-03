@@ -3,6 +3,7 @@ import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/components/HeroSection";
 import { TrainingPrograms } from "@/components/TrainingPrograms";
 import { EventsSection } from "@/components/EventsSection";
+import { ReviewsSection } from "@/components/ReviewsSection";
 import { AIChatbot } from "@/components/AIChatbot";
 import { ContactSection } from "@/components/ContactSection";
 import { AboutSection } from "@/components/AboutSection";
@@ -21,6 +22,9 @@ const Index = () => {
       </div>
       <div id="events">
         <EventsSection />
+      </div>
+      <div id="reviews">
+        <ReviewsSection />
       </div>
       <div id="contact">
         <ContactSection />

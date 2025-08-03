@@ -47,6 +47,42 @@ export type Database = {
         }
         Relationships: []
       }
+      cms_content: {
+        Row: {
+          content_key: string
+          content_type: string
+          content_value: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          section_name: string
+          updated_at: string
+        }
+        Insert: {
+          content_key: string
+          content_type: string
+          content_value: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          section_name: string
+          updated_at?: string
+        }
+        Update: {
+          content_key?: string
+          content_type?: string
+          content_value?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          section_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
           audience: string
