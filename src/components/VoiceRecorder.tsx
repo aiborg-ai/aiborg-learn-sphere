@@ -6,10 +6,11 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface VoiceRecorderProps {
   onTranscription: (text: string) => void;
+  onRecording?: (blob: Blob | null) => void;
   disabled?: boolean;
 }
 
-export function VoiceRecorder({ onTranscription, disabled = false }: VoiceRecorderProps) {
+export function VoiceRecorder({ onTranscription, onRecording, disabled = false }: VoiceRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -44,6 +45,7 @@ export function VoiceRecorder({ onTranscription, disabled = false }: VoiceRecord
       mediaRecorderRef.current.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
         setAudioBlob(blob);
+        onRecording?.(blob);
         stream.getTracks().forEach(track => track.stop());
       };
 
@@ -102,6 +104,7 @@ export function VoiceRecorder({ onTranscription, disabled = false }: VoiceRecord
 
   const deleteRecording = () => {
     setAudioBlob(null);
+    onRecording?.(null);
     setIsPlaying(false);
     if (audioRef.current) {
       audioRef.current.pause();

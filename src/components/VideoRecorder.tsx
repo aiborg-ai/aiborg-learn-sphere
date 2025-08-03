@@ -6,10 +6,11 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface VideoRecorderProps {
   onTranscription: (text: string) => void;
+  onRecording?: (blob: Blob | null) => void;
   disabled?: boolean;
 }
 
-export function VideoRecorder({ onTranscription, disabled = false }: VideoRecorderProps) {
+export function VideoRecorder({ onTranscription, onRecording, disabled = false }: VideoRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -55,6 +56,7 @@ export function VideoRecorder({ onTranscription, disabled = false }: VideoRecord
       mediaRecorderRef.current.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: 'video/webm' });
         setVideoBlob(blob);
+        onRecording?.(blob);
         stream.getTracks().forEach(track => track.stop());
         if (previewRef.current) {
           previewRef.current.srcObject = null;
@@ -116,6 +118,7 @@ export function VideoRecorder({ onTranscription, disabled = false }: VideoRecord
 
   const deleteRecording = () => {
     setVideoBlob(null);
+    onRecording?.(null);
     setIsPlaying(false);
     if (videoRef.current) {
       videoRef.current.pause();

@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { VoiceRecorder } from "./VoiceRecorder";
 import { VideoRecorder } from "./VideoRecorder";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ReviewFormData {
   courseId: string;
@@ -54,6 +55,8 @@ export function ReviewForm() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [voiceBlob, setVoiceBlob] = useState<Blob | null>(null);
+  const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +79,7 @@ export function ReviewForm() {
       return;
     }
 
-    if (!formData.writtenReview.trim()) {
+    if (formData.reviewType === 'written' && !formData.writtenReview.trim()) {
       toast({
         title: "Review Content Required",
         description: "Please provide your review content.",
@@ -85,8 +88,63 @@ export function ReviewForm() {
       return;
     }
 
+    if (formData.reviewType === 'voice' && !voiceBlob) {
+      toast({
+        title: "Voice Recording Required",
+        description: "Please record your voice review.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (formData.reviewType === 'video' && !videoBlob) {
+      toast({
+        title: "Video Recording Required",
+        description: "Please record your video review.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setIsSubmitting(true);
+      
+      let voiceReviewUrl = null;
+      let videoReviewUrl = null;
+
+      // Upload voice file if present
+      if (formData.reviewType === 'voice' && voiceBlob) {
+        const fileName = `${user.id}/${Date.now()}_voice_review.webm`;
+        const { data: voiceData, error: voiceError } = await supabase.storage
+          .from('review-voices')
+          .upload(fileName, voiceBlob, {
+            contentType: 'audio/webm',
+            upsert: false
+          });
+
+        if (voiceError) {
+          throw new Error(`Failed to upload voice review: ${voiceError.message}`);
+        }
+
+        voiceReviewUrl = fileName;
+      }
+
+      // Upload video file if present
+      if (formData.reviewType === 'video' && videoBlob) {
+        const fileName = `${user.id}/${Date.now()}_video_review.webm`;
+        const { data: videoData, error: videoError } = await supabase.storage
+          .from('review-videos')
+          .upload(fileName, videoBlob, {
+            contentType: 'video/webm',
+            upsert: false
+          });
+
+        if (videoError) {
+          throw new Error(`Failed to upload video review: ${videoError.message}`);
+        }
+
+        videoReviewUrl = fileName;
+      }
       
       await submitReview({
         user_id: user.id,
@@ -94,8 +152,8 @@ export function ReviewForm() {
         display_name_option: formData.displayNameOption,
         review_type: formData.reviewType,
         written_review: formData.writtenReview.trim(),
-        voice_review_url: null,
-        video_review_url: null,
+        voice_review_url: voiceReviewUrl,
+        video_review_url: videoReviewUrl,
         course_period: formData.coursePeriod,
         course_mode: formData.courseMode,
         rating: formData.rating
@@ -116,6 +174,10 @@ export function ReviewForm() {
         courseMode: 'online',
         rating: 5
       });
+      
+      // Reset media blobs
+      setVoiceBlob(null);
+      setVideoBlob(null);
 
     } catch (error) {
       toast({
@@ -285,7 +347,11 @@ export function ReviewForm() {
                 type="button"
                 variant={formData.reviewType === 'written' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setFormData(prev => ({ ...prev, reviewType: 'written' }))}
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, reviewType: 'written', writtenReview: '' }));
+                  setVoiceBlob(null);
+                  setVideoBlob(null);
+                }}
               >
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Text
@@ -294,7 +360,11 @@ export function ReviewForm() {
                 type="button"
                 variant={formData.reviewType === 'voice' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setFormData(prev => ({ ...prev, reviewType: 'voice' }))}
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, reviewType: 'voice', writtenReview: '' }));
+                  setVoiceBlob(null);
+                  setVideoBlob(null);
+                }}
               >
                 <Mic className="h-4 w-4 mr-2" />
                 Voice
@@ -303,7 +373,11 @@ export function ReviewForm() {
                 type="button"
                 variant={formData.reviewType === 'video' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setFormData(prev => ({ ...prev, reviewType: 'video' }))}
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, reviewType: 'video', writtenReview: '' }));
+                  setVoiceBlob(null);
+                  setVideoBlob(null);
+                }}
               >
                 <Video className="h-4 w-4 mr-2" />
                 Video
@@ -336,6 +410,7 @@ export function ReviewForm() {
           {formData.reviewType === 'voice' && (
             <VoiceRecorder 
               onTranscription={(text) => setFormData(prev => ({ ...prev, writtenReview: text }))}
+              onRecording={(blob) => setVoiceBlob(blob)}
               disabled={isSubmitting}
             />
           )}
@@ -344,6 +419,7 @@ export function ReviewForm() {
           {formData.reviewType === 'video' && (
             <VideoRecorder 
               onTranscription={(text) => setFormData(prev => ({ ...prev, writtenReview: text }))}
+              onRecording={(blob) => setVideoBlob(blob)}
               disabled={isSubmitting}
             />
           )}

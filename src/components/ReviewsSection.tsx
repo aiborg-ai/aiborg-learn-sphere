@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useReviews } from "@/hooks/useReviews";
 import { ReviewForm } from "@/components/ReviewForm";
+import { MediaPlayer } from "@/components/MediaPlayer";
 import { 
   Star, 
   MessageSquare, 
@@ -262,17 +263,40 @@ export function ReviewsSection() {
                     </p>
                   )}
                   
-                  {review.review_type === 'voice' && (
-                    <div className="text-center py-4">
-                      <Mic className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-xs text-muted-foreground">Voice review</p>
+                  {review.review_type === 'voice' && review.voice_review_url && (
+                    <div className="py-4">
+                      <MediaPlayer
+                        bucket="review-voices"
+                        path={review.voice_review_url}
+                        type="audio"
+                        className="w-full"
+                      />
                     </div>
                   )}
                   
-                  {review.review_type === 'video' && (
+                  {review.review_type === 'video' && review.video_review_url && (
+                    <div className="py-4">
+                      <MediaPlayer
+                        bucket="review-videos"
+                        path={review.video_review_url}
+                        type="video"
+                        className="w-full"
+                      />
+                    </div>
+                  )}
+
+                  {/* Fallback for voice/video without files */}
+                  {review.review_type === 'voice' && !review.voice_review_url && (
+                    <div className="text-center py-4">
+                      <Mic className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                      <p className="text-xs text-muted-foreground">Voice review (file not available)</p>
+                    </div>
+                  )}
+                  
+                  {review.review_type === 'video' && !review.video_review_url && (
                     <div className="text-center py-4">
                       <Video className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-xs text-muted-foreground">Video review</p>
+                      <p className="text-xs text-muted-foreground">Video review (file not available)</p>
                     </div>
                   )}
                   

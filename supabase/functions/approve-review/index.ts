@@ -32,6 +32,21 @@ const handler = async (req: Request): Promise<Response> => {
     let responseHtml = '';
 
     if (action === 'approve') {
+      // Get review details for notification
+      const { data: review, error: reviewError } = await supabase
+        .from('reviews')
+        .select(`
+          *,
+          profiles!inner(display_name, email),
+          courses!inner(title)
+        `)
+        .eq('id', reviewId)
+        .single();
+
+      if (reviewError) {
+        throw reviewError;
+      }
+
       // Approve the review
       const { error } = await supabase
         .from('reviews')
@@ -40,6 +55,22 @@ const handler = async (req: Request): Promise<Response> => {
 
       if (error) {
         throw error;
+      }
+
+      // Send acceptance notification email
+      try {
+        await supabase.functions.invoke('send-review-acceptance-notification', {
+          body: {
+            reviewId: review.id,
+            userEmail: review.profiles.email,
+            userName: review.profiles.display_name || review.profiles.email,
+            courseName: review.courses.title,
+            reviewType: review.review_type
+          }
+        });
+      } catch (emailError) {
+        console.error('Failed to send acceptance notification:', emailError);
+        // Don't fail the approval if email fails
       }
 
       responseHtml = `
