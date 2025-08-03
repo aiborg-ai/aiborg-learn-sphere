@@ -29,9 +29,11 @@ import {
   Loader2,
   AlertCircle,
   X,
-  CheckCircle
+  CheckCircle,
+  Play
 } from "lucide-react";
 import { ShareButton } from "@/components/ShareButton";
+import { CourseRecordingsModal } from "@/components/CourseRecordingsModal";
 
 export const TrainingPrograms = () => {
   const { courses, loading, error, refetch } = useCourses();
@@ -46,6 +48,7 @@ export const TrainingPrograms = () => {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [currentlyEnrolling, setCurrentlyEnrolling] = useState(false);
   const [showEnrolledOnly, setShowEnrolledOnly] = useState(!!user); // Default to enrolled filter for logged in users
+  const [recordingsModalOpen, setRecordingsModalOpen] = useState(false);
   const { selectedAudience, setSelectedAudience } = usePersonalization();
 
   // Convert database courses to the format expected by the component
@@ -135,13 +138,21 @@ export const TrainingPrograms = () => {
       window.location.href = '/auth';
       return;
     }
-    setSelectedCourse(program as Course);
-    setEnrollmentFormOpen(true);
+    // Find the original course object from the courses array
+    const originalCourse = courses.find(c => c.id === program.id);
+    if (originalCourse) {
+      setSelectedCourse(originalCourse);
+      setEnrollmentFormOpen(true);
+    }
   };
 
   const handleDetailsClick = (program: any) => {
-    setSelectedCourse(program as Course);
-    setDetailsModalOpen(true);
+    // Find the original course object from the courses array
+    const originalCourse = courses.find(c => c.id === program.id);
+    if (originalCourse) {
+      setSelectedCourse(originalCourse);
+      setDetailsModalOpen(true);
+    }
   };
 
   if (loading) {
@@ -367,6 +378,23 @@ export const TrainingPrograms = () => {
                       >
                         Details
                       </Button>
+                      {user && getEnrollmentStatus(program.id, program.startDate) !== 'not_enrolled' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            // Find the original course object from the courses array
+                            const originalCourse = courses.find(c => c.id === program.id);
+                            if (originalCourse) {
+                              setSelectedCourse(originalCourse);
+                              setRecordingsModalOpen(true);
+                            }
+                          }}
+                        >
+                          <Play className="h-3 w-3 mr-1" />
+                          Recordings
+                        </Button>
+                      )}
                         {user ? (
                           (() => {
                             const status = getEnrollmentStatus(program.id, program.startDate);
@@ -430,6 +458,14 @@ export const TrainingPrograms = () => {
           onClose={() => setDetailsModalOpen(false)}
           course={selectedCourse as any}
           onEnroll={() => selectedCourse && handleEnrollClick(selectedCourse)}
+        />
+
+        {/* Course Recordings Modal */}
+        <CourseRecordingsModal
+          open={recordingsModalOpen}
+          onOpenChange={setRecordingsModalOpen}
+          courseId={selectedCourse?.id || 0}
+          courseTitle={selectedCourse?.title || ""}
         />
       </div>
     </section>

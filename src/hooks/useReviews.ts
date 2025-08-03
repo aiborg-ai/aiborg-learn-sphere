@@ -42,8 +42,8 @@ export const useReviews = () => {
         .from('reviews')
         .select(`
           *,
-          courses(title),
-          profiles(display_name)
+          courses!reviews_course_id_fkey(title),
+          profiles!reviews_user_id_fkey(display_name)
         `)
         .eq('approved', true)
         .order('created_at', { ascending: false });

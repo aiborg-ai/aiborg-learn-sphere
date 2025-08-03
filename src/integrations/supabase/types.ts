@@ -83,6 +83,51 @@ export type Database = {
         }
         Relationships: []
       }
+      course_materials: {
+        Row: {
+          course_id: number
+          created_at: string
+          description: string | null
+          duration: number | null
+          file_size: number | null
+          file_url: string
+          id: string
+          is_active: boolean
+          material_type: string
+          sort_order: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          course_id: number
+          created_at?: string
+          description?: string | null
+          duration?: number | null
+          file_size?: number | null
+          file_url: string
+          id?: string
+          is_active?: boolean
+          material_type: string
+          sort_order?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          course_id?: number
+          created_at?: string
+          description?: string | null
+          duration?: number | null
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          is_active?: boolean
+          material_type?: string
+          sort_order?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
           audience: string
