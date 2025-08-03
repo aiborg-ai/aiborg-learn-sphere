@@ -23,6 +23,8 @@ import {
   CheckCircle,
   AlertCircle
 } from "lucide-react";
+import { VoiceRecorder } from "./VoiceRecorder";
+import { VideoRecorder } from "./VideoRecorder";
 
 interface ReviewFormData {
   courseId: string;
@@ -74,10 +76,10 @@ export function ReviewForm() {
       return;
     }
 
-    if (formData.reviewType === 'written' && !formData.writtenReview.trim()) {
+    if (!formData.writtenReview.trim()) {
       toast({
         title: "Review Content Required",
-        description: "Please write your review.",
+        description: "Please provide your review content.",
         variant: "destructive",
       });
       return;
@@ -91,9 +93,9 @@ export function ReviewForm() {
         course_id: parseInt(formData.courseId),
         display_name_option: formData.displayNameOption,
         review_type: formData.reviewType,
-        written_review: formData.reviewType === 'written' ? formData.writtenReview : null,
-        voice_review_url: null, // Will be implemented later
-        video_review_url: null, // Will be implemented later
+        written_review: formData.writtenReview.trim(),
+        voice_review_url: null,
+        video_review_url: null,
         course_period: formData.coursePeriod,
         course_mode: formData.courseMode,
         rating: formData.rating
@@ -272,77 +274,78 @@ export function ReviewForm() {
             {renderStarRating()}
           </div>
 
-          {/* Review Type */}
-          <div className="space-y-2">
-            <Label>Review Format</Label>
-            <RadioGroup
-              value={formData.reviewType}
-              onValueChange={(value: 'written' | 'voice' | 'video') => 
-                setFormData(prev => ({ ...prev, reviewType: value }))
-              }
-              className="flex gap-6"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="written" id="written" />
-                <Label htmlFor="written" className="flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4" />
-                  Written
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="voice" id="voice" />
-                <Label htmlFor="voice" className="flex items-center gap-2">
-                  <Mic className="h-4 w-4" />
-                  Voice
-                  <Badge variant="outline" className="text-xs">Coming Soon</Badge>
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="video" id="video" />
-                <Label htmlFor="video" className="flex items-center gap-2">
-                  <Video className="h-4 w-4" />
-                  Video
-                  <Badge variant="outline" className="text-xs">Coming Soon</Badge>
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
 
           {/* Review Content */}
-          {formData.reviewType === 'written' && (
-            <div className="space-y-2">
-              <Label htmlFor="review">Your Review *</Label>
-              <Textarea
-                id="review"
-                value={formData.writtenReview}
-                onChange={(e) => setFormData(prev => ({ ...prev, writtenReview: e.target.value }))}
-                placeholder="Share your experience with this course. What did you learn? How was the quality? Would you recommend it to others?"
-                rows={5}
-                className="resize-none"
-              />
+          <div className="space-y-2">
+            <Label htmlFor="review">Your Review *</Label>
+            
+            {/* Review Type Controls */}
+            <div className="flex gap-2 mb-4">
+              <Button
+                type="button"
+                variant={formData.reviewType === 'written' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setFormData(prev => ({ ...prev, reviewType: 'written' }))}
+              >
+                <MessageSquare className="h-4 w-4 mr-2" />
+                Text
+              </Button>
+              <Button
+                type="button"
+                variant={formData.reviewType === 'voice' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setFormData(prev => ({ ...prev, reviewType: 'voice' }))}
+              >
+                <Mic className="h-4 w-4 mr-2" />
+                Voice
+              </Button>
+              <Button
+                type="button"
+                variant={formData.reviewType === 'video' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setFormData(prev => ({ ...prev, reviewType: 'video' }))}
+              >
+                <Video className="h-4 w-4 mr-2" />
+                Video
+              </Button>
+            </div>
+
+            {/* Text Input */}
+            <Textarea
+              id="review"
+              value={formData.writtenReview}
+              onChange={(e) => setFormData(prev => ({ ...prev, writtenReview: e.target.value }))}
+              placeholder={
+                formData.reviewType === 'written' 
+                  ? "Share your experience with this course. What did you learn? How was the quality? Would you recommend it to others?"
+                  : "Transcribed text will appear here..."
+              }
+              rows={5}
+              className="resize-none"
+              readOnly={formData.reviewType !== 'written'}
+            />
+            
+            {formData.reviewType === 'written' && (
               <p className="text-xs text-muted-foreground">
                 Minimum 50 characters recommended for a helpful review.
               </p>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* Voice/Video Review Placeholders */}
+          {/* Voice Recording */}
           {formData.reviewType === 'voice' && (
-            <div className="p-6 border border-dashed border-muted-foreground/30 rounded-lg text-center">
-              <Mic className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">
-                Voice reviews will be available soon. For now, please use the written review option.
-              </p>
-            </div>
+            <VoiceRecorder 
+              onTranscription={(text) => setFormData(prev => ({ ...prev, writtenReview: text }))}
+              disabled={isSubmitting}
+            />
           )}
 
+          {/* Video Recording */}
           {formData.reviewType === 'video' && (
-            <div className="p-6 border border-dashed border-muted-foreground/30 rounded-lg text-center">
-              <Video className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">
-                Video reviews will be available soon. For now, please use the written review option.
-              </p>
-            </div>
+            <VideoRecorder 
+              onTranscription={(text) => setFormData(prev => ({ ...prev, writtenReview: text }))}
+              disabled={isSubmitting}
+            />
           )}
 
           {/* Disclaimer */}

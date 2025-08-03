@@ -17,6 +17,7 @@ import { useEventRegistrations } from "@/hooks/useEventRegistrations";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 interface EventCardProps {
   event: Event;
@@ -50,15 +51,39 @@ export function EventCard({ event, onRegister }: EventCardProps) {
 
     try {
       setIsRegistering(true);
-      await registerForEvent(event.id, event.price);
-      toast({
-        title: "Registration Successful!",
-        description: `You've been registered for ${event.title}`,
+      
+      // Create payment session for event registration
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: {
+          courseName: `Event: ${event.title}`,
+          coursePrice: `£${event.price}`,
+          studentInfo: {
+            email: user.email || user.user_metadata?.email,
+            studentName: user.user_metadata?.display_name || user.email || 'Student'
+          }
+        }
       });
+
+      if (error) {
+        throw new Error(error.message || 'Failed to create payment session');
+      }
+
+      if (data?.url) {
+        // Open payment session in new tab
+        window.open(data.url, '_blank');
+        
+        toast({
+          title: "Payment Session Created",
+          description: "Complete your payment to register for the event.",
+        });
+      } else {
+        throw new Error('No payment URL received');
+      }
+      
     } catch (error) {
       toast({
         title: "Registration Failed",
-        description: error instanceof Error ? error.message : "Failed to register for event",
+        description: error instanceof Error ? error.message : "Failed to start registration process",
         variant: "destructive",
       });
     } finally {
