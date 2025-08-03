@@ -200,8 +200,8 @@ export function EventCard({ event, onRegister }: EventCardProps) {
         <div className="w-full space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-primary" />
-              <span className="text-2xl font-bold text-primary">${event.price}</span>
+              <span className="text-lg">£</span>
+              <span className="text-2xl font-bold text-primary">{event.price}</span>
             </div>
             <div className="flex items-center gap-2">
               <ShareButton 
