@@ -315,6 +315,57 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          approved: boolean
+          course_id: number | null
+          course_mode: string | null
+          course_period: string | null
+          created_at: string
+          display_name_option: string
+          id: string
+          rating: number
+          review_type: string
+          updated_at: string
+          user_id: string
+          video_review_url: string | null
+          voice_review_url: string | null
+          written_review: string | null
+        }
+        Insert: {
+          approved?: boolean
+          course_id?: number | null
+          course_mode?: string | null
+          course_period?: string | null
+          created_at?: string
+          display_name_option?: string
+          id?: string
+          rating: number
+          review_type?: string
+          updated_at?: string
+          user_id: string
+          video_review_url?: string | null
+          voice_review_url?: string | null
+          written_review?: string | null
+        }
+        Update: {
+          approved?: boolean
+          course_id?: number | null
+          course_mode?: string | null
+          course_period?: string | null
+          created_at?: string
+          display_name_option?: string
+          id?: string
+          rating?: number
+          review_type?: string
+          updated_at?: string
+          user_id?: string
+          video_review_url?: string | null
+          voice_review_url?: string | null
+          written_review?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
