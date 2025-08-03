@@ -37,13 +37,10 @@ export const useReviews = () => {
       
       console.log('Fetching reviews...');
       
+      // First get approved reviews without joins
       const { data: reviewsData, error: reviewsError } = await supabase
         .from('reviews')
-        .select(`
-          *,
-          courses!left(title),
-          profiles!left(display_name)
-        `)
+        .select('*')
         .eq('approved', true)
         .order('created_at', { ascending: false });
 
@@ -54,8 +51,46 @@ export const useReviews = () => {
         throw reviewsError;
       }
 
-      console.log('Setting reviews data:', reviewsData);
-      setReviews((reviewsData || []) as unknown as Review[]);
+      // Enrich reviews with course and profile data separately
+      const enrichedReviews = [];
+      
+      for (const review of reviewsData || []) {
+        let courseData = null;
+        let profileData = null;
+
+        // Try to get course data
+        try {
+          const { data: course } = await supabase
+            .from('courses')
+            .select('title')
+            .eq('id', review.course_id)
+            .maybeSingle();
+          courseData = course;
+        } catch (error) {
+          console.warn('Failed to fetch course data for review:', review.id, error);
+        }
+
+        // Try to get profile data
+        try {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('display_name')
+            .eq('user_id', review.user_id)
+            .maybeSingle();
+          profileData = profile;
+        } catch (error) {
+          console.warn('Failed to fetch profile data for review:', review.id, error);
+        }
+
+        enrichedReviews.push({
+          ...review,
+          courses: courseData,
+          profiles: profileData
+        });
+      }
+
+      console.log('Setting enriched reviews data:', enrichedReviews);
+      setReviews(enrichedReviews as unknown as Review[]);
     } catch (err) {
       console.error('Error fetching reviews:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch reviews');
