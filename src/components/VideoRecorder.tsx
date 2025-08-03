@@ -25,8 +25,8 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: {
-          width: 640,
-          height: 480,
+          width: { ideal: 640 },
+          height: { ideal: 480 },
           facingMode: 'user'
         },
         audio: {
@@ -42,8 +42,20 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
         previewRef.current.play();
       }
 
+      // Try different MIME types for better compatibility
+      let mimeType = 'video/webm;codecs=vp9,opus';
+      if (!MediaRecorder.isTypeSupported(mimeType)) {
+        mimeType = 'video/webm;codecs=vp8,opus';
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+          mimeType = 'video/webm';
+          if (!MediaRecorder.isTypeSupported(mimeType)) {
+            mimeType = 'video/mp4';
+          }
+        }
+      }
+
       mediaRecorderRef.current = new MediaRecorder(stream, {
-        mimeType: 'video/webm;codecs=vp9,opus'
+        mimeType: mimeType
       });
       chunksRef.current = [];
 

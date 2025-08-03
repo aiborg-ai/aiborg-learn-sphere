@@ -32,14 +32,10 @@ const handler = async (req: Request): Promise<Response> => {
     let responseHtml = '';
 
     if (action === 'approve') {
-      // Get review details for notification
+      // Get review details first
       const { data: review, error: reviewError } = await supabase
         .from('reviews')
-        .select(`
-          *,
-          profiles!inner(display_name, email),
-          courses!inner(title)
-        `)
+        .select('*')
         .eq('id', reviewId)
         .single();
 
@@ -57,20 +53,39 @@ const handler = async (req: Request): Promise<Response> => {
         throw error;
       }
 
+      // Get profile and course data separately to avoid foreign key issues
+      const [profileResult, courseResult] = await Promise.allSettled([
+        supabase
+          .from('profiles')
+          .select('display_name, email')
+          .eq('user_id', review.user_id)
+          .single(),
+        supabase
+          .from('courses')
+          .select('title')
+          .eq('id', review.course_id)
+          .single()
+      ]);
+
+      const profile = profileResult.status === 'fulfilled' ? profileResult.value.data : null;
+      const course = courseResult.status === 'fulfilled' ? courseResult.value.data : null;
+
       // Send acceptance notification email
-      try {
-        await supabase.functions.invoke('send-review-acceptance-notification', {
-          body: {
-            reviewId: review.id,
-            userEmail: review.profiles.email,
-            userName: review.profiles.display_name || review.profiles.email,
-            courseName: review.courses.title,
-            reviewType: review.review_type
-          }
-        });
-      } catch (emailError) {
-        console.error('Failed to send acceptance notification:', emailError);
-        // Don't fail the approval if email fails
+      if (profile?.email) {
+        try {
+          await supabase.functions.invoke('send-review-acceptance-notification', {
+            body: {
+              reviewId: review.id,
+              userEmail: profile.email,
+              userName: profile.display_name || profile.email,
+              courseName: course?.title || 'Course',
+              reviewType: review.review_type
+            }
+          });
+        } catch (emailError) {
+          console.error('Failed to send acceptance notification:', emailError);
+          // Don't fail the approval if email fails
+        }
       }
 
       responseHtml = `
