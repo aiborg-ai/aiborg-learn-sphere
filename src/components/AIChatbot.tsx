@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { usePersonalization, Audience } from "@/contexts/PersonalizationContext";
 import { useCourses } from "@/hooks/useCourses";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   MessageCircle, 
   Send, 
@@ -222,137 +223,71 @@ export function AIChatbot() {
     return "That's helpful to know! What specific aspects of AI interest you most?";
   };
 
-  const generateAIResponse = (userMessage: string): string => {
-    const lowerMessage = userMessage.toLowerCase();
+  const generateAIResponse = async (userMessage: string): Promise<string> => {
+    try {
+      // Prepare messages array for OpenAI
+      const conversationMessages = messages
+        .filter(msg => msg.type === "text" || !msg.type) // Include all text messages
+        .map(msg => ({
+          role: msg.sender === "user" ? "user" : "assistant",
+          content: msg.content
+        }));
 
-    // Detect and store user information
-    const experience = detectUserExperience(userMessage);
-    const role = detectUserRole(userMessage);
-    
-    if (experience && !conversationContext.userExperienceLevel) {
-      updateConversationContext({ userExperienceLevel: experience });
-    }
-    
-    if (role && !conversationContext.userRole) {
-      updateConversationContext({ userRole: role });
-    }
+      // Add the current user message
+      conversationMessages.push({
+        role: "user",
+        content: userMessage
+      });
 
-    const recommendedCourses = getCourseRecommendations();
-    
-    // Handle specific follow-up scenarios to avoid repetition
-    if (conversationContext.lastTopic && lowerMessage.length < 20) {
-      // User gave a short answer, provide meaningful follow-up
-      if (conversationContext.lastTopic === "business_objectives" && lowerMessage.includes("productivity")) {
-        updateConversationContext({ lastTopic: "productivity_followup" });
-        return "Excellent! Productivity gains are often the most immediate ROI from AI implementation. Are you looking to automate specific tasks, enhance decision-making processes, or improve team collaboration? Understanding your specific productivity challenges helps me recommend the most relevant training approach.";
+      // Prepare courses data for context
+      const coursesData = courses.map(course => ({
+        title: course.title,
+        price: course.price,
+        duration: course.duration,
+        level: course.level,
+        audience: course.audience,
+        description: course.description,
+        category: course.category
+      }));
+
+      // Call the OpenAI edge function
+      const { data, error } = await supabase.functions.invoke('ai-chat', {
+        body: {
+          messages: conversationMessages,
+          audience: selectedAudience,
+          coursesData: coursesData
+        }
+      });
+
+      if (error) {
+        console.error('AI chat error:', error);
+        throw new Error(error.message || 'Failed to get AI response');
+      }
+
+      return data.response;
+
+    } catch (error) {
+      console.error('Error generating AI response:', error);
+      
+      // Fallback to basic static response
+      const lowerMessage = userMessage.toLowerCase();
+      
+      if (lowerMessage.includes("cost") || lowerMessage.includes("price")) {
+        const priceRange = getPriceRange();
+        return `Our courses range from ${priceRange}. For detailed pricing and payment plans, contact us on WhatsApp: +44 7404568207`;
       }
       
-      if (conversationContext.lastTopic === "course_recommendation" && (lowerMessage.includes("yes") || lowerMessage.includes("more"))) {
-        const course = recommendedCourses[0];
-        return `Great! Here's what **${course.title}** covers:\n\n• Week 1-2: Foundation concepts and practical applications\n• Week 3-4: Hands-on implementation and real-world scenarios\n• Week 5-6: Advanced techniques and portfolio projects\n\nNext start date: [Next Monday]\nSchedule: [Flexible online sessions]\n\nWould you like me to check availability or connect you with our enrollment team?`;
+      if (lowerMessage.includes("help") || lowerMessage.includes("support")) {
+        return "I'd be happy to connect you with our support team! Contact us on WhatsApp: +44 7404568207 for personalized assistance.";
       }
-    }
-
-    // Check for complex queries that might need human assistance
-    if (lowerMessage.includes('help') || lowerMessage.includes('support') || 
-        lowerMessage.includes('speak to someone') || lowerMessage.includes('human') || 
-        lowerMessage.includes('agent') || lowerMessage.includes('contact')) {
-      return `I'd be happy to connect you with our human support team for personalized assistance!\n\nYou can reach us on WhatsApp at: +44 7404568207\n\nOur team can help with course selection, pricing, scheduling, and any specific questions about our AI training programs.`;
-    }
-
-    // Handle specific queries with context
-    if (lowerMessage.includes("cost") || lowerMessage.includes("price")) {
-      const priceRange = getPriceRange();
-      updateConversationContext({ lastTopic: "pricing" });
-      return getPersonalizedContent({
-        primary: `Our fun AI courses are just ${priceRange}! 🎨 That's less than a video game, but you learn skills that last forever! Each course has games, fun projects, certificates, and you get to show your family all the cool things you build! Plus, if you don't love it, we'll give your money back!\n\nFor detailed pricing or payment plans, contact us on WhatsApp: +44 7404568207`,
-        secondary: `Our courses are ${priceRange}, which is amazing value compared to other tech programs! 📊 You get everything: live sessions with instructors, hands-on coding projects, industry certificates that colleges love, access to our teen community, and lifetime access to materials. Many students say it's the best investment they've made for their future!\n\nFor payment plans or group discounts, WhatsApp us: +44 7404568207`,
-        professional: `Our professional courses range from ${priceRange} and deliver exceptional ROI. 📈 This includes CPE credits (worth $200+ alone), industry-recognized certificates, practical skills that increase earning potential by 15-30%, networking opportunities, and implementation support. Most professionals see career advancement within 6 months. Payment plans available.\n\nContact our team on WhatsApp for corporate rates: +44 7404568207`,
-        business: `Our enterprise programs range from ${priceRange} with proven ROI of 300-500% within 12 months. 💼 This includes custom training for your team, analytics dashboards, dedicated success manager, implementation support, and measurable performance metrics. We also offer volume discounts for larger teams and flexible enterprise contracts.\n\nFor enterprise pricing, contact us on WhatsApp: +44 7404568207`,
-        default: `Our courses range from ${priceRange} and include comprehensive materials, certificates, and ongoing support.\n\nFor personalized guidance, contact us on WhatsApp: +44 7404568207`
-      });
-    }
-
-    // Professional asking about intermediate courses
-    if (lowerMessage.includes("intermediate") && selectedAudience === "professional") {
-      const course = recommendedCourses[0];
-      updateConversationContext({ 
-        lastTopic: "course_recommendation",
-        recommendedCourses: [course.title]
-      });
-      return getPersonalizedContent({
-        professional: `For intermediate-level professionals, I specifically recommend:\n\n**${course.title}** (${course.price}, ${course.duration})\n- Advanced prompt engineering techniques\n- Real-world implementation scenarios\n- Industry best practices\n- CPE credits included\n\nThis builds perfectly on your existing technical foundation. Would you like more details about the curriculum?`,
-        default: `I recommend **${course.title}** (${course.price}, ${course.duration}) for intermediate learners. Would you like more information?`
-      });
-    }
-
-    // Course recommendations with context
-    if (lowerMessage.includes("recommend") || lowerMessage.includes("suggest") || 
-        (lowerMessage.includes("course") && lowerMessage.includes("which"))) {
       
-      const course = recommendedCourses[0]; // Primary recommendation
+      if (lowerMessage.includes("recommend") || lowerMessage.includes("course")) {
+        const course = getCourseRecommendations()[0];
+        return `I recommend **${course.title}** (${course.price}, ${course.duration}). For more details, contact us on WhatsApp: +44 7404568207`;
+      }
       
-      updateConversationContext({ 
-        lastTopic: "course_recommendation",
-        recommendedCourses: [course.title]
-      });
-
-      // Professional with specific background
-      if (selectedAudience === "professional" && 
-          (lowerMessage.includes("software") || conversationContext.userRole === "developer")) {
-        
-        const courseList = recommendedCourses.slice(0, 3).map((course, index) => 
-          `${index + 1}. **${course.title}** (${course.price}, ${course.duration}) - ${(course as any).description ? (course as any).description.slice(0, 50) + '...' : course.level + ' level'}`
-        ).join('\n');
-        return `As a software professional, I recommend these courses based on your background:\n\n${courseList}\n\nAll include certificates and practical applications. Which interests you most?`;
-      }
-
-      return getPersonalizedContent({
-        primary: `I think you'd love **${course.title}**! 🎮 It's only ${course.price} and takes ${course.duration} of fun learning! You'll get to play games, create cool projects, and even get a special certificate to show everyone how smart you are! Would you like me to tell you more about the fun activities?`,
-        secondary: `I'd definitely recommend **${course.title}** (${course.price}, ${course.duration})! 🚀 This course is perfect for your level and includes hands-on coding projects that look amazing on college applications. Plus, you'll join our active teen community where you can collaborate on projects. Want to know more about the curriculum?`,
-        professional: `Based on your background, I highly recommend **${course.title}** (${course.price}, ${course.duration}). This course provides practical skills you can implement immediately at work, includes CPE credits, and offers networking opportunities with other professionals. The ROI is typically seen within the first month. Would you like details about the specific modules?`,
-        business: `For your strategic objectives, **${course.title}** (${course.price}, ${course.duration}) would be ideal. This executive-level program focuses on implementation strategy, team leadership, and measurable business outcomes. Includes analytics dashboard and dedicated support for organizational rollout. Shall I outline the business case and expected ROI?`,
-        default: `I recommend **${course.title}** (${course.price}, ${course.duration}). This course includes comprehensive materials and practical applications. Would you like more information?`
-      });
+      return "I'm experiencing technical difficulties, but I'm still here to help! For immediate assistance, please contact us on WhatsApp: +44 7404568207";
     }
-
-    // Certificate inquiry
-    if (lowerMessage.includes("certificate") || lowerMessage.includes("certification")) {
-      updateConversationContext({ lastTopic: "certification" });
-      return getPersonalizedContent({
-        primary: "Yes! You'll get awesome certificates to show your family and friends how smart you are with AI! 🏆",
-        secondary: "Absolutely! Our certificates are recognized by universities and look great on college applications. Perfect for your academic portfolio! 📜",
-        professional: "Yes! All courses include industry-recognized certificates with CPE credits. Showcase your AI expertise on LinkedIn and advance your career. 💼",
-        business: "Our executive certificates demonstrate strategic AI leadership to stakeholders and boards. Includes completion verification for HR systems. 📊",
-        default: "Yes, all programs include certificates upon completion with practical skills verification."
-      });
-    }
-
-    // Contextual follow-up based on conversation
-    if (conversationContext.lastTopic === "course_recommendation") {
-      if (lowerMessage.includes("yes") || lowerMessage.includes("interested") || 
-          lowerMessage.includes("more")) {
-        return getPersonalizedContent({
-          primary: "Yay! 🎉 This course has super fun activities like building your first AI friend, creating magic art, and solving puzzles! You'll even get to show your projects to other kids! When would you like to start?",
-          secondary: "Awesome! 🚀 The course includes 6 hands-on projects, live coding sessions, access to our teen community, and a portfolio piece for college applications. We have sessions starting every 2 weeks. What's your preferred schedule?",
-          professional: "Excellent! The program includes 8 modules covering LLM fundamentals, prompt engineering, implementation strategies, and real-world case studies. You'll also get access to our professional network and job placement assistance. When would you like to begin?",
-          business: "Perfect! This executive program includes strategic planning workshops, ROI calculators, team training materials, and a dedicated success manager. We'll also create a custom implementation roadmap for your organization. Shall we schedule a consultation?",
-          default: "Great! I can provide more details about the curriculum and help you get started."
-        });
-      }
-    }
-
-    // Generate contextual follow-up based on user input
-    const followUp = getContextualFollowUp(userMessage);
-    
-    // Default personalized response with context
-    return getPersonalizedContent({
-      primary: followUp || "That's super interesting! 🌟 Tell me more about what you like to do!",
-      secondary: followUp || "That's great! 🎯 How do you think AI could help with your interests?",
-      professional: followUp || "I understand. How can AI best support your professional objectives?",
-      business: followUp || "That's valuable insight. What are your key success metrics for AI implementation?",
-      default: "I'd be happy to help you with that! What specific aspects would you like to explore?"
-    });
   };
 
   const scrollToBottom = () => {
@@ -377,18 +312,36 @@ export function AIChatbot() {
     setInputValue("");
     setIsTyping(true);
 
-    // Simulate AI thinking time
-    setTimeout(() => {
-      const aiResponse: Message = {
+    try {
+      // Get AI response
+      const aiResponse = await generateAIResponse(content);
+      
+      // Simulate typing delay
+      setTimeout(() => {
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          content: aiResponse,
+          sender: "ai",
+          timestamp: new Date()
+        };
+        
+        setMessages(prev => [...prev, aiMessage]);
+        setIsTyping(false);
+      }, 1000 + Math.random() * 1000); // Random delay between 1-2 seconds
+
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setIsTyping(false);
+      
+      // Show error message
+      const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: generateAIResponse(content),
-        sender: "ai", 
+        content: "I'm experiencing technical difficulties. For immediate assistance, please contact us on WhatsApp: +44 7404568207",
+        sender: "ai",
         timestamp: new Date()
       };
-      
-      setMessages(prev => [...prev, aiResponse]);
-      setIsTyping(false);
-    }, 1000 + Math.random() * 1000);
+      setMessages(prev => [...prev, errorMessage]);
+    }
   };
 
   const handleQuickSuggestion = (suggestion: string) => {
