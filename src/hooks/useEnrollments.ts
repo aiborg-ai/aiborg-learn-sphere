@@ -67,6 +67,20 @@ export const useEnrollments = () => {
       throw error;
     }
 
+    // Generate and send invoice
+    try {
+      await supabase.functions.invoke('generate-invoice', {
+        body: {
+          enrollmentId: data.id,
+          userId: user.id,
+          itemType: 'course'
+        }
+      });
+    } catch (invoiceError) {
+      console.error('Invoice generation failed:', invoiceError);
+      // Don't fail the enrollment if invoice generation fails
+    }
+
     setEnrollments(prev => [...prev, data]);
     return data;
   };

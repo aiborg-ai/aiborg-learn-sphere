@@ -59,13 +59,27 @@ export const useEventRegistrations = () => {
           user_id: user.id,
           event_id: eventId,
           payment_amount: paymentAmount,
-          payment_status: 'pending'
+          payment_status: 'completed'
         })
         .select()
         .single();
 
       if (error) {
         throw error;
+      }
+
+      // Generate and send invoice
+      try {
+        await supabase.functions.invoke('generate-invoice', {
+          body: {
+            eventRegistrationId: data.id,
+            userId: user.id,
+            itemType: 'event'
+          }
+        });
+      } catch (invoiceError) {
+        console.error('Invoice generation failed:', invoiceError);
+        // Don't fail the registration if invoice generation fails
       }
 
       // Refresh registrations
