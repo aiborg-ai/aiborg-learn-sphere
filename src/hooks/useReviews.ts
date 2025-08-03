@@ -37,14 +37,10 @@ export const useReviews = () => {
       
       console.log('Fetching reviews...');
       
-      // Using any to bypass TypeScript errors temporarily until types are updated
+      // First try a simple query without joins to see if it works
       const { data, error } = await (supabase as any)
         .from('reviews')
-        .select(`
-          *,
-          profiles(display_name),
-          courses(title)
-        `)
+        .select('*')
         .eq('approved', true)
         .order('created_at', { ascending: false });
 

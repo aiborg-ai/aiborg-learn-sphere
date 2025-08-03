@@ -231,14 +231,14 @@ export function ReviewsSection() {
                   
                   <div className="space-y-2">
                     <p className="font-semibold text-sm text-primary">
-                      {review.courses?.title || 'Course'}
+                      {review.courses?.title || `Course ${review.course_id}`}
                     </p>
                     
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <User className="h-3 w-3" />
                       <span>
-                        {review.display_name_option === 'show_name' && review.profiles?.display_name
-                          ? review.profiles.display_name
+                        {review.display_name_option === 'show_name'
+                          ? 'Student'
                           : 'Anonymous Student'}
                       </span>
                     </div>
