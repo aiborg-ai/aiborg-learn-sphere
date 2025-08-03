@@ -148,6 +148,101 @@ export type Database = {
           },
         ]
       }
+      event_registrations: {
+        Row: {
+          created_at: string
+          event_id: number
+          id: string
+          payment_amount: number | null
+          payment_status: string
+          registered_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: number
+          id?: string
+          payment_amount?: number | null
+          payment_status?: string
+          registered_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: number
+          id?: string
+          payment_amount?: number | null
+          payment_status?: string
+          registered_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          activities: string[]
+          category: string
+          created_at: string
+          current_registrations: number | null
+          description: string
+          end_time: string
+          event_date: string
+          id: number
+          is_active: boolean
+          location: string
+          max_capacity: number | null
+          price: number
+          start_time: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          activities?: string[]
+          category?: string
+          created_at?: string
+          current_registrations?: number | null
+          description: string
+          end_time: string
+          event_date: string
+          id?: number
+          is_active?: boolean
+          location: string
+          max_capacity?: number | null
+          price: number
+          start_time: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          activities?: string[]
+          category?: string
+          created_at?: string
+          current_registrations?: number | null
+          description?: string
+          end_time?: string
+          event_date?: string
+          id?: number
+          is_active?: boolean
+          location?: string
+          max_capacity?: number | null
+          price?: number
+          start_time?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

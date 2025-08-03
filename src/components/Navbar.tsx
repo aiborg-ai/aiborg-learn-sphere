@@ -34,6 +34,9 @@ export function Navbar() {
             <a href="#training-programs" className="text-white/80 hover:text-white transition-colors">
               Programs
             </a>
+            <a href="#events" className="text-white/80 hover:text-white transition-colors">
+              Events
+            </a>
             <a href="#about" className="text-white/80 hover:text-white transition-colors">
               About
             </a>
@@ -118,6 +121,13 @@ export function Navbar() {
               onClick={() => setIsOpen(false)}
             >
               Programs
+            </a>
+            <a 
+              href="#events" 
+              className="block text-white/80 hover:text-white transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              Events
             </a>
             <a 
               href="#about" 
