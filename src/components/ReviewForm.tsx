@@ -28,7 +28,7 @@ import { VideoRecorder } from "./VideoRecorder";
 
 interface ReviewFormData {
   courseId: string;
-  displayNameOption: 'show_name' | 'anonymous';
+  displayNameOption: 'full_name' | 'anonymous';
   reviewType: 'written' | 'voice' | 'video';
   writtenReview: string;
   coursePeriod: string;
@@ -44,7 +44,7 @@ export function ReviewForm() {
   
   const [formData, setFormData] = useState<ReviewFormData>({
     courseId: '',
-    displayNameOption: 'show_name',
+    displayNameOption: 'full_name',
     reviewType: 'written',
     writtenReview: '',
     coursePeriod: '',
@@ -109,7 +109,7 @@ export function ReviewForm() {
       // Reset form
       setFormData({
         courseId: '',
-        displayNameOption: 'show_name',
+        displayNameOption: 'full_name',
         reviewType: 'written',
         writtenReview: '',
         coursePeriod: '',
@@ -246,14 +246,14 @@ export function ReviewForm() {
             <Label>Display Preference</Label>
             <RadioGroup
               value={formData.displayNameOption}
-              onValueChange={(value: 'show_name' | 'anonymous') => 
+              onValueChange={(value: 'full_name' | 'anonymous') => 
                 setFormData(prev => ({ ...prev, displayNameOption: value }))
               }
               className="flex gap-6"
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="show_name" id="show_name" />
-                <Label htmlFor="show_name" className="flex items-center gap-2">
+                <RadioGroupItem value="full_name" id="full_name" />
+                <Label htmlFor="full_name" className="flex items-center gap-2">
                   <User className="h-4 w-4" />
                   Show my name
                 </Label>

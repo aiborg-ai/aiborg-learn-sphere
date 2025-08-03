@@ -5,7 +5,7 @@ export interface Review {
   id: string;
   user_id: string;
   course_id: number;
-  display_name_option: 'show_name' | 'anonymous';
+  display_name_option: 'full_name' | 'first_name' | 'anonymous';
   review_type: 'written' | 'voice' | 'video';
   written_review: string | null;
   voice_review_url: string | null;
