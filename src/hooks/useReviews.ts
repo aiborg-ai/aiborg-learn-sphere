@@ -37,16 +37,45 @@ export const useReviews = () => {
       
       console.log('Fetching reviews...');
       
-      // Query reviews with course and profile data using manual joins
-      const { data, error } = await supabase
+      // First get approved reviews
+      const { data: reviewsData, error: reviewsError } = await supabase
         .from('reviews')
-        .select(`
-          *,
-          courses!inner(title),
-          profiles!inner(display_name)
-        `)
+        .select('*')
         .eq('approved', true)
         .order('created_at', { ascending: false });
+
+      if (reviewsError) {
+        console.error('Reviews query error:', reviewsError);
+        throw reviewsError;
+      }
+
+      // Then get course and profile data separately and merge
+      const enrichedReviews = [];
+      
+      for (const review of reviewsData || []) {
+        // Get course data
+        const { data: courseData } = await supabase
+          .from('courses')
+          .select('title')
+          .eq('id', review.course_id)
+          .single();
+
+        // Get profile data  
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('display_name')
+          .eq('user_id', review.user_id)
+          .single();
+
+        enrichedReviews.push({
+          ...review,
+          courses: courseData,
+          profiles: profileData
+        });
+      }
+
+      const data = enrichedReviews;
+      const error = null;
 
       console.log('Reviews query result:', { data, error });
 
