@@ -100,8 +100,8 @@ export function ReviewForm() {
       });
 
       toast({
-        title: "Review Submitted!",
-        description: "Your review has been submitted for approval. Thank you for your feedback!",
+        title: "Review Submitted Successfully!",
+        description: "Your review has been sent to our admin team for approval. You'll see it published on the website once approved. Thank you for your feedback!",
       });
 
       // Reset form
