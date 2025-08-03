@@ -34,6 +34,9 @@ export const useReviews = () => {
     try {
       setLoading(true);
       setError(null);
+      
+      console.log('Fetching reviews...');
+      
       // Using any to bypass TypeScript errors temporarily until types are updated
       const { data, error } = await (supabase as any)
         .from('reviews')
@@ -45,10 +48,14 @@ export const useReviews = () => {
         .eq('approved', true)
         .order('created_at', { ascending: false });
 
+      console.log('Reviews query result:', { data, error });
+
       if (error) {
+        console.error('Reviews query error:', error);
         throw error;
       }
 
+      console.log('Setting reviews data:', data);
       setReviews(data || []);
     } catch (err) {
       console.error('Error fetching reviews:', err);

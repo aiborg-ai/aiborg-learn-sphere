@@ -22,6 +22,8 @@ export function ReviewsSection() {
   const [showForm, setShowForm] = useState(false);
   const [filterRating, setFilterRating] = useState<number | null>(null);
 
+  console.log('ReviewsSection render:', { reviews, loading, error, reviewCount: reviews.length });
+
   const filteredReviews = filterRating 
     ? reviews.filter(review => review.rating === filterRating)
     : reviews;
