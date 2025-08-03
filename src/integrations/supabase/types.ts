@@ -364,7 +364,15 @@ export type Database = {
           voice_review_url?: string | null
           written_review?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "reviews_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

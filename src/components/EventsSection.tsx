@@ -207,34 +207,6 @@ export function EventsSection() {
           )}
         </div>
 
-        {/* Call to Action */}
-        {events.length > 0 && (
-          <div className="mt-16 text-center">
-            <Card className="p-8 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
-              <div className="max-w-2xl mx-auto">
-                <div className="flex items-center justify-center gap-2 mb-4">
-                  <Sparkles className="h-6 w-6 text-primary" />
-                  <h3 className="font-display text-2xl font-bold">Ready to Network?</h3>
-                  <Sparkles className="h-6 w-6 text-primary" />
-                </div>
-                <p className="text-muted-foreground mb-6">
-                  Join our vibrant community of AI innovators, entrepreneurs, and thought leaders. 
-                  Every event is an opportunity to learn, connect, and grow your network.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button className="btn-hero">
-                    <Star className="mr-2 h-4 w-4" />
-                    Register for Events
-                  </Button>
-                  <Button variant="outline">
-                    <TrendingUp className="mr-2 h-4 w-4" />
-                    Learn More
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          </div>
-        )}
       </div>
     </section>
   );

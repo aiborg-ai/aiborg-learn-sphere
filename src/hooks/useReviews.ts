@@ -37,10 +37,14 @@ export const useReviews = () => {
       
       console.log('Fetching reviews...');
       
-      // First try a simple query without joins to see if it works
-      const { data, error } = await (supabase as any)
+      // Query reviews with course and profile data
+      const { data, error } = await supabase
         .from('reviews')
-        .select('*')
+        .select(`
+          *,
+          courses(title),
+          profiles(display_name)
+        `)
         .eq('approved', true)
         .order('created_at', { ascending: false });
 
@@ -52,7 +56,7 @@ export const useReviews = () => {
       }
 
       console.log('Setting reviews data:', data);
-      setReviews(data || []);
+      setReviews((data || []) as unknown as Review[]);
     } catch (err) {
       console.error('Error fetching reviews:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch reviews');
@@ -69,8 +73,8 @@ export const useReviews = () => {
         approved: false // Reviews need admin approval
       };
 
-      // Using any to bypass TypeScript errors temporarily until types are updated
-      const { data, error } = await (supabase as any)
+      // Submit the review
+      const { data, error } = await supabase
         .from('reviews')
         .insert(reviewToSubmit)
         .select(`

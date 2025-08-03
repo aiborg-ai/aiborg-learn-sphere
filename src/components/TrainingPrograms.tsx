@@ -31,6 +31,7 @@ import {
   X,
   CheckCircle
 } from "lucide-react";
+import { ShareButton } from "@/components/ShareButton";
 
 export const TrainingPrograms = () => {
   const { courses, loading, error, refetch } = useCourses();
@@ -350,16 +351,22 @@ export const TrainingPrograms = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-3">
                       <span className="text-2xl font-bold text-primary">{program.price}</span>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDetailsClick(program)}
-                        >
-                          Details
-                        </Button>
+                      <ShareButton 
+                        title={program.title}
+                        description={program.description}
+                      />
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDetailsClick(program)}
+                      >
+                        Details
+                      </Button>
                         {user ? (
                           (() => {
                             const status = getEnrollmentStatus(program.id, program.startDate);
@@ -401,7 +408,6 @@ export const TrainingPrograms = () => {
                             <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                           </Button>
                         )}
-                      </div>
                     </div>
                   </div>
                 </Card>

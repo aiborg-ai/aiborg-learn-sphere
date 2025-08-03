@@ -12,6 +12,7 @@ import {
   Star,
   CheckCircle
 } from "lucide-react";
+import { ShareButton } from "@/components/ShareButton";
 import { Event } from "@/hooks/useEvents";
 import { useEventRegistrations } from "@/hooks/useEventRegistrations";
 import { useAuth } from "@/hooks/useAuth";
@@ -202,9 +203,15 @@ export function EventCard({ event, onRegister }: EventCardProps) {
               <DollarSign className="h-4 w-4 text-primary" />
               <span className="text-2xl font-bold text-primary">£{event.price}</span>
             </div>
-            {isEventFull && (
-              <Badge variant="destructive">Event Full</Badge>
-            )}
+            <div className="flex items-center gap-2">
+              <ShareButton 
+                title={event.title}
+                description={event.description}
+              />
+              {isEventFull && (
+                <Badge variant="destructive">Event Full</Badge>
+              )}
+            </div>
           </div>
           
           <Button 

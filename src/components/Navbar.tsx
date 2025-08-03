@@ -31,30 +31,30 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            <a href="#training-programs" className="text-white/80 hover:text-white transition-colors">
+            <a href="#training-programs" className="text-foreground/80 hover:text-foreground transition-colors">
               Programs
             </a>
-            <a href="#events" className="text-white/80 hover:text-white transition-colors">
+            <a href="#events" className="text-foreground/80 hover:text-foreground transition-colors">
               Events
             </a>
-            <a href="#reviews" className="text-white/80 hover:text-white transition-colors">
+            <a href="#reviews" className="text-foreground/80 hover:text-foreground transition-colors">
               Reviews
             </a>
-            <a href="#about" className="text-white/80 hover:text-white transition-colors">
+            <a href="#about" className="text-foreground/80 hover:text-foreground transition-colors">
               About
             </a>
-            <a href="#contact" className="text-white/80 hover:text-white transition-colors">
+            <a href="#contact" className="text-foreground/80 hover:text-foreground transition-colors">
               Contact
             </a>
             <button 
               onClick={() => setIsFAQOpen(true)}
-              className="text-white/80 hover:text-white transition-colors"
+              className="text-foreground/80 hover:text-foreground transition-colors"
             >
               FAQ
             </button>
             <button 
               onClick={() => setIsTermsOpen(true)}
-              className="text-white/80 hover:text-white transition-colors"
+              className="text-foreground/80 hover:text-foreground transition-colors"
             >
               Terms
             </button>
@@ -62,7 +62,7 @@ export function Navbar() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="text-white hover:bg-white/10">
+                  <Button variant="ghost" className="text-foreground hover:bg-muted/10">
                     <User className="h-4 w-4 mr-2" />
                     {profile?.display_name || user.email}
                   </Button>
@@ -91,7 +91,7 @@ export function Navbar() {
             ) : (
               <div className="flex items-center gap-4">
                 <Link to="/auth">
-                  <Button variant="ghost" className="text-white hover:bg-white/10">
+                  <Button variant="ghost" className="text-foreground hover:bg-muted/10">
                     Sign In
                   </Button>
                 </Link>
@@ -105,14 +105,14 @@ export function Navbar() {
           </div>
 
           {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="md:hidden text-white"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="md:hidden text-foreground"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
         </div>
 
         {/* Mobile Navigation */}
@@ -120,35 +120,35 @@ export function Navbar() {
           <div className="md:hidden py-4 space-y-4 border-t border-white/20">
             <a 
               href="#training-programs" 
-              className="block text-white/80 hover:text-white transition-colors"
+              className="block text-foreground/80 hover:text-foreground transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Programs
             </a>
             <a 
               href="#events" 
-              className="block text-white/80 hover:text-white transition-colors"
+              className="block text-foreground/80 hover:text-foreground transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Events
             </a>
             <a 
               href="#reviews" 
-              className="block text-white/80 hover:text-white transition-colors"
+              className="block text-foreground/80 hover:text-foreground transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Reviews
             </a>
             <a 
               href="#about" 
-              className="block text-white/80 hover:text-white transition-colors"
+              className="block text-foreground/80 hover:text-foreground transition-colors"
               onClick={() => setIsOpen(false)}
             >
               About
             </a>
             <a 
               href="#contact" 
-              className="block text-white/80 hover:text-white transition-colors"
+              className="block text-foreground/80 hover:text-foreground transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Contact
@@ -158,7 +158,7 @@ export function Navbar() {
                 setIsFAQOpen(true);
                 setIsOpen(false);
               }}
-              className="block text-white/80 hover:text-white transition-colors text-left"
+              className="block text-foreground/80 hover:text-foreground transition-colors text-left"
             >
               FAQ
             </button>
@@ -167,23 +167,23 @@ export function Navbar() {
                 setIsTermsOpen(true);
                 setIsOpen(false);
               }}
-              className="block text-white/80 hover:text-white transition-colors text-left"
+              className="block text-foreground/80 hover:text-foreground transition-colors text-left"
             >
               Terms
             </button>
             
             {user ? (
-              <div className="space-y-2 pt-4 border-t border-white/20">
-                <p className="text-white font-medium">{profile?.display_name || user.email}</p>
+              <div className="space-y-2 pt-4 border-t border-muted/20">
+                <p className="text-foreground font-medium">{profile?.display_name || user.email}</p>
                 <Link to="/profile">
-                  <Button variant="ghost" className="w-full justify-start text-white hover:bg-white/10">
+                  <Button variant="ghost" className="w-full justify-start text-foreground hover:bg-muted/10">
                     <User className="h-4 w-4 mr-2" />
                     Profile
                   </Button>
                 </Link>
                 {isAdmin && (
                   <Link to="/admin">
-                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-white/10">
+                    <Button variant="ghost" className="w-full justify-start text-foreground hover:bg-muted/10">
                       <Shield className="h-4 w-4 mr-2" />
                       Admin Dashboard
                     </Button>
@@ -191,7 +191,7 @@ export function Navbar() {
                 )}
                 <Button 
                   variant="ghost" 
-                  className="w-full justify-start text-white hover:bg-white/10"
+                  className="w-full justify-start text-foreground hover:bg-muted/10"
                   onClick={handleSignOut}
                 >
                   <LogOut className="h-4 w-4 mr-2" />
@@ -199,9 +199,9 @@ export function Navbar() {
                 </Button>
               </div>
             ) : (
-              <div className="space-y-2 pt-4 border-t border-white/20">
+              <div className="space-y-2 pt-4 border-t border-muted/20">
                 <Link to="/auth">
-                  <Button variant="ghost" className="w-full text-white hover:bg-white/10">
+                  <Button variant="ghost" className="w-full text-foreground hover:bg-muted/10">
                     Sign In
                   </Button>
                 </Link>
