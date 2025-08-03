@@ -37,13 +37,13 @@ export const useReviews = () => {
       
       console.log('Fetching reviews...');
       
-      // Query reviews with course and profile data
+      // Query reviews with course and profile data using manual joins
       const { data, error } = await supabase
         .from('reviews')
         .select(`
           *,
-          courses(title),
-          profiles(display_name)
+          courses!inner(title),
+          profiles!inner(display_name)
         `)
         .eq('approved', true)
         .order('created_at', { ascending: false });
