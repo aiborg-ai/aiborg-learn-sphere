@@ -43,6 +43,7 @@ interface Course {
   keywords: string[];
   prerequisites: string | null;
   is_active: boolean;
+  display: boolean;
   sort_order: number;
   created_at: string;
   updated_at: string;
@@ -371,6 +372,33 @@ export default function Admin() {
       toast({
         title: "Error",
         description: "Failed to update course status",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const toggleCourseDisplay = async (courseId: number, currentDisplay: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('courses')
+        .update({ display: !currentDisplay })
+        .eq('id', courseId);
+
+      if (error) throw error;
+
+      setCourses(courses.map(c => 
+        c.id === courseId ? { ...c, display: !currentDisplay } : c
+      ));
+      
+      toast({
+        title: "Success",
+        description: `Course ${!currentDisplay ? 'shown' : 'hidden'} on frontend`,
+      });
+    } catch (error) {
+      console.error('Error updating course display:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update course display",
         variant: "destructive",
       });
     }
@@ -820,12 +848,13 @@ export default function Admin() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="text-white">Title</TableHead>
-                        <TableHead className="text-white">Audience</TableHead>
-                        <TableHead className="text-white">Price</TableHead>
-                        <TableHead className="text-white">Level</TableHead>
-                        <TableHead className="text-white">Status</TableHead>
-                        <TableHead className="text-white">Actions</TableHead>
+                         <TableHead className="text-white">Title</TableHead>
+                         <TableHead className="text-white">Audience</TableHead>
+                         <TableHead className="text-white">Price</TableHead>
+                         <TableHead className="text-white">Level</TableHead>
+                         <TableHead className="text-white">Status</TableHead>
+                         <TableHead className="text-white">Display</TableHead>
+                         <TableHead className="text-white">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -835,37 +864,58 @@ export default function Admin() {
                           <TableCell className="text-white/80">{course.audience}</TableCell>
                           <TableCell className="text-white/80">{course.price}</TableCell>
                           <TableCell className="text-white/80">{course.level}</TableCell>
-                          <TableCell>
-                            <Badge variant={course.is_active ? 'default' : 'secondary'}>
-                              {course.is_active ? 'Active' : 'Inactive'}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => openEditCourse(course)}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant={course.is_active ? "secondary" : "default"}
-                                size="sm"
-                                onClick={() => toggleCourseStatus(course.id, course.is_active)}
-                              >
-                                {course.is_active ? 'Deactivate' : 'Activate'}
-                              </Button>
-                              <Button
-                                variant="destructive"
-                                size="sm"
-                                onClick={() => deleteCourse(course.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
+                           <TableCell>
+                             <Badge variant={course.is_active ? 'default' : 'secondary'}>
+                               {course.is_active ? 'Active' : 'Inactive'}
+                             </Badge>
+                           </TableCell>
+                           <TableCell>
+                             <Button
+                               variant="ghost"
+                               size="sm"
+                               onClick={() => toggleCourseDisplay(course.id, course.display)}
+                               className="text-white hover:bg-white/20"
+                             >
+                               {course.display ? (
+                                 <Eye className="h-4 w-4 text-green-400" />
+                               ) : (
+                                 <Eye className="h-4 w-4 text-gray-400" />
+                               )}
+                             </Button>
+                           </TableCell>
+                            <TableCell>
+                              <div className="flex gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => openEditCourse(course)}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant={course.is_active ? "secondary" : "default"}
+                                  size="sm"
+                                  onClick={() => toggleCourseStatus(course.id, course.is_active)}
+                                >
+                                  {course.is_active ? 'Deactivate' : 'Activate'}
+                                </Button>
+                                <Button
+                                  variant={course.display ? "secondary" : "default"}
+                                  size="sm"
+                                  onClick={() => toggleCourseDisplay(course.id, course.display)}
+                                >
+                                  {course.display ? 'Hide' : 'Show'}
+                                </Button>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => deleteCourse(course.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
                       ))}
                     </TableBody>
                   </Table>

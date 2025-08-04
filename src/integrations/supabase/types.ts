@@ -135,6 +135,7 @@ export type Database = {
           created_at: string
           currently_enrolling: boolean
           description: string
+          display: boolean
           duration: string
           features: string[]
           id: number
@@ -155,6 +156,7 @@ export type Database = {
           created_at?: string
           currently_enrolling?: boolean
           description: string
+          display?: boolean
           duration: string
           features?: string[]
           id?: number
@@ -175,6 +177,7 @@ export type Database = {
           created_at?: string
           currently_enrolling?: boolean
           description?: string
+          display?: boolean
           duration?: string
           features?: string[]
           id?: number
