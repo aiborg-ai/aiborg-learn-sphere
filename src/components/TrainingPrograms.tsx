@@ -69,7 +69,8 @@ export const TrainingPrograms = () => {
     features: course.features,
     category: course.category,
     keywords: course.keywords,
-    prerequisites: course.prerequisites
+    prerequisites: course.prerequisites,
+    currentlyEnrolling: course.currently_enrolling
   }));
 
   // Map database audience names to internal IDs for filtering
@@ -115,7 +116,7 @@ export const TrainingPrograms = () => {
                          program.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = selectedCategory === "All Categories" || program.category === selectedCategory;
     const matchesLevel = selectedLevel === "All Levels" || program.level === selectedLevel;
-    const matchesCurrentlyEnrolling = !currentlyEnrolling || isInCurrentOrNextMonth(program.startDate);
+    const matchesCurrentlyEnrolling = !currentlyEnrolling || program.currentlyEnrolling;
     
     // Filter for enrolled courses if the user is logged in and showEnrolledOnly is true
     const matchesEnrolledFilter = !showEnrolledOnly || !user || getEnrollmentStatus(program.id, program.startDate) !== 'not_enrolled';

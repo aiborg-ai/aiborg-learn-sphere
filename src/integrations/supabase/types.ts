@@ -133,6 +133,7 @@ export type Database = {
           audience: string
           category: string
           created_at: string
+          currently_enrolling: boolean
           description: string
           duration: string
           features: string[]
@@ -152,6 +153,7 @@ export type Database = {
           audience: string
           category: string
           created_at?: string
+          currently_enrolling?: boolean
           description: string
           duration: string
           features?: string[]
@@ -171,6 +173,7 @@ export type Database = {
           audience?: string
           category?: string
           created_at?: string
+          currently_enrolling?: boolean
           description?: string
           duration?: string
           features?: string[]

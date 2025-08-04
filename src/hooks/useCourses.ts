@@ -16,6 +16,7 @@ export interface Course {
   keywords: string[];
   prerequisites: string;
   is_active: boolean;
+  currently_enrolling: boolean;
   sort_order: number;
   created_at: string;
   updated_at: string;
