@@ -6,8 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { CalendarIcon, CreditCard, User, Phone, Mail, MapPin, Users } from 'lucide-react';
 import { format } from 'date-fns';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { SimpleDatePicker } from '@/components/ui/simple-date-picker';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -173,30 +172,17 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
 
             <div className="space-y-2">
               <Label>Date of Birth *</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !formData.dateOfBirth && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.dateOfBirth ? format(formData.dateOfBirth, "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={formData.dateOfBirth}
-                    onSelect={handleDateChange}
-                    disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                    initialFocus
-                    className="p-3 pointer-events-auto"
-                  />
-                </PopoverContent>
-              </Popover>
+              <SimpleDatePicker
+                value={formData.dateOfBirth}
+                onChange={handleDateChange}
+                disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                placeholder="Select date of birth"
+              />
+              {formData.dateOfBirth && (
+                <p className="text-sm text-muted-foreground">
+                  Selected: {format(formData.dateOfBirth, "PPP")} (Age: {calculateAge(formData.dateOfBirth)})
+                </p>
+              )}
             </div>
 
             {showGuardianField && (
