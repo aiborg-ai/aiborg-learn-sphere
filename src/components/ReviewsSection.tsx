@@ -24,6 +24,7 @@ export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
   const [showForm, setShowForm] = useState(false);
   const [filterRating, setFilterRating] = useState<number | null>(null);
   const [activeCourseFilter, setActiveCourseFilter] = useState<number | null>(courseFilter || null);
+  const [showAllReviews, setShowAllReviews] = useState(false);
 
   console.log('ReviewsSection render:', { reviews, loading, error, reviewCount: reviews.length, courseFilter, activeCourseFilter });
 
@@ -248,9 +249,10 @@ export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
         )}
 
         {/* Reviews Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredReviews.length > 0 ? (
-            filteredReviews.map((review) => (
+        {filteredReviews.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {(showAllReviews ? filteredReviews : filteredReviews.slice(0, 1)).map((review) => (
               <Card key={review.id} className="h-full flex flex-col hover:shadow-lg transition-all duration-300">
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between mb-3">
@@ -343,8 +345,23 @@ export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
                   </div>
                 </CardContent>
               </Card>
-            ))
-          ) : (
+              ))}
+            </div>
+            
+            {filteredReviews.length > 1 && (
+              <div className="text-center mt-8">
+                <Button 
+                  onClick={() => setShowAllReviews(!showAllReviews)}
+                  variant="outline"
+                  className="px-8 py-2"
+                >
+                  {showAllReviews ? 'Show Less' : `Show More (${filteredReviews.length - 1} more)`}
+                </Button>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="col-span-full">
               <Card className="p-12 text-center">
                 <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
@@ -376,8 +393,8 @@ export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
                 )}
               </Card>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -14,7 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, Users, BookOpen, Megaphone, Trash2, Shield, Eye, Edit, Plus, UserCheck } from 'lucide-react';
+import { Loader2, Users, BookOpen, Megaphone, Trash2, Shield, Eye, Edit, Plus, UserCheck, Star, Calendar, ToggleLeft, ToggleRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -505,6 +505,14 @@ export default function Admin() {
             <TabsTrigger value="announcements" className="text-white data-[state=active]:bg-white/20">
               <Megaphone className="h-4 w-4 mr-2" />
               Announcements ({announcements.length})
+            </TabsTrigger>
+            <TabsTrigger value="reviews" className="text-white data-[state=active]:bg-white/20">
+              <Star className="h-4 w-4 mr-2" />
+              Reviews
+            </TabsTrigger>
+            <TabsTrigger value="events" className="text-white data-[state=active]:bg-white/20">
+              <Calendar className="h-4 w-4 mr-2" />
+              Events
             </TabsTrigger>
           </TabsList>
 
@@ -1095,8 +1103,374 @@ export default function Admin() {
               </Card>
             </div>
           </TabsContent>
+
+          <TabsContent value="reviews">
+            <ReviewsManagement />
+          </TabsContent>
+
+          <TabsContent value="events">
+            <EventsManagement />
+          </TabsContent>
         </Tabs>
       </div>
     </div>
+  );
+}
+
+// Reviews Management Component
+function ReviewsManagement() {
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  const fetchReviews = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('reviews')
+        .select(`
+          *,
+          profiles(display_name, email),
+          courses(title)
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setReviews(data || []);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch reviews",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleReviewDisplay = async (reviewId: string, currentDisplay: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('reviews')
+        .update({ display: !currentDisplay })
+        .eq('id', reviewId);
+
+      if (error) throw error;
+
+      setReviews(reviews.map(r => 
+        r.id === reviewId ? { ...r, display: !currentDisplay } : r
+      ));
+      
+      toast({
+        title: "Success",
+        description: `Review ${!currentDisplay ? 'shown' : 'hidden'} on frontend`,
+      });
+    } catch (error) {
+      console.error('Error updating review display:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update review display",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const toggleReviewApproval = async (reviewId: string, currentApproval: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('reviews')
+        .update({ approved: !currentApproval })
+        .eq('id', reviewId);
+
+      if (error) throw error;
+
+      setReviews(reviews.map(r => 
+        r.id === reviewId ? { ...r, approved: !currentApproval } : r
+      ));
+      
+      toast({
+        title: "Success",
+        description: `Review ${!currentApproval ? 'approved' : 'unapproved'}`,
+      });
+    } catch (error) {
+      console.error('Error updating review approval:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update review approval",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <Card className="bg-white/10 backdrop-blur-md border-white/20">
+        <CardContent className="flex items-center justify-center py-8">
+          <Loader2 className="h-8 w-8 animate-spin text-white" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="bg-white/10 backdrop-blur-md border-white/20">
+      <CardHeader>
+        <CardTitle className="text-white">Reviews Management</CardTitle>
+        <CardDescription className="text-white/80">
+          Manage review approval and frontend display
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-white">Course</TableHead>
+              <TableHead className="text-white">User</TableHead>
+              <TableHead className="text-white">Rating</TableHead>
+              <TableHead className="text-white">Type</TableHead>
+              <TableHead className="text-white">Approved</TableHead>
+              <TableHead className="text-white">Display</TableHead>
+              <TableHead className="text-white">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {reviews.map((review) => (
+              <TableRow key={review.id}>
+                <TableCell className="text-white">
+                  {review.courses?.title || `Course ${review.course_id}`}
+                </TableCell>
+                <TableCell className="text-white">
+                  {review.profiles?.display_name || review.profiles?.email || 'Anonymous'}
+                </TableCell>
+                <TableCell className="text-white">
+                  {review.rating}/5 ⭐
+                </TableCell>
+                <TableCell className="text-white">
+                  {review.review_type}
+                </TableCell>
+                <TableCell>
+                  <Badge variant={review.approved ? 'default' : 'secondary'}>
+                    {review.approved ? 'Approved' : 'Pending'}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toggleReviewDisplay(review.id, review.display)}
+                    className="text-white hover:bg-white/20"
+                  >
+                    {review.display ? (
+                      <Eye className="h-4 w-4 text-green-400" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-400" />
+                    )}
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Button
+                      variant={review.approved ? "secondary" : "default"}
+                      size="sm"
+                      onClick={() => toggleReviewApproval(review.id, review.approved)}
+                    >
+                      {review.approved ? 'Unapprove' : 'Approve'}
+                    </Button>
+                    <Button
+                      variant={review.display ? "secondary" : "default"}
+                      size="sm"
+                      onClick={() => toggleReviewDisplay(review.id, review.display)}
+                    >
+                      {review.display ? 'Hide' : 'Show'}
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Events Management Component
+function EventsManagement() {
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .order('event_date', { ascending: false });
+
+      if (error) throw error;
+      setEvents(data || []);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch events",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleEventDisplay = async (eventId: number, currentDisplay: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('events')
+        .update({ display: !currentDisplay })
+        .eq('id', eventId);
+
+      if (error) throw error;
+
+      setEvents(events.map(e => 
+        e.id === eventId ? { ...e, display: !currentDisplay } : e
+      ));
+      
+      toast({
+        title: "Success",
+        description: `Event ${!currentDisplay ? 'shown' : 'hidden'} on frontend`,
+      });
+    } catch (error) {
+      console.error('Error updating event display:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update event display",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const toggleEventStatus = async (eventId: number, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('events')
+        .update({ is_active: !currentStatus })
+        .eq('id', eventId);
+
+      if (error) throw error;
+
+      setEvents(events.map(e => 
+        e.id === eventId ? { ...e, is_active: !currentStatus } : e
+      ));
+      
+      toast({
+        title: "Success",
+        description: `Event ${!currentStatus ? 'activated' : 'deactivated'}`,
+      });
+    } catch (error) {
+      console.error('Error updating event status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update event status",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <Card className="bg-white/10 backdrop-blur-md border-white/20">
+        <CardContent className="flex items-center justify-center py-8">
+          <Loader2 className="h-8 w-8 animate-spin text-white" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="bg-white/10 backdrop-blur-md border-white/20">
+      <CardHeader>
+        <CardTitle className="text-white">Events Management</CardTitle>
+        <CardDescription className="text-white/80">
+          Manage event status and frontend display
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-white">Title</TableHead>
+              <TableHead className="text-white">Date</TableHead>
+              <TableHead className="text-white">Location</TableHead>
+              <TableHead className="text-white">Price</TableHead>
+              <TableHead className="text-white">Active</TableHead>
+              <TableHead className="text-white">Display</TableHead>
+              <TableHead className="text-white">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {events.map((event) => (
+              <TableRow key={event.id}>
+                <TableCell className="text-white font-medium">
+                  {event.title}
+                </TableCell>
+                <TableCell className="text-white">
+                  {new Date(event.event_date).toLocaleDateString()}
+                </TableCell>
+                <TableCell className="text-white">
+                  {event.location}
+                </TableCell>
+                <TableCell className="text-white">
+                  £{event.price}
+                </TableCell>
+                <TableCell>
+                  <Badge variant={event.is_active ? 'default' : 'secondary'}>
+                    {event.is_active ? 'Active' : 'Inactive'}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toggleEventDisplay(event.id, event.display)}
+                    className="text-white hover:bg-white/20"
+                  >
+                    {event.display ? (
+                      <Eye className="h-4 w-4 text-green-400" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-400" />
+                    )}
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Button
+                      variant={event.is_active ? "secondary" : "default"}
+                      size="sm"
+                      onClick={() => toggleEventStatus(event.id, event.is_active)}
+                    >
+                      {event.is_active ? 'Deactivate' : 'Activate'}
+                    </Button>
+                    <Button
+                      variant={event.display ? "secondary" : "default"}
+                      size="sm"
+                      onClick={() => toggleEventDisplay(event.id, event.display)}
+                    >
+                      {event.display ? 'Hide' : 'Show'}
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }

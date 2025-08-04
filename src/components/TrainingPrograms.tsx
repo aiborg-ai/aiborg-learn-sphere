@@ -53,6 +53,7 @@ export const TrainingPrograms = () => {
   const [currentlyEnrolling, setCurrentlyEnrolling] = useState(false);
   const [showEnrolledOnly, setShowEnrolledOnly] = useState(!!user); // Default to enrolled filter for logged in users
   const [recordingsModalOpen, setRecordingsModalOpen] = useState(false);
+  const [showAllPrograms, setShowAllPrograms] = useState(false);
   const { selectedAudience, setSelectedAudience } = usePersonalization();
 
   // Convert database courses to the format expected by the component
@@ -340,8 +341,9 @@ export const TrainingPrograms = () => {
             )}
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPrograms.map((program) => {
+          <>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {(showAllPrograms ? filteredPrograms : filteredPrograms.slice(0, 1)).map((program) => {
               const AudienceIcon = getAudienceIcon(program.audience);
               return (
                 <Card key={program.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden">
@@ -465,8 +467,21 @@ export const TrainingPrograms = () => {
                   </div>
                 </Card>
               );
-            })}
-          </div>
+              })}
+            </div>
+            
+            {filteredPrograms.length > 1 && (
+              <div className="text-center mt-8">
+                <Button 
+                  onClick={() => setShowAllPrograms(!showAllPrograms)}
+                  variant="outline"
+                  className="px-8 py-2"
+                >
+                  {showAllPrograms ? 'Show Less' : `Show More (${filteredPrograms.length - 1} more)`}
+                </Button>
+              </div>
+            )}
+          </>
         )}
 
         {/* Enrollment Form Modal */}

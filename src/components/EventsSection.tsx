@@ -25,6 +25,7 @@ const filterOptions = [
 
 export function EventsSection() {
   const [selectedFilter, setSelectedFilter] = useState("all");
+  const [showAllEvents, setShowAllEvents] = useState(false);
   const { events, loading, error } = useEvents();
   const { registrations } = useEventRegistrations();
   const { user } = useAuth();
@@ -177,12 +178,28 @@ export function EventsSection() {
         )}
 
         {/* Events Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredEvents.length > 0 ? (
-            filteredEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))
-          ) : (
+        {filteredEvents.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {(showAllEvents ? filteredEvents : filteredEvents.slice(0, 1)).map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+            
+            {filteredEvents.length > 1 && (
+              <div className="text-center mt-8">
+                <Button 
+                  onClick={() => setShowAllEvents(!showAllEvents)}
+                  variant="outline"
+                  className="px-8 py-2"
+                >
+                  {showAllEvents ? 'Show Less' : `Show More (${filteredEvents.length - 1} more)`}
+                </Button>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="col-span-full">
               <Card className="p-12 text-center">
                 <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
@@ -204,8 +221,8 @@ export function EventsSection() {
                 )}
               </Card>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
       </div>
     </section>

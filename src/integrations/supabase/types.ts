@@ -280,6 +280,7 @@ export type Database = {
           created_at: string
           current_registrations: number | null
           description: string
+          display: boolean
           end_time: string
           event_date: string
           id: number
@@ -297,6 +298,7 @@ export type Database = {
           created_at?: string
           current_registrations?: number | null
           description: string
+          display?: boolean
           end_time: string
           event_date: string
           id?: number
@@ -314,6 +316,7 @@ export type Database = {
           created_at?: string
           current_registrations?: number | null
           description?: string
+          display?: boolean
           end_time?: string
           event_date?: string
           id?: number
@@ -370,6 +373,7 @@ export type Database = {
           course_mode: string | null
           course_period: string | null
           created_at: string
+          display: boolean
           display_name_option: string
           id: string
           rating: number
@@ -386,6 +390,7 @@ export type Database = {
           course_mode?: string | null
           course_period?: string | null
           created_at?: string
+          display?: boolean
           display_name_option?: string
           id?: string
           rating: number
@@ -402,6 +407,7 @@ export type Database = {
           course_mode?: string | null
           course_period?: string | null
           created_at?: string
+          display?: boolean
           display_name_option?: string
           id?: string
           rating?: number
