@@ -181,19 +181,19 @@ export function EventsSection() {
         {filteredEvents.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {(showAllEvents ? filteredEvents : filteredEvents.slice(0, 1)).map((event) => (
+              {(showAllEvents ? filteredEvents : filteredEvents.slice(0, 3)).map((event) => (
                 <EventCard key={event.id} event={event} />
               ))}
             </div>
             
-            {filteredEvents.length > 1 && (
+            {filteredEvents.length > 3 && (
               <div className="text-center mt-8">
                 <Button 
                   onClick={() => setShowAllEvents(!showAllEvents)}
                   variant="outline"
                   className="px-8 py-2"
                 >
-                  {showAllEvents ? 'Show Less' : `Show More (${filteredEvents.length - 1} more)`}
+                  {showAllEvents ? 'Show Less' : `Show More (${filteredEvents.length - 3} more)`}
                 </Button>
               </div>
             )}

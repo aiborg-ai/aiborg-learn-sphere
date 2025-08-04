@@ -343,7 +343,7 @@ export const TrainingPrograms = () => {
         ) : (
           <>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(showAllPrograms ? filteredPrograms : filteredPrograms.slice(0, 1)).map((program) => {
+              {(showAllPrograms ? filteredPrograms : filteredPrograms.slice(0, 3)).map((program) => {
               const AudienceIcon = getAudienceIcon(program.audience);
               return (
                 <Card key={program.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden">
@@ -470,14 +470,14 @@ export const TrainingPrograms = () => {
               })}
             </div>
             
-            {filteredPrograms.length > 1 && (
+            {filteredPrograms.length > 3 && (
               <div className="text-center mt-8">
                 <Button 
                   onClick={() => setShowAllPrograms(!showAllPrograms)}
                   variant="outline"
                   className="px-8 py-2"
                 >
-                  {showAllPrograms ? 'Show Less' : `Show More (${filteredPrograms.length - 1} more)`}
+                  {showAllPrograms ? 'Show Less' : `Show More (${filteredPrograms.length - 3} more)`}
                 </Button>
               </div>
             )}

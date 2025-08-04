@@ -252,7 +252,7 @@ export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
         {filteredReviews.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {(showAllReviews ? filteredReviews : filteredReviews.slice(0, 1)).map((review) => (
+              {(showAllReviews ? filteredReviews : filteredReviews.slice(0, 3)).map((review) => (
               <Card key={review.id} className="h-full flex flex-col hover:shadow-lg transition-all duration-300">
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between mb-3">
@@ -348,14 +348,14 @@ export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
               ))}
             </div>
             
-            {filteredReviews.length > 1 && (
+            {filteredReviews.length > 3 && (
               <div className="text-center mt-8">
                 <Button 
                   onClick={() => setShowAllReviews(!showAllReviews)}
                   variant="outline"
                   className="px-8 py-2"
                 >
-                  {showAllReviews ? 'Show Less' : `Show More (${filteredReviews.length - 1} more)`}
+                  {showAllReviews ? 'Show Less' : `Show More (${filteredReviews.length - 3} more)`}
                 </Button>
               </div>
             )}
