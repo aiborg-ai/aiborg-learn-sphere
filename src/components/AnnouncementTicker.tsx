@@ -47,13 +47,13 @@ export function AnnouncementTicker() {
   const currentAnnouncement = announcements[currentIndex];
 
   return (
-    <div className="bg-gradient-to-r from-primary via-secondary to-accent text-white py-3 overflow-hidden relative">
+    <div className="bg-primary text-primary-foreground py-2 overflow-hidden relative border-b">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center">
-          <Megaphone className="h-4 w-4 mr-2 flex-shrink-0" />
-          <div className="overflow-hidden whitespace-nowrap max-w-full">
-            <div className="inline-block ticker-animation">
-              <span className="font-medium text-sm md:text-base">
+          <Megaphone className="h-4 w-4 mr-3 flex-shrink-0 animate-pulse" />
+          <div className="overflow-hidden flex-1">
+            <div className="ticker-scroll whitespace-nowrap">
+              <span className="font-medium text-sm md:text-base inline-block">
                 {currentAnnouncement.content}
               </span>
             </div>
@@ -62,16 +62,22 @@ export function AnnouncementTicker() {
       </div>
       
       <style>{`
-        @keyframes ticker-scroll {
+        @keyframes ticker {
           0% {
-            transform: translateX(100vw);
+            transform: translateX(100%);
           }
           100% {
             transform: translateX(-100%);
           }
         }
-        .ticker-animation {
-          animation: ticker-scroll 25s linear infinite;
+        .ticker-scroll {
+          animation: ticker 20s linear infinite;
+          display: inline-block;
+        }
+        
+        /* Pause animation on hover */
+        .ticker-scroll:hover {
+          animation-play-state: paused;
         }
       `}</style>
     </div>
