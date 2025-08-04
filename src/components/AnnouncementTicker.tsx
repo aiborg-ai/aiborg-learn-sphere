@@ -48,28 +48,30 @@ export function AnnouncementTicker() {
 
   return (
     <div className="bg-gradient-to-r from-primary via-secondary to-accent text-white py-3 overflow-hidden relative">
-      <div className="flex items-center justify-center">
-        <Megaphone className="h-4 w-4 mr-2 flex-shrink-0" />
-        <div className="overflow-hidden whitespace-nowrap">
-          <div className="inline-block animate-scroll-left">
-            <span className="font-medium mr-8">
-              {currentAnnouncement.content}
-            </span>
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-center">
+          <Megaphone className="h-4 w-4 mr-2 flex-shrink-0" />
+          <div className="overflow-hidden whitespace-nowrap max-w-full">
+            <div className="inline-block ticker-animation">
+              <span className="font-medium text-sm md:text-base">
+                {currentAnnouncement.content}
+              </span>
+            </div>
           </div>
         </div>
       </div>
       
       <style>{`
-        .animate-scroll-left {
-          animation: scroll-left 30s linear infinite;
-        }
-        @keyframes scroll-left {
+        @keyframes ticker-scroll {
           0% {
-            transform: translateX(100%);
+            transform: translateX(100vw);
           }
           100% {
             transform: translateX(-100%);
           }
+        }
+        .ticker-animation {
+          animation: ticker-scroll 25s linear infinite;
         }
       `}</style>
     </div>
