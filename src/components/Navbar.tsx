@@ -25,7 +25,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-2xl font-display font-bold text-white">aiborg</span>
+            <img src="/aiborg-logo.svg" alt="Aiborg" className="h-10 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}

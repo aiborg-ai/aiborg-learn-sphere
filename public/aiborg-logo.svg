@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
+  <!-- Background -->
+  <rect width="800" height="400" fill="#1a1a1a"/>
+
+  <!-- AI Letters with 3D effect -->
+  <g id="ai-logo">
+    <!-- Letter A with 3D effect -->
+    <path d="M 150 300 L 200 100 L 250 100 L 350 300 L 310 300 L 290 240 L 180 240 L 160 300 Z M 200 200 L 270 200 L 235 120 Z"
+          fill="#C4953A" opacity="0.9"/>
+    <path d="M 155 305 L 205 105 L 255 105 L 355 305 L 315 305 L 295 245 L 185 245 L 165 305 Z M 205 205 L 275 205 L 240 125 Z"
+          fill="#D4A643" opacity="1"/>
+
+    <!-- Letter I -->
+    <rect x="380" y="100" width="50" height="200" fill="#C4953A" opacity="0.9"/>
+    <rect x="385" y="105" width="50" height="200" fill="#D4A643" opacity="1"/>
+  </g>
+
+  <!-- BORG text -->
+  <g id="borg-text">
+    <text x="470" y="220" font-family="Arial Black, sans-serif" font-size="100" font-weight="900" fill="#D4A643">BORG</text>
+  </g>
+
+  <!-- TM symbol -->
+  <text x="730" y="160" font-family="Arial, sans-serif" font-size="40" fill="#D4A643">™</text>
+</svg>

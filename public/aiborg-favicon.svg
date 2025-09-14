@@ -1,10 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <defs>
-    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-  <rect width="32" height="32" rx="6" fill="url(#gradient)"/>
-  <text x="16" y="24" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">A</text>
+  <!-- Black background -->
+  <rect width="32" height="32" rx="4" fill="#1a1a1a"/>
+
+  <!-- AI letters in gold -->
+  <g transform="scale(0.8) translate(4, 5)">
+    <!-- Letter A -->
+    <path d="M 6 24 L 10 8 L 14 8 L 18 24 L 15 24 L 14 20 L 8 20 L 7 24 Z M 9 17 L 13 17 L 11 10 Z"
+          fill="#D4A643"/>
+    <!-- Letter I -->
+    <rect x="19" y="8" width="4" height="16" fill="#D4A643"/>
+  </g>
 </svg>

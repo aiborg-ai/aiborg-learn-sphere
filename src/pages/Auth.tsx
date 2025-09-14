@@ -91,9 +91,8 @@ export default function Auth() {
             <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Link>
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Brain className="h-8 w-8 text-secondary" />
-            <span className="text-3xl font-display font-bold text-white">aiborg</span>
+          <div className="flex items-center justify-center mb-4">
+            <img src="/aiborg-logo.svg" alt="Aiborg" className="h-12 w-auto" />
           </div>
           <p className="text-white/80">Join the AI learning revolution</p>
         </div>
