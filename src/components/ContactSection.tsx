@@ -5,11 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  Mail, 
-  MessageSquare, 
-  Users, 
-  Phone, 
+import {
+  Mail,
+  MessageSquare,
+  Users,
+  Phone,
   Send,
   CheckCircle,
   ExternalLink,
@@ -18,6 +18,7 @@ import {
   Heart
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ContactForm {
   name: string;
@@ -86,15 +87,58 @@ export function ContactSection() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      // Save message to database
+      const { data, error } = await supabase
+        .from('contact_messages')
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject || null,
+          audience: formData.audience,
+          message: formData.message
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error saving contact message:', error);
+        throw error;
+      }
+
+      console.log('Contact message saved:', data);
+
+      // Send email notification to admin
+      try {
+        const { error: emailError } = await supabase.functions.invoke('send-contact-notification', {
+          body: {
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject,
+            audience: formData.audience,
+            message: formData.message
+          }
+        });
+
+        if (emailError) {
+          console.error('Failed to send email notification:', emailError);
+          // Don't fail the submission if email fails
+        } else {
+          console.log('Email notification sent successfully');
+        }
+      } catch (emailError) {
+        console.error('Email notification error:', emailError);
+        // Don't fail the submission if email fails
+      }
+
       setIsSubmitted(true);
       setIsSubmitting(false);
+
       toast({
         title: "Message sent successfully!",
         description: "We'll get back to you within 24 hours.",
       });
-      
+
       // Reset form after delay
       setTimeout(() => {
         setIsSubmitted(false);
@@ -106,7 +150,17 @@ export function ContactSection() {
           message: ""
         });
       }, 3000);
-    }, 1500);
+
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      setIsSubmitting(false);
+
+      toast({
+        title: "Failed to send message",
+        description: error instanceof Error ? error.message : "Please try again later or contact us directly via email.",
+        variant: "destructive",
+      });
+    }
   };
 
   const isFormValid = formData.name && formData.email && formData.message && formData.audience;
