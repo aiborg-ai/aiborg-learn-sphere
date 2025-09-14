@@ -73,8 +73,10 @@ export const useAuth = () => {
   };
 
   const signUp = async (email: string, password: string, displayName?: string) => {
-    const redirectUrl = `${window.location.origin}/`;
-    
+    // Use environment variable for redirect URL, fallback to current origin
+    const appUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+    const redirectUrl = `${appUrl}/`;
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
