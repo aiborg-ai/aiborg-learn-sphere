@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +43,7 @@ export function ReviewForm() {
   const { courses } = useCourses();
   const { submitReview } = useReviews();
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState<ReviewFormData>({
     courseId: '',
@@ -226,7 +228,10 @@ export function ReviewForm() {
         <p className="text-muted-foreground mb-4">
           Sign in to write a review and help other learners make informed decisions.
         </p>
-        <Button className="btn-hero">
+        <Button
+          className="btn-hero"
+          onClick={() => navigate('/auth')}
+        >
           Sign In to Review
         </Button>
       </Card>
