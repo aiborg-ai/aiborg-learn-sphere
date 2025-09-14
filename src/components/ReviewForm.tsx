@@ -62,7 +62,10 @@ export function ReviewForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    console.log('🔍 Current user:', user);
+    console.log('🔍 Form data:', formData);
+
     if (!user) {
       toast({
         title: "Authentication Required",
@@ -182,9 +185,23 @@ export function ReviewForm() {
       setVideoBlob(null);
 
     } catch (error) {
+      console.error('Review submission error:', error);
+
+      let errorMessage = "Failed to submit review";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+
+        // Check for specific Supabase error patterns
+        if (error.message.includes('violates row-level security policy')) {
+          errorMessage = "Authentication error. Please sign out and sign back in.";
+        } else if (error.message.includes('JWT')) {
+          errorMessage = "Session expired. Please sign in again.";
+        }
+      }
+
       toast({
         title: "Submission Failed",
-        description: error instanceof Error ? error.message : "Failed to submit review",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

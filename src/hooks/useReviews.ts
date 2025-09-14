@@ -79,13 +79,21 @@ export const useReviews = () => {
   }, [state.lastFetched, state.reviews.length, updateState]);
 
   const submitReview = useCallback(async (reviewData: Omit<Review, 'id' | 'created_at' | 'updated_at' | 'approved' | 'profiles' | 'courses'>) => {
-    console.log('📝 Submitting review...', { type: reviewData.review_type, course: reviewData.course_id });
-    
+    console.log('📝 Submitting review...', {
+      type: reviewData.review_type,
+      course: reviewData.course_id,
+      userId: reviewData.user_id,
+      rating: reviewData.rating
+    });
+
     try {
       const reviewToSubmit = {
         ...reviewData,
-        approved: false // Reviews need admin approval
+        approved: false, // Reviews need admin approval
+        display: true // Add missing display field
       };
+
+      console.log('🔄 Review data to submit:', reviewToSubmit);
 
       // Submit the review
       const { data, error } = await supabase
@@ -98,6 +106,8 @@ export const useReviews = () => {
         .single();
 
       if (error) {
+        console.error('❌ Supabase error:', error);
+        console.error('Error details:', { code: error.code, message: error.message, details: error.details });
         throw error;
       }
 
