@@ -63,7 +63,59 @@ Edge functions in `supabase/functions/`:
 The application uses Supabase with TypeScript types auto-generated in `src/integrations/supabase/types.ts`.
 
 ### Deployment
-This is a Lovable.dev project that syncs with GitHub. Changes can be made via:
-1. Lovable.dev interface (auto-commits to repo)
-2. Local development (push changes to GitHub)
-3. Direct GitHub editing
+
+#### Vercel Deployment
+This project is deployed on Vercel at https://aiborg-ai-web.vercel.app
+
+**IMPORTANT Deployment Notes:**
+1. **Correct Project**: Use `aiborg-ai-web` (NOT `aiborg-learn-sphere`)
+2. **Vercel Account**: Deployed under `hirendra-vikrams-projects` team
+3. **Git Author**: Must use email `hirendra.vikram@aiborg.ai` for deployments to work
+4. **Vercel Token**: Use token `ogferIl3xcqkP9yIUXzMezgH` for CLI deployments
+
+#### Deployment Commands
+```bash
+# Deploy to production (with token)
+npx vercel --prod --token ogferIl3xcqkP9yIUXzMezgH
+
+# Check deployment status
+npx vercel ls --token ogferIl3xcqkP9yIUXzMezgH
+
+# View logs
+npx vercel inspect <deployment-url> --logs --token ogferIl3xcqkP9yIUXzMezgH
+```
+
+#### Environment Variables (Required in Vercel)
+- `VITE_APP_URL` - Application URL (e.g., https://aiborg-ai-web.vercel.app)
+- `VITE_SUPABASE_URL` - Supabase project URL
+- `VITE_SUPABASE_ANON_KEY` - Supabase anonymous key
+
+#### Authentication Configuration
+- Email confirmations must redirect to production URL, not localhost
+- Configure Supabase Dashboard → Authentication → URL Configuration
+- Set Site URL to production URL
+- Add allowed redirect URLs for both local and production
+
+#### Git Configuration
+**CRITICAL**: Set correct git author for deployments to work:
+```bash
+git config user.email "hirendra.vikram@aiborg.ai"
+git config user.name "aiborg-ai"
+```
+
+If deployment fails with "Git author must have access" error, amend commit:
+```bash
+git commit --amend --author="aiborg-ai <hirendra.vikram@aiborg.ai>" --no-edit
+git push --force origin main
+```
+
+#### Branding Assets
+- Logo: `/public/aiborg-logo.svg` - Gold "AI" with "BORG™" text on black
+- Favicon: `/public/aiborg-favicon.svg` - Compact "AI" icon in gold
+- No Lovable branding should remain
+
+#### Development Origins
+Originally created on Lovable.dev, now independently deployed. Changes can be made via:
+1. Local development (push to GitHub → auto-deploy to Vercel)
+2. Direct GitHub editing (auto-deploys)
+3. Lovable.dev interface (if still connected)
