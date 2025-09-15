@@ -131,8 +131,8 @@ export function ContactSection() {
       setIsSubmitting(false);
 
       toast({
-        title: "Message sent successfully!",
-        description: "We'll get back to you within 24 hours.",
+        title: "✅ Message Received Successfully!",
+        description: `Thank you, ${formData.name}! Your message has been saved and our team at hirendra.vikram@aiborg.ai will respond within 24 hours to ${formData.email}.`,
       });
 
       // Reset form after delay
@@ -239,10 +239,21 @@ export function ContactSection() {
                     <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <CheckCircle className="h-10 w-10 text-green-600" />
                     </div>
-                    <h4 className="font-semibold text-lg mb-2">Message Sent Successfully!</h4>
-                    <p className="text-muted-foreground">
-                      Thank you for reaching out. We'll get back to you within 24 hours.
+                    <h4 className="font-semibold text-lg mb-2">✅ Message Received Successfully!</h4>
+                    <p className="text-muted-foreground mb-4">
+                      Thank you for contacting Aiborg™! Your message has been saved to our system.
                     </p>
+                    <div className="bg-muted/50 rounded-lg p-4 text-left max-w-md mx-auto">
+                      <p className="text-sm text-muted-foreground mb-2">
+                        <strong>What happens next:</strong>
+                      </p>
+                      <ul className="text-sm text-muted-foreground space-y-1">
+                        <li>• Your message has been stored in our database</li>
+                        <li>• Our team will review it within 24 hours</li>
+                        <li>• You'll receive a response at the email you provided</li>
+                        <li>• For urgent matters, email directly: <a href="mailto:hirendra.vikram@aiborg.ai" className="text-primary hover:underline">hirendra.vikram@aiborg.ai</a></li>
+                      </ul>
+                    </div>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
