@@ -88,25 +88,21 @@ export function ContactSection() {
     setIsSubmitting(true);
 
     try {
-      // Save message to database
-      const { data, error } = await supabase
-        .from('contact_messages')
-        .insert({
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject || null,
-          audience: formData.audience,
-          message: formData.message
-        })
-        .select()
-        .single();
+      // Use RPC function to bypass RLS issues
+      const { data, error } = await supabase.rpc('insert_contact_message_simple', {
+        p_name: formData.name,
+        p_email: formData.email,
+        p_subject: formData.subject || '',
+        p_audience: formData.audience,
+        p_message: formData.message
+      });
 
       if (error) {
         console.error('Error saving contact message:', error);
         throw error;
       }
 
-      console.log('Contact message saved:', data);
+      console.log('Contact message saved via RPC:', data);
 
       // Send email notification to admin
       try {
