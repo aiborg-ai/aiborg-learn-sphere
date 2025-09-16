@@ -39,6 +39,7 @@ export default function BlogPostPage() {
   const [tableOfContents, setTableOfContents] = useState<{ level: number; text: string; id: string }[]>([]);
   const [showTOC, setShowTOC] = useState(false);
   const [readingProgress, setReadingProgress] = useState(0);
+  const [dynamicCommentCount, setDynamicCommentCount] = useState(0);
 
   const { isLiked, likeCount, toggleLike, loading: likeLoading } = useBlogLike(
     post?.id || '',
@@ -64,7 +65,9 @@ export default function BlogPostPage() {
       setTableOfContents(toc);
       setShowTOC(toc.length > 3); // Show TOC if more than 3 headings
     }
-  }, [post?.content]);
+    // Initialize comment count
+    setDynamicCommentCount(post?.comment_count || 0);
+  }, [post?.content, post?.comment_count]);
 
   // Track reading progress
   useEffect(() => {
@@ -336,7 +339,7 @@ export default function BlogPostPage() {
               <Button variant="outline" asChild>
                 <a href="#comments">
                   <MessageCircle className="h-5 w-5 mr-2" />
-                  Comments ({post.comment_count || 0})
+                  Comments ({dynamicCommentCount})
                 </a>
               </Button>
               <Button
@@ -386,7 +389,10 @@ export default function BlogPostPage() {
         </div>
 
         {/* Comments Section */}
-        <CommentSection postId={post.id} />
+        <CommentSection
+          postId={post.id}
+          onCommentCountChange={setDynamicCommentCount}
+        />
       </article>
     </div>
   );

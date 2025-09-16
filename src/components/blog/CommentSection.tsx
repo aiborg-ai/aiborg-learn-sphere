@@ -13,9 +13,10 @@ import { useToast } from '@/hooks/use-toast';
 
 interface CommentSectionProps {
   postId: string;
+  onCommentCountChange?: (count: number) => void;
 }
 
-export function CommentSection({ postId }: CommentSectionProps) {
+export function CommentSection({ postId, onCommentCountChange }: CommentSectionProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [comments, setComments] = useState<BlogComment[]>([]);
@@ -27,8 +28,26 @@ export function CommentSection({ postId }: CommentSectionProps) {
     try {
       setLoading(true);
       const data = await BlogService.getPostComments(postId);
+      // Count all comments including nested replies
+      const countAllComments = (comments: BlogComment[]): number => {
+        let total = 0;
+        comments.forEach(comment => {
+          total += 1;
+          if (comment.replies && comment.replies.length > 0) {
+            total += countAllComments(comment.replies);
+          }
+        });
+        return total;
+      };
+
       setComments(data);
-      setCommentCount(data.length);
+      const totalCount = countAllComments(data);
+      setCommentCount(totalCount);
+
+      // Notify parent component of count change
+      if (onCommentCountChange) {
+        onCommentCountChange(totalCount);
+      }
     } catch (error) {
       console.error('Failed to load comments:', error);
       toast({
@@ -75,7 +94,13 @@ export function CommentSection({ postId }: CommentSectionProps) {
 
       // Optimistically add to UI
       setComments([...comments, { ...newComment, replies: [] }]);
-      setCommentCount(commentCount + 1);
+      const newCount = commentCount + 1;
+      setCommentCount(newCount);
+
+      // Notify parent component
+      if (onCommentCountChange) {
+        onCommentCountChange(newCount);
+      }
 
       toast({
         title: "Success",
@@ -155,7 +180,13 @@ export function CommentSection({ postId }: CommentSectionProps) {
       };
 
       setComments(removeComment(comments));
-      setCommentCount(commentCount - 1);
+      const newCount = Math.max(0, commentCount - 1);
+      setCommentCount(newCount);
+
+      // Notify parent component
+      if (onCommentCountChange) {
+        onCommentCountChange(newCount);
+      }
     } catch (error) {
       console.error('Failed to delete comment:', error);
       toast({
