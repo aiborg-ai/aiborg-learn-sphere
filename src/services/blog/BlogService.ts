@@ -255,10 +255,7 @@ export class BlogService {
   static async getPostComments(postId: string) {
     const { data, error } = await supabase
       .from('blog_comments')
-      .select(`
-        *,
-        profiles!blog_comments_user_id_fkey(display_name, avatar_url)
-      `)
+      .select('*')
       .eq('post_id', postId)
       .eq('is_approved', true)
       .order('created_at', { ascending: true });
@@ -268,8 +265,8 @@ export class BlogService {
     // Transform to hierarchical structure
     const comments = (data || []).map(comment => ({
       ...comment,
-      user_name: comment.profiles?.display_name,
-      user_avatar: comment.profiles?.avatar_url
+      user_name: 'User', // Default user name
+      user_avatar: null
     }));
 
     // Build tree structure for nested comments
@@ -306,18 +303,15 @@ export class BlogService {
         content,
         parent_id: parentId
       })
-      .select(`
-        *,
-        profiles!blog_comments_user_id_fkey(display_name, avatar_url)
-      `)
+      .select('*')
       .single();
 
     if (error) throw error;
 
     return {
       ...data,
-      user_name: data.profiles?.display_name,
-      user_avatar: data.profiles?.avatar_url
+      user_name: user.email?.split('@')[0] || 'User', // Use email prefix as name
+      user_avatar: null
     };
   }
 
