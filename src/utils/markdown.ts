@@ -2,9 +2,9 @@ import { marked } from 'marked';
 
 // Configure marked options for better formatting
 marked.setOptions({
+  async: false, // Force synchronous parsing
   gfm: true, // GitHub Flavored Markdown
   breaks: true, // Convert line breaks to <br>
-  headerIds: true, // Add IDs to headers for linking
   mangle: false, // Don't mangle email addresses
 });
 
@@ -12,7 +12,7 @@ marked.setOptions({
 const renderer = new marked.Renderer();
 
 // Custom heading renderer with better spacing
-renderer.heading = (text: string, level: number) => {
+renderer.heading = function(text: string, level: number): string {
   const sizes = {
     1: 'text-4xl md:text-5xl font-bold mb-6 mt-8',
     2: 'text-3xl md:text-4xl font-semibold mb-4 mt-6',
@@ -24,7 +24,7 @@ renderer.heading = (text: string, level: number) => {
 
   const className = sizes[level as keyof typeof sizes] || sizes[6];
   // Ensure text is a string before calling toLowerCase
-  const textStr = String(text || '');
+  const textStr = typeof text === 'string' ? text : String(text || '');
   const id = textStr.toLowerCase().replace(/[^\w]+/g, '-');
 
   return `<h${level} id="${id}" class="${className}">${textStr}</h${level}>`;
@@ -97,11 +97,29 @@ marked.use({ renderer });
 export function parseMarkdown(markdown: string): string {
   if (!markdown) return '';
 
-  // Process the markdown
-  const html = marked.parse(markdown) as string;
+  try {
+    // Process the markdown - marked v16+ returns a Promise or string
+    let html: string;
+    const result = marked.parse(markdown);
 
-  // Wrap the content in a container with proper styling
-  return `<div class="prose-container">${html}</div>`;
+    // Handle both sync and async results
+    if (typeof result === 'string') {
+      html = result;
+    } else if (result && typeof result === 'object') {
+      // If it's an object or Promise, convert to string
+      html = String(result);
+    } else {
+      // Fallback to basic parsing without custom renderer
+      html = marked.parse(markdown, { async: false }) as string;
+    }
+
+    // Wrap the content in a container with proper styling
+    return `<div class="prose-container">${html}</div>`;
+  } catch (error) {
+    console.error('Error parsing markdown:', error);
+    // Fallback: return escaped markdown in pre tags
+    return `<div class="prose-container"><pre class="whitespace-pre-wrap">${markdown.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre></div>`;
+  }
 }
 
 /**

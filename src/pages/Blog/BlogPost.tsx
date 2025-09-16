@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import { parseMarkdown, extractTableOfContents } from '@/utils/markdown';
+import { parseMarkdownSimple, extractHeadings } from '@/utils/markdownSimple';
 import {
   ArrowLeft,
   CalendarDays,
@@ -56,10 +56,10 @@ export default function BlogPostPage() {
   // Parse markdown content when post loads
   useEffect(() => {
     if (post?.content) {
-      const htmlContent = parseMarkdown(post.content);
+      const htmlContent = parseMarkdownSimple(post.content);
       setParsedContent(htmlContent);
 
-      const toc = extractTableOfContents(post.content);
+      const toc = extractHeadings(post.content);
       setTableOfContents(toc);
       setShowTOC(toc.length > 3); // Show TOC if more than 3 headings
     }
