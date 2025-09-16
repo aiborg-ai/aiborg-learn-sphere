@@ -15,7 +15,6 @@ export class BlogService {
       .from('blog_posts')
       .select(`
         *,
-        profiles!blog_posts_author_id_fkey(display_name, avatar_url),
         blog_categories(name, slug, color),
         blog_post_tags(
           blog_tags(id, name, slug)
@@ -82,8 +81,8 @@ export class BlogService {
     // Transform the data to match our types
     const posts = (data || []).map(post => ({
       ...post,
-      author_name: post.profiles?.display_name,
-      author_avatar: post.profiles?.avatar_url,
+      author_name: 'Admin',  // Default author name since profiles might not exist
+      author_avatar: null,
       category_name: post.blog_categories?.name,
       category_slug: post.blog_categories?.slug,
       category_color: post.blog_categories?.color,
@@ -98,7 +97,6 @@ export class BlogService {
       .from('blog_posts')
       .select(`
         *,
-        profiles!blog_posts_author_id_fkey(display_name, avatar_url, bio),
         blog_categories(name, slug, color),
         blog_post_tags(
           blog_tags(id, name, slug)
@@ -122,9 +120,9 @@ export class BlogService {
 
     return {
       ...data,
-      author_name: data.profiles?.display_name,
-      author_avatar: data.profiles?.avatar_url,
-      author_bio: data.profiles?.bio,
+      author_name: 'Admin',  // Default author name
+      author_avatar: null,
+      author_bio: null,
       category_name: data.blog_categories?.name,
       category_slug: data.blog_categories?.slug,
       category_color: data.blog_categories?.color,
