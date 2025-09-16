@@ -14,13 +14,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, Users, BookOpen, Megaphone, Trash2, Shield, Eye, Edit, Plus, UserCheck, Star, Calendar, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Loader2, Users, BookOpen, Megaphone, Trash2, Shield, Eye, Edit, Plus, UserCheck, Star, Calendar, ToggleLeft, ToggleRight, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import type { Review } from '@/hooks/useReviews';
 import type { Event } from '@/hooks/useEvents';
 import type { Course } from '@/hooks/useCourses';
 import BlogManager from './Admin/BlogManager';
+import { AchievementManager } from '@/components/admin/AchievementManager';
 
 interface UserProfile {
   id: string;
@@ -597,6 +598,10 @@ export default function Admin() {
             <TabsTrigger value="blog" className="text-white data-[state=active]:bg-white/20">
               <BookOpen className="h-4 w-4 mr-2" />
               Blog
+            </TabsTrigger>
+            <TabsTrigger value="achievements" className="text-white data-[state=active]:bg-white/20">
+              <Trophy className="h-4 w-4 mr-2" />
+              Achievements
             </TabsTrigger>
           </TabsList>
 
@@ -1238,6 +1243,10 @@ export default function Admin() {
 
           <TabsContent value="blog">
             <BlogManager />
+          </TabsContent>
+
+          <TabsContent value="achievements">
+            <AchievementManager />
           </TabsContent>
         </Tabs>
       </div>

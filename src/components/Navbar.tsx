@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
-import { Brain, Menu, X, User, Shield, LogOut } from 'lucide-react';
+import { Brain, Menu, X, User, Shield, LogOut, LayoutDashboard } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { FAQModal } from '@/components/FAQModal';
 import { TermsModal } from '@/components/TermsModal';
@@ -104,6 +104,10 @@ export function Navbar() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-white/90 backdrop-blur-md border-white/20">
+                  <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                    <LayoutDashboard className="h-4 w-4 mr-2" />
+                    My Dashboard
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/profile')}>
                     <User className="h-4 w-4 mr-2" />
                     Profile
@@ -228,6 +232,12 @@ export function Navbar() {
             {user ? (
               <div className="space-y-2 pt-4 border-t border-muted/20">
                 <p className="text-foreground font-medium">{profile?.display_name || user.email}</p>
+                <Link to="/dashboard">
+                  <Button variant="ghost" className="w-full justify-start text-foreground hover:bg-muted/10">
+                    <LayoutDashboard className="h-4 w-4 mr-2" />
+                    My Dashboard
+                  </Button>
+                </Link>
                 <Link to="/profile">
                   <Button variant="ghost" className="w-full justify-start text-foreground hover:bg-muted/10">
                     <User className="h-4 w-4 mr-2" />

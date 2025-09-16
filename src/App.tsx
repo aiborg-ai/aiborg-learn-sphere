@@ -15,6 +15,9 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import BlogPage from "./pages/Blog";
 import BlogPostPage from "./pages/Blog/BlogPost";
 import NotFound from "./pages/NotFound";
+import Dashboard from "./pages/Dashboard";
+import HomeworkSubmission from "./pages/HomeworkSubmission";
+import PublicProfile from "./pages/PublicProfile";
 
 const queryClient = new QueryClient();
 
@@ -30,12 +33,15 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/cms" element={<CMS />} />
             <Route path="/cms/blog" element={<BlogCMS />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
+            <Route path="/assignment/:assignmentId" element={<HomeworkSubmission />} />
+            <Route path="/user/:userId" element={<PublicProfile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

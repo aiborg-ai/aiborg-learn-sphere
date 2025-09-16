@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserReviews } from '@/hooks/useUserReviews';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, User, ArrowLeft, Save, Star, MessageSquare, Mic, Video, RefreshCw } from 'lucide-react';
+import { Loader2, User, ArrowLeft, Save, Star, MessageSquare, Mic, Video, RefreshCw, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Profile() {
@@ -119,6 +119,19 @@ export default function Profile() {
               Reviews Given ({userReviews.length})
             </TabsTrigger>
           </TabsList>
+
+          {/* Public Profile Link */}
+          <div className="flex justify-end mt-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.open(`/user/${user?.id}`, '_blank')}
+              className="text-white border-white/20 hover:bg-white/10"
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              View Public Profile
+            </Button>
+          </div>
 
           <TabsContent value="profile">
             <Card className="bg-white/10 backdrop-blur-md border-white/20">
