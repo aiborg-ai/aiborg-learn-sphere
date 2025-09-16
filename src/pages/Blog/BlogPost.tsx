@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { parseMarkdownSimple, extractHeadings } from '@/utils/markdownSimple';
+import { CommentSection } from '@/components/blog/CommentSection';
 import {
   ArrowLeft,
   CalendarDays,
@@ -384,17 +385,8 @@ export default function BlogPostPage() {
           </div>
         </div>
 
-        {/* Comments Section - Placeholder */}
-        <section id="comments" className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">Comments</h2>
-          <div className="bg-card rounded-lg p-8 text-center text-muted-foreground">
-            <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>Comments feature coming soon!</p>
-            <p className="text-sm mt-2">
-              Join the discussion once we launch our comment system.
-            </p>
-          </div>
-        </section>
+        {/* Comments Section */}
+        <CommentSection postId={post.id} />
       </article>
     </div>
   );

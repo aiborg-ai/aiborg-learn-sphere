@@ -1,14 +1,28 @@
 import { useState, useCallback } from 'react';
 import { BlogService } from '@/services/blog/BlogService';
 import { useToast } from '@/components/ui/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const useBlogLike = (postId: string, initialLiked = false, initialCount = 0) => {
   const [isLiked, setIsLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialCount);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleLike = useCallback(async () => {
+    if (!user) {
+      toast({
+        title: 'Authentication required',
+        description: 'Please sign in to like posts',
+      });
+      navigate('/auth', { state: { from: location.pathname } });
+      return;
+    }
+
     try {
       setLoading(true);
       if (isLiked) {
@@ -30,7 +44,7 @@ export const useBlogLike = (postId: string, initialLiked = false, initialCount =
     } finally {
       setLoading(false);
     }
-  }, [postId, isLiked, toast]);
+  }, [postId, isLiked, toast, user, navigate, location]);
 
   return { isLiked, likeCount, toggleLike, loading };
 };
@@ -39,8 +53,20 @@ export const useBlogBookmark = (postId: string, initialBookmarked = false) => {
   const [isBookmarked, setIsBookmarked] = useState(initialBookmarked);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleBookmark = useCallback(async () => {
+    if (!user) {
+      toast({
+        title: 'Authentication required',
+        description: 'Please sign in to bookmark posts',
+      });
+      navigate('/auth', { state: { from: location.pathname } });
+      return;
+    }
+
     try {
       setLoading(true);
       if (isBookmarked) {
@@ -68,7 +94,7 @@ export const useBlogBookmark = (postId: string, initialBookmarked = false) => {
     } finally {
       setLoading(false);
     }
-  }, [postId, isBookmarked, toast]);
+  }, [postId, isBookmarked, toast, user, navigate, location]);
 
   return { isBookmarked, toggleBookmark, loading };
 };
