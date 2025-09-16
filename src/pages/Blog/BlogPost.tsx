@@ -1,4 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useBlogPost } from '@/hooks/blog/useBlogPosts';
 import { useBlogLike, useBlogBookmark, useBlogShare } from '@/hooks/blog/useBlogEngagement';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { parseMarkdown, extractTableOfContents } from '@/utils/markdown';
 import {
   ArrowLeft,
   CalendarDays,
@@ -20,6 +22,7 @@ import {
   Linkedin,
   Mail,
   Link as LinkIcon,
+  List,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -31,6 +34,10 @@ import {
 export default function BlogPostPage() {
   const { slug } = useParams();
   const { post, loading, error } = useBlogPost(slug || '');
+  const [parsedContent, setParsedContent] = useState('');
+  const [tableOfContents, setTableOfContents] = useState<{ level: number; text: string; id: string }[]>([]);
+  const [showTOC, setShowTOC] = useState(false);
+  const [readingProgress, setReadingProgress] = useState(0);
 
   const { isLiked, likeCount, toggleLike, loading: likeLoading } = useBlogLike(
     post?.id || '',
@@ -45,6 +52,31 @@ export default function BlogPostPage() {
 
   const postUrl = window.location.href;
   const { share } = useBlogShare(post?.id || '', post?.title || '', postUrl);
+
+  // Parse markdown content when post loads
+  useEffect(() => {
+    if (post?.content) {
+      const htmlContent = parseMarkdown(post.content);
+      setParsedContent(htmlContent);
+
+      const toc = extractTableOfContents(post.content);
+      setTableOfContents(toc);
+      setShowTOC(toc.length > 3); // Show TOC if more than 3 headings
+    }
+  }, [post?.content]);
+
+  // Track reading progress
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrollPosition = window.scrollY;
+      const progress = (scrollPosition / scrollHeight) * 100;
+      setReadingProgress(Math.min(100, Math.max(0, progress)));
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('en-US', {
@@ -101,6 +133,14 @@ export default function BlogPostPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+      {/* Reading Progress Bar */}
+      <div className="fixed top-0 left-0 w-full h-1 bg-secondary/20 z-50">
+        <div
+          className="h-full bg-primary transition-all duration-150"
+          style={{ width: `${readingProgress}%` }}
+        />
+      </div>
+
       <article className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Back button */}
         <Button variant="ghost" asChild className="mb-8">
@@ -229,10 +269,37 @@ export default function BlogPostPage() {
           </div>
         )}
 
-        {/* Article Content */}
+        {/* Table of Contents for long articles */}
+        {showTOC && (
+          <div className="bg-secondary/10 rounded-lg p-6 mb-8">
+            <h2 className="text-xl font-semibold mb-4 flex items-center">
+              <List className="h-5 w-5 mr-2" />
+              Table of Contents
+            </h2>
+            <nav className="space-y-2">
+              {tableOfContents.map((heading, index) => (
+                <a
+                  key={index}
+                  href={`#${heading.id}`}
+                  className={`block hover:text-primary transition-colors ${
+                    heading.level === 1
+                      ? 'font-semibold'
+                      : heading.level === 2
+                      ? 'ml-4'
+                      : 'ml-8 text-sm'
+                  }`}
+                >
+                  {heading.text}
+                </a>
+              ))}
+            </nav>
+          </div>
+        )}
+
+        {/* Article Content with improved formatting */}
         <div
-          className="prose prose-lg dark:prose-invert max-w-none mb-12"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          className="article-content mb-12"
+          dangerouslySetInnerHTML={{ __html: parsedContent }}
         />
 
         <Separator className="mb-8" />

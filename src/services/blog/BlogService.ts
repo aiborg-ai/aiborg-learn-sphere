@@ -86,7 +86,7 @@ export class BlogService {
       category_name: post.blog_categories?.name,
       category_slug: post.blog_categories?.slug,
       category_color: post.blog_categories?.color,
-      tags: post.blog_post_tags?.map((pt: any) => pt.blog_tags) || []
+      tags: post.blog_post_tags?.map((pt: { blog_tags: BlogTag }) => pt.blog_tags) || []
     }));
 
     return { posts, count };
@@ -126,7 +126,7 @@ export class BlogService {
       category_name: data.blog_categories?.name,
       category_slug: data.blog_categories?.slug,
       category_color: data.blog_categories?.color,
-      tags: data.blog_post_tags?.map((pt: any) => pt.blog_tags) || [],
+      tags: data.blog_post_tags?.map((pt: { blog_tags: BlogTag }) => pt.blog_tags) || [],
       like_count: likes,
       comment_count: comments,
       is_bookmarked: bookmarks

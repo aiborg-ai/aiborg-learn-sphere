@@ -80,6 +80,53 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
+  /* Custom Blog Prose Styles */
+  .prose-container {
+    @apply max-w-none;
+  }
+
+  .prose-container > *:first-child {
+    @apply mt-0;
+  }
+
+  .prose-container > *:last-child {
+    @apply mb-0;
+  }
+
+  /* Improve list styling */
+  .prose-container ul {
+    @apply my-6;
+  }
+
+  .prose-container ul li {
+    @apply my-2;
+  }
+
+  .prose-container ol {
+    @apply my-6;
+  }
+
+  .prose-container ol li {
+    @apply my-2;
+  }
+
+  /* Better code block styling */
+  .prose-container pre {
+    @apply border border-border/20;
+  }
+
+  /* Section spacing */
+  .prose-container h1 + *,
+  .prose-container h2 + *,
+  .prose-container h3 + * {
+    @apply mt-4;
+  }
+
+  /* Smooth scrolling for anchor links */
+  html {
+    scroll-behavior: smooth;
+  }
+
   .dark {
     /* Background Colors */
     --background: 220 23% 5%;          /* Very dark blue-gray */
