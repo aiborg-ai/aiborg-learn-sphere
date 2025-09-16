@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { AnnouncementTicker } from "@/components/AnnouncementTicker";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -10,6 +12,20 @@ import { ContactSection } from "@/components/ContactSection";
 import { AboutSection } from "@/components/AboutSection";
 
 const Index = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if there's a hash in the URL and scroll to that section
+    if (location.hash) {
+      const elementId = location.hash.substring(1);
+      setTimeout(() => {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  }, [location]);
   return (
     <div className="min-h-screen">
       <AnnouncementTicker />

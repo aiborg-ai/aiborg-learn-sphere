@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { Brain, Menu, X, User, Shield, LogOut } from 'lucide-react';
@@ -13,10 +13,25 @@ export function Navbar() {
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const { user, profile, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
+  };
+
+  // Helper function to handle navigation to home page sections
+  const handleNavClick = (sectionId: string) => {
+    if (location.pathname === '/') {
+      // If on home page, scroll to section
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // If on another page, navigate to home page with hash
+      navigate(`/#${sectionId}`);
+    }
   };
 
   return (
@@ -30,24 +45,39 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            <a href="#training-programs" className="text-foreground/80 hover:text-foreground transition-colors">
+            <button
+              onClick={() => handleNavClick('training-programs')}
+              className="text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
+            >
               Programs
-            </a>
+            </button>
             <Link to="/blog" className="text-foreground/80 hover:text-foreground transition-colors">
               Blog
             </Link>
-            <a href="#events" className="text-foreground/80 hover:text-foreground transition-colors">
+            <button
+              onClick={() => handleNavClick('events')}
+              className="text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
+            >
               Events
-            </a>
-            <a href="#reviews" className="text-foreground/80 hover:text-foreground transition-colors">
+            </button>
+            <button
+              onClick={() => handleNavClick('reviews')}
+              className="text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
+            >
               Reviews
-            </a>
-            <a href="#about" className="text-foreground/80 hover:text-foreground transition-colors">
+            </button>
+            <button
+              onClick={() => handleNavClick('about')}
+              className="text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
+            >
               About
-            </a>
-            <a href="#contact" className="text-foreground/80 hover:text-foreground transition-colors">
+            </button>
+            <button
+              onClick={() => handleNavClick('contact')}
+              className="text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
+            >
               Contact
-            </a>
+            </button>
             <button 
               onClick={() => setIsFAQOpen(true)}
               className="text-foreground/80 hover:text-foreground transition-colors"
@@ -120,13 +150,15 @@ export function Navbar() {
         {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden py-4 space-y-4 border-t border-white/20">
-            <a
-              href="#training-programs"
-              className="block text-foreground/80 hover:text-foreground transition-colors"
-              onClick={() => setIsOpen(false)}
+            <button
+              className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors"
+              onClick={() => {
+                handleNavClick('training-programs');
+                setIsOpen(false);
+              }}
             >
               Programs
-            </a>
+            </button>
             <Link
               to="/blog"
               className="block text-foreground/80 hover:text-foreground transition-colors"
@@ -134,34 +166,42 @@ export function Navbar() {
             >
               Blog
             </Link>
-            <a
-              href="#events"
-              className="block text-foreground/80 hover:text-foreground transition-colors"
-              onClick={() => setIsOpen(false)}
+            <button
+              className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors"
+              onClick={() => {
+                handleNavClick('events');
+                setIsOpen(false);
+              }}
             >
               Events
-            </a>
-            <a
-              href="#reviews"
-              className="block text-foreground/80 hover:text-foreground transition-colors"
-              onClick={() => setIsOpen(false)}
+            </button>
+            <button
+              className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors"
+              onClick={() => {
+                handleNavClick('reviews');
+                setIsOpen(false);
+              }}
             >
               Reviews
-            </a>
-            <a 
-              href="#about" 
-              className="block text-foreground/80 hover:text-foreground transition-colors"
-              onClick={() => setIsOpen(false)}
+            </button>
+            <button
+              className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors"
+              onClick={() => {
+                handleNavClick('about');
+                setIsOpen(false);
+              }}
             >
               About
-            </a>
-            <a 
-              href="#contact" 
-              className="block text-foreground/80 hover:text-foreground transition-colors"
-              onClick={() => setIsOpen(false)}
+            </button>
+            <button
+              className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors"
+              onClick={() => {
+                handleNavClick('contact');
+                setIsOpen(false);
+              }}
             >
               Contact
-            </a>
+            </button>
             <button 
               onClick={() => {
                 setIsFAQOpen(true);
