@@ -3,6 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { useBlogPosts } from '@/hooks/blog/useBlogPosts';
 import { useBlogCategories } from '@/hooks/blog/useBlogCategories';
 import { BlogPostCard } from '@/components/Blog/BlogPostCard';
+import { Navbar } from '@/components/Navbar';
+import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -74,6 +76,7 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+      <Navbar />
       {/* Header */}
       <div className="bg-gradient-hero text-white py-16">
         <div className="container mx-auto px-4">
@@ -276,6 +279,7 @@ export default function BlogPage() {
           </>
         )}
       </div>
+      <Footer />
     </div>
   );
 }

@@ -2,6 +2,9 @@ import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useBlogPost } from '@/hooks/blog/useBlogPosts';
 import { useBlogLike, useBlogBookmark, useBlogShare } from '@/hooks/blog/useBlogEngagement';
+import { Navbar } from '@/components/Navbar';
+import { Footer } from '@/components/Footer';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -93,6 +96,7 @@ export default function BlogPostPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+        <Navbar />
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           <Skeleton className="h-8 w-32 mb-8" />
           <Skeleton className="h-12 w-3/4 mb-4" />
@@ -118,8 +122,10 @@ export default function BlogPostPage() {
 
   if (error || !post) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[80vh]">
+          <div className="text-center">
           <h1 className="text-3xl font-bold mb-4">Article not found</h1>
           <p className="text-muted-foreground mb-8">
             The article you're looking for doesn't exist or has been removed.
@@ -130,6 +136,7 @@ export default function BlogPostPage() {
               Back to Blog
             </Link>
           </Button>
+          </div>
         </div>
       </div>
     );
@@ -137,8 +144,9 @@ export default function BlogPostPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+      <Navbar />
       {/* Reading Progress Bar */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-secondary/20 z-50">
+      <div className="fixed top-16 left-0 w-full h-1 bg-secondary/20 z-40">
         <div
           className="h-full bg-primary transition-all duration-150"
           style={{ width: `${readingProgress}%` }}
@@ -146,6 +154,15 @@ export default function BlogPostPage() {
       </div>
 
       <article className="container mx-auto px-4 py-8 max-w-4xl">
+        {/* Breadcrumbs */}
+        <Breadcrumbs
+          items={[
+            { label: 'Blog', href: '/blog' },
+            ...(post.category_name ? [{ label: post.category_name, href: `/blog?category=${post.category_slug}` }] : []),
+            { label: post.title }
+          ]}
+        />
+
         {/* Back button */}
         <Button variant="ghost" asChild className="mb-8">
           <Link to="/blog">
@@ -394,6 +411,7 @@ export default function BlogPostPage() {
           onCommentCountChange={setDynamicCommentCount}
         />
       </article>
+      <Footer />
     </div>
   );
 }

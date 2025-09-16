@@ -1,5 +1,6 @@
 import { AnnouncementTicker } from "@/components/AnnouncementTicker";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { HeroSection } from "@/components/HeroSection";
 import { TrainingPrograms } from "@/components/TrainingPrograms";
 import { EventsSection } from "@/components/EventsSection";
@@ -29,6 +30,7 @@ const Index = () => {
       <div id="contact">
         <ContactSection />
       </div>
+      <Footer />
       <AIChatbot />
     </div>
   );
