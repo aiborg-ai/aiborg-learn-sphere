@@ -66,7 +66,8 @@ interface Assignment {
 }
 
 export default function Dashboard() {
-  const [loading, setLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
+  const [lmsSetupRequired, setLmsSetupRequired] = useState(false);
   const [stats, setStats] = useState<DashboardStats>({
     enrolledCourses: 0,
     totalAchievements: 0,
@@ -81,31 +82,40 @@ export default function Dashboard() {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [activeTab, setActiveTab] = useState('overview');
 
-  const { user, profile } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const { enrollments } = useEnrollments();
   const { courses } = useCourses();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) {
-      navigate('/auth');
-      return;
+    // Wait for auth to finish loading before checking user
+    if (!authLoading) {
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
+      fetchDashboardData();
     }
-    fetchDashboardData();
-  }, [user]);
+  }, [user, authLoading, navigate]);
 
   const fetchDashboardData = async () => {
     if (!user) return;
 
     try {
-      setLoading(true);
+      setDataLoading(true);
 
       // Fetch dashboard stats
-      const { data: dashboardData } = await supabase
+      const { data: dashboardData, error: dashboardError } = await supabase
         .from('user_dashboard')
         .select('*')
         .eq('user_id', user.id)
         .single();
+
+      if (dashboardError && dashboardError.code === '42P01') {
+        // Table doesn't exist - LMS not set up
+        console.log('LMS tables not found in production');
+        setLmsSetupRequired(true);
+      }
 
       if (dashboardData) {
         setStats({
@@ -119,7 +129,7 @@ export default function Dashboard() {
       }
 
       // Fetch user progress for enrolled courses
-      const { data: progressData } = await supabase
+      const { data: progressData, error: progressError } = await supabase
         .from('user_progress')
         .select(`
           *,
@@ -127,6 +137,11 @@ export default function Dashboard() {
         `)
         .eq('user_id', user.id)
         .order('last_accessed', { ascending: false });
+
+      if (progressError && progressError.code === '42P01') {
+        // Table doesn't exist
+        console.log('User progress table not found');
+      }
 
       if (progressData) {
         setUserProgress(progressData.map(p => ({
@@ -140,7 +155,7 @@ export default function Dashboard() {
       }
 
       // Fetch recent achievements
-      const { data: achievementData } = await supabase
+      const { data: achievementData, error: achievementError } = await supabase
         .from('user_achievements')
         .select(`
           *,
@@ -149,6 +164,11 @@ export default function Dashboard() {
         .eq('user_id', user.id)
         .order('earned_at', { ascending: false })
         .limit(6);
+
+      if (achievementError && achievementError.code === '42P01') {
+        // Table doesn't exist
+        console.log('Achievements table not found');
+      }
 
       if (achievementData) {
         setAchievements(achievementData.map(a => ({
@@ -163,19 +183,24 @@ export default function Dashboard() {
       }
 
       // Fetch notifications
-      const { data: notificationData } = await supabase
+      const { data: notificationData, error: notificationError } = await supabase
         .from('notifications')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(10);
 
+      if (notificationError && notificationError.code === '42P01') {
+        // Table doesn't exist
+        console.log('Notifications table not found');
+      }
+
       if (notificationData) {
         setNotifications(notificationData);
       }
 
       // Fetch upcoming assignments
-      const { data: assignmentData } = await supabase
+      const { data: assignmentData, error: assignmentError } = await supabase
         .from('homework_submissions')
         .select(`
           *,
@@ -186,6 +211,11 @@ export default function Dashboard() {
         .in('status', ['draft', 'submitted'])
         .order('homework_assignments.due_date', { ascending: true })
         .limit(5);
+
+      if (assignmentError && assignmentError.code === '42P01') {
+        // Table doesn't exist
+        console.log('Homework tables not found');
+      }
 
       if (assignmentData) {
         setAssignments(assignmentData.map(a => ({
@@ -200,7 +230,7 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
-      setLoading(false);
+      setDataLoading(false);
     }
   };
 
@@ -240,7 +270,8 @@ export default function Dashboard() {
     return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
   };
 
-  if (loading) {
+  // Show loading while auth is loading or data is loading
+  if (authLoading || (dataLoading && !user)) {
     return (
       <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-white" />
@@ -248,7 +279,84 @@ export default function Dashboard() {
     );
   }
 
-  if (!user) return null;
+  // If auth finished loading and no user, don't render (useEffect will redirect)
+  if (!authLoading && !user) {
+    return null;
+  }
+
+  // Show setup message if LMS tables don't exist
+  if (lmsSetupRequired) {
+    return (
+      <div className="min-h-screen bg-gradient-hero">
+        <div className="container mx-auto p-6">
+          <Link to="/" className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors mb-8">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Link>
+
+          <Card className="max-w-2xl mx-auto bg-white/10 backdrop-blur-md border-white/20">
+            <CardHeader>
+              <CardTitle className="text-white text-2xl">Learning Dashboard Coming Soon!</CardTitle>
+              <CardDescription className="text-white/80">
+                Your personalized learning dashboard is being set up.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Alert className="bg-blue-500/10 border-blue-500/20">
+                <AlertCircle className="h-4 w-4 text-blue-400" />
+                <AlertDescription className="text-white/90">
+                  The Learning Management System features are currently being configured. This includes:
+                </AlertDescription>
+              </Alert>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-start gap-3">
+                  <Trophy className="h-5 w-5 text-yellow-400 mt-0.5" />
+                  <div>
+                    <p className="text-white font-medium">Achievement System</p>
+                    <p className="text-white/60 text-sm">Earn badges for your accomplishments</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <BookOpen className="h-5 w-5 text-blue-400 mt-0.5" />
+                  <div>
+                    <p className="text-white font-medium">Course Progress</p>
+                    <p className="text-white/60 text-sm">Track your learning journey</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <FileText className="h-5 w-5 text-green-400 mt-0.5" />
+                  <div>
+                    <p className="text-white font-medium">Assignments</p>
+                    <p className="text-white/60 text-sm">Submit and track homework</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Bell className="h-5 w-5 text-purple-400 mt-0.5" />
+                  <div>
+                    <p className="text-white font-medium">Notifications</p>
+                    <p className="text-white/60 text-sm">Stay updated on your progress</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4">
+                <p className="text-white/80 text-sm">
+                  Check back soon or explore our courses below!
+                </p>
+                <Button
+                  onClick={() => navigate('/#training-programs')}
+                  className="mt-4"
+                >
+                  Explore Courses
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-hero">
