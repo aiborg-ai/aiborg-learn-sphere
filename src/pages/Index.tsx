@@ -18,14 +18,25 @@ const Index = () => {
     // Check if there's a hash in the URL and scroll to that section
     if (location.hash) {
       const elementId = location.hash.substring(1);
-      setTimeout(() => {
+      // Wait for page to fully render before scrolling
+      const scrollToElement = () => {
         const element = document.getElementById(elementId);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          const yOffset = -80; // Account for fixed navbar height
+          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
         }
-      }, 100);
+      };
+
+      // Try immediately first
+      scrollToElement();
+      // Then try again after a delay to ensure content is loaded
+      setTimeout(scrollToElement, 500);
+    } else {
+      // Scroll to top if no hash
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [location]);
+  }, [location.hash]);
   return (
     <div className="min-h-screen">
       <AnnouncementTicker />

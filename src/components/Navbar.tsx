@@ -26,7 +26,11 @@ export function Navbar() {
       // If on home page, scroll to section
       const element = document.getElementById(sectionId);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        const yOffset = -80; // Account for fixed navbar height
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+        // Update the URL hash without triggering navigation
+        window.history.pushState(null, '', `#${sectionId}`);
       }
     } else {
       // If on another page, navigate to home page with hash
