@@ -33,7 +33,7 @@ export const PersonalizedContent: React.FC<PersonalizedContentProps> = ({ sectio
 
   // Feature icons mapping
   const getFeatureIcon = (feature: string) => {
-    const iconMap: Record<string, React.ComponentType<any>> = {
+    const iconMap: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
       gamification: Gamepad2,
       parentalControls: Shield,
       simpleNavigation: Trophy,

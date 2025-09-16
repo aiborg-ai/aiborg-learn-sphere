@@ -37,7 +37,7 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
     setState(prev => ({ ...prev, ...updates }));
   };
 
-  const logError = (operation: string, error: any) => {
+  const logError = (operation: string, error: unknown) => {
     const errorMessage = `MediaPlayer ${operation} failed for ${bucket}/${path}`;
     console.error(errorMessage, error);
     return errorMessage;
@@ -69,13 +69,13 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
       updateState({ mediaUrl: data.signedUrl, error: null });
       return data.signedUrl;
 
-    } catch (error: any) {
+    } catch (error) {
       const errorMessage = logError('load', error);
       updateState({ error: errorMessage });
       
       toast({
         title: "Loading Error",
-        description: `Failed to load ${type} file: ${error.message}`,
+        description: `Failed to load ${type} file: ${error instanceof Error ? error.message : 'Unknown error'}`,
         variant: "destructive",
       });
       
@@ -152,7 +152,7 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
         await mediaRef.current.play();
         console.log('▶️ Media playing');
       }
-    } catch (error: any) {
+    } catch (error) {
       logError('toggle', error);
       toast({
         title: "Playback Error",

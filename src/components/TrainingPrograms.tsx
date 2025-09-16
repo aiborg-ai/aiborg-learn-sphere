@@ -139,7 +139,7 @@ export const TrainingPrograms = () => {
     }
   };
 
-  const handleEnrollClick = (program: any) => {
+  const handleEnrollClick = (program: Course) => {
     if (!user) {
       window.location.href = '/auth';
       return;
@@ -152,7 +152,7 @@ export const TrainingPrograms = () => {
     }
   };
 
-  const handleDetailsClick = (program: any) => {
+  const handleDetailsClick = (program: Course) => {
     // Find the original course object from the courses array
     const originalCourse = courses.find(c => c.id === program.id);
     if (originalCourse) {
@@ -496,7 +496,7 @@ export const TrainingPrograms = () => {
         <CourseDetailsModal
           isOpen={detailsModalOpen}
           onClose={() => setDetailsModalOpen(false)}
-          course={selectedCourse as any}
+          course={selectedCourse as Course}
           onEnroll={() => selectedCourse && handleEnrollClick(selectedCourse)}
         />
 

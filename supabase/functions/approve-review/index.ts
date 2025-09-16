@@ -133,7 +133,7 @@ const handler = async (req: Request): Promise<Response> => {
       headers: { "Content-Type": "text/html", ...corsHeaders },
     });
 
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error processing review action:", error);
     
     const errorHtml = `
@@ -143,7 +143,7 @@ const handler = async (req: Request): Promise<Response> => {
           <div style="max-width: 500px; margin: 0 auto; background: #f8f9fa; padding: 40px; border-radius: 8px;">
             <h1 style="color: #dc3545;">❌ Error</h1>
             <p style="font-size: 18px; color: #666;">An error occurred while processing the review action.</p>
-            <p style="color: #888; font-size: 14px; margin-top: 30px;">Error: ${error.message}</p>
+            <p style="color: #888; font-size: 14px; margin-top: 30px;">Error: ${error instanceof Error ? error.message : 'Unknown error'}</p>
           </div>
         </body>
       </html>

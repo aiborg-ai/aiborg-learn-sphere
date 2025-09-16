@@ -68,7 +68,7 @@ serve(async (req) => {
     // Add context about available courses if provided
     let enhancedSystemPrompt = systemPrompt;
     if (coursesData && coursesData.length > 0) {
-      const coursesList = coursesData.map((course: any) => 
+      const coursesList = coursesData.map((course: Record<string, unknown>) =>
         `- ${course.title}: ${course.price}, ${course.duration}, ${course.level} level, ${course.audience} audience`
       ).join('\n');
       enhancedSystemPrompt += `\n\nCurrent available courses:\n${coursesList}`;

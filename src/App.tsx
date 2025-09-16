@@ -11,6 +11,8 @@ import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import CMS from "./pages/CMS";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import BlogPage from "./pages/Blog";
+import BlogPostPage from "./pages/Blog/BlogPost";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +32,8 @@ const App = () => (
             <Route path="/admin" element={<Admin />} />
             <Route path="/cms" element={<CMS />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

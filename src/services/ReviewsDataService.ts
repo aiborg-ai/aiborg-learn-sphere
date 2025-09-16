@@ -6,9 +6,9 @@ export interface CacheOptions {
 }
 
 class ReviewsCache {
-  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+  private cache = new Map<string, { data: unknown; timestamp: number; ttl: number }>();
   
-  set(key: string, data: any, ttl = 5 * 60 * 1000) { // Default 5 minutes
+  set(key: string, data: unknown, ttl = 5 * 60 * 1000) { // Default 5 minutes
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
@@ -94,7 +94,7 @@ export class DataService {
 
     const reviews = enrichedReviews
       .filter(result => result.status === 'fulfilled')
-      .map(result => (result as PromiseFulfilledResult<any>).value);
+      .map(result => (result as PromiseFulfilledResult<unknown>).value);
 
     reviewsCache.set(cacheKey, reviews);
     console.log('✅ Reviews cached successfully');
@@ -143,7 +143,7 @@ export class DataService {
 
     const reviews = enrichedReviews
       .filter(result => result.status === 'fulfilled')
-      .map(result => (result as PromiseFulfilledResult<any>).value);
+      .map(result => (result as PromiseFulfilledResult<unknown>).value);
 
     reviewsCache.set(cacheKey, reviews, 2 * 60 * 1000); // 2 minutes for user data
     

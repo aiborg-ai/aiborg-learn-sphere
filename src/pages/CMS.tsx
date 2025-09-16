@@ -58,7 +58,7 @@ function CMSAdmin() {
   const fetchContent = async () => {
     try {
       setLoading(true);
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('cms_content')
         .select('*')
         .order('section_name', { ascending: true });
@@ -78,7 +78,7 @@ function CMSAdmin() {
 
   const handleSave = async (item: CMSContent) => {
     try {
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('cms_content')
         .update({
           content_value: item.content_value,
@@ -108,7 +108,7 @@ function CMSAdmin() {
 
   const handleCreate = async () => {
     try {
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('cms_content')
         .insert(newContent);
 
@@ -138,7 +138,7 @@ function CMSAdmin() {
 
   const handleDelete = async (id: string) => {
     try {
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('cms_content')
         .delete()
         .eq('id', id);
@@ -162,7 +162,7 @@ function CMSAdmin() {
 
   const toggleActive = async (item: CMSContent) => {
     try {
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('cms_content')
         .update({ is_active: !item.is_active })
         .eq('id', item.id);
@@ -247,7 +247,7 @@ function CMSAdmin() {
               />
               <Select
                 value={newContent.content_type}
-                onValueChange={(value: any) => setNewContent(prev => ({ ...prev, content_type: value }))}
+                onValueChange={(value) => setNewContent(prev => ({ ...prev, content_type: value }))}
               >
                 <SelectTrigger>
                   <SelectValue />

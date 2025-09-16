@@ -5,16 +5,16 @@ export type Audience = "All" | "primary" | "secondary" | "professional" | "busin
 interface PersonalizationContextType {
   selectedAudience: Audience;
   setSelectedAudience: (audience: Audience) => void;
-  getPersonalizedContent: (content: PersonalizedContent) => any;
+  getPersonalizedContent: <T = unknown>(content: PersonalizedContent<T>) => T;
   getPersonalizedStyles: (styles: PersonalizedStyles) => string;
 }
 
-interface PersonalizedContent {
-  primary?: any;
-  secondary?: any;
-  professional?: any;
-  business?: any;
-  default?: any;
+interface PersonalizedContent<T = unknown> {
+  primary?: T;
+  secondary?: T;
+  professional?: T;
+  business?: T;
+  default?: T;
 }
 
 interface PersonalizedStyles {
@@ -86,11 +86,11 @@ export const PersonalizationProvider: React.FC<PersonalizationProviderProps> = (
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const getPersonalizedContent = (content: PersonalizedContent) => {
+  const getPersonalizedContent = <T = unknown>(content: PersonalizedContent<T>): T => {
     if (!selectedAudience || selectedAudience === "All" || !content[selectedAudience]) {
-      return content.default || content;
+      return (content.default || content) as T;
     }
-    return content[selectedAudience];
+    return content[selectedAudience] as T;
   };
 
   const getPersonalizedStyles = (styles: PersonalizedStyles) => {

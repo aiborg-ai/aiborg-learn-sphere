@@ -17,6 +17,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Loader2, Users, BookOpen, Megaphone, Trash2, Shield, Eye, Edit, Plus, UserCheck, Star, Calendar, ToggleLeft, ToggleRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import type { Review } from '@/hooks/useReviews';
+import type { Event } from '@/hooks/useEvents';
+import type { Course } from '@/hooks/useCourses';
+import BlogManager from './Admin/BlogManager';
 
 interface UserProfile {
   id: string;
@@ -169,7 +173,7 @@ export default function Admin() {
         .order('enrolled_at', { ascending: false });
 
       if (enrollmentsError) throw enrollmentsError;
-      setEnrollments(enrollmentsData as any || []);
+      setEnrollments((enrollmentsData as Enrollment[]) || []);
 
     } catch (error) {
       console.error('Error fetching admin data:', error);
@@ -236,7 +240,7 @@ export default function Admin() {
     }
   };
 
-  const createCourse = async (data: any) => {
+  const createCourse = async (data: Partial<Course>) => {
     try {
       const courseData = {
         title: data.title,
@@ -279,7 +283,7 @@ export default function Admin() {
     }
   };
 
-  const updateCourse = async (data: any) => {
+  const updateCourse = async (data: Partial<Course>) => {
     if (!editingCourse) return;
 
     try {
@@ -541,6 +545,10 @@ export default function Admin() {
             <TabsTrigger value="events" className="text-white data-[state=active]:bg-white/20">
               <Calendar className="h-4 w-4 mr-2" />
               Events
+            </TabsTrigger>
+            <TabsTrigger value="blog" className="text-white data-[state=active]:bg-white/20">
+              <BookOpen className="h-4 w-4 mr-2" />
+              Blog
             </TabsTrigger>
           </TabsList>
 
@@ -1161,6 +1169,10 @@ export default function Admin() {
           <TabsContent value="events">
             <EventsManagement />
           </TabsContent>
+
+          <TabsContent value="blog">
+            <BlogManager />
+          </TabsContent>
         </Tabs>
       </div>
     </div>
@@ -1169,7 +1181,7 @@ export default function Admin() {
 
 // Reviews Management Component
 function ReviewsManagement() {
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -1350,7 +1362,7 @@ function ReviewsManagement() {
 
 // Events Management Component
 function EventsManagement() {
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 

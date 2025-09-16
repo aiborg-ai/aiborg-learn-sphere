@@ -25,7 +25,7 @@ const statistics = [
   { label: "Success Rate", value: "94%", icon: TrendingUp, color: "text-orange-300" }
 ];
 
-const getCoreValues = (getPersonalizedContent: (content: any) => any) => [
+const getCoreValues = (getPersonalizedContent: (content: Record<string, unknown>) => unknown) => [
   {
     title: getPersonalizedContent({
       primary: "Learning by Doing",
@@ -137,7 +137,7 @@ const achievements = [
   "Continuous innovation and improvement"
 ];
 
-const getLearningOutcomes = (getPersonalizedContent: (content: any) => any) => [
+const getLearningOutcomes = (getPersonalizedContent: (content: Record<string, unknown>) => unknown) => [
   {
     title: getPersonalizedContent({
       primary: "Learn Cool AI Tricks",

@@ -33,6 +33,9 @@ export function Navbar() {
             <a href="#training-programs" className="text-foreground/80 hover:text-foreground transition-colors">
               Programs
             </a>
+            <Link to="/blog" className="text-foreground/80 hover:text-foreground transition-colors">
+              Blog
+            </Link>
             <a href="#events" className="text-foreground/80 hover:text-foreground transition-colors">
               Events
             </a>
@@ -117,22 +120,29 @@ export function Navbar() {
         {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden py-4 space-y-4 border-t border-white/20">
-            <a 
-              href="#training-programs" 
+            <a
+              href="#training-programs"
               className="block text-foreground/80 hover:text-foreground transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Programs
             </a>
-            <a 
-              href="#events" 
+            <Link
+              to="/blog"
+              className="block text-foreground/80 hover:text-foreground transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              Blog
+            </Link>
+            <a
+              href="#events"
               className="block text-foreground/80 hover:text-foreground transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Events
             </a>
-            <a 
-              href="#reviews" 
+            <a
+              href="#reviews"
               className="block text-foreground/80 hover:text-foreground transition-colors"
               onClick={() => setIsOpen(false)}
             >
