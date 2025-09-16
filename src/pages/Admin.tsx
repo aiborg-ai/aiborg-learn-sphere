@@ -36,7 +36,8 @@ interface Course {
   id: number;
   title: string;
   description: string;
-  audience: string;
+  audience: string; // Kept for backward compatibility
+  audiences: string[]; // New field for multiple audiences
   mode: string;
   duration: string;
   price: string;
@@ -102,7 +103,8 @@ export default function Admin() {
     defaultValues: {
       title: '',
       description: '',
-      audience: 'Professionals',
+      audience: 'Professionals', // Kept for backward compatibility
+      audiences: ['Professionals'], // New field for multiple audiences
       mode: 'Online',
       duration: '6 hrs/4 sessions',
       price: '£99',
@@ -240,30 +242,48 @@ export default function Admin() {
     }
   };
 
-  const createCourse = async (data: Partial<Course>) => {
+  const createCourse = async (data: any) => {
     try {
       const courseData = {
         title: data.title,
         description: data.description,
-        audience: data.audience,
+        audience: data.audiences?.[0] || data.audience, // Use first audience for backward compatibility
         mode: data.mode,
         duration: data.duration,
         price: data.price,
         level: data.level,
         start_date: data.start_date,
-        features: data.features.split(',').map((f: string) => f.trim()).filter((f: string) => f),
+        features: typeof data.features === 'string' ? data.features.split(',').map((f: string) => f.trim()).filter((f: string) => f) : data.features,
         category: data.category,
-        keywords: data.keywords.split(',').map((k: string) => k.trim()).filter((k: string) => k),
+        keywords: typeof data.keywords === 'string' ? data.keywords.split(',').map((k: string) => k.trim()).filter((k: string) => k) : data.keywords,
         prerequisites: data.prerequisites || 'None',
         is_active: true,
         sort_order: courses.length + 1
       };
 
-      const { error } = await supabase
+      const { data: insertedCourse, error } = await supabase
         .from('courses')
-        .insert(courseData);
+        .insert(courseData)
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Now insert the audiences into the junction table
+      if (insertedCourse && data.audiences && data.audiences.length > 0) {
+        const audiencesData = data.audiences.map((audience: string) => ({
+          course_id: insertedCourse.id,
+          audience: audience
+        }));
+
+        const { error: audienceError } = await supabase
+          .from('course_audiences')
+          .insert(audiencesData);
+
+        if (audienceError) {
+          console.error('Error adding audiences:', audienceError);
+        }
+      }
 
       toast({
         title: "Success",
@@ -283,22 +303,22 @@ export default function Admin() {
     }
   };
 
-  const updateCourse = async (data: Partial<Course>) => {
+  const updateCourse = async (data: any) => {
     if (!editingCourse) return;
 
     try {
       const courseData = {
         title: data.title,
         description: data.description,
-        audience: data.audience,
+        audience: data.audiences?.[0] || data.audience, // Use first audience for backward compatibility
         mode: data.mode,
         duration: data.duration,
         price: data.price,
         level: data.level,
         start_date: data.start_date,
-        features: data.features.split(',').map((f: string) => f.trim()).filter((f: string) => f),
+        features: typeof data.features === 'string' ? data.features.split(',').map((f: string) => f.trim()).filter((f: string) => f) : data.features,
         category: data.category,
-        keywords: data.keywords.split(',').map((k: string) => k.trim()).filter((k: string) => k),
+        keywords: typeof data.keywords === 'string' ? data.keywords.split(',').map((k: string) => k.trim()).filter((k: string) => k) : data.keywords,
         prerequisites: data.prerequisites || 'None',
       };
 
@@ -308,6 +328,33 @@ export default function Admin() {
         .eq('id', editingCourse.id);
 
       if (error) throw error;
+
+      // Update audiences in the junction table
+      // First, delete existing audiences
+      const { error: deleteError } = await supabase
+        .from('course_audiences')
+        .delete()
+        .eq('course_id', editingCourse.id);
+
+      if (deleteError) {
+        console.error('Error deleting old audiences:', deleteError);
+      }
+
+      // Then insert new audiences
+      if (data.audiences && data.audiences.length > 0) {
+        const audiencesData = data.audiences.map((audience: string) => ({
+          course_id: editingCourse.id,
+          audience: audience
+        }));
+
+        const { error: audienceError } = await supabase
+          .from('course_audiences')
+          .insert(audiencesData);
+
+        if (audienceError) {
+          console.error('Error adding audiences:', audienceError);
+        }
+      }
 
       toast({
         title: "Success",
@@ -479,7 +526,8 @@ export default function Admin() {
     courseForm.reset({
       title: course.title,
       description: course.description,
-      audience: course.audience,
+      audience: course.audience, // Keep for backward compatibility
+      audiences: course.audiences || (course.audience ? [course.audience] : []), // Set audiences array
       mode: course.mode,
       duration: course.duration,
       price: course.price,
@@ -655,23 +703,32 @@ export default function Admin() {
                               />
                               <FormField
                                 control={courseForm.control}
-                                name="audience"
+                                name="audiences"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>Audience</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                      <FormControl>
-                                        <SelectTrigger>
-                                          <SelectValue />
-                                        </SelectTrigger>
-                                      </FormControl>
-                                      <SelectContent>
-                                        <SelectItem value="Young Learners">Young Learners</SelectItem>
-                                        <SelectItem value="Teenagers">Teenagers</SelectItem>
-                                        <SelectItem value="Professionals">Professionals</SelectItem>
-                                        <SelectItem value="SMEs">SMEs</SelectItem>
-                                      </SelectContent>
-                                    </Select>
+                                    <FormLabel>Audiences (Select Multiple)</FormLabel>
+                                    <div className="space-y-2 border rounded-md p-3">
+                                      {["Young Learners", "Teenagers", "Professionals", "SMEs"].map(audience => (
+                                        <div key={audience} className="flex items-center space-x-2">
+                                          <input
+                                            type="checkbox"
+                                            id={`add-${audience}`}
+                                            value={audience}
+                                            checked={field.value?.includes(audience) || false}
+                                            onChange={(e) => {
+                                              const updatedValue = e.target.checked
+                                                ? [...(field.value || []), audience]
+                                                : (field.value || []).filter((a: string) => a !== audience);
+                                              field.onChange(updatedValue);
+                                            }}
+                                            className="rounded border-gray-300"
+                                          />
+                                          <label htmlFor={`add-${audience}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                            {audience}
+                                          </label>
+                                        </div>
+                                      ))}
+                                    </div>
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -955,23 +1012,32 @@ export default function Admin() {
                         />
                         <FormField
                           control={courseForm.control}
-                          name="audience"
+                          name="audiences"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Audience</FormLabel>
-                              <Select onValueChange={field.onChange} value={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="Young Learners">Young Learners</SelectItem>
-                                  <SelectItem value="Teenagers">Teenagers</SelectItem>
-                                  <SelectItem value="Professionals">Professionals</SelectItem>
-                                  <SelectItem value="SMEs">SMEs</SelectItem>
-                                </SelectContent>
-                              </Select>
+                              <FormLabel>Audiences (Select Multiple)</FormLabel>
+                              <div className="space-y-2 border rounded-md p-3">
+                                {["Young Learners", "Teenagers", "Professionals", "SMEs"].map(audience => (
+                                  <div key={audience} className="flex items-center space-x-2">
+                                    <input
+                                      type="checkbox"
+                                      id={`edit-${audience}`}
+                                      value={audience}
+                                      checked={field.value?.includes(audience) || false}
+                                      onChange={(e) => {
+                                        const updatedValue = e.target.checked
+                                          ? [...(field.value || []), audience]
+                                          : (field.value || []).filter((a: string) => a !== audience);
+                                        field.onChange(updatedValue);
+                                      }}
+                                      className="rounded border-gray-300"
+                                    />
+                                    <label htmlFor={`edit-${audience}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                      {audience}
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
                               <FormMessage />
                             </FormItem>
                           )}

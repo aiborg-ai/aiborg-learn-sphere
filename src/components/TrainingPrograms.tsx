@@ -61,7 +61,8 @@ export const TrainingPrograms = () => {
     id: course.id,
     title: course.title,
     description: course.description,
-    audience: course.audience,
+    audience: course.audience, // Kept for backward compatibility
+    audiences: course.audiences || (course.audience ? [course.audience] : []), // New field for multiple audiences
     mode: course.mode,
     duration: course.duration,
     price: course.price,
@@ -110,18 +111,23 @@ export const TrainingPrograms = () => {
 
   // Filter programs based on selected audience and search criteria
   const filteredPrograms = programs.filter((program) => {
-    const programAudienceId = audienceMapping[program.audience as keyof typeof audienceMapping];
-    const matchesAudience = selectedAudience === "All" || programAudienceId === selectedAudience;
+    // Check if any of the program's audiences match the selected audience
+    const matchesAudience = selectedAudience === "All" ||
+      program.audiences.some(aud => {
+        const audienceId = audienceMapping[aud as keyof typeof audienceMapping];
+        return audienceId === selectedAudience;
+      });
+
     const matchesSearch = program.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          program.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          program.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = selectedCategory === "All Categories" || program.category === selectedCategory;
     const matchesLevel = selectedLevel === "All Levels" || program.level === selectedLevel;
     const matchesCurrentlyEnrolling = !currentlyEnrolling || program.currentlyEnrolling;
-    
+
     // Filter for enrolled courses if the user is logged in and showEnrolledOnly is true
     const matchesEnrolledFilter = !showEnrolledOnly || !user || getEnrollmentStatus(program.id, program.startDate) !== 'not_enrolled';
-    
+
     return matchesAudience && matchesSearch && matchesCategory && matchesLevel && matchesCurrentlyEnrolling && matchesEnrolledFilter;
   });
 
@@ -344,15 +350,21 @@ export const TrainingPrograms = () => {
           <>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {(showAllPrograms ? filteredPrograms : filteredPrograms.slice(0, 3)).map((program) => {
-              const AudienceIcon = getAudienceIcon(program.audience);
               return (
                 <Card key={program.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden">
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-3">
-                      <Badge variant="secondary" className="flex items-center gap-1">
-                        <AudienceIcon className="h-3 w-3" />
-                        {program.audience}
-                      </Badge>
+                      <div className="flex flex-wrap gap-1">
+                        {program.audiences.map((aud, index) => {
+                          const AudienceIcon = getAudienceIcon(aud);
+                          return (
+                            <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                              <AudienceIcon className="h-3 w-3" />
+                              {aud}
+                            </Badge>
+                          );
+                        })}
+                      </div>
                       <Badge variant="outline">{program.level}</Badge>
                     </div>
                     

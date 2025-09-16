@@ -59,10 +59,14 @@ export const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({
                 <Badge variant="secondary">{course.category}</Badge>
               </div>
               
-              <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-primary" />
+              <div className="flex items-start gap-2">
+                <Users className="h-4 w-4 text-primary mt-0.5" />
                 <span className="font-medium">Audience:</span>
-                <Badge variant="outline">{course.audience}</Badge>
+                <div className="flex flex-wrap gap-1">
+                  {(course.audiences || [course.audience]).filter(Boolean).map((aud, index) => (
+                    <Badge key={index} variant="outline">{aud}</Badge>
+                  ))}
+                </div>
               </div>
               
               <div className="flex items-center gap-2">
