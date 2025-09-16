@@ -172,13 +172,22 @@ export class BlogService {
   }
 
   static async incrementViewCount(postId: string) {
-    const { error } = await supabase.rpc('increment', {
-      table_name: 'blog_posts',
-      column_name: 'view_count',
-      row_id: postId
-    });
+    try {
+      const { error } = await supabase.rpc('increment', {
+        table_name: 'blog_posts',
+        column_name: 'view_count',
+        row_id: postId
+      });
 
-    if (error) console.error('Failed to increment view count:', error);
+      if (error) {
+        // Fallback: Just log the error, don't try to update
+        // The increment function needs to be created in the database
+        console.warn('Increment function not found. Please run the migration to create it.');
+        console.error('Failed to increment view count:', error);
+      }
+    } catch (err) {
+      console.error('Error incrementing view count:', err);
+    }
   }
 
   // Categories

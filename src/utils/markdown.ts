@@ -23,9 +23,11 @@ renderer.heading = (text: string, level: number) => {
   };
 
   const className = sizes[level as keyof typeof sizes] || sizes[6];
-  const id = text.toLowerCase().replace(/[^\w]+/g, '-');
+  // Ensure text is a string before calling toLowerCase
+  const textStr = String(text || '');
+  const id = textStr.toLowerCase().replace(/[^\w]+/g, '-');
 
-  return `<h${level} id="${id}" class="${className}">${text}</h${level}>`;
+  return `<h${level} id="${id}" class="${className}">${textStr}</h${level}>`;
 };
 
 // Custom paragraph renderer with better spacing
@@ -113,10 +115,11 @@ export function extractTableOfContents(markdown: string) {
 
   tokens.forEach(token => {
     if (token.type === 'heading' && token.depth <= 3) {
-      const id = token.text.toLowerCase().replace(/[^\w]+/g, '-');
+      const textStr = String(token.text || '');
+      const id = textStr.toLowerCase().replace(/[^\w]+/g, '-');
       headings.push({
         level: token.depth,
-        text: token.text,
+        text: textStr,
         id
       });
     }
