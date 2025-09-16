@@ -10,6 +10,7 @@ import AuthCallback from "./pages/AuthCallback";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import CMS from "./pages/CMS";
+import BlogCMS from "./pages/CMS/BlogCMS";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import BlogPage from "./pages/Blog";
 import BlogPostPage from "./pages/Blog/BlogPost";
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/cms" element={<CMS />} />
+            <Route path="/cms/blog" element={<BlogCMS />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
