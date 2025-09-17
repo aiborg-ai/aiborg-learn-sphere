@@ -9,12 +9,15 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2, Brain, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { GoogleIcon } from '@/components/icons/GoogleIcon';
+import { Separator } from '@/components/ui/separator';
 
 export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('signin');
-  const { signIn, signUp, user } = useAuth();
+  const { signIn, signUp, signInWithGoogle, user } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if user is already logged in
@@ -41,6 +44,19 @@ export default function Auth() {
       navigate('/');
     }
     setIsLoading(false);
+  };
+
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    setError(null);
+
+    const { error } = await signInWithGoogle();
+
+    if (error) {
+      setError(error.message);
+      setIsGoogleLoading(false);
+    }
+    // Navigation will happen automatically via auth state change listener
   };
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -123,7 +139,31 @@ export default function Auth() {
                 </Alert>
               )}
 
-              <TabsContent value="signin">
+              <TabsContent value="signin" className="space-y-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
+                  onClick={handleGoogleSignIn}
+                  disabled={isGoogleLoading || isLoading}
+                >
+                  {isGoogleLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <GoogleIcon className="mr-2 h-4 w-4" />
+                  )}
+                  Continue with Google
+                </Button>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <Separator className="w-full bg-white/20" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-transparent px-2 text-white/60">Or continue with email</span>
+                  </div>
+                </div>
+
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-white">Email</Label>
@@ -158,7 +198,31 @@ export default function Auth() {
                 </form>
               </TabsContent>
 
-              <TabsContent value="signup">
+              <TabsContent value="signup" className="space-y-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
+                  onClick={handleGoogleSignIn}
+                  disabled={isGoogleLoading || isLoading}
+                >
+                  {isGoogleLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <GoogleIcon className="mr-2 h-4 w-4" />
+                  )}
+                  Continue with Google
+                </Button>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <Separator className="w-full bg-white/20" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-transparent px-2 text-white/60">Or sign up with email</span>
+                  </div>
+                </div>
+
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="displayName" className="text-white">Display Name</Label>
