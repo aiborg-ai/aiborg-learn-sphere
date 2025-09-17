@@ -44,7 +44,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <img src="/aiborg-logo.svg" alt="Aiborg" className="h-10 w-auto" />
+            <img src="/logo.jpeg" alt="Aiborg" className="h-10 w-auto object-contain" />
           </Link>
 
           {/* Desktop Navigation */}

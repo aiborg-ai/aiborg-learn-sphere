@@ -81,7 +81,7 @@ export function Footer() {
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <Link to="/" className="inline-block mb-4">
-              <img src="/aiborg-logo.svg" alt="Aiborg" className="h-12 w-auto" />
+              <img src="/logo.jpeg" alt="Aiborg" className="h-12 w-auto object-contain" />
             </Link>
             <p className="text-muted-foreground mb-6 max-w-sm">
               Empowering the future with AI education. Learn, grow, and innovate with Aiborg's comprehensive training programs.
