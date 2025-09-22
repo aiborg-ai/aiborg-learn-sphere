@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Clock, Users, Globe, CheckCircle, User } from 'lucide-react';
+import { logger } from '@/utils/logger';
 
 interface CourseDetailsModalProps {
   isOpen: boolean;
@@ -31,7 +32,7 @@ export const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({
   onEnroll,
   course
 }) => {
-  console.log("CourseDetailsModal rendered with isOpen:", isOpen, "course:", course?.title);
+  logger.log("CourseDetailsModal rendered with isOpen:", isOpen, "course:", course?.title);
   const handleEnrollClick = () => {
     onClose();
     onEnroll();

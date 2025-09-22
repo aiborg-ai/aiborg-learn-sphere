@@ -64,8 +64,16 @@ The application uses Supabase with TypeScript types auto-generated in `src/integ
 
 ### Deployment
 
+#### GitHub Repository
+- **Repository URL**: https://github.com/aiborg-ai/aiborg-ai-web
+- **Main Branch**: `main`
+- **Auto-deployment**: Pushes to main branch automatically trigger Vercel deployments
+
 #### Vercel Deployment
-This project is deployed on Vercel at https://aiborg-ai-web.vercel.app
+- **Production URL**: https://aiborg-ai-web.vercel.app
+- **Vercel Dashboard**: https://vercel.com/hirendra-vikrams-projects/aiborg-ai-web/deployments
+- **Project Name**: `aiborg-ai-web` (NOT `aiborg-learn-sphere`)
+- **Team**: `hirendra-vikrams-projects`
 
 **IMPORTANT Deployment Notes:**
 1. **Correct Project**: Use `aiborg-ai-web` (NOT `aiborg-learn-sphere`)
@@ -96,14 +104,40 @@ npx vercel inspect <deployment-url> --logs --token ogferIl3xcqkP9yIUXzMezgH
 - Set Site URL to production URL
 - Add allowed redirect URLs for both local and production
 
-#### Git Configuration
-**CRITICAL**: Set correct git author for deployments to work:
+#### Git Configuration & Commands
+
+**Repository Setup:**
+```bash
+# Clone the repository
+git clone https://github.com/aiborg-ai/aiborg-ai-web.git
+
+# Set remote (if needed)
+git remote set-url origin https://github.com/aiborg-ai/aiborg-ai-web.git
+
+# Check current remote
+git remote -v
+```
+
+**CRITICAL Git Author Configuration** (Required for deployments):
 ```bash
 git config user.email "hirendra.vikram@aiborg.ai"
 git config user.name "aiborg-ai"
 ```
 
-If deployment fails with "Git author must have access" error, amend commit:
+**Push to GitHub (triggers auto-deployment):**
+```bash
+# Add changes
+git add .
+
+# Commit with proper author
+git commit -m "Your commit message"
+
+# Push to main branch
+git push origin main
+```
+
+**Fix Author Issues:**
+If deployment fails with "Git author must have access" error:
 ```bash
 git commit --amend --author="aiborg-ai <hirendra.vikram@aiborg.ai>" --no-edit
 git push --force origin main
@@ -114,8 +148,13 @@ git push --force origin main
 - Favicon: `/public/aiborg-favicon.svg` - Compact "AI" icon in gold
 - No Lovable branding should remain
 
-#### Development Origins
-Originally created on Lovable.dev, now independently deployed. Changes can be made via:
-1. Local development (push to GitHub → auto-deploy to Vercel)
-2. Direct GitHub editing (auto-deploys)
-3. Lovable.dev interface (if still connected)
+#### Development Workflow
+Changes can be deployed through:
+1. **Local Development** → Push to GitHub → Auto-deploys to Vercel
+2. **Direct GitHub Editing** → Auto-deploys on commit to main branch
+3. **Vercel Dashboard** → Manual redeployment if needed
+
+**Important URLs:**
+- GitHub Repo: https://github.com/aiborg-ai/aiborg-ai-web
+- Live Site: https://aiborg-ai-web.vercel.app
+- Vercel Dashboard: https://vercel.com/hirendra-vikrams-projects/aiborg-ai-web/deployments

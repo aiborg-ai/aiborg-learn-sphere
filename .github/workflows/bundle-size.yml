@@ -1,0 +1,228 @@
+name: Bundle Size Analysis
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+
+jobs:
+  analyze:
+    name: Analyze Bundle Size
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build PR version
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+      - name: Analyze PR bundle
+        id: analyze-pr
+        run: |
+          # Get bundle sizes
+          echo "📦 Analyzing PR bundle sizes..."
+
+          # JavaScript files
+          js_files=$(find dist -name "*.js" -type f)
+          total_js_size=0
+          for file in $js_files; do
+            size=$(stat -c%s "$file" 2>/dev/null || stat -f%z "$file" 2>/dev/null)
+            total_js_size=$((total_js_size + size))
+          done
+
+          # CSS files
+          css_files=$(find dist -name "*.css" -type f)
+          total_css_size=0
+          for file in $css_files; do
+            size=$(stat -c%s "$file" 2>/dev/null || stat -f%z "$file" 2>/dev/null)
+            total_css_size=$((total_css_size + size))
+          done
+
+          # Total size
+          total_size=$((total_js_size + total_css_size))
+
+          echo "pr_js_size=$total_js_size" >> $GITHUB_OUTPUT
+          echo "pr_css_size=$total_css_size" >> $GITHUB_OUTPUT
+          echo "pr_total_size=$total_size" >> $GITHUB_OUTPUT
+
+          # Save detailed report
+          echo "## Bundle Size Report (PR)" > pr-bundle-report.md
+          echo "" >> pr-bundle-report.md
+          echo "| Type | Size | Gzipped |" >> pr-bundle-report.md
+          echo "|------|------|---------|" >> pr-bundle-report.md
+
+          for file in $js_files; do
+            size=$(stat -c%s "$file" 2>/dev/null || stat -f%z "$file" 2>/dev/null)
+            gzip_size=$(gzip -c "$file" | wc -c)
+            name=$(basename "$file")
+            echo "| JS: $name | $(numfmt --to=iec-i --suffix=B $size) | $(numfmt --to=iec-i --suffix=B $gzip_size) |" >> pr-bundle-report.md
+          done
+
+          for file in $css_files; do
+            size=$(stat -c%s "$file" 2>/dev/null || stat -f%z "$file" 2>/dev/null)
+            gzip_size=$(gzip -c "$file" | wc -c)
+            name=$(basename "$file")
+            echo "| CSS: $name | $(numfmt --to=iec-i --suffix=B $size) | $(numfmt --to=iec-i --suffix=B $gzip_size) |" >> pr-bundle-report.md
+          done
+
+          echo "" >> pr-bundle-report.md
+          echo "**Total JS:** $(numfmt --to=iec-i --suffix=B $total_js_size)" >> pr-bundle-report.md
+          echo "**Total CSS:** $(numfmt --to=iec-i --suffix=B $total_css_size)" >> pr-bundle-report.md
+          echo "**Total Size:** $(numfmt --to=iec-i --suffix=B $total_size)" >> pr-bundle-report.md
+
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+
+      - name: Build base version
+        run: |
+          cd base
+          npm ci
+          npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+      - name: Analyze base bundle
+        id: analyze-base
+        run: |
+          cd base
+          echo "📦 Analyzing base bundle sizes..."
+
+          # JavaScript files
+          js_files=$(find dist -name "*.js" -type f)
+          total_js_size=0
+          for file in $js_files; do
+            size=$(stat -c%s "$file" 2>/dev/null || stat -f%z "$file" 2>/dev/null)
+            total_js_size=$((total_js_size + size))
+          done
+
+          # CSS files
+          css_files=$(find dist -name "*.css" -type f)
+          total_css_size=0
+          for file in $css_files; do
+            size=$(stat -c%s "$file" 2>/dev/null || stat -f%z "$file" 2>/dev/null)
+            total_css_size=$((total_css_size + size))
+          done
+
+          # Total size
+          total_size=$((total_js_size + total_css_size))
+
+          echo "base_js_size=$total_js_size" >> $GITHUB_OUTPUT
+          echo "base_css_size=$total_css_size" >> $GITHUB_OUTPUT
+          echo "base_total_size=$total_size" >> $GITHUB_OUTPUT
+
+      - name: Calculate differences
+        id: calculate-diff
+        run: |
+          pr_js=${{ steps.analyze-pr.outputs.pr_js_size }}
+          base_js=${{ steps.analyze-base.outputs.base_js_size }}
+          js_diff=$((pr_js - base_js))
+          js_percent=$((js_diff * 100 / (base_js + 1)))
+
+          pr_css=${{ steps.analyze-pr.outputs.pr_css_size }}
+          base_css=${{ steps.analyze-base.outputs.base_css_size }}
+          css_diff=$((pr_css - base_css))
+          css_percent=$((css_diff * 100 / (base_css + 1)))
+
+          pr_total=${{ steps.analyze-pr.outputs.pr_total_size }}
+          base_total=${{ steps.analyze-base.outputs.base_total_size }}
+          total_diff=$((pr_total - base_total))
+          total_percent=$((total_diff * 100 / (base_total + 1)))
+
+          echo "js_diff=$js_diff" >> $GITHUB_OUTPUT
+          echo "js_percent=$js_percent" >> $GITHUB_OUTPUT
+          echo "css_diff=$css_diff" >> $GITHUB_OUTPUT
+          echo "css_percent=$css_percent" >> $GITHUB_OUTPUT
+          echo "total_diff=$total_diff" >> $GITHUB_OUTPUT
+          echo "total_percent=$total_percent" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+
+            // Read the detailed report
+            const report = fs.readFileSync('pr-bundle-report.md', 'utf8');
+
+            // Format sizes
+            function formatBytes(bytes) {
+              const sizes = ['B', 'KB', 'MB'];
+              if (bytes === 0) return '0 B';
+              const i = Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024));
+              return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+            }
+
+            // Get values
+            const pr_total = ${{ steps.analyze-pr.outputs.pr_total_size }};
+            const base_total = ${{ steps.analyze-base.outputs.base_total_size }};
+            const total_diff = ${{ steps.calculate-diff.outputs.total_diff }};
+            const total_percent = ${{ steps.calculate-diff.outputs.total_percent }};
+
+            const pr_js = ${{ steps.analyze-pr.outputs.pr_js_size }};
+            const base_js = ${{ steps.analyze-base.outputs.base_js_size }};
+            const js_diff = ${{ steps.calculate-diff.outputs.js_diff }};
+            const js_percent = ${{ steps.calculate-diff.outputs.js_percent }};
+
+            const pr_css = ${{ steps.analyze-pr.outputs.pr_css_size }};
+            const base_css = ${{ steps.analyze-base.outputs.base_css_size }};
+            const css_diff = ${{ steps.calculate-diff.outputs.css_diff }};
+            const css_percent = ${{ steps.calculate-diff.outputs.css_percent }};
+
+            // Create status emoji
+            const getEmoji = (diff) => diff > 0 ? '⚠️' : diff < 0 ? '✅' : '➖';
+            const getSign = (num) => num > 0 ? '+' : '';
+
+            // Build comment
+            let comment = `## 📊 Bundle Size Analysis\n\n`;
+            comment += `### Summary\n\n`;
+            comment += `| Metric | Base | PR | Difference | % Change |\n`;
+            comment += `|--------|------|-----|------------|----------|\n`;
+            comment += `| **Total** ${getEmoji(total_diff)} | ${formatBytes(base_total)} | ${formatBytes(pr_total)} | ${getSign(total_diff)}${formatBytes(total_diff)} | ${getSign(total_percent)}${total_percent}% |\n`;
+            comment += `| JavaScript | ${formatBytes(base_js)} | ${formatBytes(pr_js)} | ${getSign(js_diff)}${formatBytes(js_diff)} | ${getSign(js_percent)}${js_percent}% |\n`;
+            comment += `| CSS | ${formatBytes(base_css)} | ${formatBytes(pr_css)} | ${getSign(css_diff)}${formatBytes(css_diff)} | ${getSign(css_percent)}${css_percent}% |\n`;
+            comment += `\n`;
+
+            // Add warnings
+            if (pr_total > 1024 * 1024) {
+              comment += `⚠️ **Warning:** Total bundle size exceeds 1MB (${formatBytes(pr_total)})\n\n`;
+            }
+
+            if (total_percent > 10) {
+              comment += `⚠️ **Warning:** Bundle size increased by more than 10%\n\n`;
+            }
+
+            // Add detailed report
+            comment += `<details>\n`;
+            comment += `<summary>📋 Detailed Report</summary>\n\n`;
+            comment += report;
+            comment += `\n</details>`;
+
+            // Post comment
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

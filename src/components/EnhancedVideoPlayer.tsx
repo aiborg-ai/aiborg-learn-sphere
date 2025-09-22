@@ -14,6 +14,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 
 interface Chapter {
   id: string;
@@ -140,7 +141,7 @@ export function EnhancedVideoPlayer({
         setLastSavedProgress(data.progress_percentage || 0);
       }
     } catch (error) {
-      console.error('Error loading progress:', error);
+      logger.error('Error loading progress:', error);
     }
   };
 
@@ -195,7 +196,7 @@ export function EnhancedVideoPlayer({
         onProgressUpdate(currentProgress);
       }
     } catch (error) {
-      console.error('Error saving progress:', error);
+      logger.error('Error saving progress:', error);
     }
   };
 
@@ -220,7 +221,7 @@ export function EnhancedVideoPlayer({
         })));
       }
     } catch (error) {
-      console.error('Error loading notes:', error);
+      logger.error('Error loading notes:', error);
     }
   };
 
@@ -341,7 +342,7 @@ export function EnhancedVideoPlayer({
         description: 'Your note has been saved'
       });
     } catch (error) {
-      console.error('Error adding note:', error);
+      logger.error('Error adding note:', error);
       toast({
         title: 'Error',
         description: 'Failed to save note',
@@ -375,7 +376,7 @@ export function EnhancedVideoPlayer({
         description: 'Your note has been updated'
       });
     } catch (error) {
-      console.error('Error updating note:', error);
+      logger.error('Error updating note:', error);
       toast({
         title: 'Error',
         description: 'Failed to update note',
@@ -398,7 +399,7 @@ export function EnhancedVideoPlayer({
         description: 'Your note has been removed'
       });
     } catch (error) {
-      console.error('Error deleting note:', error);
+      logger.error('Error deleting note:', error);
       toast({
         title: 'Error',
         description: 'Failed to delete note',

@@ -1,0 +1,124 @@
+{
+  "title": "Course Title Here",
+  "description": "Detailed description of what the course covers, learning objectives, and what students will achieve",
+  "audiences": [
+    "Primary",
+    "Secondary",
+    "Professional",
+    "Business"
+  ],
+  "_audience_note": "Choose one or more from: Primary, Secondary, Professional, Business",
+
+  "mode": "Online",
+  "_mode_options": ["Online", "Offline", "Hybrid"],
+
+  "duration": "8 weeks",
+  "_duration_examples": ["4 weeks", "6 weeks", "8 weeks", "3 months", "6 months"],
+
+  "price": "₹5000",
+  "_price_note": "Use format like ₹5000 or $99 or 'Free'",
+
+  "level": "Beginner",
+  "_level_options": ["Beginner", "Intermediate", "Advanced"],
+
+  "start_date": "2024-02-01",
+  "_start_date_format": "YYYY-MM-DD or text like 'Flexible' or 'Coming Soon'",
+
+  "features": [
+    "Live interactive sessions",
+    "Hands-on projects",
+    "Certificate of completion",
+    "24/7 support",
+    "Recorded sessions available"
+  ],
+  "_features_note": "List key features and benefits of the course",
+
+  "category": "Technology",
+  "_category_examples": ["Technology", "Programming", "AI/ML", "Data Science", "Web Development", "Mobile Development", "Design", "Business", "Marketing", "Language"],
+
+  "keywords": [
+    "python",
+    "programming",
+    "coding",
+    "beginners",
+    "software development"
+  ],
+  "_keywords_note": "Add searchable keywords for the course",
+
+  "prerequisites": "Basic computer knowledge",
+  "_prerequisites_note": "Specify requirements or use 'None' if no prerequisites",
+
+  "is_active": true,
+  "_is_active_note": "Set to true to make course available, false to hide it",
+
+  "currently_enrolling": true,
+  "_currently_enrolling_note": "Set to true if accepting new enrollments",
+
+  "display": true,
+  "_display_note": "Set to true to show on frontend, false to hide from public but keep in admin",
+
+  "sort_order": 0,
+  "_sort_order_note": "Lower numbers appear first, use for ordering courses",
+
+  "course_materials": [
+    {
+      "title": "Introduction to Programming",
+      "type": "video",
+      "url": "https://example.com/video1.mp4",
+      "description": "First lesson covering basics",
+      "duration": "45 mins",
+      "order_index": 1,
+      "is_preview": true
+    },
+    {
+      "title": "Setting up Development Environment",
+      "type": "document",
+      "url": "https://example.com/setup-guide.pdf",
+      "description": "Step-by-step setup guide",
+      "duration": "30 mins",
+      "order_index": 2,
+      "is_preview": false
+    },
+    {
+      "title": "Practice Exercises",
+      "type": "assignment",
+      "url": "https://example.com/exercises.pdf",
+      "description": "Hands-on coding exercises",
+      "duration": "2 hours",
+      "order_index": 3,
+      "is_preview": false
+    }
+  ],
+  "_course_materials_note": "Optional: Add course materials. Types can be: video, document, assignment, quiz, live_session",
+
+  "instructor_info": {
+    "name": "Instructor Name",
+    "email": "instructor@example.com",
+    "bio": "Brief bio of the instructor",
+    "expertise": ["Python", "Web Development", "AI/ML"]
+  },
+  "_instructor_info_note": "Optional: Add instructor details",
+
+  "batch_info": {
+    "batch_size": 30,
+    "min_students": 10,
+    "max_students": 50
+  },
+  "_batch_info_note": "Optional: Specify batch size limits",
+
+  "schedule": {
+    "days": ["Monday", "Wednesday", "Friday"],
+    "time": "6:00 PM - 8:00 PM IST",
+    "timezone": "IST"
+  },
+  "_schedule_note": "Optional: Add schedule details for live sessions",
+
+  "_instructions": {
+    "1": "Fill in all fields without underscore prefix",
+    "2": "Fields with underscore prefix (like _note) are just for guidance - don't include them in final JSON",
+    "3": "Remove any optional sections you don't need",
+    "4": "Ensure audiences array contains valid values only",
+    "5": "Keep display=true to show course publicly, false to hide",
+    "6": "Save this as 'new_course.json' and share it for processing"
+  }
+}

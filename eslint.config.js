@@ -23,7 +23,37 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
-      "@typescript-eslint/no-unused-vars": "off",
+      // Prevent console.log in production
+      "no-console": ["error", { allow: ["warn", "error"] }],
+
+      // TypeScript rules to prevent 'any' usage
+      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/no-unused-vars": ["warn", {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_"
+      }],
+
+      // Enforce consistent code style
+      "@typescript-eslint/consistent-type-imports": ["warn", {
+        prefer: "type-imports",
+        disallowTypeAnnotations: true,
+      }],
+
+      // Prevent large files (warning at 300 lines, error at 500)
+      "max-lines": ["warn", {
+        max: 500,
+        skipBlankLines: true,
+        skipComments: true
+      }],
+
+
+      // Prevent hardcoded values
+      "no-magic-numbers": ["warn", {
+        ignore: [0, 1, -1],
+        ignoreArrayIndexes: true,
+        enforceConst: true,
+        detectObjects: false,
+      }],
     },
   }
 );

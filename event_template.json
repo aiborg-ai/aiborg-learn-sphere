@@ -1,0 +1,169 @@
+{
+  "title": "Event Title Here",
+  "description": "Detailed description of the event, what will be covered, who should attend, and key takeaways",
+
+  "event_type": "workshop",
+  "_event_type_options": ["workshop", "webinar", "seminar", "conference", "meetup", "hackathon", "bootcamp", "training"],
+
+  "date": "2024-02-15",
+  "_date_format": "YYYY-MM-DD format",
+
+  "time": "6:00 PM - 8:00 PM IST",
+  "_time_note": "Include timezone, e.g., '3:00 PM - 5:00 PM IST' or '10:00 AM EST'",
+
+  "duration": "2 hours",
+  "_duration_examples": ["30 minutes", "1 hour", "2 hours", "Half day", "Full day", "2 days"],
+
+  "location": "Online via Zoom",
+  "_location_examples": ["Online via Zoom", "Online - Google Meet", "AIBorg Office, Bangalore", "Hybrid - Online and Mumbai Office"],
+
+  "venue_details": {
+    "platform": "Zoom",
+    "meeting_link": "Will be shared with registered participants",
+    "address": "If physical venue, add full address here",
+    "room": "Conference Room A",
+    "parking": "Available on-site"
+  },
+  "_venue_details_note": "Optional: Add specific venue/platform details",
+
+  "max_attendees": 100,
+  "_max_attendees_note": "Maximum number of participants, use null for unlimited",
+
+  "registration_deadline": "2024-02-14",
+  "_registration_deadline_format": "YYYY-MM-DD - Usually a day before the event",
+
+  "price": "Free",
+  "_price_examples": ["Free", "₹500", "₹1000", "$25", "Free for students, ₹500 for professionals"],
+
+  "is_featured": false,
+  "_is_featured_note": "Set to true to highlight this event prominently",
+
+  "is_active": true,
+  "_is_active_note": "Set to true to make event visible, false to hide it",
+
+  "display": true,
+  "_display_note": "Set to true to show on frontend, false to hide from public but keep in admin",
+
+  "tags": [
+    "ai",
+    "machine learning",
+    "workshop",
+    "beginners",
+    "hands-on"
+  ],
+  "_tags_note": "Add relevant tags for categorization and search",
+
+  "speaker_info": {
+    "name": "Speaker Name",
+    "designation": "Senior AI Engineer",
+    "company": "AIBorg",
+    "bio": "Brief bio of the speaker with relevant experience",
+    "linkedin": "https://linkedin.com/in/speaker",
+    "photo_url": "https://example.com/speaker-photo.jpg"
+  },
+  "_speaker_info_note": "Optional: Add speaker/instructor details",
+
+  "agenda": [
+    {
+      "time": "6:00 PM - 6:15 PM",
+      "topic": "Introduction and Welcome",
+      "description": "Event overview and introductions"
+    },
+    {
+      "time": "6:15 PM - 7:00 PM",
+      "topic": "Main Presentation",
+      "description": "Deep dive into the core topic"
+    },
+    {
+      "time": "7:00 PM - 7:30 PM",
+      "topic": "Hands-on Activity",
+      "description": "Practical exercise or demo"
+    },
+    {
+      "time": "7:30 PM - 8:00 PM",
+      "topic": "Q&A and Networking",
+      "description": "Open discussion and networking"
+    }
+  ],
+  "_agenda_note": "Optional: Add detailed schedule",
+
+  "prerequisites": "Basic understanding of programming",
+  "_prerequisites_examples": ["None", "Basic programming knowledge", "Laptop with Python installed", "Prior registration required"],
+
+  "what_to_bring": [
+    "Laptop with internet connection",
+    "Notebook and pen",
+    "Questions for Q&A session"
+  ],
+  "_what_to_bring_note": "Optional: List of items attendees should bring",
+
+  "benefits": [
+    "Learn from industry experts",
+    "Hands-on practical experience",
+    "Networking opportunities",
+    "Certificate of participation",
+    "Access to recording (for online events)"
+  ],
+  "_benefits_note": "Key takeaways and benefits for attendees",
+
+  "target_audience": [
+    "Students",
+    "Working professionals",
+    "Entrepreneurs",
+    "AI enthusiasts"
+  ],
+  "_target_audience_note": "Who should attend this event",
+
+  "registration_form_fields": {
+    "collect_phone": true,
+    "collect_organization": true,
+    "collect_designation": true,
+    "collect_experience_level": true,
+    "custom_questions": [
+      "What do you hope to learn from this event?",
+      "How did you hear about us?"
+    ]
+  },
+  "_registration_form_fields_note": "Optional: Customize registration form",
+
+  "certificates": {
+    "provided": true,
+    "type": "Digital Certificate",
+    "criteria": "Attend full session"
+  },
+  "_certificates_note": "Optional: Certificate details",
+
+  "recording": {
+    "will_be_recorded": true,
+    "available_to_attendees": true,
+    "availability_duration": "7 days"
+  },
+  "_recording_note": "Optional: For online events",
+
+  "sponsors": [
+    {
+      "name": "Company Name",
+      "logo_url": "https://example.com/sponsor-logo.png",
+      "website": "https://sponsor.com",
+      "type": "Gold Sponsor"
+    }
+  ],
+  "_sponsors_note": "Optional: Add event sponsors",
+
+  "contact_info": {
+    "email": "events@aiborg.ai",
+    "phone": "+91-9876543210",
+    "whatsapp": "+91-9876543210"
+  },
+  "_contact_info_note": "Contact details for queries",
+
+  "_instructions": {
+    "1": "Fill in all fields without underscore prefix",
+    "2": "Fields with underscore prefix (like _note) are just for guidance - don't include them in final JSON",
+    "3": "Remove any optional sections you don't need",
+    "4": "Ensure date is in YYYY-MM-DD format",
+    "5": "Keep display=true to show event publicly, false to hide",
+    "6": "Set is_featured=true for important events to highlight them",
+    "7": "Save this as 'new_event.json' and share it for processing"
+  }
+}

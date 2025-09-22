@@ -17,6 +17,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Loader2, Users, BookOpen, Megaphone, Trash2, Shield, Eye, Edit, Plus, UserCheck, Star, Calendar, ToggleLeft, ToggleRight, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 import type { Review } from '@/hooks/useReviews';
 import type { Event } from '@/hooks/useEvents';
 import type { Course } from '@/hooks/useCourses';
@@ -179,7 +180,7 @@ export default function Admin() {
       setEnrollments((enrollmentsData as Enrollment[]) || []);
 
     } catch (error) {
-      console.error('Error fetching admin data:', error);
+      logger.error('Error fetching admin data:', error);
       toast({
         title: "Error",
         description: "Failed to fetch admin data",
@@ -207,7 +208,7 @@ export default function Admin() {
         description: "User deleted successfully",
       });
     } catch (error) {
-      console.error('Error deleting user:', error);
+      logger.error('Error deleting user:', error);
       toast({
         title: "Error",
         description: "Failed to delete user",
@@ -234,7 +235,7 @@ export default function Admin() {
         description: "User role updated successfully",
       });
     } catch (error) {
-      console.error('Error updating user role:', error);
+      logger.error('Error updating user role:', error);
       toast({
         title: "Error",
         description: "Failed to update user role",
@@ -282,7 +283,7 @@ export default function Admin() {
           .insert(audiencesData);
 
         if (audienceError) {
-          console.error('Error adding audiences:', audienceError);
+          logger.error('Error adding audiences:', audienceError);
         }
       }
 
@@ -295,7 +296,7 @@ export default function Admin() {
       courseForm.reset();
       fetchData();
     } catch (error) {
-      console.error('Error creating course:', error);
+      logger.error('Error creating course:', error);
       toast({
         title: "Error",
         description: "Failed to create course",
@@ -338,7 +339,7 @@ export default function Admin() {
         .eq('course_id', editingCourse.id);
 
       if (deleteError) {
-        console.error('Error deleting old audiences:', deleteError);
+        logger.error('Error deleting old audiences:', deleteError);
       }
 
       // Then insert new audiences
@@ -353,7 +354,7 @@ export default function Admin() {
           .insert(audiencesData);
 
         if (audienceError) {
-          console.error('Error adding audiences:', audienceError);
+          logger.error('Error adding audiences:', audienceError);
         }
       }
 
@@ -367,7 +368,7 @@ export default function Admin() {
       courseForm.reset();
       fetchData();
     } catch (error) {
-      console.error('Error updating course:', error);
+      logger.error('Error updating course:', error);
       toast({
         title: "Error",
         description: "Failed to update course",
@@ -393,7 +394,7 @@ export default function Admin() {
         description: "Course deleted successfully",
       });
     } catch (error) {
-      console.error('Error deleting course:', error);
+      logger.error('Error deleting course:', error);
       toast({
         title: "Error",
         description: "Failed to delete course",
@@ -420,7 +421,7 @@ export default function Admin() {
         description: `Course ${!currentStatus ? 'activated' : 'deactivated'} successfully`,
       });
     } catch (error) {
-      console.error('Error updating course status:', error);
+      logger.error('Error updating course status:', error);
       toast({
         title: "Error",
         description: "Failed to update course status",
@@ -447,7 +448,7 @@ export default function Admin() {
         description: `Course ${!currentDisplay ? 'shown' : 'hidden'} on frontend`,
       });
     } catch (error) {
-      console.error('Error updating course display:', error);
+      logger.error('Error updating course display:', error);
       toast({
         title: "Error",
         description: "Failed to update course display",
@@ -485,7 +486,7 @@ export default function Admin() {
       fetchData();
       (e.target as HTMLFormElement).reset();
     } catch (error) {
-      console.error('Error creating announcement:', error);
+      logger.error('Error creating announcement:', error);
       toast({
         title: "Error",
         description: "Failed to create announcement",
@@ -513,7 +514,7 @@ export default function Admin() {
         description: "Announcement status updated",
       });
     } catch (error) {
-      console.error('Error updating announcement:', error);
+      logger.error('Error updating announcement:', error);
       toast({
         title: "Error",
         description: "Failed to update announcement",
@@ -1278,7 +1279,7 @@ function ReviewsManagement() {
       if (error) throw error;
       setReviews(data || []);
     } catch (error) {
-      console.error('Error fetching reviews:', error);
+      logger.error('Error fetching reviews:', error);
       toast({
         title: "Error",
         description: "Failed to fetch reviews",
@@ -1307,7 +1308,7 @@ function ReviewsManagement() {
         description: `Review ${!currentDisplay ? 'shown' : 'hidden'} on frontend`,
       });
     } catch (error) {
-      console.error('Error updating review display:', error);
+      logger.error('Error updating review display:', error);
       toast({
         title: "Error",
         description: "Failed to update review display",
@@ -1334,7 +1335,7 @@ function ReviewsManagement() {
         description: `Review ${!currentApproval ? 'approved' : 'unapproved'}`,
       });
     } catch (error) {
-      console.error('Error updating review approval:', error);
+      logger.error('Error updating review approval:', error);
       toast({
         title: "Error",
         description: "Failed to update review approval",
@@ -1455,7 +1456,7 @@ function EventsManagement() {
       if (error) throw error;
       setEvents(data || []);
     } catch (error) {
-      console.error('Error fetching events:', error);
+      logger.error('Error fetching events:', error);
       toast({
         title: "Error",
         description: "Failed to fetch events",
@@ -1484,7 +1485,7 @@ function EventsManagement() {
         description: `Event ${!currentDisplay ? 'shown' : 'hidden'} on frontend`,
       });
     } catch (error) {
-      console.error('Error updating event display:', error);
+      logger.error('Error updating event display:', error);
       toast({
         title: "Error",
         description: "Failed to update event display",
@@ -1511,7 +1512,7 @@ function EventsManagement() {
         description: `Event ${!currentStatus ? 'activated' : 'deactivated'}`,
       });
     } catch (error) {
-      console.error('Error updating event status:', error);
+      logger.error('Error updating event status:', error);
       toast({
         title: "Error",
         description: "Failed to update event status",

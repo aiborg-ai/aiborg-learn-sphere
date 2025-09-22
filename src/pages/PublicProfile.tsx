@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 import {
   Trophy, Award, Star, Calendar, Clock, BookOpen, Target,
   Flame, Shield, CheckCircle, TrendingUp, ArrowLeft, Share2,
@@ -169,7 +170,7 @@ export default function PublicProfile() {
 
       setProfile(profileInfo);
     } catch (error) {
-      console.error('Error fetching public profile:', error);
+      logger.error('Error fetching public profile:', error);
     } finally {
       setLoading(false);
     }

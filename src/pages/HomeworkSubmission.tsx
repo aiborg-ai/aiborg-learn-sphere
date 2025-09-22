@@ -10,6 +10,7 @@ import { Progress } from '@/components/ui/progress';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 import {
   FileText, Upload, Clock, Calendar, CheckCircle, AlertCircle,
   Download, Trash, Send, Save, ArrowLeft, Loader2, FileIcon,
@@ -127,7 +128,7 @@ export default function HomeworkSubmission() {
         setUploadedFileUrls(submissionData.file_urls || []);
       }
     } catch (error) {
-      console.error('Error fetching assignment:', error);
+      logger.error('Error fetching assignment:', error);
       toast({
         title: 'Error',
         description: 'Failed to load assignment details',
@@ -257,7 +258,7 @@ export default function HomeworkSubmission() {
         description: 'Your homework draft has been saved successfully'
       });
     } catch (error) {
-      console.error('Error saving draft:', error);
+      logger.error('Error saving draft:', error);
       toast({
         title: 'Error',
         description: 'Failed to save draft',
@@ -343,7 +344,7 @@ export default function HomeworkSubmission() {
 
       navigate('/dashboard');
     } catch (error) {
-      console.error('Error submitting homework:', error);
+      logger.error('Error submitting homework:', error);
       toast({
         title: 'Error',
         description: 'Failed to submit homework',

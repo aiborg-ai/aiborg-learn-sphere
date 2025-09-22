@@ -10,14 +10,16 @@ import { useAuth } from '@/hooks/useAuth';
 import { Loader2, Brain, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { GoogleIcon } from '@/components/icons/GoogleIcon';
+import { GitHubIcon } from '@/components/icons/GitHubIcon';
 import { Separator } from '@/components/ui/separator';
 
 export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isGitHubLoading, setIsGitHubLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('signin');
-  const { signIn, signUp, signInWithGoogle, user } = useAuth();
+  const { signIn, signUp, signInWithGoogle, signInWithGitHub, user } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if user is already logged in
@@ -55,6 +57,19 @@ export default function Auth() {
     if (error) {
       setError(error.message);
       setIsGoogleLoading(false);
+    }
+    // Navigation will happen automatically via auth state change listener
+  };
+
+  const handleGitHubSignIn = async () => {
+    setIsGitHubLoading(true);
+    setError(null);
+
+    const { error } = await signInWithGitHub();
+
+    if (error) {
+      setError(error.message);
+      setIsGitHubLoading(false);
     }
     // Navigation will happen automatically via auth state change listener
   };
@@ -140,20 +155,37 @@ export default function Auth() {
               )}
 
               <TabsContent value="signin" className="space-y-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
-                  onClick={handleGoogleSignIn}
-                  disabled={isGoogleLoading || isLoading}
-                >
-                  {isGoogleLoading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <GoogleIcon className="mr-2 h-4 w-4" />
-                  )}
-                  Continue with Google
-                </Button>
+                <div className="space-y-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
+                    onClick={handleGoogleSignIn}
+                    disabled={isGoogleLoading || isLoading || isGitHubLoading}
+                  >
+                    {isGoogleLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <GoogleIcon className="mr-2 h-4 w-4" />
+                    )}
+                    Continue with Google
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full bg-gray-900 text-white hover:bg-gray-800 border-gray-700"
+                    onClick={handleGitHubSignIn}
+                    disabled={isGitHubLoading || isLoading || isGoogleLoading}
+                  >
+                    {isGitHubLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <GitHubIcon className="mr-2 h-4 w-4" />
+                    )}
+                    Continue with GitHub
+                  </Button>
+                </div>
 
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
@@ -199,20 +231,37 @@ export default function Auth() {
               </TabsContent>
 
               <TabsContent value="signup" className="space-y-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
-                  onClick={handleGoogleSignIn}
-                  disabled={isGoogleLoading || isLoading}
-                >
-                  {isGoogleLoading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <GoogleIcon className="mr-2 h-4 w-4" />
-                  )}
-                  Continue with Google
-                </Button>
+                <div className="space-y-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
+                    onClick={handleGoogleSignIn}
+                    disabled={isGoogleLoading || isLoading || isGitHubLoading}
+                  >
+                    {isGoogleLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <GoogleIcon className="mr-2 h-4 w-4" />
+                    )}
+                    Continue with Google
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full bg-gray-900 text-white hover:bg-gray-800 border-gray-700"
+                    onClick={handleGitHubSignIn}
+                    disabled={isGitHubLoading || isLoading || isGoogleLoading}
+                  >
+                    {isGitHubLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <GitHubIcon className="mr-2 h-4 w-4" />
+                    )}
+                    Continue with GitHub
+                  </Button>
+                </div>
 
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">

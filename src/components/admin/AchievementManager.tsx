@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 import {
   Trophy, Plus, Edit, Trash, Award, Users, Search,
   CheckCircle, XCircle, Loader2, Star, Shield
@@ -78,7 +79,7 @@ export function AchievementManager() {
       if (error) throw error;
       setAchievements(data || []);
     } catch (error) {
-      console.error('Error fetching achievements:', error);
+      logger.error('Error fetching achievements:', error);
       toast({
         title: 'Error',
         description: 'Failed to load achievements',
@@ -127,7 +128,7 @@ export function AchievementManager() {
 
       setUsers(usersWithAchievements);
     } catch (error) {
-      console.error('Error fetching users:', error);
+      logger.error('Error fetching users:', error);
     }
   };
 
@@ -163,7 +164,7 @@ export function AchievementManager() {
       resetForm();
       fetchAchievements();
     } catch (error) {
-      console.error('Error creating achievement:', error);
+      logger.error('Error creating achievement:', error);
       toast({
         title: 'Error',
         description: 'Failed to create achievement',
@@ -206,7 +207,7 @@ export function AchievementManager() {
       resetForm();
       fetchAchievements();
     } catch (error) {
-      console.error('Error updating achievement:', error);
+      logger.error('Error updating achievement:', error);
       toast({
         title: 'Error',
         description: 'Failed to update achievement',
@@ -233,7 +234,7 @@ export function AchievementManager() {
 
       fetchAchievements();
     } catch (error) {
-      console.error('Error deleting achievement:', error);
+      logger.error('Error deleting achievement:', error);
       toast({
         title: 'Error',
         description: 'Failed to delete achievement',
@@ -283,7 +284,7 @@ export function AchievementManager() {
           variant: 'default'
         });
       } else {
-        console.error('Error allocating achievement:', error);
+        logger.error('Error allocating achievement:', error);
         toast({
           title: 'Error',
           description: 'Failed to allocate achievement',

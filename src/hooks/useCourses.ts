@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 
 export interface Course {
   id: number;
@@ -19,6 +20,7 @@ export interface Course {
   is_active: boolean;
   currently_enrolling: boolean;
   sort_order: number;
+  display: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -38,15 +40,17 @@ export const useCourses = () => {
         .from('courses_with_audiences')
         .select('*')
         .eq('is_active', true)
+        .eq('display', true)
         .order('sort_order', { ascending: true });
 
       if (viewError) {
         // Fallback to regular courses table if view doesn't exist yet
-        console.warn('View not available, falling back to regular table:', viewError);
+        logger.warn('View not available, falling back to regular table:', viewError);
         const { data, error } = await supabase
           .from('courses')
           .select('*')
           .eq('is_active', true)
+          .eq('display', true)
           .order('sort_order', { ascending: true });
 
         if (error) {
@@ -71,7 +75,7 @@ export const useCourses = () => {
         setCourses(processedCourses);
       }
     } catch (err) {
-      console.error('Error fetching courses:', err);
+      logger.error('Error fetching courses:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch courses');
     } finally {
       setLoading(false);

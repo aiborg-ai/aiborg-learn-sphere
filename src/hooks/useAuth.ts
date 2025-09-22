@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 
 export interface UserProfile {
   id: string;
@@ -62,13 +63,13 @@ export const useAuth = () => {
         .single();
 
       if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching profile:', error);
+        logger.error('Error fetching profile:', error);
         return;
       }
 
       setProfile(data);
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      logger.error('Error fetching profile:', error);
     }
   };
 
@@ -121,6 +122,20 @@ export const useAuth = () => {
     return { error };
   };
 
+  const signInWithGitHub = async () => {
+    const appUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+    const redirectUrl = `${appUrl}/`;
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo: redirectUrl,
+      },
+    });
+
+    return { error };
+  };
+
   const updateProfile = async (updates: Partial<UserProfile>) => {
     if (!user) return { error: new Error('No user logged in') };
 
@@ -144,6 +159,7 @@ export const useAuth = () => {
     signUp,
     signIn,
     signInWithGoogle,
+    signInWithGitHub,
     signOut,
     updateProfile,
     fetchUserProfile,

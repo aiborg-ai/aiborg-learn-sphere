@@ -1,25 +1,47 @@
+import { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PersonalizationProvider } from "@/contexts/PersonalizationContext";
-import Index from "./pages/Index";
-import Auth from "./pages/Auth";
-import AuthCallback from "./pages/AuthCallback";
-import Profile from "./pages/Profile";
-import Admin from "./pages/Admin";
-import CMS from "./pages/CMS";
-import BlogCMS from "./pages/CMS/BlogCMS";
-import PaymentSuccess from "./pages/PaymentSuccess";
-import BlogPage from "./pages/Blog";
-import BlogPostPage from "./pages/Blog/BlogPost";
-import NotFound from "./pages/NotFound";
-import Dashboard from "./pages/Dashboard";
-import HomeworkSubmission from "./pages/HomeworkSubmission";
-import PublicProfile from "./pages/PublicProfile";
+import { Loader2 } from "lucide-react";
 
-const queryClient = new QueryClient();
+// Create a loading component
+const PageLoader = () => (
+  <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+    <Loader2 className="h-8 w-8 animate-spin text-white" />
+  </div>
+);
+
+// Eagerly load the main page
+import Index from "./pages/Index";
+
+// Lazy load all other routes
+const Auth = lazy(() => import("./pages/Auth"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Admin = lazy(() => import("./pages/AdminRefactored"));
+const CMS = lazy(() => import("./pages/CMS"));
+const BlogCMS = lazy(() => import("./pages/CMS/BlogCMS"));
+const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
+const BlogPage = lazy(() => import("./pages/Blog"));
+const BlogPostPage = lazy(() => import("./pages/Blog/BlogPost"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Dashboard = lazy(() => import("./pages/DashboardRefactored"));
+const HomeworkSubmission = lazy(() => import("./pages/HomeworkSubmissionRefactored"));
+const PublicProfile = lazy(() => import("./pages/PublicProfile"));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 10 * 60 * 1000, // 10 minutes
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -28,23 +50,28 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/cms" element={<CMS />} />
-            <Route path="/cms/blog" element={<BlogCMS />} />
-            <Route path="/payment-success" element={<PaymentSuccess />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/blog/:slug" element={<BlogPostPage />} />
-            <Route path="/assignment/:assignmentId" element={<HomeworkSubmission />} />
-            <Route path="/user/:userId" element={<PublicProfile />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* Main page loaded eagerly for fast initial load */}
+              <Route path="/" element={<Index />} />
+
+              {/* All other routes are lazy loaded */}
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/cms" element={<CMS />} />
+              <Route path="/cms/blog" element={<BlogCMS />} />
+              <Route path="/payment-success" element={<PaymentSuccess />} />
+              <Route path="/blog" element={<BlogPage />} />
+              <Route path="/blog/:slug" element={<BlogPostPage />} />
+              <Route path="/assignment/:assignmentId" element={<HomeworkSubmission />} />
+              <Route path="/user/:userId" element={<PublicProfile />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </TooltipProvider>
     </PersonalizationProvider>

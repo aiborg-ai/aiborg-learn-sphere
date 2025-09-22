@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useEnrollments } from '@/hooks/useEnrollments';
 import { useCourses } from '@/hooks/useCourses';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 import {
   BookOpen, Trophy, Clock, TrendingUp, Award, Calendar,
   FileText, Users, Bell, ChevronRight, Play, BarChart,
@@ -113,7 +114,7 @@ export default function Dashboard() {
 
       if (dashboardError && dashboardError.code === '42P01') {
         // Table doesn't exist - LMS not set up
-        console.log('LMS tables not found in production');
+        logger.log('LMS tables not found in production');
         setLmsSetupRequired(true);
       }
 
@@ -140,7 +141,7 @@ export default function Dashboard() {
 
       if (progressError && progressError.code === '42P01') {
         // Table doesn't exist
-        console.log('User progress table not found');
+        logger.log('User progress table not found');
       }
 
       if (progressData) {
@@ -167,7 +168,7 @@ export default function Dashboard() {
 
       if (achievementError && achievementError.code === '42P01') {
         // Table doesn't exist
-        console.log('Achievements table not found');
+        logger.log('Achievements table not found');
       }
 
       if (achievementData) {
@@ -192,7 +193,7 @@ export default function Dashboard() {
 
       if (notificationError && notificationError.code === '42P01') {
         // Table doesn't exist
-        console.log('Notifications table not found');
+        logger.log('Notifications table not found');
       }
 
       if (notificationData) {
@@ -214,7 +215,7 @@ export default function Dashboard() {
 
       if (assignmentError && assignmentError.code === '42P01') {
         // Table doesn't exist
-        console.log('Homework tables not found');
+        logger.log('Homework tables not found');
       }
 
       if (assignmentData) {
@@ -228,7 +229,7 @@ export default function Dashboard() {
       }
 
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      logger.error('Error fetching dashboard data:', error);
     } finally {
       setDataLoading(false);
     }
