@@ -20,6 +20,7 @@ import Index from "./pages/Index";
 // Lazy load all other routes
 const Auth = lazy(() => import("./pages/Auth"));
 const AuthCallback = lazy(() => import("./pages/AuthCallback"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Admin = lazy(() => import("./pages/AdminRefactored"));
 const CMS = lazy(() => import("./pages/CMS"));
@@ -59,6 +60,7 @@ const App = () => (
               {/* All other routes are lazy loaded */}
               <Route path="/auth" element={<Auth />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/auth/reset-password" element={<ResetPassword />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/admin" element={<Admin />} />
