@@ -11,9 +11,10 @@ import { logger } from '@/utils/logger';
 
 // Import the new components
 import { UserManagement, type UserProfile } from '@/components/admin/UserManagement';
-import { CourseManagement, type Course } from '@/components/admin/CourseManagement';
+import { CourseManagementEnhanced } from '@/components/admin/CourseManagementEnhanced';
 import { EnrollmentManagement, type Enrollment } from '@/components/admin/EnrollmentManagement';
-import { AnnouncementManagement, type Announcement } from '@/components/admin/AnnouncementManagement';
+import { AnnouncementManagementEnhanced, type Announcement } from '@/components/admin/AnnouncementManagementEnhanced';
+import { EventsManagementEnhanced } from '@/components/admin/EventsManagementEnhanced';
 import { AchievementManager } from '@/components/admin/AchievementManager';
 import BlogManager from './Admin/BlogManager';
 
@@ -293,7 +294,7 @@ function EventsManagement() {
 
 export default function AdminRefactored() {
   const [users, setUsers] = useState<UserProfile[]>([]);
-  const [courses, setCourses] = useState<Course[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -452,7 +453,7 @@ export default function AdminRefactored() {
           </TabsContent>
 
           <TabsContent value="courses">
-            <CourseManagement
+            <CourseManagementEnhanced
               courses={courses}
               setCourses={setCourses}
               onRefresh={fetchData}
@@ -464,7 +465,7 @@ export default function AdminRefactored() {
           </TabsContent>
 
           <TabsContent value="announcements">
-            <AnnouncementManagement
+            <AnnouncementManagementEnhanced
               announcements={announcements}
               setAnnouncements={setAnnouncements}
               userId={user.id}
@@ -477,7 +478,7 @@ export default function AdminRefactored() {
           </TabsContent>
 
           <TabsContent value="events">
-            <EventsManagement />
+            <EventsManagementEnhanced />
           </TabsContent>
 
           <TabsContent value="blog">
