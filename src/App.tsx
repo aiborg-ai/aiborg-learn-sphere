@@ -31,6 +31,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const Dashboard = lazy(() => import("./pages/DashboardRefactored"));
 const HomeworkSubmission = lazy(() => import("./pages/HomeworkSubmissionRefactored"));
 const PublicProfile = lazy(() => import("./pages/PublicProfile"));
+const TemplateImport = lazy(() => import("./pages/admin/TemplateImport"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -61,6 +62,7 @@ const App = () => (
               <Route path="/profile" element={<Profile />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/template-import" element={<TemplateImport />} />
               <Route path="/cms" element={<CMS />} />
               <Route path="/cms/blog" element={<BlogCMS />} />
               <Route path="/payment-success" element={<PaymentSuccess />} />

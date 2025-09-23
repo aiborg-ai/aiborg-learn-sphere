@@ -1,0 +1,107 @@
+{
+  "events": [
+    {
+      "title": "Future of Work: AI and Automation",
+      "description": "Join industry experts to discuss how AI and automation are reshaping the workplace. Learn about emerging job roles, skills needed for the future, and how to prepare your career.",
+      "event_type": "webinar",
+      "audiences": ["Professional"],
+      "date": "2025-03-18",
+      "time": "6:00 PM IST",
+      "duration": "90 minutes",
+      "mode": "online",
+      "max_attendees": 500,
+      "registration_deadline": "2025-03-17",
+      "price": "Free",
+      "tags": [
+        "future of work",
+        "ai",
+        "automation",
+        "career",
+        "free webinar"
+      ],
+      "venue_details": {
+        "platform": "Zoom",
+        "meeting_link": "https://zoom.us/j/123456789"
+      },
+      "speaker_info": {
+        "name": "John Anderson",
+        "designation": "Future of Work Researcher",
+        "company": "TechFuture Institute",
+        "bio": "Author of 'The AI Revolution' and keynote speaker at major tech conferences"
+      },
+      "agenda": [
+        {
+          "time": "6:00 PM - 6:10 PM",
+          "topic": "Welcome & Introduction"
+        },
+        {
+          "time": "6:10 PM - 6:40 PM",
+          "topic": "AI Impact on Industries",
+          "speaker": "John Anderson"
+        },
+        {
+          "time": "6:40 PM - 7:10 PM",
+          "topic": "Skills for Tomorrow",
+          "speaker": "Panel Discussion"
+        },
+        {
+          "time": "7:10 PM - 7:30 PM",
+          "topic": "Q&A Session"
+        }
+      ],
+      "benefits": [
+        "Recording access for 30 days",
+        "Presentation slides",
+        "Resource list",
+        "Certificate of attendance"
+      ],
+      "is_featured": true,
+      "display": true
+    },
+    {
+      "title": "Cybersecurity Best Practices for SMEs",
+      "description": "Essential cybersecurity strategies for small and medium enterprises. Learn to protect your business from cyber threats without breaking the budget.",
+      "event_type": "webinar",
+      "audiences": ["Business"],
+      "date": "2025-03-25",
+      "time": "3:00 PM IST",
+      "duration": "1 hour",
+      "mode": "online",
+      "max_attendees": 200,
+      "price": "₹500",
+      "tags": [
+        "cybersecurity",
+        "sme",
+        "business security",
+        "data protection"
+      ],
+      "speaker_info": {
+        "name": "Priya Sharma",
+        "designation": "Cybersecurity Expert",
+        "company": "SecureNet Solutions"
+      }
+    },
+    {
+      "title": "Cloud Migration Strategies",
+      "description": "Learn effective strategies for migrating your applications to the cloud. Covers AWS, Azure, and Google Cloud platforms.",
+      "event_type": "webinar",
+      "audiences": ["Professional"],
+      "date": "2025-04-10",
+      "time": "5:00 PM IST",
+      "duration": "2 hours",
+      "mode": "online",
+      "price": "₹1000",
+      "tags": [
+        "cloud computing",
+        "aws",
+        "azure",
+        "migration",
+        "devops"
+      ],
+      "max_attendees": 100,
+      "registration_deadline": "2025-04-08",
+      "is_active": true,
+      "display": true
+    }
+  ]
+}

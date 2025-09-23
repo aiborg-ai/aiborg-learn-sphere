@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, Users, BookOpen, Megaphone, Shield, UserCheck, Star, Calendar, Trophy } from 'lucide-react';
+import { Loader2, Users, BookOpen, Megaphone, Shield, UserCheck, Star, Calendar, Trophy, FileJson } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
@@ -392,11 +392,19 @@ export default function AdminRefactored() {
             <Shield className="h-8 w-8 text-secondary" />
             <h1 className="text-3xl font-display font-bold text-white">Admin Dashboard</h1>
           </div>
-          <Link to="/">
-            <Button variant="outline" className="btn-outline-ai">
-              Back to Home
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link to="/admin/template-import">
+              <Button variant="outline" className="btn-outline-ai flex items-center gap-2">
+                <FileJson className="h-4 w-4" />
+                Template Import
+              </Button>
+            </Link>
+            <Link to="/">
+              <Button variant="outline" className="btn-outline-ai">
+                Back to Home
+              </Button>
+            </Link>
+          </div>
         </div>
 
         <Tabs defaultValue="users" className="space-y-6">

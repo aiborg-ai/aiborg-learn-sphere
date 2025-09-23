@@ -1,0 +1,157 @@
+{
+  "courses": [
+    {
+      "title": "Digital Marketing Masterclass",
+      "description": "Comprehensive digital marketing course covering SEO, SEM, social media marketing, content marketing, email marketing, and analytics. Learn to create and execute successful digital marketing campaigns.",
+      "audiences": ["Professional", "Business"],
+      "mode": "Online",
+      "duration": "8 weeks",
+      "price": "₹20000",
+      "level": "Intermediate",
+      "start_date": "2025-03-10",
+      "features": [
+        "Google Ads certification preparation",
+        "Facebook Blueprint training",
+        "Real campaign management",
+        "Analytics and reporting tools",
+        "Industry case studies",
+        "Personal brand building",
+        "LinkedIn optimization workshop"
+      ],
+      "keywords": [
+        "digital marketing",
+        "seo",
+        "social media",
+        "google ads",
+        "content marketing",
+        "analytics"
+      ],
+      "category": "Business",
+      "max_students": 60,
+      "certification_available": true,
+      "is_featured": true,
+      "display": true
+    },
+    {
+      "title": "Project Management Professional (PMP) Prep",
+      "description": "Prepare for PMP certification with comprehensive coverage of PMBOK Guide, agile methodologies, and real-world project management scenarios.",
+      "audiences": ["Professional"],
+      "mode": "Hybrid",
+      "duration": "12 weeks",
+      "price": "₹30000",
+      "level": "Advanced",
+      "start_date": "2025-04-05",
+      "features": [
+        "35 PDUs included",
+        "Mock exams and quizzes",
+        "Agile and Waterfall methodologies",
+        "Risk management strategies",
+        "Stakeholder management",
+        "MS Project training",
+        "Exam application assistance"
+      ],
+      "keywords": [
+        "pmp",
+        "project management",
+        "pmbok",
+        "agile",
+        "scrum",
+        "certification"
+      ],
+      "category": "Business",
+      "prerequisites": "3+ years of project management experience",
+      "certification_available": true,
+      "max_students": 25
+    },
+    {
+      "title": "Financial Analysis and Modeling",
+      "description": "Master financial analysis, valuation, and financial modeling using Excel. Learn to analyze companies, build financial models, and make investment decisions.",
+      "audiences": ["Professional", "Student"],
+      "mode": "Online",
+      "duration": "10 weeks",
+      "price": "₹22000",
+      "level": "Intermediate",
+      "start_date": "2025-03-20",
+      "features": [
+        "Excel advanced formulas",
+        "DCF modeling",
+        "Company valuation techniques",
+        "Financial statement analysis",
+        "Investment banking prep",
+        "Real company case studies"
+      ],
+      "keywords": [
+        "finance",
+        "financial modeling",
+        "excel",
+        "valuation",
+        "investment",
+        "analysis"
+      ],
+      "category": "Business",
+      "max_students": 40,
+      "instructor_info": {
+        "name": "Michael Chen",
+        "email": "michael.chen@aiborg.ai",
+        "bio": "CFA charterholder with 15 years in investment banking",
+        "designation": "Financial Analyst"
+      }
+    },
+    {
+      "title": "Entrepreneurship and Startup Launch",
+      "description": "Transform your business idea into reality. Learn lean startup methodology, business model canvas, funding strategies, and launch your startup.",
+      "audiences": ["Professional", "Student"],
+      "mode": "Online",
+      "duration": "6 weeks",
+      "price": "₹15000",
+      "level": "All Levels",
+      "start_date": "Flexible",
+      "features": [
+        "Idea validation techniques",
+        "MVP development",
+        "Pitch deck creation",
+        "Investor networking sessions",
+        "Legal and compliance basics",
+        "Marketing on a budget",
+        "Mentorship from entrepreneurs"
+      ],
+      "keywords": [
+        "entrepreneurship",
+        "startup",
+        "business",
+        "lean startup",
+        "innovation"
+      ],
+      "category": "Business",
+      "is_active": true,
+      "display": true
+    },
+    {
+      "title": "Business Communication Excellence",
+      "description": "Enhance your professional communication skills including business writing, presentations, negotiations, and cross-cultural communication.",
+      "audiences": ["Professional"],
+      "mode": "Online",
+      "duration": "4 weeks",
+      "price": "₹10000",
+      "level": "Beginner",
+      "start_date": "2025-03-01",
+      "features": [
+        "Email etiquette",
+        "Presentation skills",
+        "Negotiation tactics",
+        "Conflict resolution",
+        "Virtual meeting excellence",
+        "Report writing"
+      ],
+      "keywords": [
+        "communication",
+        "business writing",
+        "presentation",
+        "soft skills",
+        "professional development"
+      ],
+      "category": "Business",
+      "max_students": 50
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "events": [
+    {
+      "title": "AIBorg Tech Summit 2025",
+      "description": "Annual technology conference bringing together innovators, developers, and business leaders. Two days of keynotes, technical sessions, workshops, and networking.",
+      "event_type": "conference",
+      "audiences": ["Professional", "Business"],
+      "date": "2025-04-20",
+      "time": "9:00 AM IST",
+      "duration": "2 days",
+      "mode": "hybrid",
+      "location": "Bangalore International Convention Center",
+      "max_attendees": 1000,
+      "registration_deadline": "2025-04-10",
+      "price": "₹5000 - ₹15000",
+      "tags": [
+        "technology",
+        "conference",
+        "summit",
+        "networking",
+        "innovation",
+        "ai",
+        "cloud",
+        "blockchain"
+      ],
+      "venue_details": {
+        "address": "BICC, Bangalore 560001",
+        "parking": "Paid parking available",
+        "accessibility": "Fully accessible venue",
+        "map_url": "https://maps.google.com/bicc"
+      },
+      "speaker_info": {
+        "name": "Multiple Speakers",
+        "designation": "Industry Leaders",
+        "bio": "50+ speakers from leading tech companies and startups"
+      },
+      "agenda": [
+        {
+          "time": "Day 1: 9:00 AM",
+          "topic": "Registration & Welcome Coffee"
+        },
+        {
+          "time": "Day 1: 10:00 AM",
+          "topic": "Opening Keynote: Future of Technology"
+        },
+        {
+          "time": "Day 1: 11:00 AM",
+          "topic": "Parallel Track Sessions"
+        },
+        {
+          "time": "Day 1: 7:00 PM",
+          "topic": "Networking Dinner"
+        },
+        {
+          "time": "Day 2: 9:00 AM",
+          "topic": "Workshop Sessions"
+        },
+        {
+          "time": "Day 2: 2:00 PM",
+          "topic": "Panel Discussions"
+        },
+        {
+          "time": "Day 2: 5:00 PM",
+          "topic": "Closing Ceremony & Awards"
+        }
+      ],
+      "sponsors": [
+        {
+          "name": "TechCorp",
+          "type": "Gold",
+          "logo_url": "https://example.com/techcorp-logo.png"
+        },
+        {
+          "name": "InnovateLabs",
+          "type": "Silver",
+          "logo_url": "https://example.com/innovate-logo.png"
+        }
+      ],
+      "benefits": [
+        "Access to all sessions",
+        "Conference kit",
+        "Lunch and refreshments",
+        "Networking app access",
+        "Session recordings",
+        "Certificate of participation"
+      ],
+      "is_featured": true,
+      "is_active": true,
+      "display": true
+    },
+    {
+      "title": "EdTech Innovation Conference",
+      "description": "Exploring the future of education technology. Connect with educators, edtech entrepreneurs, and policy makers.",
+      "event_type": "conference",
+      "audiences": ["Professional", "Teacher"],
+      "date": "2025-05-15",
+      "time": "10:00 AM IST",
+      "duration": "Full day",
+      "mode": "offline",
+      "location": "Delhi Convention Center",
+      "max_attendees": 300,
+      "price": "₹3000",
+      "tags": [
+        "edtech",
+        "education",
+        "innovation",
+        "conference"
+      ],
+      "registration_deadline": "2025-05-10"
+    }
+  ]
+}

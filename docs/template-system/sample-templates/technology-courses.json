@@ -1,0 +1,198 @@
+{
+  "courses": [
+    {
+      "title": "Complete Web Development Bootcamp 2025",
+      "description": "Master modern web development from scratch. Learn HTML, CSS, JavaScript, React, Node.js, and deploy real-world applications. This comprehensive bootcamp covers frontend, backend, databases, and deployment strategies.",
+      "audiences": ["Student", "Professional"],
+      "mode": "Online",
+      "duration": "16 weeks",
+      "price": "₹25000",
+      "level": "Beginner",
+      "start_date": "2025-03-01",
+      "end_date": "2025-06-15",
+      "enrollment_deadline": "2025-02-25",
+      "features": [
+        "Live coding sessions twice a week",
+        "Build 10+ real-world projects",
+        "One-on-one mentorship",
+        "Job placement assistance",
+        "Lifetime access to course materials",
+        "Certificate of completion",
+        "Mock interviews",
+        "Resume building workshop"
+      ],
+      "keywords": [
+        "web development",
+        "javascript",
+        "react",
+        "node.js",
+        "html",
+        "css",
+        "full stack",
+        "bootcamp",
+        "programming"
+      ],
+      "category": "Technology",
+      "prerequisites": "Basic computer skills and enthusiasm to learn",
+      "max_students": 50,
+      "min_students": 10,
+      "certification_available": true,
+      "completion_criteria": "Complete 80% of assignments and final project",
+      "instructor_info": {
+        "name": "Sarah Johnson",
+        "email": "sarah.johnson@aiborg.ai",
+        "bio": "10+ years of experience in full-stack development. Former tech lead at major tech companies.",
+        "designation": "Senior Web Developer",
+        "linkedin": "https://linkedin.com/in/sarahjohnson"
+      },
+      "course_materials": [
+        {
+          "title": "Introduction to Web Development",
+          "type": "video",
+          "url": "https://example.com/intro-video",
+          "description": "Welcome to the course and overview of what you'll learn",
+          "duration": "15 minutes",
+          "order_index": 1,
+          "is_preview": true
+        },
+        {
+          "title": "HTML Fundamentals Guide",
+          "type": "document",
+          "url": "https://example.com/html-guide.pdf",
+          "description": "Complete guide to HTML5 with examples",
+          "order_index": 2
+        },
+        {
+          "title": "First Project: Personal Portfolio",
+          "type": "assignment",
+          "url": "https://example.com/portfolio-assignment",
+          "description": "Build your first portfolio website",
+          "order_index": 3
+        }
+      ],
+      "is_featured": true,
+      "is_active": true,
+      "display": true
+    },
+    {
+      "title": "Advanced Machine Learning with Python",
+      "description": "Dive deep into machine learning algorithms, neural networks, and deep learning. Work with TensorFlow, PyTorch, and scikit-learn to build intelligent systems.",
+      "audiences": ["Professional"],
+      "mode": "Hybrid",
+      "duration": "12 weeks",
+      "price": "₹35000",
+      "level": "Advanced",
+      "start_date": "2025-04-01",
+      "end_date": "2025-06-21",
+      "features": [
+        "Hands-on projects with real datasets",
+        "Industry guest lectures",
+        "Research paper implementation",
+        "Kaggle competition participation",
+        "GPU access for training models",
+        "Certificate from AIBorg"
+      ],
+      "keywords": [
+        "machine learning",
+        "deep learning",
+        "python",
+        "tensorflow",
+        "pytorch",
+        "ai",
+        "neural networks",
+        "data science"
+      ],
+      "category": "Technology",
+      "prerequisites": "Strong Python programming skills, basic statistics knowledge",
+      "max_students": 30,
+      "min_students": 8,
+      "certification_available": true
+    },
+    {
+      "title": "Mobile App Development with Flutter",
+      "description": "Create beautiful, natively compiled applications for mobile, web, and desktop from a single codebase using Flutter and Dart.",
+      "audiences": ["Student", "Professional"],
+      "mode": "Online",
+      "duration": "8 weeks",
+      "price": "₹18000",
+      "level": "Intermediate",
+      "start_date": "2025-03-15",
+      "features": [
+        "Build cross-platform apps",
+        "Publish app to Play Store",
+        "Firebase integration",
+        "State management patterns",
+        "UI/UX best practices",
+        "Live coding sessions"
+      ],
+      "keywords": [
+        "flutter",
+        "dart",
+        "mobile development",
+        "android",
+        "ios",
+        "cross-platform"
+      ],
+      "category": "Technology",
+      "max_students": 40,
+      "is_active": true,
+      "display": true
+    },
+    {
+      "title": "Cloud Computing with AWS",
+      "description": "Master Amazon Web Services and cloud architecture. Prepare for AWS Solutions Architect certification while building scalable cloud solutions.",
+      "audiences": ["Professional"],
+      "mode": "Online",
+      "duration": "10 weeks",
+      "price": "₹28000",
+      "level": "Intermediate",
+      "start_date": "2025-05-01",
+      "features": [
+        "AWS free tier account provided",
+        "Certification exam preparation",
+        "Real-world architecture projects",
+        "Cost optimization strategies",
+        "Security best practices",
+        "DevOps integration"
+      ],
+      "keywords": [
+        "aws",
+        "cloud computing",
+        "devops",
+        "serverless",
+        "cloud architecture"
+      ],
+      "category": "Technology",
+      "certification_available": true,
+      "max_students": 35
+    },
+    {
+      "title": "Cybersecurity Fundamentals",
+      "description": "Learn essential cybersecurity concepts, ethical hacking basics, and security best practices to protect systems and data.",
+      "audiences": ["Student", "Professional"],
+      "mode": "Online",
+      "duration": "6 weeks",
+      "price": "₹15000",
+      "level": "Beginner",
+      "start_date": "Flexible",
+      "features": [
+        "Virtual lab environment",
+        "Hands-on penetration testing",
+        "Security tools training",
+        "Incident response procedures",
+        "Compliance frameworks",
+        "Career guidance"
+      ],
+      "keywords": [
+        "cybersecurity",
+        "ethical hacking",
+        "security",
+        "penetration testing",
+        "infosec"
+      ],
+      "category": "Technology",
+      "is_active": true,
+      "display": true
+    }
+  ]
+}

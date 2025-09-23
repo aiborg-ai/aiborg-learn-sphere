@@ -1,0 +1,140 @@
+{
+  "events": [
+    {
+      "title": "AI & Machine Learning Workshop",
+      "description": "Hands-on workshop introducing artificial intelligence and machine learning concepts. Build your first ML model using Python and popular libraries. No prior experience required.",
+      "event_type": "workshop",
+      "audiences": ["Student", "Professional"],
+      "date": "2025-03-15",
+      "time": "10:00 AM IST",
+      "duration": "4 hours",
+      "mode": "offline",
+      "location": "AIBorg Innovation Center, Bangalore",
+      "max_attendees": 30,
+      "registration_deadline": "2025-03-12",
+      "price": "₹2000",
+      "tags": [
+        "ai",
+        "machine learning",
+        "python",
+        "hands-on",
+        "beginner friendly"
+      ],
+      "venue_details": {
+        "address": "123 Tech Park, Whitefield, Bangalore 560066",
+        "room": "Conference Hall A",
+        "parking": "Free parking available",
+        "accessibility": "Wheelchair accessible",
+        "map_url": "https://maps.google.com/example"
+      },
+      "speaker_info": {
+        "name": "Dr. Rajesh Kumar",
+        "designation": "AI Research Lead",
+        "company": "AIBorg",
+        "bio": "15+ years in AI research with publications in top conferences",
+        "linkedin": "https://linkedin.com/in/drrajeshkumar"
+      },
+      "agenda": [
+        {
+          "time": "10:00 AM - 10:30 AM",
+          "topic": "Registration & Welcome",
+          "description": "Check-in and networking"
+        },
+        {
+          "time": "10:30 AM - 11:30 AM",
+          "topic": "Introduction to AI & ML",
+          "description": "Understanding fundamentals and applications"
+        },
+        {
+          "time": "11:30 AM - 11:45 AM",
+          "topic": "Tea Break",
+          "description": "Refreshments and networking"
+        },
+        {
+          "time": "11:45 AM - 1:00 PM",
+          "topic": "Hands-on Session",
+          "description": "Build your first ML model"
+        },
+        {
+          "time": "1:00 PM - 2:00 PM",
+          "topic": "Lunch Break",
+          "description": "Lunch provided"
+        },
+        {
+          "time": "2:00 PM - 3:00 PM",
+          "topic": "Advanced Concepts & Q&A",
+          "description": "Deep dive and discussion"
+        }
+      ],
+      "prerequisites": "Laptop with Python installed (instructions will be sent)",
+      "what_to_bring": [
+        "Laptop",
+        "Notebook and pen",
+        "Water bottle"
+      ],
+      "benefits": [
+        "Certificate of participation",
+        "Workshop materials and code",
+        "Access to online resources",
+        "Networking opportunities"
+      ],
+      "is_featured": true,
+      "is_active": true,
+      "display": true
+    },
+    {
+      "title": "Design Thinking for Innovation",
+      "description": "Learn the design thinking process to solve complex problems creatively. Interactive workshop with real-world case studies and group exercises.",
+      "event_type": "workshop",
+      "audiences": ["Professional"],
+      "date": "2025-03-22",
+      "time": "2:00 PM IST",
+      "duration": "3 hours",
+      "mode": "hybrid",
+      "location": "Online + Mumbai Office",
+      "max_attendees": 50,
+      "registration_deadline": "2025-03-20",
+      "price": "₹1500",
+      "tags": [
+        "design thinking",
+        "innovation",
+        "problem solving",
+        "creativity"
+      ],
+      "speaker_info": {
+        "name": "Sarah Williams",
+        "designation": "Design Strategy Consultant",
+        "company": "InnovateLab",
+        "bio": "Certified design thinking facilitator with 100+ workshops delivered"
+      },
+      "benefits": [
+        "Design thinking toolkit",
+        "Certificate",
+        "Case study materials",
+        "Follow-up consultation"
+      ]
+    },
+    {
+      "title": "Blockchain Fundamentals Workshop",
+      "description": "Understand blockchain technology, cryptocurrencies, and smart contracts. Build your first smart contract on Ethereum.",
+      "event_type": "workshop",
+      "audiences": ["Professional", "Student"],
+      "date": "2025-04-05",
+      "time": "10:00 AM IST",
+      "duration": "Full day",
+      "mode": "offline",
+      "location": "Tech Hub, Delhi",
+      "max_attendees": 25,
+      "price": "₹3000",
+      "tags": [
+        "blockchain",
+        "cryptocurrency",
+        "ethereum",
+        "smart contracts",
+        "web3"
+      ],
+      "is_active": true,
+      "display": true
+    }
+  ]
+}
