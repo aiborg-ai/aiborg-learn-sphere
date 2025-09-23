@@ -12,6 +12,15 @@ import { Link } from 'react-router-dom';
 import { GoogleIcon } from '@/components/icons/GoogleIcon';
 import { GitHubIcon } from '@/components/icons/GitHubIcon';
 import { Separator } from '@/components/ui/separator';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
@@ -19,8 +28,12 @@ export default function Auth() {
   const [isGitHubLoading, setIsGitHubLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('signin');
+  const [showResetDialog, setShowResetDialog] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [isResetting, setIsResetting] = useState(false);
   const { signIn, signUp, signInWithGoogle, signInWithGitHub, user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   // Redirect if user is already logged in
   useEffect(() => {
@@ -112,6 +125,34 @@ export default function Auth() {
       setError('Account created successfully! Please check your email and then sign in.');
     }
     setIsLoading(false);
+  };
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsResetting(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Password reset email sent',
+        description: 'Please check your email for the password reset link.',
+      });
+      setShowResetDialog(false);
+      setResetEmail('');
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to send password reset email',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsResetting(false);
+    }
   };
 
   return (
@@ -209,7 +250,17 @@ export default function Auth() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="password" className="text-white">Password</Label>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="password" className="text-white">Password</Label>
+                      <Button
+                        type="button"
+                        variant="link"
+                        className="p-0 h-auto text-xs text-white/80 hover:text-white"
+                        onClick={() => setShowResetDialog(true)}
+                      >
+                        Forgot password?
+                      </Button>
+                    </div>
                     <Input
                       id="password"
                       name="password"
@@ -333,6 +384,56 @@ export default function Auth() {
           </CardContent>
         </Card>
       </div>
+
+      <Dialog open={showResetDialog} onOpenChange={setShowResetDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Reset Password</DialogTitle>
+            <DialogDescription>
+              Enter your email address and we'll send you a link to reset your password.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handlePasswordReset} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="reset-email">Email</Label>
+              <Input
+                id="reset-email"
+                type="email"
+                placeholder="Enter your email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                required
+                disabled={isResetting}
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowResetDialog(false)}
+                disabled={isResetting}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isResetting}
+                className="flex-1"
+              >
+                {isResetting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  'Send Reset Email'
+                )}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
