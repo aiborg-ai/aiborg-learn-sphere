@@ -132,8 +132,13 @@ export default function Auth() {
     setIsResetting(true);
 
     try {
+      // Use the production URL for password reset
+      const redirectUrl = window.location.hostname === 'localhost'
+        ? `${window.location.origin}/auth/reset-password`
+        : 'https://aiborg-ai-web.vercel.app/auth/reset-password';
+
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${window.location.origin}/auth/reset-password`,
+        redirectTo: redirectUrl,
       });
 
       if (error) throw error;
