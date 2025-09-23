@@ -1,4 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
+import { CourseTemplateSchema } from '@/lib/schemas/course-template.schema';
+import { EventTemplateSchema } from '@/lib/schemas/event-template.schema';
+import { z } from 'zod';
 
 export interface ValidationRequest {
   type: 'course' | 'event';
@@ -403,3 +406,100 @@ class TemplateService {
 }
 
 export const templateService = new TemplateService();
+
+// Local validation functions for the Template Builder
+export function validateCourseTemplate(data: any[]): ValidationResponse {
+  try {
+    const validatedData = data.map((item, index) => {
+      try {
+        const result = CourseTemplateSchema.parse(item);
+        return { success: true, data: result };
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          return {
+            success: false,
+            errors: error.errors.map(err => ({
+              field: err.path.join('.'),
+              message: err.message,
+              code: err.code,
+              index
+            }))
+          };
+        }
+        throw error;
+      }
+    });
+
+    const errors = validatedData.flatMap((v: any) => v.errors || []);
+    const valid = validatedData.filter((v: any) => v.success).length;
+
+    return {
+      success: errors.length === 0,
+      data: validatedData.filter((v: any) => v.success).map((v: any) => v.data),
+      errors: errors.length > 0 ? errors : undefined,
+      summary: {
+        total: data.length,
+        valid,
+        invalid: data.length - valid,
+        warnings: 0
+      }
+    };
+  } catch (error) {
+    return {
+      success: false,
+      errors: [{
+        field: 'general',
+        message: error instanceof Error ? error.message : 'Validation failed',
+        code: 'VALIDATION_ERROR'
+      }]
+    };
+  }
+}
+
+export function validateEventTemplate(data: any[]): ValidationResponse {
+  try {
+    const validatedData = data.map((item, index) => {
+      try {
+        const result = EventTemplateSchema.parse(item);
+        return { success: true, data: result };
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          return {
+            success: false,
+            errors: error.errors.map(err => ({
+              field: err.path.join('.'),
+              message: err.message,
+              code: err.code,
+              index
+            }))
+          };
+        }
+        throw error;
+      }
+    });
+
+    const errors = validatedData.flatMap((v: any) => v.errors || []);
+    const valid = validatedData.filter((v: any) => v.success).length;
+
+    return {
+      success: errors.length === 0,
+      data: validatedData.filter((v: any) => v.success).map((v: any) => v.data),
+      errors: errors.length > 0 ? errors : undefined,
+      summary: {
+        total: data.length,
+        valid,
+        invalid: data.length - valid,
+        warnings: 0
+      }
+    };
+  } catch (error) {
+    return {
+      success: false,
+      errors: [{
+        field: 'general',
+        message: error instanceof Error ? error.message : 'Validation failed',
+        code: 'VALIDATION_ERROR'
+      }]
+    };
+  }
+}
