@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Shield, CheckCircle2, Brain } from 'lucide-react';
+import { Loader2, Shield, CheckCircle2, Brain, AlertCircle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 
 export default function AuthCallback() {
   const navigate = useNavigate();
@@ -32,30 +34,91 @@ export default function AuthCallback() {
 
     // Handle the authentication callback
     const handleCallback = async () => {
-      // Get the hash from the URL
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const accessToken = hashParams.get('access_token');
+      try {
+        // First check for error in URL params (OAuth error handling)
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        const errorDescription = urlParams.get('error_description');
 
-      // Add a small delay for better UX
-      await new Promise(resolve => setTimeout(resolve, 2000));
+        if (error) {
+          logger.error('OAuth error:', { error, errorDescription });
+          setStatusMessage(`Authentication failed: ${errorDescription || error}`);
+          setProgress(100);
+          setTimeout(() => {
+            navigate('/auth', { replace: true });
+          }, 2000);
+          return;
+        }
 
-      if (accessToken) {
-        setProgress(100);
-        setStatusMessage('Success! Redirecting to your dashboard...');
-        // Check if we have a stored redirect path
-        const redirectPath = sessionStorage.getItem('authRedirect');
-        sessionStorage.removeItem('authRedirect');
+        // Check for code parameter (modern PKCE flow)
+        const code = urlParams.get('code');
 
-        // Small delay before redirect to show success state
-        setTimeout(() => {
-          navigate(redirectPath || '/', { replace: true });
-        }, 500);
-      } else {
-        // No token, redirect to auth page
-        setStatusMessage('Authentication failed. Redirecting...');
+        if (code) {
+          logger.log('OAuth code received, exchanging for session...');
+          setStatusMessage('Exchanging authorization code...');
+
+          // Exchange the code for a session
+          const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+
+          if (exchangeError) {
+            logger.error('Code exchange error:', exchangeError);
+            setProgress(100);
+            setStatusMessage('Authentication failed. Please try again.');
+            setTimeout(() => {
+              navigate('/auth', { replace: true });
+            }, 2000);
+            return;
+          }
+
+          if (data?.session) {
+            logger.log('Session established successfully');
+            setProgress(100);
+            setStatusMessage('Success! Redirecting to your dashboard...');
+
+            // Check if we have a stored redirect path
+            const redirectPath = sessionStorage.getItem('authRedirect');
+            sessionStorage.removeItem('authRedirect');
+
+            // Small delay before redirect to show success state
+            setTimeout(() => {
+              navigate(redirectPath || '/', { replace: true });
+            }, 500);
+            return;
+          }
+        }
+
+        // Fallback: Check for access_token in hash (legacy implicit flow)
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+
+        if (accessToken) {
+          logger.log('Access token found in hash (implicit flow)');
+          setProgress(100);
+          setStatusMessage('Success! Redirecting to your dashboard...');
+
+          const redirectPath = sessionStorage.getItem('authRedirect');
+          sessionStorage.removeItem('authRedirect');
+
+          setTimeout(() => {
+            navigate(redirectPath || '/', { replace: true });
+          }, 500);
+          return;
+        }
+
+        // No authentication data found
+        logger.warn('No authentication data found in callback');
+        setStatusMessage('No authentication data received. Redirecting...');
         setTimeout(() => {
           navigate('/auth', { replace: true });
-        }, 1000);
+        }, 2000);
+
+      } catch (err) {
+        logger.error('Unexpected error in auth callback:', err);
+        setStatusMessage('An unexpected error occurred. Please try again.');
+        setProgress(100);
+        setTimeout(() => {
+          navigate('/auth', { replace: true });
+        }, 2000);
       }
     };
 
