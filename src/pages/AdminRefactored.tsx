@@ -17,7 +17,6 @@ import { AnnouncementManagementEnhanced, type Announcement } from '@/components/
 import { EventsManagementEnhanced } from '@/components/admin/EventsManagementEnhanced';
 import { AchievementManager } from '@/components/admin/AchievementManager';
 import BlogManager from './Admin/BlogManager';
-import { TestComponent } from '@/components/admin/TestComponent';
 
 // Import the existing components that were already separated
 function ReviewsManagement() {
@@ -411,9 +410,6 @@ export default function AdminRefactored() {
 
         <Tabs defaultValue="users" className="space-y-6">
           <TabsList className="bg-white/10 border-white/20 flex-wrap h-auto p-2">
-            <TabsTrigger value="test" className="text-white data-[state=active]:bg-white/20">
-              Test
-            </TabsTrigger>
             <TabsTrigger value="users" className="text-white data-[state=active]:bg-white/20">
               <Users className="h-4 w-4 mr-2" />
               Users ({users.length})
@@ -448,10 +444,6 @@ export default function AdminRefactored() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="test">
-            <TestComponent />
-          </TabsContent>
-
           <TabsContent value="users">
             <UserManagement
               users={users}
@@ -461,7 +453,6 @@ export default function AdminRefactored() {
           </TabsContent>
 
           <TabsContent value="courses">
-            {console.log('Rendering courses tab, courses:', courses)}
             <CourseManagementEnhanced
               courses={courses}
               setCourses={setCourses}
