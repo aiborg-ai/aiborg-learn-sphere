@@ -106,7 +106,10 @@ export const useAuth = () => {
 
   const signInWithGoogle = async () => {
     const appUrl = import.meta.env.VITE_APP_URL || window.location.origin;
-    const redirectUrl = `${appUrl}/`;
+    const redirectUrl = `${appUrl}/auth/callback`;
+
+    // Store the current page to return to after auth
+    sessionStorage.setItem('authRedirect', window.location.pathname);
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -124,7 +127,10 @@ export const useAuth = () => {
 
   const signInWithGitHub = async () => {
     const appUrl = import.meta.env.VITE_APP_URL || window.location.origin;
-    const redirectUrl = `${appUrl}/`;
+    const redirectUrl = `${appUrl}/auth/callback`;
+
+    // Store the current page to return to after auth
+    sessionStorage.setItem('authRedirect', window.location.pathname);
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',

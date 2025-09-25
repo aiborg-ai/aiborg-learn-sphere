@@ -42,9 +42,13 @@ export default function AuthCallback() {
       if (accessToken) {
         setProgress(100);
         setStatusMessage('Success! Redirecting to your dashboard...');
+        // Check if we have a stored redirect path
+        const redirectPath = sessionStorage.getItem('authRedirect');
+        sessionStorage.removeItem('authRedirect');
+
         // Small delay before redirect to show success state
         setTimeout(() => {
-          navigate('/', { replace: true });
+          navigate(redirectPath || '/', { replace: true });
         }, 500);
       } else {
         // No token, redirect to auth page

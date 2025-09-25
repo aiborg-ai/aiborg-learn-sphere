@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Info } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2, Brain, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -199,6 +200,14 @@ export default function Auth() {
                   </AlertDescription>
                 </Alert>
               )}
+
+              {/* Temporary notice about OAuth redirect */}
+              <Alert className="mt-4 bg-blue-500/10 border-blue-500/30">
+                <Info className="h-4 w-4 text-blue-400" />
+                <AlertDescription className="text-white/80 text-xs">
+                  Note: You'll be securely redirected to our authentication provider for sign-in.
+                </AlertDescription>
+              </Alert>
 
               <TabsContent value="signin" className="space-y-4">
                 <div className="space-y-3">
