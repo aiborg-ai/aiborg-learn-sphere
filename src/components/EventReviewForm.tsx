@@ -15,7 +15,7 @@ import VoiceRecorder from '@/components/VoiceRecorder';
 import VideoRecorder from '@/components/VideoRecorder';
 
 interface Event {
-  id: string;
+  id: number;  // Changed from string to number to match database
   title: string;
   event_date: string;
   location: string;
@@ -23,8 +23,8 @@ interface Event {
 
 export default function EventReviewForm() {
   const [events, setEvents] = useState<Event[]>([]);
-  const [attendedEvents, setAttendedEvents] = useState<string[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState('');
+  const [attendedEvents, setAttendedEvents] = useState<number[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<number | ''>('');
   const [eventDateAttended, setEventDateAttended] = useState('');
   const [eventMode, setEventMode] = useState<'online' | 'in-person' | 'hybrid'>('online');
   const [displayPreference, setDisplayPreference] = useState<'show_name' | 'anonymous'>('show_name');
@@ -203,7 +203,7 @@ export default function EventReviewForm() {
           {/* Event Selection */}
           <div className="space-y-2">
             <Label htmlFor="event">Event Attended *</Label>
-            <Select value={selectedEvent} onValueChange={setSelectedEvent}>
+            <Select value={selectedEvent.toString()} onValueChange={(value) => setSelectedEvent(value ? parseInt(value) : '')}>
               <SelectTrigger>
                 <SelectValue placeholder="Select the event you attended" />
               </SelectTrigger>
@@ -214,7 +214,7 @@ export default function EventReviewForm() {
                   </SelectItem>
                 ) : (
                   events.map(event => (
-                    <SelectItem key={event.id} value={event.id}>
+                    <SelectItem key={event.id} value={event.id.toString()}>
                       <div className="flex flex-col">
                         <span>{event.title}</span>
                         <span className="text-sm text-muted-foreground">
