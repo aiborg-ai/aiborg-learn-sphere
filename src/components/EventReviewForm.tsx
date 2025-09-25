@@ -11,8 +11,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { logger } from '@/utils/logger';
-import VoiceRecorder from '@/components/VoiceRecorder';
-import VideoRecorder from '@/components/VideoRecorder';
+import { VoiceRecorder } from '@/components/VoiceRecorder';
+import { VideoRecorder } from '@/components/VideoRecorder';
 
 interface Event {
   id: number;  // Changed from string to number to match database

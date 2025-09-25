@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { AnnouncementTicker } from "@/components/AnnouncementTicker";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { HeroSection } from "@/components/HeroSection";
@@ -39,7 +38,6 @@ const Index = () => {
   }, [location.hash]);
   return (
     <div className="min-h-screen">
-      <AnnouncementTicker />
       <Navbar />
       <HeroSection />
       <div id="about">

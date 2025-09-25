@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useReviews } from "@/hooks/useReviews";
-import { ReviewForm } from "@/components/ReviewForm";
+import UnifiedReviewForm from "@/components/UnifiedReviewForm";
 import { MediaPlayer } from "@/components/MediaPlayer";
 import { 
   Star, 
@@ -244,7 +244,7 @@ export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
         {/* Review Form */}
         {showForm && (
           <div className="mb-16">
-            <ReviewForm />
+            <UnifiedReviewForm />
           </div>
         )}
 
