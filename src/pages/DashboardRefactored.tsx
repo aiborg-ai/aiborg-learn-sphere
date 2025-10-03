@@ -10,7 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import {
   BookOpen, Trophy, Clock, FileText, Bell, AlertCircle, Loader2, ArrowLeft,
-  Target, TrendingUp, Award, BarChart3, Zap
+  Target, TrendingUp, Award, BarChart3, Zap, Brain
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -302,6 +302,10 @@ export default function DashboardRefactored() {
               <Trophy className="h-4 w-4 mr-2" />
               Achievements
             </TabsTrigger>
+            <TabsTrigger value="assessments" className="text-white data-[state=active]:bg-white/20">
+              <Brain className="h-4 w-4 mr-2" />
+              Assessments
+            </TabsTrigger>
             <TabsTrigger value="assignments" className="text-white data-[state=active]:bg-white/20">
               <FileText className="h-4 w-4 mr-2" />
               Assignments
@@ -408,6 +412,38 @@ export default function DashboardRefactored() {
 
           <TabsContent value="achievements">
             <AchievementsSection achievements={achievements} />
+          </TabsContent>
+
+          <TabsContent value="assessments">
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                    <Brain className="h-6 w-6" />
+                    AI Assessments
+                  </h2>
+                  <p className="text-white/60 mt-1">Track your AI augmentation progress</p>
+                </div>
+                <Button
+                  onClick={() => navigate('/ai-assessment')}
+                  className="btn-hero"
+                >
+                  <Target className="h-4 w-4 mr-2" />
+                  Take Assessment
+                </Button>
+              </div>
+              <div className="text-center py-12">
+                <Brain className="h-16 w-16 text-white/30 mx-auto mb-4" />
+                <p className="text-white/60 mb-4">View your assessment results in your profile</p>
+                <Button
+                  onClick={() => navigate('/profile?tab=assessments')}
+                  variant="outline"
+                  className="text-white border-white/20 hover:bg-white/10"
+                >
+                  View Assessment History
+                </Button>
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="assignments">
