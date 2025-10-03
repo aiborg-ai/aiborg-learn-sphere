@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '@/utils/logger';
 import { useWatchLater } from '@/hooks/useWatchLater';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -63,7 +64,7 @@ export default function WatchLaterPage() {
       await removeFromQueue(id);
       setDeleteId(null);
     } catch (error) {
-      console.error('Error removing from queue:', error);
+      logger.error('Error removing from queue:', error);
     }
   };
 
@@ -72,7 +73,7 @@ export default function WatchLaterPage() {
       await clearQueue();
       setClearDialog(false);
     } catch (error) {
-      console.error('Error clearing queue:', error);
+      logger.error('Error clearing queue:', error);
     }
   };
 
@@ -87,7 +88,7 @@ export default function WatchLaterPage() {
       setEditingId(null);
       setEditNote('');
     } catch (error) {
-      console.error('Error updating note:', error);
+      logger.error('Error updating note:', error);
     }
   };
 

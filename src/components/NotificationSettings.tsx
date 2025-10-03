@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { logger } from '@/utils/logger';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -59,7 +60,7 @@ export function NotificationSettings() {
         setPreferences(data.notification_preferences || preferences);
       }
     } catch (error) {
-      console.error('Error loading preferences:', error);
+      logger.error('Error loading preferences:', error);
       toast({
         title: 'Error',
         description: 'Failed to load notification preferences',
@@ -90,7 +91,7 @@ export function NotificationSettings() {
         description: 'Notification preferences updated successfully',
       });
     } catch (error) {
-      console.error('Error saving preferences:', error);
+      logger.error('Error saving preferences:', error);
       toast({
         title: 'Error',
         description: 'Failed to save notification preferences',

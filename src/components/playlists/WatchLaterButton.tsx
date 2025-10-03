@@ -1,4 +1,5 @@
 import React from 'react';
+import { logger } from '@/utils/logger';
 import { Button } from '@/components/ui/button';
 import { Clock, CheckCircle } from 'lucide-react';
 import { useWatchLater } from '@/hooks/useWatchLater';
@@ -47,7 +48,7 @@ export function WatchLaterButton({
         });
       }
     } catch (error) {
-      console.error('Watch later error:', error);
+      logger.error('Watch later error:', error);
       toast({
         title: 'Error',
         description: 'Failed to update watch later queue',

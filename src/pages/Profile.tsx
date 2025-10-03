@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { logger } from '@/utils/logger';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -61,7 +62,7 @@ export default function Profile() {
       if (error) throw error;
       setAssessments(data || []);
     } catch (error) {
-      console.error('Error fetching assessments:', error);
+      logger.error('Error fetching assessments:', error);
     } finally {
       setAssessmentsLoading(false);
     }

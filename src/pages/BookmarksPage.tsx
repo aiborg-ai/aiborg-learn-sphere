@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '@/utils/logger';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -86,7 +87,7 @@ export default function BookmarksPage() {
       await deleteBookmark(id);
       setDeleteId(null);
     } catch (error) {
-      console.error('Error deleting bookmark:', error);
+      logger.error('Error deleting bookmark:', error);
     }
   };
 

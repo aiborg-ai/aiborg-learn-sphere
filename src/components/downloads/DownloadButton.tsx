@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { logger } from '@/utils/logger';
 import { Button } from '@/components/ui/button';
 import { Download, CheckCircle, Loader2 } from 'lucide-react';
 import { useDownloads, getDeviceInfo } from '@/hooks/useDownloads';
@@ -83,7 +84,7 @@ export function DownloadButton({
         onDownloadComplete();
       }
     } catch (error) {
-      console.error('Download error:', error);
+      logger.error('Download error:', error);
       toast({
         title: 'Download Failed',
         description: 'Failed to download the file',

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { logger } from '@/utils/logger';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -72,7 +73,7 @@ export function MiniCalendarWidget() {
 
       setEvents(assignmentEvents);
     } catch (error) {
-      console.error('Error loading events:', error);
+      logger.error('Error loading events:', error);
     } finally {
       setLoading(false);
     }

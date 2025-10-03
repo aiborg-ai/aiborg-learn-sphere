@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from './logger';
 
 type NotificationType =
   | 'course_enrollment'
@@ -37,7 +38,7 @@ export async function sendEmailNotification(
 
     return { success: true };
   } catch (error: any) {
-    console.error('Error sending email notification:', error);
+    logger.error('Error sending email notification:', error);
     return { success: false, error: error.message };
   }
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { logger } from '@/utils/logger';
 import { useNavigate } from 'react-router-dom';
 import {
   CommandDialog,
@@ -212,7 +213,7 @@ export function GlobalSearch() {
 
       setResults([...searchResults, ...filteredActions]);
     } catch (error) {
-      console.error('Search error:', error);
+      logger.error('Search error:', error);
     } finally {
       setLoading(false);
     }

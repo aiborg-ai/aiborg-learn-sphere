@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDownloads, formatFileSize } from '@/hooks/useDownloads';
+import { logger } from '@/utils/logger';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -71,7 +72,7 @@ export default function DownloadsPage() {
       await deleteDownload(id);
       setDeleteId(null);
     } catch (error) {
-      console.error('Error deleting download:', error);
+      logger.error('Error deleting download:', error);
     }
   };
 
@@ -80,7 +81,7 @@ export default function DownloadsPage() {
       await clearAllDownloads();
       setClearAllDialog(false);
     } catch (error) {
-      console.error('Error clearing downloads:', error);
+      logger.error('Error clearing downloads:', error);
     }
   };
 

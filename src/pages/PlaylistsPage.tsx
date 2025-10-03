@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '@/utils/logger';
 import { usePlaylists } from '@/hooks/usePlaylists';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -67,7 +68,7 @@ export default function PlaylistsPage() {
       setCreateDialog(false);
       resetForm();
     } catch (error) {
-      console.error('Error creating playlist:', error);
+      logger.error('Error creating playlist:', error);
     }
   };
 
@@ -84,7 +85,7 @@ export default function PlaylistsPage() {
       setEditingPlaylist(null);
       resetForm();
     } catch (error) {
-      console.error('Error updating playlist:', error);
+      logger.error('Error updating playlist:', error);
     }
   };
 
@@ -93,7 +94,7 @@ export default function PlaylistsPage() {
       await deletePlaylist(id);
       setDeleteId(null);
     } catch (error) {
-      console.error('Error deleting playlist:', error);
+      logger.error('Error deleting playlist:', error);
     }
   };
 
@@ -101,7 +102,7 @@ export default function PlaylistsPage() {
     try {
       await clonePlaylist(playlistId, `${playlistTitle} (Copy)`);
     } catch (error) {
-      console.error('Error cloning playlist:', error);
+      logger.error('Error cloning playlist:', error);
     }
   };
 

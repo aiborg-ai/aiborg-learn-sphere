@@ -23,8 +23,8 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
-      // Prevent console.log in production
-      "no-console": ["error", { allow: ["warn", "error"] }],
+      // Prevent console statements - use logger utility instead
+      "no-console": "error",
 
       // TypeScript rules to prevent 'any' usage
       "@typescript-eslint/no-explicit-any": "error",

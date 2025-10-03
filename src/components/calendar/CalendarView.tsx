@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { logger } from '@/utils/logger';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -88,7 +89,7 @@ export function CalendarView() {
 
       setEvents(assignmentEvents);
     } catch (error) {
-      console.error('Error loading calendar events:', error);
+      logger.error('Error loading calendar events:', error);
     } finally {
       setLoading(false);
     }
