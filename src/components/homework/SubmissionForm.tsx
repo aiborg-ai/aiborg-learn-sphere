@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,6 +9,8 @@ import {
   Upload, Save, Send, Loader2, FileIcon, X, AlertCircle
 } from 'lucide-react';
 import type { Assignment } from './AssignmentDetails';
+import { detectEarlySubmission, calculateBonusPoints, getSubmissionUrgency, formatTimeRemaining } from '@/utils/earlySubmissionDetection';
+import { EarlySubmissionBadge, SubmissionUrgencyIndicator, EarlySubmissionIncentive } from './EarlySubmissionBadge';
 
 export interface Submission {
   id: string;
@@ -63,6 +65,41 @@ export function SubmissionForm({
   const isGraded = submission?.status === 'graded';
   const isOverdue = new Date(assignment.due_date) < new Date();
 
+  // Early submission detection
+  const earlySubmissionData = useMemo(() => {
+    if (!submission?.submitted_at) return null;
+
+    const submissionDate = new Date(submission.submitted_at);
+    const dueDate = new Date(assignment.due_date);
+
+    const result = detectEarlySubmission(submissionDate, {
+      dueDate,
+      bonusPoints: {
+        enabled: true,
+        veryEarly: 5,
+        early: 3,
+        onTime: 1,
+      },
+    });
+
+    const bonusPoints = submission.score
+      ? calculateBonusPoints(submission.score, result)
+      : 0;
+
+    return { result, bonusPoints };
+  }, [submission, assignment.due_date]);
+
+  // Submission urgency for pending submissions
+  const urgencyData = useMemo(() => {
+    if (isSubmitted) return null;
+
+    const dueDate = new Date(assignment.due_date);
+    const urgency = getSubmissionUrgency(dueDate);
+    const timeRemaining = formatTimeRemaining(dueDate);
+
+    return { urgency, timeRemaining, dueDate };
+  }, [isSubmitted, assignment.due_date]);
+
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -101,6 +138,17 @@ export function SubmissionForm({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Early Submission Badge for Submitted Work */}
+        {earlySubmissionData && isSubmitted && (
+          <EarlySubmissionBadge
+            result={earlySubmissionData.result}
+            showBonus={true}
+            bonusPoints={earlySubmissionData.bonusPoints}
+            variant="alert"
+          />
+        )}
+
+        {/* Grading Information */}
         {isGraded && submission?.score !== null && (
           <Alert className="bg-green-50 border-green-200">
             <AlertCircle className="h-4 w-4 text-green-600" />
@@ -108,6 +156,11 @@ export function SubmissionForm({
               <div className="space-y-2">
                 <p className="font-semibold text-green-800">
                   Score: {submission.score} / {assignment.max_score} points
+                  {earlySubmissionData && earlySubmissionData.bonusPoints > 0 && (
+                    <span className="ml-2 text-sm">
+                      (Base: {submission.score}, Bonus: +{earlySubmissionData.bonusPoints})
+                    </span>
+                  )}
                 </p>
                 {submission.feedback && (
                   <div>
@@ -118,6 +171,26 @@ export function SubmissionForm({
               </div>
             </AlertDescription>
           </Alert>
+        )}
+
+        {/* Urgency Indicator for Pending Submissions */}
+        {!isSubmitted && urgencyData && (
+          <SubmissionUrgencyIndicator
+            dueDate={urgencyData.dueDate}
+            urgency={urgencyData.urgency}
+            timeRemaining={urgencyData.timeRemaining}
+          />
+        )}
+
+        {/* Early Submission Incentive */}
+        {!isSubmitted && !isOverdue && (
+          <EarlySubmissionIncentive
+            daysUntilDue={Math.ceil(
+              (new Date(assignment.due_date).getTime() - new Date().getTime()) /
+                (1000 * 60 * 60 * 24)
+            )}
+            bonusConfig={{ veryEarly: 5, early: 3, onTime: 1 }}
+          />
         )}
 
         <div className="space-y-2">

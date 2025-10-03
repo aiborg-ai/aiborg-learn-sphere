@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, FileText, Award } from 'lucide-react';
+import { formatTimeRemaining, getDaysUntilDue } from '@/utils/earlySubmissionDetection';
 
 export interface Assignment {
   id: string;
@@ -27,10 +28,10 @@ interface AssignmentDetailsProps {
 }
 
 export function AssignmentDetails({ assignment, course }: AssignmentDetailsProps) {
-  const isOverdue = new Date(assignment.due_date) < new Date();
-  const daysUntilDue = Math.ceil(
-    (new Date(assignment.due_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
-  );
+  const dueDate = new Date(assignment.due_date);
+  const isOverdue = dueDate < new Date();
+  const daysUntilDue = getDaysUntilDue(dueDate);
+  const timeRemaining = formatTimeRemaining(dueDate);
 
   return (
     <Card>
@@ -82,8 +83,8 @@ export function AssignmentDetails({ assignment, course }: AssignmentDetailsProps
             <Clock className="h-4 w-4 text-muted-foreground" />
             <div>
               <p className="text-xs text-muted-foreground">Time Left</p>
-              <p className="text-sm font-medium">
-                {daysUntilDue > 0 ? `${daysUntilDue} days` : 'Past due'}
+              <p className={`text-sm font-medium ${isOverdue ? 'text-destructive' : ''}`}>
+                {timeRemaining}
               </p>
             </div>
           </div>

@@ -20,6 +20,10 @@ import { usePersonalization } from '@/contexts/PersonalizationContext';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import { ProfilingQuestionnaire } from './ProfilingQuestionnaire';
+import { ScenarioQuestion } from './ScenarioQuestion';
+import { DragDropRanking } from './DragDropRanking';
+import { CodeEvaluation } from './CodeEvaluation';
+import { CaseStudy } from './CaseStudy';
 import {
   ChevronLeft,
   ChevronRight,
@@ -310,6 +314,132 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
     setShowProfiling(false);
   };
 
+  const renderQuestionComponent = () => {
+    if (!currentQuestion || !currentQuestion.options || currentQuestion.options.length === 0) {
+      return (
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            No options available for this question. Please contact support.
+            <div className="mt-2 text-xs font-mono">Question ID: {currentQuestion?.id}</div>
+          </AlertDescription>
+        </Alert>
+      );
+    }
+
+    switch (currentQuestion.question_type) {
+      case 'scenario_multimedia':
+        return (
+          <ScenarioQuestion
+            question={currentQuestion}
+            selectedOptions={selectedOptions}
+            onSelectionChange={setSelectedOptions}
+            showHints={false}
+          />
+        );
+
+      case 'drag_drop_ranking':
+      case 'drag_drop_ordering':
+        return (
+          <DragDropRanking
+            question={currentQuestion}
+            selectedOrdering={selectedOptions}
+            onOrderingChange={setSelectedOptions}
+          />
+        );
+
+      case 'code_evaluation':
+        return (
+          <CodeEvaluation
+            question={currentQuestion}
+            selectedOptions={selectedOptions}
+            onSelectionChange={setSelectedOptions}
+          />
+        );
+
+      case 'case_study':
+        return (
+          <CaseStudy
+            question={currentQuestion}
+            selectedOptions={selectedOptions}
+            onSelectionChange={setSelectedOptions}
+          />
+        );
+
+      case 'single_choice':
+      case 'frequency':
+      case 'scale':
+        // Standard single choice
+        return (
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold mb-2">{currentQuestion.question_text}</h3>
+              {currentQuestion.help_text && (
+                <p className="text-sm text-muted-foreground flex items-start gap-2">
+                  <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                  {currentQuestion.help_text}
+                </p>
+              )}
+            </div>
+            <RadioGroup value={selectedOptions[0] || ''} onValueChange={handleSingleChoice}>
+              {currentQuestion.options.map(option => (
+                <div
+                  key={option.id}
+                  className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                >
+                  <RadioGroupItem value={option.id} id={option.id} className="mt-1" />
+                  <Label htmlFor={option.id} className="flex-1 cursor-pointer">
+                    <div className="font-medium">{option.option_text}</div>
+                    {option.description && (
+                      <div className="text-sm text-muted-foreground mt-1">{option.description}</div>
+                    )}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+        );
+
+      case 'multiple_choice':
+      default:
+        // Standard multiple choice
+        return (
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold mb-2">{currentQuestion.question_text}</h3>
+              {currentQuestion.help_text && (
+                <p className="text-sm text-muted-foreground flex items-start gap-2">
+                  <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                  {currentQuestion.help_text}
+                </p>
+              )}
+            </div>
+            <div className="space-y-3">
+              {currentQuestion.options.map(option => (
+                <div
+                  key={option.id}
+                  className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                >
+                  <Checkbox
+                    id={option.id}
+                    checked={selectedOptions.includes(option.id)}
+                    onCheckedChange={() => handleMultipleChoice(option.id)}
+                    className="mt-1"
+                  />
+                  <Label htmlFor={option.id} className="flex-1 cursor-pointer">
+                    <div className="font-medium">{option.option_text}</div>
+                    {option.description && (
+                      <div className="text-sm text-muted-foreground mt-1">{option.description}</div>
+                    )}
+                  </Label>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+    }
+  };
+
   // Show profiling questionnaire first
   if (showProfiling) {
     return (
@@ -397,72 +527,8 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <div>
-            <h3 className="text-lg font-semibold mb-2">{currentQuestion.question_text}</h3>
-            {currentQuestion.help_text && (
-              <p className="text-sm text-muted-foreground flex items-start gap-2">
-                <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                {currentQuestion.help_text}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-3">
-            {!currentQuestion.options || currentQuestion.options.length === 0 ? (
-              <Alert>
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  No options available for this question. Please contact support.
-                  <div className="mt-2 text-xs font-mono">Question ID: {currentQuestion.id}</div>
-                </AlertDescription>
-              </Alert>
-            ) : currentQuestion.question_type === 'single_choice' ||
-              currentQuestion.question_type === 'frequency' ||
-              currentQuestion.question_type === 'scale' ? (
-              <RadioGroup value={selectedOptions[0] || ''} onValueChange={handleSingleChoice}>
-                {currentQuestion.options.map(option => (
-                  <div
-                    key={option.id}
-                    className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
-                  >
-                    <RadioGroupItem value={option.id} id={option.id} className="mt-1" />
-                    <Label htmlFor={option.id} className="flex-1 cursor-pointer">
-                      <div className="font-medium">{option.option_text}</div>
-                      {option.description && (
-                        <div className="text-sm text-muted-foreground mt-1">
-                          {option.description}
-                        </div>
-                      )}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            ) : (
-              <div className="space-y-3">
-                {currentQuestion.options.map(option => (
-                  <div
-                    key={option.id}
-                    className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
-                  >
-                    <Checkbox
-                      id={option.id}
-                      checked={selectedOptions.includes(option.id)}
-                      onCheckedChange={() => handleMultipleChoice(option.id)}
-                      className="mt-1"
-                    />
-                    <Label htmlFor={option.id} className="flex-1 cursor-pointer">
-                      <div className="font-medium">{option.option_text}</div>
-                      {option.description && (
-                        <div className="text-sm text-muted-foreground mt-1">
-                          {option.description}
-                        </div>
-                      )}
-                    </Label>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* Render appropriate question component based on type */}
+          {renderQuestionComponent()}
         </CardContent>
 
         <CardFooter className="flex justify-between">

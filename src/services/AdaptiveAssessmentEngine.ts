@@ -13,17 +13,28 @@ import {
 import { logger } from '@/utils/logger';
 
 /**
- * Question interface matching database structure
+ * Question interface matching database structure with enhanced types
  */
 export interface AdaptiveQuestion {
   id: string;
   question_text: string;
-  question_type: 'single_choice' | 'multiple_choice' | 'scale' | 'frequency';
+  question_type: 'single_choice' | 'multiple_choice' | 'scale' | 'frequency' |
+                 'scenario_multimedia' | 'drag_drop_ranking' | 'drag_drop_ordering' |
+                 'code_evaluation' | 'case_study';
   difficulty_level: 'foundational' | 'applied' | 'advanced' | 'strategic';
   irt_difficulty: number;
   category_id: string;
   category_name: string;
   help_text?: string;
+  // Enhanced question fields
+  media_type?: 'image' | 'video' | 'audio' | 'document';
+  media_url?: string;
+  media_caption?: string;
+  scenario_context?: string;
+  code_snippet?: string;
+  code_language?: string;
+  case_study_data?: unknown;
+  metadata?: unknown;
   options: QuestionOption[];
 }
 
@@ -35,6 +46,9 @@ export interface QuestionOption {
   description?: string;
   is_correct: boolean;
   order_index: number;
+  // Enhanced option fields
+  correct_position?: number; // For drag-drop ranking/ordering
+  option_image_url?: string; // For visual options
 }
 
 export interface AssessmentState {

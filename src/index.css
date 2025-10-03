@@ -1,10 +1,12 @@
+/* Aiborg™ Design System - AI-augmented Human Learning Platform */
+
+/* Import statements must come first */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import './styles/mobile-fixes.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Aiborg™ Design System - AI-augmented Human Learning Platform */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -290,6 +292,3 @@
     --accent: 140 30% 75%;       /* Soft mint */
   }
 }
-
-/* Import Mobile Responsiveness Fixes */
-@import './styles/mobile-fixes.css';

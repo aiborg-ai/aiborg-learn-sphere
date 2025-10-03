@@ -36,6 +36,7 @@ const PublicProfile = lazy(() => import("./pages/PublicProfile"));
 const TemplateImport = lazy(() => import("./pages/admin/TemplateImport"));
 const AIAssessment = lazy(() => import("./pages/AIAssessment"));
 const AIAssessmentResults = lazy(() => import("./pages/AIAssessmentResults"));
+const SMEAssessment = lazy(() => import("./pages/SMEAssessment"));
 const CoursePage = lazy(() => import("./pages/CoursePage"));
 const InstructorDashboard = lazy(() => import("./pages/InstructorDashboard"));
 const BookmarksPage = lazy(() => import("./pages/BookmarksPage"));
@@ -94,6 +95,7 @@ const App = () => (
               <Route path="/instructor" element={<InstructorDashboard />} />
               <Route path="/ai-assessment" element={<AIAssessment />} />
               <Route path="/ai-assessment/results/:assessmentId" element={<AIAssessmentResults />} />
+              <Route path="/sme-assessment" element={<SMEAssessment />} />
               <Route path="/bookmarks" element={<BookmarksPage />} />
               <Route path="/downloads" element={<DownloadsPage />} />
               <Route path="/watch-later" element={<WatchLaterPage />} />
