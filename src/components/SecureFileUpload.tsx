@@ -5,9 +5,11 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { validateFiles, FileValidationConfig, FileValidationPresets, createSecureUploadHandler } from '@/lib/security/file-validator';
+import type { FileValidationConfig} from '@/lib/security/file-validator';
+import { validateFiles, FileValidationPresets, createSecureUploadHandler } from '@/lib/security/file-validator';
 import { rateLimiter, RateLimitPresets } from '@/lib/security/rate-limiter';
-import { rbac, Action, Resource } from '@/lib/security/rbac';
+import type { Action, Resource } from '@/lib/security/rbac';
+import { rbac } from '@/lib/security/rbac';
 import { logger } from '@/utils/logger';
 import {
   Upload,

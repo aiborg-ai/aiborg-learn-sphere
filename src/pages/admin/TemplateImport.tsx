@@ -18,7 +18,7 @@ import { TemplateBuilder } from '@/components/admin/TemplateBuilder';
 import { DiffViewer } from '@/components/admin/DiffViewer';
 import { BulkActions } from '@/components/admin/BulkActions';
 import { useValidateTemplates, useImportTemplates } from '@/hooks/useTemplates';
-import { ValidationResponse, ImportResponse } from '@/services/templateService';
+import type { ValidationResponse, ImportResponse } from '@/services/templateService';
 
 export function TemplateImport() {
   const navigate = useNavigate();

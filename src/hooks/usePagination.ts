@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { createQueryBuilder, PaginationConfig, PaginatedResponse } from '@/lib/database/query-optimizer';
+import type { PaginationConfig, PaginatedResponse } from '@/lib/database/query-optimizer';
+import { createQueryBuilder } from '@/lib/database/query-optimizer';
 import { useToast } from '@/components/ui/use-toast';
 import { logger } from '@/utils/logger';
 

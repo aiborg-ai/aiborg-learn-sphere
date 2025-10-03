@@ -1,4 +1,8 @@
 import { describe, it, expect } from 'vitest';
+import type {
+  CourseTemplate,
+  EventTemplate
+} from '@/lib/schemas';
 import {
   validateCourseTemplate,
   validateEventTemplate,
@@ -7,9 +11,7 @@ import {
   checkCourseDuplicates,
   checkEventDuplicates,
   checkEventConflicts,
-  getTemplateExample,
-  CourseTemplate,
-  EventTemplate
+  getTemplateExample
 } from '@/lib/schemas';
 
 describe('Course Template Schema', () => {

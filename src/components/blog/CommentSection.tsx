@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { BlogService } from '@/services/blog/BlogService';
-import { BlogComment } from '@/types/blog';
+import type { BlogComment } from '@/types/blog';
 import { RequireAuth } from './RequireAuth';
 import { CommentForm } from './CommentForm';
 import { CommentItem } from './CommentItem';

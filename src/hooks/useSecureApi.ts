@@ -1,10 +1,13 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
-import { apiClient, ApiError, ApiResponse } from '@/lib/api-client';
-import { rateLimiter, RateLimitPresets, RateLimitConfig } from '@/lib/security/rate-limiter';
+import type { ApiResponse } from '@/lib/api-client';
+import { apiClient, ApiError } from '@/lib/api-client';
+import type { RateLimitConfig } from '@/lib/security/rate-limiter';
+import { rateLimiter, RateLimitPresets } from '@/lib/security/rate-limiter';
 import { sanitizeText, sanitizeHTML, sanitizeJSON, hasSQLInjectionPattern } from '@/lib/security/sanitizer';
-import { rbac, Action, Resource } from '@/lib/security/rbac';
+import type { Action, Resource } from '@/lib/security/rbac';
+import { rbac } from '@/lib/security/rbac';
 import { logger } from '@/utils/logger';
 
 /**

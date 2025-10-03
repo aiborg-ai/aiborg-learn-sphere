@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { apiClient, ApiError, ApiResponse } from '@/lib/api-client';
+import type { ApiResponse } from '@/lib/api-client';
+import { apiClient, ApiError } from '@/lib/api-client';
 import { logger } from '@/utils/logger';
 
 /**

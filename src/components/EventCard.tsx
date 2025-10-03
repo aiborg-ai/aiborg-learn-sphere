@@ -13,7 +13,7 @@ import {
   CheckCircle
 } from "lucide-react";
 import { ShareButton } from "@/components/ShareButton";
-import { Event } from "@/hooks/useEvents";
+import type { Event } from "@/hooks/useEvents";
 import { useEventRegistrations } from "@/hooks/useEventRegistrations";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";

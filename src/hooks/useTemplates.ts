@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { templateService, ValidationRequest, ImportRequest } from '@/services/templateService';
+import type { ValidationRequest, ImportRequest } from '@/services/templateService';
+import { templateService } from '@/services/templateService';
 import { useToast } from '@/components/ui/use-toast';
 
 /**

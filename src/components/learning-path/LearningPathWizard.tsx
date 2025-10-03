@@ -100,9 +100,18 @@ export default function LearningPathWizard() {
         .eq('is_complete', true)
         .order('completed_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle(); // Use maybeSingle instead of single to avoid error when no rows
 
-      if (assessmentError) throw assessmentError;
+      // Handle error cases (but not "no rows" which is expected)
+      if (assessmentError) {
+        logger.error('Error fetching assessment:', assessmentError);
+        toast({
+          title: 'Error',
+          description: 'Failed to load assessment data',
+          variant: 'destructive'
+        });
+        return;
+      }
 
       if (!assessmentData) {
         toast({

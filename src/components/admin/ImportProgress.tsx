@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ImportResponse, ImportResult } from '@/services/templateService';
+import type { ImportResponse, ImportResult } from '@/services/templateService';
 
 interface ImportProgressProps {
   importResponse: ImportResponse | null;

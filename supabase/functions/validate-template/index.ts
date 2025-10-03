@@ -222,9 +222,9 @@ async function validateTemplate(
   const isBatch = Array.isArray(data)
   const items = isBatch ? data : [data]
 
-  let errors: ValidationError[] = []
-  let warnings: ValidationWarning[] = []
-  let validItems: any[] = []
+  const errors: ValidationError[] = []
+  const warnings: ValidationWarning[] = []
+  const validItems: any[] = []
   let invalidCount = 0
 
   // Validate each item

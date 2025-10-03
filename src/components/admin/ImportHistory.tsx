@@ -20,7 +20,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useImportHistory, useImportDetails, useImportStatistics } from '@/hooks/useTemplates';
-import { templateService, ImportRecord } from '@/services/templateService';
+import type { ImportRecord } from '@/services/templateService';
+import { templateService } from '@/services/templateService';
 
 export function ImportHistory() {
   const [currentPage, setCurrentPage] = useState(1);

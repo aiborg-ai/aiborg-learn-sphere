@@ -1,7 +1,8 @@
 import React from 'react';
-import { useForm, FieldValues, UseFormReturn, FieldPath } from 'react-hook-form';
+import type { FieldValues, FieldPath } from 'react-hook-form';
+import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import type { z } from 'zod';
 import {
   Form,
   FormControl,
