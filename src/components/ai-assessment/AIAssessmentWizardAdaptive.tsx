@@ -282,8 +282,12 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
 
       if (error) throw error;
 
-      // Navigate to results page
-      window.location.href = `/ai-assessment/results/${assessmentId}`;
+      // Navigate to profile with assessments tab
+      toast({
+        title: 'Assessment Complete!',
+        description: 'Your results have been saved to your profile.',
+      });
+      window.location.href = `/profile?tab=assessments`;
     } catch (error) {
       logger.error('Error submitting adaptive assessment:', error);
       toast({

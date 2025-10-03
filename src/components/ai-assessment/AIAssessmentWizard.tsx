@@ -414,9 +414,13 @@ export const AIAssessmentWizard: React.FC = () => {
         await calculateCategoryInsights(assessmentId);
       }
 
-      // Navigate to results page
+      // Navigate to profile with assessments tab
       if (assessmentId) {
-        window.location.href = `/ai-assessment/results/${assessmentId}`;
+        toast({
+          title: 'Assessment Complete!',
+          description: 'Your results have been saved to your profile.',
+        });
+        window.location.href = `/profile?tab=assessments`;
       } else {
         // For non-logged in users, show results in modal or redirect
         toast({

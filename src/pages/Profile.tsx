@@ -10,28 +10,62 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserReviews } from '@/hooks/useUserReviews';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, User, ArrowLeft, Save, Star, MessageSquare, Mic, Video, RefreshCw, ExternalLink } from 'lucide-react';
+import { Loader2, User, ArrowLeft, Save, Star, MessageSquare, Mic, Video, RefreshCw, ExternalLink, Brain, Target } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { NotificationSettings } from '@/components/NotificationSettings';
+import AssessmentResultsCard from '@/components/assessment/AssessmentResultsCard';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function Profile() {
   const [isLoading, setIsLoading] = useState(false);
   const [displayName, setDisplayName] = useState('');
+  const [assessments, setAssessments] = useState<unknown[]>([]);
+  const [assessmentsLoading, setAssessmentsLoading] = useState(false);
   const { user, profile, updateProfile, loading } = useAuth();
   const { userReviews, loading: reviewsLoading, refetch: refetchReviews } = useUserReviews();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Get tab from URL query parameter
+  const searchParams = new URLSearchParams(window.location.search);
+  const defaultTab = searchParams.get('tab') || 'profile';
 
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
       return;
     }
-    
+
     if (profile) {
       setDisplayName(profile.display_name || '');
     }
+
+    if (user) {
+      fetchAssessments();
+    }
   }, [user, profile, loading, navigate]);
+
+  const fetchAssessments = async () => {
+    if (!user) return;
+
+    setAssessmentsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('user_ai_assessments')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('is_complete', true)
+        .order('completed_at', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+      setAssessments(data || []);
+    } catch (error) {
+      console.error('Error fetching assessments:', error);
+    } finally {
+      setAssessmentsLoading(false);
+    }
+  };
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,16 +145,21 @@ export default function Profile() {
           <p className="text-white/80">Your personal AI learning dashboard</p>
         </div>
 
-        <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-md border-white/20 md:grid-cols-3 overflow-x-auto">
+        <Tabs defaultValue={defaultTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 bg-white/10 backdrop-blur-md border-white/20 md:grid-cols-4 overflow-x-auto">
             <TabsTrigger value="profile" className="text-white data-[state=active]:bg-white/20">
-              Profile Settings
+              <User className="h-4 w-4 mr-2" />
+              Profile
+            </TabsTrigger>
+            <TabsTrigger value="assessments" className="text-white data-[state=active]:bg-white/20">
+              <Brain className="h-4 w-4 mr-2" />
+              Assessments
             </TabsTrigger>
             <TabsTrigger value="notifications" className="text-white data-[state=active]:bg-white/20">
               Notifications
             </TabsTrigger>
             <TabsTrigger value="reviews" className="text-white data-[state=active]:bg-white/20">
-              Reviews Given ({userReviews.length})
+              Reviews ({userReviews.length})
             </TabsTrigger>
           </TabsList>
 
@@ -197,6 +236,96 @@ export default function Profile() {
                     <div className="space-y-1 text-sm text-white/60">
                       <p>Member since: {new Date(profile.created_at).toLocaleDateString()}</p>
                       <p>Last updated: {new Date(profile.updated_at).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="assessments">
+            <Card className="bg-white/10 backdrop-blur-md border-white/20">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-white flex items-center gap-2">
+                      <Brain className="h-5 w-5" />
+                      Your AI Assessments
+                    </CardTitle>
+                    <CardDescription className="text-white/80">
+                      Track your AI skill progress over time
+                    </CardDescription>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={fetchAssessments}
+                    disabled={assessmentsLoading}
+                    className="text-white border-white/20 hover:bg-white/10"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${assessmentsLoading ? 'animate-spin' : ''}`} />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {assessmentsLoading ? (
+                  <div className="text-center py-8">
+                    <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-white" />
+                    <p className="text-white/80">Loading your assessments...</p>
+                  </div>
+                ) : assessments.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Target className="h-16 w-16 text-white/50 mx-auto mb-4" />
+                    <h3 className="text-white font-medium mb-2 text-xl">No Assessments Yet</h3>
+                    <p className="text-white/60 mb-6 max-w-md mx-auto">
+                      Take your first AI assessment to discover your augmentation level and get personalized learning recommendations
+                    </p>
+                    <Button
+                      onClick={() => navigate('/ai-assessment')}
+                      className="btn-hero"
+                    >
+                      <Brain className="h-4 w-4 mr-2" />
+                      Take Assessment
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {/* Latest Assessment - Full Card */}
+                    {assessments[0] && (
+                      <div>
+                        <h3 className="text-white/80 text-sm font-medium mb-4 flex items-center gap-2">
+                          <Star className="h-4 w-4 text-yellow-500" />
+                          Latest Assessment
+                        </h3>
+                        <AssessmentResultsCard assessment={assessments[0]} />
+                      </div>
+                    )}
+
+                    {/* Previous Assessments - Compact */}
+                    {assessments.length > 1 && (
+                      <div>
+                        <h3 className="text-white/80 text-sm font-medium mb-4">Assessment History</h3>
+                        <div className="space-y-3">
+                          {assessments.slice(1).map((assessment) => (
+                            <AssessmentResultsCard
+                              key={assessment.id}
+                              assessment={assessment}
+                              compact
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Take New Assessment Button */}
+                    <div className="pt-4">
+                      <Button
+                        onClick={() => navigate('/ai-assessment')}
+                        className="w-full btn-hero"
+                      >
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Take New Assessment
+                      </Button>
                     </div>
                   </div>
                 )}
