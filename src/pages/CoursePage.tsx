@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useEnrollments } from '@/hooks/useEnrollments';
+import { useQuizzes } from '@/hooks/useQuizzes';
+import { useExercises } from '@/hooks/useExercises';
+import { useWorkshops } from '@/hooks/useWorkshops';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -29,6 +32,11 @@ import {
   Loader2,
   AlertCircle,
   Eye,
+  HelpCircle,
+  PenTool,
+  UsersRound,
+  Trophy,
+  Brain,
 } from 'lucide-react';
 import { logger } from '@/utils/logger';
 import { PDFViewer } from '@/components/pdf/PDFViewer';
@@ -42,6 +50,11 @@ export default function CoursePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { enrollments, loading: enrollmentsLoading } = useEnrollments();
+
+  // Gamification hooks
+  const { quizzes, quizzesLoading } = useQuizzes(courseId ? parseInt(courseId) : undefined);
+  const { exercises, exercisesLoading } = useExercises(courseId ? parseInt(courseId) : undefined);
+  const { workshops, workshopsLoading } = useWorkshops(courseId ? parseInt(courseId) : undefined);
 
   const [course, setCourse] = useState<any>(null);
   const [progress, setProgress] = useState<any>(null);
@@ -284,6 +297,18 @@ export default function CoursePage() {
               <Video className="h-4 w-4 mr-2" />
               Materials
             </TabsTrigger>
+            <TabsTrigger value="quizzes" className="text-white data-[state=active]:bg-white/20">
+              <HelpCircle className="h-4 w-4 mr-2" />
+              Quizzes ({quizzes?.length || 0})
+            </TabsTrigger>
+            <TabsTrigger value="exercises" className="text-white data-[state=active]:bg-white/20">
+              <PenTool className="h-4 w-4 mr-2" />
+              Exercises ({exercises?.length || 0})
+            </TabsTrigger>
+            <TabsTrigger value="workshops" className="text-white data-[state=active]:bg-white/20">
+              <UsersRound className="h-4 w-4 mr-2" />
+              Workshops ({workshops?.length || 0})
+            </TabsTrigger>
             <TabsTrigger value="assignments" className="text-white data-[state=active]:bg-white/20">
               <FileText className="h-4 w-4 mr-2" />
               Assignments ({assignments.length})
@@ -443,6 +468,226 @@ export default function CoursePage() {
                     <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                     <p className="text-muted-foreground">
                       No materials available yet. Materials will be added by your instructor.
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Quizzes Tab */}
+          <TabsContent value="quizzes" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-yellow-500" />
+                  Course Quizzes
+                </CardTitle>
+                <CardDescription>
+                  Test your knowledge and earn AIBORG points
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {quizzesLoading ? (
+                  <div className="text-center py-12">
+                    <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
+                  </div>
+                ) : quizzes && quizzes.length > 0 ? (
+                  <div className="space-y-3">
+                    {quizzes.map((quiz) => (
+                      <div
+                        key={quiz.id}
+                        className="p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-medium">{quiz.title}</h4>
+                              <Badge variant="outline">{quiz.difficulty_level}</Badge>
+                            </div>
+                            {quiz.description && (
+                              <p className="text-sm text-muted-foreground mb-2">
+                                {quiz.description}
+                              </p>
+                            )}
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {quiz.time_limit_minutes ? `${quiz.time_limit_minutes} min` : 'No limit'}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Trophy className="h-3 w-3" />
+                                {quiz.points_reward} pts
+                              </span>
+                              <span>Attempts: {quiz.max_attempts}</span>
+                              <span>Pass: {quiz.passing_score_percentage}%</span>
+                            </div>
+                          </div>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => navigate(`/quiz/${quiz.id}`)}
+                        >
+                          <Play className="h-3 w-3 mr-1" />
+                          Take Quiz
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <HelpCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">
+                      No quizzes available yet. Check back later.
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Exercises Tab */}
+          <TabsContent value="exercises" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Brain className="h-5 w-5 text-purple-500" />
+                  Practice Exercises
+                </CardTitle>
+                <CardDescription>
+                  Submit assignments and get feedback from instructors
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {exercisesLoading ? (
+                  <div className="text-center py-12">
+                    <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
+                  </div>
+                ) : exercises && exercises.length > 0 ? (
+                  <div className="space-y-3">
+                    {exercises.map((exercise) => (
+                      <div
+                        key={exercise.id}
+                        className="p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-medium">{exercise.title}</h4>
+                              <Badge variant="outline">{exercise.difficulty_level}</Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              {exercise.description}
+                            </p>
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {exercise.estimated_time_minutes ? `~${exercise.estimated_time_minutes} min` : 'Self-paced'}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Trophy className="h-3 w-3" />
+                                {exercise.points_reward} pts
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => navigate(`/exercise/${exercise.id}`)}
+                        >
+                          <PenTool className="h-3 w-3 mr-1" />
+                          Start Exercise
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <PenTool className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">
+                      No exercises available yet. Check back later.
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Workshops Tab */}
+          <TabsContent value="workshops" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <UsersRound className="h-5 w-5 text-blue-500" />
+                  Collaborative Workshops
+                </CardTitle>
+                <CardDescription>
+                  Work in groups through structured learning activities
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {workshopsLoading ? (
+                  <div className="text-center py-12">
+                    <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
+                  </div>
+                ) : workshops && workshops.length > 0 ? (
+                  <div className="space-y-3">
+                    {workshops.map((workshop) => {
+                      const isUpcoming = new Date(workshop.scheduled_date) > new Date();
+                      const isPast = new Date(workshop.scheduled_date) < new Date();
+
+                      return (
+                        <div
+                          key={workshop.id}
+                          className="p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+                        >
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h4 className="font-medium">{workshop.title}</h4>
+                                {isUpcoming && <Badge variant="default">Upcoming</Badge>}
+                                {isPast && <Badge variant="secondary">Past</Badge>}
+                              </div>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                {workshop.description}
+                              </p>
+                              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="h-3 w-3" />
+                                  {new Date(workshop.scheduled_date).toLocaleString()}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Clock className="h-3 w-3" />
+                                  {workshop.duration_minutes} min
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Users className="h-3 w-3" />
+                                  Max {workshop.max_participants}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Trophy className="h-3 w-3" />
+                                  {workshop.points_reward} pts
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <Button
+                            size="sm"
+                            onClick={() => navigate(`/workshop/${workshop.id}`)}
+                            disabled={isPast}
+                          >
+                            <UsersRound className="h-3 w-3 mr-1" />
+                            {isUpcoming ? 'Register' : 'View Details'}
+                          </Button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <UsersRound className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">
+                      No workshops scheduled yet. Check back later.
                     </p>
                   </div>
                 )}
