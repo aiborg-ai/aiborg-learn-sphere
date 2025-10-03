@@ -7,6 +7,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { AIAssessmentWizard } from '@/components/ai-assessment/AIAssessmentWizard';
+import { AIAssessmentWizardAdaptive } from '@/components/ai-assessment/AIAssessmentWizardAdaptive';
+
+// Feature flag: set to true to enable adaptive assessment
+const USE_ADAPTIVE_ASSESSMENT = true;
 import { useAuth } from '@/hooks/useAuth';
 import {
   Brain,
@@ -22,40 +26,40 @@ import {
   CheckCircle,
   Star,
   Info,
-  Play
+  Play,
 } from 'lucide-react';
 
 const FEATURES = [
   {
     icon: Clock,
     title: '10-15 Minutes',
-    description: 'Quick, comprehensive assessment of your AI tool usage'
+    description: 'Quick, comprehensive assessment of your AI tool usage',
   },
   {
     icon: BarChart3,
     title: 'Detailed Analysis',
-    description: 'Get insights across 8 key AI usage categories'
+    description: 'Get insights across 8 key AI usage categories',
   },
   {
     icon: Users,
     title: 'Peer Comparison',
-    description: 'See how you compare to others in your field'
+    description: 'See how you compare to others in your field',
   },
   {
     icon: Target,
     title: 'Personalized Roadmap',
-    description: 'Get a custom plan to increase AI augmentation'
+    description: 'Get a custom plan to increase AI augmentation',
   },
   {
     icon: Award,
     title: 'Earn Badges',
-    description: 'Unlock achievements as you improve'
+    description: 'Unlock achievements as you improve',
   },
   {
     icon: TrendingUp,
     title: 'Track Progress',
-    description: 'Monitor your AI adoption journey over time'
-  }
+    description: 'Monitor your AI adoption journey over time',
+  },
 ];
 
 const CATEGORIES = [
@@ -66,7 +70,7 @@ const CATEGORIES = [
   'Data & Analytics',
   'Automation',
   'Creative Tools',
-  'Development & Coding'
+  'Development & Coding',
 ];
 
 const TESTIMONIALS = [
@@ -75,22 +79,25 @@ const TESTIMONIALS = [
     role: 'Marketing Manager',
     score: '78%',
     level: 'Advanced',
-    quote: 'The assessment opened my eyes to AI tools I never knew existed. My productivity has increased 40% since implementing the recommendations!'
+    quote:
+      'The assessment opened my eyes to AI tools I never knew existed. My productivity has increased 40% since implementing the recommendations!',
   },
   {
     name: 'Alex Rodriguez',
     role: 'Student',
     score: '52%',
     level: 'Intermediate',
-    quote: 'As a student, this helped me discover AI study tools that have transformed how I learn. My grades have improved significantly!'
+    quote:
+      'As a student, this helped me discover AI study tools that have transformed how I learn. My grades have improved significantly!',
   },
   {
     name: 'Priya Patel',
     role: 'Startup Founder',
     score: '89%',
     level: 'Expert',
-    quote: 'The peer comparison showed me where my team was falling behind. We\'ve now automated 60% of our repetitive tasks!'
-  }
+    quote:
+      "The peer comparison showed me where my team was falling behind. We've now automated 60% of our repetitive tasks!",
+  },
 ];
 
 export default function AIAssessment() {
@@ -119,7 +126,7 @@ export default function AIAssessment() {
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
         <Navbar />
         <div className="container mx-auto px-4 py-8">
-          <AIAssessmentWizard />
+          {USE_ADAPTIVE_ASSESSMENT ? <AIAssessmentWizardAdaptive /> : <AIAssessmentWizard />}
         </div>
         <Footer />
       </div>
@@ -144,15 +151,11 @@ export default function AIAssessment() {
               <span className="gradient-text block mt-2">AI Augmentation Level</span>
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
-              Take our comprehensive assessment to understand how AI-augmented you are in your daily work
-              and get a personalized roadmap to increase your productivity with AI tools.
+              Take our comprehensive assessment to understand how AI-augmented you are in your daily
+              work and get a personalized roadmap to increase your productivity with AI tools.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                onClick={startAssessment}
-                size="lg"
-                className="btn-hero text-lg px-8 py-6"
-              >
+              <Button onClick={startAssessment} size="lg" className="btn-hero text-lg px-8 py-6">
                 <Play className="mr-2 h-5 w-5" />
                 Start Free Assessment
               </Button>
@@ -160,7 +163,9 @@ export default function AIAssessment() {
                 variant="outline"
                 size="lg"
                 className="text-lg px-8 py-6 bg-white/10 border-white/20 text-white hover:bg-white/20"
-                onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() =>
+                  document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })
+                }
               >
                 Learn More
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -235,28 +240,28 @@ export default function AIAssessment() {
               {
                 step: '1',
                 title: 'Profile Setup',
-                description: 'Tell us about yourself to personalize your experience'
+                description: 'Tell us about yourself to personalize your experience',
               },
               {
                 step: '2',
                 title: 'Answer Questions',
-                description: 'Complete our comprehensive questionnaire about your AI tool usage'
+                description: 'Complete our comprehensive questionnaire about your AI tool usage',
               },
               {
                 step: '3',
                 title: 'Get Your Score',
-                description: 'Receive instant analysis with your AI augmentation percentage'
+                description: 'Receive instant analysis with your AI augmentation percentage',
               },
               {
                 step: '4',
                 title: 'View Insights',
-                description: 'Understand your strengths and areas for improvement'
+                description: 'Understand your strengths and areas for improvement',
               },
               {
                 step: '5',
                 title: 'Follow Roadmap',
-                description: 'Get personalized recommendations to boost your AI usage'
-              }
+                description: 'Get personalized recommendations to boost your AI usage',
+              },
             ].map((item, index) => (
               <div key={index} className="text-center">
                 <div className="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-xl font-bold mx-auto mb-4">
@@ -312,18 +317,13 @@ export default function AIAssessment() {
                       <p className="font-semibold">{testimonial.name}</p>
                       <p className="text-sm text-muted-foreground">{testimonial.role}</p>
                     </div>
-                    <Badge
-                      variant={testimonial.level === 'Expert' ? 'default' : 'secondary'}
-                    >
+                    <Badge variant={testimonial.level === 'Expert' ? 'default' : 'secondary'}>
                       {testimonial.score}
                     </Badge>
                   </div>
                   <div className="flex mb-2">
                     {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-4 w-4 fill-yellow-400 text-yellow-400"
-                      />
+                      <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
                 </CardHeader>
@@ -345,17 +345,16 @@ export default function AIAssessment() {
           <p className="text-xl text-white/80 mb-8">
             Join thousands who have already taken the first step towards AI-powered productivity
           </p>
-          <Button
-            onClick={startAssessment}
-            size="lg"
-            className="btn-hero text-lg px-8 py-6"
-          >
+          <Button onClick={startAssessment} size="lg" className="btn-hero text-lg px-8 py-6">
             <Brain className="mr-2 h-5 w-5" />
             Take the Assessment Now
           </Button>
           {!user && (
             <p className="text-sm text-white/60 mt-4">
-              <Link to="/auth" className="underline hover:text-white">Sign in</Link> to save your results
+              <Link to="/auth" className="underline hover:text-white">
+                Sign in
+              </Link>{' '}
+              to save your results
             </p>
           )}
         </div>
