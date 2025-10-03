@@ -326,22 +326,22 @@ BEGIN
 
   -- Get correct options and check answer
   SELECT
-    array_agg(id),
-    bool_and(id = ANY(p_selected_options)) AND
+    array_agg(opt.id),
+    bool_and(opt.id = ANY(p_selected_options)) AND
     NOT EXISTS (
       SELECT 1 FROM unnest(p_selected_options) AS selected
-      WHERE selected != ALL(array_agg(id))
+      WHERE selected != ALL(array_agg(opt.id))
     )
   INTO v_correct_option_ids, v_is_correct
-  FROM assessment_question_options
-  WHERE question_id = p_question_id AND is_correct = true;
+  FROM assessment_question_options opt
+  WHERE opt.question_id = p_question_id AND opt.is_correct = true;
 
   -- Calculate points earned
   IF v_is_correct THEN
-    SELECT COALESCE(SUM(points), 0)
+    SELECT COALESCE(SUM(opt.points), 0)
     INTO v_points
-    FROM assessment_question_options
-    WHERE id = ANY(p_selected_options) AND is_correct = true;
+    FROM assessment_question_options opt
+    WHERE opt.id = ANY(p_selected_options) AND opt.is_correct = true;
   END IF;
 
   -- Record performance
