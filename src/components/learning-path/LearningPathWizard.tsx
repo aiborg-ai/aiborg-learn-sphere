@@ -349,13 +349,46 @@ export default function LearningPathWizard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-white" />
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-white mx-auto mb-4" />
+          <p className="text-white/80">Loading your assessment data...</p>
+        </div>
       </div>
     );
   }
 
   if (!latestAssessment) {
-    return null;
+    return (
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+        <Card className="bg-white/10 backdrop-blur-md border-white/20 max-w-md">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-yellow-400" />
+              Assessment Required
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-white/80">
+              You need to complete an AI assessment before generating a personalized learning path.
+            </p>
+            <Button
+              onClick={() => navigate('/ai-assessment')}
+              className="w-full btn-hero"
+            >
+              <Brain className="h-4 w-4 mr-2" />
+              Take Assessment Now
+            </Button>
+            <Button
+              onClick={() => navigate('/')}
+              variant="outline"
+              className="w-full text-white border-white/20 hover:bg-white/10"
+            >
+              Go Back Home
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   const progressPercentage = (step / 3) * 100;
