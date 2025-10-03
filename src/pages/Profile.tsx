@@ -146,7 +146,7 @@ export default function Profile() {
         </div>
 
         <Tabs defaultValue={defaultTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-white/10 backdrop-blur-md border-white/20 md:grid-cols-4 overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-5 bg-white/10 backdrop-blur-md border-white/20 md:grid-cols-5 overflow-x-auto">
             <TabsTrigger value="profile" className="text-white data-[state=active]:bg-white/20">
               <User className="h-4 w-4 mr-2" />
               Profile
@@ -154,6 +154,10 @@ export default function Profile() {
             <TabsTrigger value="assessments" className="text-white data-[state=active]:bg-white/20">
               <Brain className="h-4 w-4 mr-2" />
               Assessments
+            </TabsTrigger>
+            <TabsTrigger value="learning-paths" className="text-white data-[state=active]:bg-white/20">
+              <Target className="h-4 w-4 mr-2" />
+              Learning Paths
             </TabsTrigger>
             <TabsTrigger value="notifications" className="text-white data-[state=active]:bg-white/20">
               Notifications
@@ -329,6 +333,56 @@ export default function Profile() {
                     </div>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="learning-paths">
+            <Card className="bg-white/10 backdrop-blur-md border-white/20">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-white flex items-center gap-2">
+                      <Target className="h-5 w-5" />
+                      Your Learning Paths
+                    </CardTitle>
+                    <CardDescription className="text-white/80">
+                      AI-powered personalized learning journeys
+                    </CardDescription>
+                  </div>
+                  <Button
+                    onClick={() => navigate('/learning-path/generate')}
+                    className="btn-hero"
+                  >
+                    <Brain className="h-4 w-4 mr-2" />
+                    Create New Path
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-12">
+                  <Target className="h-16 w-16 text-white/50 mx-auto mb-4" />
+                  <h3 className="text-white font-medium mb-2 text-xl">Start Your Learning Journey</h3>
+                  <p className="text-white/60 mb-6 max-w-md mx-auto">
+                    Create an AI-powered personalized learning path based on your assessment results and goals
+                  </p>
+                  <div className="flex gap-3 justify-center">
+                    <Button
+                      onClick={() => navigate('/learning-path/generate')}
+                      className="btn-hero"
+                    >
+                      <Brain className="h-4 w-4 mr-2" />
+                      Generate Learning Path
+                    </Button>
+                    <Button
+                      onClick={() => navigate('/learning-paths')}
+                      variant="outline"
+                      className="text-white border-white/20 hover:bg-white/10"
+                    >
+                      Browse All Paths
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

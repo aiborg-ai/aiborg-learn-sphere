@@ -46,6 +46,8 @@ const CalendarPage = lazy(() => import("./pages/CalendarPage"));
 const AchievementsPage = lazy(() => import("./pages/AchievementsPage"));
 const MyCoursesPage = lazy(() => import("./pages/MyCoursesPage"));
 const LearningPathsPage = lazy(() => import("./pages/LearningPathsPage"));
+const LearningPathWizard = lazy(() => import("./components/learning-path/LearningPathWizard"));
+const AILearningPathDetail = lazy(() => import("./pages/AILearningPathDetail"));
 const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage"));
 const GamificationPage = lazy(() => import("./pages/GamificationPage"));
 
@@ -100,6 +102,8 @@ const App = () => (
               <Route path="/achievements" element={<AchievementsPage />} />
               <Route path="/my-courses" element={<MyCoursesPage />} />
               <Route path="/learning-paths" element={<LearningPathsPage />} />
+              <Route path="/learning-path/generate" element={<LearningPathWizard />} />
+              <Route path="/learning-path/ai/:pathId" element={<AILearningPathDetail />} />
               <Route path="/analytics" element={<AnalyticsPage />} />
               <Route path="/gamification" element={<GamificationPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

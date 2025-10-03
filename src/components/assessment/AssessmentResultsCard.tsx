@@ -294,30 +294,40 @@ export default function AssessmentResultsCard({
       )}
 
       {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col gap-4">
         <Button
-          onClick={() => navigate('/ai-assessment')}
-          className="btn-hero flex-1"
+          onClick={() => navigate('/learning-path/generate')}
+          className="w-full btn-hero bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
         >
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Retake Assessment
+          <Sparkles className="h-4 w-4 mr-2" />
+          Create Personalized Learning Path
         </Button>
-        <Button
-          onClick={handleShare}
-          variant="outline"
-          className="flex-1 text-white border-white/20 hover:bg-white/10"
-        >
-          <Share2 className="h-4 w-4 mr-2" />
-          Share Results
-        </Button>
-        <Button
-          onClick={() => navigate(`/ai-assessment/results/${assessment.id}`)}
-          variant="outline"
-          className="flex-1 text-white border-white/20 hover:bg-white/10"
-        >
-          <TrendingUp className="h-4 w-4 mr-2" />
-          Full Report
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Button
+            onClick={() => navigate('/ai-assessment')}
+            variant="outline"
+            className="flex-1 text-white border-white/20 hover:bg-white/10"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Retake Assessment
+          </Button>
+          <Button
+            onClick={handleShare}
+            variant="outline"
+            className="flex-1 text-white border-white/20 hover:bg-white/10"
+          >
+            <Share2 className="h-4 w-4 mr-2" />
+            Share Results
+          </Button>
+          <Button
+            onClick={() => navigate(`/ai-assessment/results/${assessment.id}`)}
+            variant="outline"
+            className="flex-1 text-white border-white/20 hover:bg-white/10"
+          >
+            <TrendingUp className="h-4 w-4 mr-2" />
+            Full Report
+          </Button>
+        </div>
       </div>
     </div>
   );
