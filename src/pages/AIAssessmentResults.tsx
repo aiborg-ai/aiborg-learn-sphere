@@ -99,7 +99,7 @@ export default function AIAssessmentResults() {
   const [insights, setInsights] = useState<CategoryInsight[]>([]);
   const [benchmarks, setBenchmarks] = useState<Benchmark[]>([]);
   const [toolRecommendations, setToolRecommendations] = useState<string[]>([]);
-  const [achievements, setAchievements] = useState<any[]>([]);
+  const [achievements, setAchievements] = useState<unknown[]>([]);
 
   useEffect(() => {
     if (assessmentId) {
@@ -264,7 +264,7 @@ export default function AIAssessmentResults() {
   const handleShare = () => {
     if (!assessment) return;
 
-    const shareText = `I just completed the AI Augmentation Assessment and scored ${assessment.total_score}/${assessment.max_possible_score}! My AI augmentation level: ${assessment.augmentation_level}. Take the assessment at AIBORG Learning Platform!`;
+    const shareText = `I just completed the AIBORG Assessment and scored ${assessment.total_score}/${assessment.max_possible_score}! My AI augmentation level: ${assessment.augmentation_level}. Take the assessment at AIBORG Learning Platform!`;
 
     if (navigator.share) {
       navigator.share({
@@ -566,7 +566,7 @@ export default function AIAssessmentResults() {
                     Recommended AI Tools to Get Started
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {toolRecommendations.map((tool: any, index) => (
+                    {toolRecommendations.map((tool: unknown, index) => (
                       <Card key={index} className="p-4">
                         <h5 className="font-medium mb-1">{tool.name}</h5>
                         <p className="text-sm text-muted-foreground mb-2">{tool.description}</p>

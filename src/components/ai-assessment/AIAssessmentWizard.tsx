@@ -578,7 +578,7 @@ export const AIAssessmentWizard: React.FC = () => {
                 <Brain className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-2xl">AI Augmentation Assessment</CardTitle>
+                <CardTitle className="text-2xl">AIBORG Assessment</CardTitle>
                 <CardDescription>
                   Discover your AI adoption level and get personalized recommendations
                 </CardDescription>
