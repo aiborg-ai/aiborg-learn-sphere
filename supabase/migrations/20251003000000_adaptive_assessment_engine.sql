@@ -179,7 +179,7 @@ RETURNS TABLE (
   question_type VARCHAR(50),
   difficulty_level VARCHAR(20),
   irt_difficulty DECIMAL(4,2),
-  category_name TEXT,
+  category_name VARCHAR(100),
   options JSONB
 ) AS $$
 DECLARE

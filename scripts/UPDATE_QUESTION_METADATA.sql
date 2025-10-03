@@ -340,6 +340,34 @@ WHERE question_text LIKE '%pricing model does Lovable use%'
   AND category_id = (SELECT id FROM assessment_categories WHERE name = 'Development Platforms');
 
 -- =====================================================
+-- ASSIGN IRT DIFFICULTY SCORES
+-- =====================================================
+
+-- Foundational: -2.0 to -0.5 (easy questions)
+UPDATE assessment_questions
+SET irt_difficulty = -1.5
+WHERE difficulty_level = 'foundational'
+  AND irt_difficulty IS NULL;
+
+-- Applied: -0.5 to +0.5 (medium difficulty)
+UPDATE assessment_questions
+SET irt_difficulty = 0.0
+WHERE difficulty_level = 'applied'
+  AND irt_difficulty IS NULL;
+
+-- Advanced: +0.5 to +1.5 (hard questions)
+UPDATE assessment_questions
+SET irt_difficulty = 1.0
+WHERE difficulty_level = 'advanced'
+  AND irt_difficulty IS NULL;
+
+-- Strategic: +1.5 to +2.5 (very hard questions)
+UPDATE assessment_questions
+SET irt_difficulty = 2.0
+WHERE difficulty_level = 'strategic'
+  AND irt_difficulty IS NULL;
+
+-- =====================================================
 -- VERIFICATION
 -- =====================================================
 
