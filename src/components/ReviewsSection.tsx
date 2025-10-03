@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 
+import { logger } from '@/utils/logger';
 export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
   const { reviews, loading, error, refetch } = useReviews();
   const [showForm, setShowForm] = useState(false);
@@ -26,7 +27,7 @@ export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
   const [activeCourseFilter, setActiveCourseFilter] = useState<number | null>(courseFilter || null);
   const [showAllReviews, setShowAllReviews] = useState(false);
 
-  console.log('ReviewsSection render:', { reviews, loading, error, reviewCount: reviews.length, courseFilter, activeCourseFilter });
+  logger.log('ReviewsSection render:', { reviews, loading, error, reviewCount: reviews.length, courseFilter, activeCourseFilter });
 
   // Listen for course filter events
   useEffect(() => {

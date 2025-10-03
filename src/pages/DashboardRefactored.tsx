@@ -9,7 +9,8 @@ import { useCourses } from '@/hooks/useCourses';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import {
-  BookOpen, Trophy, Clock, FileText, Bell, AlertCircle, Loader2, ArrowLeft
+  BookOpen, Trophy, Clock, FileText, Bell, AlertCircle, Loader2, ArrowLeft,
+  Target, TrendingUp, Award, BarChart3, Zap
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -19,6 +20,10 @@ import { CourseProgress, type UserProgress } from '@/components/dashboard/Course
 import { AchievementsSection, type Achievement } from '@/components/dashboard/AchievementsSection';
 import { AssignmentsSection, type Assignment } from '@/components/dashboard/AssignmentsSection';
 import { NotificationsSection, type Notification } from '@/components/dashboard/NotificationsSection';
+import { MiniCalendarWidget } from '@/components/calendar/MiniCalendarWidget';
+import { AIInsightsWidget } from '@/components/dashboard/AIInsightsWidget';
+import { StudyRecommendations } from '@/components/dashboard/StudyRecommendations';
+import { AIStudyAssistant } from '@/components/AIStudyAssistant';
 
 export default function DashboardRefactored() {
   const [dataLoading, setDataLoading] = useState(true);
@@ -314,11 +319,83 @@ export default function DashboardRefactored() {
 
           <TabsContent value="overview" className="space-y-6">
             <DashboardStats stats={stats} />
-            <CourseProgress
-              userProgress={userProgress}
-              enrollments={enrollments}
-              courses={courses}
-            />
+
+            {/* Quick Access Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              <Link to="/my-courses">
+                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-6 text-white hover:shadow-lg transition-shadow cursor-pointer">
+                  <div className="flex items-center justify-between mb-2">
+                    <BookOpen className="h-8 w-8" />
+                    <span className="text-2xl font-bold">{stats.enrolledCourses}</span>
+                  </div>
+                  <h3 className="font-semibold text-lg">My Courses</h3>
+                  <p className="text-white/80 text-sm">View all courses</p>
+                </div>
+              </Link>
+
+              <Link to="/achievements">
+                <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-6 text-white hover:shadow-lg transition-shadow cursor-pointer">
+                  <div className="flex items-center justify-between mb-2">
+                    <Trophy className="h-8 w-8" />
+                    <span className="text-2xl font-bold">{stats.totalAchievements}</span>
+                  </div>
+                  <h3 className="font-semibold text-lg">Achievements</h3>
+                  <p className="text-white/80 text-sm">Badges & rewards</p>
+                </div>
+              </Link>
+
+              <Link to="/learning-paths">
+                <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-6 text-white hover:shadow-lg transition-shadow cursor-pointer">
+                  <div className="flex items-center justify-between mb-2">
+                    <TrendingUp className="h-8 w-8" />
+                    <Award className="h-6 w-6" />
+                  </div>
+                  <h3 className="font-semibold text-lg">Learning Paths</h3>
+                  <p className="text-white/80 text-sm">Structured journeys</p>
+                </div>
+              </Link>
+
+              <Link to="/analytics">
+                <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg p-6 text-white hover:shadow-lg transition-shadow cursor-pointer">
+                  <div className="flex items-center justify-between mb-2">
+                    <BarChart3 className="h-8 w-8" />
+                    <TrendingUp className="h-6 w-6" />
+                  </div>
+                  <h3 className="font-semibold text-lg">Analytics</h3>
+                  <p className="text-white/80 text-sm">Progress insights</p>
+                </div>
+              </Link>
+
+              <Link to="/gamification">
+                <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg p-6 text-white hover:shadow-lg transition-shadow cursor-pointer">
+                  <div className="flex items-center justify-between mb-2">
+                    <Zap className="h-8 w-8" />
+                    <Trophy className="h-6 w-6" />
+                  </div>
+                  <h3 className="font-semibold text-lg">Gamification</h3>
+                  <p className="text-white/80 text-sm">Levels & rewards</p>
+                </div>
+              </Link>
+            </div>
+
+            {/* AI-Powered Features Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <AIInsightsWidget />
+              <StudyRecommendations />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <CourseProgress
+                  userProgress={userProgress}
+                  enrollments={enrollments}
+                  courses={courses}
+                />
+              </div>
+              <div>
+                <MiniCalendarWidget />
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="courses" className="space-y-6">
@@ -345,6 +422,9 @@ export default function DashboardRefactored() {
             />
           </TabsContent>
         </Tabs>
+
+        {/* AI Study Assistant - Always Available */}
+        <AIStudyAssistant />
       </div>
     </div>
   );

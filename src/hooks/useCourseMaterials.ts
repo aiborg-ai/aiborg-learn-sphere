@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 
+import { logger } from '@/utils/logger';
 export interface CourseMaterial {
   id: string;
   course_id: number;
@@ -47,7 +48,7 @@ export const useCourseMaterials = (courseId: number) => {
 
       setMaterials((data || []) as CourseMaterial[]);
     } catch (err) {
-      console.error('Error fetching course materials:', err);
+      logger.error('Error fetching course materials:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch course materials');
     } finally {
       setLoading(false);

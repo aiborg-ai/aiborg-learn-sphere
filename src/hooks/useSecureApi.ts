@@ -18,7 +18,7 @@ export interface SecureApiConfig {
   requiredPermission?: {
     action: Action;
     resource: Resource;
-    resourceData?: any;
+    resourceData?: Record<string, unknown>;
   };
   /** Sanitize input data */
   sanitizeInput?: boolean;
@@ -35,7 +35,7 @@ export interface SecureApiConfig {
   /** Error message */
   errorMessage?: string;
   /** Success callback */
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: Record<string, unknown>) => void;
   /** Error callback */
   onError?: (error: ApiError) => void;
   /** Retry on error */
@@ -49,7 +49,7 @@ export interface SecureApiConfig {
  * @interface SecureApiReturn
  */
 export interface SecureApiReturn<T> {
-  execute: (queryFn: () => Promise<{ data: T | null; error: any }>, inputData?: any) => Promise<ApiResponse<T>>;
+  execute: (queryFn: () => Promise<{ data: T | null; error: unknown }>, inputData?: Record<string, unknown>) => Promise<ApiResponse<T>>;
   loading: boolean;
   error: ApiError | null;
   data: T | null;
@@ -74,7 +74,7 @@ export interface SecureApiReturn<T> {
  *
  * await execute(() => supabase.from('users').update(userData), userData);
  */
-export function useSecureApi<T = any>(
+export function useSecureApi<T = unknown>(
   config: SecureApiConfig = {}
 ): SecureApiReturn<T> {
   const {
@@ -103,8 +103,8 @@ export function useSecureApi<T = any>(
    */
   const execute = useCallback(
     async (
-      queryFn: () => Promise<{ data: T | null; error: any }>,
-      inputData?: any
+      queryFn: () => Promise<{ data: T | null; error: unknown }>,
+      inputData?: Record<string, unknown>
     ): Promise<ApiResponse<T>> => {
       // Check RBAC permissions
       if (requiredPermission) {
@@ -293,7 +293,7 @@ export function useSecureApi<T = any>(
  * @param {boolean} checkSQL - Check for SQL injection
  * @returns {any} Sanitized object
  */
-function sanitizeObjectInput(obj: any, checkSQL: boolean): any {
+function sanitizeObjectInput(obj: unknown, checkSQL: boolean): unknown {
   if (typeof obj === 'string') {
     if (checkSQL && hasSQLInjectionPattern(obj)) {
       throw new Error('Invalid input detected');
@@ -306,7 +306,7 @@ function sanitizeObjectInput(obj: any, checkSQL: boolean): any {
   }
 
   if (obj !== null && typeof obj === 'object') {
-    const sanitized: any = {};
+    const sanitized: Record<string, unknown> = {};
     for (const key in obj) {
       // Sanitize the key as well
       const sanitizedKey = sanitizeText(key);
@@ -326,7 +326,7 @@ function sanitizeObjectInput(obj: any, checkSQL: boolean): any {
  * @param {any} obj - Object to sanitize
  * @returns {any} Sanitized object
  */
-function sanitizeObjectOutput(obj: any): any {
+function sanitizeObjectOutput(obj: unknown): unknown {
   if (typeof obj === 'string') {
     // Check if it looks like HTML
     if (/<[^>]*>/g.test(obj)) {
@@ -340,7 +340,7 @@ function sanitizeObjectOutput(obj: any): any {
   }
 
   if (obj !== null && typeof obj === 'object') {
-    const sanitized: any = {};
+    const sanitized: Record<string, unknown> = {};
     for (const key in obj) {
       sanitized[key] = sanitizeObjectOutput(obj[key]);
     }
@@ -356,7 +356,7 @@ function sanitizeObjectOutput(obj: any): any {
  * @param {SecureApiConfig} [config={}] - Security configuration
  * @returns {SecureApiReturn<T>} Secure mutation interface
  */
-export function useSecureMutation<T = any>(config: SecureApiConfig = {}) {
+export function useSecureMutation<T = unknown>(config: SecureApiConfig = {}) {
   return useSecureApi<T>({
     showSuccessToast: true,
     showErrorToast: true,
@@ -373,7 +373,7 @@ export function useSecureMutation<T = any>(config: SecureApiConfig = {}) {
  * @param {SecureApiConfig} [config={}] - Security configuration
  * @returns {SecureApiReturn<T>} Secure query interface
  */
-export function useSecureQuery<T = any>(config: SecureApiConfig = {}) {
+export function useSecureQuery<T = unknown>(config: SecureApiConfig = {}) {
   return useSecureApi<T>({
     showSuccessToast: false,
     showErrorToast: true,

@@ -134,11 +134,12 @@ export default function EventReviewForm() {
       setReview('');
       setEventMode('online');
       setDisplayPreference('show_name');
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error submitting review:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to submit review. Please try again.';
       toast({
         title: 'Error',
-        description: error.message || 'Failed to submit review. Please try again.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {

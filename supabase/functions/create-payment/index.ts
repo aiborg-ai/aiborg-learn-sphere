@@ -14,9 +14,9 @@ serve(async (req) => {
 
   try {
     const requestBody = await req.json();
-    
+
     // Input validation and sanitization
-    const { courseName, coursePrice, studentInfo } = requestBody;
+    const { courseName, coursePrice, courseId, studentInfo } = requestBody;
     
     if (!courseName || typeof courseName !== 'string' || courseName.trim().length === 0) {
       throw new Error('Invalid course name provided');
@@ -73,6 +73,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/`,
       metadata: {
         courseName,
+        courseId: courseId?.toString() || '',
         studentName: studentInfo.studentName,
         email: studentInfo.email,
       },

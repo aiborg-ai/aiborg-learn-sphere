@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 
+import { logger } from '@/utils/logger';
 export interface Enrollment {
   id: string;
   user_id: string;
@@ -40,7 +41,7 @@ export const useEnrollments = () => {
 
       setEnrollments(data || []);
     } catch (err) {
-      console.error('Error fetching enrollments:', err);
+      logger.error('Error fetching enrollments:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch enrollments');
     } finally {
       setLoading(false);
@@ -77,7 +78,7 @@ export const useEnrollments = () => {
         }
       });
     } catch (invoiceError) {
-      console.error('Invoice generation failed:', invoiceError);
+      logger.error('Invoice generation failed:', invoiceError);
       // Don't fail the enrollment if invoice generation fails
     }
 

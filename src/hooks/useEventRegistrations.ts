@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 
+import { logger } from '@/utils/logger';
 export interface EventRegistration {
   id: string;
   user_id: string;
@@ -40,7 +41,7 @@ export const useEventRegistrations = () => {
 
       setRegistrations(data || []);
     } catch (err) {
-      console.error('Error fetching event registrations:', err);
+      logger.error('Error fetching event registrations:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch registrations');
     } finally {
       setLoading(false);
@@ -78,7 +79,7 @@ export const useEventRegistrations = () => {
           }
         });
       } catch (invoiceError) {
-        console.error('Invoice generation failed:', invoiceError);
+        logger.error('Invoice generation failed:', invoiceError);
         // Don't fail the registration if invoice generation fails
       }
 
@@ -86,7 +87,7 @@ export const useEventRegistrations = () => {
       await fetchRegistrations();
       return data;
     } catch (err) {
-      console.error('Error registering for event:', err);
+      logger.error('Error registering for event:', err);
       throw err;
     }
   };

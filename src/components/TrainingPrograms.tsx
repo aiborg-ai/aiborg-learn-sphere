@@ -402,8 +402,15 @@ export const TrainingPrograms = () => {
                      </div>
 
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-2xl font-bold text-primary">{program.price}</span>
-                      <ShareButton 
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-bold text-primary">{program.price}</span>
+                        {(program.price === "Free" || program.price === "₹0" || program.price === "0" || program.price?.toLowerCase().includes("free")) && (
+                          <Badge variant="secondary" className="bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20">
+                            Free Course
+                          </Badge>
+                        )}
+                      </div>
+                      <ShareButton
                         title={program.title}
                         description={program.description}
                       />
@@ -502,6 +509,7 @@ export const TrainingPrograms = () => {
           onClose={() => setEnrollmentFormOpen(false)}
           courseName={selectedCourse?.title || ""}
           coursePrice={selectedCourse?.price}
+          courseId={selectedCourse?.id}
         />
 
         {/* Course Details Modal */}

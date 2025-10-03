@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { logger } from '@/utils/logger';
 import {
   Upload,
   Image as ImageIcon,
@@ -66,7 +67,7 @@ function BlogMediaLibrary() {
       if (error) throw error;
       setMedia(data || []);
     } catch (error) {
-      console.error('Error fetching media:', error);
+      logger.error('Error fetching media:', error);
       toast({
         title: 'Error',
         description: 'Failed to fetch media library',
@@ -164,7 +165,7 @@ function BlogMediaLibrary() {
 
       fetchMedia();
     } catch (error) {
-      console.error('Error uploading files:', error);
+      logger.error('Error uploading files:', error);
       toast({
         title: 'Error',
         description: 'Failed to upload files',

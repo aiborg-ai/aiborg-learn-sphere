@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
+import { logger } from '@/utils/logger';
 export interface Event {
   id: number;
   title: string;
@@ -40,7 +41,7 @@ export const useEvents = () => {
 
       setEvents(data || []);
     } catch (err) {
-      console.error('Error fetching events:', err);
+      logger.error('Error fetching events:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch events');
     } finally {
       setLoading(false);

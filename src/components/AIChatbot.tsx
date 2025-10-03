@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { usePersonalization, Audience } from "@/contexts/PersonalizationContext";
 import { useCourses } from "@/hooks/useCourses";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from '@/utils/logger';
 import { 
   MessageCircle, 
   Send, 
@@ -260,14 +261,14 @@ export function AIChatbot() {
       });
 
       if (error) {
-        console.error('AI chat error:', error);
+        logger.error('AI chat error:', error);
         throw new Error(error.message || 'Failed to get AI response');
       }
 
       return data.response;
 
     } catch (error) {
-      console.error('Error generating AI response:', error);
+      logger.error('Error generating AI response:', error);
       
       // Fallback to basic static response
       const lowerMessage = userMessage.toLowerCase();
@@ -330,7 +331,7 @@ export function AIChatbot() {
       }, 1000 + Math.random() * 1000); // Random delay between 1-2 seconds
 
     } catch (error) {
-      console.error('Error sending message:', error);
+      logger.error('Error sending message:', error);
       setIsTyping(false);
       
       // Show error message

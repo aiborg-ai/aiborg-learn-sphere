@@ -1,22 +1,37 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, ArrowLeft } from 'lucide-react';
+import { CheckCircle, ArrowLeft, BookOpen } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
+  const { user } = useAuth();
+  const [countdown, setCountdown] = useState(8);
 
   useEffect(() => {
-    // Auto-redirect to home after 10 seconds
+    // Auto-redirect to dashboard after 8 seconds
     const timer = setTimeout(() => {
-      navigate('/');
-    }, 10000);
+      if (user) {
+        navigate('/dashboard');
+      } else {
+        navigate('/');
+      }
+    }, 8000);
 
-    return () => clearTimeout(timer);
-  }, [navigate]);
+    // Update countdown every second
+    const countdownInterval = setInterval(() => {
+      setCountdown(prev => prev - 1);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+      clearInterval(countdownInterval);
+    };
+  }, [navigate, user]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background/50 flex items-center justify-center p-4">
@@ -33,7 +48,7 @@ const PaymentSuccess = () => {
           <div className="space-y-2">
             <p className="text-lg font-medium">Thank you for your enrollment!</p>
             <p className="text-muted-foreground">
-              Your payment has been processed successfully and you will receive a confirmation email shortly.
+              Your payment has been processed successfully. Your course is now available!
             </p>
             {sessionId && (
               <p className="text-sm text-muted-foreground">
@@ -41,26 +56,47 @@ const PaymentSuccess = () => {
               </p>
             )}
           </div>
-          
-          <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-            <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">What's Next?</h4>
-            <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1 text-left">
-              <li>• Check your email for course details and access instructions</li>
-              <li>• You'll receive a WhatsApp message with your course schedule</li>
-              <li>• Course materials will be available 24 hours before start date</li>
+
+          <div className="bg-green-50 dark:bg-green-950/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+            <h4 className="font-medium text-green-900 dark:text-green-100 mb-2">🎉 Course Access Granted!</h4>
+            <ul className="text-sm text-green-800 dark:text-green-200 space-y-1 text-left">
+              <li>• Your course is now available in your dashboard</li>
+              <li>• Access all course materials immediately</li>
+              <li>• Confirmation email sent with details</li>
+              <li>• WhatsApp notification with schedule</li>
             </ul>
           </div>
 
           <div className="space-y-3">
-            <Button 
-              onClick={() => navigate('/')} 
+            {user ? (
+              <Button
+                onClick={() => navigate('/dashboard')}
+                className="w-full"
+                size="lg"
+              >
+                <BookOpen className="mr-2 h-5 w-5" />
+                Go to My Dashboard
+              </Button>
+            ) : (
+              <Button
+                onClick={() => navigate('/auth')}
+                className="w-full"
+                size="lg"
+              >
+                <BookOpen className="mr-2 h-5 w-5" />
+                Login to Access Course
+              </Button>
+            )}
+            <Button
+              onClick={() => navigate('/')}
+              variant="outline"
               className="w-full"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Return to Home
             </Button>
             <p className="text-sm text-muted-foreground">
-              Redirecting automatically in 10 seconds...
+              {user ? `Redirecting to dashboard in ${countdown} seconds...` : 'Redirecting to home in ' + countdown + ' seconds...'}
             </p>
           </div>
         </CardContent>

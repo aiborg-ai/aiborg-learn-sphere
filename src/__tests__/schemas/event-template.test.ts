@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { EventTemplateSchema } from '@/schemas/template-schemas';
 
 // Helper function to validate event template
-const validateEventTemplate = (data: any) => {
+const validateEventTemplate = (data: Record<string, unknown>) => {
   try {
     const result = EventTemplateSchema.parse(data);
     return { success: true, data: result };

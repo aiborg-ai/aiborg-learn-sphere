@@ -23,15 +23,15 @@ import { cn } from '@/lib/utils';
 interface DiffItem {
   field: string;
   label: string;
-  oldValue: any;
-  newValue: any;
+  oldValue: unknown;
+  newValue: unknown;
   type: 'added' | 'removed' | 'modified' | 'unchanged';
   category: 'required' | 'optional' | 'metadata';
 }
 
 interface DiffViewerProps {
-  originalData: any;
-  updatedData: any;
+  originalData: Record<string, unknown>;
+  updatedData: Record<string, unknown>;
   type: 'course' | 'event';
   onApprove?: (changes: DiffItem[]) => void;
   onReject?: () => void;
@@ -211,7 +211,7 @@ export function DiffViewer({
     }
   };
 
-  const formatValue = (value: any): string => {
+  const formatValue = (value: unknown): string => {
     if (value === null || value === undefined) return 'Not set';
     if (typeof value === 'boolean') return value ? 'Yes' : 'No';
     if (Array.isArray(value)) {

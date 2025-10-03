@@ -3,9 +3,10 @@ import { CourseTemplateSchema } from '@/lib/schemas/course-template.schema';
 import { EventTemplateSchema } from '@/lib/schemas/event-template.schema';
 import { z } from 'zod';
 
+import { logger } from '@/utils/logger';
 export interface ValidationRequest {
   type: 'course' | 'event';
-  data: any | any[];
+  data: Record<string, unknown> | Record<string, unknown>[];
   options?: {
     checkDuplicates?: boolean;
     validateDependencies?: boolean;
@@ -15,7 +16,7 @@ export interface ValidationRequest {
 
 export interface ValidationResponse {
   success: boolean;
-  data?: any;
+  data?: Record<string, unknown> | Record<string, unknown>[];
   errors?: ValidationError[];
   warnings?: ValidationWarning[];
   summary?: ValidationSummary;
@@ -53,7 +54,7 @@ export interface DuplicateInfo {
 
 export interface ImportRequest {
   type: 'course' | 'event';
-  data: any | any[];
+  data: Record<string, unknown> | Record<string, unknown>[];
   options?: {
     skip_duplicates?: boolean;
     update_existing?: boolean;
@@ -118,11 +119,11 @@ export interface ImportRecord {
   error_count: number;
   warning_count: number;
   skipped_count: number;
-  errors?: any[];
-  warnings?: any[];
-  options?: any;
-  items?: any[];
-  audit_logs?: any[];
+  errors?: ImportError[];
+  warnings?: ValidationWarning[];
+  options?: Record<string, unknown>;
+  items?: ImportResult[];
+  audit_logs?: Record<string, unknown>[];
 }
 
 class TemplateService {
@@ -159,7 +160,7 @@ class TemplateService {
 
       return await response.json();
     } catch (error) {
-      console.error('Validation error:', error);
+      logger.error('Validation error:', error);
       throw error;
     }
   }
@@ -191,7 +192,7 @@ class TemplateService {
 
       return await response.json();
     } catch (error) {
-      console.error('Import error:', error);
+      logger.error('Import error:', error);
       throw error;
     }
   }
@@ -202,7 +203,12 @@ class TemplateService {
   async getImportHistory(params?: ImportHistoryRequest): Promise<{
     success: boolean;
     imports?: ImportRecord[];
-    pagination?: any;
+    pagination?: {
+      page: number;
+      total_pages: number;
+      total_items: number;
+      items_per_page: number;
+    };
     error?: string;
   }> {
     try {
@@ -237,7 +243,7 @@ class TemplateService {
 
       return await response.json();
     } catch (error) {
-      console.error('History error:', error);
+      logger.error('History error:', error);
       throw error;
     }
   }
@@ -268,7 +274,7 @@ class TemplateService {
       const result = await response.json();
       return result.imports?.[0];
     } catch (error) {
-      console.error('Import details error:', error);
+      logger.error('Import details error:', error);
       throw error;
     }
   }
@@ -276,7 +282,13 @@ class TemplateService {
   /**
    * Get import statistics
    */
-  async getImportStatistics(): Promise<any> {
+  async getImportStatistics(): Promise<{
+    total_imports: number;
+    successful_imports: number;
+    failed_imports: number;
+    imports_by_type: Record<string, number>;
+    imports_by_date: Record<string, number>;
+  }> {
     try {
       const { data: { session } } = await supabase.auth.getSession();
 
@@ -299,7 +311,7 @@ class TemplateService {
       const result = await response.json();
       return result.statistics;
     } catch (error) {
-      console.error('Statistics error:', error);
+      logger.error('Statistics error:', error);
       throw error;
     }
   }
@@ -307,7 +319,7 @@ class TemplateService {
   /**
    * Parse JSON file content
    */
-  async parseJSONFile(file: File): Promise<any> {
+  async parseJSONFile(file: File): Promise<Record<string, unknown> | Record<string, unknown>[]> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
@@ -430,12 +442,12 @@ export function validateCourseTemplate(data: any[]): ValidationResponse {
       }
     });
 
-    const errors = validatedData.flatMap((v: any) => v.errors || []);
-    const valid = validatedData.filter((v: any) => v.success).length;
+    const errors = validatedData.flatMap((v) => (v as { errors?: ValidationError[] }).errors || []);
+    const valid = validatedData.filter((v) => (v as { success: boolean }).success).length;
 
     return {
       success: errors.length === 0,
-      data: validatedData.filter((v: any) => v.success).map((v: any) => v.data),
+      data: validatedData.filter((v) => (v as { success: boolean }).success).map((v) => (v as { data: Record<string, unknown> }).data),
       errors: errors.length > 0 ? errors : undefined,
       summary: {
         total: data.length,
@@ -456,7 +468,7 @@ export function validateCourseTemplate(data: any[]): ValidationResponse {
   }
 }
 
-export function validateEventTemplate(data: any[]): ValidationResponse {
+export function validateEventTemplate(data: Record<string, unknown>[]): ValidationResponse {
   try {
     const validatedData = data.map((item, index) => {
       try {
@@ -478,12 +490,12 @@ export function validateEventTemplate(data: any[]): ValidationResponse {
       }
     });
 
-    const errors = validatedData.flatMap((v: any) => v.errors || []);
-    const valid = validatedData.filter((v: any) => v.success).length;
+    const errors = validatedData.flatMap((v) => (v as { errors?: ValidationError[] }).errors || []);
+    const valid = validatedData.filter((v) => (v as { success: boolean }).success).length;
 
     return {
       success: errors.length === 0,
-      data: validatedData.filter((v: any) => v.success).map((v: any) => v.data),
+      data: validatedData.filter((v) => (v as { success: boolean }).success).map((v) => (v as { data: Record<string, unknown> }).data),
       errors: errors.length > 0 ? errors : undefined,
       summary: {
         total: data.length,

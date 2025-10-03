@@ -65,7 +65,7 @@ export default function ResetPassword() {
       setTimeout(() => {
         navigate('/auth');
       }, 2000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       setError(error.message || 'Failed to reset password');
     } finally {
       setIsLoading(false);

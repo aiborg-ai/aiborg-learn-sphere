@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { format, subDays, startOfWeek, startOfMonth } from 'date-fns';
 
+import { logger } from '@/utils/logger';
 interface ImportStats {
   totalImports: number;
   successfulImports: number;
@@ -159,7 +160,7 @@ export function ImportDashboard() {
       setRecentImports(logs?.slice(0, 5) || []);
 
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      logger.error('Error fetching dashboard data:', error);
     } finally {
       setIsLoading(false);
     }

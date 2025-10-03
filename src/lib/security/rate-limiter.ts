@@ -315,7 +315,7 @@ export function debounceWithRateLimit(
       if (rateLimit) {
         const limitCheck = rateLimiter.checkLimit(rateLimit);
         if (!limitCheck.allowed) {
-          console.warn('Rate limit exceeded for debounced function');
+          logger.warn('Rate limit exceeded for debounced function');
           return;
         }
       }
@@ -351,7 +351,7 @@ export function throttleWithRateLimit(
       if (rateLimit) {
         const limitCheck = rateLimiter.checkLimit(rateLimit);
         if (!limitCheck.allowed) {
-          console.warn('Rate limit exceeded for throttled function');
+          logger.warn('Rate limit exceeded for throttled function');
           return;
         }
       }

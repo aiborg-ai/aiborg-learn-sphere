@@ -290,3 +290,6 @@
     --accent: 140 30% 75%;       /* Soft mint */
   }
 }
+
+/* Import Mobile Responsiveness Fixes */
+@import './styles/mobile-fixes.css';

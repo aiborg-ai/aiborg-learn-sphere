@@ -28,6 +28,7 @@ import { VoiceRecorder } from "./VoiceRecorder";
 import { VideoRecorder } from "./VideoRecorder";
 import { supabase } from "@/integrations/supabase/client";
 
+import { logger } from '@/utils/logger';
 interface ReviewFormData {
   courseId: string;
   displayNameOption: 'full_name' | 'anonymous';
@@ -63,8 +64,8 @@ export function ReviewForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log('🔍 Current user:', user);
-    console.log('🔍 Form data:', formData);
+    logger.log('🔍 Current user:', user);
+    logger.log('🔍 Form data:', formData);
 
     if (!user) {
       toast({
@@ -185,7 +186,7 @@ export function ReviewForm() {
       setVideoBlob(null);
 
     } catch (error) {
-      console.error('Review submission error:', error);
+      logger.error('Review submission error:', error);
 
       let errorMessage = "Failed to submit review";
       if (error instanceof Error) {

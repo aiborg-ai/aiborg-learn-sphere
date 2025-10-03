@@ -1,5 +1,6 @@
 import DOMPurify from 'isomorphic-dompurify';
 
+import { logger } from '@/utils/logger';
 /**
  * Security utilities for input sanitization and XSS prevention
  * @module sanitizer
@@ -164,7 +165,7 @@ export function sanitizeJSON(json: string): object | null {
 
     return sanitizeObject(parsed);
   } catch (error) {
-    console.error('Invalid JSON input:', error);
+    logger.error('Invalid JSON input:', error);
     return null;
   }
 }

@@ -12,6 +12,7 @@ import { useUserReviews } from '@/hooks/useUserReviews';
 import { useToast } from '@/components/ui/use-toast';
 import { Loader2, User, ArrowLeft, Save, Star, MessageSquare, Mic, Video, RefreshCw, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { NotificationSettings } from '@/components/NotificationSettings';
 
 export default function Profile() {
   const [isLoading, setIsLoading] = useState(false);
@@ -111,9 +112,12 @@ export default function Profile() {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-md border-white/20">
+          <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-md border-white/20 md:grid-cols-3 overflow-x-auto">
             <TabsTrigger value="profile" className="text-white data-[state=active]:bg-white/20">
               Profile Settings
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="text-white data-[state=active]:bg-white/20">
+              Notifications
             </TabsTrigger>
             <TabsTrigger value="reviews" className="text-white data-[state=active]:bg-white/20">
               Reviews Given ({userReviews.length})
@@ -198,6 +202,10 @@ export default function Profile() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="notifications">
+            <NotificationSettings />
           </TabsContent>
 
           <TabsContent value="reviews">

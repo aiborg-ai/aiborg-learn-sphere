@@ -276,7 +276,7 @@ export function AchievementManager() {
       setIsAllocateDialogOpen(false);
       setSelectedUserId('');
       fetchUsers();
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error.code === '23505') {
         toast({
           title: 'Info',

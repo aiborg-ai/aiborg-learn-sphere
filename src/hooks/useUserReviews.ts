@@ -3,6 +3,7 @@ import { DataService } from '@/services/ReviewsDataService';
 import { useAuth } from '@/hooks/useAuth';
 import type { Review } from '@/hooks/useReviews';
 
+import { logger } from '@/utils/logger';
 interface UseUserReviewsState {
   userReviews: Review[];
   loading: boolean;
@@ -26,7 +27,7 @@ export const useUserReviews = () => {
 
   const fetchUserReviews = useCallback(async (force = false) => {
     if (!user) {
-      console.log('👤 No user logged in, clearing user reviews');
+      logger.log('👤 No user logged in, clearing user reviews');
       updateState({ userReviews: [], loading: false, error: null });
       return;
     }
@@ -36,16 +37,16 @@ export const useUserReviews = () => {
     const shouldRefresh = force || timeSinceLastFetch > 15000; // 15 seconds throttle for user data
 
     if (!shouldRefresh && state.userReviews.length > 0) {
-      console.log('⏭️ Skipping user reviews fetch - too recent');
+      logger.log('⏭️ Skipping user reviews fetch - too recent');
       return;
     }
 
-    console.log('🔄 Fetching user reviews...', { userId: user.id, force });
+    logger.log('🔄 Fetching user reviews...', { userId: user.id, force });
     updateState({ loading: true, error: null });
 
     try {
       const reviews = await DataService.getUserReviews(user.id);
-      console.log(`✅ Fetched ${reviews.length} user reviews`);
+      logger.log(`✅ Fetched ${reviews.length} user reviews`);
       
       updateState({ 
         userReviews: reviews as Review[], 
@@ -54,7 +55,7 @@ export const useUserReviews = () => {
         lastFetched: now
       });
     } catch (err) {
-      console.error('❌ Error fetching user reviews:', err);
+      logger.error('❌ Error fetching user reviews:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch user reviews';
       updateState({ 
         loading: false, 
@@ -68,7 +69,7 @@ export const useUserReviews = () => {
   }, [fetchUserReviews]);
 
   const refetch = useCallback(() => {
-    console.log('🔄 Manual user reviews refetch triggered');
+    logger.log('🔄 Manual user reviews refetch triggered');
     return fetchUserReviews(true);
   }, [fetchUserReviews]);
 

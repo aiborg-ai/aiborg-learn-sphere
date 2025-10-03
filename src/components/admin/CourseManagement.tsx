@@ -405,7 +405,7 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
 
 interface CourseFormProps {
   form: any; // This is from react-hook-form, which has complex types
-  onSubmit: (data: any) => void;
+  onSubmit: (data: Record<string, unknown>) => void;
   isEditing?: boolean;
 }
 

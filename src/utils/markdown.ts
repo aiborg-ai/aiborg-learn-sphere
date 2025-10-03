@@ -1,5 +1,6 @@
 import { marked } from 'marked';
 
+import { logger } from '@/utils/logger';
 // Configure marked options for better formatting
 marked.setOptions({
   async: false, // Force synchronous parsing
@@ -116,7 +117,7 @@ export function parseMarkdown(markdown: string): string {
     // Wrap the content in a container with proper styling
     return `<div class="prose-container">${html}</div>`;
   } catch (error) {
-    console.error('Error parsing markdown:', error);
+    logger.error('Error parsing markdown:', error);
     // Fallback: return escaped markdown in pre tags
     return `<div class="prose-container"><pre class="whitespace-pre-wrap">${markdown.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre></div>`;
   }

@@ -1,5 +1,6 @@
 import { marked } from 'marked';
 
+import { logger } from '@/utils/logger';
 // Configure marked for synchronous operation
 marked.use({
   async: false,
@@ -39,7 +40,7 @@ export function parseMarkdownSimple(markdown: string): string {
       </div>
     `;
   } catch (error) {
-    console.error('Error parsing markdown:', error);
+    logger.error('Error parsing markdown:', error);
     // Fallback: display as preformatted text
     const escaped = markdown
       .replace(/&/g, '&amp;')
@@ -75,7 +76,7 @@ export function extractHeadings(markdown: string) {
       }
     }
   } catch (error) {
-    console.error('Error extracting headings:', error);
+    logger.error('Error extracting headings:', error);
   }
 
   return headings;

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, Users, BookOpen, Megaphone, Shield, UserCheck, Star, Calendar, Trophy, FileJson } from 'lucide-react';
+import { Loader2, Users, BookOpen, Megaphone, Shield, UserCheck, Star, Calendar, Trophy, FileJson, BarChart3, UserCog, Receipt, TrendingUp, FileCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
@@ -17,6 +17,15 @@ import { AnnouncementManagementEnhanced, type Announcement } from '@/components/
 import { EventsManagementEnhanced } from '@/components/admin/EventsManagementEnhanced';
 import { AchievementManager } from '@/components/admin/AchievementManager';
 import BlogManager from './Admin/BlogManager';
+// Phase 1: Admin Management Panel Components
+import { RoleManagementPanel } from '@/components/admin/RoleManagementPanel';
+import { AnalyticsDashboardEnhanced } from '@/components/admin/AnalyticsDashboardEnhanced';
+// Phase 2: Enhanced Enrollment Components
+import { EnrollmentManagementEnhanced } from '@/components/admin/EnrollmentManagementEnhanced';
+import { RefundProcessor } from '@/components/admin/RefundProcessor';
+// Phase 3: Progress Tracking Components
+import { ProgressTrackingDashboard } from '@/components/admin/ProgressTrackingDashboard';
+import { AssignmentTracker } from '@/components/admin/AssignmentTracker';
 
 // Import the existing components that were already separated
 function ReviewsManagement() {
@@ -408,8 +417,16 @@ export default function AdminRefactored() {
           </div>
         </div>
 
-        <Tabs defaultValue="users" className="space-y-6">
+        <Tabs defaultValue="analytics" className="space-y-6">
           <TabsList className="bg-white/10 border-white/20 flex-wrap h-auto p-2">
+            <TabsTrigger value="analytics" className="text-white data-[state=active]:bg-white/20">
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger value="role-management" className="text-white data-[state=active]:bg-white/20">
+              <UserCog className="h-4 w-4 mr-2" />
+              Role Management
+            </TabsTrigger>
             <TabsTrigger value="users" className="text-white data-[state=active]:bg-white/20">
               <Users className="h-4 w-4 mr-2" />
               Users ({users.length})
@@ -442,7 +459,30 @@ export default function AdminRefactored() {
               <Trophy className="h-4 w-4 mr-2" />
               Achievements
             </TabsTrigger>
+            <TabsTrigger value="refunds" className="text-white data-[state=active]:bg-white/20">
+              <Receipt className="h-4 w-4 mr-2" />
+              Refunds
+            </TabsTrigger>
+            <TabsTrigger value="progress" className="text-white data-[state=active]:bg-white/20">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              Progress
+            </TabsTrigger>
+            <TabsTrigger value="assignments" className="text-white data-[state=active]:bg-white/20">
+              <FileCheck className="h-4 w-4 mr-2" />
+              Assignments
+            </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="analytics">
+            <AnalyticsDashboardEnhanced />
+          </TabsContent>
+
+          <TabsContent value="role-management">
+            <RoleManagementPanel
+              users={users}
+              onRefresh={fetchData}
+            />
+          </TabsContent>
 
           <TabsContent value="users">
             <UserManagement
@@ -461,7 +501,7 @@ export default function AdminRefactored() {
           </TabsContent>
 
           <TabsContent value="enrollments">
-            <EnrollmentManagement enrollments={enrollments} />
+            <EnrollmentManagementEnhanced enrollments={enrollments} onRefresh={fetchData} />
           </TabsContent>
 
           <TabsContent value="announcements">
@@ -487,6 +527,18 @@ export default function AdminRefactored() {
 
           <TabsContent value="achievements">
             <AchievementManager />
+          </TabsContent>
+
+          <TabsContent value="refunds">
+            <RefundProcessor />
+          </TabsContent>
+
+          <TabsContent value="progress">
+            <ProgressTrackingDashboard />
+          </TabsContent>
+
+          <TabsContent value="assignments">
+            <AssignmentTracker />
           </TabsContent>
         </Tabs>
       </div>

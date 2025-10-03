@@ -45,6 +45,7 @@ import {
 import BlogPostEditor from './BlogPostEditor';
 import { format } from 'date-fns';
 
+import { logger } from '@/utils/logger';
 interface BlogPost {
   id: string;
   title: string;
@@ -102,7 +103,7 @@ function BlogPostManager() {
       if (error) throw error;
       setPosts(data || []);
     } catch (error) {
-      console.error('Error fetching posts:', error);
+      logger.error('Error fetching posts:', error);
       toast({
         title: 'Error',
         description: 'Failed to fetch blog posts',

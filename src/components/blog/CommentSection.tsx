@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+import { logger } from '@/utils/logger';
 interface CommentSectionProps {
   postId: string;
   onCommentCountChange?: (count: number) => void;
@@ -49,7 +50,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
         onCommentCountChange(totalCount);
       }
     } catch (error) {
-      console.error('Failed to load comments:', error);
+      logger.error('Failed to load comments:', error);
       toast({
         title: "Error",
         description: "Failed to load comments. Please try again.",
@@ -76,7 +77,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
           filter: `post_id=eq.${postId}`,
         },
         (payload) => {
-          console.log('Comment change:', payload);
+          logger.log('Comment change:', payload);
           // Reload comments when there's a change
           loadComments();
         }
@@ -107,7 +108,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
         description: "Your comment has been posted.",
       });
     } catch (error) {
-      console.error('Failed to add comment:', error);
+      logger.error('Failed to add comment:', error);
       toast({
         title: "Error",
         description: "Failed to post comment. Please try again.",
@@ -130,7 +131,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
       // Reload comments to show the new reply
       loadComments();
     } catch (error) {
-      console.error('Failed to add reply:', error);
+      logger.error('Failed to add reply:', error);
       toast({
         title: "Error",
         description: "Failed to post reply. Please try again.",
@@ -151,7 +152,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
       // Reload comments to show the update
       loadComments();
     } catch (error) {
-      console.error('Failed to edit comment:', error);
+      logger.error('Failed to edit comment:', error);
       toast({
         title: "Error",
         description: "Failed to update comment. Please try again.",
@@ -188,7 +189,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
         onCommentCountChange(newCount);
       }
     } catch (error) {
-      console.error('Failed to delete comment:', error);
+      logger.error('Failed to delete comment:', error);
       toast({
         title: "Error",
         description: "Failed to delete comment. Please try again.",
@@ -201,7 +202,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
 
   const handleLikeComment = async (commentId: string) => {
     // This would need to be implemented in BlogService
-    console.log('Like comment:', commentId);
+    logger.log('Like comment:', commentId);
     toast({
       title: "Info",
       description: "Comment likes coming soon!",

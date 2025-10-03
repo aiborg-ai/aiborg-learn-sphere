@@ -25,6 +25,7 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
+import { logger } from '@/utils/logger';
 interface ScheduledImport {
   id: string;
   name: string;
@@ -83,7 +84,7 @@ export function ScheduledImports() {
       if (error) throw error;
       setSchedules(data || []);
     } catch (error) {
-      console.error('Error fetching schedules:', error);
+      logger.error('Error fetching schedules:', error);
       toast({
         title: 'Error',
         description: 'Failed to fetch scheduled imports',
@@ -128,7 +129,7 @@ export function ScheduledImports() {
         description: 'Scheduled import created successfully'
       });
     } catch (error) {
-      console.error('Error creating schedule:', error);
+      logger.error('Error creating schedule:', error);
       toast({
         title: 'Error',
         description: 'Failed to create scheduled import',
@@ -155,7 +156,7 @@ export function ScheduledImports() {
         description: `Schedule ${!isActive ? 'activated' : 'paused'}`
       });
     } catch (error) {
-      console.error('Error toggling schedule:', error);
+      logger.error('Error toggling schedule:', error);
       toast({
         title: 'Error',
         description: 'Failed to update schedule',
@@ -182,7 +183,7 @@ export function ScheduledImports() {
         description: 'Scheduled import deleted'
       });
     } catch (error) {
-      console.error('Error deleting schedule:', error);
+      logger.error('Error deleting schedule:', error);
       toast({
         title: 'Error',
         description: 'Failed to delete schedule',
@@ -200,7 +201,7 @@ export function ScheduledImports() {
         description: 'The import has been triggered and will run shortly'
       });
     } catch (error) {
-      console.error('Error running import:', error);
+      logger.error('Error running import:', error);
       toast({
         title: 'Error',
         description: 'Failed to trigger import',

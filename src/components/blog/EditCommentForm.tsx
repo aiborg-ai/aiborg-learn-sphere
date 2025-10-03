@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 
+import { logger } from '@/utils/logger';
 interface EditCommentFormProps {
   initialContent: string;
   onSubmit: (content: string) => Promise<void>;
@@ -24,7 +25,7 @@ export function EditCommentForm({ initialContent, onSubmit, onCancel }: EditComm
     try {
       await onSubmit(content);
     } catch (error) {
-      console.error('Failed to update comment:', error);
+      logger.error('Failed to update comment:', error);
     } finally {
       setIsSubmitting(false);
     }

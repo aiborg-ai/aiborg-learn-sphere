@@ -63,11 +63,14 @@ export class ApiClient {
    * @param {any} error - Raw error object from API calls
    * @returns {ApiError} Standardized ApiError instance
    */
-  private handleError(error: any): ApiError {
+  private handleError(error: unknown): ApiError {
     logger.error('API Error:', error);
 
+    // Type guard for error objects with code property
+    const errorWithCode = error as { code?: string; message?: string; status?: number };
+
     // Handle Supabase specific errors
-    if (error?.code) {
+    if (errorWithCode?.code) {
       const errorMessages: Record<string, string> = {
         '23505': 'This record already exists',
         '23503': 'Cannot delete this record as it is referenced elsewhere',
@@ -81,8 +84,8 @@ export class ApiClient {
         '53300': 'Too many connections - please try again later',
       };
 
-      const message = errorMessages[error.code] || error.message || 'An unexpected error occurred';
-      return new ApiError(message, error.code, error.status || 500, error);
+      const message = errorMessages[errorWithCode.code] || errorWithCode.message || 'An unexpected error occurred';
+      return new ApiError(message, errorWithCode.code, errorWithCode.status || 500, error);
     }
 
     // Handle network errors
@@ -95,7 +98,7 @@ export class ApiClient {
     }
 
     // Handle auth errors
-    if (error?.message?.includes('JWT')) {
+    if (error instanceof Error && error.message?.includes('JWT')) {
       return new ApiError(
         'Your session has expired. Please sign in again.',
         'AUTH_EXPIRED',
@@ -104,10 +107,11 @@ export class ApiClient {
     }
 
     // Generic error
+    const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
     return new ApiError(
-      error?.message || 'An unexpected error occurred',
+      errorMessage,
       'UNKNOWN_ERROR',
-      error?.status || 500,
+      errorWithCode?.status || 500,
       error
     );
   }
@@ -123,7 +127,7 @@ export class ApiClient {
    * );
    */
   async query<T>(
-    queryFn: () => Promise<{ data: T | null; error: any }>
+    queryFn: () => Promise<{ data: T | null; error: unknown }>
   ): Promise<ApiResponse<T>> {
     try {
       const { data, error } = await queryFn();
@@ -150,7 +154,7 @@ export class ApiClient {
    * ]);
    */
   async batchQuery<T>(
-    queries: Array<() => Promise<{ data: any; error: any }>>
+    queries: Array<() => Promise<{ data: unknown; error: unknown }>>
   ): Promise<ApiResponse<T[]>> {
     try {
       const results = await Promise.all(queries.map(q => q()));
@@ -183,7 +187,7 @@ export class ApiClient {
    * );
    */
   async retryQuery<T>(
-    queryFn: () => Promise<{ data: T | null; error: any }>,
+    queryFn: () => Promise<{ data: T | null; error: unknown }>,
     maxRetries = 3,
     delay = 1000
   ): Promise<ApiResponse<T>> {

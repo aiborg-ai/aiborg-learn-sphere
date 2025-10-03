@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 
+import { logger } from '@/utils/logger';
 interface ReplyFormProps {
   onSubmit: (content: string) => Promise<void>;
   onCancel: () => void;
@@ -21,7 +22,7 @@ export function ReplyForm({ onSubmit, onCancel }: ReplyFormProps) {
       await onSubmit(content);
       setContent('');
     } catch (error) {
-      console.error('Failed to post reply:', error);
+      logger.error('Failed to post reply:', error);
     } finally {
       setIsSubmitting(false);
     }

@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
+import { logger } from '@/utils/logger';
 interface BlogPostEditorProps {
   post?: any;
   onClose: () => void;
@@ -195,7 +196,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
 
       onClose();
     } catch (error) {
-      console.error('Error saving post:', error);
+      logger.error('Error saving post:', error);
       toast({
         title: 'Error',
         description: 'Failed to save post',

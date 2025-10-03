@@ -3,6 +3,7 @@ import { BlogService } from '@/services/blog/BlogService';
 import type { BlogPost, BlogFilters } from '@/types/blog';
 import { useToast } from '@/components/ui/use-toast';
 
+import { logger } from '@/utils/logger';
 export const useBlogPosts = (initialFilters: BlogFilters = {}) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +20,7 @@ export const useBlogPosts = (initialFilters: BlogFilters = {}) => {
       setPosts(fetchedPosts);
       setTotalCount(count || 0);
     } catch (err) {
-      console.error('Error fetching blog posts:', err);
+      logger.error('Error fetching blog posts:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch posts');
       toast({
         title: 'Error',
@@ -71,7 +72,7 @@ export const useBlogPost = (slug: string) => {
         const fetchedPost = await BlogService.getPostBySlug(slug);
         setPost(fetchedPost);
       } catch (err) {
-        console.error('Error fetching blog post:', err);
+        logger.error('Error fetching blog post:', err);
         setError(err instanceof Error ? err.message : 'Failed to fetch post');
         toast({
           title: 'Error',

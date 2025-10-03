@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
+import { logger } from '@/utils/logger';
 interface URLImportOptions {
   skip_duplicates?: boolean;
   update_existing?: boolean;
@@ -115,7 +116,7 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
       setAuthValue('');
 
     } catch (error) {
-      console.error('URL import error:', error);
+      logger.error('URL import error:', error);
       toast({
         title: 'Import Failed',
         description: error.message || 'Failed to import from URL',

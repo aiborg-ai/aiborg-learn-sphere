@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { DataService, subscribeToReviewChanges } from '@/services/ReviewsDataService';
 
+import { logger } from '@/utils/logger';
 export interface Review {
   id: string;
   user_id: string;
@@ -51,16 +52,16 @@ export const useReviews = () => {
     const shouldRefresh = force || timeSinceLastFetch > 30000; // 30 seconds throttle
 
     if (!shouldRefresh && state.reviews.length > 0) {
-      console.log('⏭️ Skipping reviews fetch - too recent');
+      logger.log('⏭️ Skipping reviews fetch - too recent');
       return;
     }
 
-    console.log('🔄 Fetching reviews...', { force, timeSinceLastFetch });
+    logger.log('🔄 Fetching reviews...', { force, timeSinceLastFetch });
     updateState({ loading: true, error: null });
 
     try {
       const reviews = await DataService.getApprovedReviews();
-      console.log(`✅ Fetched ${reviews.length} approved reviews`);
+      logger.log(`✅ Fetched ${reviews.length} approved reviews`);
       
       updateState({ 
         reviews: reviews as Review[], 
@@ -69,7 +70,7 @@ export const useReviews = () => {
         lastFetched: now
       });
     } catch (err) {
-      console.error('❌ Error fetching reviews:', err);
+      logger.error('❌ Error fetching reviews:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch reviews';
       updateState({ 
         loading: false, 
@@ -79,7 +80,7 @@ export const useReviews = () => {
   }, [state.lastFetched, state.reviews.length, updateState]);
 
   const submitReview = useCallback(async (reviewData: Omit<Review, 'id' | 'created_at' | 'updated_at' | 'approved' | 'profiles' | 'courses'>) => {
-    console.log('📝 Submitting review...', {
+    logger.log('📝 Submitting review...', {
       type: reviewData.review_type,
       course: reviewData.course_id,
       userId: reviewData.user_id,
@@ -93,7 +94,7 @@ export const useReviews = () => {
         display: true // Add missing display field
       };
 
-      console.log('🔄 Review data to submit:', reviewToSubmit);
+      logger.log('🔄 Review data to submit:', reviewToSubmit);
 
       // Submit the review
       const { data, error } = await supabase
@@ -106,12 +107,12 @@ export const useReviews = () => {
         .single();
 
       if (error) {
-        console.error('❌ Supabase error:', error);
-        console.error('Error details:', { code: error.code, message: error.message, details: error.details });
+        logger.error('❌ Supabase error:', error);
+        logger.error('Error details:', { code: error.code, message: error.message, details: error.details });
         throw error;
       }
 
-      console.log('✅ Review submitted successfully:', data.id);
+      logger.log('✅ Review submitted successfully:', data.id);
 
       // Send email notification to admin
       try {
@@ -132,9 +133,9 @@ export const useReviews = () => {
           }
         });
         
-        console.log('📧 Review notification sent to admin');
+        logger.log('📧 Review notification sent to admin');
       } catch (notificationError) {
-        console.error('⚠️ Failed to send notification email:', notificationError);
+        logger.error('⚠️ Failed to send notification email:', notificationError);
         // Don't fail the review submission if notification fails
       }
 
@@ -143,22 +144,22 @@ export const useReviews = () => {
 
       return data;
     } catch (err) {
-      console.error('❌ Error submitting review:', err);
+      logger.error('❌ Error submitting review:', err);
       throw err;
     }
   }, []);
 
   // Set up real-time subscriptions
   useEffect(() => {
-    console.log('👂 Setting up review subscriptions...');
+    logger.log('👂 Setting up review subscriptions...');
     
     const unsubscribe = subscribeToReviewChanges(() => {
-      console.log('🔔 Review change detected, refetching...');
+      logger.log('🔔 Review change detected, refetching...');
       fetchReviews(true); // Force refetch on changes
     });
 
     return () => {
-      console.log('🔌 Cleaning up review subscriptions');
+      logger.log('🔌 Cleaning up review subscriptions');
       unsubscribe();
     };
   }, [fetchReviews]);
@@ -169,7 +170,7 @@ export const useReviews = () => {
   }, [fetchReviews]);
 
   const refetch = useCallback(() => {
-    console.log('🔄 Manual refetch triggered');
+    logger.log('🔄 Manual refetch triggered');
     return fetchReviews(true);
   }, [fetchReviews]);
 

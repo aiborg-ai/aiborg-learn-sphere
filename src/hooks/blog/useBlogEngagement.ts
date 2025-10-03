@@ -4,6 +4,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+import { logger } from '@/utils/logger';
 export const useBlogLike = (postId: string, initialLiked = false, initialCount = 0) => {
   const [isLiked, setIsLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialCount);
@@ -35,7 +36,7 @@ export const useBlogLike = (postId: string, initialLiked = false, initialCount =
         setLikeCount(prev => prev + 1);
       }
     } catch (err) {
-      console.error('Error toggling like:', err);
+      logger.error('Error toggling like:', err);
       toast({
         title: 'Error',
         description: isLiked ? 'Failed to unlike post' : 'Failed to like post',
@@ -85,7 +86,7 @@ export const useBlogBookmark = (postId: string, initialBookmarked = false) => {
         });
       }
     } catch (err) {
-      console.error('Error toggling bookmark:', err);
+      logger.error('Error toggling bookmark:', err);
       toast({
         title: 'Error',
         description: 'Failed to update bookmark',
@@ -147,7 +148,7 @@ export const useBlogShare = (postId: string, postTitle: string, postUrl: string)
           break;
       }
     } catch (err) {
-      console.error('Error sharing:', err);
+      logger.error('Error sharing:', err);
       toast({
         title: 'Error',
         description: 'Failed to share post',

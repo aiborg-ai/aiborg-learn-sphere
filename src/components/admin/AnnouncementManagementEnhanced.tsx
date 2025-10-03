@@ -100,7 +100,7 @@ export function AnnouncementManagementEnhanced({
     setIsDeleteDialogOpen(true);
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: Record<string, unknown>) => {
     setIsLoading(true);
     try {
       if (editingAnnouncement?.id) {

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Send } from 'lucide-react';
 
+import { logger } from '@/utils/logger';
 interface CommentFormProps {
   onSubmit: (content: string) => Promise<void>;
   placeholder?: string;
@@ -22,7 +23,7 @@ export function CommentForm({ onSubmit, placeholder = "Write a comment..." }: Co
       await onSubmit(content);
       setContent('');
     } catch (error) {
-      console.error('Failed to post comment:', error);
+      logger.error('Failed to post comment:', error);
     } finally {
       setIsSubmitting(false);
     }

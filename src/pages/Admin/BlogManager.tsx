@@ -41,6 +41,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { logger } from '@/utils/logger';
 import {
   Plus,
   Edit,
@@ -102,7 +103,7 @@ export default function BlogManager() {
       setPosts(postsData.posts);
       setCategories(categoriesData);
     } catch (error) {
-      console.error('Error fetching blog data:', error);
+      logger.error('Error fetching blog data:', error);
       toast({
         title: 'Error',
         description: 'Failed to fetch blog data',
@@ -167,7 +168,7 @@ export default function BlogManager() {
       setIsPostDialogOpen(false);
       fetchData();
     } catch (error) {
-      console.error('Error saving post:', error);
+      logger.error('Error saving post:', error);
       toast({
         title: 'Error',
         description: 'Failed to save post',
@@ -187,7 +188,7 @@ export default function BlogManager() {
       });
       fetchData();
     } catch (error) {
-      console.error('Error deleting post:', error);
+      logger.error('Error deleting post:', error);
       toast({
         title: 'Error',
         description: 'Failed to delete post',
@@ -212,7 +213,7 @@ export default function BlogManager() {
       });
       fetchData();
     } catch (error) {
-      console.error('Error creating category:', error);
+      logger.error('Error creating category:', error);
       toast({
         title: 'Error',
         description: 'Failed to create category',

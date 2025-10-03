@@ -12,7 +12,7 @@ interface UseApiCallOptions {
   showErrorToast?: boolean;
   successMessage?: string;
   errorMessage?: string;
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: Record<string, unknown>) => void;
   onError?: (error: ApiError) => void;
   retryOnError?: boolean;
   retryCount?: number;
@@ -45,7 +45,7 @@ interface UseApiCallReturn<T> {
  * const { execute, loading, error, data } = useApiCall<User[]>({
  *   showSuccessToast: true,
  *   successMessage: 'Users loaded successfully',
- *   onSuccess: (users) => console.log('Loaded', users.length, 'users')
+ *   onSuccess: (users) => logger.log('Loaded', users.length, 'users')
  * });
  *
  * await execute(() => supabase.from('users').select());

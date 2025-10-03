@@ -158,3 +158,128 @@ Changes can be deployed through:
 - GitHub Repo: https://github.com/aiborg-ai/aiborg-ai-web
 - Live Site: https://aiborg-ai-web.vercel.app
 - Vercel Dashboard: https://vercel.com/hirendra-vikrams-projects/aiborg-ai-web/deployments
+
+## Spec-Driven Development (GitHub Spec Kit)
+
+This project uses GitHub's Spec Kit for structured, specification-driven development with Claude Code.
+
+### Available Slash Commands
+
+The following commands are available in Claude Code:
+
+1. **/constitution** - Establish or update project governing principles
+   - Defines core development principles and constraints
+   - Located: `.specify/memory/constitution.md`
+
+2. **/specify** - Create feature specifications
+   - Converts natural language feature descriptions into structured specifications
+   - Creates new git branch for feature
+   - Generates spec file in `.specify/specs/`
+
+3. **/plan** - Generate technical implementation plans
+   - Creates detailed technical plan from specification
+   - Respects architecture and tech stack constraints
+   - Output: `.specify/plans/<feature>/plan.md`
+
+4. **/tasks** - Generate actionable task lists
+   - Breaks down plan into numbered, executable tasks
+   - Identifies parallel tasks and dependencies
+   - Output: `.specify/plans/<feature>/tasks.md`
+
+5. **/implement** - Execute implementation
+   - Runs through all tasks from tasks.md
+   - Follows TDD principles
+   - Implements feature according to plan
+
+6. **/analyze** - Analyze existing code or issues
+   - Deep dive into code structure and issues
+   - Useful for debugging and understanding
+
+7. **/clarify** - Get clarification on specifications
+   - Interactive refinement of requirements
+   - Helps resolve ambiguities
+
+### Directory Structure
+
+```
+.specify/
+├── memory/
+│   └── constitution.md          # Project principles and governance
+├── scripts/
+│   └── bash/                    # Helper scripts for workflow
+├── specs/                       # Feature specifications
+│   └── <feature-name>.md
+└── templates/                   # Templates for specs, plans, tasks
+    ├── spec-template.md
+    ├── plan-template.md
+    ├── tasks-template.md
+    └── agent-file-template.md
+
+.claude/
+└── commands/                    # Claude Code slash command definitions
+    ├── constitution.md
+    ├── specify.md
+    ├── plan.md
+    ├── tasks.md
+    ├── implement.md
+    ├── analyze.md
+    └── clarify.md
+```
+
+### Workflow
+
+The recommended spec-driven development workflow:
+
+1. **Define Principles**: Run `/constitution` to establish project principles (one-time setup)
+2. **Specify Feature**: Run `/specify <feature description>` to create specification
+3. **Create Plan**: Run `/plan` to generate technical implementation plan
+4. **Generate Tasks**: Run `/tasks` to break down into actionable steps
+5. **Implement**: Run `/implement` to execute tasks and build feature
+
+### Key Benefits
+
+- **Structured Development**: Clear phases from requirements to implementation
+- **Better Planning**: AI generates detailed plans respecting project constraints
+- **Test-First**: Built-in TDD workflow with test generation before implementation
+- **Parallel Tasks**: Identifies tasks that can be executed concurrently
+- **Version Control**: Each feature gets its own branch automatically
+- **Documentation**: Specifications and plans serve as living documentation
+
+### Example Usage
+
+```bash
+# First time setup - define your project principles
+/constitution
+
+# Start a new feature
+/specify Add user dashboard with activity timeline and notifications
+
+# Review the generated spec, then create implementation plan
+/plan
+
+# Generate executable tasks
+/tasks
+
+# Start implementation
+/implement
+```
+
+### Installation
+
+Spec Kit is already installed in this project. To install in a new project:
+
+```bash
+# Install CLI tool
+uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+
+# Initialize in project
+specify init <project-name> --ai claude
+
+# Or initialize in current directory
+specify init --here --ai claude
+```
+
+### Documentation
+
+- GitHub Spec Kit: https://github.com/github/spec-kit
+- Claude Code Docs: https://docs.claude.com/en/docs/claude-code/overview

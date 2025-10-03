@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
+import { logger } from '@/utils/logger';
 interface ExportFilters {
   category?: string;
   is_active?: boolean;
@@ -110,7 +111,7 @@ export function TemplateExport() {
       }
 
     } catch (error) {
-      console.error('Export error:', error);
+      logger.error('Export error:', error);
       toast({
         title: 'Export Failed',
         description: error.message || 'Failed to export templates',

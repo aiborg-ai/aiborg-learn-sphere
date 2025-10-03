@@ -42,6 +42,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 
+import { logger } from '@/utils/logger';
 interface BulkItem {
   id: string;
   title?: string; // For courses
@@ -155,7 +156,7 @@ export function BulkActions() {
 
       setItems(filteredItems);
     } catch (error) {
-      console.error('Error fetching items:', error);
+      logger.error('Error fetching items:', error);
       toast({
         title: 'Error',
         description: 'Failed to fetch items',
@@ -443,7 +444,7 @@ export function BulkActions() {
       await action.action(selectedItemsArray);
       setSelectedItems(new Set());
     } catch (error) {
-      console.error('Bulk action error:', error);
+      logger.error('Bulk action error:', error);
       toast({
         title: 'Action Failed',
         description: 'Failed to complete bulk action',

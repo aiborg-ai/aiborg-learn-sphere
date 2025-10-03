@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { BlogService } from '@/services/blog/BlogService';
 import type { BlogCategory } from '@/types/blog';
 
+import { logger } from '@/utils/logger';
 export const useBlogCategories = () => {
   const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +16,7 @@ export const useBlogCategories = () => {
         const data = await BlogService.getCategories();
         setCategories(data);
       } catch (err) {
-        console.error('Error fetching categories:', err);
+        logger.error('Error fetching categories:', err);
         setError(err instanceof Error ? err.message : 'Failed to fetch categories');
       } finally {
         setLoading(false);

@@ -20,6 +20,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
+import { logger } from '@/utils/logger';
 interface ContactForm {
   name: string;
   email: string;
@@ -98,11 +99,11 @@ export function ContactSection() {
       });
 
       if (error) {
-        console.error('Error saving contact message:', error);
+        logger.error('Error saving contact message:', error);
         throw error;
       }
 
-      console.log('Contact message saved via RPC:', data);
+      logger.log('Contact message saved via RPC:', data);
 
       // Send email notification to admin
       try {
@@ -117,13 +118,13 @@ export function ContactSection() {
         });
 
         if (emailError) {
-          console.error('Failed to send email notification:', emailError);
+          logger.error('Failed to send email notification:', emailError);
           // Don't fail the submission if email fails
         } else {
-          console.log('Email notification sent successfully');
+          logger.log('Email notification sent successfully');
         }
       } catch (emailError) {
-        console.error('Email notification error:', emailError);
+        logger.error('Email notification error:', emailError);
         // Don't fail the submission if email fails
       }
 
@@ -148,7 +149,7 @@ export function ContactSection() {
       }, 3000);
 
     } catch (error) {
-      console.error('Error submitting contact form:', error);
+      logger.error('Error submitting contact form:', error);
       setIsSubmitting(false);
 
       toast({

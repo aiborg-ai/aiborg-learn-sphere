@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 
+import { logger } from '@/utils/logger';
 export interface CacheOptions {
   ttl?: number; // Time to live in milliseconds
   key: string;
@@ -51,11 +52,11 @@ export class DataService {
     const cached = reviewsCache.get(cacheKey);
     
     if (cached) {
-      console.log('📦 Retrieved reviews from cache');
+      logger.log('📦 Retrieved reviews from cache');
       return cached;
     }
     
-    console.log('🔄 Fetching reviews from database...');
+    logger.log('🔄 Fetching reviews from database...');
     
     const { data: reviewsData, error: reviewsError } = await supabase
       .from('reviews')
@@ -64,7 +65,7 @@ export class DataService {
       .order('created_at', { ascending: false });
 
     if (reviewsError) {
-      console.error('❌ Reviews query error:', reviewsError);
+      logger.error('❌ Reviews query error:', reviewsError);
       throw reviewsError;
     }
 
@@ -97,7 +98,7 @@ export class DataService {
       .map(result => (result as PromiseFulfilledResult<unknown>).value);
 
     reviewsCache.set(cacheKey, reviews);
-    console.log('✅ Reviews cached successfully');
+    logger.log('✅ Reviews cached successfully');
     
     return reviews;
   }
@@ -107,11 +108,11 @@ export class DataService {
     const cached = reviewsCache.get(cacheKey);
     
     if (cached) {
-      console.log('📦 Retrieved user reviews from cache');
+      logger.log('📦 Retrieved user reviews from cache');
       return cached;
     }
     
-    console.log('🔄 Fetching user reviews from database...');
+    logger.log('🔄 Fetching user reviews from database...');
     
     const { data: reviewsData, error: reviewsError } = await supabase
       .from('reviews')
@@ -120,7 +121,7 @@ export class DataService {
       .order('created_at', { ascending: false });
 
     if (reviewsError) {
-      console.error('❌ User reviews query error:', reviewsError);
+      logger.error('❌ User reviews query error:', reviewsError);
       throw reviewsError;
     }
 
@@ -152,12 +153,12 @@ export class DataService {
   
   static invalidateReviewsCache() {
     reviewsCache.invalidate('reviews');
-    console.log('🗑️ Reviews cache invalidated');
+    logger.log('🗑️ Reviews cache invalidated');
   }
 }
 
 export const subscribeToReviewChanges = (callback: () => void) => {
-  console.log('👂 Setting up real-time review subscriptions...');
+  logger.log('👂 Setting up real-time review subscriptions...');
   
   const subscription = supabase
     .channel('reviews-changes')
@@ -169,17 +170,17 @@ export const subscribeToReviewChanges = (callback: () => void) => {
         table: 'reviews'
       },
       (payload) => {
-        console.log('🔔 Review change detected:', payload.eventType, payload.new);
+        logger.log('🔔 Review change detected:', payload.eventType, payload.new);
         DataService.invalidateReviewsCache();
         callback();
       }
     )
     .subscribe((status) => {
-      console.log('📡 Review subscription status:', status);
+      logger.log('📡 Review subscription status:', status);
     });
 
   return () => {
-    console.log('🔌 Unsubscribing from review changes');
+    logger.log('🔌 Unsubscribing from review changes');
     supabase.removeChannel(subscription);
   };
 };

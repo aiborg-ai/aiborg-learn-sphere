@@ -4,6 +4,7 @@ import { Play, Pause, Volume2, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+import { logger } from '@/utils/logger';
 interface MediaPlayerProps {
   bucket: string;
   path: string;
@@ -39,17 +40,17 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
 
   const logError = (operation: string, error: unknown) => {
     const errorMessage = `MediaPlayer ${operation} failed for ${bucket}/${path}`;
-    console.error(errorMessage, error);
+    logger.error(errorMessage, error);
     return errorMessage;
   };
 
   const loadMedia = async (): Promise<string | null> => {
     if (state.mediaUrl) {
-      console.log('📦 Using cached media URL');
+      logger.log('📦 Using cached media URL');
       return state.mediaUrl;
     }
 
-    console.log(`🔄 Loading ${type} from ${bucket}/${path}...`);
+    logger.log(`🔄 Loading ${type} from ${bucket}/${path}...`);
     updateState({ isLoading: true, error: null });
 
     try {
@@ -65,7 +66,7 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
         throw new Error('No signed URL received from storage');
       }
 
-      console.log('✅ Media URL loaded successfully');
+      logger.log('✅ Media URL loaded successfully');
       updateState({ mediaUrl: data.signedUrl, error: null });
       return data.signedUrl;
 
@@ -88,7 +89,7 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
   const initializeMediaElement = (url: string) => {
     if (mediaRef.current) return;
 
-    console.log(`🎵 Initializing ${type} element`);
+    logger.log(`🎵 Initializing ${type} element`);
 
     if (type === 'audio') {
       mediaRef.current = new Audio(url);
@@ -104,7 +105,7 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
     // Event listeners
     media.onloadedmetadata = () => {
       updateState({ duration: media.duration || 0 });
-      console.log(`📊 Media metadata loaded: ${media.duration}s`);
+      logger.log(`📊 Media metadata loaded: ${media.duration}s`);
     };
 
     media.ontimeupdate = () => {
@@ -112,7 +113,7 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
     };
 
     media.onended = () => {
-      console.log('🏁 Media playback ended');
+      logger.log('🏁 Media playback ended');
       updateState({ isPlaying: false, currentTime: 0 });
     };
 
@@ -132,7 +133,7 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
   };
 
   const togglePlay = async () => {
-    console.log(`🎮 Toggle play - Current state: ${state.isPlaying ? 'playing' : 'paused'}`);
+    logger.log(`🎮 Toggle play - Current state: ${state.isPlaying ? 'playing' : 'paused'}`);
     
     const url = await loadMedia();
     if (!url) return;
@@ -140,17 +141,17 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
     initializeMediaElement(url);
     
     if (!mediaRef.current) {
-      console.error('❌ Media element not initialized');
+      logger.error('❌ Media element not initialized');
       return;
     }
 
     try {
       if (state.isPlaying) {
         mediaRef.current.pause();
-        console.log('⏸️ Media paused');
+        logger.log('⏸️ Media paused');
       } else {
         await mediaRef.current.play();
-        console.log('▶️ Media playing');
+        logger.log('▶️ Media playing');
       }
     } catch (error) {
       logError('toggle', error);
@@ -166,7 +167,7 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
   useEffect(() => {
     return () => {
       if (mediaRef.current) {
-        console.log('🧹 Cleaning up media element');
+        logger.log('🧹 Cleaning up media element');
         mediaRef.current.pause();
         if (type === 'video' && mediaRef.current.parentNode) {
           mediaRef.current.parentNode.removeChild(mediaRef.current);

@@ -17,6 +17,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
+import { logger } from '@/utils/logger';
 interface BlogStats {
   totalPosts: number;
   publishedPosts: number;
@@ -119,7 +120,7 @@ function BlogCMSDashboard() {
         recentComments: recentComments || []
       });
     } catch (error) {
-      console.error('Error fetching dashboard stats:', error);
+      logger.error('Error fetching dashboard stats:', error);
       toast({
         title: 'Error',
         description: 'Failed to fetch dashboard statistics',

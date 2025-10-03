@@ -150,10 +150,11 @@ export default function Auth() {
       });
       setShowResetDialog(false);
       setResetEmail('');
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to send password reset email';
       toast({
         title: 'Error',
-        description: error.message || 'Failed to send password reset email',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {

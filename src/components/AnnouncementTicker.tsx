@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Megaphone } from 'lucide-react';
 
+import { logger } from '@/utils/logger';
 interface Announcement {
   id: string;
   title: string;
@@ -38,7 +39,7 @@ export function AnnouncementTicker() {
       if (error) throw error;
       setAnnouncements(data || []);
     } catch (error) {
-      console.error('Error fetching announcements:', error);
+      logger.error('Error fetching announcements:', error);
     }
   };
 

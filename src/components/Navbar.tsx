@@ -2,10 +2,13 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
-import { Brain, Menu, X, User, Shield, LogOut, LayoutDashboard } from 'lucide-react';
+import { Brain, Menu, X, User, Shield, LogOut, LayoutDashboard, Sparkles } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { FAQModal } from '@/components/FAQModal';
 import { TermsModal } from '@/components/TermsModal';
+import { Badge } from '@/components/ui/badge';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { GlobalSearch } from '@/components/search/GlobalSearch';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,6 +52,15 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
+            <Link to="/ai-assessment" className="relative">
+              <Button variant="ghost" className="text-foreground/80 hover:text-foreground transition-colors gap-2">
+                <Sparkles className="h-4 w-4" />
+                AI Assessment
+                <Badge className="absolute -top-2 -right-6 bg-red-500 text-white text-[10px] px-1.5 py-0.5">
+                  NEW
+                </Badge>
+              </Button>
+            </Link>
             <button
               onClick={() => handleNavClick('training-programs')}
               className="text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
@@ -88,13 +100,19 @@ export function Navbar() {
             >
               FAQ
             </button>
-            <button 
+            <button
               onClick={() => setIsTermsOpen(true)}
               className="text-foreground/80 hover:text-foreground transition-colors"
             >
               Terms
             </button>
-            
+
+            {/* Global Search */}
+            {user && <GlobalSearch />}
+
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

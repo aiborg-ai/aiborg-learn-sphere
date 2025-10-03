@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 import type {
   BlogPost,
   BlogCategory,
@@ -182,11 +183,11 @@ export class BlogService {
       if (error) {
         // Fallback: Just log the error, don't try to update
         // The increment function needs to be created in the database
-        console.warn('Increment function not found. Please run the migration to create it.');
-        console.error('Failed to increment view count:', error);
+        logger.warn('Increment function not found. Please run the migration to create it.');
+        logger.error('Failed to increment view count:', error);
       }
     } catch (err) {
-      console.error('Error incrementing view count:', err);
+      logger.error('Error incrementing view count:', err);
     }
   }
 

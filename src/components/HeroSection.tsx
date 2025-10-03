@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Brain, GraduationCap, Briefcase, Building2, ArrowRight, Sparkles } from "lucide-react";
+import { Brain, GraduationCap, Briefcase, Building2, ArrowRight, Sparkles, BarChart3 } from "lucide-react";
 import { usePersonalization, AUDIENCE_CONFIG } from "@/contexts/PersonalizationContext";
+import { Link } from "react-router-dom";
 
 const audiences = [
   {
@@ -84,7 +85,7 @@ export function HeroSection() {
           </p>
 
           {!selectedAudience && (
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <Button size="lg" className="btn-hero group">
                 Get Started
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -94,6 +95,31 @@ export function HeroSection() {
               </Button>
             </div>
           )}
+
+          {/* AI Assessment CTA */}
+          <div className="mb-16">
+            <Link to="/ai-assessment">
+              <Card className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-yellow-500/30 hover:border-yellow-500/50 transition-all duration-300 transform hover:scale-105 max-w-2xl mx-auto">
+                <div className="p-6 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 rounded-full bg-yellow-500/20">
+                      <BarChart3 className="h-6 w-6 text-yellow-300" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                        Discover Your AI Augmentation Level
+                        <Badge className="bg-red-500 text-white text-xs">NEW</Badge>
+                      </h3>
+                      <p className="text-sm text-white/80">
+                        Take our free assessment to measure your AI tool adoption
+                      </p>
+                    </div>
+                  </div>
+                  <ArrowRight className="h-5 w-5 text-white/60" />
+                </div>
+              </Card>
+            </Link>
+          </div>
         </div>
 
         {/* Audience Selection */}

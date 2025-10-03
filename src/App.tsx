@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PersonalizationProvider } from "@/contexts/PersonalizationContext";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Loader2 } from "lucide-react";
 
 // Create a loading component
@@ -33,6 +34,20 @@ const Dashboard = lazy(() => import("./pages/DashboardRefactored"));
 const HomeworkSubmission = lazy(() => import("./pages/HomeworkSubmissionRefactored"));
 const PublicProfile = lazy(() => import("./pages/PublicProfile"));
 const TemplateImport = lazy(() => import("./pages/admin/TemplateImport"));
+const AIAssessment = lazy(() => import("./pages/AIAssessment"));
+const AIAssessmentResults = lazy(() => import("./pages/AIAssessmentResults"));
+const CoursePage = lazy(() => import("./pages/CoursePage"));
+const InstructorDashboard = lazy(() => import("./pages/InstructorDashboard"));
+const BookmarksPage = lazy(() => import("./pages/BookmarksPage"));
+const DownloadsPage = lazy(() => import("./pages/DownloadsPage"));
+const WatchLaterPage = lazy(() => import("./pages/WatchLaterPage"));
+const PlaylistsPage = lazy(() => import("./pages/PlaylistsPage"));
+const CalendarPage = lazy(() => import("./pages/CalendarPage"));
+const AchievementsPage = lazy(() => import("./pages/AchievementsPage"));
+const MyCoursesPage = lazy(() => import("./pages/MyCoursesPage"));
+const LearningPathsPage = lazy(() => import("./pages/LearningPathsPage"));
+const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage"));
+const GamificationPage = lazy(() => import("./pages/GamificationPage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,13 +62,14 @@ const queryClient = new QueryClient({
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <PersonalizationProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
+    <ThemeProvider defaultTheme="system" storageKey="aiborg-ui-theme">
+      <PersonalizationProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
               {/* Main page loaded eagerly for fast initial load */}
               <Route path="/" element={<Index />} />
 
@@ -72,6 +88,20 @@ const App = () => (
               <Route path="/blog/:slug" element={<BlogPostPage />} />
               <Route path="/assignment/:assignmentId" element={<HomeworkSubmission />} />
               <Route path="/user/:userId" element={<PublicProfile />} />
+              <Route path="/course/:courseId" element={<CoursePage />} />
+              <Route path="/instructor" element={<InstructorDashboard />} />
+              <Route path="/ai-assessment" element={<AIAssessment />} />
+              <Route path="/ai-assessment/results/:assessmentId" element={<AIAssessmentResults />} />
+              <Route path="/bookmarks" element={<BookmarksPage />} />
+              <Route path="/downloads" element={<DownloadsPage />} />
+              <Route path="/watch-later" element={<WatchLaterPage />} />
+              <Route path="/playlists" element={<PlaylistsPage />} />
+              <Route path="/calendar" element={<CalendarPage />} />
+              <Route path="/achievements" element={<AchievementsPage />} />
+              <Route path="/my-courses" element={<MyCoursesPage />} />
+              <Route path="/learning-paths" element={<LearningPathsPage />} />
+              <Route path="/analytics" element={<AnalyticsPage />} />
+              <Route path="/gamification" element={<GamificationPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
@@ -79,6 +109,7 @@ const App = () => (
         </BrowserRouter>
       </TooltipProvider>
     </PersonalizationProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

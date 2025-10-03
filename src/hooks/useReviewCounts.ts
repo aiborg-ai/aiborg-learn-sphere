@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
+import { logger } from '@/utils/logger';
 interface ReviewCount {
   course_id: number;
   count: number;
@@ -30,7 +31,7 @@ export const useReviewCounts = () => {
 
         setReviewCounts(counts);
       } catch (error) {
-        console.error('Error fetching review counts:', error);
+        logger.error('Error fetching review counts:', error);
       } finally {
         setLoading(false);
       }
