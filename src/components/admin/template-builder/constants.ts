@@ -1,8 +1,4 @@
-/**
- * Template field definitions for courses and events
- */
-
-import type { TemplateField } from './types';
+import { TemplateField } from './types';
 
 export const COURSE_FIELDS: TemplateField[] = [
   {

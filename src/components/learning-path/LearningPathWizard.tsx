@@ -26,7 +26,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { pathGenerator, type LearningGoal } from '@/services/LearningPathGenerator';
+import { pathGenerator, type LearningGoal } from '@/services/learning-path';
 import { logger } from '@/utils/logger';
 
 interface AssessmentData {

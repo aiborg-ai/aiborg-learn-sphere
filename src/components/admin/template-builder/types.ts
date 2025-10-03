@@ -1,7 +1,3 @@
-/**
- * Shared types for Template Builder components
- */
-
 export interface TemplateField {
   name: string;
   label: string;
@@ -10,20 +6,17 @@ export interface TemplateField {
   options?: string[];
   placeholder?: string;
   description?: string;
-  validation?: unknown;
+  validation?: any;
   maxItems?: number;
 }
 
+export interface TemplateBuilderState {
+  templateType: 'course' | 'event';
+  formData: Record<string, any>;
+  arrayInputs: Record<string, string>;
+  errors: Record<string, string>;
+  showPreview: boolean;
+  expandedSections: Record<string, boolean>;
+}
+
 export type TemplateType = 'course' | 'event';
-
-export interface TemplateFormData {
-  [key: string]: unknown;
-}
-
-export interface TemplateErrors {
-  [key: string]: string;
-}
-
-export interface ArrayInputs {
-  [key: string]: string;
-}

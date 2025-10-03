@@ -34,22 +34,73 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         // Manual chunks for better code splitting
-        manualChunks: {
+        manualChunks: (id) => {
           // Vendor chunks
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': [
-            '@radix-ui/react-dialog',
-            '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-label',
-            '@radix-ui/react-select',
-            '@radix-ui/react-tabs',
-            '@radix-ui/react-toast',
-          ],
-          'supabase': ['@supabase/supabase-js'],
-          'tanstack': ['@tanstack/react-query'],
-          'form': ['react-hook-form', 'zod', '@hookform/resolvers'],
-          'charts': ['recharts'],
-          'editor': ['marked'],
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'react-vendor';
+            }
+            if (id.includes('@radix-ui')) {
+              return 'ui-vendor';
+            }
+            if (id.includes('recharts') || id.includes('d3-')) {
+              return 'charts';
+            }
+            if (id.includes('@supabase')) {
+              return 'supabase';
+            }
+            if (id.includes('@tanstack')) {
+              return 'tanstack';
+            }
+            if (id.includes('react-hook-form') || id.includes('zod') || id.includes('@hookform')) {
+              return 'form';
+            }
+            if (id.includes('marked') || id.includes('dompurify') || id.includes('syntax-highlighter')) {
+              return 'editor';
+            }
+            if (id.includes('lucide-react')) {
+              return 'icons';
+            }
+            if (id.includes('react-pdf') || id.includes('pdfjs-dist')) {
+              return 'pdf';
+            }
+            // All other node_modules go to vendor
+            return 'vendor';
+          }
+
+          // Split large service groups
+          if (id.includes('/src/services/social/')) {
+            return 'services-social';
+          }
+          if (id.includes('/src/services/reporting/')) {
+            return 'services-reporting';
+          }
+          if (id.includes('/src/services/recommendations/')) {
+            return 'services-recommendations';
+          }
+          if (id.includes('/src/services/learning-path/')) {
+            return 'services-learning-path';
+          }
+
+          // Split admin components
+          if (id.includes('/src/components/admin/')) {
+            return 'admin-components';
+          }
+
+          // Split AI assessment components
+          if (id.includes('/src/components/ai-assessment/')) {
+            return 'ai-assessment';
+          }
+
+          // Split video components
+          if (id.includes('/src/components/video/')) {
+            return 'video-components';
+          }
+
+          // Split analytics components
+          if (id.includes('/src/components/analytics/')) {
+            return 'analytics';
+          }
         },
         // Use a function to generate chunk names
         chunkFileNames: (chunkInfo) => {
