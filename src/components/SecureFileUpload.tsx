@@ -5,22 +5,17 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import type { FileValidationConfig} from '@/lib/security/file-validator';
-import { validateFiles, FileValidationPresets, createSecureUploadHandler } from '@/lib/security/file-validator';
+import type { FileValidationConfig } from '@/lib/security/file-validator';
+import {
+  validateFiles,
+  FileValidationPresets,
+  createSecureUploadHandler,
+} from '@/lib/security/file-validator';
 import { rateLimiter, RateLimitPresets } from '@/lib/security/rate-limiter';
 import type { Action, Resource } from '@/lib/security/rbac';
 import { rbac } from '@/lib/security/rbac';
 import { logger } from '@/utils/logger';
-import {
-  Upload,
-  X,
-  CheckCircle,
-  AlertCircle,
-  FileText,
-  Image,
-  Film,
-  File
-} from 'lucide-react';
+import { Upload, X, CheckCircle, AlertCircle, FileText, Image, Film, File } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /**
@@ -78,7 +73,7 @@ export function SecureFileUpload({
   requiredPermission,
   maxConcurrent = 3,
   showProgress = true,
-  className
+  className,
 }: SecureFileUploadProps) {
   const [uploads, setUploads] = useState<UploadItem[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -87,9 +82,7 @@ export function SecureFileUpload({
   const { toast } = useToast();
 
   // Get validation config
-  const validationConfig = typeof config === 'string'
-    ? FileValidationPresets[config]
-    : config;
+  const validationConfig = typeof config === 'string' ? FileValidationPresets[config] : config;
 
   // Create secure upload handler
   const uploadHandler = createSecureUploadHandler(validationConfig);
@@ -98,58 +91,64 @@ export function SecureFileUpload({
    * Handle file selection
    */
   const handleFileSelect = async (files: FileList | File[]) => {
-    // Check RBAC permission
-    if (requiredPermission) {
-      const hasPermission = rbac.can(
-        requiredPermission.action,
-        requiredPermission.resource
-      );
+    try {
+      // Check RBAC permission
+      if (requiredPermission) {
+        const hasPermission = rbac.can(requiredPermission.action, requiredPermission.resource);
 
-      if (!hasPermission) {
+        if (!hasPermission) {
+          toast({
+            title: 'Permission Denied',
+            description: 'You do not have permission to upload files',
+            variant: 'destructive',
+          });
+          return;
+        }
+      }
+
+      // Check rate limit
+      const limitCheck = rateLimiter.checkLimit(RateLimitPresets.upload);
+      if (!limitCheck.allowed) {
         toast({
-          title: 'Permission Denied',
-          description: 'You do not have permission to upload files',
-          variant: 'destructive'
+          title: 'Upload Limit Exceeded',
+          description: `Please wait ${Math.ceil(limitCheck.retryAfter! / 1000)} seconds before uploading again`,
+          variant: 'destructive',
         });
         return;
       }
-    }
 
-    // Check rate limit
-    const limitCheck = rateLimiter.checkLimit(RateLimitPresets.upload);
-    if (!limitCheck.allowed) {
+      // Validate files
+      const validation = await uploadHandler(files);
+
+      if (!validation.valid) {
+        toast({
+          title: 'Validation Failed',
+          description: validation.errors.join(', '),
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      // Create upload items
+      const newUploads: UploadItem[] = validation.files.map(({ file, sanitizedName }) => ({
+        file,
+        sanitizedName,
+        progress: 0,
+        status: 'pending' as const,
+      }));
+
+      setUploads(prev => [...prev, ...newUploads]);
+
+      // Start upload process
+      uploadFiles(newUploads);
+    } catch (error) {
+      logger.error('File selection error:', error);
       toast({
-        title: 'Upload Limit Exceeded',
-        description: `Please wait ${Math.ceil(limitCheck.retryAfter! / 1000)} seconds before uploading again`,
-        variant: 'destructive'
+        title: 'Upload Error',
+        description: 'Failed to process selected files',
+        variant: 'destructive',
       });
-      return;
     }
-
-    // Validate files
-    const validation = await uploadHandler(files);
-
-    if (!validation.valid) {
-      toast({
-        title: 'Validation Failed',
-        description: validation.errors.join(', '),
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    // Create upload items
-    const newUploads: UploadItem[] = validation.files.map(({ file, sanitizedName }) => ({
-      file,
-      sanitizedName,
-      progress: 0,
-      status: 'pending' as const
-    }));
-
-    setUploads(prev => [...prev, ...newUploads]);
-
-    // Start upload process
-    uploadFiles(newUploads);
   };
 
   /**
@@ -195,30 +194,24 @@ export function SecureFileUpload({
    * Upload single file
    */
   const uploadFile = async (item: UploadItem): Promise<string> => {
-    const filePath = path
-      ? `${path}/${item.sanitizedName}`
-      : item.sanitizedName;
+    const filePath = path ? `${path}/${item.sanitizedName}` : item.sanitizedName;
 
     // Update status
     updateUploadStatus(item, 'uploading');
 
     try {
       // Upload to Supabase
-      const { data, error } = await supabase.storage
-        .from(bucket)
-        .upload(filePath, item.file, {
-          cacheControl: '3600',
-          upsert: false
-        });
+      const { data, error } = await supabase.storage.from(bucket).upload(filePath, item.file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
 
       if (error) {
         throw error;
       }
 
       // Get public URL
-      const { data: urlData } = supabase.storage
-        .from(bucket)
-        .getPublicUrl(filePath);
+      const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(filePath);
 
       const url = urlData.publicUrl;
 
@@ -242,11 +235,13 @@ export function SecureFileUpload({
     url?: string,
     error?: string
   ) => {
-    setUploads(prev => prev.map(u =>
-      u === item
-        ? { ...u, status, url, error, progress: status === 'success' ? 100 : u.progress }
-        : u
-    ));
+    setUploads(prev =>
+      prev.map(u =>
+        u === item
+          ? { ...u, status, url, error, progress: status === 'success' ? 100 : u.progress }
+          : u
+      )
+    );
   };
 
   /**
@@ -323,9 +318,7 @@ export function SecureFileUpload({
         <div
           className={cn(
             'border-2 border-dashed rounded-lg p-8 text-center transition-colors',
-            dragActive
-              ? 'border-primary bg-primary/5'
-              : 'border-gray-300 hover:border-gray-400',
+            dragActive ? 'border-primary bg-primary/5' : 'border-gray-300 hover:border-gray-400',
             isUploading && 'opacity-50 cursor-not-allowed'
           )}
           onDragEnter={handleDrag}
@@ -334,9 +327,7 @@ export function SecureFileUpload({
           onDrop={handleDrop}
         >
           <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <p className="text-sm text-gray-600 mb-2">
-            Drag and drop files here, or click to browse
-          </p>
+          <p className="text-sm text-gray-600 mb-2">Drag and drop files here, or click to browse</p>
           <p className="text-xs text-gray-500 mb-4">
             Allowed: {validationConfig.allowedExtensions?.join(', ')}
           </p>
@@ -346,7 +337,7 @@ export function SecureFileUpload({
             type="file"
             multiple={validationConfig.multiple}
             accept={validationConfig.allowedMimeTypes?.join(',')}
-            onChange={(e) => e.target.files && handleFileSelect(e.target.files)}
+            onChange={e => e.target.files && handleFileSelect(e.target.files)}
             className="hidden"
             disabled={isUploading}
           />
@@ -367,27 +358,18 @@ export function SecureFileUpload({
               const FileIcon = getFileIcon(item.file.type);
 
               return (
-                <div
-                  key={index}
-                  className="flex items-center gap-3 p-3 border rounded-lg"
-                >
+                <div key={index} className="flex items-center gap-3 p-3 border rounded-lg">
                   <FileIcon className="h-8 w-8 text-gray-400 flex-shrink-0" />
 
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">
-                      {item.sanitizedName}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {formatSize(item.file.size)}
-                    </p>
+                    <p className="text-sm font-medium truncate">{item.sanitizedName}</p>
+                    <p className="text-xs text-gray-500">{formatSize(item.file.size)}</p>
 
                     {showProgress && item.status === 'uploading' && (
                       <Progress value={item.progress} className="mt-1 h-1" />
                     )}
 
-                    {item.error && (
-                      <p className="text-xs text-destructive mt-1">{item.error}</p>
-                    )}
+                    {item.error && <p className="text-xs text-destructive mt-1">{item.error}</p>}
                   </div>
 
                   <div className="flex-shrink-0">
@@ -398,11 +380,7 @@ export function SecureFileUpload({
                       <AlertCircle className="h-5 w-5 text-destructive" />
                     )}
                     {item.status === 'pending' && (
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => removeUpload(item)}
-                      >
+                      <Button size="icon" variant="ghost" onClick={() => removeUpload(item)}>
                         <X className="h-4 w-4" />
                       </Button>
                     )}
@@ -416,9 +394,7 @@ export function SecureFileUpload({
         {/* Upload status */}
         {isUploading && (
           <Alert>
-            <AlertDescription>
-              Uploading files... Please do not close this window.
-            </AlertDescription>
+            <AlertDescription>Uploading files... Please do not close this window.</AlertDescription>
           </Alert>
         )}
       </CardContent>

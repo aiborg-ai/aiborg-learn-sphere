@@ -5,22 +5,20 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Search, Plus } from 'lucide-react';
-import { UserWithAchievements } from './types';
+import type { UserWithAchievements } from './types';
 
 interface AchievementStatsProps {
   users: UserWithAchievements[];
   onAllocateToUser: (userId: string) => void;
 }
 
-export const AchievementStats: React.FC<AchievementStatsProps> = ({
-  users,
-  onAllocateToUser
-}) => {
+export const AchievementStats: React.FC<AchievementStatsProps> = ({ users, onAllocateToUser }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredUsers = users.filter(user =>
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.display_name?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(
+    user =>
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.display_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -31,7 +29,7 @@ export const AchievementStats: React.FC<AchievementStatsProps> = ({
           <Input
             placeholder="Search users by email or name..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="pl-10 bg-white/10 border-white/20 text-white"
           />
         </div>
@@ -39,14 +37,12 @@ export const AchievementStats: React.FC<AchievementStatsProps> = ({
 
       <ScrollArea className="h-[500px]">
         <div className="space-y-3">
-          {filteredUsers.map((user) => (
+          {filteredUsers.map(user => (
             <Card key={user.user_id} className="bg-white/5 border-white/20">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-white font-medium">
-                      {user.display_name || 'Unnamed User'}
-                    </p>
+                    <p className="text-white font-medium">{user.display_name || 'Unnamed User'}</p>
                     <p className="text-white/60 text-sm">{user.email}</p>
                     <div className="flex flex-wrap gap-1 mt-2">
                       {user.achievements.length > 0 ? (
@@ -60,10 +56,7 @@ export const AchievementStats: React.FC<AchievementStatsProps> = ({
                       )}
                     </div>
                   </div>
-                  <Button
-                    size="sm"
-                    onClick={() => onAllocateToUser(user.user_id)}
-                  >
+                  <Button size="sm" onClick={() => onAllocateToUser(user.user_id)}>
                     <Plus className="h-4 w-4 mr-1" />
                     Add Badge
                   </Button>

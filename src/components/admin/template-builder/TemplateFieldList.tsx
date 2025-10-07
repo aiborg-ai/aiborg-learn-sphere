@@ -2,19 +2,19 @@ import React from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { TemplateField } from './types';
+import type { TemplateField } from './types';
 import { FieldEditor } from './FieldEditor';
 
 interface TemplateFieldListProps {
   title: string;
   description: string;
   fields: TemplateField[];
-  formData: Record<string, any>;
+  formData: Record<string, unknown>;
   arrayInputs: Record<string, string>;
   errors: Record<string, string>;
   isExpanded: boolean;
   onToggleExpanded: () => void;
-  onFieldChange: (field: TemplateField, value: any) => void;
+  onFieldChange: (field: TemplateField, value: unknown) => void;
   onArrayInputChange: (fieldName: string, value: string) => void;
   onArrayAdd: (fieldName: string) => void;
   onArrayRemove: (fieldName: string, index: number) => void;
@@ -36,14 +36,11 @@ export function TemplateFieldList({
   onArrayAdd,
   onArrayRemove,
   badgeVariant = 'secondary',
-  getBadgeContent
+  getBadgeContent,
 }: TemplateFieldListProps) {
   return (
     <Card>
-      <CardHeader
-        className="cursor-pointer"
-        onClick={onToggleExpanded}
-      >
+      <CardHeader className="cursor-pointer" onClick={onToggleExpanded}>
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="flex items-center gap-2">
@@ -56,9 +53,7 @@ export function TemplateFieldList({
             </CardTitle>
             <CardDescription>{description}</CardDescription>
           </div>
-          <Badge variant={badgeVariant}>
-            {getBadgeContent()}
-          </Badge>
+          <Badge variant={badgeVariant}>{getBadgeContent()}</Badge>
         </div>
       </CardHeader>
       {isExpanded && (

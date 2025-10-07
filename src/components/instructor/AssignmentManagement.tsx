@@ -14,9 +14,30 @@ interface AssignmentManagementProps {
   onUpdate?: () => void;
 }
 
-export function AssignmentManagement({ courseId, courseName, onUpdate }: AssignmentManagementProps) {
+interface SubmissionStats {
+  submitted: number;
+  graded: number;
+  total: number;
+}
+
+interface Assignment {
+  id: string;
+  course_id: number;
+  title: string;
+  description?: string;
+  due_date: string;
+  max_points?: number;
+  created_at?: string;
+  submissionStats: SubmissionStats;
+}
+
+export function AssignmentManagement({
+  courseId,
+  courseName,
+  onUpdate,
+}: AssignmentManagementProps) {
   const navigate = useNavigate();
-  const [assignments, setAssignments] = useState<any[]>([]);
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,13 +59,15 @@ export function AssignmentManagement({ courseId, courseName, onUpdate }: Assignm
 
       // For each assignment, count submissions
       const enrichedAssignments = await Promise.all(
-        (assignmentsData || []).map(async (assignment) => {
+        (assignmentsData || []).map(async assignment => {
           const { data: submissions } = await supabase
             .from('homework_submissions')
             .select('id, status')
             .eq('assignment_id', assignment.id);
 
-          const submitted = submissions?.filter(s => s.status === 'submitted' || s.status === 'grading').length || 0;
+          const submitted =
+            submissions?.filter(s => s.status === 'submitted' || s.status === 'grading').length ||
+            0;
           const graded = submissions?.filter(s => s.status === 'graded').length || 0;
           const total = submissions?.length || 0;
 
@@ -53,14 +76,13 @@ export function AssignmentManagement({ courseId, courseName, onUpdate }: Assignm
             submissionStats: {
               submitted,
               graded,
-              total
-            }
+              total,
+            },
           };
         })
       );
 
       setAssignments(enrichedAssignments);
-
     } catch (error) {
       logger.error('Error fetching assignments:', error);
     } finally {
@@ -68,23 +90,15 @@ export function AssignmentManagement({ courseId, courseName, onUpdate }: Assignm
     }
   };
 
-  const getStatusBadge = (assignment: any) => {
+  const getStatusBadge = (assignment: Assignment) => {
     const { submitted, graded } = assignment.submissionStats;
 
     if (submitted > 0) {
-      return (
-        <Badge variant="destructive">
-          {submitted} Pending Review
-        </Badge>
-      );
+      return <Badge variant="destructive">{submitted} Pending Review</Badge>;
     }
 
     if (graded > 0) {
-      return (
-        <Badge variant="default">
-          {graded} Graded
-        </Badge>
-      );
+      return <Badge variant="default">{graded} Graded</Badge>;
     }
 
     const dueDate = new Date(assignment.due_date);
@@ -104,9 +118,7 @@ export function AssignmentManagement({ courseId, courseName, onUpdate }: Assignm
           <FileText className="h-5 w-5" />
           Assignments ({assignments.length})
         </CardTitle>
-        <CardDescription>
-          Manage assignments and submissions for {courseName}
-        </CardDescription>
+        <CardDescription>Manage assignments and submissions for {courseName}</CardDescription>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[600px] pr-4">
@@ -116,7 +128,7 @@ export function AssignmentManagement({ courseId, courseName, onUpdate }: Assignm
             </div>
           ) : assignments.length > 0 ? (
             <div className="space-y-4">
-              {assignments.map((assignment) => (
+              {assignments.map(assignment => (
                 <div
                   key={assignment.id}
                   className="p-4 border rounded-lg hover:bg-accent/50 transition-colors"
@@ -124,9 +136,7 @@ export function AssignmentManagement({ courseId, courseName, onUpdate }: Assignm
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
                       <h4 className="font-semibold">{assignment.title}</h4>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {assignment.description}
-                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">{assignment.description}</p>
                     </div>
                     {getStatusBadge(assignment)}
                   </div>
@@ -142,9 +152,7 @@ export function AssignmentManagement({ courseId, courseName, onUpdate }: Assignm
                       <FileText className="h-3 w-3" />
                       {assignment.submissionStats.total} Submissions
                     </span>
-                    {assignment.max_score && (
-                      <span>Max Score: {assignment.max_score}</span>
-                    )}
+                    {assignment.max_score && <span>Max Score: {assignment.max_score}</span>}
                   </div>
 
                   <div className="flex gap-2 mt-4">
@@ -156,10 +164,7 @@ export function AssignmentManagement({ courseId, courseName, onUpdate }: Assignm
                       View Assignment
                     </Button>
                     {assignment.submissionStats.submitted > 0 && (
-                      <Button
-                        size="sm"
-                        onClick={() => navigate(`/assignment/${assignment.id}`)}
-                      >
+                      <Button size="sm" onClick={() => navigate(`/assignment/${assignment.id}`)}>
                         <CheckCircle className="h-3 w-3 mr-1" />
                         Grade Submissions ({assignment.submissionStats.submitted})
                       </Button>
@@ -171,9 +176,7 @@ export function AssignmentManagement({ courseId, courseName, onUpdate }: Assignm
           ) : (
             <div className="text-center py-12">
               <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-muted-foreground">
-                No assignments created yet
-              </p>
+              <p className="text-muted-foreground">No assignments created yet</p>
               <p className="text-sm text-muted-foreground mt-2">
                 Assignments can be created through the admin panel
               </p>

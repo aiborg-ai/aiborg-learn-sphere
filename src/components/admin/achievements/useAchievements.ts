@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import { useToast } from '@/components/ui/use-toast';
-import { Achievement, UserWithAchievements, AchievementFormData } from './types';
+import type { Achievement, UserWithAchievements, AchievementFormData } from './types';
 
 export const useAchievements = () => {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
@@ -24,7 +24,7 @@ export const useAchievements = () => {
       toast({
         title: 'Error',
         description: 'Failed to load achievements',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -33,9 +33,7 @@ export const useAchievements = () => {
 
   const fetchUsers = async () => {
     try {
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select(`
+      const { data: profileData, error: profileError } = await supabase.from('profiles').select(`
           user_id,
           email,
           display_name
@@ -43,9 +41,9 @@ export const useAchievements = () => {
 
       if (profileError) throw profileError;
 
-      const { data: achievementData, error: achievementError } = await supabase
-        .from('user_achievements')
-        .select(`
+      const { data: achievementData, error: achievementError } = await supabase.from(
+        'user_achievements'
+      ).select(`
           user_id,
           achievement_id,
           achievements!inner(name)
@@ -53,16 +51,18 @@ export const useAchievements = () => {
 
       if (achievementError) throw achievementError;
 
-      const usersWithAchievements = profileData?.map(user => {
-        const userAchievements = achievementData
-          ?.filter(ua => ua.user_id === user.user_id)
-          .map(ua => ua.achievements?.name || '') || [];
+      const usersWithAchievements =
+        profileData?.map(user => {
+          const userAchievements =
+            achievementData
+              ?.filter(ua => ua.user_id === user.user_id)
+              .map(ua => ua.achievements?.name || '') || [];
 
-        return {
-          ...user,
-          achievements: userAchievements
-        };
-      }) || [];
+          return {
+            ...user,
+            achievements: userAchievements,
+          };
+        }) || [];
 
       setUsers(usersWithAchievements);
     } catch (error) {
@@ -72,30 +72,30 @@ export const useAchievements = () => {
 
   const createAchievement = async (formData: AchievementFormData) => {
     try {
-      const criteria = formData.auto_allocate ? {
-        type: formData.criteria_type,
-        value: formData.criteria_value
-      } : { type: 'manual' };
+      const criteria = formData.auto_allocate
+        ? {
+            type: formData.criteria_type,
+            value: formData.criteria_value,
+          }
+        : { type: 'manual' };
 
-      const { error } = await supabase
-        .from('achievements')
-        .insert({
-          name: formData.name,
-          description: formData.description,
-          icon_emoji: formData.icon_emoji,
-          category: formData.category,
-          rarity: formData.rarity,
-          points: formData.points,
-          auto_allocate: formData.auto_allocate,
-          criteria,
-          is_active: true
-        });
+      const { error } = await supabase.from('achievements').insert({
+        name: formData.name,
+        description: formData.description,
+        icon_emoji: formData.icon_emoji,
+        category: formData.category,
+        rarity: formData.rarity,
+        points: formData.points,
+        auto_allocate: formData.auto_allocate,
+        criteria,
+        is_active: true,
+      });
 
       if (error) throw error;
 
       toast({
         title: 'Success',
-        description: 'Achievement created successfully'
+        description: 'Achievement created successfully',
       });
 
       await fetchAchievements();
@@ -105,7 +105,7 @@ export const useAchievements = () => {
       toast({
         title: 'Error',
         description: 'Failed to create achievement',
-        variant: 'destructive'
+        variant: 'destructive',
       });
       return false;
     }
@@ -113,10 +113,12 @@ export const useAchievements = () => {
 
   const updateAchievement = async (id: string, formData: AchievementFormData) => {
     try {
-      const criteria = formData.auto_allocate ? {
-        type: formData.criteria_type,
-        value: formData.criteria_value
-      } : { type: 'manual' };
+      const criteria = formData.auto_allocate
+        ? {
+            type: formData.criteria_type,
+            value: formData.criteria_value,
+          }
+        : { type: 'manual' };
 
       const { error } = await supabase
         .from('achievements')
@@ -128,7 +130,7 @@ export const useAchievements = () => {
           rarity: formData.rarity,
           points: formData.points,
           auto_allocate: formData.auto_allocate,
-          criteria
+          criteria,
         })
         .eq('id', id);
 
@@ -136,7 +138,7 @@ export const useAchievements = () => {
 
       toast({
         title: 'Success',
-        description: 'Achievement updated successfully'
+        description: 'Achievement updated successfully',
       });
 
       await fetchAchievements();
@@ -146,7 +148,7 @@ export const useAchievements = () => {
       toast({
         title: 'Error',
         description: 'Failed to update achievement',
-        variant: 'destructive'
+        variant: 'destructive',
       });
       return false;
     }
@@ -156,16 +158,13 @@ export const useAchievements = () => {
     if (!confirm('Are you sure you want to delete this achievement?')) return false;
 
     try {
-      const { error } = await supabase
-        .from('achievements')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from('achievements').delete().eq('id', id);
 
       if (error) throw error;
 
       toast({
         title: 'Success',
-        description: 'Achievement deleted successfully'
+        description: 'Achievement deleted successfully',
       });
 
       await fetchAchievements();
@@ -175,7 +174,7 @@ export const useAchievements = () => {
       toast({
         title: 'Error',
         description: 'Failed to delete achievement',
-        variant: 'destructive'
+        variant: 'destructive',
       });
       return false;
     }
@@ -183,49 +182,45 @@ export const useAchievements = () => {
 
   const allocateAchievement = async (achievementId: string, userId: string) => {
     try {
-      const { error } = await supabase
-        .from('user_achievements')
-        .insert({
-          user_id: userId,
-          achievement_id: achievementId,
-          awarded_by: (await supabase.auth.getUser()).data.user?.id
-        });
+      const { error } = await supabase.from('user_achievements').insert({
+        user_id: userId,
+        achievement_id: achievementId,
+        awarded_by: (await supabase.auth.getUser()).data.user?.id,
+      });
 
       if (error) throw error;
 
       const achievement = achievements.find(a => a.id === achievementId);
       if (achievement) {
-        await supabase
-          .from('notifications')
-          .insert({
-            user_id: userId,
-            type: 'achievement',
-            title: 'Achievement Unlocked!',
-            message: `You have been awarded: ${achievement.name}`,
-            data: { achievement_id: achievementId }
-          });
+        await supabase.from('notifications').insert({
+          user_id: userId,
+          type: 'achievement',
+          title: 'Achievement Unlocked!',
+          message: `You have been awarded: ${achievement.name}`,
+          data: { achievement_id: achievementId },
+        });
       }
 
       toast({
         title: 'Success',
-        description: 'Achievement allocated successfully'
+        description: 'Achievement allocated successfully',
       });
 
       await fetchUsers();
       return true;
-    } catch (error: any) {
-      if (error.code === '23505') {
+    } catch (error) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === '23505') {
         toast({
           title: 'Info',
           description: 'User already has this achievement',
-          variant: 'default'
+          variant: 'default',
         });
       } else {
         logger.error('Error allocating achievement:', error);
         toast({
           title: 'Error',
           description: 'Failed to allocate achievement',
-          variant: 'destructive'
+          variant: 'destructive',
         });
       }
       return false;
@@ -246,6 +241,6 @@ export const useAchievements = () => {
     deleteAchievement,
     allocateAchievement,
     refreshAchievements: fetchAchievements,
-    refreshUsers: fetchUsers
+    refreshUsers: fetchUsers,
   };
 };

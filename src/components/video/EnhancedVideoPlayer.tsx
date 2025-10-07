@@ -10,7 +10,7 @@ import { useVideoNotes } from './useVideoNotes';
 import { useVideoQuiz } from './useVideoQuiz';
 import { useVideoChapters } from './useVideoChapters';
 import { formatTime } from './utils';
-import { EnhancedVideoPlayerProps } from './types';
+import type { EnhancedVideoPlayerProps } from './types';
 
 export function EnhancedVideoPlayer({
   videoUrl,
@@ -20,7 +20,7 @@ export function EnhancedVideoPlayer({
   chapters = [],
   transcript,
   quizzes = [],
-  onProgressUpdate
+  onProgressUpdate,
 }: EnhancedVideoPlayerProps) {
   const [activeTab, setActiveTab] = useState<'chapters' | 'notes' | 'transcript'>('chapters');
 
@@ -45,7 +45,7 @@ export function EnhancedVideoPlayer({
     setShowControls,
     setWatchedPercentage,
     setLastSavedProgress,
-    setCurrentTime
+    setCurrentTime,
   } = useVideoPlayer();
 
   const {
@@ -56,7 +56,7 @@ export function EnhancedVideoPlayer({
     setEditingNoteId,
     addNote,
     updateNote,
-    deleteNote
+    deleteNote,
   } = useVideoNotes(user, contentId, courseId);
 
   const { currentChapter, jumpToChapter, jumpToNote } = useVideoChapters(
@@ -86,7 +86,7 @@ export function EnhancedVideoPlayer({
     videoRef,
     onProgressUpdate,
     setWatchedPercentage,
-    setLastSavedProgress
+    setLastSavedProgress,
   });
 
   return (

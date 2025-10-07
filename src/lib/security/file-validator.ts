@@ -43,45 +43,45 @@ export interface FileValidationResult {
 const FILE_SIGNATURES: Record<string, { signature: number[]; mimeType: string }> = {
   // Images
   jpg: {
-    signature: [0xFF, 0xD8, 0xFF],
-    mimeType: 'image/jpeg'
+    signature: [0xff, 0xd8, 0xff],
+    mimeType: 'image/jpeg',
   },
   png: {
-    signature: [0x89, 0x50, 0x4E, 0x47],
-    mimeType: 'image/png'
+    signature: [0x89, 0x50, 0x4e, 0x47],
+    mimeType: 'image/png',
   },
   gif: {
     signature: [0x47, 0x49, 0x46],
-    mimeType: 'image/gif'
+    mimeType: 'image/gif',
   },
   webp: {
     signature: [0x52, 0x49, 0x46, 0x46],
-    mimeType: 'image/webp'
+    mimeType: 'image/webp',
   },
 
   // Documents
   pdf: {
     signature: [0x25, 0x50, 0x44, 0x46],
-    mimeType: 'application/pdf'
+    mimeType: 'application/pdf',
   },
   zip: {
-    signature: [0x50, 0x4B, 0x03, 0x04],
-    mimeType: 'application/zip'
+    signature: [0x50, 0x4b, 0x03, 0x04],
+    mimeType: 'application/zip',
   },
   docx: {
-    signature: [0x50, 0x4B, 0x03, 0x04],
-    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    signature: [0x50, 0x4b, 0x03, 0x04],
+    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   },
 
   // Videos
   mp4: {
     signature: [0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70],
-    mimeType: 'video/mp4'
+    mimeType: 'video/mp4',
   },
   avi: {
     signature: [0x52, 0x49, 0x46, 0x46],
-    mimeType: 'video/x-msvideo'
-  }
+    mimeType: 'video/x-msvideo',
+  },
 };
 
 /**
@@ -93,7 +93,7 @@ export const FileValidationPresets = {
     maxSize: 5 * 1024 * 1024, // 5MB
     allowedMimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
     allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-    checkSignature: true
+    checkSignature: true,
   },
 
   /** Document upload configuration */
@@ -103,10 +103,10 @@ export const FileValidationPresets = {
       'application/pdf',
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'text/plain'
+      'text/plain',
     ],
     allowedExtensions: ['pdf', 'doc', 'docx', 'txt'],
-    checkSignature: true
+    checkSignature: true,
   },
 
   /** Video upload configuration */
@@ -114,7 +114,7 @@ export const FileValidationPresets = {
     maxSize: 100 * 1024 * 1024, // 100MB
     allowedMimeTypes: ['video/mp4', 'video/mpeg', 'video/quicktime', 'video/x-msvideo'],
     allowedExtensions: ['mp4', 'mpeg', 'mov', 'avi'],
-    checkSignature: true
+    checkSignature: true,
   },
 
   /** Avatar upload configuration */
@@ -122,7 +122,7 @@ export const FileValidationPresets = {
     maxSize: 2 * 1024 * 1024, // 2MB
     allowedMimeTypes: ['image/jpeg', 'image/png'],
     allowedExtensions: ['jpg', 'jpeg', 'png'],
-    checkSignature: true
+    checkSignature: true,
   },
 
   /** Assignment submission configuration */
@@ -133,13 +133,13 @@ export const FileValidationPresets = {
       'application/zip',
       'application/x-zip-compressed',
       'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ],
     allowedExtensions: ['pdf', 'zip', 'doc', 'docx'],
     checkSignature: true,
     multiple: true,
-    maxFiles: 5
-  }
+    maxFiles: 5,
+  },
 };
 
 /**
@@ -157,7 +157,7 @@ export async function validateFile(
     valid: true,
     errors,
     fileSize: file.size,
-    fileType: file.type
+    fileType: file.type,
   };
 
   // Sanitize filename
@@ -215,16 +215,16 @@ export async function validateFiles(
 
   // Check maximum number of files
   if (config.maxFiles && fileArray.length > config.maxFiles) {
-    return [{
-      valid: false,
-      errors: [`Maximum ${config.maxFiles} files allowed, but ${fileArray.length} were provided`]
-    }];
+    return [
+      {
+        valid: false,
+        errors: [`Maximum ${config.maxFiles} files allowed, but ${fileArray.length} were provided`],
+      },
+    ];
   }
 
   // Validate each file
-  const results = await Promise.all(
-    fileArray.map(file => validateFile(file, config))
-  );
+  const results = await Promise.all(fileArray.map(file => validateFile(file, config)));
 
   return results;
 }
@@ -270,8 +270,19 @@ async function checkFileSignature(file: File): Promise<boolean> {
 async function scanForMalware(file: File): Promise<{ safe: boolean; reason?: string }> {
   // Check for executable file extensions disguised as other types
   const dangerousExtensions = [
-    'exe', 'bat', 'cmd', 'com', 'pif', 'scr', 'vbs',
-    'js', 'jar', 'msi', 'app', 'deb', 'rpm'
+    'exe',
+    'bat',
+    'cmd',
+    'com',
+    'pif',
+    'scr',
+    'vbs',
+    'js',
+    'jar',
+    'msi',
+    'app',
+    'deb',
+    'rpm',
   ];
 
   const fileName = file.name.toLowerCase();
@@ -283,7 +294,7 @@ async function scanForMalware(file: File): Promise<{ safe: boolean; reason?: str
       if (parts.includes(ext)) {
         return {
           safe: false,
-          reason: 'File contains potentially dangerous extension'
+          reason: 'File contains potentially dangerous extension',
         };
       }
     }
@@ -292,16 +303,17 @@ async function scanForMalware(file: File): Promise<{ safe: boolean; reason?: str
   // Check for suspicious patterns in filename
   const suspiciousPatterns = [
     /\.(exe|bat|cmd|com|pif|scr|vbs|js)$/i,
-    /%00/,  // Null byte
+    /%00/, // Null byte
+    // eslint-disable-next-line no-control-regex
     /\x00/, // Null character
-    /[<>:"|?*]/  // Invalid filename characters that might indicate injection
+    /[<>:"|?*]/, // Invalid filename characters that might indicate injection
   ];
 
   for (const pattern of suspiciousPatterns) {
     if (pattern.test(fileName)) {
       return {
         safe: false,
-        reason: 'Filename contains suspicious patterns'
+        reason: 'Filename contains suspicious patterns',
       };
     }
   }
@@ -313,17 +325,17 @@ async function scanForMalware(file: File): Promise<{ safe: boolean; reason?: str
       const scriptPatterns = [
         /<script[\s\S]*?<\/script>/gi,
         /javascript:/gi,
-        /on\w+\s*=/gi,  // Event handlers
+        /on\w+\s*=/gi, // Event handlers
         /<iframe/gi,
         /eval\s*\(/gi,
-        /document\.write/gi
+        /document\.write/gi,
       ];
 
       for (const pattern of scriptPatterns) {
         if (pattern.test(text)) {
           return {
             safe: false,
-            reason: 'File contains potentially malicious scripts'
+            reason: 'File contains potentially malicious scripts',
           };
         }
       }
@@ -369,7 +381,9 @@ function formatFileSize(bytes: number): string {
  * @returns {Function} Upload handler function
  */
 export function createSecureUploadHandler(config: FileValidationConfig) {
-  return async (files: FileList | File[]): Promise<{
+  return async (
+    files: FileList | File[]
+  ): Promise<{
     valid: boolean;
     files: Array<{ file: File; sanitizedName: string }>;
     errors: string[];
@@ -383,7 +397,7 @@ export function createSecureUploadHandler(config: FileValidationConfig) {
         const file = Array.from(files)[index];
         validFiles.push({
           file,
-          sanitizedName: result.sanitizedName
+          sanitizedName: result.sanitizedName,
         });
       } else {
         allErrors.push(...result.errors);
@@ -393,7 +407,7 @@ export function createSecureUploadHandler(config: FileValidationConfig) {
     return {
       valid: allErrors.length === 0,
       files: validFiles,
-      errors: allErrors
+      errors: allErrors,
     };
   };
 }

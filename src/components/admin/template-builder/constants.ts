@@ -1,4 +1,4 @@
-import { TemplateField } from './types';
+import type { TemplateField } from './types';
 
 export const COURSE_FIELDS: TemplateField[] = [
   {
@@ -7,7 +7,7 @@ export const COURSE_FIELDS: TemplateField[] = [
     type: 'text',
     required: true,
     placeholder: 'e.g., Advanced React Development',
-    description: 'The main title of the course'
+    description: 'The main title of the course',
   },
   {
     name: 'description',
@@ -15,7 +15,7 @@ export const COURSE_FIELDS: TemplateField[] = [
     type: 'textarea',
     required: true,
     placeholder: 'Detailed course description...',
-    description: 'Comprehensive description of what the course covers'
+    description: 'Comprehensive description of what the course covers',
   },
   {
     name: 'audiences',
@@ -23,7 +23,7 @@ export const COURSE_FIELDS: TemplateField[] = [
     type: 'multiselect',
     required: true,
     options: ['Student', 'Professional', 'Entrepreneur', 'Freelancer', 'Corporate', 'Researcher'],
-    description: 'Who this course is designed for'
+    description: 'Who this course is designed for',
   },
   {
     name: 'mode',
@@ -31,7 +31,7 @@ export const COURSE_FIELDS: TemplateField[] = [
     type: 'select',
     required: true,
     options: ['Online', 'Offline', 'Hybrid', 'Self-paced', 'Instructor-led'],
-    description: 'How the course will be delivered'
+    description: 'How the course will be delivered',
   },
   {
     name: 'duration',
@@ -39,7 +39,7 @@ export const COURSE_FIELDS: TemplateField[] = [
     type: 'text',
     required: true,
     placeholder: 'e.g., 8 weeks, 3 months',
-    description: 'Length of the course'
+    description: 'Length of the course',
   },
   {
     name: 'price',
@@ -47,7 +47,7 @@ export const COURSE_FIELDS: TemplateField[] = [
     type: 'price',
     required: true,
     placeholder: '₹15000 or Free',
-    description: 'Course fee in local currency'
+    description: 'Course fee in local currency',
   },
   {
     name: 'level',
@@ -55,14 +55,14 @@ export const COURSE_FIELDS: TemplateField[] = [
     type: 'select',
     required: true,
     options: ['Beginner', 'Intermediate', 'Advanced'],
-    description: 'Course difficulty level'
+    description: 'Course difficulty level',
   },
   {
     name: 'start_date',
     label: 'Start Date',
     type: 'date',
     required: true,
-    description: 'When the course begins'
+    description: 'When the course begins',
   },
   {
     name: 'features',
@@ -70,7 +70,7 @@ export const COURSE_FIELDS: TemplateField[] = [
     type: 'array',
     required: true,
     maxItems: 10,
-    description: 'Key features and offerings'
+    description: 'Key features and offerings',
   },
   {
     name: 'keywords',
@@ -78,30 +78,41 @@ export const COURSE_FIELDS: TemplateField[] = [
     type: 'array',
     required: true,
     maxItems: 15,
-    description: 'Search keywords for better discovery'
+    description: 'Search keywords for better discovery',
   },
   {
     name: 'category',
     label: 'Category',
     type: 'select',
     required: true,
-    options: ['Technology', 'Business', 'Design', 'Marketing', 'Finance', 'Health', 'Education', 'Arts', 'Science', 'Engineering'],
-    description: 'Primary category classification'
+    options: [
+      'Technology',
+      'Business',
+      'Design',
+      'Marketing',
+      'Finance',
+      'Health',
+      'Education',
+      'Arts',
+      'Science',
+      'Engineering',
+    ],
+    description: 'Primary category classification',
   },
   {
     name: 'is_featured',
     label: 'Featured Course',
     type: 'boolean',
     required: false,
-    description: 'Display prominently on homepage'
+    description: 'Display prominently on homepage',
   },
   {
     name: 'is_active',
     label: 'Active',
     type: 'boolean',
     required: false,
-    description: 'Whether the course is currently active'
-  }
+    description: 'Whether the course is currently active',
+  },
 ];
 
 export const EVENT_FIELDS: TemplateField[] = [
@@ -111,7 +122,7 @@ export const EVENT_FIELDS: TemplateField[] = [
     type: 'text',
     required: true,
     placeholder: 'e.g., AI Summit 2025',
-    description: 'The main title of the event'
+    description: 'The main title of the event',
   },
   {
     name: 'description',
@@ -119,7 +130,7 @@ export const EVENT_FIELDS: TemplateField[] = [
     type: 'textarea',
     required: true,
     placeholder: 'Detailed event description...',
-    description: 'What the event is about'
+    description: 'What the event is about',
   },
   {
     name: 'event_type',
@@ -127,14 +138,14 @@ export const EVENT_FIELDS: TemplateField[] = [
     type: 'select',
     required: true,
     options: ['workshop', 'webinar', 'conference', 'seminar', 'bootcamp', 'meetup'],
-    description: 'Type of event'
+    description: 'Type of event',
   },
   {
     name: 'date',
     label: 'Event Date',
     type: 'date',
     required: true,
-    description: 'When the event will occur'
+    description: 'When the event will occur',
   },
   {
     name: 'time',
@@ -142,7 +153,7 @@ export const EVENT_FIELDS: TemplateField[] = [
     type: 'text',
     required: false,
     placeholder: 'e.g., 10:00 AM',
-    description: 'Event start time'
+    description: 'Event start time',
   },
   {
     name: 'duration',
@@ -150,7 +161,7 @@ export const EVENT_FIELDS: TemplateField[] = [
     type: 'text',
     required: false,
     placeholder: 'e.g., 3 hours, 2 days',
-    description: 'How long the event lasts'
+    description: 'How long the event lasts',
   },
   {
     name: 'location',
@@ -158,7 +169,7 @@ export const EVENT_FIELDS: TemplateField[] = [
     type: 'text',
     required: false,
     placeholder: 'e.g., Mumbai, Online',
-    description: 'Where the event takes place'
+    description: 'Where the event takes place',
   },
   {
     name: 'venue',
@@ -166,7 +177,7 @@ export const EVENT_FIELDS: TemplateField[] = [
     type: 'text',
     required: false,
     placeholder: 'e.g., Tech Hub, Zoom',
-    description: 'Specific venue or platform'
+    description: 'Specific venue or platform',
   },
   {
     name: 'max_attendees',
@@ -174,7 +185,7 @@ export const EVENT_FIELDS: TemplateField[] = [
     type: 'number',
     required: false,
     placeholder: '100',
-    description: 'Maximum number of participants'
+    description: 'Maximum number of participants',
   },
   {
     name: 'price',
@@ -182,15 +193,26 @@ export const EVENT_FIELDS: TemplateField[] = [
     type: 'price',
     required: true,
     placeholder: '₹5000 or Free',
-    description: 'Event registration fee'
+    description: 'Event registration fee',
   },
   {
     name: 'category',
     label: 'Category',
     type: 'select',
     required: true,
-    options: ['Technology', 'Business', 'Design', 'Marketing', 'Finance', 'Health', 'Education', 'Arts', 'Science', 'Engineering'],
-    description: 'Event category'
+    options: [
+      'Technology',
+      'Business',
+      'Design',
+      'Marketing',
+      'Finance',
+      'Health',
+      'Education',
+      'Arts',
+      'Science',
+      'Engineering',
+    ],
+    description: 'Event category',
   },
   {
     name: 'speakers',
@@ -198,7 +220,7 @@ export const EVENT_FIELDS: TemplateField[] = [
     type: 'array',
     required: false,
     maxItems: 30,
-    description: 'List of speakers/presenters'
+    description: 'List of speakers/presenters',
   },
   {
     name: 'agenda',
@@ -206,7 +228,7 @@ export const EVENT_FIELDS: TemplateField[] = [
     type: 'array',
     required: false,
     maxItems: 20,
-    description: 'Event schedule and sessions'
+    description: 'Event schedule and sessions',
   },
   {
     name: 'tags',
@@ -214,6 +236,6 @@ export const EVENT_FIELDS: TemplateField[] = [
     type: 'array',
     required: false,
     maxItems: 15,
-    description: 'Event tags for search'
-  }
+    description: 'Event tags for search',
+  },
 ];

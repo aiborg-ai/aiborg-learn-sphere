@@ -1,12 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Star, MessageSquare, Mic, Video, Calendar, MapPin, Users } from 'lucide-react';
+import { Star, MessageSquare, Mic, Video, Users } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
@@ -15,7 +21,7 @@ import { VoiceRecorder } from '@/components/VoiceRecorder';
 import { VideoRecorder } from '@/components/VideoRecorder';
 
 interface Event {
-  id: number;  // Changed from string to number to match database
+  id: number; // Changed from string to number to match database
   title: string;
   event_date: string;
   location: string;
@@ -27,7 +33,9 @@ export default function EventReviewForm() {
   const [selectedEvent, setSelectedEvent] = useState<number | ''>('');
   const [eventDateAttended, setEventDateAttended] = useState('');
   const [eventMode, setEventMode] = useState<'online' | 'in-person' | 'hybrid'>('online');
-  const [displayPreference, setDisplayPreference] = useState<'show_name' | 'anonymous'>('show_name');
+  const [displayPreference, setDisplayPreference] = useState<'show_name' | 'anonymous'>(
+    'show_name'
+  );
   const [rating, setRating] = useState(5);
   const [review, setReview] = useState('');
   const [reviewMethod, setReviewMethod] = useState<'text' | 'voice' | 'video'>('text');
@@ -37,13 +45,7 @@ export default function EventReviewForm() {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (user) {
-      fetchAttendedEvents();
-    }
-  }, [user]);
-
-  const fetchAttendedEvents = async () => {
+  const fetchAttendedEvents = useCallback(async () => {
     try {
       // Fetch events the user has registered for and attended
       const { data: registrations, error: regError } = await supabase
@@ -83,7 +85,13 @@ export default function EventReviewForm() {
     } catch (error) {
       logger.error('Error fetching events:', error);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchAttendedEvents();
+    }
+  }, [user, fetchAttendedEvents]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,33 +100,29 @@ export default function EventReviewForm() {
     setIsSubmitting(true);
     try {
       // First ensure the user is marked as attended (for testing)
-      const { error: regError } = await supabase
-        .from('event_registrations')
-        .upsert({
-          user_id: user.id,
-          event_id: selectedEvent,
-          registration_status: 'attended',
-          attended_at: new Date().toISOString()
-        });
+      const { error: regError } = await supabase.from('event_registrations').upsert({
+        user_id: user.id,
+        event_id: selectedEvent,
+        registration_status: 'attended',
+        attended_at: new Date().toISOString(),
+      });
 
       if (regError) {
         logger.warn('Could not update registration:', regError);
       }
 
       // Submit the review
-      const { error } = await supabase
-        .from('event_reviews')
-        .insert({
-          user_id: user.id,
-          event_id: selectedEvent,
-          rating,
-          comment: review,
-          event_date_attended: eventDateAttended || null,
-          event_mode: eventMode,
-          display_preference: displayPreference,
-          display: false, // Admin will approve
-          approved: false // Admin will approve
-        });
+      const { error } = await supabase.from('event_reviews').insert({
+        user_id: user.id,
+        event_id: selectedEvent,
+        rating,
+        comment: review,
+        event_date_attended: eventDateAttended || null,
+        event_mode: eventMode,
+        display_preference: displayPreference,
+        display: false, // Admin will approve
+        approved: false, // Admin will approve
+      });
 
       if (error) throw error;
 
@@ -136,7 +140,8 @@ export default function EventReviewForm() {
       setDisplayPreference('show_name');
     } catch (error: unknown) {
       logger.error('Error submitting review:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to submit review. Please try again.';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to submit review. Please try again.';
       toast({
         title: 'Error',
         description: errorMessage,
@@ -147,7 +152,7 @@ export default function EventReviewForm() {
     }
   };
 
-  const handleVoiceRecording = (audioBlob: Blob) => {
+  const handleVoiceRecording = (_audioBlob: Blob) => {
     // Convert audio to text or handle audio submission
     // For now, we'll just add a placeholder
     setReview('[Voice review submitted - transcription pending]');
@@ -157,7 +162,7 @@ export default function EventReviewForm() {
     });
   };
 
-  const handleVideoRecording = (videoBlob: Blob) => {
+  const handleVideoRecording = (_videoBlob: Blob) => {
     // Handle video submission
     // For now, we'll just add a placeholder
     setReview('[Video review submitted - processing pending]');
@@ -173,7 +178,7 @@ export default function EventReviewForm() {
       2: 'Fair',
       3: 'Good',
       4: 'Very Good',
-      5: 'Excellent'
+      5: 'Excellent',
     };
     return labels[stars as keyof typeof labels];
   };
@@ -204,7 +209,10 @@ export default function EventReviewForm() {
           {/* Event Selection */}
           <div className="space-y-2">
             <Label htmlFor="event">Event Attended *</Label>
-            <Select value={selectedEvent.toString()} onValueChange={(value) => setSelectedEvent(value ? parseInt(value) : '')}>
+            <Select
+              value={selectedEvent.toString()}
+              onValueChange={value => setSelectedEvent(value ? parseInt(value) : '')}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select the event you attended" />
               </SelectTrigger>
@@ -237,14 +245,17 @@ export default function EventReviewForm() {
               type="text"
               placeholder="e.g., December 2024"
               value={eventDateAttended}
-              onChange={(e) => setEventDateAttended(e.target.value)}
+              onChange={e => setEventDateAttended(e.target.value)}
             />
           </div>
 
           {/* Event Mode */}
           <div className="space-y-2">
             <Label>Event Mode *</Label>
-            <RadioGroup value={eventMode} onValueChange={(value) => setEventMode(value as any)}>
+            <RadioGroup
+              value={eventMode}
+              onValueChange={value => setEventMode(value as 'online' | 'in-person' | 'hybrid')}
+            >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="online" id="online" />
                 <Label htmlFor="online">Online</Label>
@@ -265,7 +276,7 @@ export default function EventReviewForm() {
             <Label>Display Preference</Label>
             <RadioGroup
               value={displayPreference}
-              onValueChange={(value) => setDisplayPreference(value as any)}
+              onValueChange={value => setDisplayPreference(value as 'show_name' | 'anonymous')}
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="show_name" id="show_name" />
@@ -289,7 +300,7 @@ export default function EventReviewForm() {
             <Label>Overall Rating *</Label>
             <div className="flex items-center gap-2">
               <div className="flex gap-1">
-                {[1, 2, 3, 4, 5].map((star) => (
+                {[1, 2, 3, 4, 5].map(star => (
                   <button
                     key={star}
                     type="button"
@@ -351,7 +362,7 @@ export default function EventReviewForm() {
               <Textarea
                 placeholder="Share your experience with this event. What did you learn? How was the organization? Would you recommend it to others?"
                 value={review}
-                onChange={(e) => setReview(e.target.value)}
+                onChange={e => setReview(e.target.value)}
                 rows={5}
                 required
               />

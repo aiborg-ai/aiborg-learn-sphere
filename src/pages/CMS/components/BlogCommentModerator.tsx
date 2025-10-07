@@ -6,8 +6,21 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { MessageSquare, Check, X, Flag, Trash2, Eye } from 'lucide-react';
 
+interface BlogComment {
+  id: string;
+  post_id: string;
+  user_id: string;
+  content: string;
+  status: string;
+  created_at: string;
+  author?: {
+    display_name: string;
+    email: string;
+  };
+}
+
 function BlogCommentModerator() {
-  const [comments, setComments] = useState<any[]>([]);
+  const [comments, setComments] = useState<BlogComment[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -20,11 +33,13 @@ function BlogCommentModerator() {
       setLoading(true);
       const { data, error } = await supabase
         .from('blog_comments')
-        .select(`
+        .select(
+          `
           *,
           blog_posts!inner(title, slug),
           profiles!blog_comments_user_id_fkey(email, full_name)
-        `)
+        `
+        )
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -33,7 +48,7 @@ function BlogCommentModerator() {
       toast({
         title: 'Error',
         description: 'Failed to fetch comments',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -47,7 +62,7 @@ function BlogCommentModerator() {
         .update({
           status,
           moderated_by: (await supabase.auth.getUser()).data.user?.id,
-          moderated_at: new Date().toISOString()
+          moderated_at: new Date().toISOString(),
         })
         .eq('id', id);
 
@@ -55,24 +70,28 @@ function BlogCommentModerator() {
 
       toast({
         title: 'Success',
-        description: `Comment ${status}`
+        description: `Comment ${status}`,
       });
       fetchComments();
     } catch (error) {
       toast({
         title: 'Error',
         description: 'Failed to update comment',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'approved': return <Badge className="bg-green-500/20 text-green-600">Approved</Badge>;
-      case 'pending': return <Badge className="bg-yellow-500/20 text-yellow-600">Pending</Badge>;
-      case 'spam': return <Badge className="bg-red-500/20 text-red-600">Spam</Badge>;
-      default: return <Badge>{status}</Badge>;
+      case 'approved':
+        return <Badge className="bg-green-500/20 text-green-600">Approved</Badge>;
+      case 'pending':
+        return <Badge className="bg-yellow-500/20 text-yellow-600">Pending</Badge>;
+      case 'spam':
+        return <Badge className="bg-red-500/20 text-red-600">Spam</Badge>;
+      default:
+        return <Badge>{status}</Badge>;
     }
   };
 

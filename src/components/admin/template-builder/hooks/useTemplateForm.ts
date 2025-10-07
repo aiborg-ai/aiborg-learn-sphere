@@ -1,18 +1,19 @@
 import { useState } from 'react';
-import { TemplateField, TemplateType } from '../types';
+import type { TemplateField } from '../types';
+import { TemplateType } from '../types';
 
 export function useTemplateForm() {
-  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [formData, setFormData] = useState<Record<string, unknown>>({});
   const [arrayInputs, setArrayInputs] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleFieldChange = (field: TemplateField, value: any) => {
-    setFormData((prev) => ({
+  const handleFieldChange = (field: TemplateField, value: unknown) => {
+    setFormData(prev => ({
       ...prev,
-      [field.name]: value
+      [field.name]: value,
     }));
 
-    setErrors((prev) => {
+    setErrors(prev => {
       const newErrors = { ...prev };
       delete newErrors[field.name];
       return newErrors;
@@ -23,23 +24,23 @@ export function useTemplateForm() {
     const value = arrayInputs[fieldName];
     if (!value?.trim()) return;
 
-    const currentArray = formData[fieldName] || [];
-    setFormData((prev) => ({
+    const currentArray = (formData[fieldName] as string[]) || [];
+    setFormData(prev => ({
       ...prev,
-      [fieldName]: [...currentArray, value.trim()]
+      [fieldName]: [...currentArray, value.trim()],
     }));
 
-    setArrayInputs((prev) => ({
+    setArrayInputs(prev => ({
       ...prev,
-      [fieldName]: ''
+      [fieldName]: '',
     }));
   };
 
   const handleArrayRemove = (fieldName: string, index: number) => {
-    const currentArray = formData[fieldName] || [];
-    setFormData((prev) => ({
+    const currentArray = (formData[fieldName] as string[]) || [];
+    setFormData(prev => ({
       ...prev,
-      [fieldName]: currentArray.filter((_: any, i: number) => i !== index)
+      [fieldName]: currentArray.filter((_item, i) => i !== index),
     }));
   };
 
@@ -58,6 +59,6 @@ export function useTemplateForm() {
     handleFieldChange,
     handleArrayAdd,
     handleArrayRemove,
-    resetForm
+    resetForm,
   };
 }

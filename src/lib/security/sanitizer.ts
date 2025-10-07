@@ -27,17 +27,31 @@ export interface SanitizeConfig {
  * Default allowed HTML tags for rich text
  */
 const DEFAULT_ALLOWED_TAGS = [
-  'p', 'br', 'strong', 'em', 'u', 's', 'blockquote',
-  'ul', 'ol', 'li', 'a', 'code', 'pre', 'h1', 'h2',
-  'h3', 'h4', 'h5', 'h6'
+  'p',
+  'br',
+  'strong',
+  'em',
+  'u',
+  's',
+  'blockquote',
+  'ul',
+  'ol',
+  'li',
+  'a',
+  'code',
+  'pre',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
 ];
 
 /**
  * Default allowed HTML attributes
  */
-const DEFAULT_ALLOWED_ATTRIBUTES = [
-  'href', 'target', 'rel', 'class', 'id'
-];
+const DEFAULT_ALLOWED_ATTRIBUTES = ['href', 'target', 'rel', 'class', 'id'];
 
 /**
  * Sanitize HTML content to prevent XSS attacks
@@ -48,20 +62,30 @@ const DEFAULT_ALLOWED_ATTRIBUTES = [
  * const clean = sanitizeHTML('<script>alert("XSS")</script><p>Hello</p>');
  * // Returns: '<p>Hello</p>'
  */
-export function sanitizeHTML(
-  dirty: string,
-  config: SanitizeConfig = {}
-): string {
+export function sanitizeHTML(dirty: string, config: SanitizeConfig = {}): string {
   const {
     allowedTags = DEFAULT_ALLOWED_TAGS,
     allowedAttributes = DEFAULT_ALLOWED_ATTRIBUTES,
     allowDataUri = false,
     allowExternalLinks = false,
-    stripDangerous = true
+    stripDangerous = true,
   } = config;
 
   // Configure DOMPurify
-  const purifyConfig: any = {
+  const purifyConfig: {
+    ALLOWED_TAGS: string[];
+    ALLOWED_ATTR: string[];
+    ALLOW_DATA_ATTR: boolean;
+    ALLOW_UNKNOWN_PROTOCOLS: boolean;
+    SAFE_FOR_TEMPLATES: boolean;
+    WHOLE_DOCUMENT: boolean;
+    RETURN_DOM: boolean;
+    RETURN_DOM_FRAGMENT: boolean;
+    FORCE_BODY: boolean;
+    SANITIZE_DOM: boolean;
+    KEEP_CONTENT: boolean;
+    ALLOWED_URI_REGEXP?: RegExp;
+  } = {
     ALLOWED_TAGS: allowedTags,
     ALLOWED_ATTR: allowedAttributes,
     ALLOW_DATA_ATTR: false,
@@ -72,12 +96,13 @@ export function sanitizeHTML(
     RETURN_DOM_FRAGMENT: false,
     FORCE_BODY: true,
     SANITIZE_DOM: true,
-    KEEP_CONTENT: !stripDangerous
+    KEEP_CONTENT: !stripDangerous,
   };
 
   // Handle data URIs
   if (!allowDataUri) {
-    purifyConfig.ALLOWED_URI_REGEXP = /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i;
+    purifyConfig.ALLOWED_URI_REGEXP =
+      /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i;
   }
 
   // Sanitize the HTML
@@ -85,16 +110,13 @@ export function sanitizeHTML(
 
   // Additional security for external links
   if (!allowExternalLinks) {
-    clean = clean.replace(
-      /<a\s+(?:[^>]*?\s+)?href="(https?:\/\/[^"]*)"[^>]*>/gi,
-      (match, url) => {
-        // Add rel="noopener noreferrer" to external links
-        if (!url.startsWith(window.location.origin)) {
-          return match.replace('<a', '<a rel="noopener noreferrer" target="_blank"');
-        }
-        return match;
+    clean = clean.replace(/<a\s+(?:[^>]*?\s+)?href="(https?:\/\/[^"]*)"[^>]*>/gi, (match, url) => {
+      // Add rel="noopener noreferrer" to external links
+      if (!url.startsWith(window.location.origin)) {
+        return match.replace('<a', '<a rel="noopener noreferrer" target="_blank"');
       }
-    );
+      return match;
+    });
   }
 
   return clean;
@@ -112,7 +134,7 @@ export function sanitizeText(text: string): string {
   return DOMPurify.sanitize(text, {
     ALLOWED_TAGS: [],
     ALLOWED_ATTR: [],
-    KEEP_CONTENT: true
+    KEEP_CONTENT: true,
   });
 }
 
@@ -144,7 +166,7 @@ export function sanitizeJSON(json: string): object | null {
     const parsed = JSON.parse(cleaned);
 
     // Recursive sanitization for nested objects
-    const sanitizeObject = (obj: any): any => {
+    const sanitizeObject = (obj: unknown): unknown => {
       if (typeof obj === 'string') {
         return sanitizeText(obj);
       }
@@ -152,11 +174,11 @@ export function sanitizeJSON(json: string): object | null {
         return obj.map(sanitizeObject);
       }
       if (obj !== null && typeof obj === 'object') {
-        const sanitized: any = {};
+        const sanitized: Record<string, unknown> = {};
         for (const key in obj) {
           // Sanitize keys as well
           const sanitizedKey = sanitizeText(key);
-          sanitized[sanitizedKey] = sanitizeObject(obj[key]);
+          sanitized[sanitizedKey] = sanitizeObject((obj as Record<string, unknown>)[key]);
         }
         return sanitized;
       }
@@ -220,13 +242,13 @@ export function sanitizeFileName(fileName: string): string {
   let safe = fileName.replace(/\.\./g, '');
 
   // Remove directory separators
-  safe = safe.replace(/[\/\\]/g, '');
+  safe = safe.replace(/[/\\]/g, '');
 
   // Remove control characters and special characters
-  safe = safe.replace(/[^\w\s\-\.]/g, '');
+  safe = safe.replace(/[^\w\s.-]/g, '');
 
   // Remove leading/trailing dots and spaces
-  safe = safe.replace(/^[\s\.]+|[\s\.]+$/g, '');
+  safe = safe.replace(/^[\s.]+|[\s.]+$/g, '');
 
   // Limit length
   if (safe.length > 255) {
@@ -254,7 +276,7 @@ export function isValidEmail(email: string): boolean {
  * @returns {boolean} True if valid phone
  */
 export function isValidPhone(phone: string): boolean {
-  const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+  const phoneRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
   return phoneRegex.test(phone);
 }
 
@@ -266,10 +288,10 @@ export function isValidPhone(phone: string): boolean {
 export function hasSQLInjectionPattern(input: string): boolean {
   const sqlPatterns = [
     /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|CREATE|ALTER|EXEC|EXECUTE|SCRIPT|JAVASCRIPT)\b)/gi,
-    /(\-\-|\/\*|\*\/|;|\||\'|\"|`)/g,
-    /(=\s*[\'\"0-9])/gi,
-    /(\bOR\b\s*[\'\"]?\s*[\'\"]?\s*=)/gi,
-    /(\bAND\b\s*[\'\"]?\s*[\'\"]?\s*=)/gi
+    /(--|\/\*|\*\/|;|\||'|"|`)/g,
+    /(=\s*['"0-9])/gi,
+    /(\bOR\b\s*["']?\s*["']?\s*=)/gi,
+    /(\bAND\b\s*["']?\s*["']?\s*=)/gi,
   ];
 
   return sqlPatterns.some(pattern => pattern.test(input));
@@ -312,7 +334,7 @@ export function generateCSP(): string {
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    "upgrade-insecure-requests"
+    'upgrade-insecure-requests',
   ];
 
   return policies.join('; ');

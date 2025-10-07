@@ -14,32 +14,30 @@ type NotificationType =
 interface EmailNotificationData {
   to: string;
   type: NotificationType;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }
 
 export async function sendEmailNotification(
   type: NotificationType,
   recipientEmail: string,
-  data: Record<string, any>
+  data: Record<string, unknown>
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const { data: result, error } = await supabase.functions.invoke(
-      'send-email-notification',
-      {
-        body: {
-          to: recipientEmail,
-          type,
-          data,
-        },
-      }
-    );
+    const { data: result, error } = await supabase.functions.invoke('send-email-notification', {
+      body: {
+        to: recipientEmail,
+        type,
+        data,
+      },
+    });
 
     if (error) throw error;
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     logger.error('Error sending email notification:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: errorMessage };
   }
 }
 

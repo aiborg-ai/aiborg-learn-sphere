@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-import { Download, FileJson, FileText, Filter, Settings, Calendar, Link } from 'lucide-react';
+import { Download, FileJson, FileText, Filter, Settings, Link } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -38,7 +44,7 @@ export function TemplateExport() {
     include_inactive: false,
     include_hidden: false,
     include_materials: true,
-    include_metadata: false
+    include_metadata: false,
   });
 
   const handleExport = async () => {
@@ -50,7 +56,7 @@ export function TemplateExport() {
         toast({
           title: 'Authentication Required',
           description: 'Please log in to export templates',
-          variant: 'destructive'
+          variant: 'destructive',
         });
         return;
       }
@@ -61,14 +67,14 @@ export function TemplateExport() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session.session?.access_token}`
+            Authorization: `Bearer ${session.session?.access_token}`,
           },
           body: JSON.stringify({
             type: exportType,
             format: exportFormat,
             filters,
-            options
-          })
+            options,
+          }),
         }
       );
 
@@ -93,7 +99,7 @@ export function TemplateExport() {
         // For JSON, parse and download
         const result = await response.json();
         const blob = new Blob([JSON.stringify(result.data, null, 2)], {
-          type: 'application/json'
+          type: 'application/json',
         });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -106,16 +112,15 @@ export function TemplateExport() {
 
         toast({
           title: 'Export Successful',
-          description: `Exported ${result.count} items to ${result.filename}`
+          description: `Exported ${result.count} items to ${result.filename}`,
         });
       }
-
     } catch (error) {
       logger.error('Export error:', error);
       toast({
         title: 'Export Failed',
         description: error.message || 'Failed to export templates',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setIsExporting(false);
@@ -126,9 +131,7 @@ export function TemplateExport() {
     <Card>
       <CardHeader>
         <CardTitle>Export Templates</CardTitle>
-        <CardDescription>
-          Export existing courses and events to JSON or CSV format
-        </CardDescription>
+        <CardDescription>Export existing courses and events to JSON or CSV format</CardDescription>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="basic" className="space-y-4">
@@ -144,7 +147,7 @@ export function TemplateExport() {
               <Label>Export Type</Label>
               <RadioGroup
                 value={exportType}
-                onValueChange={(value) => setExportType(value as any)}
+                onValueChange={value => setExportType(value as 'course' | 'event' | 'both')}
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="course" id="export-course" />
@@ -166,7 +169,7 @@ export function TemplateExport() {
               <Label>Export Format</Label>
               <RadioGroup
                 value={exportFormat}
-                onValueChange={(value) => setExportFormat(value as any)}
+                onValueChange={value => setExportFormat(value as 'json' | 'csv')}
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="json" id="format-json" />
@@ -200,7 +203,7 @@ export function TemplateExport() {
                   id="category"
                   placeholder="e.g., Technology"
                   value={filters.category || ''}
-                  onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+                  onChange={e => setFilters({ ...filters, category: e.target.value })}
                 />
               </div>
             )}
@@ -213,7 +216,7 @@ export function TemplateExport() {
                   id="date-from"
                   type="date"
                   value={filters.date_from || ''}
-                  onChange={(e) => setFilters({ ...filters, date_from: e.target.value })}
+                  onChange={e => setFilters({ ...filters, date_from: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
@@ -222,7 +225,7 @@ export function TemplateExport() {
                   id="date-to"
                   type="date"
                   value={filters.date_to || ''}
-                  onChange={(e) => setFilters({ ...filters, date_to: e.target.value })}
+                  onChange={e => setFilters({ ...filters, date_to: e.target.value })}
                 />
               </div>
             </div>
@@ -235,7 +238,7 @@ export function TemplateExport() {
                   <Checkbox
                     id="active-only"
                     checked={filters.is_active === true}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={checked =>
                       setFilters({ ...filters, is_active: checked ? true : undefined })
                     }
                   />
@@ -245,7 +248,7 @@ export function TemplateExport() {
                   <Checkbox
                     id="display-only"
                     checked={filters.display === true}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={checked =>
                       setFilters({ ...filters, display: checked ? true : undefined })
                     }
                   />
@@ -260,7 +263,7 @@ export function TemplateExport() {
               <Input
                 id="ids"
                 placeholder="e.g., 1,2,3"
-                onChange={(e) => {
+                onChange={e => {
                   const ids = e.target.value
                     .split(',')
                     .map(id => parseInt(id.trim()))
@@ -279,7 +282,7 @@ export function TemplateExport() {
                   <Checkbox
                     id="include-inactive"
                     checked={options.include_inactive}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={checked =>
                       setOptions({ ...options, include_inactive: checked as boolean })
                     }
                   />
@@ -289,7 +292,7 @@ export function TemplateExport() {
                   <Checkbox
                     id="include-hidden"
                     checked={options.include_hidden}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={checked =>
                       setOptions({ ...options, include_hidden: checked as boolean })
                     }
                   />
@@ -300,7 +303,7 @@ export function TemplateExport() {
                     <Checkbox
                       id="include-materials"
                       checked={options.include_materials}
-                      onCheckedChange={(checked) =>
+                      onCheckedChange={checked =>
                         setOptions({ ...options, include_materials: checked as boolean })
                       }
                     />
@@ -311,13 +314,11 @@ export function TemplateExport() {
                   <Checkbox
                     id="include-metadata"
                     checked={options.include_metadata}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={checked =>
                       setOptions({ ...options, include_metadata: checked as boolean })
                     }
                   />
-                  <Label htmlFor="include-metadata">
-                    Include metadata (IDs, timestamps)
-                  </Label>
+                  <Label htmlFor="include-metadata">Include metadata (IDs, timestamps)</Label>
                 </div>
               </div>
             </div>
@@ -326,11 +327,7 @@ export function TemplateExport() {
 
         {/* Export Button */}
         <div className="mt-6 flex justify-end">
-          <Button
-            onClick={handleExport}
-            disabled={isExporting}
-            className="flex items-center gap-2"
-          >
+          <Button onClick={handleExport} disabled={isExporting} className="flex items-center gap-2">
             <Download className="h-4 w-4" />
             {isExporting ? 'Exporting...' : 'Export Templates'}
           </Button>

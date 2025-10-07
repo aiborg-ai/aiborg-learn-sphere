@@ -23,7 +23,7 @@ import {
   Sparkles,
   Loader2,
   CheckCircle,
-  Lock
+  Lock,
 } from 'lucide-react';
 import { logger } from '@/utils/logger';
 import { useToast } from '@/hooks/use-toast';
@@ -69,7 +69,7 @@ const LEVEL_TITLES = [
   { level: 40, title: 'Learning Champion', rank: 'Platinum I' },
   { level: 50, title: 'Grand Master', rank: 'Platinum II' },
   { level: 75, title: 'Learning Legend', rank: 'Diamond' },
-  { level: 100, title: 'Ultimate Scholar', rank: 'Champion' }
+  { level: 100, title: 'Ultimate Scholar', rank: 'Champion' },
 ];
 
 const XP_PER_LEVEL = 1000;
@@ -86,7 +86,7 @@ export default function GamificationPage() {
     xpToNextLevel: XP_PER_LEVEL,
     totalXP: 0,
     title: 'Novice Learner',
-    rank: 'Bronze I'
+    rank: 'Bronze I',
   });
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [dailyChallenges, setDailyChallenges] = useState<DailyChallenge[]>([]);
@@ -114,7 +114,8 @@ export default function GamificationPage() {
         .eq('user_id', user.id);
 
       // Calculate total XP from achievements
-      const totalXP = achievementsData?.reduce((sum, a) => sum + (a.achievements?.points || 0), 0) || 500;
+      const totalXP =
+        achievementsData?.reduce((sum, a) => sum + (a.achievements?.points || 0), 0) || 500;
 
       // Calculate level
       const level = Math.floor(totalXP / XP_PER_LEVEL) + 1;
@@ -130,20 +131,18 @@ export default function GamificationPage() {
         xpToNextLevel,
         totalXP,
         title: levelInfo.title,
-        rank: levelInfo.rank
+        rank: levelInfo.rank,
       });
 
       // Fetch leaderboard data
-      const { data: leaderboardData } = await supabase
-        .from('user_achievements')
-        .select(`
+      const { data: leaderboardData } = await supabase.from('user_achievements').select(`
           user_id,
           profiles!inner(display_name, email),
           achievements!inner(points)
         `);
 
       // Aggregate points per user
-      const userPointsMap = new Map<string, any>();
+      const userPointsMap = new Map<string, { points: number; name: string }>();
       leaderboardData?.forEach(entry => {
         const userId = entry.user_id;
         if (!userPointsMap.has(userId)) {
@@ -152,7 +151,7 @@ export default function GamificationPage() {
             display_name: entry.profiles?.display_name || 'Anonymous',
             email: entry.profiles?.email || '',
             total_points: 0,
-            achievements_count: 0
+            achievements_count: 0,
           });
         }
         const userData = userPointsMap.get(userId);
@@ -168,7 +167,7 @@ export default function GamificationPage() {
           rank: index + 1,
           ...entry,
           level: Math.floor(entry.total_points / XP_PER_LEVEL) + 1,
-          courses_completed: Math.floor(Math.random() * 10) // Would fetch actual data
+          courses_completed: Math.floor(Math.random() * 10), // Would fetch actual data
         }));
 
       setLeaderboard(leaderboardArray);
@@ -187,7 +186,7 @@ export default function GamificationPage() {
           type: 'study_time',
           target: 30,
           current: 15,
-          completed: false
+          completed: false,
         },
         {
           id: '2',
@@ -197,7 +196,7 @@ export default function GamificationPage() {
           type: 'course_complete',
           target: 1,
           current: 0,
-          completed: false
+          completed: false,
         },
         {
           id: '3',
@@ -207,7 +206,7 @@ export default function GamificationPage() {
           type: 'quiz_score',
           target: 90,
           current: 0,
-          completed: false
+          completed: false,
         },
         {
           id: '4',
@@ -217,18 +216,17 @@ export default function GamificationPage() {
           type: 'streak',
           target: 1,
           current: 1,
-          completed: true
-        }
+          completed: true,
+        },
       ];
 
       setDailyChallenges(challenges);
-
     } catch (error) {
       logger.error('Error fetching gamification data:', error);
       toast({
         title: 'Error',
         description: 'Failed to load gamification data',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -277,9 +275,7 @@ export default function GamificationPage() {
                 <Zap className="h-8 w-8 text-yellow-400" />
                 Gamification Hub
               </h1>
-              <p className="text-white/80">
-                Level up, compete, and earn rewards!
-              </p>
+              <p className="text-white/80">Level up, compete, and earn rewards!</p>
             </div>
           </div>
         </div>
@@ -322,10 +318,7 @@ export default function GamificationPage() {
                   {userLevel.currentXP} / {XP_PER_LEVEL} XP
                 </span>
               </div>
-              <Progress
-                value={(userLevel.currentXP / XP_PER_LEVEL) * 100}
-                className="h-3"
-              />
+              <Progress value={(userLevel.currentXP / XP_PER_LEVEL) * 100} className="h-3" />
               <p className="text-xs text-muted-foreground text-right">
                 {userLevel.xpToNextLevel} XP to Level {userLevel.level + 1}
               </p>
@@ -393,7 +386,7 @@ export default function GamificationPage() {
               <CardContent>
                 <ScrollArea className="h-96">
                   <div className="space-y-3">
-                    {LEVEL_TITLES.map((levelInfo) => {
+                    {LEVEL_TITLES.map(levelInfo => {
                       const unlocked = userLevel.level >= levelInfo.level;
                       return (
                         <div
@@ -440,8 +433,11 @@ export default function GamificationPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {dailyChallenges.map((challenge) => (
-                    <Card key={challenge.id} className={challenge.completed ? 'bg-green-50 dark:bg-green-950' : ''}>
+                  {dailyChallenges.map(challenge => (
+                    <Card
+                      key={challenge.id}
+                      className={challenge.completed ? 'bg-green-50 dark:bg-green-950' : ''}
+                    >
                       <CardContent className="pt-6">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex-1">
@@ -451,9 +447,7 @@ export default function GamificationPage() {
                                 <CheckCircle className="h-4 w-4 text-green-500" />
                               )}
                             </div>
-                            <p className="text-sm text-muted-foreground">
-                              {challenge.description}
-                            </p>
+                            <p className="text-sm text-muted-foreground">{challenge.description}</p>
                           </div>
                           <Badge variant={challenge.completed ? 'default' : 'secondary'}>
                             +{challenge.xp_reward} XP
@@ -495,18 +489,18 @@ export default function GamificationPage() {
               <CardContent>
                 <ScrollArea className="h-[600px]">
                   <div className="space-y-2">
-                    {leaderboard.map((entry) => (
+                    {leaderboard.map(entry => (
                       <Card
                         key={entry.user_id}
                         className={`${
-                          entry.user_id === user?.id
-                            ? 'ring-2 ring-primary bg-primary/5'
-                            : ''
+                          entry.user_id === user?.id ? 'ring-2 ring-primary bg-primary/5' : ''
                         }`}
                       >
                         <CardContent className="p-4">
                           <div className="flex items-center gap-4">
-                            <div className={`flex-shrink-0 w-12 h-12 rounded-full ${getRankBadgeColor(entry.rank)} flex items-center justify-center text-white font-bold`}>
+                            <div
+                              className={`flex-shrink-0 w-12 h-12 rounded-full ${getRankBadgeColor(entry.rank)} flex items-center justify-center text-white font-bold`}
+                            >
                               {entry.rank <= 3 ? getRankIcon(entry.rank) : entry.rank}
                             </div>
 
@@ -514,7 +508,9 @@ export default function GamificationPage() {
                               <p className="font-semibold truncate">
                                 {entry.display_name}
                                 {entry.user_id === user?.id && (
-                                  <Badge variant="outline" className="ml-2">You</Badge>
+                                  <Badge variant="outline" className="ml-2">
+                                    You
+                                  </Badge>
                                 )}
                               </p>
                               <div className="flex items-center gap-3 text-sm text-muted-foreground">

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Upload, FileJson, Download, AlertCircle, X } from 'lucide-react';
+import { Upload, FileJson, AlertCircle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -8,8 +8,13 @@ import { Label } from '@/components/ui/label';
 import { templateService } from '@/services/templateService';
 import { useParseJSONFile } from '@/hooks/useTemplates';
 
+interface UploadedTemplateData {
+  courses?: unknown[];
+  events?: unknown[];
+}
+
 interface TemplateUploadProps {
-  onFileUpload: (data: any, type: 'course' | 'event') => void;
+  onFileUpload: (data: UploadedTemplateData, type: 'course' | 'event') => void;
   isLoading?: boolean;
 }
 
@@ -24,31 +29,37 @@ export function TemplateUpload({ onFileUpload, isLoading }: TemplateUploadProps)
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
+    if (e.type === 'dragenter' || e.type === 'dragover') {
       setDragActive(true);
-    } else if (e.type === "dragleave") {
+    } else if (e.type === 'dragleave') {
       setDragActive(false);
     }
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    setError(null);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragActive(false);
+      setError(null);
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0]);
-    }
-  }, []);
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    },
+    [handleFile]
+  );
 
-  const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setError(null);
-    if (e.target.files && e.target.files[0]) {
-      handleFile(e.target.files[0]);
-    }
-  }, []);
+  const handleFileInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      setError(null);
+      if (e.target.files && e.target.files[0]) {
+        handleFile(e.target.files[0]);
+      }
+    },
+    [handleFile]
+  );
 
   const handleFile = async (file: File) => {
     // Validate file type
@@ -118,7 +129,7 @@ export function TemplateUpload({ onFileUpload, isLoading }: TemplateUploadProps)
           <Label>Template Type</Label>
           <RadioGroup
             value={templateType}
-            onValueChange={(value) => setTemplateType(value as 'course' | 'event')}
+            onValueChange={value => setTemplateType(value as 'course' | 'event')}
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="course" id="course" />
@@ -147,9 +158,7 @@ export function TemplateUpload({ onFileUpload, isLoading }: TemplateUploadProps)
         {/* File Upload Area */}
         <div
           className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-            dragActive
-              ? 'border-primary bg-primary/5'
-              : 'border-gray-300 hover:border-gray-400'
+            dragActive ? 'border-primary bg-primary/5' : 'border-gray-300 hover:border-gray-400'
           }`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
@@ -186,12 +195,8 @@ export function TemplateUpload({ onFileUpload, isLoading }: TemplateUploadProps)
             <div className="space-y-4">
               <Upload className="h-12 w-12 mx-auto text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium">
-                  Drop your JSON file here or click to browse
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Supports JSON files up to 5MB
-                </p>
+                <p className="text-sm font-medium">Drop your JSON file here or click to browse</p>
+                <p className="text-xs text-muted-foreground mt-1">Supports JSON files up to 5MB</p>
               </div>
             </div>
           )}
@@ -206,11 +211,7 @@ export function TemplateUpload({ onFileUpload, isLoading }: TemplateUploadProps)
         )}
 
         {/* Upload Button */}
-        <Button
-          onClick={handleUpload}
-          disabled={!selectedFile || isLoading}
-          className="w-full"
-        >
+        <Button onClick={handleUpload} disabled={!selectedFile || isLoading} className="w-full">
           {isLoading ? 'Processing...' : 'Validate & Import'}
         </Button>
       </CardContent>

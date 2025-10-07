@@ -1,12 +1,12 @@
 import { useToast } from '@/components/ui/use-toast';
 import { validateCourseTemplate, validateEventTemplate } from '@/services/templateService';
-import { TemplateField, TemplateType } from '../types';
+import type { TemplateField, TemplateType } from '../types';
 
 export function useTemplateValidation() {
   const { toast } = useToast();
 
   const validateRequiredFields = (
-    formData: Record<string, any>,
+    formData: Record<string, unknown>,
     requiredFields: TemplateField[]
   ): Record<string, string> => {
     const newErrors: Record<string, string> = {};
@@ -14,7 +14,7 @@ export function useTemplateValidation() {
     requiredFields.forEach(field => {
       const value = formData[field.name];
       if (field.type === 'array') {
-        if (!value || value.length === 0) {
+        if (!value || (Array.isArray(value) && value.length === 0)) {
           newErrors[field.name] = `${field.label} is required`;
         }
       } else if (!value) {
@@ -26,19 +26,20 @@ export function useTemplateValidation() {
   };
 
   const validateTemplate = async (
-    formData: Record<string, any>,
+    formData: Record<string, unknown>,
     templateType: TemplateType
   ): Promise<boolean> => {
     try {
-      const validation = templateType === 'course'
-        ? validateCourseTemplate([formData])
-        : validateEventTemplate([formData]);
+      const validation =
+        templateType === 'course'
+          ? validateCourseTemplate([formData])
+          : validateEventTemplate([formData]);
 
       if (!validation.success) {
         toast({
           title: 'Validation Failed',
           description: validation.errors?.[0]?.message || 'Please check your input',
-          variant: 'destructive'
+          variant: 'destructive',
         });
         return false;
       }
@@ -52,7 +53,7 @@ export function useTemplateValidation() {
       toast({
         title: 'Error',
         description: 'Failed to validate template',
-        variant: 'destructive'
+        variant: 'destructive',
       });
       return false;
     }
@@ -60,6 +61,6 @@ export function useTemplateValidation() {
 
   return {
     validateRequiredFields,
-    validateTemplate
+    validateTemplate,
   };
 }

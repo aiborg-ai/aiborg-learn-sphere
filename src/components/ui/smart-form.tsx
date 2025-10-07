@@ -15,7 +15,13 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ButtonLoader } from './loading-states';
@@ -29,8 +35,20 @@ import { cn } from '@/lib/utils';
 export interface FieldConfig<T extends FieldValues = FieldValues> {
   name: FieldPath<T>;
   label: string;
-  type: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'date' | 'time' |
-        'textarea' | 'select' | 'checkbox' | 'radio' | 'file';
+  type:
+    | 'text'
+    | 'email'
+    | 'password'
+    | 'number'
+    | 'tel'
+    | 'url'
+    | 'date'
+    | 'time'
+    | 'textarea'
+    | 'select'
+    | 'checkbox'
+    | 'radio'
+    | 'file';
   placeholder?: string;
   description?: string;
   options?: Array<{ label: string; value: string }>;
@@ -130,12 +148,8 @@ export function SmartForm<T extends FieldValues = FieldValues>({
         render={({ field: formField }) => (
           <FormItem className={field.className}>
             {field.type !== 'checkbox' && <FormLabel>{field.label}</FormLabel>}
-            <FormControl>
-              {renderInput(field, formField)}
-            </FormControl>
-            {field.description && (
-              <FormDescription>{field.description}</FormDescription>
-            )}
+            <FormControl>{renderInput(field, formField)}</FormControl>
+            {field.description && <FormDescription>{field.description}</FormDescription>}
             <FormMessage />
           </FormItem>
         )}
@@ -146,10 +160,13 @@ export function SmartForm<T extends FieldValues = FieldValues>({
   /**
    * Render the appropriate input component based on field type
    * @param {FieldConfig<T>} fieldConfig - Field configuration
-   * @param {any} formField - React Hook Form field object
+   * @param {object} formField - React Hook Form field object
    * @returns {JSX.Element} Appropriate input component
    */
-  const renderInput = (fieldConfig: FieldConfig<T>, formField: any) => {
+  const renderInput = (
+    fieldConfig: FieldConfig<T>,
+    formField: { value: unknown; onChange: (value: unknown) => void; onBlur: () => void }
+  ) => {
     const { type, placeholder, options, disabled, rows, accept, multiple, label } = fieldConfig;
 
     switch (type) {
@@ -174,7 +191,7 @@ export function SmartForm<T extends FieldValues = FieldValues>({
               <SelectValue placeholder={placeholder || 'Select an option'} />
             </SelectTrigger>
             <SelectContent>
-              {options?.map((option) => (
+              {options?.map(option => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
                 </SelectItem>
@@ -204,7 +221,7 @@ export function SmartForm<T extends FieldValues = FieldValues>({
             defaultValue={formField.value}
             disabled={disabled || loading}
           >
-            {options?.map((option) => (
+            {options?.map(option => (
               <div key={option.value} className="flex items-center space-x-2">
                 <RadioGroupItem value={option.value} />
                 <label className="text-sm font-medium">{option.label}</label>
@@ -219,7 +236,7 @@ export function SmartForm<T extends FieldValues = FieldValues>({
             type="file"
             accept={accept}
             multiple={multiple}
-            onChange={(e) => {
+            onChange={e => {
               const files = e.target.files;
               formField.onChange(multiple ? files : files?.[0]);
             }}
@@ -241,30 +258,16 @@ export function SmartForm<T extends FieldValues = FieldValues>({
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className={cn('space-y-6', className)}
-      >
+      <form onSubmit={form.handleSubmit(handleSubmit)} className={cn('space-y-6', className)}>
         {fields.map(renderField)}
 
         <div className="flex gap-4">
-          <Button
-            type="submit"
-            disabled={loading}
-            className={submitClassName}
-          >
-            <ButtonLoader loading={loading}>
-              {submitLabel}
-            </ButtonLoader>
+          <Button type="submit" disabled={loading} className={submitClassName}>
+            <ButtonLoader loading={loading}>{submitLabel}</ButtonLoader>
           </Button>
 
           {onCancel && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              disabled={loading}
-            >
+            <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
               {cancelLabel}
             </Button>
           )}

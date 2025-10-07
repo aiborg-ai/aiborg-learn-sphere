@@ -43,7 +43,7 @@ import {
   Clock,
   FileText,
   Copy,
-  ExternalLink
+  ExternalLink,
 } from 'lucide-react';
 import BlogPostEditor from './BlogPostEditor';
 import { format } from 'date-fns';
@@ -99,7 +99,7 @@ function BlogPostManagerOptimized() {
     setPageSize,
     setFilters,
     setOrdering,
-    refresh
+    refresh,
   } = usePagination<BlogPost>({
     table: 'blog_posts',
     selectFields: `
@@ -111,11 +111,11 @@ function BlogPostManagerOptimized() {
     initialPageSize: 20,
     initialOrderBy: 'created_at',
     initialOrderDirection: 'desc',
-    transform: (item: any) => ({
+    transform: (item: Record<string, unknown>) => ({
       ...item,
       category: item.blog_categories,
-      author: item.profiles
-    })
+      author: item.profiles,
+    }),
   });
 
   // Debounce search input
@@ -145,16 +145,13 @@ function BlogPostManagerOptimized() {
     if (!confirm('Are you sure you want to delete this post?')) return;
 
     try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from('blog_posts').delete().eq('id', id);
 
       if (error) throw error;
 
       toast({
         title: 'Success',
-        description: 'Post deleted successfully'
+        description: 'Post deleted successfully',
       });
       refresh();
     } catch (error) {
@@ -162,7 +159,7 @@ function BlogPostManagerOptimized() {
       toast({
         title: 'Error',
         description: 'Failed to delete post',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -178,7 +175,7 @@ function BlogPostManagerOptimized() {
 
       toast({
         title: 'Success',
-        description: `Post ${!currentStatus ? 'featured' : 'unfeatured'} successfully`
+        description: `Post ${!currentStatus ? 'featured' : 'unfeatured'} successfully`,
       });
       refresh();
     } catch (error) {
@@ -186,28 +183,25 @@ function BlogPostManagerOptimized() {
       toast({
         title: 'Error',
         description: 'Failed to update featured status',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
-      const updateData: any = { status: newStatus };
+      const updateData: Record<string, unknown> = { status: newStatus };
       if (newStatus === 'published' && !posts.find(p => p.id === id)?.published_at) {
         updateData.published_at = new Date().toISOString();
       }
 
-      const { error } = await supabase
-        .from('blog_posts')
-        .update(updateData)
-        .eq('id', id);
+      const { error } = await supabase.from('blog_posts').update(updateData).eq('id', id);
 
       if (error) throw error;
 
       toast({
         title: 'Success',
-        description: 'Post status updated successfully'
+        description: 'Post status updated successfully',
       });
       refresh();
     } catch (error) {
@@ -215,7 +209,7 @@ function BlogPostManagerOptimized() {
       toast({
         title: 'Error',
         description: 'Failed to update post status',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -225,30 +219,25 @@ function BlogPostManagerOptimized() {
       published: 'default',
       draft: 'secondary',
       scheduled: 'outline',
-      archived: 'destructive'
+      archived: 'destructive',
     };
 
-    return (
-      <Badge variant={variants[status] || 'default'}>
-        {status}
-      </Badge>
-    );
+    return <Badge variant={variants[status] || 'default'}>{status}</Badge>;
   };
 
   // Filter posts based on search term (client-side for now)
-  const filteredPosts = posts.filter(post =>
-    !debouncedSearch ||
-    post.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-    post.slug.toLowerCase().includes(debouncedSearch.toLowerCase())
+  const filteredPosts = posts.filter(
+    post =>
+      !debouncedSearch ||
+      post.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+      post.slug.toLowerCase().includes(debouncedSearch.toLowerCase())
   );
 
   if (error) {
     return (
       <Card>
         <CardContent className="pt-6">
-          <div className="text-center text-destructive">
-            Error loading posts: {error}
-          </div>
+          <div className="text-center text-destructive">Error loading posts: {error}</div>
         </CardContent>
       </Card>
     );
@@ -272,7 +261,7 @@ function BlogPostManagerOptimized() {
               <Input
                 placeholder="Search posts..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -309,7 +298,7 @@ function BlogPostManagerOptimized() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredPosts.map((post) => (
+                  {filteredPosts.map(post => (
                     <TableRow key={post.id}>
                       <TableCell>
                         <div className="space-y-1">
@@ -349,12 +338,8 @@ function BlogPostManagerOptimized() {
                             <Eye className="h-3 w-3" />
                             {post.view_count}
                           </span>
-                          <span className="flex items-center gap-1">
-                            ❤️ {post.like_count}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            💬 {post.comment_count}
-                          </span>
+                          <span className="flex items-center gap-1">❤️ {post.like_count}</span>
+                          <span className="flex items-center gap-1">💬 {post.comment_count}</span>
                         </div>
                       </TableCell>
                       <TableCell className="text-sm">
@@ -389,7 +374,7 @@ function BlogPostManagerOptimized() {
                               onClick={() => {
                                 navigator.clipboard.writeText(`/blog/${post.slug}`);
                                 toast({
-                                  description: 'Link copied to clipboard'
+                                  description: 'Link copied to clipboard',
                                 });
                               }}
                             >

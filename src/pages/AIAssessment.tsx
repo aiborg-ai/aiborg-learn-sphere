@@ -8,10 +8,11 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { AIAssessmentWizard } from '@/components/ai-assessment/AIAssessmentWizard';
 import { AIAssessmentWizardAdaptive } from '@/components/ai-assessment/AIAssessmentWizardAdaptive';
-
-// Feature flag: set to true to enable adaptive assessment
-const USE_ADAPTIVE_ASSESSMENT = true;
 import { useAuth } from '@/hooks/useAuth';
+
+// Feature flag: read from environment variable
+// Defaults to true if not set
+const USE_ADAPTIVE_ASSESSMENT = import.meta.env.VITE_USE_ADAPTIVE_ASSESSMENT !== 'false';
 import {
   Brain,
   Sparkles,
@@ -107,15 +108,13 @@ export default function AIAssessment() {
 
   const startAssessment = () => {
     if (!user) {
-      // Prompt to sign in for full experience
-      const proceed = window.confirm(
-        'Sign in to save your results and track progress over time. Continue as guest?'
-      );
-      if (proceed) {
-        setShowAssessment(true);
-      } else {
-        navigate('/auth');
-      }
+      // Require sign-in for assessment
+      navigate('/auth', {
+        state: {
+          returnTo: '/ai-assessment',
+          message: 'Please sign in to take the assessment and save your results.',
+        },
+      });
     } else {
       setShowAssessment(true);
     }
@@ -172,7 +171,7 @@ export default function AIAssessment() {
               </Button>
             </div>
             <p className="text-sm text-white/60 mt-4">
-              No credit card required • Takes 10-15 minutes • Instant results
+              Sign in required • No credit card needed • Takes 10-15 minutes • Instant results
             </p>
           </div>
 
@@ -347,14 +346,11 @@ export default function AIAssessment() {
           </p>
           <Button onClick={startAssessment} size="lg" className="btn-hero text-lg px-8 py-6">
             <Brain className="mr-2 h-5 w-5" />
-            Take the Assessment Now
+            {user ? 'Take the Assessment Now' : 'Sign In to Start'}
           </Button>
           {!user && (
             <p className="text-sm text-white/60 mt-4">
-              <Link to="/auth" className="underline hover:text-white">
-                Sign in
-              </Link>{' '}
-              to save your results
+              Sign in required to save and track your results
             </p>
           )}
         </div>

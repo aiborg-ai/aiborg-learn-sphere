@@ -36,9 +36,14 @@ export interface PaginatedResponse<T> {
  * Query builder with optimization features
  * @class OptimizedQueryBuilder
  */
+interface CachedQuery<T = unknown> {
+  data: T;
+  timestamp: number;
+}
+
 export class OptimizedQueryBuilder {
   private client: SupabaseClient;
-  private queries: Map<string, any> = new Map();
+  private queries: Map<string, CachedQuery> = new Map();
 
   constructor(client: SupabaseClient) {
     this.client = client;
@@ -64,7 +69,7 @@ export class OptimizedQueryBuilder {
     table: string,
     config: PaginationConfig,
     selectFields: string = '*',
-    filters: Record<string, any> = {}
+    filters: Record<string, unknown> = {}
   ): Promise<PaginatedResponse<T>> {
     const { page, pageSize, orderBy = 'created_at', orderDirection = 'desc' } = config;
     const from = (page - 1) * pageSize;
@@ -82,9 +87,7 @@ export class OptimizedQueryBuilder {
       });
 
       // Apply pagination and ordering
-      query = query
-        .order(orderBy, { ascending: orderDirection === 'asc' })
-        .range(from, to);
+      query = query.order(orderBy, { ascending: orderDirection === 'asc' }).range(from, to);
 
       const { data, count, error } = await query;
 
@@ -102,7 +105,7 @@ export class OptimizedQueryBuilder {
         totalCount,
         totalPages,
         hasNextPage: page < totalPages,
-        hasPreviousPage: page > 1
+        hasPreviousPage: page > 1,
       };
     } catch (error) {
       logger.error('Pagination query failed:', error);
@@ -128,7 +131,7 @@ export class OptimizedQueryBuilder {
    *   'post_id'
    * );
    */
-  async batchFetchRelated<T extends Record<string, any>, R>(
+  async batchFetchRelated<T extends Record<string, unknown>, R>(
     entities: T[],
     foreignKey: keyof T,
     relatedTable: string,
@@ -145,10 +148,7 @@ export class OptimizedQueryBuilder {
     }
 
     try {
-      const { data, error } = await this.client
-        .from(relatedTable)
-        .select('*')
-        .in(relatedKey, ids);
+      const { data, error } = await this.client.from(relatedTable).select('*').in(relatedKey, ids);
 
       if (error) {
         throw error;
@@ -157,12 +157,12 @@ export class OptimizedQueryBuilder {
       // Group related data by foreign key
       const relatedMap = new Map<string, R[]>();
 
-      (data || []).forEach((item: any) => {
-        const key = item[relatedKey];
+      (data || []).forEach((item: Record<string, unknown>) => {
+        const key = String(item[relatedKey]);
         if (!relatedMap.has(key)) {
           relatedMap.set(key, []);
         }
-        relatedMap.get(key)!.push(item);
+        relatedMap.get(key)!.push(item as R);
       });
 
       return relatedMap;
@@ -174,8 +174,8 @@ export class OptimizedQueryBuilder {
 
   /**
    * Execute multiple queries in parallel
-   * @param {Array<() => Promise<any>>} queries - Array of query functions
-   * @returns {Promise<any[]>} Array of query results
+   * @param {Array<() => Promise<T[K]>>} queries - Array of query functions
+   * @returns {Promise<T>} Array of query results
    * @example
    * const [users, posts, comments] = await queryBuilder.parallel([
    *   () => supabase.from('users').select(),
@@ -183,9 +183,9 @@ export class OptimizedQueryBuilder {
    *   () => supabase.from('comments').select()
    * ]);
    */
-  async parallel<T extends readonly unknown[]>(
-    queries: { [K in keyof T]: () => Promise<T[K]> }
-  ): Promise<T> {
+  async parallel<T extends readonly unknown[]>(queries: {
+    [K in keyof T]: () => Promise<T[K]>;
+  }): Promise<T> {
     try {
       const results = await Promise.all(queries.map(q => q()));
       return results as T;
@@ -203,11 +203,7 @@ export class OptimizedQueryBuilder {
    * @param {number} [ttl=300000] - Time to live in milliseconds (default: 5 minutes)
    * @returns {Promise<T>} Cached or fresh data
    */
-  async cached<T>(
-    key: string,
-    queryFn: () => Promise<T>,
-    ttl: number = 300000
-  ): Promise<T> {
+  async cached<T>(key: string, queryFn: () => Promise<T>, ttl: number = 300000): Promise<T> {
     const cached = this.queries.get(key);
 
     if (cached && cached.timestamp + ttl > Date.now()) {
@@ -220,7 +216,7 @@ export class OptimizedQueryBuilder {
 
     this.queries.set(key, {
       data,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     // Clean up old cache entries
@@ -254,11 +250,7 @@ export class OptimizedQueryBuilder {
    * @param {string[]} frequentSorts - Frequently sorted columns
    * @returns {string[]} SQL statements for creating indexes
    */
-  suggestIndexes(
-    table: string,
-    frequentFilters: string[],
-    frequentSorts: string[]
-  ): string[] {
+  suggestIndexes(table: string, frequentFilters: string[], frequentSorts: string[]): string[] {
     const indexes: string[] = [];
 
     // Single column indexes for filters

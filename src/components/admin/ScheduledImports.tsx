@@ -4,7 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
@@ -65,8 +71,8 @@ export function ScheduledImports() {
     import_options: {
       skip_duplicates: true,
       update_existing: false,
-      validate_first: true
-    }
+      validate_first: true,
+    },
   });
 
   useEffect(() => {
@@ -88,7 +94,7 @@ export function ScheduledImports() {
       toast({
         title: 'Error',
         description: 'Failed to fetch scheduled imports',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -98,9 +104,10 @@ export function ScheduledImports() {
   const handleCreateSchedule = async () => {
     try {
       // Combine date and time for scheduled_at
-      const scheduledAt = formData.schedule_type === 'once'
-        ? `${formData.scheduled_at}T${formData.scheduled_time}:00`
-        : null;
+      const scheduledAt =
+        formData.schedule_type === 'once'
+          ? `${formData.scheduled_at}T${formData.scheduled_time}:00`
+          : null;
 
       const { data, error } = await supabase
         .from('scheduled_imports')
@@ -113,7 +120,7 @@ export function ScheduledImports() {
           source_type: formData.source_type,
           source_url: formData.source_url,
           import_options: formData.import_options,
-          user_id: (await supabase.auth.getUser()).data.user?.id
+          user_id: (await supabase.auth.getUser()).data.user?.id,
         })
         .select()
         .single();
@@ -126,14 +133,14 @@ export function ScheduledImports() {
 
       toast({
         title: 'Success',
-        description: 'Scheduled import created successfully'
+        description: 'Scheduled import created successfully',
       });
     } catch (error) {
       logger.error('Error creating schedule:', error);
       toast({
         title: 'Error',
         description: 'Failed to create scheduled import',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -147,20 +154,18 @@ export function ScheduledImports() {
 
       if (error) throw error;
 
-      setSchedules(schedules.map(s =>
-        s.id === id ? { ...s, is_active: !isActive } : s
-      ));
+      setSchedules(schedules.map(s => (s.id === id ? { ...s, is_active: !isActive } : s)));
 
       toast({
         title: 'Success',
-        description: `Schedule ${!isActive ? 'activated' : 'paused'}`
+        description: `Schedule ${!isActive ? 'activated' : 'paused'}`,
       });
     } catch (error) {
       logger.error('Error toggling schedule:', error);
       toast({
         title: 'Error',
         description: 'Failed to update schedule',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -169,10 +174,7 @@ export function ScheduledImports() {
     if (!confirm('Are you sure you want to delete this scheduled import?')) return;
 
     try {
-      const { error } = await supabase
-        .from('scheduled_imports')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from('scheduled_imports').delete().eq('id', id);
 
       if (error) throw error;
 
@@ -180,14 +182,14 @@ export function ScheduledImports() {
 
       toast({
         title: 'Success',
-        description: 'Scheduled import deleted'
+        description: 'Scheduled import deleted',
       });
     } catch (error) {
       logger.error('Error deleting schedule:', error);
       toast({
         title: 'Error',
         description: 'Failed to delete schedule',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -198,14 +200,14 @@ export function ScheduledImports() {
       // Implementation would call the execute_scheduled_import function
       toast({
         title: 'Import Started',
-        description: 'The import has been triggered and will run shortly'
+        description: 'The import has been triggered and will run shortly',
       });
     } catch (error) {
       logger.error('Error running import:', error);
       toast({
         title: 'Error',
         description: 'Failed to trigger import',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -223,8 +225,8 @@ export function ScheduledImports() {
       import_options: {
         skip_duplicates: true,
         update_existing: false,
-        validate_first: true
-      }
+        validate_first: true,
+      },
     });
   };
 
@@ -234,7 +236,7 @@ export function ScheduledImports() {
     const variants: Record<string, 'default' | 'success' | 'destructive' | 'secondary'> = {
       success: 'success',
       failed: 'destructive',
-      running: 'default'
+      running: 'default',
     };
 
     return <Badge variant={variants[status] || 'secondary'}>{status}</Badge>;
@@ -245,7 +247,7 @@ export function ScheduledImports() {
       once: '📅',
       daily: '🔄',
       weekly: '📆',
-      monthly: '📅'
+      monthly: '📅',
     };
 
     return (
@@ -273,9 +275,7 @@ export function ScheduledImports() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Scheduled Imports</CardTitle>
-              <CardDescription>
-                Automate template imports on a recurring schedule
-              </CardDescription>
+              <CardDescription>Automate template imports on a recurring schedule</CardDescription>
             </div>
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
               <DialogTrigger asChild>
@@ -298,7 +298,7 @@ export function ScheduledImports() {
                       <Input
                         id="name"
                         value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        onChange={e => setFormData({ ...formData, name: e.target.value })}
                         placeholder="Daily Course Import"
                       />
                     </div>
@@ -306,8 +306,11 @@ export function ScheduledImports() {
                       <Label htmlFor="import-type">Import Type</Label>
                       <Select
                         value={formData.import_type}
-                        onValueChange={(value) =>
-                          setFormData({ ...formData, import_type: value as any })
+                        onValueChange={value =>
+                          setFormData({
+                            ...formData,
+                            import_type: value as 'course' | 'event' | 'both',
+                          })
                         }
                       >
                         <SelectTrigger>
@@ -327,7 +330,7 @@ export function ScheduledImports() {
                     <Input
                       id="description"
                       value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      onChange={e => setFormData({ ...formData, description: e.target.value })}
                       placeholder="Optional description"
                     />
                   </div>
@@ -337,8 +340,11 @@ export function ScheduledImports() {
                       <Label>Schedule Type</Label>
                       <Select
                         value={formData.schedule_type}
-                        onValueChange={(value) =>
-                          setFormData({ ...formData, schedule_type: value as any })
+                        onValueChange={value =>
+                          setFormData({
+                            ...formData,
+                            schedule_type: value as 'once' | 'daily' | 'weekly',
+                          })
                         }
                       >
                         <SelectTrigger>
@@ -360,7 +366,7 @@ export function ScheduledImports() {
                           <Input
                             type="date"
                             value={formData.scheduled_at}
-                            onChange={(e) =>
+                            onChange={e =>
                               setFormData({ ...formData, scheduled_at: e.target.value })
                             }
                           />
@@ -370,7 +376,7 @@ export function ScheduledImports() {
                           <Input
                             type="time"
                             value={formData.scheduled_time}
-                            onChange={(e) =>
+                            onChange={e =>
                               setFormData({ ...formData, scheduled_time: e.target.value })
                             }
                           />
@@ -385,7 +391,7 @@ export function ScheduledImports() {
                       id="source-url"
                       type="url"
                       value={formData.source_url}
-                      onChange={(e) => setFormData({ ...formData, source_url: e.target.value })}
+                      onChange={e => setFormData({ ...formData, source_url: e.target.value })}
                       placeholder="https://example.com/templates.json"
                     />
                   </div>
@@ -422,7 +428,7 @@ export function ScheduledImports() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {schedules.map((schedule) => (
+                {schedules.map(schedule => (
                   <TableRow key={schedule.id}>
                     <TableCell>
                       <div>
@@ -484,11 +490,7 @@ export function ScheduledImports() {
                             <Play className="h-4 w-4" />
                           )}
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => runNow(schedule.id)}
-                        >
+                        <Button variant="ghost" size="sm" onClick={() => runNow(schedule.id)}>
                           <RefreshCw className="h-4 w-4" />
                         </Button>
                         <Button

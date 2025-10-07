@@ -9,10 +9,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { TemplateType } from './types';
+import type { TemplateType } from './types';
 
 interface TemplatePreviewProps {
-  formData: Record<string, any>;
+  formData: Record<string, unknown>;
   templateType: TemplateType;
   showPreview: boolean;
   onShowPreviewChange: (show: boolean) => void;
@@ -26,12 +26,10 @@ export function TemplatePreview({
   showPreview,
   onShowPreviewChange,
   onCopyJSON,
-  onExportJSON
+  onExportJSON,
 }: TemplatePreviewProps) {
   const getPreviewData = () => {
-    return templateType === 'course'
-      ? { courses: [formData] }
-      : { events: [formData] };
+    return templateType === 'course' ? { courses: [formData] } : { events: [formData] };
   };
 
   return (
@@ -45,9 +43,7 @@ export function TemplatePreview({
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-auto">
         <DialogHeader>
           <DialogTitle>Template Preview</DialogTitle>
-          <DialogDescription>
-            JSON representation of your template
-          </DialogDescription>
+          <DialogDescription>JSON representation of your template</DialogDescription>
         </DialogHeader>
         <pre className="bg-muted p-4 rounded-lg overflow-auto text-sm">
           {JSON.stringify(getPreviewData(), null, 2)}

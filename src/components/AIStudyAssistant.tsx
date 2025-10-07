@@ -1,48 +1,57 @@
-import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import {
-  MessageCircle,
   Send,
   X,
   Bot,
   User,
   Sparkles,
   BookOpen,
-  Clock,
   Target,
   Calendar,
   Brain,
-  Loader2
-} from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+  Loader2,
+} from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface Message {
   id: string;
   content: string;
-  role: "user" | "assistant" | "system";
+  role: 'user' | 'assistant' | 'system';
   timestamp: Date;
 }
 
 interface StudyContext {
-  enrolled_courses?: any[];
-  upcoming_assignments?: any[];
-  recent_activity?: any[];
-  active_recommendations?: any[];
+  enrolled_courses?: unknown[];
+  upcoming_assignments?: unknown[];
+  recent_activity?: unknown[];
+  active_recommendations?: unknown[];
 }
 
 const quickActions = [
-  { icon: BookOpen, label: "Study Plan", prompt: "Help me create a study plan for this week" },
-  { icon: Target, label: "Assignment Help", prompt: "I need help understanding my current assignments" },
-  { icon: Calendar, label: "Schedule", prompt: "What should I prioritize today based on my deadlines?" },
-  { icon: Brain, label: "Review Topics", prompt: "What topics should I review based on my progress?" },
+  { icon: BookOpen, label: 'Study Plan', prompt: 'Help me create a study plan for this week' },
+  {
+    icon: Target,
+    label: 'Assignment Help',
+    prompt: 'I need help understanding my current assignments',
+  },
+  {
+    icon: Calendar,
+    label: 'Schedule',
+    prompt: 'What should I prioritize today based on my deadlines?',
+  },
+  {
+    icon: Brain,
+    label: 'Review Topics',
+    prompt: 'What topics should I review based on my progress?',
+  },
 ];
 
 export function AIStudyAssistant() {
@@ -50,28 +59,18 @@ export function AIStudyAssistant() {
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [inputMessage, setInputMessage] = useState("");
+  const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [studyContext, setStudyContext] = useState<StudyContext>({});
+  const [_studyContext, setStudyContext] = useState<StudyContext>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (isOpen && messages.length === 0 && user) {
-      initializeSession();
-    }
-  }, [isOpen, user]);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const initializeSession = async () => {
+  const initializeSession = useCallback(async () => {
     try {
       if (!user) return;
 
@@ -81,7 +80,7 @@ export function AIStudyAssistant() {
         .insert({
           user_id: user.id,
           session_type: 'chat',
-          context: {}
+          context: {},
         })
         .select()
         .single();
@@ -91,8 +90,9 @@ export function AIStudyAssistant() {
       setSessionId(session.id);
 
       // Get user's study context
-      const { data: context, error: contextError } = await supabase
-        .rpc('get_user_study_context', { p_user_id: user.id });
+      const { data: context, error: contextError } = await supabase.rpc('get_user_study_context', {
+        p_user_id: user.id,
+      });
 
       if (!contextError && context) {
         setStudyContext(context);
@@ -101,8 +101,8 @@ export function AIStudyAssistant() {
         const welcomeMessage: Message = {
           id: crypto.randomUUID(),
           content: getWelcomeMessage(context),
-          role: "assistant",
-          timestamp: new Date()
+          role: 'assistant',
+          timestamp: new Date(),
         };
 
         setMessages([welcomeMessage]);
@@ -110,12 +110,22 @@ export function AIStudyAssistant() {
     } catch (error) {
       logger.error('Error initializing AI study session:', error);
       toast({
-        title: "Session Error",
-        description: "Failed to initialize study assistant. Please try again.",
-        variant: "destructive"
+        title: 'Session Error',
+        description: 'Failed to initialize study assistant. Please try again.',
+        variant: 'destructive',
       });
     }
-  };
+  }, [user, toast]);
+
+  useEffect(() => {
+    if (isOpen && messages.length === 0 && user) {
+      initializeSession();
+    }
+  }, [isOpen, user, messages.length, initializeSession]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const getWelcomeMessage = (context: StudyContext): string => {
     const coursesCount = context.enrolled_courses?.length || 0;
@@ -131,12 +141,12 @@ export function AIStudyAssistant() {
       message += `⏰ You have ${upcomingCount} upcoming assignment${upcomingCount > 1 ? 's' : ''}.\n`;
     }
 
-    message += "\nHow can I help you today? I can:\n";
-    message += "• Create personalized study plans\n";
-    message += "• Help you understand concepts (without doing your work!)\n";
-    message += "• Prioritize your assignments\n";
-    message += "• Suggest study strategies\n";
-    message += "• Track your learning progress";
+    message += '\nHow can I help you today? I can:\n';
+    message += '• Create personalized study plans\n';
+    message += '• Help you understand concepts (without doing your work!)\n';
+    message += '• Prioritize your assignments\n';
+    message += '• Suggest study strategies\n';
+    message += '• Track your learning progress';
 
     return message;
   };
@@ -148,12 +158,12 @@ export function AIStudyAssistant() {
     const userMessage: Message = {
       id: crypto.randomUUID(),
       content: textToSend,
-      role: "user",
-      timestamp: new Date()
+      role: 'user',
+      timestamp: new Date(),
     };
 
     setMessages(prev => [...prev, userMessage]);
-    setInputMessage("");
+    setInputMessage('');
     setIsLoading(true);
 
     try {
@@ -162,20 +172,21 @@ export function AIStudyAssistant() {
         body: {
           messages: [...messages, userMessage].map(m => ({
             role: m.role,
-            content: m.content
+            content: m.content,
           })),
           sessionId,
-          userId: user.id
-        }
+          userId: user.id,
+        },
       });
 
       if (error) throw error;
 
       const aiMessage: Message = {
         id: crypto.randomUUID(),
-        content: data.response || "I apologize, but I couldn't generate a response. Please try again.",
-        role: "assistant",
-        timestamp: new Date()
+        content:
+          data.response || "I apologize, but I couldn't generate a response. Please try again.",
+        role: 'assistant',
+        timestamp: new Date(),
       };
 
       setMessages(prev => [...prev, aiMessage]);
@@ -184,17 +195,18 @@ export function AIStudyAssistant() {
 
       const errorMessage: Message = {
         id: crypto.randomUUID(),
-        content: "I'm having trouble right now. Please try again in a moment, or contact support if the issue persists.",
-        role: "assistant",
-        timestamp: new Date()
+        content:
+          "I'm having trouble right now. Please try again in a moment, or contact support if the issue persists.",
+        role: 'assistant',
+        timestamp: new Date(),
       };
 
       setMessages(prev => [...prev, errorMessage]);
 
       toast({
-        title: "Message Error",
-        description: "Failed to get AI response. Please try again.",
-        variant: "destructive"
+        title: 'Message Error',
+        description: 'Failed to get AI response. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -277,7 +289,7 @@ export function AIStudyAssistant() {
             <div className="p-3 border-b bg-muted/50">
               <p className="text-xs text-muted-foreground mb-2">Quick actions:</p>
               <div className="grid grid-cols-2 gap-2">
-                {quickActions.map((action) => (
+                {quickActions.map(action => (
                   <Button
                     key={action.label}
                     variant="outline"
@@ -297,7 +309,7 @@ export function AIStudyAssistant() {
           {/* Messages */}
           <ScrollArea className="flex-1 p-4">
             <div className="space-y-4">
-              {messages.map((message) => (
+              {messages.map(message => (
                 <div
                   key={message.id}
                   className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
@@ -312,14 +324,15 @@ export function AIStudyAssistant() {
 
                   <div
                     className={`max-w-[75%] rounded-lg p-3 ${
-                      message.role === 'user'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted'
+                      message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'
                     }`}
                   >
                     <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                     <span className="text-xs opacity-70 mt-1 block">
-                      {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {message.timestamp.toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
                     </span>
                   </div>
 
@@ -356,7 +369,7 @@ export function AIStudyAssistant() {
               <Input
                 ref={inputRef}
                 value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
+                onChange={e => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Ask me anything about your studies..."
                 disabled={isLoading}

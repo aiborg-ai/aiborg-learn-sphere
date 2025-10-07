@@ -25,17 +25,15 @@ WHERE irt_difficulty = 0.0 OR irt_difficulty IS NULL;
 -- 2. ADJUST BASED ON QUESTION TYPE
 -- =====================================================
 
--- Multiple choice questions are typically easier than open-ended
 UPDATE assessment_questions
-SET irt_difficulty = irt_difficulty - 0.2
-WHERE question_type = 'single_choice'
-  AND difficulty_level IN ('medium', 'hard');
-
--- Multiple answer questions are harder
-UPDATE assessment_questions
-SET irt_difficulty = irt_difficulty + 0.3
-WHERE question_type = 'multiple_choice'
-  AND difficulty_level IN ('easy', 'medium');
+SET irt_difficulty = CASE
+  WHEN difficulty_level = 'easy' THEN -0.75 + (RANDOM() * 0.5)
+  WHEN difficulty_level = 'medium' THEN -0.15 + (RANDOM() * 0.6)
+  WHEN difficulty_level = 'hard' THEN 0.75 + (RANDOM() * 1.0)
+  WHEN difficulty_level = 'very_hard' THEN 1.75 + (RANDOM() * 0.75)
+  ELSE 0.0
+END
+WHERE irt_difficulty = 0.0 OR irt_difficulty IS NULL;
 
 -- =====================================================
 -- 3. ENSURE VALUES ARE WITHIN VALID RANGE

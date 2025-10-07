@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Eye, EyeOff, ChevronDown, ChevronRight, Check, X,
-  AlertCircle, Info, ArrowRight, RefreshCw, GitBranch
+  Eye,
+  EyeOff,
+  ChevronDown,
+  ChevronRight,
+  Check,
+  X,
+  AlertCircle,
+  Info,
+  ArrowRight,
+  RefreshCw,
+  GitBranch,
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,12 +21,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 interface DiffItem {
@@ -77,7 +81,7 @@ const FIELD_LABELS: { [key: string]: string } = {
   // Common metadata
   created_at: 'Created At',
   updated_at: 'Updated At',
-  id: 'ID'
+  id: 'ID',
 };
 
 const FIELD_CATEGORIES: { [key: string]: 'required' | 'optional' | 'metadata' } = {
@@ -119,7 +123,7 @@ const FIELD_CATEGORIES: { [key: string]: 'required' | 'optional' | 'metadata' } 
   // Metadata
   id: 'metadata',
   created_at: 'metadata',
-  updated_at: 'metadata'
+  updated_at: 'metadata',
 };
 
 export function DiffViewer({
@@ -128,13 +132,13 @@ export function DiffViewer({
   type,
   onApprove,
   onReject,
-  mode = 'preview'
+  mode = 'preview',
 }: DiffViewerProps) {
   const [diffs, setDiffs] = useState<DiffItem[]>([]);
   const [expandedCategories, setExpandedCategories] = useState({
     required: true,
     optional: true,
-    metadata: false
+    metadata: false,
   });
   const [showUnchanged, setShowUnchanged] = useState(false);
   const [viewMode, setViewMode] = useState<'side-by-side' | 'unified'>('side-by-side');
@@ -148,7 +152,7 @@ export function DiffViewer({
     const diffItems: DiffItem[] = [];
     const allKeys = new Set([
       ...Object.keys(originalData || {}),
-      ...Object.keys(updatedData || {})
+      ...Object.keys(updatedData || {}),
     ]);
 
     allKeys.forEach(key => {
@@ -174,7 +178,7 @@ export function DiffViewer({
           oldValue: oldVal,
           newValue: newVal,
           type: diffType,
-          category
+          category,
         });
 
         // Auto-select changes in review mode
@@ -190,7 +194,7 @@ export function DiffViewer({
   const toggleCategory = (category: string) => {
     setExpandedCategories(prev => ({
       ...prev,
-      [category]: !prev[category]
+      [category]: !prev[category],
     }));
   };
 
@@ -259,7 +263,7 @@ export function DiffViewer({
       added: categoryDiffs.filter(d => d.type === 'added').length,
       removed: categoryDiffs.filter(d => d.type === 'removed').length,
       modified: categoryDiffs.filter(d => d.type === 'modified').length,
-      unchanged: categoryDiffs.filter(d => d.type === 'unchanged').length
+      unchanged: categoryDiffs.filter(d => d.type === 'unchanged').length,
     };
   };
 
@@ -275,19 +279,23 @@ export function DiffViewer({
           />
         </div>
       )}
-      <div className={cn(
-        "col-span-2 font-medium flex items-center gap-2",
-        mode === 'review' ? '' : 'col-span-3'
-      )}>
+      <div
+        className={cn(
+          'col-span-2 font-medium flex items-center gap-2',
+          mode === 'review' ? '' : 'col-span-3'
+        )}
+      >
         {getDiffIcon(diff.type)}
         {diff.label}
       </div>
       <div className="col-span-4 space-y-1">
         <div className="text-sm text-muted-foreground">Original</div>
-        <div className={cn(
-          "p-2 rounded-md text-sm font-mono",
-          diff.type === 'removed' ? 'bg-red-50 text-red-900' : 'bg-muted'
-        )}>
+        <div
+          className={cn(
+            'p-2 rounded-md text-sm font-mono',
+            diff.type === 'removed' ? 'bg-red-50 text-red-900' : 'bg-muted'
+          )}
+        >
           {formatValue(diff.oldValue)}
         </div>
       </div>
@@ -296,11 +304,16 @@ export function DiffViewer({
       </div>
       <div className="col-span-4 space-y-1">
         <div className="text-sm text-muted-foreground">Updated</div>
-        <div className={cn(
-          "p-2 rounded-md text-sm font-mono",
-          diff.type === 'added' ? 'bg-green-50 text-green-900' :
-          diff.type === 'modified' ? 'bg-yellow-50 text-yellow-900' : 'bg-muted'
-        )}>
+        <div
+          className={cn(
+            'p-2 rounded-md text-sm font-mono',
+            diff.type === 'added'
+              ? 'bg-green-50 text-green-900'
+              : diff.type === 'modified'
+                ? 'bg-yellow-50 text-yellow-900'
+                : 'bg-muted'
+          )}
+        >
           {formatValue(diff.newValue)}
         </div>
       </div>
@@ -371,10 +384,7 @@ export function DiffViewer({
 
     return (
       <Card>
-        <CardHeader
-          className="cursor-pointer"
-          onClick={() => toggleCategory(category)}
-        >
+        <CardHeader className="cursor-pointer" onClick={() => toggleCategory(category)}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {expandedCategories[category] ? (
@@ -406,9 +416,7 @@ export function DiffViewer({
             <ScrollArea className="h-[400px]">
               <div className="space-y-2">
                 {categoryDiffs.map(diff =>
-                  viewMode === 'side-by-side'
-                    ? renderSideBySideView(diff)
-                    : renderUnifiedView(diff)
+                  viewMode === 'side-by-side' ? renderSideBySideView(diff) : renderUnifiedView(diff)
                 )}
               </div>
             </ScrollArea>
@@ -442,15 +450,15 @@ export function DiffViewer({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setSelectedChanges(new Set(diffs.filter(d => d.type !== 'unchanged').map(d => d.field)))}
+              onClick={() =>
+                setSelectedChanges(
+                  new Set(diffs.filter(d => d.type !== 'unchanged').map(d => d.field))
+                )
+              }
             >
               Select All
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setSelectedChanges(new Set())}
-            >
+            <Button variant="outline" size="sm" onClick={() => setSelectedChanges(new Set())}>
               Clear Selection
             </Button>
           </div>
@@ -462,7 +470,10 @@ export function DiffViewer({
         <CardContent className="pt-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as any)}>
+              <Tabs
+                value={viewMode}
+                onValueChange={v => setViewMode(v as 'side-by-side' | 'unified')}
+              >
                 <TabsList>
                   <TabsTrigger value="side-by-side">Side by Side</TabsTrigger>
                   <TabsTrigger value="unified">Unified</TabsTrigger>
@@ -523,11 +534,7 @@ export function DiffViewer({
           'Optional Fields',
           'Additional fields that enhance the template'
         )}
-        {renderCategorySection(
-          'metadata',
-          'Metadata',
-          'System-generated fields and timestamps'
-        )}
+        {renderCategorySection('metadata', 'Metadata', 'System-generated fields and timestamps')}
       </div>
 
       {/* Action Buttons */}
@@ -541,7 +548,8 @@ export function DiffViewer({
                 <AlertDescription>
                   Please review the changes above and select which ones to apply.
                   {selectedCount === 0 && ' No changes are currently selected.'}
-                  {selectedCount > 0 && ` ${selectedCount} change${selectedCount !== 1 ? 's' : ''} will be applied.`}
+                  {selectedCount > 0 &&
+                    ` ${selectedCount} change${selectedCount !== 1 ? 's' : ''} will be applied.`}
                 </AlertDescription>
               </Alert>
               <div className="flex gap-2">
@@ -552,12 +560,10 @@ export function DiffViewer({
                   </Button>
                 )}
                 {onApprove && (
-                  <Button
-                    onClick={handleApprove}
-                    disabled={selectedCount === 0}
-                  >
+                  <Button onClick={handleApprove} disabled={selectedCount === 0}>
                     <Check className="h-4 w-4 mr-2" />
-                    Apply {selectedCount > 0 ? `${selectedCount} ` : ''}Change{selectedCount !== 1 ? 's' : ''}
+                    Apply {selectedCount > 0 ? `${selectedCount} ` : ''}Change
+                    {selectedCount !== 1 ? 's' : ''}
                   </Button>
                 )}
               </div>

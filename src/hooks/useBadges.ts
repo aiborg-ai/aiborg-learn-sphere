@@ -27,7 +27,7 @@ export interface UserAchievement {
   achievement_id: string;
   earned_at: string;
   awarded_by?: string;
-  evidence?: any;
+  evidence?: Record<string, unknown>;
   is_featured: boolean;
   achievement?: Achievement;
 }
@@ -67,10 +67,12 @@ export function useBadges() {
 
       const { data, error } = await supabase
         .from('user_achievements')
-        .select(`
+        .select(
+          `
           *,
           achievement:achievements(*)
-        `)
+        `
+        )
         .eq('user_id', user.id)
         .order('earned_at', { ascending: false });
 
@@ -87,7 +89,7 @@ export function useBadges() {
       evidence,
     }: {
       achievementId: string;
-      evidence?: any;
+      evidence?: Record<string, unknown>;
     }) => {
       if (!user) throw new Error('User not authenticated');
 
@@ -98,16 +100,18 @@ export function useBadges() {
           achievement_id: achievementId,
           evidence,
         })
-        .select(`
+        .select(
+          `
           *,
           achievement:achievements(*)
-        `)
+        `
+        )
         .single();
 
       if (error) throw error;
       return data as UserAchievement;
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ['user-achievements', user?.id] });
 
       const achievement = data.achievement as Achievement;
@@ -117,9 +121,13 @@ export function useBadges() {
 
       logger.log('Badge awarded:', achievement);
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       // Ignore duplicate errors silently
-      if (error?.code !== '23505') {
+      const isPostgresError = (err: unknown): err is { code: string } => {
+        return typeof err === 'object' && err !== null && 'code' in err;
+      };
+
+      if (!isPostgresError(error) || error.code !== '23505') {
         logger.error('Error awarding badge:', error);
         toast.error('Failed to award badge');
       }
@@ -182,8 +190,8 @@ export function useBadges() {
               name: badge.name,
               description: badge.description,
               icon_emoji: badge.icon,
-              category: badge.category as any,
-              rarity: badge.rarity as any,
+              category: badge.category as Achievement['category'],
+              rarity: badge.rarity as Achievement['rarity'],
               criteria: badge.criteria,
               points: badge.points,
               auto_allocate: true,

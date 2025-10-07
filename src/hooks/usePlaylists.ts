@@ -42,10 +42,12 @@ export const usePlaylists = (options: UsePlaylistsOptions = {}) => {
 
       let query = supabase
         .from('playlists')
-        .select(`
+        .select(
+          `
           *,
           user:profiles!user_id(user_id, display_name, avatar_url)
-        `)
+        `
+        )
         .order('created_at', { ascending: false });
 
       // Apply filters
@@ -96,7 +98,7 @@ export const usePlaylists = (options: UsePlaylistsOptions = {}) => {
       const average_items_per_playlist =
         total_playlists > 0 ? Math.round(total_items / total_playlists) : 0;
       const total_duration = data.reduce((sum, p) => sum + (p.total_duration || 0), 0);
-      const public_playlists = data.filter((p) => p.is_public).length;
+      const public_playlists = data.filter(p => p.is_public).length;
 
       setStats({
         total_playlists,
@@ -234,7 +236,15 @@ export const usePlaylists = (options: UsePlaylistsOptions = {}) => {
 
         // Copy all items
         if (original.items && original.items.length > 0) {
-          const items = original.items.map((item: any) => ({
+          interface OriginalPlaylistItem {
+            material_id: string;
+            position: number;
+            note?: string;
+            start_time?: number;
+            end_time?: number;
+          }
+
+          const items = original.items.map((item: OriginalPlaylistItem) => ({
             playlist_id: newPlaylist.id,
             material_id: item.material_id,
             position: item.position,
@@ -304,7 +314,8 @@ export const usePlaylistItems = (playlistId: string | null) => {
 
       const { data, error: fetchError } = await supabase
         .from('playlist_items')
-        .select(`
+        .select(
+          `
           *,
           material:course_materials(
             id,
@@ -315,7 +326,8 @@ export const usePlaylistItems = (playlistId: string | null) => {
             duration,
             file_size
           )
-        `)
+        `
+        )
         .eq('playlist_id', playlistId)
         .order('position', { ascending: true });
 
@@ -424,10 +436,7 @@ export const usePlaylistItems = (playlistId: string | null) => {
       }
 
       try {
-        const { error: deleteError } = await supabase
-          .from('playlist_items')
-          .delete()
-          .eq('id', id);
+        const { error: deleteError } = await supabase.from('playlist_items').delete().eq('id', id);
 
         if (deleteError) throw deleteError;
 
@@ -449,11 +458,8 @@ export const usePlaylistItems = (playlistId: string | null) => {
       }
 
       try {
-        const updates = reorderedItems.map((item) =>
-          supabase
-            .from('playlist_items')
-            .update({ position: item.position })
-            .eq('id', item.id)
+        const updates = reorderedItems.map(item =>
+          supabase.from('playlist_items').update({ position: item.position }).eq('id', item.id)
         );
 
         await Promise.all(updates);

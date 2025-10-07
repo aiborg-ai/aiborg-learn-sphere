@@ -19,7 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
-import { TemplateType } from './types';
+import type { TemplateType } from './types';
 import { COURSE_FIELDS, EVENT_FIELDS } from './constants';
 import { useTemplateForm } from './hooks/useTemplateForm';
 import { useTemplateValidation } from './hooks/useTemplateValidation';
@@ -34,7 +34,7 @@ export function TemplateBuilder() {
   const [showPreview, setShowPreview] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
     required: true,
-    optional: false
+    optional: false,
   });
 
   const {
@@ -45,7 +45,7 @@ export function TemplateBuilder() {
     setErrors,
     handleFieldChange,
     handleArrayAdd,
-    handleArrayRemove
+    handleArrayRemove,
   } = useTemplateForm();
 
   const { validateRequiredFields, validateTemplate } = useTemplateValidation();
@@ -58,7 +58,7 @@ export function TemplateBuilder() {
   const handleArrayInputChange = (fieldName: string, value: string) => {
     setArrayInputs(prev => ({
       ...prev,
-      [fieldName]: value
+      [fieldName]: value,
     }));
   };
 
@@ -70,7 +70,7 @@ export function TemplateBuilder() {
       toast({
         title: 'Validation Error',
         description: 'Please fill in all required fields',
-        variant: 'destructive'
+        variant: 'destructive',
       });
       return;
     }
@@ -89,13 +89,13 @@ export function TemplateBuilder() {
   const toggleSection = (section: 'required' | 'optional') => {
     setExpandedSections(prev => ({
       ...prev,
-      [section]: !prev[section]
+      [section]: !prev[section],
     }));
   };
 
   const getMissingRequiredCount = () => {
-    return requiredFields.filter(f =>
-      !formData[f.name] || (f.type === 'array' && formData[f.name]?.length === 0)
+    return requiredFields.filter(
+      f => !formData[f.name] || (f.type === 'array' && formData[f.name]?.length === 0)
     ).length;
   };
 
@@ -133,12 +133,10 @@ export function TemplateBuilder() {
       <Card>
         <CardHeader>
           <CardTitle>Template Type</CardTitle>
-          <CardDescription>
-            Choose the type of template you want to create
-          </CardDescription>
+          <CardDescription>Choose the type of template you want to create</CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs value={templateType} onValueChange={(v) => setTemplateType(v as TemplateType)}>
+          <Tabs value={templateType} onValueChange={v => setTemplateType(v as TemplateType)}>
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="course">Course Template</TabsTrigger>
               <TabsTrigger value="event">Event Template</TabsTrigger>

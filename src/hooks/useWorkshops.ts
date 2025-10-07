@@ -186,15 +186,16 @@ export function useWorkshops(courseId?: number) {
       if (error) throw error;
       return data as WorkshopParticipant;
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ['workshop-detail', data.workshop_id] });
       queryClient.invalidateQueries({ queryKey: ['my-workshops', user?.id] });
       toast.success('Successfully joined workshop!');
       logger.log('Joined workshop:', data);
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       logger.error('Error joining workshop:', error);
-      toast.error(error.message || 'Failed to join workshop');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to join workshop';
+      toast.error(errorMessage);
     },
   });
 
@@ -223,7 +224,8 @@ export function useWorkshops(courseId?: number) {
       // Calculate points
       const basePoints = workshop.points_reward;
       const leaderBonus = isLeader ? workshop.leader_bonus_points : 0;
-      const totalPoints = basePoints + leaderBonus + GAMIFICATION_CONFIG.POINTS.WORKSHOP_COMPLETION_BONUS;
+      const totalPoints =
+        basePoints + leaderBonus + GAMIFICATION_CONFIG.POINTS.WORKSHOP_COMPLETION_BONUS;
 
       // Update participant
       const { data, error } = await supabase
@@ -249,14 +251,14 @@ export function useWorkshops(courseId?: number) {
 
       return data as WorkshopParticipant;
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ['workshop-detail', data.workshop_id] });
       toast.success('🎉 Workshop completed!', {
         description: `You earned ${data.points_earned} AIBORG points!`,
       });
       logger.log('Workshop completed:', data);
     },
-    onError: (error) => {
+    onError: error => {
       logger.error('Error completing workshop:', error);
       toast.error('Failed to complete workshop');
     },
@@ -296,12 +298,14 @@ export function useWorkshops(courseId?: number) {
       if (error) throw error;
       return data as WorkshopSubmission;
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['workshop-submissions', data.workshop_id, data.group_id] });
+    onSuccess: data => {
+      queryClient.invalidateQueries({
+        queryKey: ['workshop-submissions', data.workshop_id, data.group_id],
+      });
       toast.success(`${data.phase} phase submitted successfully`);
       logger.log('Phase submitted:', data);
     },
-    onError: (error) => {
+    onError: error => {
       logger.error('Error submitting phase:', error);
       toast.error('Failed to submit phase work');
     },
@@ -340,7 +344,7 @@ export function useWorkshops(courseId?: number) {
       if (error) throw error;
       return data as WorkshopMessage;
     },
-    onError: (error) => {
+    onError: error => {
       logger.error('Error sending message:', error);
       toast.error('Failed to send message');
     },
@@ -353,10 +357,7 @@ export function useWorkshops(courseId?: number) {
       queryFn: async () => {
         if (!workshopId) return [];
 
-        let query = supabase
-          .from('workshop_messages')
-          .select('*')
-          .eq('workshop_id', workshopId);
+        let query = supabase.from('workshop_messages').select('*').eq('workshop_id', workshopId);
 
         if (groupId) {
           query = query.eq('group_id', groupId);

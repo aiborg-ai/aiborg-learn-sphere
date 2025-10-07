@@ -22,10 +22,18 @@ import {
   Lock,
   Loader2,
   Award,
-  Route as RouteIcon
+  Route as RouteIcon,
 } from 'lucide-react';
 import { logger } from '@/utils/logger';
 import { useToast } from '@/hooks/use-toast';
+
+interface CourseInPath {
+  id: string;
+  title: string;
+  order_index: number;
+  is_required: boolean;
+  [key: string]: unknown;
+}
 
 interface LearningPath {
   id: string;
@@ -39,7 +47,7 @@ interface LearningPath {
   outcomes?: string[];
   is_published: boolean;
   created_at: string;
-  courses: any[];
+  courses: CourseInPath[];
   enrollment?: {
     started_at: string;
     completed_at?: string;
@@ -52,7 +60,7 @@ const difficultyConfig = {
   beginner: { color: 'bg-green-500', label: 'Beginner', icon: Star },
   intermediate: { color: 'bg-blue-500', label: 'Intermediate', icon: TrendingUp },
   advanced: { color: 'bg-purple-500', label: 'Advanced', icon: Target },
-  expert: { color: 'bg-orange-500', label: 'Expert', icon: Award }
+  expert: { color: 'bg-orange-500', label: 'Expert', icon: Award },
 };
 
 export default function LearningPathsPage() {
@@ -86,14 +94,16 @@ export default function LearningPathsPage() {
       // Fetch all published learning paths with their courses
       const { data: pathsData, error: pathsError } = await supabase
         .from('learning_paths')
-        .select(`
+        .select(
+          `
           *,
           learning_path_courses!inner(
             order_index,
             is_required,
             courses(*)
           )
-        `)
+        `
+        )
         .eq('is_published', true)
         .order('created_at', { ascending: false });
 
@@ -106,22 +116,33 @@ export default function LearningPathsPage() {
         .eq('user_id', user.id);
 
       // Enrich paths with enrollment data
-      const enrichedPaths = pathsData?.map(path => {
-        const enrollment = enrollmentsData?.find(e => e.learning_path_id === path.id);
-        const courses = path.learning_path_courses
-          ?.sort((a: any, b: any) => a.order_index - b.order_index)
-          .map((lpc: any) => ({
-            ...lpc.courses,
-            order_index: lpc.order_index,
-            is_required: lpc.is_required
-          })) || [];
+      const enrichedPaths =
+        pathsData?.map(path => {
+          const enrollment = enrollmentsData?.find(e => e.learning_path_id === path.id);
+          const courses =
+            path.learning_path_courses
+              ?.sort(
+                (a: { order_index: number }, b: { order_index: number }) =>
+                  a.order_index - b.order_index
+              )
+              .map(
+                (lpc: {
+                  courses: Record<string, unknown>;
+                  order_index: number;
+                  is_required: boolean;
+                }) => ({
+                  ...lpc.courses,
+                  order_index: lpc.order_index,
+                  is_required: lpc.is_required,
+                })
+              ) || [];
 
-        return {
-          ...path,
-          courses,
-          enrollment: enrollment || undefined
-        };
-      }) || [];
+          return {
+            ...path,
+            courses,
+            enrollment: enrollment || undefined,
+          };
+        }) || [];
 
       setLearningPaths(enrichedPaths);
     } catch (error) {
@@ -129,7 +150,7 @@ export default function LearningPathsPage() {
       toast({
         title: 'Error',
         description: 'Failed to load learning paths',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -152,22 +173,20 @@ export default function LearningPathsPage() {
     if (!user) return;
 
     try {
-      const { error } = await supabase
-        .from('user_learning_paths')
-        .insert({
-          user_id: user.id,
-          learning_path_id: pathId,
-          started_at: new Date().toISOString(),
-          progress_percentage: 0,
-          current_course_index: 0
-        });
+      const { error } = await supabase.from('user_learning_paths').insert({
+        user_id: user.id,
+        learning_path_id: pathId,
+        started_at: new Date().toISOString(),
+        progress_percentage: 0,
+        current_course_index: 0,
+      });
 
       if (error) {
         if (error.code === '23505') {
           toast({
             title: 'Already Enrolled',
             description: 'You are already enrolled in this learning path',
-            variant: 'destructive'
+            variant: 'destructive',
           });
           return;
         }
@@ -176,7 +195,7 @@ export default function LearningPathsPage() {
 
       toast({
         title: 'Enrolled!',
-        description: 'You have successfully enrolled in this learning path'
+        description: 'You have successfully enrolled in this learning path',
       });
 
       fetchLearningPaths();
@@ -185,7 +204,7 @@ export default function LearningPathsPage() {
       toast({
         title: 'Error',
         description: 'Failed to enroll in learning path',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -202,16 +221,12 @@ export default function LearningPathsPage() {
           <div className="flex items-start justify-between mb-2">
             <div className="flex-1">
               <CardTitle className="text-xl mb-2">{path.title}</CardTitle>
-              <CardDescription className="line-clamp-2">
-                {path.description}
-              </CardDescription>
+              <CardDescription className="line-clamp-2">{path.description}</CardDescription>
             </div>
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
-            <Badge className={difficultyInfo.color}>
-              {difficultyInfo.label}
-            </Badge>
+            <Badge className={difficultyInfo.color}>{difficultyInfo.label}</Badge>
             {path.estimated_hours && (
               <Badge variant="outline">
                 <Clock className="h-3 w-3 mr-1" />
@@ -241,14 +256,16 @@ export default function LearningPathsPage() {
             <p className="text-sm font-medium mb-2">Courses:</p>
             <ScrollArea className="h-32">
               <div className="space-y-2">
-                {path.courses.slice(0, 5).map((course: any, index: number) => (
+                {path.courses.slice(0, 5).map((course, index: number) => (
                   <div key={course.id} className="flex items-center gap-2 text-sm">
                     <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium">
                       {index + 1}
                     </div>
                     <span className="flex-1 truncate">{course.title}</span>
                     {course.is_required && (
-                      <Badge variant="outline" className="text-xs">Required</Badge>
+                      <Badge variant="outline" className="text-xs">
+                        Required
+                      </Badge>
                     )}
                   </div>
                 ))}
@@ -300,10 +317,7 @@ export default function LearningPathsPage() {
                 >
                   View Details
                 </Button>
-                <Button
-                  className="flex-1"
-                  onClick={() => handleEnroll(path.id)}
-                >
+                <Button className="flex-1" onClick={() => handleEnroll(path.id)}>
                   Enroll Now
                 </Button>
               </>
@@ -325,7 +339,7 @@ export default function LearningPathsPage() {
   const stats = {
     total: learningPaths.length,
     enrolled: learningPaths.filter(p => p.enrollment && !p.enrollment.completed_at).length,
-    completed: learningPaths.filter(p => p.enrollment && p.enrollment.completed_at).length
+    completed: learningPaths.filter(p => p.enrollment && p.enrollment.completed_at).length,
   };
 
   return (
@@ -393,7 +407,10 @@ export default function LearningPathsPage() {
         </div>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
+        <Tabs
+          value={activeTab}
+          onValueChange={v => setActiveTab(v as 'all' | 'enrolled' | 'completed')}
+        >
           <TabsList className="bg-white/10 border-white/20 mb-6">
             <TabsTrigger value="all" className="text-white data-[state=active]:bg-white/20">
               All Paths ({stats.total})
@@ -414,10 +431,10 @@ export default function LearningPathsPage() {
                   <p className="text-lg font-medium mb-2">No learning paths found</p>
                   <p className="text-muted-foreground">
                     {activeTab === 'enrolled'
-                      ? 'You haven\'t enrolled in any learning paths yet'
+                      ? "You haven't enrolled in any learning paths yet"
                       : activeTab === 'completed'
-                      ? 'You haven\'t completed any learning paths yet'
-                      : 'No learning paths are currently available'}
+                        ? "You haven't completed any learning paths yet"
+                        : 'No learning paths are currently available'}
                   </p>
                 </CardContent>
               </Card>

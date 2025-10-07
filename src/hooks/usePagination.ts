@@ -15,7 +15,7 @@ export interface UsePaginationOptions<T> {
   /** Fields to select (default: '*') */
   selectFields?: string;
   /** Initial filters to apply */
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
   /** Initial page size (default: 10) */
   initialPageSize?: number;
   /** Initial order by field (default: 'created_at') */
@@ -23,7 +23,7 @@ export interface UsePaginationOptions<T> {
   /** Initial order direction (default: 'desc') */
   initialOrderDirection?: 'asc' | 'desc';
   /** Transform function to apply to each item */
-  transform?: (item: any) => T;
+  transform?: (item: unknown) => T;
   /** Enable automatic data fetching on mount */
   autoFetch?: boolean;
 }
@@ -60,7 +60,7 @@ export interface UsePaginationReturn<T> {
   /** Change page size */
   setPageSize: (size: number) => void;
   /** Update filters */
-  setFilters: (filters: Record<string, any>) => void;
+  setFilters: (filters: Record<string, unknown>) => void;
   /** Update ordering */
   setOrdering: (field: string, direction: 'asc' | 'desc') => void;
   /** Refresh current page data */
@@ -87,7 +87,7 @@ export interface UsePaginationReturn<T> {
  *   initialPageSize: 20
  * });
  */
-export function usePagination<T = any>(
+export function usePagination<T = unknown>(
   options: UsePaginationOptions<T>
 ): UsePaginationReturn<T> {
   const {
@@ -98,7 +98,7 @@ export function usePagination<T = any>(
     initialOrderBy = 'created_at',
     initialOrderDirection = 'desc',
     transform,
-    autoFetch = true
+    autoFetch = true,
   } = options;
 
   const [data, setData] = useState<T[]>([]);
@@ -129,10 +129,10 @@ export function usePagination<T = any>(
         page,
         pageSize,
         orderBy,
-        orderDirection
+        orderDirection,
       };
 
-      const response: PaginatedResponse<any> = await queryBuilder.paginate(
+      const response: PaginatedResponse<unknown> = await queryBuilder.paginate(
         table,
         config,
         selectFields,
@@ -140,9 +140,7 @@ export function usePagination<T = any>(
       );
 
       // Apply transform if provided
-      const transformedData = transform
-        ? response.data.map(transform)
-        : response.data;
+      const transformedData = transform ? response.data.map(transform) : response.data;
 
       setData(transformedData);
       setTotalCount(response.totalCount);
@@ -156,12 +154,23 @@ export function usePagination<T = any>(
       toast({
         title: 'Error',
         description: errorMessage,
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
     }
-  }, [page, pageSize, orderBy, orderDirection, filters, table, selectFields, transform]);
+  }, [
+    page,
+    pageSize,
+    orderBy,
+    orderDirection,
+    filters,
+    table,
+    selectFields,
+    transform,
+    queryBuilder,
+    toast,
+  ]);
 
   /**
    * Navigation functions
@@ -178,11 +187,14 @@ export function usePagination<T = any>(
     }
   }, [hasPreviousPage]);
 
-  const goToPage = useCallback((newPage: number) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setPage(newPage);
-    }
-  }, [totalPages]);
+  const goToPage = useCallback(
+    (newPage: number) => {
+      if (newPage >= 1 && newPage <= totalPages) {
+        setPage(newPage);
+      }
+    },
+    [totalPages]
+  );
 
   /**
    * Update page size and reset to first page
@@ -195,7 +207,7 @@ export function usePagination<T = any>(
   /**
    * Update filters and reset to first page
    */
-  const setFilters = useCallback((newFilters: Record<string, any>) => {
+  const setFilters = useCallback((newFilters: Record<string, unknown>) => {
     setFiltersState(newFilters);
     setPage(1);
   }, []);
@@ -238,7 +250,7 @@ export function usePagination<T = any>(
     setPageSize,
     setFilters,
     setOrdering,
-    refresh
+    refresh,
   };
 }
 
@@ -248,9 +260,7 @@ export function usePagination<T = any>(
  * @param {UsePaginationOptions<T>} options - Pagination configuration
  * @returns {object} Infinite scroll controls and data
  */
-export function useInfiniteScroll<T = any>(
-  options: UsePaginationOptions<T>
-) {
+export function useInfiniteScroll<T = unknown>(options: UsePaginationOptions<T>) {
   const [allData, setAllData] = useState<T[]>([]);
   const pagination = usePagination<T>(options);
 
@@ -281,6 +291,6 @@ export function useInfiniteScroll<T = any>(
       setAllData([]);
       pagination.goToPage(1);
       return pagination.refresh();
-    }
+    },
   };
 }

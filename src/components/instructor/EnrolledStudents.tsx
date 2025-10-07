@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,22 +12,39 @@ interface EnrolledStudentsProps {
   courseName: string;
 }
 
+interface StudentProfile {
+  display_name?: string;
+  email?: string;
+}
+
+interface StudentProgress {
+  progress_percentage: number;
+  time_spent_minutes: number;
+  last_accessed: string | null;
+}
+
+interface EnrolledStudent {
+  id: string;
+  enrolled_at: string;
+  payment_status: string;
+  user_id: string;
+  profiles?: StudentProfile;
+  progress?: StudentProgress;
+}
+
 export function EnrolledStudents({ courseId, courseName }: EnrolledStudentsProps) {
-  const [students, setStudents] = useState<any[]>([]);
+  const [students, setStudents] = useState<EnrolledStudent[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchEnrolledStudents();
-  }, [courseId]);
-
-  const fetchEnrolledStudents = async () => {
+  const fetchEnrolledStudents = useCallback(async () => {
     try {
       setLoading(true);
 
       // Fetch enrollments with user details and progress
       const { data: enrollments, error: enrollError } = await supabase
         .from('enrollments')
-        .select(`
+        .select(
+          `
           id,
           enrolled_at,
           payment_status,
@@ -36,7 +53,8 @@ export function EnrolledStudents({ courseId, courseName }: EnrolledStudentsProps
             display_name,
             email
           )
-        `)
+        `
+        )
         .eq('course_id', courseId)
         .eq('payment_status', 'completed')
         .order('enrolled_at', { ascending: false });
@@ -45,7 +63,7 @@ export function EnrolledStudents({ courseId, courseName }: EnrolledStudentsProps
 
       // Fetch progress for each student
       const enrichedStudents = await Promise.all(
-        (enrollments || []).map(async (enrollment) => {
+        (enrollments || []).map(async enrollment => {
           const { data: progress } = await supabase
             .from('user_progress')
             .select('progress_percentage, time_spent_minutes, last_accessed')
@@ -55,23 +73,35 @@ export function EnrolledStudents({ courseId, courseName }: EnrolledStudentsProps
 
           return {
             ...enrollment,
-            progress: progress || { progress_percentage: 0, time_spent_minutes: 0, last_accessed: null }
+            progress: progress || {
+              progress_percentage: 0,
+              time_spent_minutes: 0,
+              last_accessed: null,
+            },
           };
         })
       );
 
       setStudents(enrichedStudents);
-
     } catch (error) {
       logger.error('Error fetching students:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [courseId]);
+
+  useEffect(() => {
+    fetchEnrolledStudents();
+  }, [fetchEnrolledStudents]);
 
   const getInitials = (name: string) => {
     if (!name) return '?';
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
   };
 
   return (
@@ -81,9 +111,7 @@ export function EnrolledStudents({ courseId, courseName }: EnrolledStudentsProps
           <Users className="h-5 w-5" />
           Enrolled Students ({students.length})
         </CardTitle>
-        <CardDescription>
-          Students enrolled in {courseName}
-        </CardDescription>
+        <CardDescription>Students enrolled in {courseName}</CardDescription>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[600px] pr-4">
@@ -93,14 +121,13 @@ export function EnrolledStudents({ courseId, courseName }: EnrolledStudentsProps
             </div>
           ) : students.length > 0 ? (
             <div className="space-y-4">
-              {students.map((student) => (
-                <div
-                  key={student.id}
-                  className="flex items-center gap-4 p-4 border rounded-lg"
-                >
+              {students.map(student => (
+                <div key={student.id} className="flex items-center gap-4 p-4 border rounded-lg">
                   <Avatar>
                     <AvatarFallback>
-                      {getInitials(student.profiles?.display_name || student.profiles?.email || '?')}
+                      {getInitials(
+                        student.profiles?.display_name || student.profiles?.email || '?'
+                      )}
                     </AvatarFallback>
                   </Avatar>
 
@@ -121,7 +148,8 @@ export function EnrolledStudents({ courseId, courseName }: EnrolledStudentsProps
                       </span>
                       {student.progress?.last_accessed && (
                         <span>
-                          Last active: {new Date(student.progress.last_accessed).toLocaleDateString()}
+                          Last active:{' '}
+                          {new Date(student.progress.last_accessed).toLocaleDateString()}
                         </span>
                       )}
                     </div>
@@ -134,9 +162,16 @@ export function EnrolledStudents({ courseId, courseName }: EnrolledStudentsProps
                         {student.progress?.progress_percentage || 0}%
                       </span>
                     </div>
-                    <Badge variant={student.progress?.progress_percentage >= 50 ? 'default' : 'secondary'}>
-                      {student.progress?.progress_percentage >= 100 ? 'Completed' :
-                       student.progress?.progress_percentage >= 50 ? 'Active' : 'Started'}
+                    <Badge
+                      variant={
+                        student.progress?.progress_percentage >= 50 ? 'default' : 'secondary'
+                      }
+                    >
+                      {student.progress?.progress_percentage >= 100
+                        ? 'Completed'
+                        : student.progress?.progress_percentage >= 50
+                          ? 'Active'
+                          : 'Started'}
                     </Badge>
                   </div>
                 </div>
@@ -145,9 +180,7 @@ export function EnrolledStudents({ courseId, courseName }: EnrolledStudentsProps
           ) : (
             <div className="text-center py-12">
               <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-muted-foreground">
-                No students enrolled yet
-              </p>
+              <p className="text-muted-foreground">No students enrolled yet</p>
             </div>
           )}
         </ScrollArea>

@@ -15,9 +15,9 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from 'recharts';
-import { DollarSign, TrendingUp, CreditCard, Download, Loader2 } from 'lucide-react';
+import { DollarSign, TrendingUp, CreditCard, Loader2 } from 'lucide-react';
 
 interface RevenueAnalyticsProps {
   dateRange: { startDate: Date; endDate: Date };
@@ -41,7 +41,10 @@ export function RevenueAnalytics({ dateRange }: RevenueAnalyticsProps) {
 
     const csvContent = [
       ['Revenue Analytics Report'],
-      ['Date Range', `${dateRange.startDate.toLocaleDateString()} - ${dateRange.endDate.toLocaleDateString()}`],
+      [
+        'Date Range',
+        `${dateRange.startDate.toLocaleDateString()} - ${dateRange.endDate.toLocaleDateString()}`,
+      ],
       [],
       ['Metric', 'Value'],
       ['Total Revenue', formatCurrency(data.totalRevenue)],
@@ -53,7 +56,9 @@ export function RevenueAnalytics({ dateRange }: RevenueAnalyticsProps) {
       ['Daily Revenue'],
       ['Date', 'Amount'],
       ...data.revenueByDay.map(item => [item.date, item.amount.toString()]),
-    ].map(row => row.join(',')).join('\n');
+    ]
+      .map(row => row.join(','))
+      .join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -80,9 +85,10 @@ export function RevenueAnalytics({ dateRange }: RevenueAnalyticsProps) {
     );
   }
 
-  const successRate = data.totalTransactions > 0
-    ? ((data.successfulTransactions / data.totalTransactions) * 100).toFixed(1)
-    : '0';
+  const successRate =
+    data.totalTransactions > 0
+      ? ((data.successfulTransactions / data.totalTransactions) * 100).toFixed(1)
+      : '0';
 
   return (
     <div className="space-y-6">
@@ -143,9 +149,7 @@ export function RevenueAnalytics({ dateRange }: RevenueAnalyticsProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-purple-900">{successRate}%</div>
-            <p className="text-xs text-purple-700 mt-1">
-              {data.failedTransactions} failed
-            </p>
+            <p className="text-xs text-purple-700 mt-1">{data.failedTransactions} failed</p>
           </CardContent>
         </Card>
 
@@ -154,9 +158,7 @@ export function RevenueAnalytics({ dateRange }: RevenueAnalyticsProps) {
             <CardTitle className="text-sm text-orange-800">Transactions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-900">
-              {data.totalTransactions}
-            </div>
+            <div className="text-2xl font-bold text-orange-900">{data.totalTransactions}</div>
             <p className="text-xs text-orange-700 mt-1">Total processed</p>
           </CardContent>
         </Card>
@@ -215,7 +217,7 @@ export function RevenueAnalytics({ dateRange }: RevenueAnalyticsProps) {
                   cx="50%"
                   cy="50%"
                   outerRadius={80}
-                  label={(entry) => `${entry.method}: ${formatCurrency(entry.amount)}`}
+                  label={entry => `${entry.method}: ${formatCurrency(entry.amount)}`}
                 >
                   {data.revenueByPaymentMethod.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

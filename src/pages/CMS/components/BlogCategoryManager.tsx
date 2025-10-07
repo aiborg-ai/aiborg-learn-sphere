@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,16 +33,12 @@ function BlogCategoryManager() {
     description: '',
     color: '#6B46C1',
     is_active: true,
-    sort_order: 0
+    sort_order: 0,
   });
   const [showNewForm, setShowNewForm] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
@@ -56,24 +52,26 @@ function BlogCategoryManager() {
       toast({
         title: 'Error',
         description: 'Failed to fetch categories',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const handleCreate = async () => {
     try {
-      const { error } = await supabase
-        .from('blog_categories')
-        .insert(newCategory);
+      const { error } = await supabase.from('blog_categories').insert(newCategory);
 
       if (error) throw error;
 
       toast({
         title: 'Success',
-        description: 'Category created successfully'
+        description: 'Category created successfully',
       });
 
       setNewCategory({
@@ -82,7 +80,7 @@ function BlogCategoryManager() {
         description: '',
         color: '#6B46C1',
         is_active: true,
-        sort_order: 0
+        sort_order: 0,
       });
       setShowNewForm(false);
       fetchCategories();
@@ -90,7 +88,7 @@ function BlogCategoryManager() {
       toast({
         title: 'Error',
         description: 'Failed to create category',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -105,7 +103,7 @@ function BlogCategoryManager() {
           description: category.description,
           color: category.color,
           is_active: category.is_active,
-          sort_order: category.sort_order
+          sort_order: category.sort_order,
         })
         .eq('id', category.id);
 
@@ -113,7 +111,7 @@ function BlogCategoryManager() {
 
       toast({
         title: 'Success',
-        description: 'Category updated successfully'
+        description: 'Category updated successfully',
       });
 
       setEditingCategory(null);
@@ -122,7 +120,7 @@ function BlogCategoryManager() {
       toast({
         title: 'Error',
         description: 'Failed to update category',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -131,16 +129,13 @@ function BlogCategoryManager() {
     if (!confirm('Are you sure? This will not delete associated posts.')) return;
 
     try {
-      const { error } = await supabase
-        .from('blog_categories')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from('blog_categories').delete().eq('id', id);
 
       if (error) throw error;
 
       toast({
         title: 'Success',
-        description: 'Category deleted successfully'
+        description: 'Category deleted successfully',
       });
 
       fetchCategories();
@@ -148,23 +143,23 @@ function BlogCategoryManager() {
       toast({
         title: 'Error',
         description: 'Failed to delete category',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
 
   const generateSlug = (name: string) => {
-    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
   };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Manage Categories</h2>
-        <Button
-          onClick={() => setShowNewForm(true)}
-          className="btn-hero"
-        >
+        <Button onClick={() => setShowNewForm(true)} className="btn-hero">
           <Plus className="mr-2 h-4 w-4" />
           New Category
         </Button>
@@ -182,7 +177,7 @@ function BlogCategoryManager() {
                 <Label>Name</Label>
                 <Input
                   value={newCategory.name}
-                  onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
+                  onChange={e => setNewCategory({ ...newCategory, name: e.target.value })}
                   placeholder="Category name"
                 />
               </div>
@@ -191,12 +186,14 @@ function BlogCategoryManager() {
                 <div className="flex gap-2">
                   <Input
                     value={newCategory.slug}
-                    onChange={(e) => setNewCategory({ ...newCategory, slug: e.target.value })}
+                    onChange={e => setNewCategory({ ...newCategory, slug: e.target.value })}
                     placeholder="category-slug"
                   />
                   <Button
                     variant="outline"
-                    onClick={() => setNewCategory({ ...newCategory, slug: generateSlug(newCategory.name) })}
+                    onClick={() =>
+                      setNewCategory({ ...newCategory, slug: generateSlug(newCategory.name) })
+                    }
                   >
                     Generate
                   </Button>
@@ -207,7 +204,7 @@ function BlogCategoryManager() {
               <Label>Description</Label>
               <Textarea
                 value={newCategory.description}
-                onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
+                onChange={e => setNewCategory({ ...newCategory, description: e.target.value })}
                 placeholder="Category description"
                 rows={2}
               />
@@ -219,12 +216,12 @@ function BlogCategoryManager() {
                   <Input
                     type="color"
                     value={newCategory.color}
-                    onChange={(e) => setNewCategory({ ...newCategory, color: e.target.value })}
+                    onChange={e => setNewCategory({ ...newCategory, color: e.target.value })}
                     className="w-20"
                   />
                   <Input
                     value={newCategory.color}
-                    onChange={(e) => setNewCategory({ ...newCategory, color: e.target.value })}
+                    onChange={e => setNewCategory({ ...newCategory, color: e.target.value })}
                   />
                 </div>
               </div>
@@ -233,14 +230,18 @@ function BlogCategoryManager() {
                 <Input
                   type="number"
                   value={newCategory.sort_order}
-                  onChange={(e) => setNewCategory({ ...newCategory, sort_order: parseInt(e.target.value) })}
+                  onChange={e =>
+                    setNewCategory({ ...newCategory, sort_order: parseInt(e.target.value) })
+                  }
                 />
               </div>
               <div className="flex items-end">
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={newCategory.is_active}
-                    onCheckedChange={(checked) => setNewCategory({ ...newCategory, is_active: checked })}
+                    onCheckedChange={checked =>
+                      setNewCategory({ ...newCategory, is_active: checked })
+                    }
                   />
                   <Label>Active</Label>
                 </div>
@@ -281,18 +282,24 @@ function BlogCategoryManager() {
                       <div className="grid grid-cols-2 gap-4">
                         <Input
                           value={editingCategory.name}
-                          onChange={(e) => setEditingCategory({ ...editingCategory, name: e.target.value })}
+                          onChange={e =>
+                            setEditingCategory({ ...editingCategory, name: e.target.value })
+                          }
                           placeholder="Category name"
                         />
                         <Input
                           value={editingCategory.slug}
-                          onChange={(e) => setEditingCategory({ ...editingCategory, slug: e.target.value })}
+                          onChange={e =>
+                            setEditingCategory({ ...editingCategory, slug: e.target.value })
+                          }
                           placeholder="category-slug"
                         />
                       </div>
                       <Textarea
                         value={editingCategory.description || ''}
-                        onChange={(e) => setEditingCategory({ ...editingCategory, description: e.target.value })}
+                        onChange={e =>
+                          setEditingCategory({ ...editingCategory, description: e.target.value })
+                        }
                         placeholder="Description"
                         rows={2}
                       />
@@ -316,13 +323,13 @@ function BlogCategoryManager() {
                           <div className="flex items-center gap-2">
                             <p className="font-medium">{category.name}</p>
                             <Badge variant="secondary">{category.post_count} posts</Badge>
-                            {!category.is_active && (
-                              <Badge variant="destructive">Inactive</Badge>
-                            )}
+                            {!category.is_active && <Badge variant="destructive">Inactive</Badge>}
                           </div>
                           <p className="text-sm text-muted-foreground">{category.slug}</p>
                           {category.description && (
-                            <p className="text-sm text-muted-foreground mt-1">{category.description}</p>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {category.description}
+                            </p>
                           )}
                         </div>
                       </div>

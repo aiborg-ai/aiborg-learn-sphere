@@ -4,7 +4,23 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, Users, BookOpen, Megaphone, Shield, UserCheck, Star, Calendar, Trophy, FileJson, BarChart3, UserCog, Receipt, TrendingUp, FileCheck } from 'lucide-react';
+import {
+  Loader2,
+  Users,
+  BookOpen,
+  Megaphone,
+  Shield,
+  UserCheck,
+  Star,
+  Calendar,
+  Trophy,
+  FileJson,
+  BarChart3,
+  UserCog,
+  Receipt,
+  TrendingUp,
+  FileCheck,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
@@ -13,7 +29,10 @@ import { logger } from '@/utils/logger';
 import { UserManagement, type UserProfile } from '@/components/admin/UserManagement';
 import { CourseManagementEnhanced } from '@/components/admin/CourseManagementEnhanced';
 import { EnrollmentManagement, type Enrollment } from '@/components/admin/EnrollmentManagement';
-import { AnnouncementManagementEnhanced, type Announcement } from '@/components/admin/AnnouncementManagementEnhanced';
+import {
+  AnnouncementManagementEnhanced,
+  type Announcement,
+} from '@/components/admin/AnnouncementManagementEnhanced';
 import { EventsManagementEnhanced } from '@/components/admin/EventsManagementEnhanced';
 import { AchievementManager } from '@/components/admin/AchievementManager';
 import BlogManager from './Admin/BlogManager';
@@ -28,8 +47,18 @@ import { ProgressTrackingDashboard } from '@/components/admin/ProgressTrackingDa
 import { AssignmentTracker } from '@/components/admin/AssignmentTracker';
 
 // Import the existing components that were already separated
+interface Review {
+  id: string;
+  comment: string;
+  rating: number;
+  display: boolean;
+  approved: boolean;
+  profiles?: { display_name?: string };
+  courses?: { title: string };
+}
+
 function ReviewsManagement() {
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -42,11 +71,13 @@ function ReviewsManagement() {
     try {
       const { data, error } = await supabase
         .from('reviews')
-        .select(`
+        .select(
+          `
           *,
           profiles(display_name, email),
           courses(title)
-        `)
+        `
+        )
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -54,9 +85,9 @@ function ReviewsManagement() {
     } catch (error) {
       logger.error('Error fetching reviews:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch reviews",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to fetch reviews',
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -72,20 +103,18 @@ function ReviewsManagement() {
 
       if (error) throw error;
 
-      setReviews(reviews.map(r =>
-        r.id === reviewId ? { ...r, display: !currentDisplay } : r
-      ));
+      setReviews(reviews.map(r => (r.id === reviewId ? { ...r, display: !currentDisplay } : r)));
 
       toast({
-        title: "Success",
+        title: 'Success',
         description: `Review ${!currentDisplay ? 'shown' : 'hidden'} on frontend`,
       });
     } catch (error) {
       logger.error('Error updating review display:', error);
       toast({
-        title: "Error",
-        description: "Failed to update review display",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update review display',
+        variant: 'destructive',
       });
     }
   };
@@ -99,20 +128,18 @@ function ReviewsManagement() {
 
       if (error) throw error;
 
-      setReviews(reviews.map(r =>
-        r.id === reviewId ? { ...r, approved: !currentApproval } : r
-      ));
+      setReviews(reviews.map(r => (r.id === reviewId ? { ...r, approved: !currentApproval } : r)));
 
       toast({
-        title: "Success",
+        title: 'Success',
         description: `Review ${!currentApproval ? 'approved' : 'unapproved'}`,
       });
     } catch (error) {
       logger.error('Error updating review approval:', error);
       toast({
-        title: "Error",
-        description: "Failed to update review approval",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update review approval',
+        variant: 'destructive',
       });
     }
   };
@@ -148,14 +175,14 @@ function ReviewsManagement() {
               <div className="flex gap-2">
                 <Button
                   size="sm"
-                  variant={review.display ? "default" : "outline"}
+                  variant={review.display ? 'default' : 'outline'}
                   onClick={() => toggleReviewDisplay(review.id, review.display)}
                 >
                   {review.display ? 'Hide' : 'Show'}
                 </Button>
                 <Button
                   size="sm"
-                  variant={review.approved ? "success" : "outline"}
+                  variant={review.approved ? 'success' : 'outline'}
                   onClick={() => toggleReviewApproval(review.id, review.approved)}
                 >
                   {review.approved ? 'Unapprove' : 'Approve'}
@@ -169,8 +196,19 @@ function ReviewsManagement() {
   );
 }
 
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  event_date: string;
+  event_time: string;
+  location: string;
+  display: boolean;
+  is_active: boolean;
+}
+
 function EventsManagement() {
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -191,9 +229,9 @@ function EventsManagement() {
     } catch (error) {
       logger.error('Error fetching events:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch events",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to fetch events',
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -209,20 +247,18 @@ function EventsManagement() {
 
       if (error) throw error;
 
-      setEvents(events.map(e =>
-        e.id === eventId ? { ...e, display: !currentDisplay } : e
-      ));
+      setEvents(events.map(e => (e.id === eventId ? { ...e, display: !currentDisplay } : e)));
 
       toast({
-        title: "Success",
+        title: 'Success',
         description: `Event ${!currentDisplay ? 'shown' : 'hidden'} on frontend`,
       });
     } catch (error) {
       logger.error('Error updating event display:', error);
       toast({
-        title: "Error",
-        description: "Failed to update event display",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update event display',
+        variant: 'destructive',
       });
     }
   };
@@ -236,20 +272,18 @@ function EventsManagement() {
 
       if (error) throw error;
 
-      setEvents(events.map(e =>
-        e.id === eventId ? { ...e, is_active: !currentStatus } : e
-      ));
+      setEvents(events.map(e => (e.id === eventId ? { ...e, is_active: !currentStatus } : e)));
 
       toast({
-        title: "Success",
+        title: 'Success',
         description: `Event ${!currentStatus ? 'activated' : 'deactivated'}`,
       });
     } catch (error) {
       logger.error('Error updating event status:', error);
       toast({
-        title: "Error",
-        description: "Failed to update event status",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update event status',
+        variant: 'destructive',
       });
     }
   };
@@ -280,14 +314,14 @@ function EventsManagement() {
               <div className="flex gap-2">
                 <Button
                   size="sm"
-                  variant={event.display ? "default" : "outline"}
+                  variant={event.display ? 'default' : 'outline'}
                   onClick={() => toggleEventDisplay(event.id, event.display)}
                 >
                   {event.display ? 'Hide' : 'Show'}
                 </Button>
                 <Button
                   size="sm"
-                  variant={event.is_active ? "success" : "outline"}
+                  variant={event.is_active ? 'success' : 'outline'}
                   onClick={() => toggleEventStatus(event.id, event.is_active)}
                 >
                   {event.is_active ? 'Deactivate' : 'Activate'}
@@ -301,9 +335,18 @@ function EventsManagement() {
   );
 }
 
+interface Course {
+  id: string;
+  title: string;
+  sort_order: number;
+  course_audiences?: Array<{ audience: string }>;
+  audiences?: string[];
+  [key: string]: unknown;
+}
+
 export default function AdminRefactored() {
   const [users, setUsers] = useState<UserProfile[]>([]);
-  const [courses, setCourses] = useState<any[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -334,17 +377,19 @@ export default function AdminRefactored() {
       // Fetch courses with audiences
       const { data: coursesData, error: coursesError } = await supabase
         .from('courses')
-        .select(`
+        .select(
+          `
           *,
           course_audiences(audience)
-        `)
+        `
+        )
         .order('sort_order', { ascending: true });
 
       if (coursesError) throw coursesError;
 
       const coursesWithAudiences = (coursesData || []).map(course => ({
         ...course,
-        audiences: course.course_audiences?.map((ca: any) => ca.audience) || []
+        audiences: course.course_audiences?.map((ca: { audience: string }) => ca.audience) || [],
       }));
       setCourses(coursesWithAudiences);
 
@@ -360,22 +405,23 @@ export default function AdminRefactored() {
       // Fetch enrollments
       const { data: enrollmentsData, error: enrollmentsError } = await supabase
         .from('enrollments')
-        .select(`
+        .select(
+          `
           *,
           profiles(display_name, email),
           courses(title, start_date, price)
-        `)
+        `
+        )
         .order('enrolled_at', { ascending: false });
 
       if (enrollmentsError) throw enrollmentsError;
       setEnrollments(enrollmentsData || []);
-
     } catch (error) {
       logger.error('Error fetching admin data:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch admin data",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to fetch admin data',
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -423,7 +469,10 @@ export default function AdminRefactored() {
               <BarChart3 className="h-4 w-4 mr-2" />
               Analytics
             </TabsTrigger>
-            <TabsTrigger value="role-management" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="role-management"
+              className="text-white data-[state=active]:bg-white/20"
+            >
               <UserCog className="h-4 w-4 mr-2" />
               Role Management
             </TabsTrigger>
@@ -439,7 +488,10 @@ export default function AdminRefactored() {
               <UserCheck className="h-4 w-4 mr-2" />
               Enrollments ({enrollments.length})
             </TabsTrigger>
-            <TabsTrigger value="announcements" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="announcements"
+              className="text-white data-[state=active]:bg-white/20"
+            >
               <Megaphone className="h-4 w-4 mr-2" />
               Announcements ({announcements.length})
             </TabsTrigger>
@@ -455,7 +507,10 @@ export default function AdminRefactored() {
               <BookOpen className="h-4 w-4 mr-2" />
               Blog
             </TabsTrigger>
-            <TabsTrigger value="achievements" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="achievements"
+              className="text-white data-[state=active]:bg-white/20"
+            >
               <Trophy className="h-4 w-4 mr-2" />
               Achievements
             </TabsTrigger>
@@ -478,18 +533,11 @@ export default function AdminRefactored() {
           </TabsContent>
 
           <TabsContent value="role-management">
-            <RoleManagementPanel
-              users={users}
-              onRefresh={fetchData}
-            />
+            <RoleManagementPanel users={users} onRefresh={fetchData} />
           </TabsContent>
 
           <TabsContent value="users">
-            <UserManagement
-              users={users}
-              setUsers={setUsers}
-              onRefresh={fetchData}
-            />
+            <UserManagement users={users} setUsers={setUsers} onRefresh={fetchData} />
           </TabsContent>
 
           <TabsContent value="courses">

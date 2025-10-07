@@ -5,7 +5,12 @@ import type { ApiResponse } from '@/lib/api-client';
 import { apiClient, ApiError } from '@/lib/api-client';
 import type { RateLimitConfig } from '@/lib/security/rate-limiter';
 import { rateLimiter, RateLimitPresets } from '@/lib/security/rate-limiter';
-import { sanitizeText, sanitizeHTML, sanitizeJSON, hasSQLInjectionPattern } from '@/lib/security/sanitizer';
+import {
+  sanitizeText,
+  sanitizeHTML,
+  sanitizeJSON,
+  hasSQLInjectionPattern,
+} from '@/lib/security/sanitizer';
 import type { Action, Resource } from '@/lib/security/rbac';
 import { rbac } from '@/lib/security/rbac';
 import { logger } from '@/utils/logger';
@@ -52,7 +57,10 @@ export interface SecureApiConfig {
  * @interface SecureApiReturn
  */
 export interface SecureApiReturn<T> {
-  execute: (queryFn: () => Promise<{ data: T | null; error: unknown }>, inputData?: Record<string, unknown>) => Promise<ApiResponse<T>>;
+  execute: (
+    queryFn: () => Promise<{ data: T | null; error: unknown }>,
+    inputData?: Record<string, unknown>
+  ) => Promise<ApiResponse<T>>;
   loading: boolean;
   error: ApiError | null;
   data: T | null;
@@ -77,9 +85,7 @@ export interface SecureApiReturn<T> {
  *
  * await execute(() => supabase.from('users').update(userData), userData);
  */
-export function useSecureApi<T = unknown>(
-  config: SecureApiConfig = {}
-): SecureApiReturn<T> {
+export function useSecureApi<T = unknown>(config: SecureApiConfig = {}): SecureApiReturn<T> {
   const {
     rateLimit,
     requiredPermission,
@@ -93,7 +99,7 @@ export function useSecureApi<T = unknown>(
     onSuccess,
     onError,
     retryOnError = false,
-    retryCount = 3
+    retryCount = 3,
   } = config;
 
   const [loading, setLoading] = useState(false);
@@ -129,7 +135,7 @@ export function useSecureApi<T = unknown>(
             toast({
               title: 'Permission Denied',
               description: 'You do not have permission to perform this action',
-              variant: 'destructive'
+              variant: 'destructive',
             });
           }
 
@@ -139,9 +145,8 @@ export function useSecureApi<T = unknown>(
 
       // Check rate limit
       if (rateLimit) {
-        const rateLimitConfig = typeof rateLimit === 'string'
-          ? RateLimitPresets[rateLimit]
-          : rateLimit;
+        const rateLimitConfig =
+          typeof rateLimit === 'string' ? RateLimitPresets[rateLimit] : rateLimit;
 
         const limitCheck = rateLimiter.checkLimit(rateLimitConfig);
 
@@ -158,7 +163,7 @@ export function useSecureApi<T = unknown>(
             toast({
               title: 'Too Many Requests',
               description: rateLimitError.message,
-              variant: 'destructive'
+              variant: 'destructive',
             });
           }
 
@@ -174,18 +179,14 @@ export function useSecureApi<T = unknown>(
 
           // Check for SQL injection
           if (checkSQLInjection && hasSQLInjectionPattern(inputData)) {
-            const injectionError = new ApiError(
-              'Invalid input detected',
-              'INVALID_INPUT',
-              400
-            );
+            const injectionError = new ApiError('Invalid input detected', 'INVALID_INPUT', 400);
             setError(injectionError);
 
             if (showErrorToast) {
               toast({
                 title: 'Invalid Input',
                 description: 'Your input contains invalid characters',
-                variant: 'destructive'
+                variant: 'destructive',
               });
             }
 
@@ -213,7 +214,7 @@ export function useSecureApi<T = unknown>(
             toast({
               title: 'Error',
               description: errorMessage || result.error.message,
-              variant: 'destructive'
+              variant: 'destructive',
             });
           }
 
@@ -230,7 +231,7 @@ export function useSecureApi<T = unknown>(
           if (showSuccessToast) {
             toast({
               title: 'Success',
-              description: successMessage
+              description: successMessage,
             });
           }
 
@@ -240,18 +241,14 @@ export function useSecureApi<T = unknown>(
         return result;
       } catch (unexpectedError) {
         logger.error('Unexpected error in secure API call:', unexpectedError);
-        const apiError = new ApiError(
-          'An unexpected error occurred',
-          'UNEXPECTED_ERROR',
-          500
-        );
+        const apiError = new ApiError('An unexpected error occurred', 'UNEXPECTED_ERROR', 500);
         setError(apiError);
 
         if (showErrorToast) {
           toast({
             title: 'Error',
             description: 'An unexpected error occurred. Please try again.',
-            variant: 'destructive'
+            variant: 'destructive',
           });
         }
 
@@ -274,7 +271,7 @@ export function useSecureApi<T = unknown>(
       onError,
       retryOnError,
       retryCount,
-      toast
+      toast,
     ]
   );
 
@@ -292,9 +289,9 @@ export function useSecureApi<T = unknown>(
 
 /**
  * Sanitize object input recursively
- * @param {any} obj - Object to sanitize
+ * @param {unknown} obj - Object to sanitize
  * @param {boolean} checkSQL - Check for SQL injection
- * @returns {any} Sanitized object
+ * @returns {unknown} Sanitized object
  */
 function sanitizeObjectInput(obj: unknown, checkSQL: boolean): unknown {
   if (typeof obj === 'string') {
@@ -310,13 +307,14 @@ function sanitizeObjectInput(obj: unknown, checkSQL: boolean): unknown {
 
   if (obj !== null && typeof obj === 'object') {
     const sanitized: Record<string, unknown> = {};
-    for (const key in obj) {
+    const record = obj as Record<string, unknown>;
+    for (const key in record) {
       // Sanitize the key as well
       const sanitizedKey = sanitizeText(key);
       if (checkSQL && hasSQLInjectionPattern(key)) {
         throw new Error('Invalid input detected');
       }
-      sanitized[sanitizedKey] = sanitizeObjectInput(obj[key], checkSQL);
+      sanitized[sanitizedKey] = sanitizeObjectInput(record[key], checkSQL);
     }
     return sanitized;
   }
@@ -326,8 +324,8 @@ function sanitizeObjectInput(obj: unknown, checkSQL: boolean): unknown {
 
 /**
  * Sanitize object output recursively
- * @param {any} obj - Object to sanitize
- * @returns {any} Sanitized object
+ * @param {unknown} obj - Object to sanitize
+ * @returns {unknown} Sanitized object
  */
 function sanitizeObjectOutput(obj: unknown): unknown {
   if (typeof obj === 'string') {
@@ -344,8 +342,9 @@ function sanitizeObjectOutput(obj: unknown): unknown {
 
   if (obj !== null && typeof obj === 'object') {
     const sanitized: Record<string, unknown> = {};
-    for (const key in obj) {
-      sanitized[key] = sanitizeObjectOutput(obj[key]);
+    const record = obj as Record<string, unknown>;
+    for (const key in record) {
+      sanitized[key] = sanitizeObjectOutput(record[key]);
     }
     return sanitized;
   }
@@ -366,7 +365,7 @@ export function useSecureMutation<T = unknown>(config: SecureApiConfig = {}) {
     rateLimit: 'form',
     sanitizeInput: true,
     checkSQLInjection: true,
-    ...config
+    ...config,
   });
 }
 
@@ -383,6 +382,6 @@ export function useSecureQuery<T = unknown>(config: SecureApiConfig = {}) {
     rateLimit: 'api',
     retryOnError: true,
     sanitizeOutput: true,
-    ...config
+    ...config,
   });
 }

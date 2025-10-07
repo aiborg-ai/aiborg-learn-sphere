@@ -26,7 +26,7 @@ export interface PointsHistory {
   source_type: 'quiz' | 'exercise' | 'workshop' | 'assessment' | 'streak' | 'achievement' | 'bonus';
   source_id?: string;
   description: string;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
   earned_at: string;
 }
 
@@ -112,7 +112,7 @@ export function useAiborgPoints() {
       sourceType: PointsHistory['source_type'];
       sourceId?: string;
       description: string;
-      metadata?: any;
+      metadata?: Record<string, unknown>;
     }) => {
       if (!user) throw new Error('User not authenticated');
 
@@ -129,7 +129,7 @@ export function useAiborgPoints() {
 
       return { points, description };
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ['aiborg-points', user?.id] });
       queryClient.invalidateQueries({ queryKey: ['aiborg-points-history', user?.id] });
@@ -141,7 +141,7 @@ export function useAiborgPoints() {
 
       logger.log('Points awarded:', data);
     },
-    onError: (error) => {
+    onError: error => {
       logger.error('Error awarding points:', error);
       toast.error('Failed to award points');
     },

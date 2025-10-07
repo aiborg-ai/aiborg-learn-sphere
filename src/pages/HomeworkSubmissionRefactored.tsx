@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -13,12 +13,9 @@ import { Link } from 'react-router-dom';
 import {
   AssignmentDetails,
   type Assignment,
-  type CourseInfo
+  type CourseInfo,
 } from '@/components/homework/AssignmentDetails';
-import {
-  SubmissionForm,
-  type Submission
-} from '@/components/homework/SubmissionForm';
+import { SubmissionForm, type Submission } from '@/components/homework/SubmissionForm';
 import { SubmissionHistory } from '@/components/homework/SubmissionHistory';
 
 export default function HomeworkSubmissionRefactored() {
@@ -40,17 +37,7 @@ export default function HomeworkSubmissionRefactored() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!user) {
-      navigate('/auth');
-      return;
-    }
-    if (assignmentId) {
-      fetchAssignmentAndSubmission();
-    }
-  }, [user, assignmentId]);
-
-  const fetchAssignmentAndSubmission = async () => {
+  const fetchAssignmentAndSubmission = useCallback(async () => {
     if (!user || !assignmentId) return;
 
     try {
@@ -59,10 +46,12 @@ export default function HomeworkSubmissionRefactored() {
       // Fetch assignment details
       const { data: assignmentData, error: assignmentError } = await supabase
         .from('homework_assignments')
-        .select(`
+        .select(
+          `
           *,
           courses!inner(id, title)
-        `)
+        `
+        )
         .eq('id', assignmentId)
         .single();
 
@@ -109,18 +98,27 @@ export default function HomeworkSubmissionRefactored() {
       if (historyData) {
         setPreviousSubmissions(historyData);
       }
-
     } catch (error) {
       logger.error('Error fetching assignment:', error);
       toast({
         title: 'Error',
         description: 'Failed to load assignment details',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, assignmentId, toast]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+    if (assignmentId) {
+      fetchAssignmentAndSubmission();
+    }
+  }, [user, assignmentId, navigate, fetchAssignmentAndSubmission]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !assignment) return;
@@ -135,7 +133,7 @@ export default function HomeworkSubmissionRefactored() {
         toast({
           title: 'File too large',
           description: `${file.name} exceeds the ${assignment.max_file_size_mb}MB limit`,
-          variant: 'destructive'
+          variant: 'destructive',
         });
         continue;
       }
@@ -146,7 +144,7 @@ export default function HomeworkSubmissionRefactored() {
         toast({
           title: 'Invalid file type',
           description: `${file.name} is not an allowed file type`,
-          variant: 'destructive'
+          variant: 'destructive',
         });
         continue;
       }
@@ -186,9 +184,9 @@ export default function HomeworkSubmissionRefactored() {
         if (uploadError) throw uploadError;
 
         if (data) {
-          const { data: { publicUrl } } = supabase.storage
-            .from('homework-submissions')
-            .getPublicUrl(data.path);
+          const {
+            data: { publicUrl },
+          } = supabase.storage.from('homework-submissions').getPublicUrl(data.path);
 
           fileUrls.push(publicUrl);
         }
@@ -220,7 +218,7 @@ export default function HomeworkSubmissionRefactored() {
         submission_text: submissionText,
         file_urls: allFileUrls,
         status: 'draft',
-        submitted_at: null
+        submitted_at: null,
       };
 
       if (submission) {
@@ -248,14 +246,14 @@ export default function HomeworkSubmissionRefactored() {
 
       toast({
         title: 'Draft Saved',
-        description: 'Your homework draft has been saved successfully'
+        description: 'Your homework draft has been saved successfully',
       });
     } catch (error) {
       logger.error('Error saving draft:', error);
       toast({
         title: 'Error',
         description: 'Failed to save draft',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setSaving(false);
@@ -273,7 +271,7 @@ export default function HomeworkSubmissionRefactored() {
       toast({
         title: 'Submission Not Allowed',
         description: 'This assignment is overdue and does not accept late submissions',
-        variant: 'destructive'
+        variant: 'destructive',
       });
       return;
     }
@@ -292,7 +290,7 @@ export default function HomeworkSubmissionRefactored() {
         submission_text: submissionText,
         file_urls: allFileUrls,
         status: 'submitted',
-        submitted_at: new Date().toISOString()
+        submitted_at: new Date().toISOString(),
       };
 
       if (submission) {
@@ -305,16 +303,14 @@ export default function HomeworkSubmissionRefactored() {
         if (error) throw error;
       } else {
         // Create new submission
-        const { error } = await supabase
-          .from('homework_submissions')
-          .insert(submissionData);
+        const { error } = await supabase.from('homework_submissions').insert(submissionData);
 
         if (error) throw error;
       }
 
       toast({
         title: 'Success',
-        description: 'Your homework has been submitted successfully'
+        description: 'Your homework has been submitted successfully',
       });
 
       navigate('/dashboard');
@@ -323,7 +319,7 @@ export default function HomeworkSubmissionRefactored() {
       toast({
         title: 'Error',
         description: 'Failed to submit homework',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setSaving(false);
@@ -394,9 +390,7 @@ export default function HomeworkSubmissionRefactored() {
           {enrollmentError ? (
             <Alert className="bg-red-50 border-red-200">
               <AlertCircle className="h-4 w-4 text-red-600" />
-              <AlertDescription className="text-red-800">
-                {enrollmentError}
-              </AlertDescription>
+              <AlertDescription className="text-red-800">{enrollmentError}</AlertDescription>
             </Alert>
           ) : (
             <>

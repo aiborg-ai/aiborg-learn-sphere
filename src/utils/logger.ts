@@ -15,14 +15,14 @@ export const logger = {
 
   error: (...args: unknown[]) => {
     if (isDevelopment) {
-       
+      // eslint-disable-next-line no-console
       console.error(...args);
     }
   },
 
   warn: (...args: unknown[]) => {
     if (isDevelopment) {
-       
+      // eslint-disable-next-line no-console
       console.warn(...args);
     }
   },
@@ -46,5 +46,5 @@ export const logger = {
       // eslint-disable-next-line no-console
       console.table(data);
     }
-  }
+  },
 };

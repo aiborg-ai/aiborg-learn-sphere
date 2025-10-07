@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, Upload, Globe, FileJson, FileText, AlertCircle, Shield } from 'lucide-react';
+import { Link, FileJson, FileText, AlertCircle, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -7,7 +7,13 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -21,7 +27,19 @@ interface URLImportOptions {
   headers?: Record<string, string>;
 }
 
-export function URLImport({ onImportComplete }: { onImportComplete?: (result: any) => void }) {
+interface ImportResult {
+  summary?: {
+    total?: number;
+    imported?: number;
+  };
+  [key: string]: unknown;
+}
+
+export function URLImport({
+  onImportComplete,
+}: {
+  onImportComplete?: (result: ImportResult) => void;
+}) {
   const { toast } = useToast();
   const [url, setUrl] = useState('');
   const [templateType, setTemplateType] = useState<'auto' | 'course' | 'event'>('auto');
@@ -33,7 +51,7 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
     skip_duplicates: true,
     update_existing: false,
     dry_run: false,
-    validate_first: true
+    validate_first: true,
   });
 
   const handleImport = async () => {
@@ -41,7 +59,7 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
       toast({
         title: 'URL Required',
         description: 'Please enter a URL to import from',
-        variant: 'destructive'
+        variant: 'destructive',
       });
       return;
     }
@@ -54,7 +72,7 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
         toast({
           title: 'Authentication Required',
           description: 'Please log in to import templates',
-          variant: 'destructive'
+          variant: 'destructive',
         });
         return;
       }
@@ -75,7 +93,7 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session.session?.access_token}`
+            Authorization: `Bearer ${session.session?.access_token}`,
           },
           body: JSON.stringify({
             url,
@@ -83,9 +101,9 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
             format: format === 'auto' ? undefined : format,
             options: {
               ...options,
-              headers: Object.keys(headers).length > 0 ? headers : undefined
-            }
-          })
+              headers: Object.keys(headers).length > 0 ? headers : undefined,
+            },
+          }),
         }
       );
 
@@ -98,12 +116,12 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
       if (options.dry_run) {
         toast({
           title: 'Dry Run Complete',
-          description: `Found ${result.summary?.total || 0} items ready for import`
+          description: `Found ${result.summary?.total || 0} items ready for import`,
         });
       } else {
         toast({
           title: 'Import Successful',
-          description: `Imported ${result.summary?.imported || 0} items from URL`
+          description: `Imported ${result.summary?.imported || 0} items from URL`,
         });
       }
 
@@ -114,13 +132,12 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
       // Clear form on success
       setUrl('');
       setAuthValue('');
-
     } catch (error) {
       logger.error('URL import error:', error);
       toast({
         title: 'Import Failed',
         description: error.message || 'Failed to import from URL',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setIsImporting(false);
@@ -131,9 +148,7 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
     <Card>
       <CardHeader>
         <CardTitle>Import from URL</CardTitle>
-        <CardDescription>
-          Import templates directly from a URL (JSON or CSV format)
-        </CardDescription>
+        <CardDescription>Import templates directly from a URL (JSON or CSV format)</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <Tabs defaultValue="basic" className="space-y-4">
@@ -155,7 +170,7 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
                     type="url"
                     placeholder="https://example.com/templates.json"
                     value={url}
-                    onChange={(e) => setUrl(e.target.value)}
+                    onChange={e => setUrl(e.target.value)}
                     className="pl-10"
                   />
                 </div>
@@ -167,7 +182,7 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
               <Label>Template Type</Label>
               <RadioGroup
                 value={templateType}
-                onValueChange={(value) => setTemplateType(value as any)}
+                onValueChange={value => setTemplateType(value as 'auto' | 'course' | 'event')}
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="auto" id="type-auto" />
@@ -189,7 +204,7 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
               <Label>File Format</Label>
               <RadioGroup
                 value={format}
-                onValueChange={(value) => setFormat(value as any)}
+                onValueChange={value => setFormat(value as 'auto' | 'json' | 'csv')}
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="auto" id="format-auto" />
@@ -227,7 +242,9 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
               <Label>Authentication Type</Label>
               <Select
                 value={authType}
-                onValueChange={(value) => setAuthType(value as any)}
+                onValueChange={value =>
+                  setAuthType(value as 'none' | 'basic' | 'bearer' | 'api_key')
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -258,7 +275,7 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
                       : 'Enter authentication value'
                   }
                   value={authValue}
-                  onChange={(e) => setAuthValue(e.target.value)}
+                  onChange={e => setAuthValue(e.target.value)}
                 />
                 {authType === 'basic' && (
                   <p className="text-xs text-muted-foreground">
@@ -278,7 +295,7 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
                   <Checkbox
                     id="skip-duplicates"
                     checked={options.skip_duplicates}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={checked =>
                       setOptions({ ...options, skip_duplicates: checked as boolean })
                     }
                   />
@@ -288,7 +305,7 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
                   <Checkbox
                     id="update-existing"
                     checked={options.update_existing}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={checked =>
                       setOptions({ ...options, update_existing: checked as boolean })
                     }
                     disabled={options.skip_duplicates}
@@ -299,7 +316,7 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
                   <Checkbox
                     id="validate-first"
                     checked={options.validate_first}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={checked =>
                       setOptions({ ...options, validate_first: checked as boolean })
                     }
                   />
@@ -309,7 +326,7 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
                   <Checkbox
                     id="dry-run"
                     checked={options.dry_run}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={checked =>
                       setOptions({ ...options, dry_run: checked as boolean })
                     }
                   />
@@ -324,8 +341,8 @@ export function URLImport({ onImportComplete }: { onImportComplete?: (result: an
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            Only import templates from trusted sources. The system will validate
-            all data before importing.
+            Only import templates from trusted sources. The system will validate all data before
+            importing.
           </AlertDescription>
         </Alert>
 

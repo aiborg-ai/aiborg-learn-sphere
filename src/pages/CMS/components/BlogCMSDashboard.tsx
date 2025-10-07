@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,12 +12,30 @@ import {
   Calendar,
   Clock,
   AlertCircle,
-  Plus
+  Plus,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
 import { logger } from '@/utils/logger';
+interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  status: string;
+  view_count: number;
+  like_count?: number;
+}
+
+interface BlogComment {
+  id: string;
+  content: string;
+  status: string;
+  created_at: string;
+  user_id: string;
+  blog_posts?: { title: string };
+}
+
 interface BlogStats {
   totalPosts: number;
   publishedPosts: number;
@@ -28,9 +46,9 @@ interface BlogStats {
   pendingComments: number;
   totalCategories: number;
   totalTags: number;
-  recentPosts: any[];
-  popularPosts: any[];
-  recentComments: any[];
+  recentPosts: BlogPost[];
+  popularPosts: BlogPost[];
+  recentComments: BlogComment[];
 }
 
 function BlogCMSDashboard() {
@@ -38,11 +56,7 @@ function BlogCMSDashboard() {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchDashboardStats();
-  }, []);
-
-  const fetchDashboardStats = async () => {
+  const fetchDashboardStats = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -94,14 +108,16 @@ function BlogCMSDashboard() {
       // Fetch recent comments
       const { data: recentComments } = await supabase
         .from('blog_comments')
-        .select(`
+        .select(
+          `
           id,
           content,
           status,
           created_at,
           user_id,
           blog_posts!inner(title)
-        `)
+        `
+        )
         .order('created_at', { ascending: false })
         .limit(5);
 
@@ -117,19 +133,23 @@ function BlogCMSDashboard() {
         totalTags: totalTags || 0,
         recentPosts: recentPosts || [],
         popularPosts: popularPosts || [],
-        recentComments: recentComments || []
+        recentComments: recentComments || [],
       });
     } catch (error) {
       logger.error('Error fetching dashboard stats:', error);
       toast({
         title: 'Error',
         description: 'Failed to fetch dashboard statistics',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchDashboardStats();
+  }, [fetchDashboardStats]);
 
   if (loading) {
     return (
@@ -185,9 +205,7 @@ function BlogCMSDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalViews.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
-              Across all posts
-            </p>
+            <p className="text-xs text-muted-foreground">Across all posts</p>
           </CardContent>
         </Card>
 
@@ -198,9 +216,7 @@ function BlogCMSDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalLikes}</div>
-            <p className="text-xs text-muted-foreground">
-              Total likes received
-            </p>
+            <p className="text-xs text-muted-foreground">Total likes received</p>
           </CardContent>
         </Card>
 
@@ -246,7 +262,8 @@ function BlogCMSDashboard() {
                       {post.title}
                     </Link>
                     <p className="text-xs text-muted-foreground">
-                      {post.status === 'published' ? 'Published' : 'Draft'} • {post.view_count || 0} views
+                      {post.status === 'published' ? 'Published' : 'Draft'} • {post.view_count || 0}{' '}
+                      views
                     </p>
                   </div>
                 </div>
@@ -308,15 +325,17 @@ function BlogCMSDashboard() {
               {stats.recentComments.map(comment => (
                 <div key={comment.id} className="space-y-1">
                   <p className="text-sm truncate">{comment.content}</p>
-                  <p className="text-xs text-muted-foreground">
-                    on "{comment.blog_posts?.title}"
-                  </p>
+                  <p className="text-xs text-muted-foreground">on "{comment.blog_posts?.title}"</p>
                   <div className="flex items-center gap-2">
-                    <span className={`text-xs px-1.5 py-0.5 rounded ${
-                      comment.status === 'approved' ? 'bg-green-500/20 text-green-600' :
-                      comment.status === 'pending' ? 'bg-yellow-500/20 text-yellow-600' :
-                      'bg-red-500/20 text-red-600'
-                    }`}>
+                    <span
+                      className={`text-xs px-1.5 py-0.5 rounded ${
+                        comment.status === 'approved'
+                          ? 'bg-green-500/20 text-green-600'
+                          : comment.status === 'pending'
+                            ? 'bg-yellow-500/20 text-yellow-600'
+                            : 'bg-red-500/20 text-red-600'
+                      }`}
+                    >
                       {comment.status}
                     </span>
                   </div>

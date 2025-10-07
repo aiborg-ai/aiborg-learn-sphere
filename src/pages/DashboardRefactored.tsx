@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -9,8 +9,20 @@ import { useCourses } from '@/hooks/useCourses';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import {
-  BookOpen, Trophy, Clock, FileText, Bell, AlertCircle, Loader2, ArrowLeft,
-  Target, TrendingUp, Award, BarChart3, Zap, Brain
+  BookOpen,
+  Trophy,
+  Clock,
+  FileText,
+  Bell,
+  AlertCircle,
+  Loader2,
+  ArrowLeft,
+  Target,
+  TrendingUp,
+  Award,
+  BarChart3,
+  Zap,
+  Brain,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -19,7 +31,10 @@ import { DashboardStats, type DashboardStatsData } from '@/components/dashboard/
 import { CourseProgress, type UserProgress } from '@/components/dashboard/CourseProgress';
 import { AchievementsSection, type Achievement } from '@/components/dashboard/AchievementsSection';
 import { AssignmentsSection, type Assignment } from '@/components/dashboard/AssignmentsSection';
-import { NotificationsSection, type Notification } from '@/components/dashboard/NotificationsSection';
+import {
+  NotificationsSection,
+  type Notification,
+} from '@/components/dashboard/NotificationsSection';
 import { MiniCalendarWidget } from '@/components/calendar/MiniCalendarWidget';
 import { AIInsightsWidget } from '@/components/dashboard/AIInsightsWidget';
 import { StudyRecommendations } from '@/components/dashboard/StudyRecommendations';
@@ -34,7 +49,7 @@ export default function DashboardRefactored() {
     certificatesEarned: 0,
     currentStreak: 0,
     pendingAssignments: 0,
-    unreadNotifications: 0
+    unreadNotifications: 0,
   });
   const [userProgress, setUserProgress] = useState<UserProgress[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
@@ -47,17 +62,7 @@ export default function DashboardRefactored() {
   const { courses } = useCourses();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!authLoading) {
-      if (!user) {
-        navigate('/auth');
-        return;
-      }
-      fetchDashboardData();
-    }
-  }, [user, authLoading, navigate]);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -82,17 +87,19 @@ export default function DashboardRefactored() {
           certificatesEarned: dashboardData.certificates_earned || 0,
           currentStreak: dashboardData.current_streak || 0,
           pendingAssignments: dashboardData.pending_assignments || 0,
-          unreadNotifications: dashboardData.unread_notifications || 0
+          unreadNotifications: dashboardData.unread_notifications || 0,
         });
       }
 
       // Fetch user progress
       const { data: progressData, error: progressError } = await supabase
         .from('user_progress')
-        .select(`
+        .select(
+          `
           *,
           courses!inner(title)
-        `)
+        `
+        )
         .eq('user_id', user.id)
         .order('last_accessed', { ascending: false });
 
@@ -101,23 +108,27 @@ export default function DashboardRefactored() {
       }
 
       if (progressData) {
-        setUserProgress(progressData.map(p => ({
-          courseId: p.course_id,
-          courseTitle: p.courses?.title || 'Unknown Course',
-          progressPercentage: p.progress_percentage || 0,
-          timeSpentMinutes: p.time_spent_minutes || 0,
-          lastAccessed: p.last_accessed,
-          completedAt: p.completed_at
-        })));
+        setUserProgress(
+          progressData.map(p => ({
+            courseId: p.course_id,
+            courseTitle: p.courses?.title || 'Unknown Course',
+            progressPercentage: p.progress_percentage || 0,
+            timeSpentMinutes: p.time_spent_minutes || 0,
+            lastAccessed: p.last_accessed,
+            completedAt: p.completed_at,
+          }))
+        );
       }
 
       // Fetch achievements
       const { data: achievementData, error: achievementError } = await supabase
         .from('user_achievements')
-        .select(`
+        .select(
+          `
           *,
           achievements!inner(name, description, icon_emoji, rarity, is_featured)
-        `)
+        `
+        )
         .eq('user_id', user.id)
         .order('earned_at', { ascending: false });
 
@@ -126,15 +137,17 @@ export default function DashboardRefactored() {
       }
 
       if (achievementData) {
-        setAchievements(achievementData.map(a => ({
-          id: a.id,
-          name: a.achievements?.name || 'Unknown Achievement',
-          description: a.achievements?.description || '',
-          iconEmoji: a.achievements?.icon_emoji || '🏆',
-          rarity: a.achievements?.rarity || 'Common',
-          earnedAt: a.earned_at,
-          isFeatured: a.achievements?.is_featured || false
-        })));
+        setAchievements(
+          achievementData.map(a => ({
+            id: a.id,
+            name: a.achievements?.name || 'Unknown Achievement',
+            description: a.achievements?.description || '',
+            iconEmoji: a.achievements?.icon_emoji || '🏆',
+            rarity: a.achievements?.rarity || 'Common',
+            earnedAt: a.earned_at,
+            isFeatured: a.achievements?.is_featured || false,
+          }))
+        );
       }
 
       // Fetch notifications
@@ -150,24 +163,28 @@ export default function DashboardRefactored() {
       }
 
       if (notificationData) {
-        setNotifications(notificationData.map(n => ({
-          id: n.id,
-          type: n.type || 'info',
-          title: n.title,
-          message: n.message,
-          isRead: n.is_read || false,
-          createdAt: n.created_at,
-          actionUrl: n.action_url
-        })));
+        setNotifications(
+          notificationData.map(n => ({
+            id: n.id,
+            type: n.type || 'info',
+            title: n.title,
+            message: n.message,
+            isRead: n.is_read || false,
+            createdAt: n.created_at,
+            actionUrl: n.action_url,
+          }))
+        );
       }
 
       // Fetch assignments
       const { data: assignmentData, error: assignmentError } = await supabase
         .from('homework_assignments')
-        .select(`
+        .select(
+          `
           *,
           courses!inner(title)
-        `)
+        `
+        )
         .eq('user_id', user.id)
         .order('due_date', { ascending: true });
 
@@ -176,44 +193,50 @@ export default function DashboardRefactored() {
       }
 
       if (assignmentData) {
-        setAssignments(assignmentData.map(a => ({
-          id: a.id,
-          title: a.title,
-          courseTitle: a.courses?.title || 'Unknown Course',
-          dueDate: a.due_date,
-          status: a.status || 'pending'
-        })));
+        setAssignments(
+          assignmentData.map(a => ({
+            id: a.id,
+            title: a.title,
+            courseTitle: a.courses?.title || 'Unknown Course',
+            dueDate: a.due_date,
+            status: a.status || 'pending',
+          }))
+        );
       }
 
       // Update enrollments count in stats if we have the data
       if (enrollments) {
         setStats(prev => ({
           ...prev,
-          enrolledCourses: enrollments.length
+          enrolledCourses: enrollments.length,
         }));
       }
-
     } catch (error) {
       logger.error('Error fetching dashboard data:', error);
     } finally {
       setDataLoading(false);
     }
-  };
+  }, [user, enrollments]);
+
+  useEffect(() => {
+    if (!authLoading) {
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
+      fetchDashboardData();
+    }
+  }, [user, authLoading, navigate, fetchDashboardData]);
 
   const handleMarkNotificationAsRead = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('notifications')
-        .update({ is_read: true })
-        .eq('id', id);
+      const { error } = await supabase.from('notifications').update({ is_read: true }).eq('id', id);
 
       if (!error) {
-        setNotifications(prev => prev.map(n =>
-          n.id === id ? { ...n, isRead: true } : n
-        ));
+        setNotifications(prev => prev.map(n => (n.id === id ? { ...n, isRead: true } : n)));
         setStats(prev => ({
           ...prev,
-          unreadNotifications: Math.max(0, prev.unreadNotifications - 1)
+          unreadNotifications: Math.max(0, prev.unreadNotifications - 1),
         }));
       }
     } catch (error) {
@@ -266,9 +289,7 @@ export default function DashboardRefactored() {
               <h1 className="text-3xl font-display font-bold text-white mb-2">
                 Welcome back, {profile?.display_name || 'Learner'}!
               </h1>
-              <p className="text-white/80">
-                Track your learning progress and manage your courses
-              </p>
+              <p className="text-white/80">Track your learning progress and manage your courses</p>
             </div>
             <div className="text-right">
               <p className="text-white/60 text-sm">Member since</p>
@@ -298,7 +319,10 @@ export default function DashboardRefactored() {
               <Clock className="h-4 w-4 mr-2" />
               My Courses
             </TabsTrigger>
-            <TabsTrigger value="achievements" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="achievements"
+              className="text-white data-[state=active]:bg-white/20"
+            >
               <Trophy className="h-4 w-4 mr-2" />
               Achievements
             </TabsTrigger>
@@ -310,7 +334,10 @@ export default function DashboardRefactored() {
               <FileText className="h-4 w-4 mr-2" />
               Assignments
             </TabsTrigger>
-            <TabsTrigger value="notifications" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="notifications"
+              className="text-white data-[state=active]:bg-white/20"
+            >
               <Bell className="h-4 w-4 mr-2" />
               Notifications
               {stats.unreadNotifications > 0 && (
@@ -424,10 +451,7 @@ export default function DashboardRefactored() {
                   </h2>
                   <p className="text-white/60 mt-1">Track your AI augmentation progress</p>
                 </div>
-                <Button
-                  onClick={() => navigate('/ai-assessment')}
-                  className="btn-hero"
-                >
+                <Button onClick={() => navigate('/ai-assessment')} className="btn-hero">
                   <Target className="h-4 w-4 mr-2" />
                   Take Assessment
                 </Button>

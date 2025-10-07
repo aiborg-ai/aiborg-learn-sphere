@@ -50,12 +50,12 @@ export const useEvents = () => {
 
   useEffect(() => {
     fetchEvents();
-  }, []);
+  }, [fetchEvents]);
 
-  return { 
-    events, 
-    loading, 
-    error, 
-    refetch: fetchEvents
+  return {
+    events,
+    loading,
+    error,
+    refetch: fetchEvents,
   };
 };

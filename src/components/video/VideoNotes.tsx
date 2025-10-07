@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { BookmarkPlus, Edit, Save, X } from 'lucide-react';
-import { Note } from './types';
+import type { Note } from './types';
 
 interface VideoNotesProps {
   notes: Note[];
@@ -29,7 +29,7 @@ export function VideoNotes({
   onDeleteNote,
   onJumpToNote,
   onSetEditingNoteId,
-  formatTime
+  formatTime,
 }: VideoNotesProps) {
   return (
     <div className="space-y-3">
@@ -39,17 +39,12 @@ export function VideoNotes({
       <div className="space-y-2">
         <Textarea
           value={newNoteText}
-          onChange={(e) => onNewNoteTextChange(e.target.value)}
+          onChange={e => onNewNoteTextChange(e.target.value)}
           placeholder="Add a note at current time..."
           className="bg-gray-800 border-gray-700 text-white text-sm"
           rows={3}
         />
-        <Button
-          size="sm"
-          onClick={onAddNote}
-          disabled={!newNoteText.trim()}
-          className="w-full"
-        >
+        <Button size="sm" onClick={onAddNote} disabled={!newNoteText.trim()} className="w-full">
           <BookmarkPlus className="h-4 w-4 mr-2" />
           Add Note at {formatTime(currentTime)}
         </Button>
@@ -57,11 +52,8 @@ export function VideoNotes({
 
       {/* Notes List */}
       <div className="space-y-2">
-        {notes.map((note) => (
-          <div
-            key={note.id}
-            className="bg-gray-800 p-3 rounded-lg space-y-2"
-          >
+        {notes.map(note => (
+          <div key={note.id} className="bg-gray-800 p-3 rounded-lg space-y-2">
             <div className="flex items-center justify-between">
               <button
                 onClick={() => onJumpToNote(note.timestamp)}
@@ -76,34 +68,24 @@ export function VideoNotes({
                       size="sm"
                       variant="ghost"
                       onClick={() => {
-                        const textarea = document.querySelector(`#note-${note.id}`) as HTMLTextAreaElement;
+                        const textarea = document.querySelector(
+                          `#note-${note.id}`
+                        ) as HTMLTextAreaElement;
                         onUpdateNote(note.id, textarea.value);
                       }}
                     >
                       <Save className="h-3 w-3" />
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => onSetEditingNoteId(null)}
-                    >
+                    <Button size="sm" variant="ghost" onClick={() => onSetEditingNoteId(null)}>
                       <X className="h-3 w-3" />
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => onSetEditingNoteId(note.id)}
-                    >
+                    <Button size="sm" variant="ghost" onClick={() => onSetEditingNoteId(note.id)}>
                       <Edit className="h-3 w-3" />
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => onDeleteNote(note.id)}
-                    >
+                    <Button size="sm" variant="ghost" onClick={() => onDeleteNote(note.id)}>
                       <X className="h-3 w-3" />
                     </Button>
                   </>

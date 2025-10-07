@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { Quiz } from './types';
+import type { Quiz } from './types';
 
 export function useVideoQuiz(
   quizzes: Quiz[],
@@ -15,9 +15,8 @@ export function useVideoQuiz(
 
   useEffect(() => {
     // Check for quiz at current time
-    const quiz = quizzes.find(q =>
-      Math.abs(q.timestamp - currentTime) < 1 &&
-      !quizAnswered.has(q.id)
+    const quiz = quizzes.find(
+      q => Math.abs(q.timestamp - currentTime) < 1 && !quizAnswered.has(q.id)
     );
 
     if (quiz && isPlaying) {
@@ -36,7 +35,7 @@ export function useVideoQuiz(
       description: isCorrect
         ? 'Great job! Continue watching.'
         : 'Try again next time. Keep learning!',
-      variant: isCorrect ? 'default' : 'destructive'
+      variant: isCorrect ? 'default' : 'destructive',
     });
 
     setQuizAnswered(prev => new Set(prev).add(currentQuiz.id));
@@ -48,6 +47,6 @@ export function useVideoQuiz(
 
   return {
     currentQuiz,
-    handleQuizAnswer
+    handleQuizAnswer,
   };
 }

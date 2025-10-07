@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@supabase/supabase-js';
 
 // Test configuration
@@ -7,7 +8,7 @@ const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'test-key';
 const functionUrl = `${supabaseUrl}/functions/v1/validate-template`;
 
 describe('validate-template Edge Function Integration Tests', () => {
-  let supabase: any;
+  let supabase: SupabaseClient;
   let authToken: string;
 
   beforeAll(async () => {
@@ -15,7 +16,9 @@ describe('validate-template Edge Function Integration Tests', () => {
     supabase = createClient(supabaseUrl, supabaseKey);
 
     // Get auth token for testing
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     authToken = session?.access_token || '';
   });
 
@@ -23,28 +26,30 @@ describe('validate-template Edge Function Integration Tests', () => {
     it('should validate a valid course template', async () => {
       const validCourse = {
         type: 'course',
-        data: [{
-          title: 'Test Course',
-          description: 'A test course for validation',
-          audiences: ['Student'],
-          mode: 'Online',
-          duration: '4 weeks',
-          price: '₹5000',
-          level: 'Beginner',
-          start_date: '2025-04-01',
-          features: ['Videos', 'Assignments'],
-          keywords: ['test', 'validation'],
-          category: 'Technology'
-        }]
+        data: [
+          {
+            title: 'Test Course',
+            description: 'A test course for validation',
+            audiences: ['Student'],
+            mode: 'Online',
+            duration: '4 weeks',
+            price: '₹5000',
+            level: 'Beginner',
+            start_date: '2025-04-01',
+            features: ['Videos', 'Assignments'],
+            keywords: ['test', 'validation'],
+            category: 'Technology',
+          },
+        ],
       };
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(validCourse)
+        body: JSON.stringify(validCourse),
       });
 
       const result = await response.json();
@@ -59,28 +64,30 @@ describe('validate-template Edge Function Integration Tests', () => {
     it('should detect invalid course fields', async () => {
       const invalidCourse = {
         type: 'course',
-        data: [{
-          title: '', // Empty title
-          description: 'A test course',
-          audiences: ['Invalid'], // Invalid audience
-          mode: 'InvalidMode', // Invalid mode
-          duration: '4 weeks',
-          price: 'abc123', // Invalid price format
-          level: 'Expert', // Invalid level
-          start_date: 'invalid-date', // Invalid date
-          features: [],
-          keywords: [],
-          category: 'InvalidCategory' // Invalid category
-        }]
+        data: [
+          {
+            title: '', // Empty title
+            description: 'A test course',
+            audiences: ['Invalid'], // Invalid audience
+            mode: 'InvalidMode', // Invalid mode
+            duration: '4 weeks',
+            price: 'abc123', // Invalid price format
+            level: 'Expert', // Invalid level
+            start_date: 'invalid-date', // Invalid date
+            features: [],
+            keywords: [],
+            category: 'InvalidCategory', // Invalid category
+          },
+        ],
       };
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(invalidCourse)
+        body: JSON.stringify(invalidCourse),
       });
 
       const result = await response.json();
@@ -108,7 +115,7 @@ describe('validate-template Edge Function Integration Tests', () => {
             start_date: '2025-04-01',
             features: ['Videos'],
             keywords: ['test'],
-            category: 'Technology'
+            category: 'Technology',
           },
           {
             title: 'duplicate course', // Case-insensitive duplicate
@@ -121,21 +128,21 @@ describe('validate-template Edge Function Integration Tests', () => {
             start_date: '2025-05-01',
             features: ['Projects'],
             keywords: ['duplicate'],
-            category: 'Business'
-          }
+            category: 'Business',
+          },
         ],
         options: {
-          checkDuplicates: true
-        }
+          checkDuplicates: true,
+        },
       };
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(duplicateCourses)
+        body: JSON.stringify(duplicateCourses),
       });
 
       const result = await response.json();
@@ -148,31 +155,33 @@ describe('validate-template Edge Function Integration Tests', () => {
     it('should validate batch of courses', async () => {
       const batchCourses = {
         type: 'course',
-        data: Array(10).fill(null).map((_, i) => ({
-          title: `Course ${i + 1}`,
-          description: `Description for course ${i + 1}`,
-          audiences: ['Student', 'Professional'],
-          mode: i % 2 === 0 ? 'Online' : 'Hybrid',
-          duration: `${(i + 1) * 2} weeks`,
-          price: `₹${(i + 1) * 1000}`,
-          level: ['Beginner', 'Intermediate', 'Advanced'][i % 3],
-          start_date: `2025-0${(i % 9) + 1}-01`,
-          features: ['Videos', 'Quizzes', 'Certificate'],
-          keywords: ['batch', 'test', `course${i}`],
-          category: ['Technology', 'Business', 'Design'][i % 3]
-        })),
+        data: Array(10)
+          .fill(null)
+          .map((_, i) => ({
+            title: `Course ${i + 1}`,
+            description: `Description for course ${i + 1}`,
+            audiences: ['Student', 'Professional'],
+            mode: i % 2 === 0 ? 'Online' : 'Hybrid',
+            duration: `${(i + 1) * 2} weeks`,
+            price: `₹${(i + 1) * 1000}`,
+            level: ['Beginner', 'Intermediate', 'Advanced'][i % 3],
+            start_date: `2025-0${(i % 9) + 1}-01`,
+            features: ['Videos', 'Quizzes', 'Certificate'],
+            keywords: ['batch', 'test', `course${i}`],
+            category: ['Technology', 'Business', 'Design'][i % 3],
+          })),
         options: {
-          batchMode: true
-        }
+          batchMode: true,
+        },
       };
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(batchCourses)
+        body: JSON.stringify(batchCourses),
       });
 
       const result = await response.json();
@@ -189,27 +198,29 @@ describe('validate-template Edge Function Integration Tests', () => {
     it('should validate a valid event template', async () => {
       const validEvent = {
         type: 'event',
-        data: [{
-          name: 'Test Workshop',
-          description: 'A test workshop event',
-          event_type: 'workshop',
-          date: '2025-03-15',
-          time: '10:00',
-          duration: '3 hours',
-          location: 'Online',
-          max_attendees: 50,
-          price: '₹2000',
-          category: 'Technology'
-        }]
+        data: [
+          {
+            name: 'Test Workshop',
+            description: 'A test workshop event',
+            event_type: 'workshop',
+            date: '2025-03-15',
+            time: '10:00',
+            duration: '3 hours',
+            location: 'Online',
+            max_attendees: 50,
+            price: '₹2000',
+            category: 'Technology',
+          },
+        ],
       };
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(validEvent)
+        body: JSON.stringify(validEvent),
       });
 
       const result = await response.json();
@@ -223,23 +234,25 @@ describe('validate-template Edge Function Integration Tests', () => {
     it('should detect invalid event fields', async () => {
       const invalidEvent = {
         type: 'event',
-        data: [{
-          name: '', // Empty name
-          description: 'Test event',
-          event_type: 'party', // Invalid type
-          date: 'not-a-date', // Invalid date
-          price: 'invalid', // Invalid price
-          category: 'Unknown' // Invalid category
-        }]
+        data: [
+          {
+            name: '', // Empty name
+            description: 'Test event',
+            event_type: 'party', // Invalid type
+            date: 'not-a-date', // Invalid date
+            price: 'invalid', // Invalid price
+            category: 'Unknown', // Invalid category
+          },
+        ],
       };
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(invalidEvent)
+        body: JSON.stringify(invalidEvent),
       });
 
       const result = await response.json();
@@ -260,7 +273,7 @@ describe('validate-template Edge Function Integration Tests', () => {
             event_type: 'workshop',
             date: '2025-03-15',
             price: '₹2000',
-            category: 'Technology'
+            category: 'Technology',
           },
           {
             name: 'ai workshop', // Case-insensitive duplicate
@@ -268,21 +281,21 @@ describe('validate-template Edge Function Integration Tests', () => {
             event_type: 'workshop',
             date: '2025-03-15', // Same date
             price: '₹3000',
-            category: 'Business'
-          }
+            category: 'Business',
+          },
         ],
         options: {
-          checkDuplicates: true
-        }
+          checkDuplicates: true,
+        },
       };
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(duplicateEvents)
+        body: JSON.stringify(duplicateEvents),
       });
 
       const result = await response.json();
@@ -308,7 +321,7 @@ describe('validate-template Edge Function Integration Tests', () => {
             start_date: '2025-04-01',
             features: ['Videos'],
             keywords: ['test'],
-            category: 'Technology'
+            category: 'Technology',
           },
           {
             title: 'Same Course',
@@ -321,21 +334,21 @@ describe('validate-template Edge Function Integration Tests', () => {
             start_date: '2025-04-01',
             features: ['Videos'],
             keywords: ['test'],
-            category: 'Technology'
-          }
+            category: 'Technology',
+          },
         ],
         options: {
-          checkDuplicates: false
-        }
+          checkDuplicates: false,
+        },
       };
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       const result = await response.json();
@@ -348,35 +361,37 @@ describe('validate-template Edge Function Integration Tests', () => {
     it('should validate dependencies when enabled', async () => {
       const data = {
         type: 'course',
-        data: [{
-          title: 'Advanced Course',
-          description: 'Requires prerequisites',
-          audiences: ['Professional'],
-          mode: 'Online',
-          duration: '8 weeks',
-          price: '₹15000',
-          level: 'Advanced',
-          start_date: '2025-06-01',
-          features: ['Videos', 'Projects'],
-          keywords: ['advanced'],
-          category: 'Technology',
-          prerequisites: ['Basic Programming', 'Data Structures'] // These would be validated
-        }],
+        data: [
+          {
+            title: 'Advanced Course',
+            description: 'Requires prerequisites',
+            audiences: ['Professional'],
+            mode: 'Online',
+            duration: '8 weeks',
+            price: '₹15000',
+            level: 'Advanced',
+            start_date: '2025-06-01',
+            features: ['Videos', 'Projects'],
+            keywords: ['advanced'],
+            category: 'Technology',
+            prerequisites: ['Basic Programming', 'Data Structures'], // These would be validated
+          },
+        ],
         options: {
-          validateDependencies: true
-        }
+          validateDependencies: true,
+        },
       };
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
-      const result = await response.json();
+      const _result = await response.json();
 
       expect(response.ok).toBe(true);
       // Dependencies validation would check if prerequisites exist
@@ -387,28 +402,30 @@ describe('validate-template Edge Function Integration Tests', () => {
     it('should handle missing authentication', async () => {
       const data = {
         type: 'course',
-        data: [{
-          title: 'Test Course',
-          description: 'Test',
-          audiences: ['Student'],
-          mode: 'Online',
-          duration: '4 weeks',
-          price: '₹5000',
-          level: 'Beginner',
-          start_date: '2025-04-01',
-          features: ['Videos'],
-          keywords: ['test'],
-          category: 'Technology'
-        }]
+        data: [
+          {
+            title: 'Test Course',
+            description: 'Test',
+            audiences: ['Student'],
+            mode: 'Online',
+            duration: '4 weeks',
+            price: '₹5000',
+            level: 'Beginner',
+            start_date: '2025-04-01',
+            features: ['Videos'],
+            keywords: ['test'],
+            category: 'Technology',
+          },
+        ],
       };
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
           // No Authorization header
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       expect(response.ok).toBe(false);
@@ -420,9 +437,9 @@ describe('validate-template Edge Function Integration Tests', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: 'invalid json {'
+        body: 'invalid json {',
       });
 
       expect(response.ok).toBe(false);
@@ -432,28 +449,30 @@ describe('validate-template Edge Function Integration Tests', () => {
     it('should handle missing type parameter', async () => {
       const data = {
         // Missing 'type' field
-        data: [{
-          title: 'Test Course',
-          description: 'Test',
-          audiences: ['Student'],
-          mode: 'Online',
-          duration: '4 weeks',
-          price: '₹5000',
-          level: 'Beginner',
-          start_date: '2025-04-01',
-          features: ['Videos'],
-          keywords: ['test'],
-          category: 'Technology'
-        }]
+        data: [
+          {
+            title: 'Test Course',
+            description: 'Test',
+            audiences: ['Student'],
+            mode: 'Online',
+            duration: '4 weeks',
+            price: '₹5000',
+            level: 'Beginner',
+            start_date: '2025-04-01',
+            features: ['Videos'],
+            keywords: ['test'],
+            category: 'Technology',
+          },
+        ],
       };
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       const result = await response.json();
@@ -465,16 +484,16 @@ describe('validate-template Edge Function Integration Tests', () => {
     it('should handle empty data array', async () => {
       const data = {
         type: 'course',
-        data: []
+        data: [],
       };
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       const result = await response.json();
@@ -488,28 +507,30 @@ describe('validate-template Edge Function Integration Tests', () => {
     it('should handle very large batch', async () => {
       const largeBatch = {
         type: 'course',
-        data: Array(100).fill(null).map((_, i) => ({
-          title: `Course ${i}`,
-          description: `Description ${i}`,
-          audiences: ['Student'],
-          mode: 'Online',
-          duration: '4 weeks',
-          price: '₹5000',
-          level: 'Beginner',
-          start_date: '2025-04-01',
-          features: ['Videos'],
-          keywords: ['test'],
-          category: 'Technology'
-        }))
+        data: Array(100)
+          .fill(null)
+          .map((_, i) => ({
+            title: `Course ${i}`,
+            description: `Description ${i}`,
+            audiences: ['Student'],
+            mode: 'Online',
+            duration: '4 weeks',
+            price: '₹5000',
+            level: 'Beginner',
+            start_date: '2025-04-01',
+            features: ['Videos'],
+            keywords: ['test'],
+            category: 'Technology',
+          })),
       };
 
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(largeBatch)
+        body: JSON.stringify(largeBatch),
       });
 
       const result = await response.json();
@@ -523,19 +544,21 @@ describe('validate-template Edge Function Integration Tests', () => {
     it('should validate single item quickly', async () => {
       const data = {
         type: 'course',
-        data: [{
-          title: 'Performance Test',
-          description: 'Testing speed',
-          audiences: ['Student'],
-          mode: 'Online',
-          duration: '4 weeks',
-          price: '₹5000',
-          level: 'Beginner',
-          start_date: '2025-04-01',
-          features: ['Videos'],
-          keywords: ['test'],
-          category: 'Technology'
-        }]
+        data: [
+          {
+            title: 'Performance Test',
+            description: 'Testing speed',
+            audiences: ['Student'],
+            mode: 'Online',
+            duration: '4 weeks',
+            price: '₹5000',
+            level: 'Beginner',
+            start_date: '2025-04-01',
+            features: ['Videos'],
+            keywords: ['test'],
+            category: 'Technology',
+          },
+        ],
       };
 
       const startTime = Date.now();
@@ -544,9 +567,9 @@ describe('validate-template Edge Function Integration Tests', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       const endTime = Date.now();
@@ -559,18 +582,20 @@ describe('validate-template Edge Function Integration Tests', () => {
     it('should handle batch validation efficiently', async () => {
       const batchData = {
         type: 'event',
-        data: Array(50).fill(null).map((_, i) => ({
-          name: `Event ${i}`,
-          description: `Description ${i}`,
-          event_type: 'workshop',
-          date: '2025-03-15',
-          price: `₹${1000 * (i + 1)}`,
-          category: 'Technology'
-        })),
+        data: Array(50)
+          .fill(null)
+          .map((_, i) => ({
+            name: `Event ${i}`,
+            description: `Description ${i}`,
+            event_type: 'workshop',
+            date: '2025-03-15',
+            price: `₹${1000 * (i + 1)}`,
+            category: 'Technology',
+          })),
         options: {
           batchMode: true,
-          checkDuplicates: true
-        }
+          checkDuplicates: true,
+        },
       };
 
       const startTime = Date.now();
@@ -579,9 +604,9 @@ describe('validate-template Edge Function Integration Tests', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(batchData)
+        body: JSON.stringify(batchData),
       });
 
       const endTime = Date.now();

@@ -1,10 +1,15 @@
 import { useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
-import { Chapter } from './types';
+import type { Chapter } from './types';
+
+interface User {
+  id: string;
+  email?: string;
+}
 
 interface UseVideoProgressProps {
-  user: any;
+  user: User | null;
   contentId: string;
   courseId?: number;
   currentTime: number;
@@ -30,7 +35,7 @@ export function useVideoProgress({
   videoRef,
   onProgressUpdate,
   setWatchedPercentage,
-  setLastSavedProgress
+  setLastSavedProgress,
 }: UseVideoProgressProps) {
   const loadProgress = useCallback(async () => {
     if (!user || !contentId) return;
@@ -67,9 +72,8 @@ export function useVideoProgress({
     if (Math.abs(currentProgress - lastSavedProgress) < 1) return;
 
     try {
-      await supabase
-        .from('content_views')
-        .upsert({
+      await supabase.from('content_views').upsert(
+        {
           user_id: user.id,
           content_id: contentId,
           content_type: 'video',
@@ -81,27 +85,30 @@ export function useVideoProgress({
             currentTime,
             duration,
             playbackSpeed,
-            lastChapter: currentChapter?.id
-          }
-        }, {
-          onConflict: 'user_id,content_id,content_type'
-        });
+            lastChapter: currentChapter?.id,
+          },
+        },
+        {
+          onConflict: 'user_id,content_id,content_type',
+        }
+      );
 
       setLastSavedProgress(currentProgress);
 
       // Update user progress if part of a course
       if (courseId) {
-        await supabase
-          .from('user_progress')
-          .upsert({
+        await supabase.from('user_progress').upsert(
+          {
             user_id: user.id,
             course_id: courseId,
             progress_percentage: currentProgress,
             time_spent_minutes: Math.floor(currentTime / 60),
-            current_position: JSON.stringify({ videoId: contentId, timestamp: currentTime })
-          }, {
-            onConflict: 'user_id,course_id'
-          });
+            current_position: JSON.stringify({ videoId: contentId, timestamp: currentTime }),
+          },
+          {
+            onConflict: 'user_id,course_id',
+          }
+        );
       }
 
       // Trigger callback if provided
@@ -122,7 +129,7 @@ export function useVideoProgress({
     lastSavedProgress,
     videoRef,
     onProgressUpdate,
-    setLastSavedProgress
+    setLastSavedProgress,
   ]);
 
   useEffect(() => {

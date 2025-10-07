@@ -7,8 +7,12 @@ import { Trophy, Plus, Loader2 } from 'lucide-react';
 import { useAchievements } from './useAchievements';
 import { AchievementList } from './AchievementList';
 import { AchievementStats } from './AchievementStats';
-import { CreateAchievementDialog, EditAchievementDialog, AllocateAchievementDialog } from './AchievementDialogs';
-import { Achievement, AchievementFormData } from './types';
+import {
+  CreateAchievementDialog,
+  EditAchievementDialog,
+  AllocateAchievementDialog,
+} from './AchievementDialogs';
+import type { Achievement, AchievementFormData } from './types';
 
 const initialFormData: AchievementFormData = {
   name: '',
@@ -19,7 +23,7 @@ const initialFormData: AchievementFormData = {
   points: 10,
   auto_allocate: false,
   criteria_type: 'manual',
-  criteria_value: ''
+  criteria_value: '',
 };
 
 export function AchievementManager() {
@@ -30,7 +34,7 @@ export function AchievementManager() {
     createAchievement,
     updateAchievement,
     deleteAchievement,
-    allocateAchievement
+    allocateAchievement,
   } = useAchievements();
 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -88,7 +92,7 @@ export function AchievementManager() {
       points: achievement.points,
       auto_allocate: achievement.auto_allocate,
       criteria_type: achievement.criteria?.type || 'manual',
-      criteria_value: achievement.criteria?.value || ''
+      criteria_value: achievement.criteria?.value || '',
     });
     setIsEditDialogOpen(true);
   };
@@ -165,10 +169,7 @@ export function AchievementManager() {
           </TabsContent>
 
           <TabsContent value="allocation" className="space-y-4">
-            <AchievementStats
-              users={users}
-              onAllocateToUser={handleAllocateToUser}
-            />
+            <AchievementStats users={users} onAllocateToUser={handleAllocateToUser} />
           </TabsContent>
         </Tabs>
 

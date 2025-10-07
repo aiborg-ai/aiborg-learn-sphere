@@ -40,7 +40,7 @@ import {
   Clock,
   FileText,
   Copy,
-  ExternalLink
+  ExternalLink,
 } from 'lucide-react';
 import BlogPostEditor from './BlogPostEditor';
 import { format } from 'date-fns';
@@ -87,11 +87,13 @@ function BlogPostManager() {
       setLoading(true);
       let query = supabase
         .from('blog_posts')
-        .select(`
+        .select(
+          `
           *,
           blog_categories(name, color),
           profiles!blog_posts_author_id_fkey(email)
-        `)
+        `
+        )
         .order('created_at', { ascending: false });
 
       if (statusFilter !== 'all') {
@@ -107,7 +109,7 @@ function BlogPostManager() {
       toast({
         title: 'Error',
         description: 'Failed to fetch blog posts',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -118,52 +120,46 @@ function BlogPostManager() {
     if (!confirm('Are you sure you want to delete this post?')) return;
 
     try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from('blog_posts').delete().eq('id', id);
 
       if (error) throw error;
 
       toast({
         title: 'Success',
-        description: 'Post deleted successfully'
+        description: 'Post deleted successfully',
       });
       fetchPosts();
     } catch (error) {
       toast({
         title: 'Error',
         description: 'Failed to delete post',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
 
   const handleStatusChange = async (id: string, status: string) => {
     try {
-      const updateData: any = { status };
+      const updateData: { status: string; published_at?: string } = { status };
 
       if (status === 'published' && !posts.find(p => p.id === id)?.published_at) {
         updateData.published_at = new Date().toISOString();
       }
 
-      const { error } = await supabase
-        .from('blog_posts')
-        .update(updateData)
-        .eq('id', id);
+      const { error } = await supabase.from('blog_posts').update(updateData).eq('id', id);
 
       if (error) throw error;
 
       toast({
         title: 'Success',
-        description: `Post ${status === 'published' ? 'published' : `changed to ${status}`} successfully`
+        description: `Post ${status === 'published' ? 'published' : `changed to ${status}`} successfully`,
       });
       fetchPosts();
     } catch (error) {
       toast({
         title: 'Error',
         description: 'Failed to update post status',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -179,14 +175,14 @@ function BlogPostManager() {
 
       toast({
         title: 'Success',
-        description: `Post ${!is_featured ? 'featured' : 'unfeatured'} successfully`
+        description: `Post ${!is_featured ? 'featured' : 'unfeatured'} successfully`,
       });
       fetchPosts();
     } catch (error) {
       toast({
         title: 'Error',
         description: 'Failed to update featured status',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -202,14 +198,14 @@ function BlogPostManager() {
 
       toast({
         title: 'Success',
-        description: `Post ${!is_sticky ? 'pinned' : 'unpinned'} successfully`
+        description: `Post ${!is_sticky ? 'pinned' : 'unpinned'} successfully`,
       });
       fetchPosts();
     } catch (error) {
       toast({
         title: 'Error',
         description: 'Failed to update sticky status',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -235,41 +231,45 @@ function BlogPostManager() {
         like_count: 0,
         comment_count: 0,
         created_at: undefined,
-        updated_at: undefined
+        updated_at: undefined,
       };
 
-      const { error: insertError } = await supabase
-        .from('blog_posts')
-        .insert(newPost);
+      const { error: insertError } = await supabase.from('blog_posts').insert(newPost);
 
       if (insertError) throw insertError;
 
       toast({
         title: 'Success',
-        description: 'Post duplicated successfully'
+        description: 'Post duplicated successfully',
       });
       fetchPosts();
     } catch (error) {
       toast({
         title: 'Error',
         description: 'Failed to duplicate post',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
 
-  const filteredPosts = posts.filter(post =>
-    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.slug.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPosts = posts.filter(
+    post =>
+      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.slug.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'published': return 'bg-green-500/20 text-green-600';
-      case 'draft': return 'bg-gray-500/20 text-gray-600';
-      case 'scheduled': return 'bg-blue-500/20 text-blue-600';
-      case 'archived': return 'bg-red-500/20 text-red-600';
-      default: return 'bg-gray-500/20 text-gray-600';
+      case 'published':
+        return 'bg-green-500/20 text-green-600';
+      case 'draft':
+        return 'bg-gray-500/20 text-gray-600';
+      case 'scheduled':
+        return 'bg-blue-500/20 text-blue-600';
+      case 'archived':
+        return 'bg-red-500/20 text-red-600';
+      default:
+        return 'bg-gray-500/20 text-gray-600';
     }
   };
 
@@ -291,10 +291,7 @@ function BlogPostManager() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Manage Posts</h2>
-        <Button
-          onClick={() => setShowEditor(true)}
-          className="btn-hero"
-        >
+        <Button onClick={() => setShowEditor(true)} className="btn-hero">
           <Plus className="mr-2 h-4 w-4" />
           New Post
         </Button>
@@ -310,7 +307,7 @@ function BlogPostManager() {
                 <Input
                   placeholder="Search posts..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
               </div>
@@ -364,10 +361,14 @@ function BlogPostManager() {
                         <div className="flex items-center gap-2">
                           <p className="font-medium">{post.title}</p>
                           {post.is_featured && (
-                            <Badge variant="secondary" className="text-xs">Featured</Badge>
+                            <Badge variant="secondary" className="text-xs">
+                              Featured
+                            </Badge>
                           )}
                           {post.is_sticky && (
-                            <Badge variant="secondary" className="text-xs">Pinned</Badge>
+                            <Badge variant="secondary" className="text-xs">
+                              Pinned
+                            </Badge>
                           )}
                         </div>
                         <p className="text-xs text-muted-foreground">{post.slug}</p>
@@ -376,16 +377,17 @@ function BlogPostManager() {
                     <TableCell>
                       {post.category && (
                         <Badge
-                          style={{ backgroundColor: post.category.color + '20', color: post.category.color }}
+                          style={{
+                            backgroundColor: post.category.color + '20',
+                            color: post.category.color,
+                          }}
                         >
                           {post.category.name}
                         </Badge>
                       )}
                     </TableCell>
                     <TableCell>
-                      <Badge className={getStatusColor(post.status)}>
-                        {post.status}
-                      </Badge>
+                      <Badge className={getStatusColor(post.status)}>{post.status}</Badge>
                     </TableCell>
                     <TableCell>
                       <div className="text-xs space-y-1">
@@ -445,7 +447,9 @@ function BlogPostManager() {
                             Duplicate
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => toggleFeatured(post.id, post.is_featured)}>
+                          <DropdownMenuItem
+                            onClick={() => toggleFeatured(post.id, post.is_featured)}
+                          >
                             {post.is_featured ? (
                               <>
                                 <EyeOff className="mr-2 h-4 w-4" />
@@ -463,7 +467,9 @@ function BlogPostManager() {
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           {post.status !== 'published' && (
-                            <DropdownMenuItem onClick={() => handleStatusChange(post.id, 'published')}>
+                            <DropdownMenuItem
+                              onClick={() => handleStatusChange(post.id, 'published')}
+                            >
                               Publish
                             </DropdownMenuItem>
                           )}
@@ -473,7 +479,9 @@ function BlogPostManager() {
                             </DropdownMenuItem>
                           )}
                           {post.status !== 'archived' && (
-                            <DropdownMenuItem onClick={() => handleStatusChange(post.id, 'archived')}>
+                            <DropdownMenuItem
+                              onClick={() => handleStatusChange(post.id, 'archived')}
+                            >
                               Archive
                             </DropdownMenuItem>
                           )}

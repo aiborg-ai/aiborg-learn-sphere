@@ -14,16 +14,18 @@ const validateEventTemplate = (data: Record<string, unknown>) => {
         errors: error.errors.map(err => ({
           field: err.path.join('.'),
           message: err.message,
-          code: err.code
-        }))
+          code: err.code,
+        })),
       };
     }
     throw error;
   }
 };
 
+type EventTemplate = z.infer<typeof EventTemplateSchema>;
+
 describe('EventTemplateSchema', () => {
-  let validEvent: any;
+  let validEvent: Record<string, unknown>;
 
   beforeEach(() => {
     validEvent = {
@@ -47,9 +49,9 @@ describe('EventTemplateSchema', () => {
       contact_info: {
         email: 'info@aisummit.com',
         phone: '+91-9876543210',
-        website: 'https://aisummit.com'
+        website: 'https://aisummit.com',
       },
-      category: 'Technology'
+      category: 'Technology',
     };
   });
 
@@ -155,13 +157,7 @@ describe('EventTemplateSchema', () => {
     });
 
     it('should accept flexible date formats', () => {
-      const flexibleDates = [
-        'March 2025',
-        'Q2 2025',
-        'Summer 2025',
-        'TBD',
-        'To be announced'
-      ];
+      const flexibleDates = ['March 2025', 'Q2 2025', 'Summer 2025', 'TBD', 'To be announced'];
 
       flexibleDates.forEach(date => {
         validEvent.date = date;
@@ -172,14 +168,7 @@ describe('EventTemplateSchema', () => {
     });
 
     it('should accept valid time formats', () => {
-      const validTimes = [
-        '09:00',
-        '14:30',
-        '18:00',
-        '9:00 AM',
-        '2:30 PM',
-        '10:00 IST'
-      ];
+      const validTimes = ['09:00', '14:30', '18:00', '9:00 AM', '2:30 PM', '10:00 IST'];
 
       validTimes.forEach(time => {
         validEvent.time = time;
@@ -216,7 +205,7 @@ describe('EventTemplateSchema', () => {
         '90 minutes',
         'Half day',
         'Full day',
-        '2-day workshop'
+        '2-day workshop',
       ];
 
       validDurations.forEach(duration => {
@@ -316,7 +305,7 @@ describe('EventTemplateSchema', () => {
         'Free',
         'FREE',
         '0',
-        '₹0'
+        '₹0',
       ];
 
       validPrices.forEach(price => {
@@ -328,13 +317,7 @@ describe('EventTemplateSchema', () => {
     });
 
     it('should reject invalid price formats', () => {
-      const invalidPrices = [
-        'abc',
-        '₹-100',
-        'Rs100',
-        'USD 100',
-        '100 dollars'
-      ];
+      const invalidPrices = ['abc', '₹-100', 'Rs100', 'USD 100', '100 dollars'];
 
       invalidPrices.forEach(price => {
         validEvent.price = price;
@@ -447,7 +430,7 @@ describe('EventTemplateSchema', () => {
       validEvent.contact_info = {
         email: 'test@example.com',
         phone: '+91-9876543210',
-        website: 'https://example.com'
+        website: 'https://example.com',
       };
       const result = validateEventTemplate(validEvent);
       expect(result.success).toBe(true);
@@ -455,7 +438,7 @@ describe('EventTemplateSchema', () => {
 
     it('should accept partial contact info', () => {
       validEvent.contact_info = {
-        email: 'test@example.com'
+        email: 'test@example.com',
       };
       const result = validateEventTemplate(validEvent);
       expect(result.success).toBe(true);
@@ -469,7 +452,7 @@ describe('EventTemplateSchema', () => {
 
     it('should validate email format in contact info', () => {
       validEvent.contact_info = {
-        email: 'invalid-email'
+        email: 'invalid-email',
       };
       const result = validateEventTemplate(validEvent);
       expect(result.success).toBe(false);
@@ -478,7 +461,7 @@ describe('EventTemplateSchema', () => {
 
     it('should accept valid URL in contact info', () => {
       validEvent.contact_info = {
-        website: 'https://www.example.com'
+        website: 'https://www.example.com',
       };
       const result = validateEventTemplate(validEvent);
       expect(result.success).toBe(true);
@@ -496,7 +479,7 @@ describe('EventTemplateSchema', () => {
       'Education',
       'Arts',
       'Science',
-      'Engineering'
+      'Engineering',
     ];
 
     validCategories.forEach(category => {
@@ -523,7 +506,7 @@ describe('EventTemplateSchema', () => {
         event_type: 'meetup',
         date: '2025-03-15',
         price: 'Free',
-        category: 'Technology'
+        category: 'Technology',
       };
       const result = validateEventTemplate(minimalEvent);
       expect(result.success).toBe(true);
@@ -551,7 +534,7 @@ describe('EventTemplateSchema', () => {
       'display',
       'certificate_provided',
       'recording_available',
-      'materials_provided'
+      'materials_provided',
     ];
 
     booleanFields.forEach(field => {
@@ -586,7 +569,7 @@ describe('EventTemplateSchema', () => {
 
     it('should handle event with special characters', () => {
       validEvent.name = 'AI & ML Summit - 2025 (Online)';
-      validEvent.organizer = 'O\'Reilly & Associates';
+      validEvent.organizer = "O'Reilly & Associates";
       validEvent.venue = 'Building #42, Floor-3';
       const result = validateEventTemplate(validEvent);
       expect(result.success).toBe(true);
@@ -616,7 +599,7 @@ describe('EventTemplateSchema', () => {
     it('should detect duplicate event by name (case-insensitive)', () => {
       const events = [
         { ...validEvent, name: 'AI Summit 2025' },
-        { ...validEvent, name: 'ai summit 2025' }
+        { ...validEvent, name: 'ai summit 2025' },
       ];
 
       // This would be handled by the validation service
@@ -628,7 +611,7 @@ describe('EventTemplateSchema', () => {
     it('should detect duplicate event by name and date combination', () => {
       const events = [
         { ...validEvent, name: 'Workshop', date: '2025-03-15' },
-        { ...validEvent, name: 'Workshop', date: '2025-03-15' }
+        { ...validEvent, name: 'Workshop', date: '2025-03-15' },
       ];
 
       const key1 = `${events[0].name.toLowerCase()}_${events[0].date}`;
@@ -639,7 +622,7 @@ describe('EventTemplateSchema', () => {
     it('should not flag as duplicate if names differ', () => {
       const events = [
         { ...validEvent, name: 'AI Summit' },
-        { ...validEvent, name: 'ML Summit' }
+        { ...validEvent, name: 'ML Summit' },
       ];
 
       const name1 = events[0].name.toLowerCase().trim();
@@ -650,7 +633,7 @@ describe('EventTemplateSchema', () => {
     it('should not flag as duplicate if dates differ', () => {
       const events = [
         { ...validEvent, name: 'Workshop', date: '2025-03-15' },
-        { ...validEvent, name: 'Workshop', date: '2025-03-16' }
+        { ...validEvent, name: 'Workshop', date: '2025-03-16' },
       ];
 
       const key1 = `${events[0].name.toLowerCase()}_${events[0].date}`;

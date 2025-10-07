@@ -6,6 +6,15 @@ import { logger } from '@/utils/logger';
  */
 
 /**
+ * Request object for rate limit middleware
+ */
+export interface RateLimitRequest {
+  userId?: string;
+  ip?: string;
+  [key: string]: unknown;
+}
+
+/**
  * Rate limit configuration
  * @interface RateLimitConfig
  */
@@ -65,13 +74,13 @@ export class RateLimiter {
       this.limits.set(key, {
         count: 1,
         resetTime: now + windowMs,
-        blocked: false
+        blocked: false,
       });
 
       return {
         allowed: true,
         remaining: maxRequests - 1,
-        resetTime: now + windowMs
+        resetTime: now + windowMs,
       };
     }
 
@@ -82,7 +91,7 @@ export class RateLimiter {
         allowed: false,
         remaining: 0,
         resetTime: entry.resetTime,
-        retryAfter
+        retryAfter,
       };
     }
 
@@ -100,14 +109,14 @@ export class RateLimiter {
         allowed: false,
         remaining: 0,
         resetTime: entry.resetTime,
-        retryAfter
+        retryAfter,
       };
     }
 
     return {
       allowed: true,
       remaining: maxRequests - entry.count,
-      resetTime: entry.resetTime
+      resetTime: entry.resetTime,
     };
   }
 
@@ -171,50 +180,50 @@ export const RateLimitPresets = {
   api: {
     maxRequests: 100,
     windowMs: 60000, // 1 minute
-    key: 'api'
+    key: 'api',
   },
 
   /** Authentication attempts */
   auth: {
     maxRequests: 5,
     windowMs: 300000, // 5 minutes
-    key: 'auth'
+    key: 'auth',
   },
 
   /** File uploads */
   upload: {
     maxRequests: 10,
     windowMs: 600000, // 10 minutes
-    key: 'upload'
+    key: 'upload',
   },
 
   /** Search queries */
   search: {
     maxRequests: 30,
     windowMs: 60000, // 1 minute
-    key: 'search'
+    key: 'search',
   },
 
   /** Form submissions */
   form: {
     maxRequests: 10,
     windowMs: 60000, // 1 minute
-    key: 'form'
+    key: 'form',
   },
 
   /** Password reset */
   passwordReset: {
     maxRequests: 3,
     windowMs: 3600000, // 1 hour
-    key: 'password-reset'
+    key: 'password-reset',
   },
 
   /** Email sending */
   email: {
     maxRequests: 5,
     windowMs: 300000, // 5 minutes
-    key: 'email'
-  }
+    key: 'email',
+  },
 };
 
 /**
@@ -225,14 +234,16 @@ export const RateLimitPresets = {
  * const limitedFunction = withRateLimit(RateLimitPresets.api)(originalFunction);
  */
 export function withRateLimit(config: RateLimitConfig) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (...args: unknown[]) {
       const limitCheck = rateLimiter.checkLimit(config);
 
       if (!limitCheck.allowed) {
-        throw new Error(`Rate limit exceeded. Try again in ${Math.ceil(limitCheck.retryAfter! / 1000)} seconds`);
+        throw new Error(
+          `Rate limit exceeded. Try again in ${Math.ceil(limitCheck.retryAfter! / 1000)} seconds`
+        );
       }
 
       try {
@@ -257,10 +268,10 @@ export function withRateLimit(config: RateLimitConfig) {
  * @returns {Function} Middleware function
  */
 export function rateLimitMiddleware(config: RateLimitConfig) {
-  return async (request: any, next: Function) => {
+  return async (request: RateLimitRequest, next: () => Promise<unknown>) => {
     const limitCheck = rateLimiter.checkLimit({
       ...config,
-      key: `${config.key}-${request.userId || request.ip || 'anonymous'}`
+      key: `${config.key}-${request.userId || request.ip || 'anonymous'}`,
     });
 
     if (!limitCheck.allowed) {
@@ -268,15 +279,15 @@ export function rateLimitMiddleware(config: RateLimitConfig) {
         error: {
           message: 'Too many requests',
           code: 'RATE_LIMIT_EXCEEDED',
-          retryAfter: limitCheck.retryAfter
+          retryAfter: limitCheck.retryAfter,
         },
         status: 429,
         headers: {
           'X-RateLimit-Limit': config.maxRequests.toString(),
           'X-RateLimit-Remaining': limitCheck.remaining.toString(),
           'X-RateLimit-Reset': new Date(limitCheck.resetTime).toISOString(),
-          'Retry-After': Math.ceil(limitCheck.retryAfter! / 1000).toString()
-        }
+          'Retry-After': Math.ceil(limitCheck.retryAfter! / 1000).toString(),
+        },
       };
     }
 
@@ -300,15 +311,15 @@ export function rateLimitMiddleware(config: RateLimitConfig) {
  * @param {RateLimitConfig} [rateLimit] - Optional rate limit config
  * @returns {Function} Debounced function
  */
-export function debounceWithRateLimit(
-  func: Function,
+export function debounceWithRateLimit<T extends unknown[]>(
+  func: (...args: T) => void,
   wait: number,
   rateLimit?: RateLimitConfig
-): Function {
+): (...args: T) => void {
   let timeout: NodeJS.Timeout | null = null;
-  let lastArgs: any[] = [];
+  let lastArgs: T | null = null;
 
-  return function (...args: any[]) {
+  return function (...args: T) {
     lastArgs = args;
 
     const execute = () => {
@@ -319,7 +330,9 @@ export function debounceWithRateLimit(
           return;
         }
       }
-      func.apply(this, lastArgs);
+      if (lastArgs) {
+        func(...lastArgs);
+      }
     };
 
     if (timeout) {
@@ -337,14 +350,14 @@ export function debounceWithRateLimit(
  * @param {RateLimitConfig} [rateLimit] - Optional rate limit config
  * @returns {Function} Throttled function
  */
-export function throttleWithRateLimit(
-  func: Function,
+export function throttleWithRateLimit<T extends unknown[]>(
+  func: (...args: T) => void,
   wait: number,
   rateLimit?: RateLimitConfig
-): Function {
+): (...args: T) => void {
   let lastTime = 0;
 
-  return function (...args: any[]) {
+  return function (...args: T) {
     const now = Date.now();
 
     if (now - lastTime >= wait) {
@@ -357,7 +370,7 @@ export function throttleWithRateLimit(
       }
 
       lastTime = now;
-      func.apply(this, args);
+      func(...args);
     }
   };
 }

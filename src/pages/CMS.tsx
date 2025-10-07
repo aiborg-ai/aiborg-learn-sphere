@@ -1,24 +1,20 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { 
-  Settings, 
-  Edit, 
-  Save, 
-  Plus, 
-  Trash2, 
-  Eye, 
-  EyeOff,
-  RefreshCw,
-  Shield
-} from "lucide-react";
+import { useState, useEffect, useCallback } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { Settings, Edit, Save, Plus, Trash2, Eye, EyeOff, RefreshCw, Shield } from 'lucide-react';
 
 interface CMSContent {
   id: string;
@@ -43,19 +39,13 @@ function CMSAdmin() {
     content_key: '',
     content_value: '',
     content_type: 'text' as const,
-    description: ''
+    description: '',
   });
 
   // Check if user is admin
   const isAdmin = user?.email === 'hirendra.vikram@aiborg.ai';
 
-  useEffect(() => {
-    if (isAdmin) {
-      fetchContent();
-    }
-  }, [isAdmin]);
-
-  const fetchContent = async () => {
+  const fetchContent = useCallback(async () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
@@ -67,14 +57,20 @@ function CMSAdmin() {
       setContent(data || []);
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to fetch CMS content",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to fetch CMS content',
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    if (isAdmin) {
+      fetchContent();
+    }
+  }, [isAdmin, fetchContent]);
 
   const handleSave = async (item: CMSContent) => {
     try {
@@ -84,78 +80,73 @@ function CMSAdmin() {
           content_value: item.content_value,
           description: item.description,
           is_active: item.is_active,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', item.id);
 
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Content updated successfully",
+        title: 'Success',
+        description: 'Content updated successfully',
       });
-      
+
       setEditingId(null);
       fetchContent();
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to update content",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update content',
+        variant: 'destructive',
       });
     }
   };
 
   const handleCreate = async () => {
     try {
-      const { error } = await supabase
-        .from('cms_content')
-        .insert(newContent);
+      const { error } = await supabase.from('cms_content').insert(newContent);
 
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Content created successfully",
+        title: 'Success',
+        description: 'Content created successfully',
       });
-      
+
       setNewContent({
         section_name: '',
         content_key: '',
         content_value: '',
         content_type: 'text',
-        description: ''
+        description: '',
       });
       fetchContent();
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to create content",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to create content',
+        variant: 'destructive',
       });
     }
   };
 
   const handleDelete = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('cms_content')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from('cms_content').delete().eq('id', id);
 
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Content deleted successfully",
+        title: 'Success',
+        description: 'Content deleted successfully',
       });
-      
+
       fetchContent();
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to delete content",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to delete content',
+        variant: 'destructive',
       });
     }
   };
@@ -170,16 +161,16 @@ function CMSAdmin() {
       if (error) throw error;
 
       toast({
-        title: "Success",
+        title: 'Success',
         description: `Content ${!item.is_active ? 'activated' : 'deactivated'}`,
       });
-      
+
       fetchContent();
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to toggle content status",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to toggle content status',
+        variant: 'destructive',
       });
     }
   };
@@ -220,9 +211,7 @@ function CMSAdmin() {
             <Settings className="h-6 w-6 text-primary" />
             <h1 className="font-display text-3xl font-bold">CMS Admin Panel</h1>
           </div>
-          <p className="text-muted-foreground">
-            Manage website content and configuration
-          </p>
+          <p className="text-muted-foreground">Manage website content and configuration</p>
         </div>
 
         {/* Add New Content */}
@@ -238,16 +227,16 @@ function CMSAdmin() {
               <Input
                 placeholder="Section Name"
                 value={newContent.section_name}
-                onChange={(e) => setNewContent(prev => ({ ...prev, section_name: e.target.value }))}
+                onChange={e => setNewContent(prev => ({ ...prev, section_name: e.target.value }))}
               />
               <Input
                 placeholder="Content Key"
                 value={newContent.content_key}
-                onChange={(e) => setNewContent(prev => ({ ...prev, content_key: e.target.value }))}
+                onChange={e => setNewContent(prev => ({ ...prev, content_key: e.target.value }))}
               />
               <Select
                 value={newContent.content_type}
-                onValueChange={(value) => setNewContent(prev => ({ ...prev, content_type: value }))}
+                onValueChange={value => setNewContent(prev => ({ ...prev, content_type: value }))}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -262,14 +251,14 @@ function CMSAdmin() {
               <Input
                 placeholder="Description"
                 value={newContent.description}
-                onChange={(e) => setNewContent(prev => ({ ...prev, description: e.target.value }))}
+                onChange={e => setNewContent(prev => ({ ...prev, description: e.target.value }))}
               />
             </div>
             <div className="mb-4">
               <Textarea
                 placeholder="Content Value"
                 value={newContent.content_value}
-                onChange={(e) => setNewContent(prev => ({ ...prev, content_value: e.target.value }))}
+                onChange={e => setNewContent(prev => ({ ...prev, content_value: e.target.value }))}
                 rows={3}
               />
             </div>
@@ -282,7 +271,7 @@ function CMSAdmin() {
 
         {/* Content List */}
         <div className="space-y-4">
-          {content.map((item) => (
+          {content.map(item => (
             <Card key={item.id} className={`${!item.is_active ? 'opacity-60' : ''}`}>
               <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-4">
@@ -291,8 +280,8 @@ function CMSAdmin() {
                       <div className="flex items-center gap-2 mb-1">
                         <Badge variant="outline">{item.section_name}</Badge>
                         <Badge variant="secondary">{item.content_key}</Badge>
-                        <Badge variant={item.is_active ? "default" : "destructive"}>
-                          {item.is_active ? "Active" : "Inactive"}
+                        <Badge variant={item.is_active ? 'default' : 'destructive'}>
+                          {item.is_active ? 'Active' : 'Inactive'}
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">
@@ -301,12 +290,12 @@ function CMSAdmin() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => toggleActive(item)}
-                    >
-                      {item.is_active ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    <Button size="sm" variant="outline" onClick={() => toggleActive(item)}>
+                      {item.is_active ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
                     </Button>
                     <Button
                       size="sm"
@@ -315,11 +304,7 @@ function CMSAdmin() {
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => handleDelete(item.id)}
-                    >
+                    <Button size="sm" variant="destructive" onClick={() => handleDelete(item.id)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -329,8 +314,8 @@ function CMSAdmin() {
                   <div className="space-y-4">
                     <Textarea
                       value={item.content_value}
-                      onChange={(e) => {
-                        const updated = content.map(c => 
+                      onChange={e => {
+                        const updated = content.map(c =>
                           c.id === item.id ? { ...c, content_value: e.target.value } : c
                         );
                         setContent(updated);
@@ -340,8 +325,8 @@ function CMSAdmin() {
                     <Input
                       placeholder="Description"
                       value={item.description || ''}
-                      onChange={(e) => {
-                        const updated = content.map(c => 
+                      onChange={e => {
+                        const updated = content.map(c =>
                           c.id === item.id ? { ...c, description: e.target.value } : c
                         );
                         setContent(updated);

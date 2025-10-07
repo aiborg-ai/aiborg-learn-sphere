@@ -18,7 +18,7 @@ import {
   BarChart3,
   Loader2,
   Activity,
-  Zap
+  Zap,
 } from 'lucide-react';
 import { logger } from '@/utils/logger';
 import {
@@ -41,14 +41,37 @@ import {
   PolarRadiusAxis,
   Radar,
   AreaChart,
-  Area
+  Area,
 } from 'recharts';
 
+interface WeeklyActivity {
+  day: string;
+  minutes: number;
+  courses: number;
+}
+
+interface CategoryDistribution {
+  name: string;
+  value: number;
+  percentage: string;
+}
+
+interface ProgressTrend {
+  week: string;
+  progress: number;
+  courses: number;
+}
+
+interface SkillRadar {
+  skill: string;
+  level: number;
+}
+
 interface AnalyticsData {
-  weeklyActivity: any[];
-  categoryDistribution: any[];
-  progressTrend: any[];
-  skillsRadar: any[];
+  weeklyActivity: WeeklyActivity[];
+  categoryDistribution: CategoryDistribution[];
+  progressTrend: ProgressTrend[];
+  skillsRadar: SkillRadar[];
   monthlyStats: {
     totalTime: number;
     coursesCompleted: number;
@@ -77,8 +100,8 @@ export default function AnalyticsPage() {
       achievementsEarned: 0,
       currentStreak: 0,
       longestStreak: 0,
-      averageScore: 0
-    }
+      averageScore: 0,
+    },
   });
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -99,10 +122,12 @@ export default function AnalyticsPage() {
       // Fetch user progress data
       const { data: progressData } = await supabase
         .from('user_progress')
-        .select(`
+        .select(
+          `
           *,
           courses!inner(title, category)
-        `)
+        `
+        )
         .eq('user_id', user.id);
 
       // Fetch achievements
@@ -118,15 +143,16 @@ export default function AnalyticsPage() {
         const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
 
         // Simulate activity data (in real app, track actual daily activity)
-        const activity = progressData?.filter(p => {
-          const lastAccessed = new Date(p.last_accessed);
-          return lastAccessed.toDateString() === date.toDateString();
-        }).length || 0;
+        const activity =
+          progressData?.filter(p => {
+            const lastAccessed = new Date(p.last_accessed);
+            return lastAccessed.toDateString() === date.toDateString();
+          }).length || 0;
 
         return {
           day: dayName,
           minutes: activity * 30 + Math.floor(Math.random() * 60),
-          courses: activity
+          courses: activity,
         };
       });
 
@@ -140,7 +166,7 @@ export default function AnalyticsPage() {
       const categoryDistribution = Array.from(categoryMap.entries()).map(([name, value]) => ({
         name,
         value,
-        percentage: ((value / (progressData?.length || 1)) * 100).toFixed(1)
+        percentage: ((value / (progressData?.length || 1)) * 100).toFixed(1),
       }));
 
       // Calculate progress trend (last 6 weeks)
@@ -149,7 +175,7 @@ export default function AnalyticsPage() {
         return {
           week: `Week ${weekAgo}`,
           progress: Math.min(100, (i + 1) * 15 + Math.random() * 10),
-          courses: i + 1
+          courses: i + 1,
         };
       });
 
@@ -160,7 +186,7 @@ export default function AnalyticsPage() {
         { skill: 'Technical Skills', level: 90 },
         { skill: 'Collaboration', level: 68 },
         { skill: 'Creativity', level: 78 },
-        { skill: 'Time Management', level: 82 }
+        { skill: 'Time Management', level: 82 },
       ];
 
       // Calculate monthly stats
@@ -179,10 +205,9 @@ export default function AnalyticsPage() {
           achievementsEarned,
           currentStreak: 7, // Would calculate from actual activity log
           longestStreak: 14,
-          averageScore: 87.5
-        }
+          averageScore: 87.5,
+        },
       });
-
     } catch (error) {
       logger.error('Error fetching analytics:', error);
     } finally {
@@ -218,9 +243,7 @@ export default function AnalyticsPage() {
                 <BarChart3 className="h-8 w-8 text-purple-400" />
                 Learning Analytics
               </h1>
-              <p className="text-white/80">
-                Track your progress and insights
-              </p>
+              <p className="text-white/80">Track your progress and insights</p>
             </div>
           </div>
         </div>
@@ -376,9 +399,7 @@ export default function AnalyticsPage() {
                       <p className="font-semibold">Achievements</p>
                     </div>
                     <p className="text-2xl font-bold">{stats.achievementsEarned}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Badges earned
-                    </p>
+                    <p className="text-sm text-muted-foreground">Badges earned</p>
                   </div>
 
                   <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
@@ -387,9 +408,7 @@ export default function AnalyticsPage() {
                       <p className="font-semibold">Average Score</p>
                     </div>
                     <p className="text-2xl font-bold">{stats.averageScore}%</p>
-                    <p className="text-sm text-muted-foreground">
-                      Across all assessments
-                    </p>
+                    <p className="text-sm text-muted-foreground">Across all assessments</p>
                   </div>
                 </div>
               </CardContent>
@@ -476,7 +495,7 @@ export default function AnalyticsPage() {
             </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {analyticsData.skillsRadar.map((skill) => (
+              {analyticsData.skillsRadar.map(skill => (
                 <Card key={skill.skill}>
                   <CardContent className="pt-6">
                     <div className="flex items-center justify-between mb-2">

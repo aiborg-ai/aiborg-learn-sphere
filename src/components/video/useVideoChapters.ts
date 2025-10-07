@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Chapter } from './types';
+import type { Chapter } from './types';
 
 export function useVideoChapters(
   chapters: Chapter[],
@@ -11,29 +11,33 @@ export function useVideoChapters(
 
   useEffect(() => {
     // Update current chapter
-    const chapter = chapters.find(ch =>
-      currentTime >= ch.startTime && currentTime <= ch.endTime
-    );
+    const chapter = chapters.find(ch => currentTime >= ch.startTime && currentTime <= ch.endTime);
     setCurrentChapter(chapter || null);
   }, [currentTime, chapters]);
 
-  const jumpToChapter = useCallback((chapter: Chapter) => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = chapter.startTime;
-      setCurrentTime(chapter.startTime);
-    }
-  }, [videoRef, setCurrentTime]);
+  const jumpToChapter = useCallback(
+    (chapter: Chapter) => {
+      if (videoRef.current) {
+        videoRef.current.currentTime = chapter.startTime;
+        setCurrentTime(chapter.startTime);
+      }
+    },
+    [videoRef, setCurrentTime]
+  );
 
-  const jumpToNote = useCallback((timestamp: number) => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = timestamp;
-      setCurrentTime(timestamp);
-    }
-  }, [videoRef, setCurrentTime]);
+  const jumpToNote = useCallback(
+    (timestamp: number) => {
+      if (videoRef.current) {
+        videoRef.current.currentTime = timestamp;
+        setCurrentTime(timestamp);
+      }
+    },
+    [videoRef, setCurrentTime]
+  );
 
   return {
     currentChapter,
     jumpToChapter,
-    jumpToNote
+    jumpToNote,
   };
 }

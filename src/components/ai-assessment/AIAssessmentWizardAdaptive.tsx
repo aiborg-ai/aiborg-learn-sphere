@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Card,
   CardContent,
@@ -24,6 +25,8 @@ import { ScenarioQuestion } from './ScenarioQuestion';
 import { DragDropRanking } from './DragDropRanking';
 import { CodeEvaluation } from './CodeEvaluation';
 import { CaseStudy } from './CaseStudy';
+import { AnswerOptions } from './wizard/AnswerOptions';
+import { QuestionDisplay } from './wizard/QuestionDisplay';
 import {
   ChevronLeft,
   ChevronRight,
@@ -64,6 +67,7 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [voiceAnswer, setVoiceAnswer] = useState<string | null>(null);
   const [adaptiveEngine, setAdaptiveEngine] = useState<AdaptiveAssessmentEngine | null>(null);
 
   // Performance tracking
@@ -78,12 +82,14 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
   const { user } = useAuth();
   const { selectedAudience } = usePersonalization();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Initialize assessment when profiling is complete
   useEffect(() => {
     if (!showProfiling && profilingData && !assessmentId) {
       initializeAssessment();
     }
+    // Dependencies intentionally limited - initializeAssessment is not memoized
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showProfiling, profilingData]);
 
@@ -92,16 +98,22 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
     if (adaptiveEngine && !currentQuestion) {
       fetchNextQuestion();
     }
+    // Dependencies intentionally limited - fetchNextQuestion is not memoized
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adaptiveEngine]);
 
   const initializeAssessment = async () => {
     if (!user) {
       toast({
-        title: 'Please sign in',
-        description: 'You need to be signed in to take the adaptive assessment',
+        title: 'Sign In Required',
+        description:
+          'The adaptive assessment requires sign-in to save your progress and results. Please sign in to continue.',
         variant: 'destructive',
       });
+      // Optionally navigate to auth page after a delay
+      setTimeout(() => {
+        navigate('/auth');
+      }, 3000);
       return;
     }
 
@@ -169,6 +181,7 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
 
       setCurrentQuestion(nextQuestion);
       setSelectedOptions([]);
+      setVoiceAnswer(null);
       questionStartTime.current = new Date();
     } catch (error) {
       logger.error('Error fetching next question:', error);
@@ -194,14 +207,19 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
     setSelectedOptions(newSelection);
   };
 
+  const handleVoiceAnswer = (text: string) => {
+    setVoiceAnswer(text);
+  };
+
   const handleNext = async () => {
     if (!adaptiveEngine || !currentQuestion) return;
 
-    // Validate answer
-    if (selectedOptions.length === 0) {
+    // Validate answer - require either selected options or voice answer
+    if (selectedOptions.length === 0 && !voiceAnswer) {
       toast({
-        title: 'Please select an answer',
-        description: 'You must answer the current question before proceeding.',
+        title: 'Please provide an answer',
+        description:
+          'You must answer the current question before proceeding (select an option or provide a voice answer).',
         variant: 'destructive',
       });
       return;
@@ -214,6 +232,15 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
       const timeSpent = questionStartTime.current
         ? Math.floor((Date.now() - questionStartTime.current.getTime()) / 1000)
         : undefined;
+
+      // Store voice answer as metadata if provided
+      if (voiceAnswer) {
+        await supabase
+          .from('assessment_responses')
+          .update({ voice_answer: voiceAnswer })
+          .eq('assessment_id', assessmentId)
+          .eq('question_id', currentQuestion.id);
+      }
 
       // Record answer and get result
       const result = await adaptiveEngine.recordAnswer(
@@ -305,6 +332,13 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
   };
 
   const handleProfilingComplete = (data: ProfilingData) => {
+    // If business/SME audience, redirect to company assessment
+    if (data.audience_type === 'business') {
+      navigate('/sme-assessment', { state: { profilingData: data } });
+      return;
+    }
+
+    // Otherwise, continue with personal AI assessment
     setProfilingData(data);
     setShowProfiling(false);
   };
@@ -369,72 +403,41 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
       case 'single_choice':
       case 'frequency':
       case 'scale':
-        // Standard single choice
+        // Standard single choice with voice input support
         return (
           <div className="space-y-4">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">{currentQuestion.question_text}</h3>
-              {currentQuestion.help_text && (
-                <p className="text-sm text-muted-foreground flex items-start gap-2">
-                  <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                  {currentQuestion.help_text}
-                </p>
-              )}
-            </div>
-            <RadioGroup value={selectedOptions[0] || ''} onValueChange={handleSingleChoice}>
-              {currentQuestion.options.map(option => (
-                <div
-                  key={option.id}
-                  className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
-                >
-                  <RadioGroupItem value={option.id} id={option.id} className="mt-1" />
-                  <Label htmlFor={option.id} className="flex-1 cursor-pointer">
-                    <div className="font-medium">{option.option_text}</div>
-                    {option.description && (
-                      <div className="text-sm text-muted-foreground mt-1">{option.description}</div>
-                    )}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
+            <QuestionDisplay
+              question_text={currentQuestion.question_text}
+              help_text={currentQuestion.help_text}
+            />
+            <AnswerOptions
+              question={currentQuestion}
+              selectedOptions={selectedOptions}
+              onSingleChoice={(optionId, points) => handleSingleChoice(optionId)}
+              onMultipleChoice={() => {}}
+              onVoiceAnswer={handleVoiceAnswer}
+              enableVoiceInput={true}
+            />
           </div>
         );
 
       case 'multiple_choice':
       default:
-        // Standard multiple choice
+        // Standard multiple choice with voice input support
         return (
           <div className="space-y-4">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">{currentQuestion.question_text}</h3>
-              {currentQuestion.help_text && (
-                <p className="text-sm text-muted-foreground flex items-start gap-2">
-                  <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                  {currentQuestion.help_text}
-                </p>
-              )}
-            </div>
-            <div className="space-y-3">
-              {currentQuestion.options.map(option => (
-                <div
-                  key={option.id}
-                  className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
-                >
-                  <Checkbox
-                    id={option.id}
-                    checked={selectedOptions.includes(option.id)}
-                    onCheckedChange={() => handleMultipleChoice(option.id)}
-                    className="mt-1"
-                  />
-                  <Label htmlFor={option.id} className="flex-1 cursor-pointer">
-                    <div className="font-medium">{option.option_text}</div>
-                    {option.description && (
-                      <div className="text-sm text-muted-foreground mt-1">{option.description}</div>
-                    )}
-                  </Label>
-                </div>
-              ))}
-            </div>
+            <QuestionDisplay
+              question_text={currentQuestion.question_text}
+              help_text={currentQuestion.help_text}
+            />
+            <AnswerOptions
+              question={currentQuestion}
+              selectedOptions={selectedOptions}
+              onSingleChoice={() => {}}
+              onMultipleChoice={(optionId, points) => handleMultipleChoice(optionId)}
+              onVoiceAnswer={handleVoiceAnswer}
+              enableVoiceInput={true}
+            />
           </div>
         );
     }

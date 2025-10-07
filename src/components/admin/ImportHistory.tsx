@@ -27,7 +27,11 @@ export function ImportHistory() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedImportId, setSelectedImportId] = useState<string | null>(null);
 
-  const { data: historyData, isLoading, refetch } = useImportHistory({
+  const {
+    data: historyData,
+    isLoading,
+    refetch,
+  } = useImportHistory({
     page: currentPage,
     limit: 10,
   });
@@ -121,9 +125,7 @@ export function ImportHistory() {
       <Card>
         <CardHeader>
           <CardTitle>Import History</CardTitle>
-          <CardDescription>
-            View all previous template import operations
-          </CardDescription>
+          <CardDescription>View all previous template import operations</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -145,9 +147,7 @@ export function ImportHistory() {
                   <TableCell className="text-sm">
                     {templateService.formatDate(importRecord.started_at)}
                   </TableCell>
-                  <TableCell className="font-medium">
-                    {importRecord.file_name}
-                  </TableCell>
+                  <TableCell className="font-medium">{importRecord.file_name}</TableCell>
                   <TableCell>
                     <Badge variant="outline">{importRecord.import_type}</Badge>
                   </TableCell>
@@ -158,12 +158,8 @@ export function ImportHistory() {
                     </div>
                   </TableCell>
                   <TableCell>{importRecord.total_count}</TableCell>
-                  <TableCell className="text-green-600">
-                    {importRecord.success_count}
-                  </TableCell>
-                  <TableCell className="text-red-600">
-                    {importRecord.error_count}
-                  </TableCell>
+                  <TableCell className="text-green-600">{importRecord.success_count}</TableCell>
+                  <TableCell className="text-red-600">{importRecord.error_count}</TableCell>
                   <TableCell>
                     <Button
                       variant="ghost"
@@ -267,9 +263,7 @@ export function ImportHistory() {
               </Card>
               <Card>
                 <CardContent className="p-3">
-                  <div className="text-lg font-bold text-red-600">
-                    {importDetails.error_count}
-                  </div>
+                  <div className="text-lg font-bold text-red-600">{importDetails.error_count}</div>
                   <p className="text-xs text-muted-foreground">Failed</p>
                 </CardContent>
               </Card>
@@ -288,14 +282,16 @@ export function ImportHistory() {
               <div>
                 <h4 className="font-medium mb-2">Errors</h4>
                 <ScrollArea className="h-[200px] border rounded p-2">
-                  {importDetails.errors.map((error: any, index: number) => (
-                    <div key={index} className="p-2 bg-red-50 rounded mb-2">
-                      <p className="text-sm text-red-600">{error.message}</p>
-                      {error.field && (
-                        <p className="text-xs text-muted-foreground">Field: {error.field}</p>
-                      )}
-                    </div>
-                  ))}
+                  {importDetails.errors.map(
+                    (error: { message: string; field?: string }, index: number) => (
+                      <div key={index} className="p-2 bg-red-50 rounded mb-2">
+                        <p className="text-sm text-red-600">{error.message}</p>
+                        {error.field && (
+                          <p className="text-xs text-muted-foreground">Field: {error.field}</p>
+                        )}
+                      </div>
+                    )
+                  )}
                 </ScrollArea>
               </div>
             )}

@@ -5,7 +5,7 @@ import { List, Edit, FileText } from 'lucide-react';
 import { VideoChapters } from './VideoChapters';
 import { VideoNotes } from './VideoNotes';
 import { VideoTranscript } from './VideoTranscript';
-import { Chapter, Note } from './types';
+import type { Chapter, Note } from './types';
 
 interface VideoSidebarProps {
   activeTab: 'chapters' | 'notes' | 'transcript';
@@ -44,7 +44,7 @@ export function VideoSidebar({
   onDeleteNote,
   onJumpToNote,
   onSetEditingNoteId,
-  formatTime
+  formatTime,
 }: VideoSidebarProps) {
   return (
     <div className="lg:col-span-1 bg-gray-900 border-l border-gray-800">
@@ -102,9 +102,7 @@ export function VideoSidebar({
             />
           )}
 
-          {activeTab === 'transcript' && (
-            <VideoTranscript transcript={transcript} />
-          )}
+          {activeTab === 'transcript' && <VideoTranscript transcript={transcript} />}
         </ScrollArea>
       </div>
     </div>

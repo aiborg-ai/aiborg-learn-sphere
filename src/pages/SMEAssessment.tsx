@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -7,6 +7,8 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ArrowLeft, ArrowRight, Save, CheckCircle2, FileText, Building2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import { useSMEAssessmentSubmit } from '@/hooks/useSMEAssessmentSubmit';
 import type { AssessmentFormData } from '@/types/aiAssessment';
 
 // Import form sections
@@ -24,7 +26,9 @@ const TOTAL_SECTIONS = 9;
 
 export default function SMEAssessment() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [currentSection, setCurrentSection] = useState(1);
   const [formData, setFormData] = useState<Partial<AssessmentFormData>>({
     companyName: '',
@@ -47,29 +51,82 @@ export default function SMEAssessment() {
     completedBy: '',
   });
 
+  // Enforce authentication requirement
+  useEffect(() => {
+    if (!user) {
+      toast({
+        title: 'Sign In Required',
+        description: 'Please sign in to access the SME Assessment and save your results.',
+        variant: 'destructive',
+      });
+      navigate('/auth', {
+        state: {
+          returnTo: '/sme-assessment',
+          message: 'Please sign in to access the SME Assessment.',
+        },
+      });
+    }
+  }, [user, navigate, toast]);
+
+  // Receive profiling data from navigation state and pre-fill form
+  useEffect(() => {
+    const state = location.state as {
+      profilingData?: {
+        industry?: string;
+        company_size?: string;
+        job_role?: string;
+        current_tools?: string[];
+        challenges?: string[];
+      };
+    } | null;
+
+    if (state?.profilingData) {
+      const profiling = state.profilingData;
+      setFormData(prev => ({
+        ...prev,
+        // Pre-fill industry if available
+        ...(profiling.industry && { companyMission: `Operating in ${profiling.industry}` }),
+        // Store profiling data for later use
+        _profilingData: profiling,
+      }));
+    }
+  }, [location.state]);
+
+  // Use the assessment submission hook
+  const { saveDraft, submitAssessment, isSaving } = useSMEAssessmentSubmit({
+    user,
+    formData,
+    onSuccess: assessmentId => {
+      toast({
+        title: 'Assessment Completed',
+        description: 'Your AI Opportunity Assessment has been submitted successfully.',
+      });
+    },
+  });
+
   const progress = (currentSection / TOTAL_SECTIONS) * 100;
 
   const handleUpdateFormData = (data: Partial<AssessmentFormData>) => {
-    setFormData((prev) => ({ ...prev, ...data }));
+    setFormData(prev => ({ ...prev, ...data }));
   };
 
   const handleNext = () => {
     if (currentSection < TOTAL_SECTIONS) {
-      setCurrentSection((prev) => prev + 1);
+      setCurrentSection(prev => prev + 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handlePrevious = () => {
     if (currentSection > 1) {
-      setCurrentSection((prev) => prev - 1);
+      setCurrentSection(prev => prev - 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handleSaveDraft = async () => {
     try {
-      // TODO: Implement save to Supabase
+      await saveDraft();
       toast({
         title: 'Draft Saved',
         description: 'Your assessment progress has been saved.',
@@ -85,13 +142,12 @@ export default function SMEAssessment() {
 
   const handleSubmit = async () => {
     try {
-      // TODO: Implement submit to Supabase and generate report
       toast({
-        title: 'Assessment Completed',
-        description: 'Generating your AI Opportunity Report...',
+        title: 'Processing',
+        description: 'Submitting your AI Opportunity Assessment...',
       });
-      // Navigate to results page
-      // navigate(`/sme-assessment-report/${assessmentId}`);
+      await submitAssessment();
+      // Navigation happens in the hook
     } catch (error) {
       toast({
         title: 'Error',
@@ -205,25 +261,33 @@ export default function SMEAssessment() {
         </Card>
 
         <div className="flex justify-between items-center gap-4">
-          <Button variant="outline" onClick={handlePrevious} disabled={currentSection === 1}>
+          <Button
+            variant="outline"
+            onClick={handlePrevious}
+            disabled={currentSection === 1 || isSaving}
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Previous
           </Button>
 
-          <Button variant="outline" onClick={handleSaveDraft}>
+          <Button variant="outline" onClick={handleSaveDraft} disabled={isSaving}>
             <Save className="mr-2 h-4 w-4" />
-            Save Draft
+            {isSaving ? 'Saving...' : 'Save Draft'}
           </Button>
 
           {currentSection < TOTAL_SECTIONS ? (
-            <Button onClick={handleNext}>
+            <Button onClick={handleNext} disabled={isSaving}>
               Next
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           ) : (
-            <Button onClick={handleSubmit} className="bg-green-600 hover:bg-green-700">
+            <Button
+              onClick={handleSubmit}
+              className="bg-green-600 hover:bg-green-700"
+              disabled={isSaving}
+            >
               <CheckCircle2 className="mr-2 h-4 w-4" />
-              Complete Assessment
+              {isSaving ? 'Submitting...' : 'Complete Assessment'}
             </Button>
           )}
         </div>

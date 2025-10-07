@@ -1,27 +1,14 @@
-import { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { 
-  Play, 
-  FileText, 
-  Presentation, 
-  Download, 
-  Lock,
-  Clock,
-  Calendar
-} from "lucide-react";
-import { useCourseMaterials, CourseMaterial } from "@/hooks/useCourseMaterials";
-import { useEnrollments } from "@/hooks/useEnrollments";
-import { useAuth } from "@/hooks/useAuth";
-import { format } from "date-fns";
+import { useState, useEffect } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Play, FileText, Presentation, Download, Lock, Clock, Calendar } from 'lucide-react';
+import { useCourseMaterials, CourseMaterial } from '@/hooks/useCourseMaterials';
+import { useEnrollments } from '@/hooks/useEnrollments';
+import { useAuth } from '@/hooks/useAuth';
+import { format } from 'date-fns';
 
 interface CourseRecordingsModalProps {
   open: boolean;
@@ -82,7 +69,7 @@ export function CourseRecordingsModal({
   const recordings = materials.filter(m => m.material_type === 'recording');
   const handbooks = materials.filter(m => m.material_type === 'handbook');
   const presentations = materials.filter(m => m.material_type === 'presentation');
-  const otherMaterials = materials.filter(m => m.material_type === 'other');
+  const _otherMaterials = materials.filter(m => m.material_type === 'other');
 
   if (!user) {
     return (
@@ -122,10 +109,7 @@ export function CourseRecordingsModal({
             <p className="text-muted-foreground mt-2">
               You need to enroll in this course to access recordings and materials.
             </p>
-            <Button 
-              className="mt-4" 
-              onClick={() => onOpenChange(false)}
-            >
+            <Button className="mt-4" onClick={() => onOpenChange(false)}>
               Enroll in Course
             </Button>
           </div>
@@ -171,7 +155,7 @@ export function CourseRecordingsModal({
                   Recordings ({recordings.length})
                 </h3>
                 <div className="grid gap-3">
-                  {recordings.map((material) => (
+                  {recordings.map(material => (
                     <Card key={material.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
@@ -183,7 +167,9 @@ export function CourseRecordingsModal({
                               <div>
                                 <h4 className="font-medium">{material.title}</h4>
                                 {material.description && (
-                                  <p className="text-sm text-muted-foreground">{material.description}</p>
+                                  <p className="text-sm text-muted-foreground">
+                                    {material.description}
+                                  </p>
                                 )}
                               </div>
                             </div>
@@ -231,7 +217,7 @@ export function CourseRecordingsModal({
                     Handbooks & Materials ({handbooks.length})
                   </h3>
                   <div className="grid gap-3">
-                    {handbooks.map((material) => (
+                    {handbooks.map(material => (
                       <Card key={material.id} className="hover:shadow-md transition-shadow">
                         <CardContent className="p-4">
                           <div className="flex items-center justify-between">
@@ -243,7 +229,9 @@ export function CourseRecordingsModal({
                                 <div>
                                   <h4 className="font-medium">{material.title}</h4>
                                   {material.description && (
-                                    <p className="text-sm text-muted-foreground">{material.description}</p>
+                                    <p className="text-sm text-muted-foreground">
+                                      {material.description}
+                                    </p>
                                   )}
                                 </div>
                               </div>
@@ -284,7 +272,7 @@ export function CourseRecordingsModal({
                     Presentations ({presentations.length})
                   </h3>
                   <div className="grid gap-3">
-                    {presentations.map((material) => (
+                    {presentations.map(material => (
                       <Card key={material.id} className="hover:shadow-md transition-shadow">
                         <CardContent className="p-4">
                           <div className="flex items-center justify-between">
@@ -296,7 +284,9 @@ export function CourseRecordingsModal({
                                 <div>
                                   <h4 className="font-medium">{material.title}</h4>
                                   {material.description && (
-                                    <p className="text-sm text-muted-foreground">{material.description}</p>
+                                    <p className="text-sm text-muted-foreground">
+                                      {material.description}
+                                    </p>
                                   )}
                                 </div>
                               </div>

@@ -23,16 +23,27 @@ import {
   Loader2,
   Calendar,
   Award,
-  Play
+  Play,
 } from 'lucide-react';
 import { logger } from '@/utils/logger';
+
+interface Course {
+  id: number;
+  title: string;
+  description: string;
+  category?: string;
+  price?: number;
+  level?: string;
+  duration?: string;
+  mode?: string;
+}
 
 interface EnrichedEnrollment {
   id: string;
   course_id: number;
   enrolled_at: string;
   status: string;
-  course: any;
+  course: Course | undefined;
   progress?: {
     progress_percentage: number;
     time_spent_minutes: number;
@@ -93,7 +104,7 @@ export default function MyCoursesPage() {
           enrolled_at: enrollment.enrolled_at,
           status: enrollment.status,
           course,
-          progress: progressData || undefined
+          progress: progressData || undefined,
         });
       }
 
@@ -110,25 +121,22 @@ export default function MyCoursesPage() {
 
     // Filter by status
     if (activeTab === 'in_progress') {
-      filtered = filtered.filter(e =>
-        e.progress &&
-        e.progress.progress_percentage > 0 &&
-        e.progress.progress_percentage < 100
+      filtered = filtered.filter(
+        e =>
+          e.progress && e.progress.progress_percentage > 0 && e.progress.progress_percentage < 100
       );
     } else if (activeTab === 'completed') {
-      filtered = filtered.filter(e =>
-        e.progress &&
-        e.progress.progress_percentage === 100
-      );
+      filtered = filtered.filter(e => e.progress && e.progress.progress_percentage === 100);
     }
 
     // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(e =>
-        e.course?.title?.toLowerCase().includes(query) ||
-        e.course?.description?.toLowerCase().includes(query) ||
-        e.course?.category?.toLowerCase().includes(query)
+      filtered = filtered.filter(
+        e =>
+          e.course?.title?.toLowerCase().includes(query) ||
+          e.course?.description?.toLowerCase().includes(query) ||
+          e.course?.category?.toLowerCase().includes(query)
       );
     }
 
@@ -200,9 +208,7 @@ export default function MyCoursesPage() {
               {enrollment.course?.price === 0 ? (
                 <Badge variant="secondary">Free</Badge>
               ) : (
-                <Badge variant="default">
-                  ${enrollment.course?.price}
-                </Badge>
+                <Badge variant="default">${enrollment.course?.price}</Badge>
               )}
             </div>
 
@@ -247,9 +253,7 @@ export default function MyCoursesPage() {
                 <div className="flex-1">
                   <Progress value={progress} className="h-2" />
                 </div>
-                <span className="text-sm font-medium min-w-[3rem] text-right">
-                  {progress}%
-                </span>
+                <span className="text-sm font-medium min-w-[3rem] text-right">{progress}%</span>
               </div>
 
               <div className="flex items-center justify-between">
@@ -264,10 +268,7 @@ export default function MyCoursesPage() {
                     </Badge>
                   )}
                 </div>
-                <Button
-                  size="sm"
-                  onClick={() => navigate(`/course/${enrollment.course_id}`)}
-                >
+                <Button size="sm" onClick={() => navigate(`/course/${enrollment.course_id}`)}>
                   <Play className="h-3 w-3 mr-1" />
                   {progress > 0 ? 'Continue' : 'Start'}
                 </Button>
@@ -289,15 +290,15 @@ export default function MyCoursesPage() {
 
   const stats = {
     total: enrichedEnrollments.length,
-    inProgress: enrichedEnrollments.filter(e =>
-      e.progress && e.progress.progress_percentage > 0 && e.progress.progress_percentage < 100
+    inProgress: enrichedEnrollments.filter(
+      e => e.progress && e.progress.progress_percentage > 0 && e.progress.progress_percentage < 100
     ).length,
-    completed: enrichedEnrollments.filter(e =>
-      e.progress && e.progress.progress_percentage === 100
-    ).length,
-    totalTime: enrichedEnrollments.reduce((sum, e) =>
-      sum + (e.progress?.time_spent_minutes || 0), 0
-    )
+    completed: enrichedEnrollments.filter(e => e.progress && e.progress.progress_percentage === 100)
+      .length,
+    totalTime: enrichedEnrollments.reduce(
+      (sum, e) => sum + (e.progress?.time_spent_minutes || 0),
+      0
+    ),
   };
 
   return (
@@ -318,9 +319,7 @@ export default function MyCoursesPage() {
                 <BookOpen className="h-8 w-8 text-blue-400" />
                 My Courses
               </h1>
-              <p className="text-white/80">
-                Manage and track your learning journey
-              </p>
+              <p className="text-white/80">Manage and track your learning journey</p>
             </div>
           </div>
 
@@ -385,7 +384,7 @@ export default function MyCoursesPage() {
             <Input
               placeholder="Search courses..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="pl-10"
             />
           </div>
@@ -409,7 +408,10 @@ export default function MyCoursesPage() {
         </div>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
+        <Tabs
+          value={activeTab}
+          onValueChange={v => setActiveTab(v as 'all' | 'in_progress' | 'completed')}
+        >
           <TabsList className="bg-white/10 border-white/20 mb-6">
             <TabsTrigger value="all" className="text-white data-[state=active]:bg-white/20">
               All ({stats.total})

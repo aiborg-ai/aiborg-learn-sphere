@@ -2,6 +2,14 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { StudyGroupService } from '../StudyGroupService';
 import { supabase } from '@/integrations/supabase/client';
 
+type MockQueryBuilder = {
+  insert: ReturnType<typeof vi.fn>;
+  select: ReturnType<typeof vi.fn>;
+  single: ReturnType<typeof vi.fn>;
+  delete: ReturnType<typeof vi.fn>;
+  eq: ReturnType<typeof vi.fn>;
+};
+
 describe('StudyGroupService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -24,7 +32,7 @@ describe('StudyGroupService', () => {
         insert: vi.fn().mockReturnThis(),
         select: vi.fn().mockReturnThis(),
         single: vi.fn().mockResolvedValue({ data: mockGroup, error: null }),
-      } as any);
+      } as unknown as MockQueryBuilder);
 
       const result = await StudyGroupService.create({
         name: 'AI Study Group',
@@ -45,9 +53,9 @@ describe('StudyGroupService', () => {
         select: vi.fn().mockReturnThis(),
         single: vi.fn().mockResolvedValue({
           data: null,
-          error: new Error('Database error')
+          error: new Error('Database error'),
         }),
-      } as any);
+      } as unknown as MockQueryBuilder);
 
       await expect(
         StudyGroupService.create({
@@ -68,7 +76,7 @@ describe('StudyGroupService', () => {
 
       vi.mocked(supabase.rpc).mockResolvedValue({
         data: mockGroups,
-        error: null
+        error: null,
       });
 
       const result = await StudyGroupService.findCompatible(3, ['ai', 'ml']);
@@ -85,11 +93,9 @@ describe('StudyGroupService', () => {
     it('should add user to study group', async () => {
       vi.mocked(supabase.from).mockReturnValue({
         insert: vi.fn().mockResolvedValue({ error: null }),
-      } as any);
+      } as unknown as MockQueryBuilder);
 
-      await expect(
-        StudyGroupService.join('group-123', 'user-456')
-      ).resolves.not.toThrow();
+      await expect(StudyGroupService.join('group-123', 'user-456')).resolves.not.toThrow();
 
       expect(supabase.from).toHaveBeenCalledWith('study_group_members');
     });
@@ -100,11 +106,9 @@ describe('StudyGroupService', () => {
       vi.mocked(supabase.from).mockReturnValue({
         delete: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis().mockResolvedValue({ error: null }),
-      } as any);
+      } as unknown as MockQueryBuilder);
 
-      await expect(
-        StudyGroupService.leave('group-123', 'user-456')
-      ).resolves.not.toThrow();
+      await expect(StudyGroupService.leave('group-123', 'user-456')).resolves.not.toThrow();
 
       expect(supabase.from).toHaveBeenCalledWith('study_group_members');
     });

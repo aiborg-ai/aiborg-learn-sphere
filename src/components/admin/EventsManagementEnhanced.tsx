@@ -1,12 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Calendar, Edit, Plus, Trash2, MapPin, Clock, Users } from 'lucide-react';
@@ -50,7 +63,13 @@ export function EventsManagementEnhanced() {
   const [fetchingEvents, setFetchingEvents] = useState(true);
   const { toast } = useToast();
 
-  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<Event>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm<Event>({
     defaultValues: {
       title: '',
       description: '',
@@ -61,14 +80,10 @@ export function EventsManagementEnhanced() {
       display: true,
       is_active: true,
       event_type: 'workshop',
-    }
+    },
   });
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     setFetchingEvents(true);
     try {
       const { data, error } = await supabase
@@ -81,14 +96,18 @@ export function EventsManagementEnhanced() {
     } catch (error) {
       logger.error('Error fetching events:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch events",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to fetch events',
+        variant: 'destructive',
       });
     } finally {
       setFetchingEvents(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
 
   const openCreateDialog = () => {
     setEditingEvent(null);
@@ -144,31 +163,29 @@ export function EventsManagementEnhanced() {
         if (error) throw error;
 
         toast({
-          title: "Success",
-          description: "Event updated successfully",
+          title: 'Success',
+          description: 'Event updated successfully',
         });
       } else {
         // Create new event
-        const { error } = await supabase
-          .from('events')
-          .insert({
-            title: data.title,
-            description: data.description,
-            event_date: data.event_date,
-            event_time: data.event_time,
-            location: data.location,
-            max_capacity: data.max_capacity,
-            registration_count: 0,
-            display: data.display,
-            is_active: data.is_active,
-            event_type: data.event_type,
-          });
+        const { error } = await supabase.from('events').insert({
+          title: data.title,
+          description: data.description,
+          event_date: data.event_date,
+          event_time: data.event_time,
+          location: data.location,
+          max_capacity: data.max_capacity,
+          registration_count: 0,
+          display: data.display,
+          is_active: data.is_active,
+          event_type: data.event_type,
+        });
 
         if (error) throw error;
 
         toast({
-          title: "Success",
-          description: "Event created successfully",
+          title: 'Success',
+          description: 'Event created successfully',
         });
       }
 
@@ -178,9 +195,9 @@ export function EventsManagementEnhanced() {
     } catch (error) {
       logger.error('Error saving event:', error);
       toast({
-        title: "Error",
-        description: editingEvent ? "Failed to update event" : "Failed to create event",
-        variant: "destructive",
+        title: 'Error',
+        description: editingEvent ? 'Failed to update event' : 'Failed to create event',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -192,16 +209,13 @@ export function EventsManagementEnhanced() {
 
     setIsLoading(true);
     try {
-      const { error } = await supabase
-        .from('events')
-        .delete()
-        .eq('id', deletingEvent.id);
+      const { error } = await supabase.from('events').delete().eq('id', deletingEvent.id);
 
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Event deleted successfully",
+        title: 'Success',
+        description: 'Event deleted successfully',
       });
 
       fetchEvents();
@@ -210,9 +224,9 @@ export function EventsManagementEnhanced() {
     } catch (error) {
       logger.error('Error deleting event:', error);
       toast({
-        title: "Error",
-        description: "Failed to delete event",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to delete event',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -228,20 +242,18 @@ export function EventsManagementEnhanced() {
 
       if (error) throw error;
 
-      setEvents(events.map(e =>
-        e.id === event.id ? { ...e, [field]: !e[field] } : e
-      ));
+      setEvents(events.map(e => (e.id === event.id ? { ...e, [field]: !e[field] } : e)));
 
       toast({
-        title: "Success",
+        title: 'Success',
         description: `Event ${field === 'is_active' ? 'status' : 'visibility'} updated`,
       });
     } catch (error) {
       logger.error(`Error toggling event ${field}:`, error);
       toast({
-        title: "Error",
+        title: 'Error',
         description: `Failed to update event ${field === 'is_active' ? 'status' : 'visibility'}`,
-        variant: "destructive",
+        variant: 'destructive',
       });
     }
   };
@@ -279,9 +291,7 @@ export function EventsManagementEnhanced() {
                 <Calendar className="h-5 w-5" />
                 Events Management
               </CardTitle>
-              <CardDescription>
-                Manage workshops, seminars, and other events
-              </CardDescription>
+              <CardDescription>Manage workshops, seminars, and other events</CardDescription>
             </div>
             <Button onClick={openCreateDialog} className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
@@ -312,7 +322,7 @@ export function EventsManagementEnhanced() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  events.map((event) => (
+                  events.map(event => (
                     <TableRow key={event.id}>
                       <TableCell className="font-medium">{event.title}</TableCell>
                       <TableCell>
@@ -360,11 +370,7 @@ export function EventsManagementEnhanced() {
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => openEditDialog(event)}
-                          >
+                          <Button size="sm" variant="outline" onClick={() => openEditDialog(event)}>
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button
@@ -389,9 +395,7 @@ export function EventsManagementEnhanced() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>
-              {editingEvent ? 'Edit Event' : 'Create New Event'}
-            </DialogTitle>
+            <DialogTitle>{editingEvent ? 'Edit Event' : 'Create New Event'}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
@@ -401,9 +405,7 @@ export function EventsManagementEnhanced() {
                 {...register('title', { required: 'Title is required' })}
                 placeholder="AI Workshop 2024"
               />
-              {errors.title && (
-                <p className="text-sm text-red-500">{errors.title.message}</p>
-              )}
+              {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -463,11 +465,7 @@ export function EventsManagementEnhanced() {
 
               <div className="space-y-2">
                 <Label htmlFor="event_time">Event Time</Label>
-                <Input
-                  id="event_time"
-                  type="time"
-                  {...register('event_time')}
-                />
+                <Input id="event_time" type="time" {...register('event_time')} />
               </div>
 
               <div className="space-y-2">
@@ -477,7 +475,7 @@ export function EventsManagementEnhanced() {
                   type="number"
                   {...register('max_capacity', {
                     required: 'Capacity is required',
-                    min: { value: 1, message: 'Capacity must be at least 1' }
+                    min: { value: 1, message: 'Capacity must be at least 1' },
                   })}
                   placeholder="50"
                 />
@@ -498,11 +496,7 @@ export function EventsManagementEnhanced() {
               </div>
 
               <div className="flex items-center space-x-2">
-                <Switch
-                  id="display"
-                  {...register('display')}
-                  defaultChecked={watch('display')}
-                />
+                <Switch id="display" {...register('display')} defaultChecked={watch('display')} />
                 <Label htmlFor="display">Visible on Website</Label>
               </div>
             </div>
@@ -517,7 +511,7 @@ export function EventsManagementEnhanced() {
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Saving...' : (editingEvent ? 'Update Event' : 'Create Event')}
+                {isLoading ? 'Saving...' : editingEvent ? 'Update Event' : 'Create Event'}
               </Button>
             </DialogFooter>
           </form>
@@ -530,8 +524,8 @@ export function EventsManagementEnhanced() {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the event "{deletingEvent?.title}".
-              This action cannot be undone.
+              This will permanently delete the event "{deletingEvent?.title}". This action cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

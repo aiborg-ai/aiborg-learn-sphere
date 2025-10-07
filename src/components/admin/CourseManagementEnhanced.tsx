@@ -5,11 +5,24 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { BookOpen, Edit, Plus, Trash2, Save, X, Calendar, DollarSign, Users } from 'lucide-react';
+import { BookOpen, Edit, Plus, Trash2, Save, X, DollarSign, Users } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
@@ -48,7 +61,11 @@ interface CourseManagementProps {
   onRefresh: () => void;
 }
 
-export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: CourseManagementProps) {
+export function CourseManagementEnhanced({
+  courses,
+  setCourses,
+  onRefresh,
+}: CourseManagementProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
@@ -56,7 +73,14 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<Course>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<Course>({
     defaultValues: {
       title: '',
       description: '',
@@ -67,7 +91,7 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
       level: 'beginner',
       is_active: true,
       display: true,
-    }
+    },
   });
 
   const openCreateDialog = () => {
@@ -127,8 +151,8 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
         if (error) throw error;
 
         toast({
-          title: "Success",
-          description: "Course updated successfully",
+          title: 'Success',
+          description: 'Course updated successfully',
         });
       } else {
         // Create new course
@@ -154,8 +178,8 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
         if (error) throw error;
 
         toast({
-          title: "Success",
-          description: "Course created successfully",
+          title: 'Success',
+          description: 'Course created successfully',
         });
       }
 
@@ -165,9 +189,9 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
     } catch (error) {
       logger.error('Error saving course:', error);
       toast({
-        title: "Error",
-        description: editingCourse ? "Failed to update course" : "Failed to create course",
-        variant: "destructive",
+        title: 'Error',
+        description: editingCourse ? 'Failed to update course' : 'Failed to create course',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -179,16 +203,13 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
 
     setIsLoading(true);
     try {
-      const { error } = await supabase
-        .from('courses')
-        .delete()
-        .eq('id', deletingCourse.id);
+      const { error } = await supabase.from('courses').delete().eq('id', deletingCourse.id);
 
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Course deleted successfully",
+        title: 'Success',
+        description: 'Course deleted successfully',
       });
 
       onRefresh();
@@ -197,9 +218,9 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
     } catch (error) {
       logger.error('Error deleting course:', error);
       toast({
-        title: "Error",
-        description: "Failed to delete course",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to delete course',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -215,20 +236,18 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
 
       if (error) throw error;
 
-      setCourses(courses.map(c =>
-        c.id === course.id ? { ...c, [field]: !c[field] } : c
-      ));
+      setCourses(courses.map(c => (c.id === course.id ? { ...c, [field]: !c[field] } : c)));
 
       toast({
-        title: "Success",
+        title: 'Success',
         description: `Course ${field === 'is_active' ? 'status' : 'visibility'} updated`,
       });
     } catch (error) {
       logger.error(`Error toggling course ${field}:`, error);
       toast({
-        title: "Error",
+        title: 'Error',
         description: `Failed to update course ${field === 'is_active' ? 'status' : 'visibility'}`,
-        variant: "destructive",
+        variant: 'destructive',
       });
     }
   };
@@ -243,9 +262,7 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
                 <BookOpen className="h-5 w-5" />
                 Course Management
               </CardTitle>
-              <CardDescription>
-                Manage your courses, programs, and learning paths
-              </CardDescription>
+              <CardDescription>Manage your courses, programs, and learning paths</CardDescription>
             </div>
             <Button onClick={openCreateDialog} className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
@@ -277,7 +294,7 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
                     </TableCell>
                   </TableRow>
                 ) : (
-                  courses.map((course) => (
+                  courses.map(course => (
                     <TableRow key={course.id}>
                       <TableCell className="font-medium">{course.title}</TableCell>
                       <TableCell>
@@ -288,7 +305,9 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
                       </TableCell>
                       <TableCell>${course.price}</TableCell>
                       <TableCell>
-                        {course.start_date ? new Date(course.start_date).toLocaleDateString() : 'Not set'}
+                        {course.start_date
+                          ? new Date(course.start_date).toLocaleDateString()
+                          : 'Not set'}
                       </TableCell>
                       <TableCell>
                         {course.enrollment_count || 0}/{course.max_capacity}
@@ -336,9 +355,7 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>
-              {editingCourse ? 'Edit Course' : 'Create New Course'}
-            </DialogTitle>
+            <DialogTitle>{editingCourse ? 'Edit Course' : 'Create New Course'}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -349,9 +366,7 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
                   {...register('title', { required: 'Title is required' })}
                   placeholder="Introduction to AI"
                 />
-                {errors.title && (
-                  <p className="text-sm text-red-500">{errors.title.message}</p>
-                )}
+                {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
               </div>
 
               <div className="space-y-2">
@@ -361,13 +376,11 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
                   type="number"
                   {...register('price', {
                     required: 'Price is required',
-                    min: { value: 0, message: 'Price must be positive' }
+                    min: { value: 0, message: 'Price must be positive' },
                   })}
                   placeholder="299"
                 />
-                {errors.price && (
-                  <p className="text-sm text-red-500">{errors.price.message}</p>
-                )}
+                {errors.price && <p className="text-sm text-red-500">{errors.price.message}</p>}
               </div>
             </div>
 
@@ -432,11 +445,7 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
 
               <div className="space-y-2">
                 <Label htmlFor="end_date">End Date</Label>
-                <Input
-                  id="end_date"
-                  type="date"
-                  {...register('end_date')}
-                />
+                <Input id="end_date" type="date" {...register('end_date')} />
               </div>
 
               <div className="space-y-2">
@@ -446,7 +455,7 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
                   type="number"
                   {...register('max_capacity', {
                     required: 'Capacity is required',
-                    min: { value: 1, message: 'Capacity must be at least 1' }
+                    min: { value: 1, message: 'Capacity must be at least 1' },
                   })}
                   placeholder="30"
                 />
@@ -476,11 +485,7 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
               </div>
 
               <div className="flex items-center space-x-2">
-                <Switch
-                  id="display"
-                  {...register('display')}
-                  defaultChecked={watch('display')}
-                />
+                <Switch id="display" {...register('display')} defaultChecked={watch('display')} />
                 <Label htmlFor="display">Visible on Website</Label>
               </div>
             </div>
@@ -495,7 +500,7 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Saving...' : (editingCourse ? 'Update Course' : 'Create Course')}
+                {isLoading ? 'Saving...' : editingCourse ? 'Update Course' : 'Create Course'}
               </Button>
             </DialogFooter>
           </form>
@@ -508,8 +513,8 @@ export function CourseManagementEnhanced({ courses, setCourses, onRefresh }: Cou
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the course "{deletingCourse?.title}".
-              This action cannot be undone.
+              This will permanently delete the course "{deletingCourse?.title}". This action cannot
+              be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

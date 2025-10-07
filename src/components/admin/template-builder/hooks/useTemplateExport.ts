@@ -1,16 +1,14 @@
 import { useToast } from '@/components/ui/use-toast';
-import { TemplateType } from '../types';
+import type { TemplateType } from '../types';
 
 export function useTemplateExport() {
   const { toast } = useToast();
 
-  const exportAsJSON = (formData: Record<string, any>, templateType: TemplateType) => {
-    const exportData = templateType === 'course'
-      ? { courses: [formData] }
-      : { events: [formData] };
+  const exportAsJSON = (formData: Record<string, unknown>, templateType: TemplateType) => {
+    const exportData = templateType === 'course' ? { courses: [formData] } : { events: [formData] };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json'
+      type: 'application/json',
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -27,10 +25,8 @@ export function useTemplateExport() {
     });
   };
 
-  const copyToClipboard = (formData: Record<string, any>, templateType: TemplateType) => {
-    const exportData = templateType === 'course'
-      ? { courses: [formData] }
-      : { events: [formData] };
+  const copyToClipboard = (formData: Record<string, unknown>, templateType: TemplateType) => {
+    const exportData = templateType === 'course' ? { courses: [formData] } : { events: [formData] };
 
     navigator.clipboard.writeText(JSON.stringify(exportData, null, 2));
 
@@ -42,6 +38,6 @@ export function useTemplateExport() {
 
   return {
     exportAsJSON,
-    copyToClipboard
+    copyToClipboard,
   };
 }

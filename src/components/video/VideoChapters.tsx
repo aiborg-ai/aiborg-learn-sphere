@@ -1,5 +1,5 @@
 import React from 'react';
-import { Chapter } from './types';
+import type { Chapter } from './types';
 
 interface VideoChaptersProps {
   chapters: Chapter[];
@@ -12,13 +12,13 @@ export function VideoChapters({
   chapters,
   currentChapter,
   onJumpToChapter,
-  formatTime
+  formatTime,
 }: VideoChaptersProps) {
   return (
     <div className="space-y-2">
       <h3 className="text-white font-medium mb-3">Chapters</h3>
       {chapters.length > 0 ? (
-        chapters.map((chapter) => (
+        chapters.map(chapter => (
           <button
             key={chapter.id}
             onClick={() => onJumpToChapter(chapter)}
@@ -30,9 +30,7 @@ export function VideoChapters({
           >
             <div className="flex items-center justify-between">
               <span className="text-sm">{chapter.title}</span>
-              <span className="text-xs opacity-60">
-                {formatTime(chapter.startTime)}
-              </span>
+              <span className="text-xs opacity-60">{formatTime(chapter.startTime)}</span>
             </div>
           </button>
         ))

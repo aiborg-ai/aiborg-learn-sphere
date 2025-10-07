@@ -1,5 +1,5 @@
 import React from 'react';
-import { Achievement } from './types';
+import type { Achievement } from './types';
 import { AchievementBadge } from './AchievementBadge';
 
 interface AchievementListProps {
@@ -13,11 +13,11 @@ export const AchievementList: React.FC<AchievementListProps> = ({
   achievements,
   onEdit,
   onDelete,
-  onAllocate
+  onAllocate,
 }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {achievements.map((achievement) => (
+      {achievements.map(achievement => (
         <AchievementBadge
           key={achievement.id}
           achievement={achievement}

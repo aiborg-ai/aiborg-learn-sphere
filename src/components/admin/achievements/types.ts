@@ -1,3 +1,10 @@
+export interface AchievementCriteria {
+  type: string;
+  value: string | number;
+  condition?: string;
+  [key: string]: unknown;
+}
+
 export interface Achievement {
   id: string;
   name: string;
@@ -5,7 +12,7 @@ export interface Achievement {
   icon_emoji: string;
   category: string;
   rarity: string;
-  criteria: any;
+  criteria: AchievementCriteria;
   points: number;
   is_active: boolean;
   auto_allocate: boolean;

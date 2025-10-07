@@ -3,10 +3,16 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import {
-  Play, Pause, SkipForward, SkipBack, Volume2, VolumeX,
-  Maximize, Minimize
+  Play,
+  Pause,
+  SkipForward,
+  SkipBack,
+  Volume2,
+  VolumeX,
+  Maximize,
+  Minimize,
 } from 'lucide-react';
-import { Chapter } from './types';
+import type { Chapter } from './types';
 
 interface VideoControlsProps {
   isPlaying: boolean;
@@ -53,7 +59,7 @@ export function VideoControls({
   onFullscreen,
   onSeek,
   onSetShowControls,
-  formatTime
+  formatTime,
 }: VideoControlsProps) {
   return (
     <div
@@ -67,7 +73,7 @@ export function VideoControls({
       <div
         ref={progressBarRef}
         className="relative h-1 bg-white/20 rounded-full mb-4 cursor-pointer"
-        onClick={(e) => {
+        onClick={e => {
           const rect = progressBarRef.current?.getBoundingClientRect();
           if (rect) {
             const x = e.clientX - rect.left;
@@ -151,7 +157,7 @@ export function VideoControls({
           {/* Speed Control */}
           <select
             value={playbackSpeed}
-            onChange={(e) => onSpeedChange(parseFloat(e.target.value))}
+            onChange={e => onSpeedChange(parseFloat(e.target.value))}
             className="bg-white/10 text-white text-sm px-2 py-1 rounded border border-white/20"
           >
             <option value="0.5">0.5x</option>

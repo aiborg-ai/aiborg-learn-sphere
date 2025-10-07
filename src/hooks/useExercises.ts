@@ -14,12 +14,12 @@ export interface Exercise {
   instructions: string;
   difficulty_level: 'beginner' | 'intermediate' | 'advanced';
   estimated_time_minutes?: number;
-  rubric?: any;
+  rubric?: Record<string, unknown>;
   allowed_file_types: string[];
   max_file_size_mb: number;
   points_reward: number;
   auto_grade: boolean;
-  test_cases?: any;
+  test_cases?: Record<string, unknown>;
   is_published: boolean;
   order_index: number;
   created_by?: string;
@@ -44,7 +44,7 @@ export interface ExerciseSubmission {
   feedback?: string;
   graded_by?: string;
   graded_at?: string;
-  auto_grade_results?: any;
+  auto_grade_results?: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }
@@ -69,7 +69,7 @@ export function useExercises(courseId?: number) {
         .select('*')
         .eq('course_id', courseId)
         .eq('is_published', true)
-        .order('order_index', { ascending: true});
+        .order('order_index', { ascending: true });
 
       if (error) throw error;
       return data as Exercise[];
@@ -173,12 +173,14 @@ export function useExercises(courseId?: number) {
         return data as ExerciseSubmission;
       }
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['exercise-submissions', data.exercise_id, user?.id] });
+    onSuccess: data => {
+      queryClient.invalidateQueries({
+        queryKey: ['exercise-submissions', data.exercise_id, user?.id],
+      });
       toast.success('Draft saved successfully');
       logger.log('Exercise draft saved:', data);
     },
-    onError: (error) => {
+    onError: error => {
       logger.error('Error saving exercise draft:', error);
       toast.error('Failed to save draft');
     },
@@ -186,11 +188,7 @@ export function useExercises(courseId?: number) {
 
   // Submit exercise
   const submitExerciseMutation = useMutation({
-    mutationFn: async ({
-      submissionId,
-    }: {
-      submissionId: string;
-    }) => {
+    mutationFn: async ({ submissionId }: { submissionId: string }) => {
       if (!user) throw new Error('User not authenticated');
 
       const { data, error } = await supabase
@@ -206,14 +204,16 @@ export function useExercises(courseId?: number) {
       if (error) throw error;
       return data as ExerciseSubmission;
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['exercise-submissions', data.exercise_id, user?.id] });
+    onSuccess: data => {
+      queryClient.invalidateQueries({
+        queryKey: ['exercise-submissions', data.exercise_id, user?.id],
+      });
       toast.success('Exercise submitted successfully', {
         description: 'Your instructor will review your submission',
       });
       logger.log('Exercise submitted:', data);
     },
-    onError: (error) => {
+    onError: error => {
       logger.error('Error submitting exercise:', error);
       toast.error('Failed to submit exercise');
     },
@@ -243,13 +243,29 @@ export function useExercises(courseId?: number) {
 
       if (submissionError) throw submissionError;
 
-      const exercise = submission.exercise as any;
+      const exercise = submission.exercise as Exercise;
       const isPerfectScore = scorePercentage === 100;
-      const isEarlySubmission = false; // TODO: Implement early submission detection
+
+      // Early submission detection: submitted in less than 75% of estimated time
+      let isEarlySubmission = false;
+      if (exercise.estimated_time_minutes && submission.created_at && submission.submitted_at) {
+        const createdTime = new Date(submission.created_at).getTime();
+        const submittedTime = new Date(submission.submitted_at).getTime();
+        const timeTakenMinutes = (submittedTime - createdTime) / (1000 * 60);
+        const estimatedMinutes = exercise.estimated_time_minutes;
+
+        // Consider it "early" if completed in less than 75% of estimated time
+        isEarlySubmission = timeTakenMinutes < estimatedMinutes * 0.75;
+      }
 
       // Calculate AIBORG points
       const aiborgPoints = passed
-        ? calculateExercisePoints(exercise.points_reward, scorePercentage, isPerfectScore, isEarlySubmission)
+        ? calculateExercisePoints(
+            exercise.points_reward,
+            scorePercentage,
+            isPerfectScore,
+            isEarlySubmission
+          )
         : 0;
 
       // Update submission
@@ -283,12 +299,12 @@ export function useExercises(courseId?: number) {
 
       return data as ExerciseSubmission;
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ['exercise-submissions', data.exercise_id] });
       toast.success('Exercise graded successfully');
       logger.log('Exercise graded:', data);
     },
-    onError: (error) => {
+    onError: error => {
       logger.error('Error grading exercise:', error);
       toast.error('Failed to grade exercise');
     },

@@ -24,42 +24,52 @@ interface CourseCardProps {
 export const MemoizedCourseCard = memo<CourseCardProps>(
   function CourseCard({ course, onEnroll, onViewDetails }) {
     return (
-      <Card className="h-full hover:shadow-lg transition-shadow">
+      <Card
+        className="h-full hover:shadow-lg transition-shadow"
+        role="article"
+        aria-label={`Course: ${course.title}`}
+      >
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <CardTitle className="text-xl line-clamp-2">{course.title}</CardTitle>
-              <CardDescription className="mt-2">
+              <CardDescription
+                className="mt-2"
+                aria-label={`Course details: ${course.level} level, ${course.duration} duration`}
+              >
                 {course.level} • {course.duration}
               </CardDescription>
             </div>
             {course.is_featured && (
-              <Badge variant="default">Featured</Badge>
+              <Badge variant="default" aria-label="Featured course">
+                Featured
+              </Badge>
             )}
           </div>
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground line-clamp-3">
-            {course.description}
-          </p>
+          <p className="text-sm text-muted-foreground line-clamp-3">{course.description}</p>
 
-          <div className="flex flex-wrap gap-2">
-            {course.audiences.slice(0, 3).map((audience) => (
-              <Badge key={audience} variant="secondary">
+          <div className="flex flex-wrap gap-2" role="list" aria-label="Target audiences">
+            {course.audiences.slice(0, 3).map(audience => (
+              <Badge key={audience} variant="secondary" role="listitem">
                 {audience}
               </Badge>
             ))}
           </div>
 
           <div className="flex items-center justify-between pt-4">
-            <span className="text-lg font-semibold">{course.price}</span>
-            <div className="flex gap-2">
+            <span className="text-lg font-semibold" aria-label={`Course price: ${course.price}`}>
+              {course.price}
+            </span>
+            <div className="flex gap-2" role="group" aria-label="Course actions">
               {onViewDetails && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => onViewDetails(course.id)}
+                  aria-label={`View details for ${course.title}`}
                 >
                   Details
                 </Button>
@@ -68,6 +78,7 @@ export const MemoizedCourseCard = memo<CourseCardProps>(
                 <Button
                   size="sm"
                   onClick={() => onEnroll(course.id)}
+                  aria-label={`Enroll in ${course.title}`}
                 >
                   Enroll
                 </Button>

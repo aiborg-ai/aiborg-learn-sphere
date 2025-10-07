@@ -2,19 +2,22 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AchievementFormData } from './types';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import type { AchievementFormData } from './types';
 
 interface AchievementFormProps {
   formData: AchievementFormData;
   onChange: (data: AchievementFormData) => void;
 }
 
-export const AchievementForm: React.FC<AchievementFormProps> = ({
-  formData,
-  onChange
-}) => {
-  const handleChange = (field: keyof AchievementFormData, value: any) => {
+export const AchievementForm: React.FC<AchievementFormProps> = ({ formData, onChange }) => {
+  const handleChange = (field: keyof AchievementFormData, value: string | number | boolean) => {
     onChange({ ...formData, [field]: value });
   };
 
@@ -25,7 +28,7 @@ export const AchievementForm: React.FC<AchievementFormProps> = ({
           <Label>Name</Label>
           <Input
             value={formData.name}
-            onChange={(e) => handleChange('name', e.target.value)}
+            onChange={e => handleChange('name', e.target.value)}
             placeholder="Achievement name"
             className="bg-gray-800 border-gray-700"
           />
@@ -34,7 +37,7 @@ export const AchievementForm: React.FC<AchievementFormProps> = ({
           <Label>Emoji Icon</Label>
           <Input
             value={formData.icon_emoji}
-            onChange={(e) => handleChange('icon_emoji', e.target.value)}
+            onChange={e => handleChange('icon_emoji', e.target.value)}
             placeholder="🏆"
             className="bg-gray-800 border-gray-700"
           />
@@ -45,7 +48,7 @@ export const AchievementForm: React.FC<AchievementFormProps> = ({
         <Label>Description</Label>
         <Textarea
           value={formData.description}
-          onChange={(e) => handleChange('description', e.target.value)}
+          onChange={e => handleChange('description', e.target.value)}
           placeholder="What does this achievement represent?"
           className="bg-gray-800 border-gray-700"
         />
@@ -56,7 +59,7 @@ export const AchievementForm: React.FC<AchievementFormProps> = ({
           <Label>Category</Label>
           <Select
             value={formData.category}
-            onValueChange={(value) => handleChange('category', value)}
+            onValueChange={value => handleChange('category', value)}
           >
             <SelectTrigger className="bg-gray-800 border-gray-700">
               <SelectValue />
@@ -72,10 +75,7 @@ export const AchievementForm: React.FC<AchievementFormProps> = ({
         </div>
         <div>
           <Label>Rarity</Label>
-          <Select
-            value={formData.rarity}
-            onValueChange={(value) => handleChange('rarity', value)}
-          >
+          <Select value={formData.rarity} onValueChange={value => handleChange('rarity', value)}>
             <SelectTrigger className="bg-gray-800 border-gray-700">
               <SelectValue />
             </SelectTrigger>
@@ -94,7 +94,7 @@ export const AchievementForm: React.FC<AchievementFormProps> = ({
         <Input
           type="number"
           value={formData.points}
-          onChange={(e) => handleChange('points', parseInt(e.target.value))}
+          onChange={e => handleChange('points', parseInt(e.target.value))}
           className="bg-gray-800 border-gray-700"
         />
       </div>

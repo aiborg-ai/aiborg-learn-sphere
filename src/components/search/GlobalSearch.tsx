@@ -124,7 +124,7 @@ export function GlobalSearch() {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen((open) => !open);
+        setOpen(open => !open);
       }
     };
 
@@ -133,91 +133,101 @@ export function GlobalSearch() {
   }, []);
 
   // Search functionality
-  const performSearch = useCallback(async (query: string) => {
-    if (!query || query.length < 2) {
-      setResults([]);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const searchQuery = query.toLowerCase();
-      const searchResults: SearchResult[] = [];
-
-      // Search courses
-      const { data: courses } = await supabase
-        .from('courses')
-        .select('id, title, description, category')
-        .or(`title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,category.ilike.%${searchQuery}%`)
-        .limit(5);
-
-      if (courses) {
-        courses.forEach((course) => {
-          searchResults.push({
-            id: `course-${course.id}`,
-            title: course.title,
-            type: 'course',
-            description: course.description?.substring(0, 60) + '...' || course.category,
-            icon: <BookOpen className="h-4 w-4" />,
-            url: `/course/${course.id}`,
-          });
-        });
+  const performSearch = useCallback(
+    async (query: string) => {
+      if (!query || query.length < 2) {
+        setResults([]);
+        return;
       }
 
-      // Search assignments
-      const { data: assignments } = await supabase
-        .from('assignments')
-        .select('id, title, description, courses(title)')
-        .ilike('title', `%${searchQuery}%`)
-        .limit(5);
+      setLoading(true);
+      try {
+        const searchQuery = query.toLowerCase();
+        const searchResults: SearchResult[] = [];
 
-      if (assignments) {
-        assignments.forEach((assignment) => {
-          searchResults.push({
-            id: `assignment-${assignment.id}`,
-            title: assignment.title,
-            type: 'assignment',
-            description: assignment.courses?.title || assignment.description?.substring(0, 60),
-            icon: <FileText className="h-4 w-4" />,
-            url: `/assignment/${assignment.id}`,
+        // Search courses
+        const { data: courses } = await supabase
+          .from('courses')
+          .select('id, title, description, category')
+          .or(
+            `title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,category.ilike.%${searchQuery}%`
+          )
+          .limit(5);
+
+        if (courses) {
+          courses.forEach(course => {
+            searchResults.push({
+              id: `course-${course.id}`,
+              title: course.title,
+              type: 'course',
+              description: course.description?.substring(0, 60) + '...' || course.category,
+              icon: <BookOpen className="h-4 w-4" />,
+              url: `/course/${course.id}`,
+            });
           });
-        });
-      }
+        }
 
-      // Search course materials
-      const { data: materials } = await supabase
-        .from('course_materials')
-        .select('id, title, type, courses(title)')
-        .ilike('title', `%${searchQuery}%`)
-        .limit(5);
+        // Search assignments
+        const { data: assignments } = await supabase
+          .from('assignments')
+          .select('id, title, description, courses(title)')
+          .ilike('title', `%${searchQuery}%`)
+          .limit(5);
 
-      if (materials) {
-        materials.forEach((material) => {
-          searchResults.push({
-            id: `material-${material.id}`,
-            title: material.title,
-            type: 'material',
-            description: material.courses?.title,
-            icon: material.type === 'video' ? <Video className="h-4 w-4" /> : <FileText className="h-4 w-4" />,
-            url: `/course/${material.courses?.id}`,
+        if (assignments) {
+          assignments.forEach(assignment => {
+            searchResults.push({
+              id: `assignment-${assignment.id}`,
+              title: assignment.title,
+              type: 'assignment',
+              description: assignment.courses?.title || assignment.description?.substring(0, 60),
+              icon: <FileText className="h-4 w-4" />,
+              url: `/assignment/${assignment.id}`,
+            });
           });
-        });
+        }
+
+        // Search course materials
+        const { data: materials } = await supabase
+          .from('course_materials')
+          .select('id, title, type, courses(title)')
+          .ilike('title', `%${searchQuery}%`)
+          .limit(5);
+
+        if (materials) {
+          materials.forEach(material => {
+            searchResults.push({
+              id: `material-${material.id}`,
+              title: material.title,
+              type: 'material',
+              description: material.courses?.title,
+              icon:
+                material.type === 'video' ? (
+                  <Video className="h-4 w-4" />
+                ) : (
+                  <FileText className="h-4 w-4" />
+                ),
+              url: `/course/${material.courses?.id}`,
+            });
+          });
+        }
+
+        // Filter quick actions by search query
+        const filteredActions = quickActions.filter(
+          action =>
+            action.title.toLowerCase().includes(searchQuery) ||
+            action.description?.toLowerCase().includes(searchQuery)
+        );
+
+        setResults([...searchResults, ...filteredActions]);
+      } catch (error) {
+        logger.error('Search error:', error);
+      } finally {
+        setLoading(false);
       }
-
-      // Filter quick actions by search query
-      const filteredActions = quickActions.filter(
-        (action) =>
-          action.title.toLowerCase().includes(searchQuery) ||
-          action.description?.toLowerCase().includes(searchQuery)
-      );
-
-      setResults([...searchResults, ...filteredActions]);
-    } catch (error) {
-      logger.error('Search error:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    [quickActions]
+  );
 
   // Debounce search
   useEffect(() => {
@@ -235,10 +245,10 @@ export function GlobalSearch() {
   };
 
   const groupedResults = {
-    courses: results.filter((r) => r.type === 'course'),
-    assignments: results.filter((r) => r.type === 'assignment'),
-    materials: results.filter((r) => r.type === 'material'),
-    pages: results.filter((r) => r.type === 'page'),
+    courses: results.filter(r => r.type === 'course'),
+    assignments: results.filter(r => r.type === 'assignment'),
+    materials: results.filter(r => r.type === 'material'),
+    pages: results.filter(r => r.type === 'page'),
   };
 
   return (
@@ -264,15 +274,13 @@ export function GlobalSearch() {
         />
         <CommandList>
           {loading ? (
-            <div className="py-6 text-center text-sm text-muted-foreground">
-              Searching...
-            </div>
+            <div className="py-6 text-center text-sm text-muted-foreground">Searching...</div>
           ) : (
             <>
               {!search && (
                 <>
                   <CommandGroup heading="Quick Actions">
-                    {quickActions.slice(0, 6).map((action) => (
+                    {quickActions.slice(0, 6).map(action => (
                       <CommandItem
                         key={action.id}
                         onSelect={() => handleSelect(action.url)}
@@ -299,16 +307,14 @@ export function GlobalSearch() {
               )}
 
               {search && results.length === 0 && (
-                <CommandEmpty>
-                  No results found for "{search}"
-                </CommandEmpty>
+                <CommandEmpty>No results found for "{search}"</CommandEmpty>
               )}
 
               {groupedResults.courses.length > 0 && (
                 <>
                   <CommandSeparator />
                   <CommandGroup heading="Courses">
-                    {groupedResults.courses.map((result) => (
+                    {groupedResults.courses.map(result => (
                       <CommandItem
                         key={result.id}
                         onSelect={() => handleSelect(result.url)}
@@ -331,7 +337,7 @@ export function GlobalSearch() {
                 <>
                   <CommandSeparator />
                   <CommandGroup heading="Assignments">
-                    {groupedResults.assignments.map((result) => (
+                    {groupedResults.assignments.map(result => (
                       <CommandItem
                         key={result.id}
                         onSelect={() => handleSelect(result.url)}
@@ -354,7 +360,7 @@ export function GlobalSearch() {
                 <>
                   <CommandSeparator />
                   <CommandGroup heading="Materials">
-                    {groupedResults.materials.map((result) => (
+                    {groupedResults.materials.map(result => (
                       <CommandItem
                         key={result.id}
                         onSelect={() => handleSelect(result.url)}
@@ -377,7 +383,7 @@ export function GlobalSearch() {
                 <>
                   <CommandSeparator />
                   <CommandGroup heading="Pages">
-                    {groupedResults.pages.map((result) => (
+                    {groupedResults.pages.map(result => (
                       <CommandItem
                         key={result.id}
                         onSelect={() => handleSelect(result.url)}

@@ -32,20 +32,39 @@ import {
   Code,
   Quote,
   Hash,
-  ImageIcon
+  ImageIcon,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 import { logger } from '@/utils/logger';
+interface BlogPost {
+  id: string;
+  title?: string;
+  [key: string]: unknown;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  color: string;
+  is_active: boolean;
+  sort_order: number;
+}
+
+interface Tag {
+  id: string;
+  name: string;
+}
+
 interface BlogPostEditorProps {
-  post?: any;
+  post?: BlogPost;
   onClose: () => void;
 }
 
 function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [tags, setTags] = useState<any[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     title: '',
@@ -66,7 +85,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
     og_image: '',
     canonical_url: '',
     scheduled_for: '',
-    reading_time: 0
+    reading_time: 0,
   });
   const [preview, setPreview] = useState(false);
   const { toast } = useToast();
@@ -89,10 +108,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
   };
 
   const fetchTags = async () => {
-    const { data } = await supabase
-      .from('blog_tags')
-      .select('*')
-      .order('name');
+    const { data } = await supabase.from('blog_tags').select('*').order('name');
     setTags(data || []);
   };
 
@@ -101,10 +117,12 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
 
     const { data: postData } = await supabase
       .from('blog_posts')
-      .select(`
+      .select(
+        `
         *,
         blog_post_tags(tag_id)
-      `)
+      `
+      )
       .eq('id', post.id)
       .single();
 
@@ -112,10 +130,10 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
       setFormData({
         ...formData,
         ...postData,
-        scheduled_for: postData.scheduled_for || ''
+        scheduled_for: postData.scheduled_for || '',
       });
 
-      const tagIds = postData.blog_post_tags?.map((pt: any) => pt.tag_id) || [];
+      const tagIds = postData.blog_post_tags?.map((pt: { tag_id: string }) => pt.tag_id) || [];
       setSelectedTags(tagIds);
     }
   };
@@ -142,7 +160,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
         status: publishNow ? 'published' : formData.status,
         published_at: publishNow && !post?.published_at ? new Date().toISOString() : undefined,
         reading_time: calculateReadingTime(formData.content),
-        last_modified_by: (await supabase.auth.getUser()).data.user?.id
+        last_modified_by: (await supabase.auth.getUser()).data.user?.id,
       };
 
       let result;
@@ -160,7 +178,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
           .from('blog_posts')
           .insert({
             ...saveData,
-            author_id: (await supabase.auth.getUser()).data.user?.id
+            author_id: (await supabase.auth.getUser()).data.user?.id,
           })
           .select()
           .single();
@@ -171,27 +189,22 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
       // Update tags
       if (result.data) {
         // Remove existing tags
-        await supabase
-          .from('blog_post_tags')
-          .delete()
-          .eq('post_id', result.data.id);
+        await supabase.from('blog_post_tags').delete().eq('post_id', result.data.id);
 
         // Add new tags
         if (selectedTags.length > 0) {
           const tagInserts = selectedTags.map(tagId => ({
             post_id: result.data.id,
-            tag_id: tagId
+            tag_id: tagId,
           }));
 
-          await supabase
-            .from('blog_post_tags')
-            .insert(tagInserts);
+          await supabase.from('blog_post_tags').insert(tagInserts);
         }
       }
 
       toast({
         title: 'Success',
-        description: `Post ${post ? 'updated' : 'created'} successfully`
+        description: `Post ${post ? 'updated' : 'created'} successfully`,
       });
 
       onClose();
@@ -200,7 +213,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
       toast({
         title: 'Error',
         description: 'Failed to save post',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -217,9 +230,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
     const replacement = `${before}${selectedText}${after}`;
 
     const newContent =
-      formData.content.substring(0, start) +
-      replacement +
-      formData.content.substring(end);
+      formData.content.substring(0, start) + replacement + formData.content.substring(end);
 
     setFormData({ ...formData, content: newContent });
 
@@ -240,31 +251,18 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
-          <h2 className="text-2xl font-bold">
-            {post ? 'Edit Post' : 'Create New Post'}
-          </h2>
+          <h2 className="text-2xl font-bold">{post ? 'Edit Post' : 'Create New Post'}</h2>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setPreview(!preview)}
-          >
+          <Button variant="outline" onClick={() => setPreview(!preview)}>
             <Eye className="mr-2 h-4 w-4" />
             {preview ? 'Edit' : 'Preview'}
           </Button>
-          <Button
-            variant="outline"
-            onClick={() => handleSave(false)}
-            disabled={loading}
-          >
+          <Button variant="outline" onClick={() => handleSave(false)} disabled={loading}>
             <Save className="mr-2 h-4 w-4" />
             Save Draft
           </Button>
-          <Button
-            className="btn-hero"
-            onClick={() => handleSave(true)}
-            disabled={loading}
-          >
+          <Button className="btn-hero" onClick={() => handleSave(true)} disabled={loading}>
             Publish Now
           </Button>
         </div>
@@ -280,7 +278,11 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                 <p className="text-xl text-muted-foreground">{formData.excerpt}</p>
               )}
               {formData.featured_image && (
-                <img src={formData.featured_image} alt={formData.title} className="w-full rounded-lg" />
+                <img
+                  src={formData.featured_image}
+                  alt={formData.title}
+                  className="w-full rounded-lg"
+                />
               )}
               <div dangerouslySetInnerHTML={{ __html: parseMarkdown(formData.content) }} />
             </article>
@@ -298,7 +300,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                   <Input
                     id="title"
                     value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    onChange={e => setFormData({ ...formData, title: e.target.value })}
                     placeholder="Enter post title..."
                     className="text-lg"
                   />
@@ -310,12 +312,14 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                     <Input
                       id="slug"
                       value={formData.slug}
-                      onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                      onChange={e => setFormData({ ...formData, slug: e.target.value })}
                       placeholder="post-url-slug"
                     />
                     <Button
                       variant="outline"
-                      onClick={() => setFormData({ ...formData, slug: generateSlug(formData.title) })}
+                      onClick={() =>
+                        setFormData({ ...formData, slug: generateSlug(formData.title) })
+                      }
                     >
                       Generate
                     </Button>
@@ -327,7 +331,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                   <Textarea
                     id="excerpt"
                     value={formData.excerpt}
-                    onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                    onChange={e => setFormData({ ...formData, excerpt: e.target.value })}
                     placeholder="Brief description of the post..."
                     rows={3}
                   />
@@ -337,32 +341,16 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                   <div className="flex items-center justify-between mb-2">
                     <Label htmlFor="content">Content</Label>
                     <div className="flex gap-1">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => insertMarkdown('**', '**')}
-                      >
+                      <Button size="sm" variant="ghost" onClick={() => insertMarkdown('**', '**')}>
                         <Bold className="h-4 w-4" />
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => insertMarkdown('*', '*')}
-                      >
+                      <Button size="sm" variant="ghost" onClick={() => insertMarkdown('*', '*')}>
                         <Italic className="h-4 w-4" />
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => insertMarkdown('\n## ', '')}
-                      >
+                      <Button size="sm" variant="ghost" onClick={() => insertMarkdown('\n## ', '')}>
                         <Hash className="h-4 w-4" />
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => insertMarkdown('\n- ', '')}
-                      >
+                      <Button size="sm" variant="ghost" onClick={() => insertMarkdown('\n- ', '')}>
                         <List className="h-4 w-4" />
                       </Button>
                       <Button
@@ -372,18 +360,10 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                       >
                         <Link2 className="h-4 w-4" />
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => insertMarkdown('`', '`')}
-                      >
+                      <Button size="sm" variant="ghost" onClick={() => insertMarkdown('`', '`')}>
                         <Code className="h-4 w-4" />
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => insertMarkdown('\n> ', '')}
-                      >
+                      <Button size="sm" variant="ghost" onClick={() => insertMarkdown('\n> ', '')}>
                         <Quote className="h-4 w-4" />
                       </Button>
                       <Button
@@ -398,7 +378,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                   <Textarea
                     id="content-editor"
                     value={formData.content}
-                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                    onChange={e => setFormData({ ...formData, content: e.target.value })}
                     placeholder="Write your content in Markdown..."
                     rows={20}
                     className="font-mono"
@@ -424,7 +404,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                   <Input
                     id="meta_title"
                     value={formData.meta_title}
-                    onChange={(e) => setFormData({ ...formData, meta_title: e.target.value })}
+                    onChange={e => setFormData({ ...formData, meta_title: e.target.value })}
                     placeholder="SEO title (max 60 characters)"
                     maxLength={60}
                   />
@@ -438,7 +418,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                   <Textarea
                     id="meta_description"
                     value={formData.meta_description}
-                    onChange={(e) => setFormData({ ...formData, meta_description: e.target.value })}
+                    onChange={e => setFormData({ ...formData, meta_description: e.target.value })}
                     placeholder="SEO description (max 160 characters)"
                     maxLength={160}
                     rows={3}
@@ -453,7 +433,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                   <Input
                     id="seo_keywords"
                     value={formData.seo_keywords}
-                    onChange={(e) => setFormData({ ...formData, seo_keywords: e.target.value })}
+                    onChange={e => setFormData({ ...formData, seo_keywords: e.target.value })}
                     placeholder="keyword1, keyword2, keyword3"
                   />
                 </div>
@@ -463,7 +443,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                   <Input
                     id="canonical_url"
                     value={formData.canonical_url}
-                    onChange={(e) => setFormData({ ...formData, canonical_url: e.target.value })}
+                    onChange={e => setFormData({ ...formData, canonical_url: e.target.value })}
                     placeholder="https://example.com/original-post"
                   />
                 </div>
@@ -486,7 +466,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                   <Label htmlFor="status">Status</Label>
                   <Select
                     value={formData.status}
-                    onValueChange={(value) => setFormData({ ...formData, status: value })}
+                    onValueChange={value => setFormData({ ...formData, status: value })}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -507,7 +487,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                       id="scheduled_for"
                       type="datetime-local"
                       value={formData.scheduled_for}
-                      onChange={(e) => setFormData({ ...formData, scheduled_for: e.target.value })}
+                      onChange={e => setFormData({ ...formData, scheduled_for: e.target.value })}
                     />
                   </div>
                 )}
@@ -516,7 +496,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                   <Label htmlFor="category">Category</Label>
                   <Select
                     value={formData.category_id}
-                    onValueChange={(value) => setFormData({ ...formData, category_id: value })}
+                    onValueChange={value => setFormData({ ...formData, category_id: value })}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select a category" />
@@ -542,7 +522,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                   <Switch
                     id="is_featured"
                     checked={formData.is_featured}
-                    onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
+                    onCheckedChange={checked => setFormData({ ...formData, is_featured: checked })}
                   />
                 </div>
 
@@ -551,7 +531,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                   <Switch
                     id="is_sticky"
                     checked={formData.is_sticky}
-                    onCheckedChange={(checked) => setFormData({ ...formData, is_sticky: checked })}
+                    onCheckedChange={checked => setFormData({ ...formData, is_sticky: checked })}
                   />
                 </div>
 
@@ -560,7 +540,9 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                   <Switch
                     id="allow_comments"
                     checked={formData.allow_comments}
-                    onCheckedChange={(checked) => setFormData({ ...formData, allow_comments: checked })}
+                    onCheckedChange={checked =>
+                      setFormData({ ...formData, allow_comments: checked })
+                    }
                   />
                 </div>
               </CardContent>
@@ -585,7 +567,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
                   )}
                   <Input
                     value={formData.featured_image}
-                    onChange={(e) => setFormData({ ...formData, featured_image: e.target.value })}
+                    onChange={e => setFormData({ ...formData, featured_image: e.target.value })}
                     placeholder="Image URL"
                   />
                 </div>
@@ -603,14 +585,11 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
               <CardContent>
                 <div className="space-y-2">
                   {tags.map(tag => (
-                    <label
-                      key={tag.id}
-                      className="flex items-center gap-2 cursor-pointer"
-                    >
+                    <label key={tag.id} className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={selectedTags.includes(tag.id)}
-                        onChange={(e) => {
+                        onChange={e => {
                           if (e.target.checked) {
                             setSelectedTags([...selectedTags, tag.id]);
                           } else {

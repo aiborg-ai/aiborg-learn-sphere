@@ -1,3 +1,4 @@
+import React from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 
@@ -5,6 +6,34 @@ import { logger } from '@/utils/logger';
  * Role-Based Access Control (RBAC) system
  * @module rbac
  */
+
+/**
+ * User object type for RBAC
+ */
+export interface RBACUser {
+  id: string;
+  [key: string]: unknown;
+}
+
+/**
+ * Resource data type for condition checking
+ */
+export interface ResourceData {
+  id?: string;
+  user_id?: string;
+  instructor_id?: string;
+  author_id?: string;
+  is_public?: boolean;
+  status?: string;
+  course?: {
+    instructor_id?: string;
+  };
+  submissions?: Array<{
+    user_id: string;
+    [key: string]: unknown;
+  }>;
+  [key: string]: unknown;
+}
 
 /**
  * User roles in the system
@@ -15,7 +44,7 @@ export enum UserRole {
   ADMIN = 'admin',
   INSTRUCTOR = 'instructor',
   STUDENT = 'student',
-  GUEST = 'guest'
+  GUEST = 'guest',
 }
 
 /**
@@ -32,7 +61,7 @@ export enum Resource {
   ANALYTICS = 'analytics',
   SETTINGS = 'settings',
   PAYMENT = 'payment',
-  REVIEW = 'review'
+  REVIEW = 'review',
 }
 
 /**
@@ -47,7 +76,7 @@ export enum Action {
   PUBLISH = 'publish',
   APPROVE = 'approve',
   EXPORT = 'export',
-  MANAGE = 'manage'
+  MANAGE = 'manage',
 }
 
 /**
@@ -58,7 +87,7 @@ interface PermissionRule {
   role: UserRole;
   resource: Resource;
   actions: Action[];
-  condition?: (user: any, resource: any) => boolean;
+  condition?: (user: RBACUser, resource: ResourceData) => boolean;
 }
 
 /**
@@ -69,60 +98,67 @@ const PERMISSION_MATRIX: PermissionRule[] = [
   {
     role: UserRole.SUPER_ADMIN,
     resource: Resource.COURSE,
-    actions: [Action.CREATE, Action.READ, Action.UPDATE, Action.DELETE, Action.PUBLISH, Action.MANAGE]
+    actions: [
+      Action.CREATE,
+      Action.READ,
+      Action.UPDATE,
+      Action.DELETE,
+      Action.PUBLISH,
+      Action.MANAGE,
+    ],
   },
   {
     role: UserRole.SUPER_ADMIN,
     resource: Resource.USER,
-    actions: [Action.CREATE, Action.READ, Action.UPDATE, Action.DELETE, Action.MANAGE]
+    actions: [Action.CREATE, Action.READ, Action.UPDATE, Action.DELETE, Action.MANAGE],
   },
   {
     role: UserRole.SUPER_ADMIN,
     resource: Resource.ADMIN_PANEL,
-    actions: [Action.READ, Action.MANAGE]
+    actions: [Action.READ, Action.MANAGE],
   },
   {
     role: UserRole.SUPER_ADMIN,
     resource: Resource.ANALYTICS,
-    actions: [Action.READ, Action.EXPORT]
+    actions: [Action.READ, Action.EXPORT],
   },
   {
     role: UserRole.SUPER_ADMIN,
     resource: Resource.SETTINGS,
-    actions: [Action.READ, Action.UPDATE, Action.MANAGE]
+    actions: [Action.READ, Action.UPDATE, Action.MANAGE],
   },
 
   // Admin - Limited management access
   {
     role: UserRole.ADMIN,
     resource: Resource.COURSE,
-    actions: [Action.CREATE, Action.READ, Action.UPDATE, Action.PUBLISH]
+    actions: [Action.CREATE, Action.READ, Action.UPDATE, Action.PUBLISH],
   },
   {
     role: UserRole.ADMIN,
     resource: Resource.ENROLLMENT,
-    actions: [Action.READ, Action.UPDATE, Action.APPROVE]
+    actions: [Action.READ, Action.UPDATE, Action.APPROVE],
   },
   {
     role: UserRole.ADMIN,
     resource: Resource.BLOG,
-    actions: [Action.CREATE, Action.READ, Action.UPDATE, Action.DELETE, Action.PUBLISH]
+    actions: [Action.CREATE, Action.READ, Action.UPDATE, Action.DELETE, Action.PUBLISH],
   },
   {
     role: UserRole.ADMIN,
     resource: Resource.USER,
     actions: [Action.READ, Action.UPDATE],
-    condition: (user, targetUser) => user.id !== targetUser.id // Can't modify own account
+    condition: (user, targetUser) => user.id !== targetUser.id, // Can't modify own account
   },
   {
     role: UserRole.ADMIN,
     resource: Resource.ADMIN_PANEL,
-    actions: [Action.READ]
+    actions: [Action.READ],
   },
   {
     role: UserRole.ADMIN,
     resource: Resource.ANALYTICS,
-    actions: [Action.READ]
+    actions: [Action.READ],
   },
 
   // Instructor - Course and content management
@@ -130,66 +166,66 @@ const PERMISSION_MATRIX: PermissionRule[] = [
     role: UserRole.INSTRUCTOR,
     resource: Resource.COURSE,
     actions: [Action.CREATE, Action.READ, Action.UPDATE],
-    condition: (user, course) => course.instructor_id === user.id // Only own courses
+    condition: (user, course) => course.instructor_id === user.id, // Only own courses
   },
   {
     role: UserRole.INSTRUCTOR,
     resource: Resource.ASSIGNMENT,
     actions: [Action.CREATE, Action.READ, Action.UPDATE, Action.DELETE],
-    condition: (user, assignment) => assignment.instructor_id === user.id
+    condition: (user, assignment) => assignment.instructor_id === user.id,
   },
   {
     role: UserRole.INSTRUCTOR,
     resource: Resource.ENROLLMENT,
     actions: [Action.READ],
-    condition: (user, enrollment) => enrollment.course?.instructor_id === user.id
+    condition: (user, enrollment) => enrollment.course?.instructor_id === user.id,
   },
   {
     role: UserRole.INSTRUCTOR,
     resource: Resource.BLOG,
     actions: [Action.CREATE, Action.READ, Action.UPDATE],
-    condition: (user, blog) => blog.author_id === user.id
+    condition: (user, blog) => blog.author_id === user.id,
   },
   {
     role: UserRole.INSTRUCTOR,
     resource: Resource.REVIEW,
-    actions: [Action.READ]
+    actions: [Action.READ],
   },
 
   // Student - Limited access
   {
     role: UserRole.STUDENT,
     resource: Resource.COURSE,
-    actions: [Action.READ]
+    actions: [Action.READ],
   },
   {
     role: UserRole.STUDENT,
     resource: Resource.ENROLLMENT,
     actions: [Action.CREATE, Action.READ],
-    condition: (user, enrollment) => enrollment.user_id === user.id // Only own enrollments
+    condition: (user, enrollment) => enrollment.user_id === user.id, // Only own enrollments
   },
   {
     role: UserRole.STUDENT,
     resource: Resource.ASSIGNMENT,
     actions: [Action.READ, Action.UPDATE],
-    condition: (user, assignment) => assignment.submissions?.some((s: any) => s.user_id === user.id)
+    condition: (user, assignment) => assignment.submissions?.some(s => s.user_id === user.id),
   },
   {
     role: UserRole.STUDENT,
     resource: Resource.BLOG,
-    actions: [Action.READ]
+    actions: [Action.READ],
   },
   {
     role: UserRole.STUDENT,
     resource: Resource.REVIEW,
     actions: [Action.CREATE, Action.READ, Action.UPDATE],
-    condition: (user, review) => review.user_id === user.id
+    condition: (user, review) => review.user_id === user.id,
   },
   {
     role: UserRole.STUDENT,
     resource: Resource.PAYMENT,
     actions: [Action.CREATE, Action.READ],
-    condition: (user, payment) => payment.user_id === user.id
+    condition: (user, payment) => payment.user_id === user.id,
   },
 
   // Guest - Minimal access
@@ -197,14 +233,14 @@ const PERMISSION_MATRIX: PermissionRule[] = [
     role: UserRole.GUEST,
     resource: Resource.COURSE,
     actions: [Action.READ],
-    condition: (user, course) => course.is_public === true
+    condition: (user, course) => course.is_public === true,
   },
   {
     role: UserRole.GUEST,
     resource: Resource.BLOG,
     actions: [Action.READ],
-    condition: (user, blog) => blog.status === 'published'
-  }
+    condition: (user, blog) => blog.status === 'published',
+  },
 ];
 
 /**
@@ -218,9 +254,9 @@ export class RBACManager {
 
   /**
    * Initialize RBAC with user data
-   * @param {any} user - User object
+   * @param {RBACUser | null} user - User object
    */
-  async initialize(user: any): Promise<void> {
+  async initialize(user: RBACUser | null): Promise<void> {
     if (!user) {
       this.userRole = UserRole.GUEST;
       this.userId = null;
@@ -283,10 +319,10 @@ export class RBACManager {
    * Check if user can perform an action on a resource
    * @param {Action} action - Action to perform
    * @param {Resource} resource - Resource to access
-   * @param {any} [resourceData] - Optional resource data for condition checking
+   * @param {ResourceData} [resourceData] - Optional resource data for condition checking
    * @returns {boolean} True if action is allowed
    */
-  can(action: Action, resource: Resource, resourceData?: any): boolean {
+  can(action: Action, resource: Resource, resourceData?: ResourceData): boolean {
     // Super admin can do everything
     if (this.userRole === UserRole.SUPER_ADMIN) {
       return true;
@@ -301,10 +337,11 @@ export class RBACManager {
     // Check conditional permissions
     if (resourceData) {
       const rules = PERMISSION_MATRIX.filter(
-        rule => rule.role === this.userRole &&
-                rule.resource === resource &&
-                rule.actions.includes(action) &&
-                rule.condition
+        rule =>
+          rule.role === this.userRole &&
+          rule.resource === resource &&
+          rule.actions.includes(action) &&
+          rule.condition
       );
 
       for (const rule of rules) {
@@ -321,10 +358,10 @@ export class RBACManager {
    * Check if user cannot perform an action
    * @param {Action} action - Action to perform
    * @param {Resource} resource - Resource to access
-   * @param {any} [resourceData] - Optional resource data
+   * @param {ResourceData} [resourceData] - Optional resource data
    * @returns {boolean} True if action is not allowed
    */
-  cannot(action: Action, resource: Resource, resourceData?: any): boolean {
+  cannot(action: Action, resource: Resource, resourceData?: ResourceData): boolean {
     return !this.can(action, resource, resourceData);
   }
 
@@ -398,16 +435,16 @@ export const rbac = new RBACManager();
  */
 export function useRBAC() {
   return {
-    can: (action: Action, resource: Resource, data?: any) =>
+    can: (action: Action, resource: Resource, data?: ResourceData) =>
       rbac.can(action, resource, data),
-    cannot: (action: Action, resource: Resource, data?: any) =>
+    cannot: (action: Action, resource: Resource, data?: ResourceData) =>
       rbac.cannot(action, resource, data),
     hasRole: (role: UserRole) => rbac.hasRole(role),
     hasAnyRole: (roles: UserRole[]) => rbac.hasAnyRole(roles),
     isAuthenticated: () => rbac.isAuthenticated(),
     isAdmin: () => rbac.isAdmin(),
     isInstructor: () => rbac.isInstructor(),
-    getRole: () => rbac.getRole()
+    getRole: () => rbac.getRole(),
   };
 }
 
@@ -420,27 +457,27 @@ export function ProtectedRoute({
   children,
   requiredRole,
   requiredPermission,
-  fallback = null
+  fallback = null,
 }: {
   children: React.ReactNode;
   requiredRole?: UserRole | UserRole[];
   requiredPermission?: { action: Action; resource: Resource };
   fallback?: React.ReactNode;
-}) {
+}): React.ReactElement {
   // Check role requirement
   if (requiredRole) {
     const roles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
     if (!rbac.hasAnyRole(roles)) {
-      return <>{fallback}</>;
+      return <React.Fragment>{fallback}</React.Fragment>;
     }
   }
 
   // Check permission requirement
   if (requiredPermission) {
     if (!rbac.can(requiredPermission.action, requiredPermission.resource)) {
-      return <>{fallback}</>;
+      return <React.Fragment>{fallback}</React.Fragment>;
     }
   }
 
-  return <>{children}</>;
+  return <React.Fragment>{children}</React.Fragment>;
 }

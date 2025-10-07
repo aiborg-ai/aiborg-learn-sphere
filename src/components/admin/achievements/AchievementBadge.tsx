@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Edit, Trash, Award } from 'lucide-react';
-import { Achievement } from './types';
+import type { Achievement } from './types';
 import { getRarityColor, getCategoryIcon } from './utils';
 
 interface AchievementBadgeProps {
@@ -17,7 +17,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
   achievement,
   onEdit,
   onDelete,
-  onAllocate
+  onAllocate,
 }) => {
   const CategoryIcon = getCategoryIcon(achievement.category);
 
@@ -29,9 +29,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
             <span className="text-3xl">{achievement.icon_emoji}</span>
             <div>
               <h3 className="font-medium text-white">{achievement.name}</h3>
-              <p className="text-sm text-white/80 mt-1">
-                {achievement.description}
-              </p>
+              <p className="text-sm text-white/80 mt-1">{achievement.description}</p>
             </div>
           </div>
         </div>
@@ -52,25 +50,13 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
         </div>
 
         <div className="flex gap-2 mt-4">
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onEdit(achievement)}
-          >
+          <Button size="sm" variant="ghost" onClick={() => onEdit(achievement)}>
             <Edit className="h-4 w-4" />
           </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onDelete(achievement.id)}
-          >
+          <Button size="sm" variant="ghost" onClick={() => onDelete(achievement.id)}>
             <Trash className="h-4 w-4 text-red-400" />
           </Button>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => onAllocate(achievement)}
-          >
+          <Button size="sm" variant="secondary" onClick={() => onAllocate(achievement)}>
             <Award className="h-4 w-4 mr-1" />
             Allocate
           </Button>

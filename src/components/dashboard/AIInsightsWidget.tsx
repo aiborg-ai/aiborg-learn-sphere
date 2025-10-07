@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
-import { logger } from "@/utils/logger";
+import { useEffect, useState, useCallback } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 import {
   Brain,
   TrendingUp,
@@ -15,9 +15,9 @@ import {
   AlertCircle,
   Sparkles,
   ChevronRight,
-  Loader2
-} from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+  Loader2,
+} from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface LearningInsight {
   id: string;
@@ -30,11 +30,15 @@ interface LearningInsight {
 }
 
 const insightIcons = {
-  strength: { icon: TrendingUp, color: "text-green-500", bg: "bg-green-50 dark:bg-green-950" },
-  weakness: { icon: TrendingDown, color: "text-orange-500", bg: "bg-orange-50 dark:bg-orange-950" },
-  pattern: { icon: Target, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-950" },
-  achievement: { icon: Award, color: "text-yellow-500", bg: "bg-yellow-50 dark:bg-yellow-950" },
-  suggestion: { icon: AlertCircle, color: "text-purple-500", bg: "bg-purple-50 dark:bg-purple-950" },
+  strength: { icon: TrendingUp, color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-950' },
+  weakness: { icon: TrendingDown, color: 'text-orange-500', bg: 'bg-orange-50 dark:bg-orange-950' },
+  pattern: { icon: Target, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-950' },
+  achievement: { icon: Award, color: 'text-yellow-500', bg: 'bg-yellow-50 dark:bg-yellow-950' },
+  suggestion: {
+    icon: AlertCircle,
+    color: 'text-purple-500',
+    bg: 'bg-purple-50 dark:bg-purple-950',
+  },
 };
 
 export function AIInsightsWidget() {
@@ -43,13 +47,7 @@ export function AIInsightsWidget() {
   const [insights, setInsights] = useState<LearningInsight[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (user) {
-      fetchInsights();
-    }
-  }, [user]);
-
-  const fetchInsights = async () => {
+  const fetchInsights = useCallback(async () => {
     try {
       if (!user) return;
 
@@ -66,19 +64,39 @@ export function AIInsightsWidget() {
     } catch (error) {
       logger.error('Error fetching AI insights:', error);
       toast({
-        title: "Error",
-        description: "Failed to load learning insights",
-        variant: "destructive"
+        title: 'Error',
+        description: 'Failed to load learning insights',
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, toast]);
+
+  useEffect(() => {
+    if (user) {
+      fetchInsights();
+    }
+  }, [user, fetchInsights]);
 
   const getConfidenceBadge = (score: number) => {
-    if (score >= 0.8) return <Badge variant="default" className="text-xs">High</Badge>;
-    if (score >= 0.6) return <Badge variant="secondary" className="text-xs">Medium</Badge>;
-    return <Badge variant="outline" className="text-xs">Low</Badge>;
+    if (score >= 0.8)
+      return (
+        <Badge variant="default" className="text-xs">
+          High
+        </Badge>
+      );
+    if (score >= 0.6)
+      return (
+        <Badge variant="secondary" className="text-xs">
+          Medium
+        </Badge>
+      );
+    return (
+      <Badge variant="outline" className="text-xs">
+        Low
+      </Badge>
+    );
   };
 
   if (loading) {
@@ -106,9 +124,7 @@ export function AIInsightsWidget() {
           <Brain className="h-5 w-5 text-purple-500" />
           AI Learning Insights
         </CardTitle>
-        <CardDescription>
-          Personalized insights based on your learning patterns
-        </CardDescription>
+        <CardDescription>Personalized insights based on your learning patterns</CardDescription>
       </CardHeader>
       <CardContent>
         {insights.length === 0 ? (
@@ -124,7 +140,7 @@ export function AIInsightsWidget() {
         ) : (
           <ScrollArea className="h-[300px]">
             <div className="space-y-3">
-              {insights.map((insight) => {
+              {insights.map(insight => {
                 const config = insightIcons[insight.insight_type];
                 const Icon = config.icon;
 
@@ -139,14 +155,10 @@ export function AIInsightsWidget() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2 mb-1">
-                          <h4 className="font-semibold text-sm truncate">
-                            {insight.title}
-                          </h4>
+                          <h4 className="font-semibold text-sm truncate">{insight.title}</h4>
                           {getConfidenceBadge(insight.confidence_score)}
                         </div>
-                        <p className="text-xs text-muted-foreground mb-2">
-                          {insight.description}
-                        </p>
+                        <p className="text-xs text-muted-foreground mb-2">{insight.description}</p>
                         <div className="flex items-center justify-between">
                           <Badge variant="outline" className="text-xs">
                             {insight.category}
@@ -170,8 +182,8 @@ export function AIInsightsWidget() {
             className="w-full mt-4"
             onClick={() => {
               toast({
-                title: "Coming Soon",
-                description: "Detailed insights view is under development"
+                title: 'Coming Soon',
+                description: 'Detailed insights view is under development',
               });
             }}
           >

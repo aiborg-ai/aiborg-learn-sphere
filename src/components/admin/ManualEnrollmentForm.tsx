@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -57,7 +57,7 @@ export function ManualEnrollmentForm({ open, onOpenChange, onSuccess }: ManualEn
   const { toast } = useToast();
   const { logEnrollmentCreated } = useAuditLogs();
 
-  const fetchCourses = async () => {
+  const fetchCourses = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('courses')
@@ -74,13 +74,13 @@ export function ManualEnrollmentForm({ open, onOpenChange, onSuccess }: ManualEn
         variant: 'destructive',
       });
     }
-  };
+  }, [toast]);
 
   useEffect(() => {
     if (open) {
       fetchCourses();
     }
-  }, [open]);
+  }, [open, fetchCourses]);
 
   const searchUsers = async (email: string) => {
     if (!email || email.length < 3) {
@@ -237,9 +237,7 @@ export function ManualEnrollmentForm({ open, onOpenChange, onSuccess }: ManualEn
             <UserPlus className="h-5 w-5" />
             Manual Enrollment
           </DialogTitle>
-          <DialogDescription>
-            Manually enroll a student into a course
-          </DialogDescription>
+          <DialogDescription>Manually enroll a student into a course</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -252,7 +250,7 @@ export function ManualEnrollmentForm({ open, onOpenChange, onSuccess }: ManualEn
                 id="user-search"
                 placeholder="Search by email..."
                 value={emailSearch}
-                onChange={(e) => handleEmailSearchChange(e.target.value)}
+                onChange={e => handleEmailSearchChange(e.target.value)}
                 className="pl-10"
                 disabled={loading}
               />
@@ -264,7 +262,7 @@ export function ManualEnrollmentForm({ open, onOpenChange, onSuccess }: ManualEn
             {/* User suggestions */}
             {users.length > 0 && (
               <div className="border rounded-md divide-y max-h-48 overflow-y-auto">
-                {users.map((user) => (
+                {users.map(user => (
                   <button
                     key={user.id}
                     type="button"
@@ -296,7 +294,7 @@ export function ManualEnrollmentForm({ open, onOpenChange, onSuccess }: ManualEn
                 <SelectValue placeholder="Select a course" />
               </SelectTrigger>
               <SelectContent>
-                {courses.map((course) => (
+                {courses.map(course => (
                   <SelectItem key={course.id} value={course.id.toString()}>
                     {course.title} - ₹{course.price}
                   </SelectItem>
@@ -314,7 +312,7 @@ export function ManualEnrollmentForm({ open, onOpenChange, onSuccess }: ManualEn
               step="0.01"
               placeholder="0.00"
               value={paymentAmount}
-              onChange={(e) => setPaymentAmount(e.target.value)}
+              onChange={e => setPaymentAmount(e.target.value)}
               disabled={loading}
             />
           </div>

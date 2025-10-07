@@ -20,12 +20,12 @@ interface AssignmentsSectionProps {
 export function AssignmentsSection({ assignments }: AssignmentsSectionProps) {
   const navigate = useNavigate();
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string): 'default' | 'secondary' | 'destructive' | 'outline' => {
     switch (status.toLowerCase()) {
       case 'submitted':
-        return 'success';
+        return 'default'; // Using 'default' instead of 'success'
       case 'pending':
-        return 'warning';
+        return 'outline'; // Using 'outline' instead of 'warning'
       case 'overdue':
         return 'destructive';
       case 'graded':
@@ -43,11 +43,11 @@ export function AssignmentsSection({ assignments }: AssignmentsSectionProps) {
     return diffDays;
   };
 
-  const pendingAssignments = assignments.filter(a =>
-    a.status.toLowerCase() === 'pending' || a.status.toLowerCase() === 'overdue'
+  const pendingAssignments = assignments.filter(
+    a => a.status.toLowerCase() === 'pending' || a.status.toLowerCase() === 'overdue'
   );
-  const completedAssignments = assignments.filter(a =>
-    a.status.toLowerCase() === 'submitted' || a.status.toLowerCase() === 'graded'
+  const completedAssignments = assignments.filter(
+    a => a.status.toLowerCase() === 'submitted' || a.status.toLowerCase() === 'graded'
   );
 
   return (
@@ -57,9 +57,7 @@ export function AssignmentsSection({ assignments }: AssignmentsSectionProps) {
           <FileText className="h-5 w-5" />
           Assignments
         </CardTitle>
-        <CardDescription>
-          Track and submit your course assignments
-        </CardDescription>
+        <CardDescription>Track and submit your course assignments</CardDescription>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[600px] pr-4">
@@ -72,7 +70,7 @@ export function AssignmentsSection({ assignments }: AssignmentsSectionProps) {
                   PENDING ASSIGNMENTS
                 </h3>
                 <div className="space-y-3">
-                  {pendingAssignments.map((assignment) => {
+                  {pendingAssignments.map(assignment => {
                     const daysUntilDue = getDaysUntilDue(assignment.dueDate);
                     return (
                       <div
@@ -86,7 +84,7 @@ export function AssignmentsSection({ assignments }: AssignmentsSectionProps) {
                               {assignment.courseTitle}
                             </p>
                             <div className="flex items-center gap-3 mt-2">
-                              <Badge variant={getStatusColor(assignment.status) as any}>
+                              <Badge variant={getStatusColor(assignment.status)}>
                                 {assignment.status}
                               </Badge>
                               <span className="text-sm text-muted-foreground flex items-center gap-1">
@@ -122,21 +120,13 @@ export function AssignmentsSection({ assignments }: AssignmentsSectionProps) {
                   COMPLETED ASSIGNMENTS
                 </h3>
                 <div className="space-y-3">
-                  {completedAssignments.map((assignment) => (
-                    <div
-                      key={assignment.id}
-                      className="p-4 border rounded-lg opacity-75"
-                    >
+                  {completedAssignments.map(assignment => (
+                    <div key={assignment.id} className="p-4 border rounded-lg opacity-75">
                       <div className="flex items-center justify-between">
                         <div>
                           <h4 className="font-medium">{assignment.title}</h4>
-                          <p className="text-sm text-muted-foreground">
-                            {assignment.courseTitle}
-                          </p>
-                          <Badge
-                            variant={getStatusColor(assignment.status) as any}
-                            className="mt-2"
-                          >
+                          <p className="text-sm text-muted-foreground">{assignment.courseTitle}</p>
+                          <Badge variant={getStatusColor(assignment.status)} className="mt-2">
                             {assignment.status}
                           </Badge>
                         </div>

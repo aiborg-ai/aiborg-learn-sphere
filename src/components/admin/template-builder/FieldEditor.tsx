@@ -4,18 +4,24 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
-import { TemplateField } from './types';
+import type { TemplateField } from './types';
 
 interface FieldEditorProps {
   field: TemplateField;
-  value: any;
+  value: unknown;
   error?: string;
   arrayInput?: string;
-  onFieldChange: (field: TemplateField, value: any) => void;
+  onFieldChange: (field: TemplateField, value: unknown) => void;
   onArrayInputChange?: (fieldName: string, value: string) => void;
   onArrayAdd?: (fieldName: string) => void;
   onArrayRemove?: (fieldName: string, index: number) => void;
@@ -29,7 +35,7 @@ export function FieldEditor({
   onFieldChange,
   onArrayInputChange,
   onArrayAdd,
-  onArrayRemove
+  onArrayRemove,
 }: FieldEditorProps) {
   const renderFieldInput = () => {
     switch (field.type) {
@@ -38,7 +44,7 @@ export function FieldEditor({
           <Input
             id={field.name}
             value={value || ''}
-            onChange={(e) => onFieldChange(field, e.target.value)}
+            onChange={e => onFieldChange(field, e.target.value)}
             placeholder={field.placeholder}
             className={error ? 'border-red-500' : ''}
           />
@@ -49,7 +55,7 @@ export function FieldEditor({
           <Textarea
             id={field.name}
             value={value || ''}
-            onChange={(e) => onFieldChange(field, e.target.value)}
+            onChange={e => onFieldChange(field, e.target.value)}
             placeholder={field.placeholder}
             className={error ? 'border-red-500' : ''}
             rows={4}
@@ -58,10 +64,7 @@ export function FieldEditor({
 
       case 'select':
         return (
-          <Select
-            value={value || ''}
-            onValueChange={(val) => onFieldChange(field, val)}
-          >
+          <Select value={value || ''} onValueChange={val => onFieldChange(field, val)}>
             <SelectTrigger className={error ? 'border-red-500' : ''}>
               <SelectValue placeholder={`Select ${field.label.toLowerCase()}`} />
             </SelectTrigger>
@@ -83,19 +86,19 @@ export function FieldEditor({
                 <Checkbox
                   id={`${field.name}-${option}`}
                   checked={(value || []).includes(option)}
-                  onCheckedChange={(checked) => {
+                  onCheckedChange={checked => {
                     const currentValue = value || [];
                     if (checked) {
                       onFieldChange(field, [...currentValue, option]);
                     } else {
-                      onFieldChange(field, currentValue.filter((v: string) => v !== option));
+                      onFieldChange(
+                        field,
+                        currentValue.filter((v: string) => v !== option)
+                      );
                     }
                   }}
                 />
-                <Label
-                  htmlFor={`${field.name}-${option}`}
-                  className="font-normal cursor-pointer"
-                >
+                <Label htmlFor={`${field.name}-${option}`} className="font-normal cursor-pointer">
                   {option}
                 </Label>
               </div>
@@ -109,7 +112,7 @@ export function FieldEditor({
             id={field.name}
             type="number"
             value={value || ''}
-            onChange={(e) => onFieldChange(field, parseInt(e.target.value))}
+            onChange={e => onFieldChange(field, parseInt(e.target.value))}
             placeholder={field.placeholder}
             className={error ? 'border-red-500' : ''}
           />
@@ -121,7 +124,7 @@ export function FieldEditor({
             id={field.name}
             type="date"
             value={value || ''}
-            onChange={(e) => onFieldChange(field, e.target.value)}
+            onChange={e => onFieldChange(field, e.target.value)}
             className={error ? 'border-red-500' : ''}
           />
         );
@@ -131,7 +134,7 @@ export function FieldEditor({
           <Input
             id={field.name}
             value={value || ''}
-            onChange={(e) => onFieldChange(field, e.target.value)}
+            onChange={e => onFieldChange(field, e.target.value)}
             placeholder={field.placeholder}
             className={error ? 'border-red-500' : ''}
           />
@@ -143,9 +146,9 @@ export function FieldEditor({
             <div className="flex gap-2">
               <Input
                 value={arrayInput || ''}
-                onChange={(e) => onArrayInputChange?.(field.name, e.target.value)}
+                onChange={e => onArrayInputChange?.(field.name, e.target.value)}
                 placeholder={`Add ${field.label.toLowerCase()}`}
-                onKeyPress={(e) => {
+                onKeyPress={e => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
                     onArrayAdd?.(field.name);
@@ -191,7 +194,7 @@ export function FieldEditor({
             <Switch
               id={field.name}
               checked={value || false}
-              onCheckedChange={(checked) => onFieldChange(field, checked)}
+              onCheckedChange={checked => onFieldChange(field, checked)}
             />
           </div>
         );
@@ -211,9 +214,7 @@ export function FieldEditor({
         {field.label}
         {field.required && <span className="text-red-500 ml-1">*</span>}
         {field.type === 'array' && field.maxItems && (
-          <span className="text-xs text-muted-foreground ml-2">
-            (max {field.maxItems})
-          </span>
+          <span className="text-xs text-muted-foreground ml-2">(max {field.maxItems})</span>
         )}
       </Label>
       {renderFieldInput()}

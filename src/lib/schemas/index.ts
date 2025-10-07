@@ -41,7 +41,7 @@ export {
   // Types
   type ValidationResult,
   type ValidationError,
-  type BatchValidationResult
+  type BatchValidationResult,
 } from './common.schema';
 
 // Export course schemas and types
@@ -52,7 +52,7 @@ export {
   type CourseBatchTemplate,
   validateCourseTemplate,
   validateCourseBatch,
-  checkCourseDuplicates
+  checkCourseDuplicates,
 } from './course-template.schema';
 
 // Export event schemas and types
@@ -64,11 +64,13 @@ export {
   validateEventTemplate,
   validateEventBatch,
   checkEventDuplicates,
-  checkEventConflicts
+  checkEventConflicts,
 } from './event-template.schema';
 
 // Combined template type for generic processing
-export type Template = import('./course-template.schema').CourseTemplate | import('./event-template.schema').EventTemplate;
+export type Template =
+  | import('./course-template.schema').CourseTemplate
+  | import('./event-template.schema').EventTemplate;
 
 export type TemplateType = 'course' | 'event';
 
@@ -82,11 +84,13 @@ export function validateTemplate(type: TemplateType, data: unknown): ValidationR
 
   return {
     success: false,
-    errors: [{
-      field: 'type',
-      message: `Invalid template type: ${type}`,
-      code: 'INVALID_TYPE'
-    }]
+    errors: [
+      {
+        field: 'type',
+        message: `Invalid template type: ${type}`,
+        code: 'INVALID_TYPE',
+      },
+    ],
   };
 }
 
@@ -99,14 +103,17 @@ export function validateBatchTemplate(type: TemplateType, data: unknown): BatchV
       valid: result.summary?.valid || 0,
       invalid: result.summary?.invalid || 0,
       warnings: 0,
-      items: result.errors?.map(err => ({
-        success: false,
-        errors: [{
-          field: err.field,
-          message: err.message,
-          code: err.code
-        }]
-      })) || []
+      items:
+        result.errors?.map(err => ({
+          success: false,
+          errors: [
+            {
+              field: err.field,
+              message: err.message,
+              code: err.code,
+            },
+          ],
+        })) || [],
     };
   } else if (type === 'event') {
     const result = validateEventBatch(data);
@@ -115,14 +122,17 @@ export function validateBatchTemplate(type: TemplateType, data: unknown): BatchV
       valid: result.summary?.valid || 0,
       invalid: result.summary?.invalid || 0,
       warnings: 0,
-      items: result.errors?.map(err => ({
-        success: false,
-        errors: [{
-          field: err.field,
-          message: err.message,
-          code: err.code
-        }]
-      })) || []
+      items:
+        result.errors?.map(err => ({
+          success: false,
+          errors: [
+            {
+              field: err.field,
+              message: err.message,
+              code: err.code,
+            },
+          ],
+        })) || [],
     };
   }
 
@@ -131,51 +141,49 @@ export function validateBatchTemplate(type: TemplateType, data: unknown): BatchV
     valid: 0,
     invalid: 0,
     warnings: 0,
-    items: []
+    items: [],
   };
 }
 
 // Utility to generate template examples
-export function getTemplateExample(type: TemplateType): any {
+export function getTemplateExample(type: TemplateType): Record<string, unknown> {
   if (type === 'course') {
     return {
-      title: "Introduction to AI and Machine Learning",
-      description: "Learn the fundamentals of artificial intelligence and machine learning with hands-on projects",
-      audiences: ["Professional", "Business"],
-      mode: "Online",
-      duration: "8 weeks",
-      price: "₹5000",
-      level: "Beginner",
-      start_date: "2025-02-01",
-      features: [
-        "Live interactive sessions",
-        "Hands-on projects",
-        "Certificate of completion"
-      ],
-      keywords: ["ai", "machine-learning", "python", "deep-learning"],
-      category: "Technology",
-      prerequisites: "Basic programming knowledge",
+      title: 'Introduction to AI and Machine Learning',
+      description:
+        'Learn the fundamentals of artificial intelligence and machine learning with hands-on projects',
+      audiences: ['Professional', 'Business'],
+      mode: 'Online',
+      duration: '8 weeks',
+      price: '₹5000',
+      level: 'Beginner',
+      start_date: '2025-02-01',
+      features: ['Live interactive sessions', 'Hands-on projects', 'Certificate of completion'],
+      keywords: ['ai', 'machine-learning', 'python', 'deep-learning'],
+      category: 'Technology',
+      prerequisites: 'Basic programming knowledge',
       is_active: true,
       currently_enrolling: true,
       display: true,
-      sort_order: 0
+      sort_order: 0,
     };
   } else if (type === 'event') {
     return {
-      title: "AI Workshop: Building Your First Chatbot",
-      description: "Learn to build and deploy your first AI chatbot using modern tools and frameworks",
-      event_type: "workshop",
-      date: "2025-02-15",
-      time: "6:00 PM - 8:00 PM IST",
-      duration: "2 hours",
-      location: "Online via Zoom",
+      title: 'AI Workshop: Building Your First Chatbot',
+      description:
+        'Learn to build and deploy your first AI chatbot using modern tools and frameworks',
+      event_type: 'workshop',
+      date: '2025-02-15',
+      time: '6:00 PM - 8:00 PM IST',
+      duration: '2 hours',
+      location: 'Online via Zoom',
       max_attendees: 100,
-      registration_deadline: "2025-02-14",
-      price: "Free",
+      registration_deadline: '2025-02-14',
+      price: 'Free',
       is_featured: true,
       is_active: true,
       display: true,
-      tags: ["ai", "chatbot", "workshop", "beginners"]
+      tags: ['ai', 'chatbot', 'workshop', 'beginners'],
     };
   }
 
@@ -184,15 +192,15 @@ export function getTemplateExample(type: TemplateType): any {
 
 // Error code to user-friendly message mapping
 export const ERROR_MESSAGES: Record<string, string> = {
-  'too_small': 'Value is too short or small',
-  'too_big': 'Value is too long or large',
-  'invalid_type': 'Invalid data type provided',
-  'invalid_enum_value': 'Value must be one of the allowed options',
-  'invalid_date': 'Invalid date format',
-  'invalid_email': 'Invalid email address',
-  'invalid_url': 'Invalid URL format',
-  'required': 'This field is required',
-  'custom': 'Validation failed for custom rule'
+  too_small: 'Value is too short or small',
+  too_big: 'Value is too long or large',
+  invalid_type: 'Invalid data type provided',
+  invalid_enum_value: 'Value must be one of the allowed options',
+  invalid_date: 'Invalid date format',
+  invalid_email: 'Invalid email address',
+  invalid_url: 'Invalid URL format',
+  required: 'This field is required',
+  custom: 'Validation failed for custom rule',
 };
 
 // Get user-friendly error message

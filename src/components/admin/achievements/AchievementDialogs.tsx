@@ -1,10 +1,23 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Achievement, AchievementFormData, UserWithAchievements } from './types';
+import type { Achievement, AchievementFormData, UserWithAchievements } from './types';
 import { AchievementForm } from './AchievementForm';
 
 interface CreateDialogProps {
@@ -20,7 +33,7 @@ export const CreateAchievementDialog: React.FC<CreateDialogProps> = ({
   onOpenChange,
   formData,
   onFormChange,
-  onSubmit
+  onSubmit,
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -36,9 +49,7 @@ export const CreateAchievementDialog: React.FC<CreateDialogProps> = ({
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={onSubmit}>
-            Create Achievement
-          </Button>
+          <Button onClick={onSubmit}>Create Achievement</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -58,7 +69,7 @@ export const EditAchievementDialog: React.FC<EditDialogProps> = ({
   onOpenChange,
   formData,
   onFormChange,
-  onSubmit
+  onSubmit,
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -71,9 +82,7 @@ export const EditAchievementDialog: React.FC<EditDialogProps> = ({
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={onSubmit}>
-            Update Achievement
-          </Button>
+          <Button onClick={onSubmit}>Update Achievement</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -101,7 +110,7 @@ export const AllocateAchievementDialog: React.FC<AllocateDialogProps> = ({
   users,
   onAchievementSelect,
   onUserSelect,
-  onSubmit
+  onSubmit,
 }) => {
   const handleClose = () => {
     onOpenChange(false);
@@ -130,7 +139,7 @@ export const AllocateAchievementDialog: React.FC<AllocateDialogProps> = ({
         {!selectedAchievement && (
           <ScrollArea className="h-[300px]">
             <div className="space-y-2">
-              {achievements.map((achievement) => (
+              {achievements.map(achievement => (
                 <Button
                   key={achievement.id}
                   variant="outline"
@@ -153,7 +162,7 @@ export const AllocateAchievementDialog: React.FC<AllocateDialogProps> = ({
                 <SelectValue placeholder="Choose a user..." />
               </SelectTrigger>
               <SelectContent>
-                {users.map((user) => (
+                {users.map(user => (
                   <SelectItem key={user.user_id} value={user.user_id}>
                     {user.display_name || user.email}
                   </SelectItem>
@@ -169,7 +178,7 @@ export const AllocateAchievementDialog: React.FC<AllocateDialogProps> = ({
               <p className="text-sm text-gray-400 mb-2">Allocating to:</p>
               <p className="text-white font-medium">
                 {users.find(u => u.user_id === selectedUserId)?.display_name ||
-                 users.find(u => u.user_id === selectedUserId)?.email}
+                  users.find(u => u.user_id === selectedUserId)?.email}
               </p>
             </div>
           </div>
@@ -179,10 +188,7 @@ export const AllocateAchievementDialog: React.FC<AllocateDialogProps> = ({
           <Button variant="ghost" onClick={handleClose}>
             Cancel
           </Button>
-          <Button
-            onClick={onSubmit}
-            disabled={!selectedAchievement || !selectedUserId}
-          >
+          <Button onClick={onSubmit} disabled={!selectedAchievement || !selectedUserId}>
             Allocate Achievement
           </Button>
         </DialogFooter>

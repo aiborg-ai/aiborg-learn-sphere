@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { CheckCircle2, XCircle, AlertTriangle, Copy, ChevronDown, ChevronRight } from 'lucide-react';
+import {
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  Copy,
+  ChevronDown,
+  ChevronRight,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -12,19 +19,28 @@ import type {
   ValidationResponse,
   ValidationError,
   ValidationWarning,
-  DuplicateInfo
+  DuplicateInfo,
 } from '@/services/templateService';
+
+interface ImportOptions {
+  skip_duplicates?: boolean;
+  update_existing?: boolean;
+  dry_run?: boolean;
+  send_notifications?: boolean;
+  auto_publish?: boolean;
+  [key: string]: unknown;
+}
 
 interface TemplateValidationProps {
   validationResult: ValidationResponse | null;
-  onProceedToImport: (options: any) => void;
+  onProceedToImport: (options: ImportOptions) => void;
   isImporting?: boolean;
 }
 
 export function TemplateValidation({
   validationResult,
   onProceedToImport,
-  isImporting
+  isImporting,
 }: TemplateValidationProps) {
   const [importOptions, setImportOptions] = useState({
     skip_duplicates: true,
@@ -88,7 +104,7 @@ export function TemplateValidation({
   const renderErrors = (errors: ValidationError[]) => {
     const groupedErrors: { [key: number]: ValidationError[] } = {};
 
-    errors.forEach((error) => {
+    errors.forEach(error => {
       const index = error.index ?? -1;
       if (!groupedErrors[index]) {
         groupedErrors[index] = [];
@@ -127,9 +143,7 @@ export function TemplateValidation({
                       <div className="font-medium">{error.field}</div>
                       <div className="text-red-600">{error.message}</div>
                       {error.suggestion && (
-                        <div className="text-xs text-gray-600 italic">
-                          💡 {error.suggestion}
-                        </div>
+                        <div className="text-xs text-gray-600 italic">💡 {error.suggestion}</div>
                       )}
                     </div>
                   ))}
@@ -199,16 +213,14 @@ export function TemplateValidation({
       <Card>
         <CardHeader>
           <CardTitle>Import Options</CardTitle>
-          <CardDescription>
-            Configure how to handle the import process
-          </CardDescription>
+          <CardDescription>Configure how to handle the import process</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center space-x-2">
             <Checkbox
               id="skip_duplicates"
               checked={importOptions.skip_duplicates}
-              onCheckedChange={(checked) =>
+              onCheckedChange={checked =>
                 setImportOptions({ ...importOptions, skip_duplicates: checked as boolean })
               }
             />
@@ -224,7 +236,7 @@ export function TemplateValidation({
             <Checkbox
               id="update_existing"
               checked={importOptions.update_existing}
-              onCheckedChange={(checked) =>
+              onCheckedChange={checked =>
                 setImportOptions({ ...importOptions, update_existing: checked as boolean })
               }
               disabled={importOptions.skip_duplicates}
@@ -241,7 +253,7 @@ export function TemplateValidation({
             <Checkbox
               id="dry_run"
               checked={importOptions.dry_run}
-              onCheckedChange={(checked) =>
+              onCheckedChange={checked =>
                 setImportOptions({ ...importOptions, dry_run: checked as boolean })
               }
             />
@@ -257,7 +269,7 @@ export function TemplateValidation({
             <Checkbox
               id="send_notifications"
               checked={importOptions.send_notifications}
-              onCheckedChange={(checked) =>
+              onCheckedChange={checked =>
                 setImportOptions({ ...importOptions, send_notifications: checked as boolean })
               }
             />
@@ -273,7 +285,7 @@ export function TemplateValidation({
             <Checkbox
               id="auto_publish"
               checked={importOptions.auto_publish}
-              onCheckedChange={(checked) =>
+              onCheckedChange={checked =>
                 setImportOptions({ ...importOptions, auto_publish: checked as boolean })
               }
             />
@@ -289,8 +301,8 @@ export function TemplateValidation({
     );
   };
 
-  const canProceed = validationResult.success ||
-    (validationResult.errors && validationResult.errors.length === 0);
+  const canProceed =
+    validationResult.success || (validationResult.errors && validationResult.errors.length === 0);
 
   return (
     <div className="space-y-6">
@@ -309,19 +321,19 @@ export function TemplateValidation({
       )}
 
       {/* Errors */}
-      {validationResult.errors && validationResult.errors.length > 0 && (
-        renderErrors(validationResult.errors)
-      )}
+      {validationResult.errors &&
+        validationResult.errors.length > 0 &&
+        renderErrors(validationResult.errors)}
 
       {/* Warnings */}
-      {validationResult.warnings && validationResult.warnings.length > 0 && (
-        renderWarnings(validationResult.warnings)
-      )}
+      {validationResult.warnings &&
+        validationResult.warnings.length > 0 &&
+        renderWarnings(validationResult.warnings)}
 
       {/* Duplicates */}
-      {validationResult.duplicates && validationResult.duplicates.length > 0 && (
-        renderDuplicates(validationResult.duplicates)
-      )}
+      {validationResult.duplicates &&
+        validationResult.duplicates.length > 0 &&
+        renderDuplicates(validationResult.duplicates)}
 
       {/* Import Options */}
       {canProceed && renderImportOptions()}
@@ -332,7 +344,11 @@ export function TemplateValidation({
           onClick={() => onProceedToImport(importOptions)}
           disabled={!canProceed || isImporting}
         >
-          {isImporting ? 'Importing...' : importOptions.dry_run ? 'Run Dry Import' : 'Proceed with Import'}
+          {isImporting
+            ? 'Importing...'
+            : importOptions.dry_run
+              ? 'Run Dry Import'
+              : 'Proceed with Import'}
         </Button>
       </div>
     </div>

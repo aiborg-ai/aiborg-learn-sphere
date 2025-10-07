@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { logger } from '@/utils/logger';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -38,11 +38,7 @@ export function NotificationSettings() {
     discussion_reply: true,
   });
 
-  useEffect(() => {
-    loadPreferences();
-  }, [user]);
-
-  const loadPreferences = async () => {
+  const loadPreferences = useCallback(async () => {
     if (!user) return;
 
     setLoading(true);
@@ -69,7 +65,11 @@ export function NotificationSettings() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, toast, preferences]);
+
+  useEffect(() => {
+    loadPreferences();
+  }, [loadPreferences]);
 
   const savePreferences = async () => {
     if (!user) return;
@@ -103,7 +103,7 @@ export function NotificationSettings() {
   };
 
   const togglePreference = (key: keyof NotificationPreferences) => {
-    setPreferences((prev) => ({
+    setPreferences(prev => ({
       ...prev,
       [key]: !prev[key],
     }));
@@ -201,11 +201,7 @@ export function NotificationSettings() {
               </p>
             </div>
           </div>
-          <Switch
-            id="email-enabled"
-            checked={emailEnabled}
-            onCheckedChange={setEmailEnabled}
-          />
+          <Switch id="email-enabled" checked={emailEnabled} onCheckedChange={setEmailEnabled} />
         </div>
 
         <Separator />
@@ -216,13 +212,11 @@ export function NotificationSettings() {
             Notification Types
           </h4>
 
-          {notificationTypes.map((type) => (
+          {notificationTypes.map(type => (
             <div
               key={type.key}
               className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
-                emailEnabled
-                  ? 'hover:bg-muted/50'
-                  : 'opacity-50 cursor-not-allowed'
+                emailEnabled ? 'hover:bg-muted/50' : 'opacity-50 cursor-not-allowed'
               }`}
             >
               <div className="flex items-start gap-3 flex-1">
@@ -236,9 +230,7 @@ export function NotificationSettings() {
                   >
                     {type.label}
                   </Label>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {type.description}
-                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{type.description}</p>
                 </div>
               </div>
               <Switch
@@ -255,9 +247,7 @@ export function NotificationSettings() {
 
         {/* Save Button */}
         <div className="flex items-center justify-between pt-2">
-          <p className="text-sm text-muted-foreground">
-            Changes are saved automatically
-          </p>
+          <p className="text-sm text-muted-foreground">Changes are saved automatically</p>
           <Button onClick={savePreferences} disabled={saving}>
             <Save className="h-4 w-4 mr-2" />
             {saving ? 'Saving...' : 'Save Preferences'}

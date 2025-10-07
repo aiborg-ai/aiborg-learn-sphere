@@ -1,8 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
-  CourseTemplateSchema,
   validateCourseTemplate,
-  checkCourseDuplicates
+  checkCourseDuplicates,
 } from '@/lib/schemas/course-template.schema';
 
 describe('CourseTemplateSchema', () => {
@@ -18,7 +17,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-03-01',
         features: ['Feature 1'],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -39,7 +38,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-03-01',
         features: ['Feature 1'],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -59,7 +58,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-03-01',
         features: ['Feature 1'],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -80,7 +79,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-03-01',
         features: ['Feature 1'],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -100,7 +99,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-03-01',
         features: [],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -120,7 +119,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-03-01',
         features: ['Feature 1'],
         keywords: [],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -142,7 +141,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-03-01',
         features: ['Feature 1'],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -162,7 +161,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-03-01',
         features: ['Feature 1'],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -182,7 +181,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-03-01',
         features: ['Feature 1'],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -205,7 +204,7 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-03-01',
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
+          category: 'Technology',
         };
 
         const result = validateCourseTemplate(course);
@@ -228,7 +227,7 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-03-01',
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
+          category: 'Technology',
         };
 
         const result = validateCourseTemplate(course);
@@ -251,7 +250,7 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-03-01',
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
+          category: 'Technology',
         };
 
         const result = validateCourseTemplate(course);
@@ -273,7 +272,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-12-31',
         features: ['Feature 1'],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -295,7 +294,7 @@ describe('CourseTemplateSchema', () => {
           start_date: date,
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
+          category: 'Technology',
         };
 
         const result = validateCourseTemplate(course);
@@ -312,7 +311,7 @@ describe('CourseTemplateSchema', () => {
         'January 1, 2025',
         '2025-13-01', // Invalid month
         '2025-02-30', // Invalid day
-        'Random Text'
+        'Random Text',
       ];
 
       invalidDates.forEach(date => {
@@ -327,7 +326,7 @@ describe('CourseTemplateSchema', () => {
           start_date: date,
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
+          category: 'Technology',
         };
 
         const result = validateCourseTemplate(course);
@@ -349,7 +348,7 @@ describe('CourseTemplateSchema', () => {
         end_date: '2025-03-01', // Before start_date
         features: ['Feature 1'],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -370,7 +369,7 @@ describe('CourseTemplateSchema', () => {
         end_date: '2025-03-15',
         features: ['Feature 1'],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -391,7 +390,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-03-01',
         features: ['Feature 1'],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -408,7 +407,7 @@ describe('CourseTemplateSchema', () => {
         '£75',
         '¥1000',
         '₹1000 - ₹2000',
-        '$99 - $199'
+        '$99 - $199',
       ];
 
       validPrices.forEach(price => {
@@ -423,7 +422,7 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-03-01',
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
+          category: 'Technology',
         };
 
         const result = validateCourseTemplate(course);
@@ -438,7 +437,7 @@ describe('CourseTemplateSchema', () => {
         '$$$$',
         '5000', // Missing currency symbol
         'Rs.5000', // Invalid currency format
-        'USD 100'
+        'USD 100',
       ];
 
       invalidPrices.forEach(price => {
@@ -453,7 +452,7 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-03-01',
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
+          category: 'Technology',
         };
 
         const result = validateCourseTemplate(course);
@@ -476,7 +475,7 @@ describe('CourseTemplateSchema', () => {
         '30 minutes',
         '1 hour',
         '6 weeks',
-        '2 months'
+        '2 months',
       ];
 
       validDurations.forEach(duration => {
@@ -491,7 +490,7 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-03-01',
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
+          category: 'Technology',
         };
 
         const result = validateCourseTemplate(course);
@@ -500,14 +499,7 @@ describe('CourseTemplateSchema', () => {
     });
 
     it('should reject invalid duration formats', () => {
-      const invalidDurations = [
-        'random',
-        '123',
-        'abc hours',
-        'two weeks',
-        '3.5 months',
-        ''
-      ];
+      const invalidDurations = ['random', '123', 'abc hours', 'two weeks', '3.5 months', ''];
 
       invalidDurations.forEach(duration => {
         const course = {
@@ -521,7 +513,7 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-03-01',
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
+          category: 'Technology',
         };
 
         const result = validateCourseTemplate(course);
@@ -544,7 +536,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-03-01',
         features: ['Feature 1'],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -563,7 +555,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-03-01',
         features: ['Feature 1'],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -584,7 +576,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-03-01',
         features,
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -605,7 +597,7 @@ describe('CourseTemplateSchema', () => {
         start_date: '2025-03-01',
         features: ['Feature 1'],
         keywords,
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(course);
@@ -634,8 +626,8 @@ describe('CourseTemplateSchema', () => {
           bio: 'Experienced instructor',
           expertise: ['JavaScript', 'React'],
           linkedin: 'https://linkedin.com/in/johndoe',
-          photo_url: 'https://example.com/photo.jpg'
-        }
+          photo_url: 'https://example.com/photo.jpg',
+        },
       };
 
       const result = validateCourseTemplate(course);
@@ -658,8 +650,8 @@ describe('CourseTemplateSchema', () => {
         instructor_info: {
           name: 'John Doe',
           email: 'invalid-email',
-          bio: 'Experienced instructor'
-        }
+          bio: 'Experienced instructor',
+        },
       };
 
       const result = validateCourseTemplate(course);
@@ -689,16 +681,16 @@ describe('CourseTemplateSchema', () => {
             duration: '10 minutes',
             order_index: 1,
             is_preview: true,
-            is_mandatory: true
+            is_mandatory: true,
           },
           {
             title: 'Course Handbook',
             type: 'document',
             url: 'https://example.com/handbook.pdf',
             order_index: 2,
-            is_mandatory: true
-          }
-        ]
+            is_mandatory: true,
+          },
+        ],
       };
 
       const result = validateCourseTemplate(course);
@@ -723,9 +715,9 @@ describe('CourseTemplateSchema', () => {
             title: 'Introduction Video',
             type: 'video',
             url: 'not-a-url',
-            order_index: 1
-          }
-        ]
+            order_index: 1,
+          },
+        ],
       };
 
       const result = validateCourseTemplate(course);
@@ -749,7 +741,7 @@ describe('CourseTemplateSchema', () => {
         keywords: ['test'],
         category: 'Technology',
         min_students: 10,
-        max_students: 50
+        max_students: 50,
       };
 
       const result = validateCourseTemplate(course);
@@ -770,7 +762,7 @@ describe('CourseTemplateSchema', () => {
         keywords: ['test'],
         category: 'Technology',
         min_students: 50,
-        max_students: 10
+        max_students: 10,
       };
 
       const result = validateCourseTemplate(course);
@@ -791,7 +783,7 @@ describe('CourseTemplateSchema', () => {
         features: ['Feature 1'],
         keywords: ['test'],
         category: 'Technology',
-        sort_order: 5
+        sort_order: 5,
       };
 
       const result = validateCourseTemplate(course);
@@ -811,7 +803,7 @@ describe('CourseTemplateSchema', () => {
         features: ['Feature 1'],
         keywords: ['test'],
         category: 'Technology',
-        sort_order: -1
+        sort_order: -1,
       };
 
       const result = validateCourseTemplate(course);
@@ -834,7 +826,7 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-03-01',
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
+          category: 'Technology',
         },
         {
           title: 'Same Course',
@@ -847,8 +839,8 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-04-01',
           features: ['Feature 2'],
           keywords: ['different'],
-          category: 'Business'
-        }
+          category: 'Business',
+        },
       ];
 
       const result = checkCourseDuplicates(courses);
@@ -871,7 +863,7 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-03-01',
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
+          category: 'Technology',
         },
         {
           title: 'Test Course',
@@ -884,8 +876,8 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-03-01',
           features: ['Feature 2'],
           keywords: ['different'],
-          category: 'Business'
-        }
+          category: 'Business',
+        },
       ];
 
       const result = checkCourseDuplicates(courses);
@@ -906,7 +898,7 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-03-01',
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
+          category: 'Technology',
         },
         {
           title: 'Course Two',
@@ -919,8 +911,8 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-03-01',
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
-        }
+          category: 'Technology',
+        },
       ];
 
       const result = checkCourseDuplicates(courses);
@@ -941,7 +933,7 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-03-01',
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
+          category: 'Technology',
         },
         {
           title: 'TEST COURSE',
@@ -954,8 +946,8 @@ describe('CourseTemplateSchema', () => {
           start_date: '2025-03-01',
           features: ['Feature 1'],
           keywords: ['test'],
-          category: 'Technology'
-        }
+          category: 'Technology',
+        },
       ];
 
       const result = checkCourseDuplicates(courses);

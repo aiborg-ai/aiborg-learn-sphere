@@ -205,7 +205,7 @@ export default function BookmarksPage() {
                   <Input
                     placeholder="Search bookmarks..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={e => setSearchQuery(e.target.value)}
                     className="pl-10"
                   />
                 </div>
@@ -218,7 +218,7 @@ export default function BookmarksPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Folders</SelectItem>
-                  {folders.map((folder) => (
+                  {folders.map(folder => (
                     <SelectItem key={folder} value={folder}>
                       <Folder className="inline h-3 w-3 mr-2" />
                       {folder}
@@ -228,7 +228,10 @@ export default function BookmarksPage() {
               </Select>
 
               {/* Type Filter */}
-              <Select value={selectedType} onValueChange={(v) => setSelectedType(v as any)}>
+              <Select
+                value={selectedType}
+                onValueChange={v => setSelectedType(v as BookmarkType | 'all')}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="All Types" />
                 </SelectTrigger>
@@ -251,9 +254,7 @@ export default function BookmarksPage() {
             <CardTitle>
               {bookmarks.length} Bookmark{bookmarks.length !== 1 ? 's' : ''}
             </CardTitle>
-            <CardDescription>
-              Click on any bookmark to navigate to that content
-            </CardDescription>
+            <CardDescription>Click on any bookmark to navigate to that content</CardDescription>
           </CardHeader>
           <CardContent>
             {bookmarks.length === 0 ? (
@@ -268,7 +269,7 @@ export default function BookmarksPage() {
             ) : (
               <ScrollArea className="h-[600px]">
                 <div className="space-y-3">
-                  {bookmarks.map((bookmark) => (
+                  {bookmarks.map(bookmark => (
                     <div
                       key={bookmark.id}
                       className="group border rounded-lg p-4 hover:bg-accent/50 transition-colors cursor-pointer"
@@ -310,7 +311,7 @@ export default function BookmarksPage() {
 
                             {bookmark.tags.length > 0 && (
                               <div className="flex gap-1">
-                                {bookmark.tags.slice(0, 3).map((tag) => (
+                                {bookmark.tags.slice(0, 3).map(tag => (
                                   <Badge key={tag} variant="secondary" className="text-xs">
                                     <Tag className="h-3 w-3 mr-1" />
                                     {tag}
@@ -336,7 +337,7 @@ export default function BookmarksPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={(e) => {
+                            onClick={e => {
                               e.stopPropagation();
                               handleBookmarkClick(bookmark);
                             }}
@@ -347,7 +348,7 @@ export default function BookmarksPage() {
                             variant="ghost"
                             size="sm"
                             className="text-destructive hover:text-destructive"
-                            onClick={(e) => {
+                            onClick={e => {
                               e.stopPropagation();
                               setDeleteId(bookmark.id);
                             }}

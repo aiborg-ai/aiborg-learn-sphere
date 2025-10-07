@@ -37,11 +37,13 @@ export const useDownloads = (options: UseDownloadsOptions = {}) => {
 
       let query = supabase
         .from('downloads')
-        .select(`
+        .select(
+          `
           *,
           material:course_materials(id, title, material_type, description),
           course:courses(id, title)
-        `)
+        `
+        )
         .eq('user_id', user.id)
         .order('download_date', { ascending: false });
 
@@ -99,7 +101,17 @@ export const useDownloads = (options: UseDownloadsOptions = {}) => {
       const by_type: Record<string, number> = {};
       const accessMap = new Map<string, { title: string; count: number }>();
 
-      data.forEach((download: any) => {
+      interface DownloadStatsData {
+        file_type?: string;
+        file_size?: number;
+        access_count: number;
+        material_id: string;
+        material?: {
+          title?: string;
+        };
+      }
+
+      data.forEach((download: DownloadStatsData) => {
         // Sum file sizes
         if (download.file_size) {
           total_size += download.file_size;
@@ -232,7 +244,7 @@ export const useDownloads = (options: UseDownloadsOptions = {}) => {
   // Check if material is downloaded
   const isDownloaded = useCallback(
     (materialId: string): boolean => {
-      return downloads.some((d) => d.material_id === materialId);
+      return downloads.some(d => d.material_id === materialId);
     },
     [downloads]
   );
@@ -240,7 +252,7 @@ export const useDownloads = (options: UseDownloadsOptions = {}) => {
   // Get download record for material
   const getDownload = useCallback(
     (materialId: string): DownloadWithRelations | null => {
-      return downloads.find((d) => d.material_id === materialId) || null;
+      return downloads.find(d => d.material_id === materialId) || null;
     },
     [downloads]
   );

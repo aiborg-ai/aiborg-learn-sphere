@@ -186,7 +186,7 @@ export function PDFViewer({
         .order('created_at', { ascending: false });
 
       if (data) {
-        const parsedAnnotations = data.map((d) => ({
+        const parsedAnnotations = data.map(d => ({
           id: d.id,
           page: d.content_data.page || 1,
           text: d.content_data.text || '',
@@ -218,7 +218,7 @@ export function PDFViewer({
     (newPage: number) => {
       if (newPage >= 1 && newPage <= numPages) {
         setCurrentPage(newPage);
-        setPagesViewed((prev) => new Set(prev).add(newPage));
+        setPagesViewed(prev => new Set(prev).add(newPage));
 
         // Scroll to page
         const pageElement = pageRefs.current.get(newPage);
@@ -231,11 +231,11 @@ export function PDFViewer({
   );
 
   const handleZoomIn = () => {
-    setScale((prev) => Math.min(prev + 0.25, 2.5));
+    setScale(prev => Math.min(prev + 0.25, 2.5));
   };
 
   const handleZoomOut = () => {
-    setScale((prev) => Math.max(prev - 0.25, 0.5));
+    setScale(prev => Math.max(prev - 0.25, 0.5));
   };
 
   const handleZoomReset = () => {
@@ -328,7 +328,7 @@ export function PDFViewer({
                   {Array.from(new Array(numPages), (_, index) => (
                     <div
                       key={`page_${index + 1}`}
-                      ref={(el) => {
+                      ref={el => {
                         if (el) pageRefs.current.set(index + 1, el);
                       }}
                       className="mb-4 shadow-lg"
@@ -340,7 +340,7 @@ export function PDFViewer({
                         renderAnnotationLayer={true}
                         onLoadSuccess={() => {
                           // Track that page was viewed when it loads
-                          setPagesViewed((prev) => new Set(prev).add(index + 1));
+                          setPagesViewed(prev => new Set(prev).add(index + 1));
                         }}
                       />
                       <div className="text-center text-sm text-muted-foreground mt-2 mb-4">
@@ -355,18 +355,18 @@ export function PDFViewer({
 
           {/* Sidebar */}
           <div className="lg:col-span-1 flex flex-col bg-muted/30">
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="flex-1 flex flex-col">
+            <Tabs
+              value={activeTab}
+              onValueChange={v => setActiveTab(v as 'thumbnails' | 'annotations' | 'search')}
+              className="flex-1 flex flex-col"
+            >
               <TabsList className="w-full grid grid-cols-3 rounded-none border-b">
                 <TabsTrigger value="thumbnails">
                   <FileText className="h-4 w-4 mr-1" />
                   Pages
                 </TabsTrigger>
-                <TabsTrigger value="annotations">
-                  📝 Notes
-                </TabsTrigger>
-                <TabsTrigger value="search">
-                  🔍 Search
-                </TabsTrigger>
+                <TabsTrigger value="annotations">📝 Notes</TabsTrigger>
+                <TabsTrigger value="search">🔍 Search</TabsTrigger>
               </TabsList>
 
               <div className="flex-1 overflow-hidden">
@@ -385,7 +385,7 @@ export function PDFViewer({
                     contentId={contentId}
                     annotations={annotations}
                     currentPage={currentPage}
-                    onAnnotationClick={(page) => handlePageChange(page)}
+                    onAnnotationClick={page => handlePageChange(page)}
                     onAnnotationsChange={loadAnnotations}
                   />
                 </TabsContent>

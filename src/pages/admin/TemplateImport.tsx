@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
 import {
-  ArrowLeft, FileJson, Upload, History, Download, Link, Calendar,
-  BarChart3, Hammer, GitCompare, CheckSquare
+  ArrowLeft,
+  FileJson,
+  Upload,
+  History,
+  Download,
+  Link,
+  Calendar,
+  BarChart3,
+  Hammer,
+  GitCompare,
+  CheckSquare,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -20,10 +29,22 @@ import { BulkActions } from '@/components/admin/BulkActions';
 import { useValidateTemplates, useImportTemplates } from '@/hooks/useTemplates';
 import type { ValidationResponse, ImportResponse } from '@/services/templateService';
 
+interface UploadedTemplateData {
+  courses?: unknown[];
+  events?: unknown[];
+}
+
+interface ImportOptions {
+  validate_first?: boolean;
+  skip_duplicates?: boolean;
+  update_existing?: boolean;
+  [key: string]: unknown;
+}
+
 export function TemplateImport() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('upload');
-  const [uploadedData, setUploadedData] = useState<any>(null);
+  const [uploadedData, setUploadedData] = useState<UploadedTemplateData | null>(null);
   const [templateType, setTemplateType] = useState<'course' | 'event'>('course');
   const [validationResult, setValidationResult] = useState<ValidationResponse | null>(null);
   const [importResult, setImportResult] = useState<ImportResponse | null>(null);
@@ -31,7 +52,7 @@ export function TemplateImport() {
   const validateMutation = useValidateTemplates();
   const importMutation = useImportTemplates();
 
-  const handleFileUpload = async (data: any, type: 'course' | 'event') => {
+  const handleFileUpload = async (data: UploadedTemplateData, type: 'course' | 'event') => {
     setUploadedData(data);
     setTemplateType(type);
 
@@ -50,7 +71,7 @@ export function TemplateImport() {
     setActiveTab('validate');
   };
 
-  const handleProceedToImport = async (options: any) => {
+  const handleProceedToImport = async (options: ImportOptions) => {
     if (!uploadedData || !templateType) return;
 
     const result = await importMutation.mutateAsync({
@@ -162,10 +183,7 @@ export function TemplateImport() {
         </TabsContent>
 
         <TabsContent value="upload" className="space-y-4">
-          <TemplateUpload
-            onFileUpload={handleFileUpload}
-            isLoading={validateMutation.isPending}
-          />
+          <TemplateUpload onFileUpload={handleFileUpload} isLoading={validateMutation.isPending} />
         </TabsContent>
 
         <TabsContent value="builder" className="space-y-4">
@@ -174,7 +192,7 @@ export function TemplateImport() {
 
         <TabsContent value="url-import" className="space-y-4">
           <URLImport
-            onImportComplete={(result) => {
+            onImportComplete={result => {
               setImportResult(result);
               setActiveTab('progress');
             }}
@@ -201,18 +219,13 @@ export function TemplateImport() {
         </TabsContent>
 
         <TabsContent value="progress" className="space-y-4">
-          <ImportProgress
-            importResponse={importResult}
-            isImporting={importMutation.isPending}
-          />
+          <ImportProgress importResponse={importResult} isImporting={importMutation.isPending} />
           {importResult && !importMutation.isPending && (
             <div className="flex justify-center gap-4">
               <Button variant="outline" onClick={handleReset}>
                 Import Another File
               </Button>
-              <Button onClick={() => setActiveTab('history')}>
-                View Import History
-              </Button>
+              <Button onClick={() => setActiveTab('history')}>View Import History</Button>
             </div>
           )}
         </TabsContent>

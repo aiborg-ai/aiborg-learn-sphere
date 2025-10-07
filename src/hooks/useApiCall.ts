@@ -26,7 +26,7 @@ interface UseApiCallOptions {
  */
 interface UseApiCallReturn<T> {
   /** Execute the API call with the provided query function */
-  execute: (queryFn: () => Promise<{ data: T | null; error: any }>) => Promise<ApiResponse<T>>;
+  execute: (queryFn: () => Promise<{ data: T | null; error: unknown }>) => Promise<ApiResponse<T>>;
   /** Loading state indicator */
   loading: boolean;
   /** Error object if the call failed */
@@ -51,9 +51,7 @@ interface UseApiCallReturn<T> {
  *
  * await execute(() => supabase.from('users').select());
  */
-export function useApiCall<T = any>(
-  options: UseApiCallOptions = {}
-): UseApiCallReturn<T> {
+export function useApiCall<T = unknown>(options: UseApiCallOptions = {}): UseApiCallReturn<T> {
   const {
     showSuccessToast = false,
     showErrorToast = true,
@@ -76,7 +74,7 @@ export function useApiCall<T = any>(
    * @returns {Promise<ApiResponse<T>>} The API response
    */
   const execute = useCallback(
-    async (queryFn: () => Promise<{ data: T | null; error: any }>) => {
+    async (queryFn: () => Promise<{ data: T | null; error: unknown }>) => {
       setLoading(true);
       setError(null);
 
@@ -113,11 +111,7 @@ export function useApiCall<T = any>(
         return result;
       } catch (unexpectedError) {
         logger.error('Unexpected error in useApiCall:', unexpectedError);
-        const apiError = new ApiError(
-          'An unexpected error occurred',
-          'UNEXPECTED_ERROR',
-          500
-        );
+        const apiError = new ApiError('An unexpected error occurred', 'UNEXPECTED_ERROR', 500);
         setError(apiError);
 
         if (showErrorToast) {
@@ -175,7 +169,7 @@ export function useApiCall<T = any>(
  *   supabase.from('users').insert({ name, email })
  * );
  */
-export function useMutation<T = any>(options: UseApiCallOptions = {}) {
+export function useMutation<T = unknown>(options: UseApiCallOptions = {}) {
   return useApiCall<T>({
     showSuccessToast: true,
     showErrorToast: true,
@@ -200,7 +194,7 @@ export function useMutation<T = any>(options: UseApiCallOptions = {}) {
  *   fetchUsers.execute(() => supabase.from('users').select());
  * }, []);
  */
-export function useQuery<T = any>(options: UseApiCallOptions = {}) {
+export function useQuery<T = unknown>(options: UseApiCallOptions = {}) {
   return useApiCall<T>({
     showSuccessToast: false,
     showErrorToast: true,

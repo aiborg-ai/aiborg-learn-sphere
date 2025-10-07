@@ -20,7 +20,7 @@ import {
   Medal,
   Crown,
   Zap,
-  TrendingUp
+  TrendingUp,
 } from 'lucide-react';
 import { logger } from '@/utils/logger';
 import { useToast } from '@/hooks/use-toast';
@@ -50,14 +50,34 @@ interface AvailableAchievement {
   category: string;
   rarity: string;
   points: number;
-  criteria: any;
+  criteria: Record<string, unknown>;
 }
 
 const rarityConfig = {
-  common: { color: 'bg-gray-500', icon: Star, label: 'Common', gradient: 'from-gray-400 to-gray-600' },
-  rare: { color: 'bg-blue-500', icon: Sparkles, label: 'Rare', gradient: 'from-blue-400 to-blue-600' },
-  epic: { color: 'bg-purple-500', icon: Crown, label: 'Epic', gradient: 'from-purple-400 to-purple-600' },
-  legendary: { color: 'bg-yellow-500', icon: Zap, label: 'Legendary', gradient: 'from-yellow-400 to-orange-500' }
+  common: {
+    color: 'bg-gray-500',
+    icon: Star,
+    label: 'Common',
+    gradient: 'from-gray-400 to-gray-600',
+  },
+  rare: {
+    color: 'bg-blue-500',
+    icon: Sparkles,
+    label: 'Rare',
+    gradient: 'from-blue-400 to-blue-600',
+  },
+  epic: {
+    color: 'bg-purple-500',
+    icon: Crown,
+    label: 'Epic',
+    gradient: 'from-purple-400 to-purple-600',
+  },
+  legendary: {
+    color: 'bg-yellow-500',
+    icon: Zap,
+    label: 'Legendary',
+    gradient: 'from-yellow-400 to-orange-500',
+  },
 };
 
 const categoryConfig = {
@@ -65,7 +85,7 @@ const categoryConfig = {
   skill_mastery: { label: 'Skill Mastery', icon: Target, color: 'text-purple-500' },
   engagement: { label: 'Engagement', icon: TrendingUp, color: 'text-green-500' },
   milestone: { label: 'Milestone', icon: Medal, color: 'text-orange-500' },
-  special: { label: 'Special', icon: Award, color: 'text-pink-500' }
+  special: { label: 'Special', icon: Award, color: 'text-pink-500' },
 };
 
 export default function AchievementsPage() {
@@ -83,7 +103,7 @@ export default function AchievementsPage() {
     common: 0,
     rare: 0,
     epic: 0,
-    legendary: 0
+    legendary: 0,
   });
 
   useEffect(() => {
@@ -103,10 +123,12 @@ export default function AchievementsPage() {
       // Fetch earned achievements
       const { data: earnedData, error: earnedError } = await supabase
         .from('user_achievements')
-        .select(`
+        .select(
+          `
           *,
           achievements!inner(*)
-        `)
+        `
+        )
         .eq('user_id', user.id)
         .order('earned_at', { ascending: false });
 
@@ -123,7 +145,7 @@ export default function AchievementsPage() {
         common: earnedData?.filter(a => a.achievements?.rarity === 'common').length || 0,
         rare: earnedData?.filter(a => a.achievements?.rarity === 'rare').length || 0,
         epic: earnedData?.filter(a => a.achievements?.rarity === 'epic').length || 0,
-        legendary: earnedData?.filter(a => a.achievements?.rarity === 'legendary').length || 0
+        legendary: earnedData?.filter(a => a.achievements?.rarity === 'legendary').length || 0,
       };
       setStats(rarityStats);
 
@@ -140,13 +162,12 @@ export default function AchievementsPage() {
       const earnedIds = new Set(earnedData?.map(a => a.achievement_id) || []);
       const notEarned = availableData?.filter(a => !earnedIds.has(a.id)) || [];
       setAvailableAchievements(notEarned);
-
     } catch (error) {
       logger.error('Error fetching achievements:', error);
       toast({
         title: 'Error',
         description: 'Failed to load achievements',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -182,14 +203,14 @@ export default function AchievementsPage() {
         title: currentFeatured ? 'Unfeatured' : 'Featured!',
         description: currentFeatured
           ? 'Achievement removed from featured display'
-          : 'This achievement will be shown on your profile'
+          : 'This achievement will be shown on your profile',
       });
     } catch (error) {
       logger.error('Error featuring achievement:', error);
       toast({
         title: 'Error',
         description: 'Failed to update achievement',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -245,7 +266,7 @@ export default function AchievementsPage() {
             </CardContent>
           </Card>
 
-          {(['common', 'rare', 'epic', 'legendary'] as const).map((rarity) => {
+          {(['common', 'rare', 'epic', 'legendary'] as const).map(rarity => {
             const config = rarityConfig[rarity];
             const Icon = config.icon;
             return (
@@ -291,7 +312,7 @@ export default function AchievementsPage() {
               </Card>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {earnedAchievements.map((achievement) => {
+                {earnedAchievements.map(achievement => {
                   const rarity = achievement.achievements?.rarity || 'common';
                   const category = achievement.achievements?.category || 'special';
                   const rarityInfo = rarityConfig[rarity as keyof typeof rarityConfig];
@@ -306,7 +327,9 @@ export default function AchievementsPage() {
                       }`}
                     >
                       {/* Rarity gradient background */}
-                      <div className={`absolute inset-0 bg-gradient-to-br ${rarityInfo.gradient} opacity-10`} />
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-br ${rarityInfo.gradient} opacity-10`}
+                      />
 
                       <CardHeader className="relative">
                         <div className="flex items-start justify-between">
@@ -330,12 +353,8 @@ export default function AchievementsPage() {
                             <CategoryIcon className="h-3 w-3" />
                             {categoryInfo?.label}
                           </Badge>
-                          <Badge className={rarityInfo.color}>
-                            {rarityInfo.label}
-                          </Badge>
-                          <Badge variant="outline">
-                            {achievement.achievements?.points} pts
-                          </Badge>
+                          <Badge className={rarityInfo.color}>{rarityInfo.label}</Badge>
+                          <Badge variant="outline">{achievement.achievements?.points} pts</Badge>
                         </div>
                       </CardHeader>
 
@@ -347,9 +366,13 @@ export default function AchievementsPage() {
                           <Button
                             variant={achievement.is_featured ? 'default' : 'outline'}
                             size="sm"
-                            onClick={() => handleFeatureAchievement(achievement.id, achievement.is_featured)}
+                            onClick={() =>
+                              handleFeatureAchievement(achievement.id, achievement.is_featured)
+                            }
                           >
-                            <Star className={`h-3 w-3 mr-1 ${achievement.is_featured ? 'fill-current' : ''}`} />
+                            <Star
+                              className={`h-3 w-3 mr-1 ${achievement.is_featured ? 'fill-current' : ''}`}
+                            />
                             {achievement.is_featured ? 'Featured' : 'Feature'}
                           </Button>
                         </div>
@@ -375,7 +398,7 @@ export default function AchievementsPage() {
               </Card>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {availableAchievements.map((achievement) => {
+                {availableAchievements.map(achievement => {
                   const rarity = achievement.rarity || 'common';
                   const category = achievement.category || 'special';
                   const rarityInfo = rarityConfig[rarity as keyof typeof rarityConfig];
@@ -399,9 +422,7 @@ export default function AchievementsPage() {
                               {achievement.icon_emoji || '🏆'}
                             </div>
                             <div>
-                              <CardTitle className="text-lg">
-                                {achievement.name}
-                              </CardTitle>
+                              <CardTitle className="text-lg">{achievement.name}</CardTitle>
                               <CardDescription className="mt-1">
                                 {achievement.description}
                               </CardDescription>
@@ -414,12 +435,8 @@ export default function AchievementsPage() {
                             <CategoryIcon className="h-3 w-3" />
                             {categoryInfo?.label}
                           </Badge>
-                          <Badge className={rarityInfo.color}>
-                            {rarityInfo.label}
-                          </Badge>
-                          <Badge variant="outline">
-                            {achievement.points} pts
-                          </Badge>
+                          <Badge className={rarityInfo.color}>{rarityInfo.label}</Badge>
+                          <Badge variant="outline">{achievement.points} pts</Badge>
                         </div>
                       </CardHeader>
                     </Card>

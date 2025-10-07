@@ -60,7 +60,7 @@ export const useCourses = () => {
         // For backward compatibility, create audiences array from single audience field
         const coursesWithAudienceArrays = (data || []).map(course => ({
           ...course,
-          audiences: course.audience ? [course.audience] : []
+          audiences: course.audience ? [course.audience] : [],
         }));
 
         setCourses(coursesWithAudienceArrays);
@@ -69,7 +69,7 @@ export const useCourses = () => {
         const processedCourses = (coursesWithAudiences || []).map(course => ({
           ...course,
           audience: course.audiences?.[0] || course.audience || '', // Use first audience for backward compatibility
-          audiences: course.audiences || (course.audience ? [course.audience] : [])
+          audiences: course.audiences || (course.audience ? [course.audience] : []),
         }));
 
         setCourses(processedCourses);
@@ -84,12 +84,12 @@ export const useCourses = () => {
 
   useEffect(() => {
     fetchCourses();
-  }, []);
+  }, [fetchCourses]);
 
-  return { 
-    courses, 
-    loading, 
-    error, 
-    refetch: fetchCourses
+  return {
+    courses,
+    loading,
+    error,
+    refetch: fetchCourses,
   };
 };

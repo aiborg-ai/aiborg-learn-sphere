@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AnalyticsService, type SkillGap } from '@/services/AnalyticsService';
 import { useAuth } from '@/hooks/useAuth';
+import { logger } from '@/utils/logger';
 import {
   Target,
   TrendingUp,
@@ -16,7 +17,7 @@ import {
   CheckCircle2,
   Loader2,
   BarChart3,
-  ArrowRight
+  ArrowRight,
 } from 'lucide-react';
 
 export const SkillGapAnalysis: React.FC = () => {
@@ -24,30 +25,37 @@ export const SkillGapAnalysis: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [skillGaps, setSkillGaps] = useState<SkillGap[]>([]);
 
-  useEffect(() => {
-    if (user) {
-      loadSkillGaps();
-    }
-  }, [user]);
-
-  const loadSkillGaps = async () => {
+  const loadSkillGaps = useCallback(async () => {
     if (!user) return;
 
     setLoading(true);
     try {
       const gaps = await AnalyticsService.analyzeSkillGaps(user.id);
       setSkillGaps(gaps);
+    } catch (error) {
+      logger.error('Error loading skill gaps:', error);
+      setSkillGaps([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      loadSkillGaps();
+    }
+  }, [user, loadSkillGaps]);
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
-      case 'critical': return 'bg-red-100 text-red-800 border-red-300';
-      case 'high': return 'bg-orange-100 text-orange-800 border-orange-300';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      default: return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 'critical':
+        return 'bg-red-100 text-red-800 border-red-300';
+      case 'high':
+        return 'bg-orange-100 text-orange-800 border-orange-300';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+      default:
+        return 'bg-blue-100 text-blue-800 border-blue-300';
     }
   };
 
@@ -107,9 +115,18 @@ export const SkillGapAnalysis: React.FC = () => {
               {skillGaps
                 .sort((a, b) => b.priorityScore - a.priorityScore)
                 .map((gap, idx) => (
-                  <Card key={idx} className="border-l-4" style={{
-                    borderLeftColor: gap.priorityScore > 80 ? '#ef4444' : gap.priorityScore > 60 ? '#f97316' : '#3b82f6'
-                  }}>
+                  <Card
+                    key={idx}
+                    className="border-l-4"
+                    style={{
+                      borderLeftColor:
+                        gap.priorityScore > 80
+                          ? '#ef4444'
+                          : gap.priorityScore > 60
+                            ? '#f97316'
+                            : '#3b82f6',
+                    }}
+                  >
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-3">
@@ -120,7 +137,9 @@ export const SkillGapAnalysis: React.FC = () => {
                               <Badge className={getImpactColor(gap.businessImpact)}>
                                 {gap.businessImpact} impact
                               </Badge>
-                              <span className="text-xs">Priority: {Math.round(gap.priorityScore)}/100</span>
+                              <span className="text-xs">
+                                Priority: {Math.round(gap.priorityScore)}/100
+                              </span>
                             </CardDescription>
                           </div>
                         </div>
@@ -131,7 +150,9 @@ export const SkillGapAnalysis: React.FC = () => {
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
                           <span className="text-muted-foreground">Current Proficiency</span>
-                          <span className="font-semibold">{Math.round(gap.currentProficiency)}%</span>
+                          <span className="font-semibold">
+                            {Math.round(gap.currentProficiency)}%
+                          </span>
                         </div>
                         <Progress value={gap.currentProficiency} className="h-2" />
                         <div className="flex justify-between text-sm text-muted-foreground">
@@ -150,7 +171,8 @@ export const SkillGapAnalysis: React.FC = () => {
                             {Math.round(gap.predictedProficiency30d)}%
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            +{Math.round(gap.predictedProficiency30d - gap.currentProficiency)}% predicted
+                            +{Math.round(gap.predictedProficiency30d - gap.currentProficiency)}%
+                            predicted
                           </p>
                         </div>
                         <div className="space-y-1">
@@ -162,7 +184,8 @@ export const SkillGapAnalysis: React.FC = () => {
                             {Math.round(gap.predictedProficiency90d)}%
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            +{Math.round(gap.predictedProficiency90d - gap.currentProficiency)}% predicted
+                            +{Math.round(gap.predictedProficiency90d - gap.currentProficiency)}%
+                            predicted
                           </p>
                         </div>
                       </div>
@@ -197,13 +220,20 @@ export const SkillGapAnalysis: React.FC = () => {
                 {skillGaps
                   .sort((a, b) => {
                     const impactOrder = { critical: 4, high: 3, medium: 2, low: 1 };
-                    return (impactOrder[b.businessImpact] || 0) - (impactOrder[a.businessImpact] || 0);
+                    return (
+                      (impactOrder[b.businessImpact] || 0) - (impactOrder[a.businessImpact] || 0)
+                    );
                   })
                   .map((gap, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between p-4 border rounded-lg"
+                    >
                       <div className="flex-1">
                         <p className="font-medium">{gap.categoryName}</p>
-                        <p className="text-sm text-muted-foreground">{Math.round(gap.gapSize)}% gap</p>
+                        <p className="text-sm text-muted-foreground">
+                          {Math.round(gap.gapSize)}% gap
+                        </p>
                       </div>
                       <Badge className={getImpactColor(gap.businessImpact)}>
                         {gap.businessImpact}
@@ -223,7 +253,10 @@ export const SkillGapAnalysis: React.FC = () => {
                         <p className="text-2xl font-bold">{gap.estimatedHoursToClose}h</p>
                       </div>
                       <div className="flex-1">
-                        <Progress value={100 - (gap.estimatedHoursToClose / 100 * 100)} className="h-2" />
+                        <Progress
+                          value={100 - (gap.estimatedHoursToClose / 100) * 100}
+                          className="h-2"
+                        />
                       </div>
                       <div className="flex-shrink-0 w-40">
                         <p className="font-medium text-sm">{gap.categoryName}</p>

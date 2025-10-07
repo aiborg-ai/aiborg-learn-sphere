@@ -55,7 +55,7 @@ export interface QuizAttempt {
   score_percentage: number;
   passed?: boolean;
   points_awarded: number;
-  answers: Record<string, any>;
+  answers: Record<string, unknown>;
   attempt_number: number;
   created_at: string;
 }
@@ -105,10 +105,12 @@ export function useQuizzes(courseId?: number) {
 
         const { data: questions, error: questionsError } = await supabase
           .from('quiz_questions')
-          .select(`
+          .select(
+            `
             *,
             options:quiz_question_options(*)
-          `)
+          `
+          )
           .eq('quiz_id', quizId)
           .order('order_index', { ascending: true });
 
@@ -187,13 +189,14 @@ export function useQuizzes(courseId?: number) {
       if (error) throw error;
       return data as QuizAttempt;
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ['quiz-attempts', data.quiz_id, user?.id] });
       logger.log('Quiz attempt started:', data);
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       logger.error('Error starting quiz:', error);
-      toast.error(error.message || 'Failed to start quiz');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to start quiz';
+      toast.error(errorMessage);
     },
   });
 
@@ -205,7 +208,7 @@ export function useQuizzes(courseId?: number) {
       timeSpentSeconds,
     }: {
       attemptId: string;
-      answers: Record<string, any>;
+      answers: Record<string, unknown>;
       timeSpentSeconds: number;
     }) => {
       if (!user) throw new Error('User not authenticated');
@@ -222,10 +225,12 @@ export function useQuizzes(courseId?: number) {
       // Get quiz questions with correct answers
       const { data: questions, error: questionsError } = await supabase
         .from('quiz_questions')
-        .select(`
+        .select(
+          `
           *,
           options:quiz_question_options(*)
-        `)
+        `
+        )
         .eq('quiz_id', attempt.quiz_id)
         .order('order_index', { ascending: true });
 
@@ -235,19 +240,24 @@ export function useQuizzes(courseId?: number) {
       let totalPoints = 0;
       let earnedPoints = 0;
 
-      questions.forEach((question: any) => {
+      interface QuestionWithOptions extends QuizQuestion {
+        options: QuizQuestionOption[];
+      }
+
+      questions.forEach((question: QuestionWithOptions) => {
         totalPoints += question.points_value;
         const userAnswer = answers[question.id];
 
         if (question.question_type === 'single_choice' || question.question_type === 'true_false') {
-          const correctOption = question.options.find((o: any) => o.is_correct);
+          const correctOption = question.options.find(o => o.is_correct);
           if (userAnswer === correctOption?.id) {
             earnedPoints += question.points_value;
           }
         } else if (question.question_type === 'multiple_choice') {
-          const correctOptions = question.options.filter((o: any) => o.is_correct).map((o: any) => o.id);
+          const correctOptions = question.options.filter(o => o.is_correct).map(o => o.id);
           const userAnswers = Array.isArray(userAnswer) ? userAnswer : [];
-          const isCorrect = correctOptions.length === userAnswers.length &&
+          const isCorrect =
+            correctOptions.length === userAnswers.length &&
             correctOptions.every((id: string) => userAnswers.includes(id));
           if (isCorrect) {
             earnedPoints += question.points_value;
@@ -256,7 +266,7 @@ export function useQuizzes(courseId?: number) {
       });
 
       const scorePercentage = totalPoints > 0 ? (earnedPoints / totalPoints) * 100 : 0;
-      const quiz = attempt.quiz as any;
+      const quiz = attempt.quiz as Quiz;
       const passed = scorePercentage >= quiz.passing_score_percentage;
       const isPerfectScore = scorePercentage === 100;
       const isFirstAttempt = attempt.attempt_number === 1;
@@ -297,7 +307,7 @@ export function useQuizzes(courseId?: number) {
 
       return updatedAttempt as QuizAttempt;
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ['quiz-attempts', data.quiz_id, user?.id] });
 
       if (data.passed) {
@@ -312,7 +322,7 @@ export function useQuizzes(courseId?: number) {
 
       logger.log('Quiz submitted:', data);
     },
-    onError: (error) => {
+    onError: error => {
       logger.error('Error submitting quiz:', error);
       toast.error('Failed to submit quiz');
     },

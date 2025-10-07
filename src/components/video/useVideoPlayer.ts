@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import { VideoPlayerState } from './types';
+import type { VideoPlayerState } from './types';
 
 export function useVideoPlayer() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -16,7 +16,7 @@ export function useVideoPlayer() {
     playbackSpeed: 1,
     showControls: true,
     watchedPercentage: 0,
-    lastSavedProgress: 0
+    lastSavedProgress: 0,
   });
 
   const handlePlayPause = useCallback(() => {
@@ -37,13 +37,16 @@ export function useVideoPlayer() {
     }
   }, []);
 
-  const handleSeek = useCallback((value: number[]) => {
-    if (videoRef.current && state.duration) {
-      const newTime = (value[0] / 100) * state.duration;
-      videoRef.current.currentTime = newTime;
-      setState(prev => ({ ...prev, currentTime: newTime }));
-    }
-  }, [state.duration]);
+  const handleSeek = useCallback(
+    (value: number[]) => {
+      if (videoRef.current && state.duration) {
+        const newTime = (value[0] / 100) * state.duration;
+        videoRef.current.currentTime = newTime;
+        setState(prev => ({ ...prev, currentTime: newTime }));
+      }
+    },
+    [state.duration]
+  );
 
   const handleVolumeChange = useCallback((value: number[]) => {
     const newVolume = value[0] / 100;
@@ -98,7 +101,7 @@ export function useVideoPlayer() {
       setState(prev => ({
         ...prev,
         currentTime,
-        watchedPercentage: Math.max(prev.watchedPercentage, progress)
+        watchedPercentage: Math.max(prev.watchedPercentage, progress),
       }));
     }
   }, []);
@@ -144,6 +147,6 @@ export function useVideoPlayer() {
     setShowControls,
     setWatchedPercentage,
     setLastSavedProgress,
-    setCurrentTime
+    setCurrentTime,
   };
 }

@@ -1,4 +1,5 @@
-import { memo, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { memo } from 'react';
 import { useVirtualScroll } from '@/hooks/useVirtualScroll';
 
 interface VirtualListProps<T> {
@@ -186,11 +187,7 @@ export const VirtualGrid = memo(function VirtualGrid<T>({
             >
               {rowItems.map((item, colIndex) => {
                 const itemIndex = startItemIndex + colIndex;
-                return (
-                  <div key={keyExtractor(item, itemIndex)}>
-                    {renderItem(item, itemIndex)}
-                  </div>
-                );
+                return <div key={keyExtractor(item, itemIndex)}>{renderItem(item, itemIndex)}</div>;
               })}
             </div>
           );
@@ -242,12 +239,7 @@ export const InfiniteVirtualList = memo(function InfiniteVirtualList<T>({
       const distanceFromBottom = items.length - end;
       const itemsUntilBottom = distanceFromBottom * itemHeight;
 
-      if (
-        itemsUntilBottom < loadMoreThreshold &&
-        hasMore &&
-        !isLoadingMore &&
-        !loading
-      ) {
+      if (itemsUntilBottom < loadMoreThreshold && hasMore && !isLoadingMore && !loading) {
         onLoadMore();
       }
     },

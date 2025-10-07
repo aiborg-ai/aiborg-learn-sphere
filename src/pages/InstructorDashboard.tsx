@@ -20,7 +20,7 @@ import {
   PlusCircle,
   CheckCircle,
   Clock,
-  Award
+  Award,
 } from 'lucide-react';
 import { logger } from '@/utils/logger';
 
@@ -29,19 +29,30 @@ import { MaterialUploadSection } from '@/components/instructor/MaterialUploadSec
 import { EnrolledStudents } from '@/components/instructor/EnrolledStudents';
 import { AssignmentManagement } from '@/components/instructor/AssignmentManagement';
 
+interface InstructorCourse {
+  id: number;
+  title: string;
+  description?: string;
+  level?: string;
+  duration?: string;
+  mode?: string;
+  is_active?: boolean;
+  created_at?: string;
+}
+
 export default function InstructorDashboard() {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
-  const [instructorCourses, setInstructorCourses] = useState<any[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [instructorCourses, setInstructorCourses] = useState<InstructorCourse[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<InstructorCourse | null>(null);
   const [stats, setStats] = useState({
     totalCourses: 0,
     totalStudents: 0,
     pendingAssignments: 0,
-    totalMaterials: 0
+    totalMaterials: 0,
   });
 
   useEffect(() => {
@@ -66,7 +77,12 @@ export default function InstructorDashboard() {
         .eq('is_active', true)
         .single();
 
-      if (!roleData || (roleData.role !== 'instructor' && roleData.role !== 'admin' && roleData.role !== 'super_admin')) {
+      if (
+        !roleData ||
+        (roleData.role !== 'instructor' &&
+          roleData.role !== 'admin' &&
+          roleData.role !== 'super_admin')
+      ) {
         // Not an instructor, redirect
         navigate('/dashboard');
         return;
@@ -127,7 +143,6 @@ export default function InstructorDashboard() {
       if (!materialsError) {
         setStats(prev => ({ ...prev, totalMaterials: materialsData?.length || 0 }));
       }
-
     } catch (error) {
       logger.error('Error fetching instructor data:', error);
     } finally {
@@ -161,12 +176,8 @@ export default function InstructorDashboard() {
 
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display font-bold text-white mb-2">
-                Instructor Portal
-              </h1>
-              <p className="text-white/80">
-                Manage your courses, students, and course materials
-              </p>
+              <h1 className="text-3xl font-display font-bold text-white mb-2">Instructor Portal</h1>
+              <p className="text-white/80">Manage your courses, students, and course materials</p>
             </div>
             <Button onClick={handleRefresh} variant="outline" className="btn-outline-ai">
               Refresh Data
@@ -254,14 +265,12 @@ export default function InstructorDashboard() {
                   <BookOpen className="h-5 w-5" />
                   My Courses
                 </CardTitle>
-                <CardDescription>
-                  Courses you're managing
-                </CardDescription>
+                <CardDescription>Courses you're managing</CardDescription>
               </CardHeader>
               <CardContent>
                 {instructorCourses.length > 0 ? (
                   <div className="space-y-3">
-                    {instructorCourses.map((course) => (
+                    {instructorCourses.map(course => (
                       <div
                         key={course.id}
                         className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
@@ -282,7 +291,7 @@ export default function InstructorDashboard() {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={(e) => {
+                            onClick={e => {
                               e.stopPropagation();
                               navigate(`/course/${course.id}`);
                             }}
@@ -306,7 +315,8 @@ export default function InstructorDashboard() {
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Course selected: <strong>{selectedCourse.title}</strong>. Use the tabs above to manage materials, students, and assignments for this course.
+                  Course selected: <strong>{selectedCourse.title}</strong>. Use the tabs above to
+                  manage materials, students, and assignments for this course.
                 </AlertDescription>
               </Alert>
             )}

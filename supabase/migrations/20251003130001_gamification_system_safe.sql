@@ -349,7 +349,7 @@ BEGIN
   DROP POLICY IF EXISTS "Users can insert their own exercise submissions" ON public.exercise_submissions;
   DROP POLICY IF EXISTS "Users can update their own exercise submissions" ON public.exercise_submissions;
   DROP POLICY IF EXISTS "Anyone can view published workshops" ON public.workshops;
-  DROP POLICY IF EXISTS "Users can view workshop groups they're in" ON public.workshop_groups;
+  DROP POLICY IF EXISTS "Users can view workshop groups theyre in" ON public.workshop_groups;
   DROP POLICY IF EXISTS "Users can view their own workshop participations" ON public.workshop_participants;
   DROP POLICY IF EXISTS "Users can insert themselves as workshop participants" ON public.workshop_participants;
   DROP POLICY IF EXISTS "Users can view submissions from their group" ON public.workshop_submissions;
@@ -372,7 +372,7 @@ CREATE POLICY "Users can view their own exercise submissions" ON public.exercise
 CREATE POLICY "Users can insert their own exercise submissions" ON public.exercise_submissions FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Users can update their own exercise submissions" ON public.exercise_submissions FOR UPDATE USING (auth.uid() = user_id);
 CREATE POLICY "Anyone can view published workshops" ON public.workshops FOR SELECT USING (is_published = true);
-CREATE POLICY "Users can view workshop groups they're in" ON public.workshop_groups FOR SELECT USING (EXISTS (SELECT 1 FROM public.workshop_participants WHERE group_id = workshop_groups.id AND user_id = auth.uid()));
+CREATE POLICY "Users can view workshop groups theyre in" ON public.workshop_groups FOR SELECT USING (EXISTS (SELECT 1 FROM public.workshop_participants WHERE group_id = workshop_groups.id AND user_id = auth.uid()));
 CREATE POLICY "Users can view their own workshop participations" ON public.workshop_participants FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "Users can insert themselves as workshop participants" ON public.workshop_participants FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Users can view submissions from their group" ON public.workshop_submissions FOR SELECT USING (EXISTS (SELECT 1 FROM public.workshop_participants WHERE group_id = workshop_submissions.group_id AND user_id = auth.uid()));

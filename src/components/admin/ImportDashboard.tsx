@@ -1,22 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import {
-  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  AreaChart, Area
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
 } from 'recharts';
 import {
-  Activity, TrendingUp, Package, AlertCircle, CheckCircle,
-  Clock, Calendar, FileJson, Users, DollarSign, Target
+  Activity,
+  TrendingUp,
+  Package,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  FileJson,
+  Users,
+  DollarSign,
+  Target,
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { format, subDays, startOfWeek, startOfMonth } from 'date-fns';
 
 import { logger } from '@/utils/logger';
+interface ImportLog {
+  id: string;
+  status: string;
+  created_at: string;
+  import_time_ms?: number;
+  import_type: string;
+  items_imported?: number;
+  summary?: {
+    categories?: Record<string, number>;
+  };
+  [key: string]: unknown;
+}
+
 interface ImportStats {
   totalImports: number;
   successfulImports: number;
@@ -59,14 +98,14 @@ export function ImportDashboard() {
     totalEvents: 0,
     avgImportTime: 0,
     lastImportDate: '',
-    activeSchedules: 0
+    activeSchedules: 0,
   });
 
   const [timeRange, setTimeRange] = useState('7d');
   const [importHistory, setImportHistory] = useState<ChartData[]>([]);
   const [categoryBreakdown, setCategoryBreakdown] = useState<CategoryData[]>([]);
   const [successRates, setSuccessRates] = useState<SuccessRateData[]>([]);
-  const [recentImports, setRecentImports] = useState<any[]>([]);
+  const [recentImports, setRecentImports] = useState<ImportLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -128,17 +167,12 @@ export function ImportDashboard() {
       const failedImports = logs?.filter(l => l.status === 'failed').length || 0;
 
       // Calculate average import time
-      const importTimes = logs
-        ?.filter(l => l.import_time_ms)
-        .map(l => l.import_time_ms) || [];
-      const avgImportTime = importTimes.length > 0
-        ? importTimes.reduce((a, b) => a + b, 0) / importTimes.length
-        : 0;
+      const importTimes = logs?.filter(l => l.import_time_ms).map(l => l.import_time_ms) || [];
+      const avgImportTime =
+        importTimes.length > 0 ? importTimes.reduce((a, b) => a + b, 0) / importTimes.length : 0;
 
       // Get last import date
-      const lastImportDate = logs && logs.length > 0
-        ? logs[0].created_at
-        : '';
+      const lastImportDate = logs && logs.length > 0 ? logs[0].created_at : '';
 
       setStats({
         totalImports,
@@ -148,7 +182,7 @@ export function ImportDashboard() {
         totalEvents: eventsCount || 0,
         avgImportTime: Math.round(avgImportTime),
         lastImportDate,
-        activeSchedules: schedulesCount || 0
+        activeSchedules: schedulesCount || 0,
       });
 
       // Process chart data
@@ -158,7 +192,6 @@ export function ImportDashboard() {
 
       // Set recent imports
       setRecentImports(logs?.slice(0, 5) || []);
-
     } catch (error) {
       logger.error('Error fetching dashboard data:', error);
     } finally {
@@ -166,7 +199,7 @@ export function ImportDashboard() {
     }
   };
 
-  const processImportHistory = (logs: any[], startDate: Date, endDate: Date) => {
+  const processImportHistory = (logs: ImportLog[], startDate: Date, endDate: Date) => {
     const dailyData: { [key: string]: { courses: number; events: number } } = {};
 
     // Initialize all days in range
@@ -194,13 +227,13 @@ export function ImportDashboard() {
       date,
       courses: data.courses,
       events: data.events,
-      total: data.courses + data.events
+      total: data.courses + data.events,
     }));
 
     setImportHistory(chartData);
   };
 
-  const processCategoryBreakdown = (logs: any[]) => {
+  const processCategoryBreakdown = (logs: ImportLog[]) => {
     const categoryCount: { [key: string]: number } = {};
 
     logs.forEach(log => {
@@ -216,7 +249,7 @@ export function ImportDashboard() {
       .map(([category, count]) => ({
         category,
         count,
-        percentage: total > 0 ? Math.round((count / total) * 100) : 0
+        percentage: total > 0 ? Math.round((count / total) * 100) : 0,
       }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 6);
@@ -224,7 +257,7 @@ export function ImportDashboard() {
     setCategoryBreakdown(data);
   };
 
-  const processSuccessRates = (logs: any[]) => {
+  const processSuccessRates = (logs: ImportLog[]) => {
     const courseStats = { success: 0, failed: 0 };
     const eventStats = { success: 0, failed: 0 };
 
@@ -246,18 +279,26 @@ export function ImportDashboard() {
         type: 'Courses',
         success: courseStats.success,
         failed: courseStats.failed,
-        rate: courseTotal > 0 ? Math.round((courseStats.success / courseTotal) * 100) : 0
+        rate: courseTotal > 0 ? Math.round((courseStats.success / courseTotal) * 100) : 0,
       },
       {
         type: 'Events',
         success: eventStats.success,
         failed: eventStats.failed,
-        rate: eventTotal > 0 ? Math.round((eventStats.success / eventTotal) * 100) : 0
-      }
+        rate: eventTotal > 0 ? Math.round((eventStats.success / eventTotal) * 100) : 0,
+      },
     ]);
   };
 
-  const StatCard = ({ title, value, icon: Icon, trend, trendValue }: any) => (
+  interface StatCardProps {
+    title: string;
+    value: string | number;
+    icon: React.ElementType;
+    trend?: 'up' | 'down';
+    trendValue?: string;
+  }
+
+  const StatCard = ({ title, value, icon: Icon, trend, trendValue }: StatCardProps) => (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
@@ -272,9 +313,7 @@ export function ImportDashboard() {
             ) : (
               <TrendingUp className="h-3 w-3 text-red-500 rotate-180" />
             )}
-            <span className={trend === 'up' ? 'text-green-500' : 'text-red-500'}>
-              {trendValue}
-            </span>
+            <span className={trend === 'up' ? 'text-green-500' : 'text-red-500'}>{trendValue}</span>
             <span>from last period</span>
           </p>
         )}
@@ -324,9 +363,11 @@ export function ImportDashboard() {
         />
         <StatCard
           title="Success Rate"
-          value={`${stats.totalImports > 0
-            ? Math.round((stats.successfulImports / stats.totalImports) * 100)
-            : 0}%`}
+          value={`${
+            stats.totalImports > 0
+              ? Math.round((stats.successfulImports / stats.totalImports) * 100)
+              : 0
+          }%`}
           icon={CheckCircle}
           trend={stats.failedImports > 0 ? 'down' : 'up'}
           trendValue={stats.failedImports > 0 ? `-${stats.failedImports}` : '+100%'}
@@ -336,11 +377,7 @@ export function ImportDashboard() {
           value={`${(stats.avgImportTime / 1000).toFixed(1)}s`}
           icon={Clock}
         />
-        <StatCard
-          title="Active Schedules"
-          value={stats.activeSchedules}
-          icon={Calendar}
-        />
+        <StatCard title="Active Schedules" value={stats.activeSchedules} icon={Calendar} />
       </div>
 
       {/* Charts */}
@@ -356,21 +393,19 @@ export function ImportDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Import Trend</CardTitle>
-              <CardDescription>
-                Number of items imported over time
-              </CardDescription>
+              <CardDescription>Number of items imported over time</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height="350">
                 <AreaChart data={importHistory}>
                   <defs>
                     <linearGradient id="colorCourses" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#0088FE" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#0088FE" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#0088FE" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#0088FE" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="colorEvents" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#00C49F" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#00C49F" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#00C49F" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#00C49F" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -405,9 +440,7 @@ export function ImportDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle>Category Distribution</CardTitle>
-                <CardDescription>
-                  Breakdown of imports by category
-                </CardDescription>
+                <CardDescription>Breakdown of imports by category</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height="350">
@@ -435,9 +468,7 @@ export function ImportDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle>Top Categories</CardTitle>
-                <CardDescription>
-                  Most imported categories
-                </CardDescription>
+                <CardDescription>Most imported categories</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -468,9 +499,7 @@ export function ImportDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Success Rates by Type</CardTitle>
-              <CardDescription>
-                Import success and failure rates
-              </CardDescription>
+              <CardDescription>Import success and failure rates</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height="350">
@@ -512,9 +541,7 @@ export function ImportDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle>Import Performance Metrics</CardTitle>
-                <CardDescription>
-                  System performance during imports
-                </CardDescription>
+                <CardDescription>System performance during imports</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -541,14 +568,15 @@ export function ImportDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle>Recent Import Activity</CardTitle>
-                <CardDescription>
-                  Latest import operations
-                </CardDescription>
+                <CardDescription>Latest import operations</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {recentImports.map((log, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50"
+                    >
                       <div className="flex items-center gap-3">
                         {log.status === 'completed' ? (
                           <CheckCircle className="h-4 w-4 text-green-500" />

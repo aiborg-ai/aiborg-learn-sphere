@@ -139,9 +139,7 @@ export default function DownloadsPage() {
                 <Download className="inline h-8 w-8 mr-2" />
                 Download History
               </h1>
-              <p className="text-white/80">
-                Track and manage your downloaded materials
-              </p>
+              <p className="text-white/80">Track and manage your downloaded materials</p>
             </div>
 
             {stats && (
@@ -183,7 +181,7 @@ export default function DownloadsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {stats.most_accessed.slice(0, 3).map((item) => (
+                {stats.most_accessed.slice(0, 3).map(item => (
                   <div
                     key={item.material_id}
                     className="flex items-center justify-between p-3 border rounded-lg"
@@ -219,14 +217,17 @@ export default function DownloadsPage() {
                   <Input
                     placeholder="Search downloads..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={e => setSearchQuery(e.target.value)}
                     className="pl-10"
                   />
                 </div>
               </div>
 
               {/* Type Filter */}
-              <Select value={selectedType} onValueChange={(v) => setSelectedType(v as any)}>
+              <Select
+                value={selectedType}
+                onValueChange={v => setSelectedType(v as FileType | 'all')}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="All Types" />
                 </SelectTrigger>
@@ -251,16 +252,10 @@ export default function DownloadsPage() {
                 <CardTitle>
                   {downloads.length} Download{downloads.length !== 1 ? 's' : ''}
                 </CardTitle>
-                <CardDescription>
-                  Your download history and file access tracking
-                </CardDescription>
+                <CardDescription>Your download history and file access tracking</CardDescription>
               </div>
               {downloads.length > 0 && (
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => setClearAllDialog(true)}
-                >
+                <Button variant="destructive" size="sm" onClick={() => setClearAllDialog(true)}>
                   <Trash2 className="h-4 w-4 mr-2" />
                   Clear All
                 </Button>
@@ -280,7 +275,7 @@ export default function DownloadsPage() {
             ) : (
               <ScrollArea className="h-[600px]">
                 <div className="space-y-3">
-                  {downloads.map((download) => (
+                  {downloads.map(download => (
                     <div
                       key={download.id}
                       className="group border rounded-lg p-4 hover:bg-accent/50 transition-colors"
@@ -369,7 +364,8 @@ export default function DownloadsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Remove Download Record?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will remove this download from your history. The file itself won't be deleted from your device.
+              This will remove this download from your history. The file itself won't be deleted
+              from your device.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -390,7 +386,8 @@ export default function DownloadsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Clear All Download History?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove all download records from your history. Downloaded files on your device won't be affected. This action cannot be undone.
+              This will permanently remove all download records from your history. Downloaded files
+              on your device won't be affected. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

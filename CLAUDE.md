@@ -1,10 +1,12 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this
+repository.
 
 ## Commands
 
 ### Development
+
 - `npm install` - Install dependencies
 - `npm run dev` - Start development server (Vite)
 - `npm run build` - Build for production
@@ -15,6 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Architecture
 
 ### Tech Stack
+
 - **Frontend Framework**: React 18 with TypeScript
 - **Build Tool**: Vite
 - **Styling**: Tailwind CSS with shadcn/ui components
@@ -26,12 +29,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Project Structure
 
 #### Core Application
+
 - `src/App.tsx` - Main application entry with routing setup
 - `src/pages/` - Route components (Index, Auth, Profile, Admin, CMS, PaymentSuccess)
 - `src/contexts/PersonalizationContext.tsx` - User personalization state management
 - `src/integrations/supabase/` - Supabase client configuration and types
 
 #### Key Features
+
 - **Authentication**: Supabase Auth with email/password
 - **Admin Panel**: `/admin` route for content management
 - **CMS**: `/cms` route for content editing
@@ -39,11 +44,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Payment Integration**: Payment success page with enrollment handling
 
 #### Component Organization
+
 - `src/components/` - Reusable React components
 - `src/components/ui/` - shadcn/ui base components (Button, Card, Dialog, etc.)
-- Custom components include: AIChatbot, CourseDetailsModal, EnrollmentForm, EventCard, MediaPlayer, ReviewForm
+- Custom components include: AIChatbot, CourseDetailsModal, EnrollmentForm, EventCard, MediaPlayer,
+  ReviewForm
 
 #### Data Fetching
+
 - Custom hooks in `src/hooks/`:
   - `useAuth` - Authentication state
   - `useCourses` - Course data management
@@ -52,7 +60,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `useReviews`, `useUserReviews` - Review system
 
 #### Supabase Functions
+
 Edge functions in `supabase/functions/`:
+
 - `ai-chat` - AI chatbot functionality
 - `create-payment` - Payment processing
 - `generate-invoice` - Invoice generation
@@ -60,28 +70,34 @@ Edge functions in `supabase/functions/`:
 - `send-review-notification`, `approve-review` - Review workflow
 
 ### Database Schema
-The application uses Supabase with TypeScript types auto-generated in `src/integrations/supabase/types.ts`.
+
+The application uses Supabase with TypeScript types auto-generated in
+`src/integrations/supabase/types.ts`.
 
 ### Deployment
 
 #### GitHub Repository
+
 - **Repository URL**: https://github.com/aiborg-ai/aiborg-ai-web
 - **Main Branch**: `main`
 - **Auto-deployment**: Pushes to main branch automatically trigger Vercel deployments
 
 #### Vercel Deployment
+
 - **Production URL**: https://aiborg-ai-web.vercel.app
 - **Vercel Dashboard**: https://vercel.com/hirendra-vikrams-projects/aiborg-ai-web/deployments
 - **Project Name**: `aiborg-ai-web` (NOT `aiborg-learn-sphere`)
 - **Team**: `hirendra-vikrams-projects`
 
 **IMPORTANT Deployment Notes:**
+
 1. **Correct Project**: Use `aiborg-ai-web` (NOT `aiborg-learn-sphere`)
 2. **Vercel Account**: Deployed under `hirendra-vikrams-projects` team
 3. **Git Author**: Must use email `hirendra.vikram@aiborg.ai` for deployments to work
 4. **Vercel Token**: Use token `ogferIl3xcqkP9yIUXzMezgH` for CLI deployments
 
 #### Deployment Commands
+
 ```bash
 # Deploy to production (with token)
 npx vercel --prod --token ogferIl3xcqkP9yIUXzMezgH
@@ -94,11 +110,20 @@ npx vercel inspect <deployment-url> --logs --token ogferIl3xcqkP9yIUXzMezgH
 ```
 
 #### Environment Variables (Required in Vercel)
+
 - `VITE_APP_URL` - Application URL (e.g., https://aiborg-ai-web.vercel.app)
 - `VITE_SUPABASE_URL` - Supabase project URL
 - `VITE_SUPABASE_ANON_KEY` - Supabase anonymous key
 
+#### Feature Flags (Optional)
+
+- `VITE_USE_ADAPTIVE_ASSESSMENT` - Enable adaptive assessment (default: `true`)
+  - `true` = Adaptive assessment with dynamic difficulty (CAT)
+  - `false` = Standard assessment with fixed questions
+  - See `docs/FEATURE_FLAGS.md` for detailed documentation
+
 #### Authentication Configuration
+
 - Email confirmations must redirect to production URL, not localhost
 - Configure Supabase Dashboard → Authentication → URL Configuration
 - Set Site URL to production URL
@@ -107,6 +132,7 @@ npx vercel inspect <deployment-url> --logs --token ogferIl3xcqkP9yIUXzMezgH
 #### Git Configuration & Commands
 
 **Repository Setup:**
+
 ```bash
 # Clone the repository
 git clone https://github.com/aiborg-ai/aiborg-ai-web.git
@@ -119,12 +145,14 @@ git remote -v
 ```
 
 **CRITICAL Git Author Configuration** (Required for deployments):
+
 ```bash
 git config user.email "hirendra.vikram@aiborg.ai"
 git config user.name "aiborg-ai"
 ```
 
 **Push to GitHub (triggers auto-deployment):**
+
 ```bash
 # Add changes
 git add .
@@ -136,32 +164,37 @@ git commit -m "Your commit message"
 git push origin main
 ```
 
-**Fix Author Issues:**
-If deployment fails with "Git author must have access" error:
+**Fix Author Issues:** If deployment fails with "Git author must have access" error:
+
 ```bash
 git commit --amend --author="aiborg-ai <hirendra.vikram@aiborg.ai>" --no-edit
 git push --force origin main
 ```
 
 #### Branding Assets
+
 - Logo: `/public/aiborg-logo.svg` - Gold "AI" with "BORG™" text on black
 - Favicon: `/public/aiborg-favicon.svg` - Compact "AI" icon in gold
 - No Lovable branding should remain
 
 #### Development Workflow
+
 Changes can be deployed through:
+
 1. **Local Development** → Push to GitHub → Auto-deploys to Vercel
 2. **Direct GitHub Editing** → Auto-deploys on commit to main branch
 3. **Vercel Dashboard** → Manual redeployment if needed
 
 **Important URLs:**
+
 - GitHub Repo: https://github.com/aiborg-ai/aiborg-ai-web
 - Live Site: https://aiborg-ai-web.vercel.app
 - Vercel Dashboard: https://vercel.com/hirendra-vikrams-projects/aiborg-ai-web/deployments
 
 ## Spec-Driven Development (GitHub Spec Kit)
 
-This project uses GitHub's Spec Kit for structured, specification-driven development with Claude Code.
+This project uses GitHub's Spec Kit for structured, specification-driven development with Claude
+Code.
 
 ### Available Slash Commands
 

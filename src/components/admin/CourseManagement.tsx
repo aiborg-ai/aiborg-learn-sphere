@@ -1,14 +1,40 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, type UseFormReturn } from 'react-hook-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { BookOpen, Edit, Eye, Plus, ToggleLeft, ToggleRight, Trash2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
@@ -65,7 +91,7 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
       category: course.category,
       keywords: course.keywords.join(','),
       prerequisites: course.prerequisites || '',
-      sort_order: course.sort_order
+      sort_order: course.sort_order,
     });
     setIsEditingCourse(true);
   };
@@ -102,7 +128,7 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
       prerequisites: data.prerequisites || null,
       is_active: true,
       display: true,
-      sort_order: data.sort_order || 0
+      sort_order: data.sort_order || 0,
     };
 
     try {
@@ -117,7 +143,7 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
       if (newCourse && data.audiences && data.audiences.length > 0) {
         const audiencesData = data.audiences.map((audience: string) => ({
           course_id: newCourse.id,
-          audience: audience
+          audience: audience,
         }));
 
         const { error: audienceError } = await supabase
@@ -130,8 +156,8 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
       }
 
       toast({
-        title: "Success",
-        description: "Course created successfully",
+        title: 'Success',
+        description: 'Course created successfully',
       });
 
       setIsAddingCourse(false);
@@ -140,9 +166,9 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
     } catch (error) {
       logger.error('Error creating course:', error);
       toast({
-        title: "Error",
-        description: "Failed to create course",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to create course',
+        variant: 'destructive',
       });
     }
   };
@@ -163,7 +189,7 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
       category: data.category,
       keywords: data.keywords.split(',').map((k: string) => k.trim()),
       prerequisites: data.prerequisites || null,
-      sort_order: data.sort_order || 0
+      sort_order: data.sort_order || 0,
     };
 
     try {
@@ -186,7 +212,7 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
       if (data.audiences && data.audiences.length > 0) {
         const audiencesData = data.audiences.map((audience: string) => ({
           course_id: editingCourse.id,
-          audience: audience
+          audience: audience,
         }));
 
         const { error: audienceError } = await supabase
@@ -199,8 +225,8 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
       }
 
       toast({
-        title: "Success",
-        description: "Course updated successfully",
+        title: 'Success',
+        description: 'Course updated successfully',
       });
 
       setIsEditingCourse(false);
@@ -210,33 +236,30 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
     } catch (error) {
       logger.error('Error updating course:', error);
       toast({
-        title: "Error",
-        description: "Failed to update course",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update course',
+        variant: 'destructive',
       });
     }
   };
 
   const deleteCourse = async (courseId: number) => {
     try {
-      const { error } = await supabase
-        .from('courses')
-        .delete()
-        .eq('id', courseId);
+      const { error } = await supabase.from('courses').delete().eq('id', courseId);
 
       if (error) throw error;
 
       setCourses(courses.filter(c => c.id !== courseId));
       toast({
-        title: "Success",
-        description: "Course deleted successfully",
+        title: 'Success',
+        description: 'Course deleted successfully',
       });
     } catch (error) {
       logger.error('Error deleting course:', error);
       toast({
-        title: "Error",
-        description: "Failed to delete course",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to delete course',
+        variant: 'destructive',
       });
     }
   };
@@ -250,20 +273,18 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
 
       if (error) throw error;
 
-      setCourses(courses.map(c =>
-        c.id === courseId ? { ...c, is_active: !currentStatus } : c
-      ));
+      setCourses(courses.map(c => (c.id === courseId ? { ...c, is_active: !currentStatus } : c)));
 
       toast({
-        title: "Success",
+        title: 'Success',
         description: `Course ${!currentStatus ? 'activated' : 'deactivated'} successfully`,
       });
     } catch (error) {
       logger.error('Error updating course status:', error);
       toast({
-        title: "Error",
-        description: "Failed to update course status",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update course status',
+        variant: 'destructive',
       });
     }
   };
@@ -277,20 +298,18 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
 
       if (error) throw error;
 
-      setCourses(courses.map(c =>
-        c.id === courseId ? { ...c, display: !currentDisplay } : c
-      ));
+      setCourses(courses.map(c => (c.id === courseId ? { ...c, display: !currentDisplay } : c)));
 
       toast({
-        title: "Success",
+        title: 'Success',
         description: `Course ${!currentDisplay ? 'shown' : 'hidden'} on frontend`,
       });
     } catch (error) {
       logger.error('Error updating course display:', error);
       toast({
-        title: "Error",
-        description: "Failed to update course display",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update course display',
+        variant: 'destructive',
       });
     }
   };
@@ -340,7 +359,7 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
               </TableRow>
             </TableHeader>
             <TableBody>
-              {courses.map((course) => (
+              {courses.map(course => (
                 <TableRow key={course.id}>
                   <TableCell className="font-medium">{course.title}</TableCell>
                   <TableCell>{course.category}</TableCell>
@@ -348,22 +367,18 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
                   <TableCell>{course.level}</TableCell>
                   <TableCell>{course.price}</TableCell>
                   <TableCell>
-                    <Badge variant={course.is_active ? "success" : "secondary"}>
+                    <Badge variant={course.is_active ? 'success' : 'secondary'}>
                       {course.is_active ? 'Active' : 'Inactive'}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={course.display ? "default" : "outline"}>
+                    <Badge variant={course.display ? 'default' : 'outline'}>
                       {course.display ? 'Visible' : 'Hidden'}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleEditCourse(course)}
-                      >
+                      <Button size="sm" variant="outline" onClick={() => handleEditCourse(course)}>
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button
@@ -404,7 +419,7 @@ export function CourseManagement({ courses, setCourses, onRefresh }: CourseManag
 }
 
 interface CourseFormProps {
-  form: any; // This is from react-hook-form, which has complex types
+  form: UseFormReturn<Record<string, unknown>>;
   onSubmit: (data: Record<string, unknown>) => void;
   isEditing?: boolean;
 }
@@ -539,15 +554,16 @@ function CourseForm({ form, onSubmit, isEditing = false }: CourseFormProps) {
             <FormItem>
               <FormLabel>Features (one per line)</FormLabel>
               <FormControl>
-                <Textarea {...field} placeholder="Feature 1&#10;Feature 2&#10;Feature 3" />
+                <Textarea
+                  {...field}
+                  placeholder="Feature 1&#10;Feature 2&#10;Feature 3"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">
-          {isEditing ? 'Update Course' : 'Create Course'}
-        </Button>
+        <Button type="submit">{isEditing ? 'Update Course' : 'Create Course'}</Button>
       </form>
     </Form>
   );

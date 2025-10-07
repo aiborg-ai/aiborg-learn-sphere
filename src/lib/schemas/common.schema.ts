@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 // Date validation - accepts YYYY-MM-DD format or flexible strings
 export const DateStringSchema = z.string().refine(
-  (val) => {
+  val => {
     // Allow flexible dates
     if (val === 'Flexible' || val === 'Coming Soon' || val === 'TBD') {
       return true;
@@ -21,7 +21,7 @@ export const DateStringSchema = z.string().refine(
     return date instanceof Date && !isNaN(date.getTime());
   },
   {
-    message: 'Date must be in YYYY-MM-DD format or "Flexible", "Coming Soon", "TBD"'
+    message: 'Date must be in YYYY-MM-DD format or "Flexible", "Coming Soon", "TBD"',
   }
 );
 
@@ -33,7 +33,7 @@ export const URLSchema = z.string().url('Invalid URL format');
 
 // Price validation - accepts various formats
 export const PriceSchema = z.string().refine(
-  (val) => {
+  val => {
     // Allow free courses
     if (val.toLowerCase() === 'free') {
       return true;
@@ -43,52 +43,54 @@ export const PriceSchema = z.string().refine(
     return priceRegex.test(val.replace(/,/g, ''));
   },
   {
-    message: 'Price must be "Free" or a valid amount (e.g., ₹5000, $99, €50)'
+    message: 'Price must be "Free" or a valid amount (e.g., ₹5000, $99, €50)',
   }
 );
 
 // Phone number validation
 export const PhoneSchema = z.string().refine(
-  (val) => {
+  val => {
     // Basic international phone validation
-    const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,5}[-\s.]?[0-9]{1,5}$/;
+    const phoneRegex =
+      /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,5}[-\s.]?[0-9]{1,5}$/;
     return phoneRegex.test(val.replace(/\s/g, ''));
   },
   {
-    message: 'Invalid phone number format'
+    message: 'Invalid phone number format',
   }
 );
 
 // Time validation - flexible format
 export const TimeStringSchema = z.string().refine(
-  (val) => {
+  val => {
     // Allow various time formats
     const timePatterns = [
       /^\d{1,2}:\d{2}\s*(AM|PM|am|pm)?\s*(-\s*\d{1,2}:\d{2}\s*(AM|PM|am|pm)?)?/,
       /^\d{1,2}\s*(AM|PM|am|pm)\s*(-\s*\d{1,2}\s*(AM|PM|am|pm)?)?/,
-      /^.+\s+(IST|EST|PST|UTC|GMT|CST|MST|CET|CEST|JST|AEST|AEDT)$/
+      /^.+\s+(IST|EST|PST|UTC|GMT|CST|MST|CET|CEST|JST|AEST|AEDT)$/,
     ];
     return timePatterns.some(pattern => pattern.test(val));
   },
   {
-    message: 'Time must include hours and timezone (e.g., "6:00 PM IST", "3 PM - 5 PM EST")'
+    message: 'Time must include hours and timezone (e.g., "6:00 PM IST", "3 PM - 5 PM EST")',
   }
 );
 
 // Duration validation
 export const DurationSchema = z.string().refine(
-  (val) => {
+  val => {
     // Allow various duration formats
     const durationPatterns = [
       /^\d+\s*(hours?|hrs?|minutes?|mins?|days?|weeks?|months?)$/i,
       /^\d+\s*-\s*\d+\s*(hours?|hrs?|minutes?|mins?|days?|weeks?|months?)$/i,
       /^(Half|Full)\s+day$/i,
-      /^\d+\s*\/\s*\d+\s*(hours?|hrs?|minutes?|mins?|days?|weeks?|months?)$/i
+      /^\d+\s*\/\s*\d+\s*(hours?|hrs?|minutes?|mins?|days?|weeks?|months?)$/i,
     ];
     return durationPatterns.some(pattern => pattern.test(val));
   },
   {
-    message: 'Duration must be in a valid format (e.g., "2 hours", "4 weeks", "3-6 months", "Full day")'
+    message:
+      'Duration must be in a valid format (e.g., "2 hours", "4 weeks", "3-6 months", "Full day")',
   }
 );
 
@@ -110,7 +112,7 @@ export const EventTypeEnum = z.enum([
   'meetup',
   'hackathon',
   'bootcamp',
-  'training'
+  'training',
 ]);
 
 // Material type enum
@@ -121,7 +123,7 @@ export const MaterialTypeEnum = z.enum([
   'quiz',
   'live_session',
   'resource',
-  'presentation'
+  'presentation',
 ]);
 
 // Instructor info schema
@@ -131,7 +133,7 @@ export const InstructorSchema = z.object({
   bio: z.string().optional(),
   expertise: z.array(z.string()).optional(),
   linkedin: URLSchema.optional(),
-  photo_url: URLSchema.optional()
+  photo_url: URLSchema.optional(),
 });
 
 // Speaker info schema (for events)
@@ -141,7 +143,7 @@ export const SpeakerSchema = z.object({
   company: z.string().optional(),
   bio: z.string().optional(),
   linkedin: URLSchema.optional(),
-  photo_url: URLSchema.optional()
+  photo_url: URLSchema.optional(),
 });
 
 // Course material schema
@@ -153,34 +155,38 @@ export const CourseMaterialSchema = z.object({
   duration: DurationSchema.optional(),
   order_index: z.number().int().min(1),
   is_preview: z.boolean().default(false),
-  is_mandatory: z.boolean().default(true)
+  is_mandatory: z.boolean().default(true),
 });
 
 // Batch info schema
-export const BatchInfoSchema = z.object({
-  batch_size: z.number().int().positive().optional(),
-  min_students: z.number().int().positive().optional(),
-  max_students: z.number().int().positive().optional(),
-  start_date: DateStringSchema.optional(),
-  end_date: DateStringSchema.optional()
-}).refine(
-  (data) => {
-    if (data.min_students && data.max_students) {
-      return data.min_students <= data.max_students;
+export const BatchInfoSchema = z
+  .object({
+    batch_size: z.number().int().positive().optional(),
+    min_students: z.number().int().positive().optional(),
+    max_students: z.number().int().positive().optional(),
+    start_date: DateStringSchema.optional(),
+    end_date: DateStringSchema.optional(),
+  })
+  .refine(
+    data => {
+      if (data.min_students && data.max_students) {
+        return data.min_students <= data.max_students;
+      }
+      return true;
+    },
+    {
+      message: 'Minimum students must be less than or equal to maximum students',
     }
-    return true;
-  },
-  {
-    message: 'Minimum students must be less than or equal to maximum students'
-  }
-);
+  );
 
 // Schedule schema
 export const ScheduleSchema = z.object({
-  days: z.array(z.enum(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])).optional(),
+  days: z
+    .array(z.enum(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']))
+    .optional(),
   time: TimeStringSchema.optional(),
   timezone: z.string().optional(),
-  frequency: z.enum(['daily', 'weekly', 'biweekly', 'monthly', 'one-time']).optional()
+  frequency: z.enum(['daily', 'weekly', 'biweekly', 'monthly', 'one-time']).optional(),
 });
 
 // Venue details schema (for events)
@@ -191,7 +197,7 @@ export const VenueDetailsSchema = z.object({
   room: z.string().optional(),
   parking: z.string().optional(),
   accessibility: z.string().optional(),
-  map_url: URLSchema.optional()
+  map_url: URLSchema.optional(),
 });
 
 // Agenda item schema (for events)
@@ -200,14 +206,14 @@ export const AgendaItemSchema = z.object({
   topic: z.string().min(1, 'Topic is required'),
   description: z.string().optional(),
   speaker: z.string().optional(),
-  duration: DurationSchema.optional()
+  duration: DurationSchema.optional(),
 });
 
 // Certificate schema
 export const CertificateSchema = z.object({
   provided: z.boolean().default(false),
   type: z.enum(['Digital', 'Physical', 'Both']).optional(),
-  criteria: z.string().optional()
+  criteria: z.string().optional(),
 });
 
 // Sponsor schema
@@ -215,7 +221,7 @@ export const SponsorSchema = z.object({
   name: z.string().min(1, 'Sponsor name is required'),
   logo_url: URLSchema.optional(),
   website: URLSchema.optional(),
-  type: z.enum(['Gold', 'Silver', 'Bronze', 'Partner', 'Community']).optional()
+  type: z.enum(['Gold', 'Silver', 'Bronze', 'Partner', 'Community']).optional(),
 });
 
 // Contact info schema
@@ -223,7 +229,7 @@ export const ContactInfoSchema = z.object({
   email: EmailSchema.optional(),
   phone: PhoneSchema.optional(),
   whatsapp: PhoneSchema.optional(),
-  website: URLSchema.optional()
+  website: URLSchema.optional(),
 });
 
 // Registration form fields schema
@@ -232,18 +238,18 @@ export const RegistrationFieldsSchema = z.object({
   collect_organization: z.boolean().default(false),
   collect_designation: z.boolean().default(false),
   collect_experience_level: z.boolean().default(false),
-  custom_questions: z.array(z.string()).optional()
+  custom_questions: z.array(z.string()).optional(),
 });
 
 // Recording settings schema
 export const RecordingSchema = z.object({
   will_be_recorded: z.boolean().default(false),
   available_to_attendees: z.boolean().default(false),
-  availability_duration: z.string().optional()
+  availability_duration: z.string().optional(),
 });
 
 // Common validation result types
-export interface ValidationResult<T = any> {
+export interface ValidationResult<T = unknown> {
   success: boolean;
   data?: T;
   errors?: ValidationError[];

@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Share2, Mail, MessageCircle, Copy } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Share2, MessageCircle, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ShareButtonProps {
@@ -16,7 +21,9 @@ export function ShareButton({ title, description, url = window.location.href }: 
 
   const shareText = `${title}\n\n${description}\n\nLearn more: ${url}`;
   const emailSubject = encodeURIComponent(title);
-  const emailBody = encodeURIComponent(`Hi!\n\nI wanted to share this with you: ${title}\n\n${description}\n\nYou can learn more here: ${url}\n\nBest regards`);
+  const emailBody = encodeURIComponent(
+    `Hi!\n\nI wanted to share this with you: ${title}\n\n${description}\n\nYou can learn more here: ${url}\n\nBest regards`
+  );
 
   const handleEmailShare = () => {
     window.open(`mailto:?subject=${emailSubject}&body=${emailBody}`, '_blank');
@@ -33,14 +40,14 @@ export function ShareButton({ title, description, url = window.location.href }: 
     try {
       await navigator.clipboard.writeText(url);
       toast({
-        title: "Link Copied!",
-        description: "The link has been copied to your clipboard.",
+        title: 'Link Copied!',
+        description: 'The link has been copied to your clipboard.',
       });
     } catch (error) {
       toast({
-        title: "Copy Failed",
-        description: "Could not copy link to clipboard.",
-        variant: "destructive",
+        title: 'Copy Failed',
+        description: 'Could not copy link to clipboard.',
+        variant: 'destructive',
       });
     }
     setIsOpen(false);

@@ -41,9 +41,7 @@ export function PDFSearch({ fileUrl, numPages, onResultClick }: PDFSearchProps) 
         for (let pageNum = 1; pageNum <= numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
           const textContent = await page.getTextContent();
-          const pageText = textContent.items
-            .map((item: any) => item.str)
-            .join(' ');
+          const pageText = textContent.items.map((item: { str: string }) => item.str).join(' ');
 
           // Find all matches in the page
           const lowerQuery = query.toLowerCase();
@@ -136,7 +134,7 @@ export function PDFSearch({ fileUrl, numPages, onResultClick }: PDFSearchProps) 
               type="text"
               placeholder="Search in document..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="pr-8"
             />
             {searchQuery && (

@@ -138,7 +138,9 @@ class TemplateService {
    */
   async validateTemplates(request: ValidationRequest): Promise<ValidationResponse> {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session) {
         throw new Error('Authentication required');
@@ -148,7 +150,7 @@ class TemplateService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify(request),
       });
@@ -170,7 +172,9 @@ class TemplateService {
    */
   async importTemplates(request: ImportRequest): Promise<ImportResponse> {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session) {
         throw new Error('Authentication required');
@@ -180,7 +184,7 @@ class TemplateService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify(request),
       });
@@ -212,7 +216,9 @@ class TemplateService {
     error?: string;
   }> {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session) {
         throw new Error('Authentication required');
@@ -232,7 +238,7 @@ class TemplateService {
       const response = await fetch(url, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${session.access_token}`,
         },
       });
 
@@ -253,7 +259,9 @@ class TemplateService {
    */
   async getImportDetails(importId: string): Promise<ImportRecord> {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session) {
         throw new Error('Authentication required');
@@ -262,7 +270,7 @@ class TemplateService {
       const response = await fetch(`${this.baseUrl}/import-history/${importId}`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${session.access_token}`,
         },
       });
 
@@ -290,7 +298,9 @@ class TemplateService {
     imports_by_date: Record<string, number>;
   }> {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session) {
         throw new Error('Authentication required');
@@ -299,7 +309,7 @@ class TemplateService {
       const response = await fetch(`${this.baseUrl}/import-history/statistics`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${session.access_token}`,
         },
       });
 
@@ -323,7 +333,7 @@ class TemplateService {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
-      reader.onload = (e) => {
+      reader.onload = e => {
         try {
           const content = e.target?.result as string;
           const data = JSON.parse(content);
@@ -347,39 +357,38 @@ class TemplateService {
   downloadTemplateExample(type: 'course' | 'event') {
     const examples = {
       course: {
-        title: "Advanced Machine Learning",
-        description: "Comprehensive course on machine learning algorithms and applications",
-        audiences: ["Professional", "Student"],
-        mode: "Online",
-        duration: "8 weeks",
-        price: "₹5000",
-        level: "Advanced",
-        start_date: "2025-03-01",
-        features: ["Live sessions", "Hands-on projects", "Certificate"],
-        keywords: ["ML", "AI", "Deep Learning"],
-        category: "Technology"
+        title: 'Advanced Machine Learning',
+        description: 'Comprehensive course on machine learning algorithms and applications',
+        audiences: ['Professional', 'Student'],
+        mode: 'Online',
+        duration: '8 weeks',
+        price: '₹5000',
+        level: 'Advanced',
+        start_date: '2025-03-01',
+        features: ['Live sessions', 'Hands-on projects', 'Certificate'],
+        keywords: ['ML', 'AI', 'Deep Learning'],
+        category: 'Technology',
       },
       event: {
-        title: "AI Workshop",
-        description: "Hands-on workshop on practical AI applications",
-        event_type: "workshop",
-        audiences: ["Professional"],
-        date: "2025-02-15",
-        time: "2:00 PM IST",
-        duration: "3 hours",
-        mode: "online",
-        price: "Free",
-        keywords: ["AI", "Workshop"],
-        category: "Technology"
-      }
+        title: 'AI Workshop',
+        description: 'Hands-on workshop on practical AI applications',
+        event_type: 'workshop',
+        audiences: ['Professional'],
+        date: '2025-02-15',
+        time: '2:00 PM IST',
+        duration: '3 hours',
+        mode: 'online',
+        price: 'Free',
+        keywords: ['AI', 'Workshop'],
+        category: 'Technology',
+      },
     };
 
-    const template = type === 'course'
-      ? { courses: [examples.course] }
-      : { events: [examples.event] };
+    const template =
+      type === 'course' ? { courses: [examples.course] } : { events: [examples.event] };
 
     const blob = new Blob([JSON.stringify(template, null, 2)], {
-      type: 'application/json'
+      type: 'application/json',
     });
 
     const url = URL.createObjectURL(blob);
@@ -400,7 +409,7 @@ class TemplateService {
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
   }
 
   /**
@@ -412,7 +421,7 @@ class TemplateService {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   }
 }
@@ -420,7 +429,7 @@ class TemplateService {
 export const templateService = new TemplateService();
 
 // Local validation functions for the Template Builder
-export function validateCourseTemplate(data: any[]): ValidationResponse {
+export function validateCourseTemplate(data: unknown[]): ValidationResponse {
   try {
     const validatedData = data.map((item, index) => {
       try {
@@ -434,36 +443,40 @@ export function validateCourseTemplate(data: any[]): ValidationResponse {
               field: err.path.join('.'),
               message: err.message,
               code: err.code,
-              index
-            }))
+              index,
+            })),
           };
         }
         throw error;
       }
     });
 
-    const errors = validatedData.flatMap((v) => (v as { errors?: ValidationError[] }).errors || []);
-    const valid = validatedData.filter((v) => (v as { success: boolean }).success).length;
+    const errors = validatedData.flatMap(v => (v as { errors?: ValidationError[] }).errors || []);
+    const valid = validatedData.filter(v => (v as { success: boolean }).success).length;
 
     return {
       success: errors.length === 0,
-      data: validatedData.filter((v) => (v as { success: boolean }).success).map((v) => (v as { data: Record<string, unknown> }).data),
+      data: validatedData
+        .filter(v => (v as { success: boolean }).success)
+        .map(v => (v as { data: Record<string, unknown> }).data),
       errors: errors.length > 0 ? errors : undefined,
       summary: {
         total: data.length,
         valid,
         invalid: data.length - valid,
-        warnings: 0
-      }
+        warnings: 0,
+      },
     };
   } catch (error) {
     return {
       success: false,
-      errors: [{
-        field: 'general',
-        message: error instanceof Error ? error.message : 'Validation failed',
-        code: 'VALIDATION_ERROR'
-      }]
+      errors: [
+        {
+          field: 'general',
+          message: error instanceof Error ? error.message : 'Validation failed',
+          code: 'VALIDATION_ERROR',
+        },
+      ],
     };
   }
 }
@@ -482,36 +495,40 @@ export function validateEventTemplate(data: Record<string, unknown>[]): Validati
               field: err.path.join('.'),
               message: err.message,
               code: err.code,
-              index
-            }))
+              index,
+            })),
           };
         }
         throw error;
       }
     });
 
-    const errors = validatedData.flatMap((v) => (v as { errors?: ValidationError[] }).errors || []);
-    const valid = validatedData.filter((v) => (v as { success: boolean }).success).length;
+    const errors = validatedData.flatMap(v => (v as { errors?: ValidationError[] }).errors || []);
+    const valid = validatedData.filter(v => (v as { success: boolean }).success).length;
 
     return {
       success: errors.length === 0,
-      data: validatedData.filter((v) => (v as { success: boolean }).success).map((v) => (v as { data: Record<string, unknown> }).data),
+      data: validatedData
+        .filter(v => (v as { success: boolean }).success)
+        .map(v => (v as { data: Record<string, unknown> }).data),
       errors: errors.length > 0 ? errors : undefined,
       summary: {
         total: data.length,
         valid,
         invalid: data.length - valid,
-        warnings: 0
-      }
+        warnings: 0,
+      },
     };
   } catch (error) {
     return {
       success: false,
-      errors: [{
-        field: 'general',
-        message: error instanceof Error ? error.message : 'Validation failed',
-        code: 'VALIDATION_ERROR'
-      }]
+      errors: [
+        {
+          field: 'general',
+          message: error instanceof Error ? error.message : 'Validation failed',
+          code: 'VALIDATION_ERROR',
+        },
+      ],
     };
   }
 }

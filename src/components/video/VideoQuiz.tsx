@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Quiz } from './types';
+import type { Quiz } from './types';
 
 interface VideoQuizProps {
   quiz: Quiz | null;
@@ -14,9 +14,7 @@ export function VideoQuiz({ quiz, onAnswerQuiz }: VideoQuizProps) {
   return (
     <div className="absolute inset-0 bg-black/90 flex items-center justify-center">
       <Card className="bg-gray-900 border-gray-700 p-6 max-w-md">
-        <h3 className="text-white text-lg font-medium mb-4">
-          Quick Quiz
-        </h3>
+        <h3 className="text-white text-lg font-medium mb-4">Quick Quiz</h3>
         <p className="text-white/80 mb-4">{quiz.question}</p>
         <div className="space-y-2">
           {quiz.options.map((option, idx) => (
