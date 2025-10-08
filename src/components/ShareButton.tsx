@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Share2, MessageCircle, Copy } from 'lucide-react';
+import { Share2, MessageCircle, Copy, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ShareButtonProps {
