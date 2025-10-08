@@ -406,7 +406,7 @@ export default function AdminRefactored() {
       if (announcementsError) throw announcementsError;
       setAnnouncements(announcementsData || []);
 
-      // Fetch enrollments
+      // Fetch enrollments (non-fatal - page works even if this fails)
       const { data: enrollmentsData, error: enrollmentsError } = await supabase
         .from('enrollments')
         .select(
@@ -418,8 +418,12 @@ export default function AdminRefactored() {
         )
         .order('enrolled_at', { ascending: false });
 
-      if (enrollmentsError) throw enrollmentsError;
-      setEnrollments(enrollmentsData || []);
+      if (enrollmentsError) {
+        logger.warn('Error fetching enrollments (non-fatal):', enrollmentsError);
+        setEnrollments([]);
+      } else {
+        setEnrollments(enrollmentsData || []);
+      }
     } catch (error) {
       logger.error('Error fetching admin data:', error);
       toast({
