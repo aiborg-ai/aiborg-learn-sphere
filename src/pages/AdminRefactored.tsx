@@ -349,21 +349,25 @@ export default function AdminRefactored() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { user, profile } = useAuth();
+  const [dataLoading, setDataLoading] = useState(true);
+  const { user, profile, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Wait for auth to finish loading before checking
+    if (authLoading) return;
+
+    // Now check if user is admin
     if (!user || profile?.role !== 'admin') {
       navigate('/');
       return;
     }
     fetchData();
-  }, [user, profile, navigate]);
+  }, [user, profile, authLoading, navigate]);
 
   const fetchData = async () => {
-    setLoading(true);
+    setDataLoading(true);
     try {
       // Fetch users
       const { data: usersData, error: usersError } = await supabase
@@ -424,11 +428,11 @@ export default function AdminRefactored() {
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setDataLoading(false);
     }
   };
 
-  if (loading) {
+  if (authLoading || dataLoading) {
     return (
       <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-white" />
