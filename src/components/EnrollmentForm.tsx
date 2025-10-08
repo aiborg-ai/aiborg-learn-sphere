@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,21 +28,25 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
   isOpen,
   onClose,
   courseName,
-  coursePrice = "Contact for pricing",
-  courseId
+  coursePrice = 'Contact for pricing',
+  courseId,
 }) => {
-  logger.log("EnrollmentForm rendered with isOpen:", isOpen, "courseName:", courseName);
+  logger.log('EnrollmentForm rendered with isOpen:', isOpen, 'courseName:', courseName);
   const { toast } = useToast();
 
   // Check if the course is free
-  const isFree = coursePrice === "Free" || coursePrice === "₹0" || coursePrice === "0" || coursePrice?.toLowerCase().includes("free");
+  const isFree =
+    coursePrice === 'Free' ||
+    coursePrice === '₹0' ||
+    coursePrice === '0' ||
+    coursePrice?.toLowerCase().includes('free');
   const [formData, setFormData] = useState({
     studentName: '',
     dateOfBirth: undefined as Date | undefined,
     guardianName: '',
     email: '',
     whatsappNumber: '',
-    homeAddress: ''
+    homeAddress: '',
   });
 
   const [showGuardianField, setShowGuardianField] = useState(false);
@@ -45,7 +55,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
     const today = new Date();
     const age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    
+
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       return age - 1;
     }
@@ -68,12 +78,18 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
     logger.log('Form submission started');
 
     // Basic validation
-    if (!formData.studentName || !formData.dateOfBirth || !formData.email || !formData.whatsappNumber || !formData.homeAddress) {
+    if (
+      !formData.studentName ||
+      !formData.dateOfBirth ||
+      !formData.email ||
+      !formData.whatsappNumber ||
+      !formData.homeAddress
+    ) {
       logger.log('Validation failed - missing fields');
       toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
-        variant: "destructive"
+        title: 'Missing Information',
+        description: 'Please fill in all required fields.',
+        variant: 'destructive',
       });
       return;
     }
@@ -81,9 +97,9 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
     if (showGuardianField && !formData.guardianName) {
       logger.log('Validation failed - missing guardian');
       toast({
-        title: "Guardian Required",
-        description: "Guardian information is required for students under 18.",
-        variant: "destructive"
+        title: 'Guardian Required',
+        description: 'Guardian information is required for students under 18.',
+        variant: 'destructive',
       });
       return;
     }
@@ -92,20 +108,22 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
 
     try {
       logger.log('Importing supabase client...');
-      const { supabase } = await import("@/integrations/supabase/client");
+      const { supabase } = await import('@/integrations/supabase/client');
 
       // Handle free course enrollment directly
       if (isFree && courseId) {
         logger.log('Free course detected, enrolling directly without payment');
 
         // Get current user
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
         if (!user) {
           toast({
-            title: "Authentication Required",
-            description: "Please log in to enroll in this course.",
-            variant: "destructive"
+            title: 'Authentication Required',
+            description: 'Please log in to enroll in this course.',
+            variant: 'destructive',
           });
           return;
         }
@@ -120,8 +138,8 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
 
         if (existingEnrollment) {
           toast({
-            title: "Already Enrolled",
-            description: "You are already enrolled in this course. Check your dashboard!",
+            title: 'Already Enrolled',
+            description: 'You are already enrolled in this course. Check your dashboard!',
           });
           onClose();
           return;
@@ -134,7 +152,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
             user_id: user.id,
             course_id: courseId,
             payment_status: 'completed',
-            payment_amount: 0
+            payment_amount: 0,
           })
           .select()
           .single();
@@ -147,7 +165,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
         logger.log('Free course enrollment successful:', enrollment);
 
         toast({
-          title: "Enrollment Successful! 🎉",
+          title: 'Enrollment Successful! 🎉',
           description: "You're now enrolled! The course is available in your dashboard.",
         });
 
@@ -167,7 +185,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
         courseName,
         coursePrice,
         courseId,
-        studentInfo: formData
+        studentInfo: formData,
       });
 
       const { data, error } = await supabase.functions.invoke('create-payment', {
@@ -175,8 +193,8 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
           courseName,
           coursePrice,
           courseId,
-          studentInfo: formData
-        }
+          studentInfo: formData,
+        },
       });
 
       logger.log('Payment function response:', { data, error });
@@ -196,17 +214,17 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
       window.open(data.url, '_blank');
 
       toast({
-        title: "Redirecting to Payment",
-        description: "Opening secure payment page in a new tab...",
+        title: 'Redirecting to Payment',
+        description: 'Opening secure payment page in a new tab...',
       });
 
       onClose();
     } catch (error) {
       logger.error('Enrollment/Payment error:', error);
       toast({
-        title: isFree ? "Enrollment Error" : "Payment Error",
+        title: isFree ? 'Enrollment Error' : 'Payment Error',
         description: `Failed to ${isFree ? 'enroll' : 'create payment session'}: ${error.message}`,
-        variant: "destructive"
+        variant: 'destructive',
       });
     } finally {
       setIsProcessing(false);
@@ -233,13 +251,13 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               <User className="h-4 w-4" />
               Student Information
             </h3>
-            
+
             <div className="space-y-2">
               <Label htmlFor="studentName">Student's Full Name *</Label>
               <Input
                 id="studentName"
                 value={formData.studentName}
-                onChange={(e) => setFormData(prev => ({ ...prev, studentName: e.target.value }))}
+                onChange={e => setFormData(prev => ({ ...prev, studentName: e.target.value }))}
                 placeholder="Enter full name"
                 required
               />
@@ -250,12 +268,16 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               <SimpleDatePicker
                 value={formData.dateOfBirth}
                 onChange={handleDateChange}
-                disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                disabled={date => date > new Date() || date < new Date('1900-01-01')}
                 placeholder="Select date of birth"
               />
+              {!formData.dateOfBirth && (
+                <p className="text-sm text-muted-foreground">Select year, then month, then day</p>
+              )}
               {formData.dateOfBirth && (
                 <p className="text-sm text-muted-foreground">
-                  Selected: {format(formData.dateOfBirth, "PPP")} (Age: {calculateAge(formData.dateOfBirth)})
+                  Selected: {format(formData.dateOfBirth, 'PPP')} (Age:{' '}
+                  {calculateAge(formData.dateOfBirth)})
                 </p>
               )}
             </div>
@@ -266,7 +288,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                 <Input
                   id="guardianName"
                   value={formData.guardianName}
-                  onChange={(e) => setFormData(prev => ({ ...prev, guardianName: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, guardianName: e.target.value }))}
                   placeholder="Enter guardian's full name"
                   required={showGuardianField}
                 />
@@ -283,14 +305,14 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               <Mail className="h-4 w-4" />
               Contact Information
             </h3>
-            
+
             <div className="space-y-2">
               <Label htmlFor="email">Email Address *</Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
                 placeholder="Enter email address"
                 required
               />
@@ -302,7 +324,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                 id="whatsappNumber"
                 type="tel"
                 value={formData.whatsappNumber}
-                onChange={(e) => setFormData(prev => ({ ...prev, whatsappNumber: e.target.value }))}
+                onChange={e => setFormData(prev => ({ ...prev, whatsappNumber: e.target.value }))}
                 placeholder="Enter WhatsApp number"
                 required
               />
@@ -313,7 +335,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               <Textarea
                 id="homeAddress"
                 value={formData.homeAddress}
-                onChange={(e) => setFormData(prev => ({ ...prev, homeAddress: e.target.value }))}
+                onChange={e => setFormData(prev => ({ ...prev, homeAddress: e.target.value }))}
                 placeholder="Enter complete home address"
                 required
                 rows={3}
@@ -325,7 +347,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
           <div className="space-y-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <CreditCard className="h-4 w-4" />
-              Course & {isFree ? "Enrollment" : "Payment"}
+              Course & {isFree ? 'Enrollment' : 'Payment'}
             </h3>
 
             <div className="bg-muted p-4 rounded-lg">
@@ -335,7 +357,9 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
 
             {isFree ? (
               <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-3">🎉 Free Course Enrollment</h4>
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-3">
+                  🎉 Free Course Enrollment
+                </h4>
                 <div className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
                   <p>This course is completely free! Click "Enroll Now" to get instant access.</p>
                   <ul className="space-y-1 ml-4">
@@ -347,9 +371,13 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               </div>
             ) : (
               <div className="bg-green-50 dark:bg-green-950/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                <h4 className="font-medium text-green-900 dark:text-green-100 mb-3">Secure Online Payment</h4>
+                <h4 className="font-medium text-green-900 dark:text-green-100 mb-3">
+                  Secure Online Payment
+                </h4>
                 <div className="space-y-2 text-sm text-green-800 dark:text-green-200">
-                  <p>Click "Proceed to Payment" to complete your enrollment with secure card payment.</p>
+                  <p>
+                    Click "Proceed to Payment" to complete your enrollment with secure card payment.
+                  </p>
                   <ul className="space-y-1 ml-4">
                     <li>• Secure payment powered by Stripe</li>
                     <li>• Instant enrollment confirmation</li>
@@ -368,7 +396,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               {isProcessing ? (
                 <>
                   <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
-                  {isFree ? "Enrolling..." : "Processing..."}
+                  {isFree ? 'Enrolling...' : 'Processing...'}
                 </>
               ) : isFree ? (
                 <>
@@ -388,4 +416,3 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
     </Dialog>
   );
 };
-
