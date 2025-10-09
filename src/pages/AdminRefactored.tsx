@@ -89,19 +89,39 @@ function ReviewsManagement() {
   const fetchReviews = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // Fetch reviews without embedded relations to avoid foreign key errors
+      const { data: reviewsData, error: reviewsError } = await supabase
         .from('reviews')
-        .select(
-          `
-          *,
-          profiles(display_name, email),
-          courses(title)
-        `
-        )
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setReviews(data || []);
+      if (reviewsError) throw reviewsError;
+
+      // Fetch related data separately
+      const reviewsWithRelations = await Promise.all(
+        (reviewsData || []).map(async (review) => {
+          const [{ data: profile }, { data: course }] = await Promise.all([
+            supabase
+              .from('profiles')
+              .select('display_name, email')
+              .eq('user_id', review.user_id)
+              .maybeSingle(),
+            supabase
+              .from('courses')
+              .select('title')
+              .eq('id', review.course_id)
+              .maybeSingle(),
+          ]);
+
+          return {
+            ...review,
+            profiles: profile,
+            courses: course,
+          };
+        })
+      );
+
+      setReviews(reviewsWithRelations);
     } catch (error) {
       logger.error('Error fetching reviews:', error);
       toast({
@@ -109,6 +129,7 @@ function ReviewsManagement() {
         description: 'Failed to fetch reviews',
         variant: 'destructive',
       });
+      setReviews([]);
     } finally {
       setLoading(false);
     }
@@ -491,22 +512,42 @@ export default function AdminRefactored() {
       setAnnouncements(announcementsData || []);
 
       // Fetch enrollments (non-fatal - page works even if this fails)
-      const { data: enrollmentsData, error: enrollmentsError } = await supabase
-        .from('enrollments')
-        .select(
-          `
-          *,
-          profiles(display_name, email),
-          courses(title, start_date, price)
-        `
-        )
-        .order('enrolled_at', { ascending: false });
+      try {
+        const { data: enrollmentsData, error: enrollmentsError } = await supabase
+          .from('enrollments')
+          .select('*')
+          .order('enrolled_at', { ascending: false });
 
-      if (enrollmentsError) {
+        if (enrollmentsError) throw enrollmentsError;
+
+        // Fetch related data separately to avoid foreign key errors
+        const enrollmentsWithRelations = await Promise.all(
+          (enrollmentsData || []).map(async (enrollment) => {
+            const [{ data: profile }, { data: course }] = await Promise.all([
+              supabase
+                .from('profiles')
+                .select('display_name, email')
+                .eq('user_id', enrollment.user_id)
+                .maybeSingle(),
+              supabase
+                .from('courses')
+                .select('title, start_date, price')
+                .eq('id', enrollment.course_id)
+                .maybeSingle(),
+            ]);
+
+            return {
+              ...enrollment,
+              profiles: profile,
+              courses: course,
+            };
+          })
+        );
+
+        setEnrollments(enrollmentsWithRelations);
+      } catch (enrollmentsError) {
         logger.warn('Error fetching enrollments (non-fatal):', enrollmentsError);
         setEnrollments([]);
-      } else {
-        setEnrollments(enrollmentsData || []);
       }
     } catch (error) {
       logger.error('Error fetching admin data:', error);
