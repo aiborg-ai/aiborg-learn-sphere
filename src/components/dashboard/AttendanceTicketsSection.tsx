@@ -171,7 +171,7 @@ export function AttendanceTicketsSection({
             />
           </div>
 
-          <Select value={typeFilter} onValueChange={(value: any) => setTypeFilter(value)}>
+          <Select value={typeFilter} onValueChange={(value) => setTypeFilter(value as 'all' | 'event' | 'course_session')}>
             <SelectTrigger className="w-full sm:w-[180px]">
               <Filter className="h-4 w-4 mr-2" />
               <SelectValue placeholder="Filter by type" />

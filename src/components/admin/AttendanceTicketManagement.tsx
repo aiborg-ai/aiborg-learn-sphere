@@ -214,7 +214,7 @@ export function AttendanceTicketManagement() {
               />
             </div>
 
-            <Select value={typeFilter} onValueChange={(value: any) => setTypeFilter(value)}>
+            <Select value={typeFilter} onValueChange={(value) => setTypeFilter(value as 'all' | 'event' | 'course_session')}>
               <SelectTrigger className="w-full md:w-[180px]">
                 <Filter className="h-4 w-4 mr-2" />
                 <SelectValue placeholder="Filter by type" />
@@ -226,7 +226,7 @@ export function AttendanceTicketManagement() {
               </SelectContent>
             </Select>
 
-            <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
+            <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as 'all' | 'verified' | 'pending')}>
               <SelectTrigger className="w-full md:w-[180px]">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>

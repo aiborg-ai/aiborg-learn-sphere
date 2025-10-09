@@ -1,8 +1,14 @@
 import type { ReactNode } from 'react';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+/**
+ * Target audience types for content personalization
+ */
 export type Audience = "All" | "primary" | "secondary" | "professional" | "business";
 
+/**
+ * Personalization context interface
+ */
 interface PersonalizationContextType {
   selectedAudience: Audience;
   setSelectedAudience: (audience: Audience) => void;
@@ -28,6 +34,25 @@ interface PersonalizedStyles {
 
 const PersonalizationContext = createContext<PersonalizationContextType | undefined>(undefined);
 
+/**
+ * Hook to access personalization context
+ *
+ * Provides methods to get audience-specific content and styles
+ *
+ * @example
+ * ```tsx
+ * const { selectedAudience, getPersonalizedContent } = usePersonalization();
+ *
+ * const title = getPersonalizedContent({
+ *   primary: "Learn with Fun!",
+ *   professional: "Professional Development",
+ *   default: "Learning Platform"
+ * });
+ * ```
+ *
+ * @throws Error if used outside PersonalizationProvider
+ * @returns Personalization context value
+ */
 export const usePersonalization = () => {
   const context = useContext(PersonalizationContext);
   if (context === undefined) {

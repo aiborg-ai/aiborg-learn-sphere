@@ -362,7 +362,7 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
 
             <div className="space-y-2">
               <Label>Badge Color</Label>
-              <Select value={badgeColor} onValueChange={(v: any) => setBadgeColor(v)}>
+              <Select value={badgeColor} onValueChange={(v) => setBadgeColor(v as 'gold' | 'silver' | 'bronze' | 'blue' | 'green')}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

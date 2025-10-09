@@ -528,8 +528,8 @@ export function ResourcesManagement() {
                 <Label htmlFor="resource_type">Type</Label>
                 <Select
                   value={formData.resource_type}
-                  onValueChange={(value: any) =>
-                    setFormData(prev => ({ ...prev, resource_type: value }))
+                  onValueChange={(value) =>
+                    setFormData(prev => ({ ...prev, resource_type: value as 'pdf' | 'video_link' | 'document' | 'presentation' }))
                   }
                 >
                   <SelectTrigger>
