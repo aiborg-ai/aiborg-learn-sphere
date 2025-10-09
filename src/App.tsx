@@ -11,6 +11,7 @@ import { useGlobalShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { CommandPalette } from '@/components/CommandPalette';
 import { KeyboardShortcutsHelp } from '@/components/KeyboardShortcutsHelp';
 import { OfflineBanner } from '@/components/OfflineBanner';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 // Create a loading component
 const PageLoader = () => (
@@ -79,48 +80,50 @@ const AppWithShortcuts = () => {
       <KeyboardShortcutsHelp shortcuts={shortcuts} />
       <Toaster />
       <Sonner />
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          {/* Main page loaded eagerly for fast initial load */}
-          <Route path="/" element={<Index />} />
+      <ErrorBoundary>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            {/* Main page loaded eagerly for fast initial load */}
+            <Route path="/" element={<Index />} />
 
-          {/* All other routes are lazy loaded */}
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/auth/callback" element={<AuthCallback />} />
-          <Route path="/auth/reset-password" element={<ResetPassword />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/template-import" element={<TemplateImport />} />
-          <Route path="/cms" element={<CMS />} />
-          <Route path="/cms/blog" element={<BlogCMS />} />
-          <Route path="/payment-success" element={<PaymentSuccess />} />
-          <Route path="/blog" element={<BlogPage />} />
-          <Route path="/blog/:slug" element={<BlogPostPage />} />
-          <Route path="/assignment/:assignmentId" element={<HomeworkSubmission />} />
-          <Route path="/user/:userId" element={<PublicProfile />} />
-          <Route path="/course/:courseId" element={<CoursePage />} />
-          <Route path="/instructor" element={<InstructorDashboard />} />
-          <Route path="/ai-assessment" element={<AIAssessment />} />
-          <Route path="/ai-assessment/results/:assessmentId" element={<AIAssessmentResults />} />
-          <Route path="/sme-assessment" element={<SMEAssessment />} />
-          <Route path="/sme-assessment-report/:assessmentId" element={<SMEAssessmentReport />} />
-          <Route path="/bookmarks" element={<BookmarksPage />} />
-          <Route path="/downloads" element={<DownloadsPage />} />
-          <Route path="/watch-later" element={<WatchLaterPage />} />
-          <Route path="/playlists" element={<PlaylistsPage />} />
-          <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/achievements" element={<AchievementsPage />} />
-          <Route path="/my-courses" element={<MyCoursesPage />} />
-          <Route path="/learning-paths" element={<LearningPathsPage />} />
-          <Route path="/learning-path/generate" element={<LearningPathWizard />} />
-          <Route path="/learning-path/ai/:pathId" element={<AILearningPathDetail />} />
-          <Route path="/analytics" element={<AnalyticsPage />} />
-          <Route path="/gamification" element={<GamificationPage />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
+            {/* All other routes are lazy loaded */}
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/auth/reset-password" element={<ResetPassword />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/template-import" element={<TemplateImport />} />
+            <Route path="/cms" element={<CMS />} />
+            <Route path="/cms/blog" element={<BlogCMS />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
+            <Route path="/assignment/:assignmentId" element={<HomeworkSubmission />} />
+            <Route path="/user/:userId" element={<PublicProfile />} />
+            <Route path="/course/:courseId" element={<CoursePage />} />
+            <Route path="/instructor" element={<InstructorDashboard />} />
+            <Route path="/ai-assessment" element={<AIAssessment />} />
+            <Route path="/ai-assessment/results/:assessmentId" element={<AIAssessmentResults />} />
+            <Route path="/sme-assessment" element={<SMEAssessment />} />
+            <Route path="/sme-assessment-report/:assessmentId" element={<SMEAssessmentReport />} />
+            <Route path="/bookmarks" element={<BookmarksPage />} />
+            <Route path="/downloads" element={<DownloadsPage />} />
+            <Route path="/watch-later" element={<WatchLaterPage />} />
+            <Route path="/playlists" element={<PlaylistsPage />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/achievements" element={<AchievementsPage />} />
+            <Route path="/my-courses" element={<MyCoursesPage />} />
+            <Route path="/learning-paths" element={<LearningPathsPage />} />
+            <Route path="/learning-path/generate" element={<LearningPathWizard />} />
+            <Route path="/learning-path/ai/:pathId" element={<AILearningPathDetail />} />
+            <Route path="/analytics" element={<AnalyticsPage />} />
+            <Route path="/gamification" element={<GamificationPage />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
     </>
   );
 };
