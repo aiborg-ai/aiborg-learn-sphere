@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -25,7 +25,15 @@ interface EventCardProps {
   onRegister?: (event: Event) => void;
 }
 
-export function EventCard({ event, onRegister }: EventCardProps) {
+/**
+ * EventCard component - Displays event information with registration functionality
+ *
+ * Memoized to prevent unnecessary re-renders when event data hasn't changed
+ *
+ * @param event - Event details
+ * @param onRegister - Optional callback when user registers
+ */
+export const EventCard = memo(function EventCard({ event, onRegister }: EventCardProps) {
   const [isRegistering, setIsRegistering] = useState(false);
   const { user } = useAuth();
   const { isRegisteredForEvent, registerForEvent } = useEventRegistrations();
@@ -303,4 +311,4 @@ export function EventCard({ event, onRegister }: EventCardProps) {
       </CardFooter>
     </Card>
   );
-}
+});

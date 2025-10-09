@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,12 +11,20 @@ interface BlogPostCardProps {
   variant?: 'default' | 'featured' | 'compact';
 }
 
-export function BlogPostCard({ post, variant = 'default' }: BlogPostCardProps) {
+/**
+ * BlogPostCard - Displays blog post summary with metadata
+ *
+ * Memoized for performance when rendering lists of blog posts
+ */
+export const BlogPostCard = memo(function BlogPostCard({
+  post,
+  variant = 'default',
+}: BlogPostCardProps) {
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('en-US', {
       month: 'long',
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
     });
   };
 
@@ -47,9 +56,7 @@ export function BlogPostCard({ post, variant = 'default' }: BlogPostCardProps) {
               {post.title}
             </h2>
           </Link>
-          {post.excerpt && (
-            <p className="text-muted-foreground line-clamp-3">{post.excerpt}</p>
-          )}
+          {post.excerpt && <p className="text-muted-foreground line-clamp-3">{post.excerpt}</p>}
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
@@ -145,18 +152,14 @@ export function BlogPostCard({ post, variant = 'default' }: BlogPostCardProps) {
               {post.category_name}
             </Badge>
           )}
-          {post.is_featured && (
-            <Badge variant="secondary">Featured</Badge>
-          )}
+          {post.is_featured && <Badge variant="secondary">Featured</Badge>}
         </div>
         <Link to={`/blog/${post.slug}`}>
           <h3 className="text-xl font-semibold hover:text-primary transition-colors line-clamp-2">
             {post.title}
           </h3>
         </Link>
-        {post.excerpt && (
-          <p className="text-muted-foreground mt-2 line-clamp-2">{post.excerpt}</p>
-        )}
+        {post.excerpt && <p className="text-muted-foreground mt-2 line-clamp-2">{post.excerpt}</p>}
       </CardHeader>
       <CardFooter className="pt-0">
         <div className="flex items-center justify-between w-full">
@@ -186,4 +189,4 @@ export function BlogPostCard({ post, variant = 'default' }: BlogPostCardProps) {
       </CardFooter>
     </Card>
   );
-}
+});

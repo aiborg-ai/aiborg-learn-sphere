@@ -3,6 +3,9 @@ import type { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 
+/**
+ * User profile data structure from the database
+ */
 export interface UserProfile {
   id: string;
   user_id: string;
@@ -15,6 +18,28 @@ export interface UserProfile {
   updated_at: string;
 }
 
+/**
+ * Authentication hook for managing user authentication state
+ *
+ * Features:
+ * - Sign up / Sign in / Sign out
+ * - OAuth authentication (Google, GitHub)
+ * - User profile management
+ * - Admin role checking
+ * - Real-time auth state updates
+ *
+ * @example
+ * ```tsx
+ * const { user, profile, signIn, signOut, isAdmin } = useAuth();
+ *
+ * if (loading) return <Loader />;
+ * if (!user) return <SignInPage />;
+ *
+ * return <DashboardPage user={user} profile={profile} />;
+ * ```
+ *
+ * @returns Authentication state and methods
+ */
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
