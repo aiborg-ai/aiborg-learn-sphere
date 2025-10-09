@@ -20,9 +20,13 @@ export const useAuth = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profileError, setProfileError] = useState<string | null>(null);
 
   const fetchUserProfile = async (userId: string) => {
     try {
+      logger.log('[useAuth] Fetching profile for user:', userId);
+      setProfileError(null); // Clear any previous errors
+
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -30,13 +34,42 @@ export const useAuth = () => {
         .single();
 
       if (error && error.code !== 'PGRST116') {
-        logger.error('Error fetching profile:', error);
+        logger.error('[useAuth] Error fetching profile:', {
+          userId,
+          error,
+          code: error.code,
+          message: error.message,
+          details: error.details,
+        });
+        setProfileError(`Failed to fetch profile: ${error.message}`);
+        setProfile(null);
         return;
       }
 
+      if (error && error.code === 'PGRST116') {
+        logger.warn('[useAuth] Profile not found for user:', userId);
+        setProfileError('Profile not found in database');
+        setProfile(null);
+        return;
+      }
+
+      logger.log('[useAuth] Profile fetched successfully:', {
+        userId,
+        profileId: data?.id,
+        role: data?.role,
+        email: data?.email,
+      });
+
+      setProfileError(null);
       setProfile(data);
     } catch (error) {
-      logger.error('Error fetching profile:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      logger.error('[useAuth] Exception while fetching profile:', {
+        userId,
+        error,
+      });
+      setProfileError(`Exception: ${errorMessage}`);
+      setProfile(null);
     }
   };
 
@@ -45,6 +78,12 @@ export const useAuth = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      logger.log('[useAuth] Auth state changed:', {
+        event,
+        userId: session?.user?.id,
+        email: session?.user?.email,
+      });
+
       setSession(session);
       setUser(session?.user ?? null);
 
@@ -52,13 +91,22 @@ export const useAuth = () => {
         // Fetch user profile and wait for it to complete before setting loading to false
         await fetchUserProfile(session.user.id);
       } else {
+        logger.log('[useAuth] No session, clearing profile');
         setProfile(null);
       }
       setLoading(false);
+      logger.log('[useAuth] Loading complete, auth state updated');
     });
 
     // Check for existing session
+    logger.log('[useAuth] Checking for existing session...');
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      logger.log('[useAuth] Existing session check:', {
+        hasSession: !!session,
+        userId: session?.user?.id,
+        email: session?.user?.email,
+      });
+
       setSession(session);
       setUser(session?.user ?? null);
 
@@ -67,6 +115,7 @@ export const useAuth = () => {
         await fetchUserProfile(session.user.id);
       }
       setLoading(false);
+      logger.log('[useAuth] Initial load complete');
     });
 
     return () => subscription.unsubscribe();
@@ -158,6 +207,7 @@ export const useAuth = () => {
     session,
     profile,
     loading,
+    profileError,
     signUp,
     signIn,
     signInWithGoogle,

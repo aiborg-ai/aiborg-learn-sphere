@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/select';
 import { RevenueAnalytics } from './RevenueAnalytics';
 import { EnrollmentAnalytics } from './EnrollmentAnalytics';
-import { DollarSign, Users, Activity } from 'lucide-react';
+import { DollarSign, Users, Activity, Calendar } from 'lucide-react';
 
 export function AnalyticsDashboardEnhanced() {
   const [dateRangePreset, setDateRangePreset] = useState<string>('30');

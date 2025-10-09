@@ -50,7 +50,7 @@ export const useKeyboardShortcuts = ({
           continue;
         }
 
-        const keyMatches = event.key.toLowerCase() === shortcut.key.toLowerCase();
+        const keyMatches = event.key?.toLowerCase() === shortcut.key?.toLowerCase();
         const ctrlMatches = shortcut.ctrl
           ? event.ctrlKey || event.metaKey
           : !event.ctrlKey && !event.metaKey;
