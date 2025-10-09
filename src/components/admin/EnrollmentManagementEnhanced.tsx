@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -20,9 +27,11 @@ import {
   Download,
   Filter,
   TrendingUp,
-  Users
+  Users,
+  Upload,
 } from 'lucide-react';
 import { ManualEnrollmentForm } from './ManualEnrollmentForm';
+import { BulkEnrollmentDialog } from './BulkEnrollmentDialog';
 
 export interface Enrollment {
   id: string;
@@ -49,10 +58,14 @@ interface EnrollmentManagementEnhancedProps {
   onRefresh: () => void;
 }
 
-export function EnrollmentManagementEnhanced({ enrollments, onRefresh }: EnrollmentManagementEnhancedProps) {
+export function EnrollmentManagementEnhanced({
+  enrollments,
+  onRefresh,
+}: EnrollmentManagementEnhancedProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [showManualEnrollment, setShowManualEnrollment] = useState(false);
+  const [showBulkEnrollment, setShowBulkEnrollment] = useState(false);
 
   const filteredEnrollments = enrollments.filter(enrollment => {
     const matchesSearch =
@@ -71,14 +84,16 @@ export function EnrollmentManagementEnhanced({ enrollments, onRefresh }: Enrollm
       paid: 'default',
       pending: 'secondary',
       failed: 'destructive',
-      refunded: 'outline'
+      refunded: 'outline',
     };
     return <Badge variant={variants[status] || 'outline'}>{status}</Badge>;
   };
 
   const getEnrollmentStats = () => {
     const total = enrollments.length;
-    const completed = enrollments.filter(e => e.payment_status === 'completed' || e.payment_status === 'paid').length;
+    const completed = enrollments.filter(
+      e => e.payment_status === 'completed' || e.payment_status === 'paid'
+    ).length;
     const pending = enrollments.filter(e => e.payment_status === 'pending').length;
     const totalRevenue = enrollments
       .filter(e => e.payment_status === 'completed' || e.payment_status === 'paid')
@@ -91,19 +106,26 @@ export function EnrollmentManagementEnhanced({ enrollments, onRefresh }: Enrollm
   const stats = getEnrollmentStats();
 
   const exportToCSV = () => {
-    const headers = ['Student Name', 'Email', 'Course', 'Enrolled Date', 'Payment Status', 'Amount'];
+    const headers = [
+      'Student Name',
+      'Email',
+      'Course',
+      'Enrolled Date',
+      'Payment Status',
+      'Amount',
+    ];
     const rows = filteredEnrollments.map(e => [
       e.profiles?.display_name || 'N/A',
       e.profiles?.email || 'N/A',
       e.courses?.title || 'N/A',
       new Date(e.enrolled_at).toLocaleDateString(),
       e.payment_status,
-      e.payment_amount ? `₹${e.payment_amount}` : e.courses?.price || 'N/A'
+      e.payment_amount ? `₹${e.payment_amount}` : e.courses?.price || 'N/A',
     ]);
 
     const csvContent = [
       headers.join(','),
-      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(',')),
     ].join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -118,9 +140,7 @@ export function EnrollmentManagementEnhanced({ enrollments, onRefresh }: Enrollm
       <Card className="bg-white/95 backdrop-blur">
         <CardHeader>
           <CardTitle>Enrollment Management</CardTitle>
-          <CardDescription>
-            Comprehensive enrollment oversight and management
-          </CardDescription>
+          <CardDescription>Comprehensive enrollment oversight and management</CardDescription>
 
           {/* Statistics Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
@@ -172,7 +192,7 @@ export function EnrollmentManagementEnhanced({ enrollments, onRefresh }: Enrollm
               <Input
                 placeholder="Search enrollments..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -195,6 +215,15 @@ export function EnrollmentManagementEnhanced({ enrollments, onRefresh }: Enrollm
             <Button onClick={() => setShowManualEnrollment(true)} className="w-full sm:w-auto">
               <UserPlus className="h-4 w-4 mr-2" />
               Manual Enrollment
+            </Button>
+
+            <Button
+              onClick={() => setShowBulkEnrollment(true)}
+              variant="secondary"
+              className="w-full sm:w-auto"
+            >
+              <Upload className="h-4 w-4 mr-2" />
+              Bulk Upload
             </Button>
 
             <Button variant="outline" onClick={exportToCSV} className="w-full sm:w-auto">
@@ -240,19 +269,15 @@ export function EnrollmentManagementEnhanced({ enrollments, onRefresh }: Enrollm
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredEnrollments.map((enrollment) => (
+                  filteredEnrollments.map(enrollment => (
                     <TableRow key={enrollment.id}>
                       <TableCell className="font-medium">
                         {enrollment.profiles?.display_name || 'N/A'}
                       </TableCell>
                       <TableCell>{enrollment.profiles?.email || 'N/A'}</TableCell>
                       <TableCell>{enrollment.courses?.title || 'N/A'}</TableCell>
-                      <TableCell>
-                        {new Date(enrollment.enrolled_at).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>
-                        {getPaymentStatusBadge(enrollment.payment_status)}
-                      </TableCell>
+                      <TableCell>{new Date(enrollment.enrolled_at).toLocaleDateString()}</TableCell>
+                      <TableCell>{getPaymentStatusBadge(enrollment.payment_status)}</TableCell>
                       <TableCell>
                         {enrollment.payment_amount
                           ? `₹${enrollment.payment_amount.toLocaleString()}`
@@ -284,6 +309,13 @@ export function EnrollmentManagementEnhanced({ enrollments, onRefresh }: Enrollm
       <ManualEnrollmentForm
         open={showManualEnrollment}
         onOpenChange={setShowManualEnrollment}
+        onSuccess={onRefresh}
+      />
+
+      {/* Bulk Enrollment Dialog */}
+      <BulkEnrollmentDialog
+        open={showBulkEnrollment}
+        onOpenChange={setShowBulkEnrollment}
         onSuccess={onRefresh}
       />
     </>
