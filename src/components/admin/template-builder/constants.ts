@@ -30,7 +30,7 @@ export const COURSE_FIELDS: TemplateField[] = [
     label: 'Course Mode',
     type: 'select',
     required: true,
-    options: ['Online', 'Offline', 'Hybrid', 'Self-paced', 'Instructor-led'],
+    options: ['Online', 'In-Person', 'Hybrid', 'Self-paced', 'Instructor-led'],
     description: 'How the course will be delivered',
   },
   {

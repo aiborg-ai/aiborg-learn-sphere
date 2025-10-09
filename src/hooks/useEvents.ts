@@ -2,6 +2,17 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 import { logger } from '@/utils/logger';
+export interface EventPhoto {
+  id: string;
+  event_id: number;
+  photo_url: string;
+  photo_caption?: string;
+  display_order: number;
+  uploaded_by?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Event {
   id: number;
   title: string;
@@ -16,8 +27,10 @@ export interface Event {
   max_capacity: number | null;
   current_registrations: number;
   is_active: boolean;
+  is_past: boolean;
   created_at: string;
   updated_at: string;
+  photos?: EventPhoto[];
 }
 
 export const useEvents = () => {

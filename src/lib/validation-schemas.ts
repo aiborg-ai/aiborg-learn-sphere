@@ -82,7 +82,7 @@ export const courseSchemas = {
     duration: z.string().min(1, 'Duration is required'),
     price: validationPatterns.currency,
     startDate: validationPatterns.date,
-    mode: z.enum(['Online', 'Offline', 'Hybrid']),
+    mode: z.enum(['Online', 'In-Person', 'Hybrid']),
     features: z.string().optional(),
     keywords: z.string().optional(),
     prerequisites: z.string().optional(),

@@ -22,8 +22,9 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { Calendar, Edit, Plus, Trash2, MapPin, Clock, Users } from 'lucide-react';
+import { Calendar, Edit, Plus, Trash2, MapPin, Clock, Users, Image, Archive } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { EventPhotosUpload } from './EventPhotosUpload';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import {
@@ -48,6 +49,7 @@ interface Event {
   registration_count?: number;
   display: boolean;
   is_active: boolean;
+  is_past: boolean;
   event_type: string;
   created_at?: string;
   updated_at?: string;
@@ -61,6 +63,7 @@ export function EventsManagementEnhanced() {
   const [deletingEvent, setDeletingEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [fetchingEvents, setFetchingEvents] = useState(true);
+  const [photoUploadEvent, setPhotoUploadEvent] = useState<Event | null>(null);
   const { toast } = useToast();
 
   const {
@@ -79,6 +82,7 @@ export function EventsManagementEnhanced() {
       max_capacity: 50,
       display: true,
       is_active: true,
+      is_past: false,
       event_type: 'workshop',
     },
   });
@@ -120,6 +124,7 @@ export function EventsManagementEnhanced() {
       max_capacity: 50,
       display: true,
       is_active: true,
+      is_past: false,
       event_type: 'workshop',
     });
     setIsDialogOpen(true);
@@ -155,6 +160,7 @@ export function EventsManagementEnhanced() {
             max_capacity: data.max_capacity,
             display: data.display,
             is_active: data.is_active,
+            is_past: data.is_past,
             event_type: data.event_type,
             updated_at: new Date().toISOString(),
           })
@@ -178,6 +184,7 @@ export function EventsManagementEnhanced() {
           registration_count: 0,
           display: data.display,
           is_active: data.is_active,
+          is_past: data.is_past,
           event_type: data.event_type,
         });
 
@@ -258,6 +265,40 @@ export function EventsManagementEnhanced() {
     }
   };
 
+  const moveToPastEvents = async (event: Event) => {
+    try {
+      const { error } = await supabase
+        .from('events')
+        .update({
+          is_past: true,
+          is_active: false,
+        })
+        .eq('id', event.id);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'Event moved to past events. You can now upload photos.',
+      });
+
+      fetchEvents();
+      // Open photo upload dialog
+      setPhotoUploadEvent(event);
+    } catch (error) {
+      logger.error('Error moving event to past:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to move event to past events',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const openPhotoUpload = (event: Event) => {
+    setPhotoUploadEvent(event);
+  };
+
   const getEventTypeBadge = (type: string) => {
     const colors: Record<string, string> = {
       workshop: 'bg-blue-100 text-blue-800',
@@ -310,6 +351,7 @@ export function EventsManagementEnhanced() {
                   <TableHead>Location</TableHead>
                   <TableHead>Registrations</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Past Event</TableHead>
                   <TableHead>Visible</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -317,7 +359,7 @@ export function EventsManagementEnhanced() {
               <TableBody>
                 {events.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center text-muted-foreground">
+                    <TableCell colSpan={9} className="text-center text-muted-foreground">
                       No events found. Create your first event to get started.
                     </TableCell>
                   </TableRow>
@@ -360,7 +402,25 @@ export function EventsManagementEnhanced() {
                         <Switch
                           checked={event.is_active}
                           onCheckedChange={() => toggleEventStatus(event, 'is_active')}
+                          disabled={event.is_past}
                         />
+                      </TableCell>
+                      <TableCell>
+                        {event.is_past ? (
+                          <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                            Past Event
+                          </Badge>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => moveToPastEvents(event)}
+                            className="text-xs"
+                          >
+                            <Archive className="h-3 w-3 mr-1" />
+                            Move to Past
+                          </Button>
+                        )}
                       </TableCell>
                       <TableCell>
                         <Switch
@@ -370,6 +430,16 @@ export function EventsManagementEnhanced() {
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
+                          {event.is_past && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => openPhotoUpload(event)}
+                              className="text-blue-600"
+                            >
+                              <Image className="h-4 w-4" />
+                            </Button>
+                          )}
                           <Button size="sm" variant="outline" onClick={() => openEditDialog(event)}>
                             <Edit className="h-4 w-4" />
                           </Button>
@@ -540,6 +610,16 @@ export function EventsManagementEnhanced() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Photo Upload Dialog */}
+      {photoUploadEvent && (
+        <EventPhotosUpload
+          eventId={Number(photoUploadEvent.id)}
+          eventTitle={photoUploadEvent.title}
+          isOpen={!!photoUploadEvent}
+          onClose={() => setPhotoUploadEvent(null)}
+        />
+      )}
     </>
   );
 }

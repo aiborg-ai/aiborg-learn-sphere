@@ -1,20 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EventCard } from "./EventCard";
+import { EventPhotoGallery } from "./EventPhotoGallery";
 import { useEvents } from "@/hooks/useEvents";
 import { useEventRegistrations } from "@/hooks/useEventRegistrations";
 import { useAuth } from "@/hooks/useAuth";
-import { 
+import { supabase } from "@/integrations/supabase/client";
+import {
   Calendar,
   Users,
   MapPin,
-  Filter,
-  ChevronDown,
-  Sparkles,
-  Star,
-  TrendingUp
+  Filter
 } from "lucide-react";
 
 const filterOptions = [
@@ -26,15 +24,60 @@ const filterOptions = [
 export function EventsSection() {
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [showAllEvents, setShowAllEvents] = useState(false);
+  const [showAllPastEvents, setShowAllPastEvents] = useState(false);
+  const [pastEventsWithPhotos, setPastEventsWithPhotos] = useState<Event[]>([]);
   const { events, loading, error } = useEvents();
   const { registrations } = useEventRegistrations();
   const { user } = useAuth();
 
-  // Filter events based on selected filter
+  // Fetch past events with photos
+  useEffect(() => {
+    const fetchPastEvents = async () => {
+      try {
+        const { data: pastEvents, error: eventsError } = await supabase
+          .from('events')
+          .select('*')
+          .eq('is_past', true)
+          .order('event_date', { ascending: false });
+
+        if (eventsError) throw eventsError;
+
+        if (pastEvents && pastEvents.length > 0) {
+          // Fetch photos for each past event
+          const eventsWithPhotos = await Promise.all(
+            pastEvents.map(async (event) => {
+              const { data: photos, error: photosError } = await supabase
+                .from('event_photos')
+                .select('*')
+                .eq('event_id', event.id)
+                .order('display_order', { ascending: true });
+
+              if (photosError) {
+                return { ...event, photos: [] };
+              }
+
+              return { ...event, photos: photos || [] };
+            })
+          );
+
+          setPastEventsWithPhotos(eventsWithPhotos);
+        }
+      } catch (_error) {
+        // Error fetching past events
+      }
+    };
+
+    fetchPastEvents();
+  }, []);
+
+  // Filter events based on selected filter (exclude past events)
   const filteredEvents = events.filter(event => {
+    // Exclude past events from the main events list
+    if (event.is_past) return false;
+
     const eventDate = new Date(event.event_date);
     const today = new Date();
-    
+
     switch (selectedFilter) {
       case "upcoming":
         return eventDate >= today;
@@ -224,6 +267,78 @@ export function EventsSection() {
           </div>
         )}
 
+        {/* Past Events Section */}
+        {pastEventsWithPhotos.length > 0 && (
+          <div className="mt-20">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-800 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                <Calendar className="h-4 w-4" />
+                <span>Past Events Gallery</span>
+              </div>
+
+              <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
+                <span className="gradient-text">Relive the Moments</span>
+              </h2>
+
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                Take a look back at our previous events and the amazing connections made within our AI community.
+              </p>
+            </div>
+
+            <div className="space-y-12">
+              {(showAllPastEvents ? pastEventsWithPhotos : pastEventsWithPhotos.slice(0, 3)).map((event) => (
+                <Card key={event.id} className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                  <div className="p-6 md:p-8">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                            Past Event
+                          </Badge>
+                          <Badge variant="outline">{event.category || 'Networking'}</Badge>
+                        </div>
+                        <h3 className="text-2xl font-bold mb-2">{event.title}</h3>
+                        <p className="text-muted-foreground mb-4">{event.description}</p>
+                      </div>
+                      <div className="flex-shrink-0 text-right">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                          <Calendar className="h-4 w-4" />
+                          {new Date(event.event_date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })}
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <MapPin className="h-4 w-4" />
+                          {event.location}
+                        </div>
+                      </div>
+                    </div>
+
+                    {event.photos && event.photos.length > 0 && (
+                      <EventPhotoGallery photos={event.photos} eventTitle={event.title} />
+                    )}
+                  </div>
+                </Card>
+              ))}
+            </div>
+
+            {pastEventsWithPhotos.length > 3 && (
+              <div className="text-center mt-8">
+                <Button
+                  onClick={() => setShowAllPastEvents(!showAllPastEvents)}
+                  variant="outline"
+                  className="px-8 py-2"
+                >
+                  {showAllPastEvents
+                    ? 'Show Less'
+                    : `View All Past Events (${pastEventsWithPhotos.length - 3} more)`}
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

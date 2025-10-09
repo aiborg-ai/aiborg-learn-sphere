@@ -98,7 +98,7 @@ export const DurationSchema = z.string().refine(
 export const AudienceEnum = z.enum(['Primary', 'Secondary', 'Professional', 'Business']);
 
 // Course mode enum
-export const CourseModeEnum = z.enum(['Online', 'Offline', 'Hybrid']);
+export const CourseModeEnum = z.enum(['Online', 'In-Person', 'Hybrid']);
 
 // Course level enum
 export const CourseLevelEnum = z.enum(['Beginner', 'Intermediate', 'Advanced']);

@@ -43,7 +43,7 @@ interface Course {
   description: string;
   audience: string; // Kept for backward compatibility
   audiences: string[]; // Multi-audience support
-  mode: string; // online, offline, hybrid
+  mode: string; // online, in-person, hybrid
   duration: string; // "8 weeks", "40 hours", etc.
   price: string; // Can include currency symbols
   level: string; // beginner, intermediate, advanced

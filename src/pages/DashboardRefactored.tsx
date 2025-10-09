@@ -23,6 +23,8 @@ import {
   BarChart3,
   Zap,
   Brain,
+  Folder,
+  Ticket,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -39,6 +41,10 @@ import { MiniCalendarWidget } from '@/components/calendar/MiniCalendarWidget';
 import { AIInsightsWidget } from '@/components/dashboard/AIInsightsWidget';
 import { StudyRecommendations } from '@/components/dashboard/StudyRecommendations';
 import { AIStudyAssistant } from '@/components/AIStudyAssistant';
+import { ResourcesSection } from '@/components/dashboard/ResourcesSection';
+import { useUserResources } from '@/hooks/useUserResources';
+import { AttendanceTicketsSection } from '@/components/dashboard/AttendanceTicketsSection';
+import { useAttendanceTickets } from '@/hooks/useAttendanceTickets';
 
 export default function DashboardRefactored() {
   const [dataLoading, setDataLoading] = useState(true);
@@ -60,6 +66,8 @@ export default function DashboardRefactored() {
   const { user, profile, loading: authLoading } = useAuth();
   const { enrollments } = useEnrollments();
   const { courses } = useCourses();
+  const { resources, loading: resourcesLoading, trackResourceView } = useUserResources(user?.id);
+  const { tickets, statistics: ticketStats, loading: ticketsLoading } = useAttendanceTickets(user?.id);
   const navigate = useNavigate();
 
   const fetchDashboardData = useCallback(async () => {
@@ -334,6 +342,24 @@ export default function DashboardRefactored() {
               <FileText className="h-4 w-4 mr-2" />
               Assignments
             </TabsTrigger>
+            <TabsTrigger value="resources" className="text-white data-[state=active]:bg-white/20">
+              <Folder className="h-4 w-4 mr-2" />
+              Resources
+              {resources.length > 0 && (
+                <span className="ml-2 px-2 py-0.5 text-xs bg-secondary text-white rounded-full">
+                  {resources.length}
+                </span>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="attendance" className="text-white data-[state=active]:bg-white/20">
+              <Ticket className="h-4 w-4 mr-2" />
+              Attendance
+              {ticketStats.total_tickets > 0 && (
+                <span className="ml-2 px-2 py-0.5 text-xs bg-yellow-500 text-white rounded-full">
+                  {ticketStats.total_tickets}
+                </span>
+              )}
+            </TabsTrigger>
             <TabsTrigger
               value="notifications"
               className="text-white data-[state=active]:bg-white/20"
@@ -472,6 +498,22 @@ export default function DashboardRefactored() {
 
           <TabsContent value="assignments">
             <AssignmentsSection assignments={assignments} />
+          </TabsContent>
+
+          <TabsContent value="resources">
+            <ResourcesSection
+              resources={resources}
+              loading={resourcesLoading}
+              onResourceView={trackResourceView}
+            />
+          </TabsContent>
+
+          <TabsContent value="attendance">
+            <AttendanceTicketsSection
+              tickets={tickets}
+              statistics={ticketStats}
+              loading={ticketsLoading}
+            />
           </TabsContent>
 
           <TabsContent value="notifications">

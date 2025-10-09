@@ -22,6 +22,8 @@ import {
   FileCheck,
   AlertCircle,
   Home,
+  Folder,
+  Ticket,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -49,14 +51,29 @@ import { RefundProcessor } from '@/components/admin/RefundProcessor';
 import { ProgressTrackingDashboard } from '@/components/admin/ProgressTrackingDashboard';
 import { AssignmentTracker } from '@/components/admin/AssignmentTracker';
 
+// Resources Management Component
+import { ResourcesManagement } from '@/components/admin/ResourcesManagement';
+
+// Attendance Ticket Management Component
+import { AttendanceTicketManagement } from '@/components/admin/AttendanceTicketManagement';
+
 // Import the existing components that were already separated
 interface Review {
   id: string;
-  comment: string;
+  user_id: string;
+  course_id: number;
+  display_name_option: 'full_name' | 'first_name' | 'anonymous';
+  review_type: 'written' | 'voice' | 'video';
+  written_review: string | null;
+  voice_review_url: string | null;
+  video_review_url: string | null;
+  course_period: string;
+  course_mode: 'online' | 'in-person' | 'hybrid';
   rating: number;
   display: boolean;
   approved: boolean;
-  profiles?: { display_name?: string };
+  created_at: string;
+  profiles?: { display_name?: string; email?: string };
   courses?: { title: string };
 }
 
@@ -159,41 +176,70 @@ function ReviewsManagement() {
     <div className="bg-white/95 backdrop-blur rounded-lg p-6">
       <h2 className="text-2xl font-bold mb-4">Reviews Management</h2>
       <div className="space-y-4">
-        {reviews.map(review => (
-          <div key={review.id} className="border rounded-lg p-4">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-semibold">{review.profiles?.display_name || 'Anonymous'}</p>
-                <p className="text-sm text-gray-600">{review.courses?.title}</p>
-                <p className="mt-2">{review.comment}</p>
-                <div className="flex gap-2 mt-2">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-4 w-4 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
-                    />
-                  ))}
+        {reviews.length === 0 ? (
+          <p className="text-gray-500 text-center py-8">No reviews found</p>
+        ) : (
+          reviews.map(review => (
+            <div key={review.id} className="border rounded-lg p-4">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <p className="font-semibold">{review.profiles?.display_name || review.profiles?.email || 'Anonymous'}</p>
+                    <span className="text-xs px-2 py-1 bg-gray-100 rounded">
+                      {review.review_type}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600">{review.courses?.title}</p>
+
+                  {review.review_type === 'written' && review.written_review && (
+                    <p className="mt-2">{review.written_review}</p>
+                  )}
+                  {review.review_type === 'voice' && review.voice_review_url && (
+                    <div className="mt-2">
+                      <audio controls src={review.voice_review_url} className="w-full max-w-md" />
+                    </div>
+                  )}
+                  {review.review_type === 'video' && review.video_review_url && (
+                    <div className="mt-2">
+                      <video controls src={review.video_review_url} className="w-full max-w-md" />
+                    </div>
+                  )}
+
+                  <div className="flex gap-2 mt-2">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`h-4 w-4 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                      />
+                    ))}
+                  </div>
+
+                  <div className="flex gap-4 mt-2 text-xs text-gray-500">
+                    <span>Mode: {review.course_mode}</span>
+                    <span>Period: {review.course_period}</span>
+                    <span>Created: {new Date(review.created_at).toLocaleDateString()}</span>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant={review.display ? 'default' : 'outline'}
+                    onClick={() => toggleReviewDisplay(review.id, review.display)}
+                  >
+                    {review.display ? 'Hide' : 'Show'}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={review.approved ? 'success' : 'outline'}
+                    onClick={() => toggleReviewApproval(review.id, review.approved)}
+                  >
+                    {review.approved ? 'Unapprove' : 'Approve'}
+                  </Button>
                 </div>
               </div>
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  variant={review.display ? 'default' : 'outline'}
-                  onClick={() => toggleReviewDisplay(review.id, review.display)}
-                >
-                  {review.display ? 'Hide' : 'Show'}
-                </Button>
-                <Button
-                  size="sm"
-                  variant={review.approved ? 'success' : 'outline'}
-                  onClick={() => toggleReviewApproval(review.id, review.approved)}
-                >
-                  {review.approved ? 'Unapprove' : 'Approve'}
-                </Button>
-              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
@@ -660,6 +706,14 @@ export default function AdminRefactored() {
               <FileCheck className="h-4 w-4 mr-2" />
               Assignments
             </TabsTrigger>
+            <TabsTrigger value="resources" className="text-white data-[state=active]:bg-white/20">
+              <Folder className="h-4 w-4 mr-2" />
+              Resources
+            </TabsTrigger>
+            <TabsTrigger value="attendance" className="text-white data-[state=active]:bg-white/20">
+              <Ticket className="h-4 w-4 mr-2" />
+              Attendance
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="analytics">
@@ -721,6 +775,14 @@ export default function AdminRefactored() {
 
           <TabsContent value="assignments">
             <AssignmentTracker />
+          </TabsContent>
+
+          <TabsContent value="resources">
+            <ResourcesManagement />
+          </TabsContent>
+
+          <TabsContent value="attendance">
+            <AttendanceTicketManagement />
           </TabsContent>
         </Tabs>
       </div>
