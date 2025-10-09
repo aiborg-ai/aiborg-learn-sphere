@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
@@ -16,12 +17,33 @@ export default tseslint.config(
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'jsx-a11y': jsxA11y,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+
+      // Accessibility rules
+      'jsx-a11y/alt-text': 'warn',
+      'jsx-a11y/anchor-has-content': 'warn',
+      'jsx-a11y/aria-props': 'warn',
+      'jsx-a11y/aria-role': 'warn',
+      'jsx-a11y/click-events-have-key-events': 'warn',
+      'jsx-a11y/label-has-associated-control': 'warn',
+
       // Prevent console statements - use logger utility instead
       'no-console': 'error',
+
+      // Fix for ESLint 9 compatibility - disable base rule, use TypeScript version
+      'no-unused-expressions': 'off',
+      '@typescript-eslint/no-unused-expressions': [
+        'warn',
+        {
+          allowShortCircuit: true,
+          allowTernary: true,
+          allowTaggedTemplates: true,
+        },
+      ],
 
       // TypeScript rules to prevent 'any' usage
       '@typescript-eslint/no-explicit-any': 'error',
