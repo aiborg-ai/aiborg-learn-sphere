@@ -10,7 +10,6 @@ export * from './useBadges';
 
 // Courses & Learning
 export * from './useCourses';
-export * from './useCoursesOptimized';
 export * from './useCourseMaterials';
 export * from './useEnrollments';
 export * from './useProgressTracking';

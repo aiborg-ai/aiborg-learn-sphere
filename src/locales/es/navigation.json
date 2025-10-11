@@ -1,0 +1,41 @@
+{
+  "menu": {
+    "home": "Inicio",
+    "programs": "Programas",
+    "blog": "Blog",
+    "events": "Eventos",
+    "reviews": "Reseñas",
+    "about": "Acerca de",
+    "contact": "Contacto",
+    "faq": "Preguntas Frecuentes",
+    "terms": "Términos"
+  },
+  "aiAssessment": {
+    "title": "Evaluación de IA",
+    "badge": "NUEVO"
+  },
+  "user": {
+    "menu": "Menú de Usuario",
+    "dashboard": "Mi Panel",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "signIn": "Iniciar Sesión",
+    "signOut": "Cerrar Sesión",
+    "adminDashboard": "Panel de Administración"
+  },
+  "features": {
+    "search": "Buscar",
+    "keyboardShortcuts": "Atajos de Teclado",
+    "themeToggle": "Cambiar Tema"
+  },
+  "mobile": {
+    "openMenu": "Abrir Menú",
+    "closeMenu": "Cerrar Menú"
+  },
+  "aria": {
+    "mainNavigation": "Navegación principal",
+    "primaryMenu": "Menú principal",
+    "userAccountMenu": "Menú de cuenta de usuario",
+    "mobileMenu": "Menú de navegación móvil"
+  }
+}

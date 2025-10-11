@@ -65,9 +65,14 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
   useEffect(() => {
     loadComments();
 
-    // Set up real-time subscription
+    // Set up real-time subscription with improved error handling
     const channel = supabase
-      .channel(`blog_comments_${postId}`)
+      .channel(`blog_comments_${postId}`, {
+        config: {
+          broadcast: { self: false },
+          presence: { key: '' },
+        },
+      })
       .on(
         'postgres_changes',
         {
@@ -77,14 +82,30 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
           filter: `post_id=eq.${postId}`,
         },
         (payload) => {
-          logger.log('Comment change:', payload);
+          logger.log('🔔 Comment change:', payload.eventType);
           // Reload comments when there's a change
           loadComments();
         }
       )
-      .subscribe();
+      .subscribe((status, err) => {
+        if (status === 'SUBSCRIBED') {
+          logger.log('✅ Comments subscription active for post:', postId);
+        } else if (status === 'CHANNEL_ERROR') {
+          logger.error('❌ Comments subscription error:', err);
+          toast({
+            title: "Connection Issue",
+            description: "Real-time updates may be delayed. Refresh to see latest comments.",
+            variant: "destructive",
+          });
+        } else if (status === 'TIMED_OUT') {
+          logger.error('⏱️ Comments subscription timed out');
+        } else {
+          logger.log('📡 Comments subscription status:', status);
+        }
+      });
 
     return () => {
+      logger.log('🔌 Cleaning up comments subscription');
       supabase.removeChannel(channel);
     };
   }, [postId]);

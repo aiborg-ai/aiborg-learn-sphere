@@ -27,6 +27,8 @@ import { CodeEvaluation } from './CodeEvaluation';
 import { CaseStudy } from './CaseStudy';
 import { AnswerOptions } from './wizard/AnswerOptions';
 import { QuestionDisplay } from './wizard/QuestionDisplay';
+import { AssessmentProgressIndicator } from './AssessmentProgressIndicator';
+import { LiveStatsPanel } from './LiveStatsPanel';
 import {
   ChevronLeft,
   ChevronRight,
@@ -43,6 +45,9 @@ import {
 import type { AdaptiveAssessmentEngine } from '@/services/AdaptiveAssessmentEngine';
 import { createAdaptiveEngine, type AdaptiveQuestion } from '@/services/AdaptiveAssessmentEngine';
 import { ADAPTIVE_CONFIG } from '@/config/adaptiveAssessment';
+import { AdaptiveAssessmentEngagementService } from '@/services/analytics/AdaptiveAssessmentEngagementService';
+import { AchievementService, PointsService } from '@/services/gamification';
+import { showAchievementToast } from '../gamification/AchievementUnlockToast';
 
 interface ProfilingData {
   audience_type: string;
@@ -76,6 +81,14 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
   const [confidenceLevel, setConfidenceLevel] = useState(0);
   const [performanceTrend, setPerformanceTrend] = useState<'up' | 'down' | 'stable'>('stable');
   const [lastAnswerCorrect, setLastAnswerCorrect] = useState<boolean | null>(null);
+
+  // Live stats tracking
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [totalPointsEarned, setTotalPointsEarned] = useState(0);
+  const [questionTimes, setQuestionTimes] = useState<number[]>([]);
+  const [liveStatsPanelCollapsed, setLiveStatsPanelCollapsed] = useState(false);
+  const [currentStreak, setCurrentStreak] = useState(1);
+  const [levelProgress, setLevelProgress] = useState(0);
 
   const questionStartTime = useRef<Date | null>(null);
 
@@ -138,6 +151,34 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
       if (error) throw error;
 
       setAssessmentId(data.id);
+
+      // Track assessment started event
+      await AdaptiveAssessmentEngagementService.trackEvent(
+        user.id,
+        'assessment_started',
+        {
+          assessment_id: data.id,
+          audience_type: data.audience_type,
+          is_adaptive: true,
+        }
+      );
+
+      // Update daily streak for gamification
+      try {
+        const streakResult = await PointsService.updateStreak(user.id);
+        if (streakResult) {
+          setCurrentStreak(streakResult.newStreak);
+          if (streakResult.streakIncreased && streakResult.newStreak > 1) {
+            toast({
+              title: '🔥 Streak Active!',
+              description: `${streakResult.newStreak} day streak! Points multiplier: ${streakResult.multiplier}x`,
+            });
+          }
+        }
+      } catch (error) {
+        logger.error('Error updating streak:', error);
+        // Non-critical, continue with assessment
+      }
 
       // Initialize adaptive engine
       const engine = await createAdaptiveEngine(data.id);
@@ -257,6 +298,15 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
       setCurrentAbility(result.newAbility);
       setConfidenceLevel(adaptiveEngine.getState().confidenceLevel);
 
+      // Update live stats
+      if (result.isCorrect) {
+        setCorrectAnswers(prev => prev + 1);
+        setTotalPointsEarned(prev => prev + result.pointsEarned);
+      }
+      if (timeSpent !== undefined) {
+        setQuestionTimes(prev => [...prev, timeSpent]);
+      }
+
       // Determine performance trend
       if (result.newAbility > previousAbility + 0.2) {
         setPerformanceTrend('up');
@@ -264,6 +314,78 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
         setPerformanceTrend('down');
       } else {
         setPerformanceTrend('stable');
+      }
+
+      // Track question answered event
+      if (user) {
+        await AdaptiveAssessmentEngagementService.trackEvent(
+          user.id,
+          'question_answered',
+          {
+            assessment_id: assessmentId,
+            question_id: currentQuestion.id,
+            is_correct: result.isCorrect,
+            ability_before: previousAbility,
+            ability_after: result.newAbility,
+            time_spent: timeSpent,
+          }
+        );
+      }
+
+      // Award points and check achievements for correct answers
+      if (user && result.isCorrect) {
+        try {
+          // Award points for correct answer
+          const pointsAwarded = await PointsService.awardPoints(
+            user.id,
+            result.pointsEarned,
+            'assessment_question',
+            `Correct answer in ${currentQuestion.category_name}`,
+            {
+              assessment_id: assessmentId,
+              question_id: currentQuestion.id,
+              difficulty: currentQuestion.difficulty_level,
+              ability_score: result.newAbility,
+            }
+          );
+
+          // Check and unlock achievements
+          const unlockedAchievements = await AchievementService.checkAndUnlock(user.id, {
+            action: 'assessment_completed',
+            metadata: {
+              assessment_id: assessmentId,
+              questions_answered: questionsAnswered + 1,
+              current_ability: result.newAbility,
+              difficulty_level: currentQuestion.difficulty_level,
+            },
+          });
+
+          // Show achievement notifications
+          if (unlockedAchievements && unlockedAchievements.length > 0) {
+            unlockedAchievements.forEach(achievement => {
+              showAchievementToast(achievement, toast);
+            });
+          }
+
+          // Update level progress for live stats
+          if (pointsAwarded) {
+            const pointsToNextLevel = PointsService.calculatePointsForLevel(pointsAwarded.newLevel + 1);
+            const pointsProgress = ((pointsAwarded.newPoints % 100) / 100) * 100;
+            setLevelProgress(pointsProgress);
+          }
+
+          // Show level-up notification if applicable
+          if (pointsAwarded?.leveledUp) {
+            toast({
+              title: '🎉 Level Up!',
+              description: `You've reached level ${pointsAwarded.newLevel}!`,
+              duration: 4000,
+            });
+          }
+        } catch (error) {
+          logger.error('Error awarding points/achievements:', error);
+          // Non-critical, continue with assessment
+        }
       }
 
       // Show feedback toast
@@ -313,12 +435,102 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
 
       if (error) throw error;
 
-      // Navigate to profile with assessments tab
-      toast({
-        title: 'Assessment Complete!',
-        description: 'Your results have been saved to your profile.',
-      });
-      window.location.href = `/profile?tab=assessments`;
+      // Track assessment completed event
+      if (user) {
+        await AdaptiveAssessmentEngagementService.trackEvent(
+          user.id,
+          'assessment_completed',
+          {
+            assessment_id: assessmentId,
+            final_ability: finalScore.abilityScore,
+            augmentation_level: finalScore.augmentationLevel,
+            questions_answered: state.questionsAnswered,
+            confidence_level: state.confidenceLevel,
+          }
+        );
+      }
+
+      // Award completion bonus points and check achievements
+      if (user) {
+        try {
+          // Calculate completion bonus based on performance
+          const completionBonus = Math.floor(
+            100 + (finalScore.abilityScore * 50) + (state.confidenceLevel * 2)
+          );
+
+          // Award completion points
+          const pointsAwarded = await PointsService.awardPoints(
+            user.id,
+            completionBonus,
+            'assessment_completed',
+            `Completed assessment with ${finalScore.augmentationLevel} level`,
+            {
+              assessment_id: assessmentId,
+              final_ability: finalScore.abilityScore,
+              augmentation_level: finalScore.augmentationLevel,
+              questions_answered: state.questionsAnswered,
+              confidence_level: state.confidenceLevel,
+            }
+          );
+
+          // Check and unlock completion achievements
+          const unlockedAchievements = await AchievementService.checkAndUnlock(user.id, {
+            action: 'assessment_completed',
+            metadata: {
+              assessment_id: assessmentId,
+              final_ability: finalScore.abilityScore,
+              augmentation_level: finalScore.augmentationLevel,
+              questions_answered: state.questionsAnswered,
+              confidence_level: state.confidenceLevel,
+            },
+          });
+
+          // Show achievement notifications
+          if (unlockedAchievements && unlockedAchievements.length > 0) {
+            unlockedAchievements.forEach((achievement, index) => {
+              setTimeout(() => {
+                showAchievementToast(achievement, toast);
+              }, index * 1000); // Stagger by 1 second
+            });
+          }
+
+          // Show level-up notification if applicable
+          if (pointsAwarded?.leveledUp) {
+            setTimeout(() => {
+              toast({
+                title: '🎉 Level Up!',
+                description: `You've reached level ${pointsAwarded.newLevel}!`,
+                duration: 4000,
+              });
+            }, (unlockedAchievements?.length || 0) * 1000);
+          }
+
+          // Show completion summary with points
+          toast({
+            title: 'Assessment Complete!',
+            description: `You earned ${completionBonus} bonus points! Your results have been saved.`,
+            duration: 5000,
+          });
+        } catch (error) {
+          logger.error('Error awarding completion rewards:', error);
+          // Show basic completion toast
+          toast({
+            title: 'Assessment Complete!',
+            description: 'Your results have been saved to your profile.',
+          });
+        }
+      } else {
+        // User not logged in - show basic completion toast
+        toast({
+          title: 'Assessment Complete!',
+          description: 'Your results have been saved to your profile.',
+        });
+      }
+
+      // Navigate to profile with assessments tab after a delay to allow toasts to show
+      setTimeout(() => {
+        window.location.href = `/profile?tab=assessments`;
+      }, 2000);
     } catch (error) {
       logger.error('Error submitting adaptive assessment:', error);
       toast({
@@ -470,6 +682,17 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
+      {/* Enhanced Progress Indicator */}
+      <AssessmentProgressIndicator
+        questionsAnswered={questionsAnswered}
+        currentAbility={currentAbility}
+        confidenceLevel={confidenceLevel}
+        performanceTrend={performanceTrend}
+        lastAnswerCorrect={lastAnswerCorrect}
+        estimatedQuestionsRemaining={estimatedRemaining}
+        currentDifficulty={currentQuestion.difficulty_level}
+      />
+
       <Card className="shadow-xl">
         <CardHeader>
           <div className="flex items-center justify-between mb-4">
@@ -564,6 +787,24 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
           </AlertDescription>
         </Alert>
       )}
+
+      {/* Live Stats Panel */}
+      <LiveStatsPanel
+        questionsAnswered={questionsAnswered}
+        correctAnswers={correctAnswers}
+        totalPoints={totalPointsEarned}
+        averageTimePerQuestion={
+          questionTimes.length > 0
+            ? Math.floor(questionTimes.reduce((a, b) => a + b, 0) / questionTimes.length)
+            : 0
+        }
+        currentStreak={currentStreak}
+        levelProgress={levelProgress}
+        nearbyAchievements={[]}
+        leaderboardChange={0}
+        isCollapsed={liveStatsPanelCollapsed}
+        onToggle={() => setLiveStatsPanelCollapsed(!liveStatsPanelCollapsed)}
+      />
     </div>
   );
 };

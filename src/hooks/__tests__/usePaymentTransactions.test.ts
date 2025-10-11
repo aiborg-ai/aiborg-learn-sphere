@@ -76,7 +76,7 @@ describe('usePaymentTransactions', () => {
   });
 
   describe('initialization', () => {
-    it('should initialize with loading state', () => {
+    it('should initialize with loading state', async () => {
       vi.mocked(authHook.useAuth).mockReturnValue({
         user: null,
         profile: null,
@@ -86,7 +86,10 @@ describe('usePaymentTransactions', () => {
 
       const { result } = renderHook(() => usePaymentTransactions());
 
-      expect(result.current.loading).toBe(true);
+      // When user is null, hook immediately sets loading to false
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
       expect(result.current.transactions).toEqual([]);
       expect(result.current.error).toBeNull();
     });
@@ -119,11 +122,11 @@ describe('usePaymentTransactions', () => {
       } as ReturnType<typeof authHook.useAuth>);
 
       const mockSelect = vi.fn().mockReturnThis();
-      const mockOrder = vi.fn().mockReturnThis();
-      const mockEq = vi.fn().mockResolvedValue({
+      const mockOrder = vi.fn().mockResolvedValue({
         data: [mockTransaction],
         error: null,
       });
+      const mockEq = vi.fn().mockReturnThis();
 
       vi.mocked(supabase.from).mockReturnValue({
         select: mockSelect,
@@ -132,10 +135,10 @@ describe('usePaymentTransactions', () => {
       } as any);
 
       mockSelect.mockReturnValue({
-        order: mockOrder,
-      });
-      mockOrder.mockReturnValue({
         eq: mockEq,
+      });
+      mockEq.mockReturnValue({
+        order: mockOrder,
       });
 
       const { result } = renderHook(() => usePaymentTransactions());
@@ -192,11 +195,11 @@ describe('usePaymentTransactions', () => {
 
       const mockError = new Error('Database error');
       const mockSelect = vi.fn().mockReturnThis();
-      const mockOrder = vi.fn().mockReturnThis();
-      const mockEq = vi.fn().mockResolvedValue({
+      const mockOrder = vi.fn().mockResolvedValue({
         data: null,
         error: mockError,
       });
+      const mockEq = vi.fn().mockReturnThis();
 
       vi.mocked(supabase.from).mockReturnValue({
         select: mockSelect,
@@ -205,10 +208,10 @@ describe('usePaymentTransactions', () => {
       } as any);
 
       mockSelect.mockReturnValue({
-        order: mockOrder,
-      });
-      mockOrder.mockReturnValue({
         eq: mockEq,
+      });
+      mockEq.mockReturnValue({
+        order: mockOrder,
       });
 
       const { result } = renderHook(() => usePaymentTransactions());
@@ -229,30 +232,31 @@ describe('usePaymentTransactions', () => {
         profileError: null,
       } as ReturnType<typeof authHook.useAuth>);
 
-      const mockSelect = vi.fn().mockReturnThis();
-      const mockOrder = vi.fn().mockReturnThis();
-      const mockEq = vi.fn().mockResolvedValue({
+      const mockOrder = vi.fn().mockResolvedValue({
         data: [mockTransaction],
         error: null,
       });
 
+      const queryBuilder = {
+        eq: vi.fn().mockReturnThis(),
+        order: mockOrder,
+      };
+
+      const mockSelect = vi.fn().mockReturnValue(queryBuilder);
+
       vi.mocked(supabase.from).mockReturnValue({
         select: mockSelect,
-        order: mockOrder,
-        eq: mockEq,
       } as any);
 
-      mockSelect.mockReturnValue({
-        order: mockOrder,
-      });
-      mockOrder.mockReturnValue({
-        eq: mockEq,
-      });
+      // Make eq() return the query builder to support chaining
+      queryBuilder.eq.mockReturnValue(queryBuilder);
 
       renderHook(() => usePaymentTransactions({ status: 'completed' }));
 
       await waitFor(() => {
-        expect(mockEq).toHaveBeenCalledWith('payment_status', 'completed');
+        // First call is for user_id (non-admin filter), second call is for payment_status
+        expect(queryBuilder.eq).toHaveBeenNthCalledWith(1, 'user_id', mockUser.id);
+        expect(queryBuilder.eq).toHaveBeenNthCalledWith(2, 'payment_status', 'completed');
       });
     });
   });

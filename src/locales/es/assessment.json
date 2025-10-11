@@ -1,0 +1,61 @@
+{
+  "hero": {
+    "title": "Descubre tu",
+    "titleHighlight": "Nivel de Aumentación con IA",
+    "description": "Realiza nuestra evaluación integral para comprender qué tan aumentado estás con IA en tu trabajo diario y obtén una hoja de ruta personalizada para aumentar tu productividad con herramientas de IA.",
+    "startButton": "Comenzar Evaluación Gratuita",
+    "learnMore": "Saber Más",
+    "requirements": "Inicio de sesión requerido • No se necesita tarjeta de crédito • Toma 10-15 minutos • Resultados instantáneos"
+  },
+  "stats": {
+    "assessmentsTaken": "Evaluaciones Realizadas",
+    "userSatisfaction": "Satisfacción del Usuario",
+    "productivityGain": "Ganancia de Productividad Promedio"
+  },
+  "features": {
+    "title": "¿Por Qué Realizar Esta Evaluación?",
+    "subtitle": "Obtén información práctica para transformar tu productividad con IA",
+    "duration": {
+      "title": "10-15 Minutos",
+      "description": "Evaluación rápida y completa del uso de herramientas de IA"
+    },
+    "analysis": {
+      "title": "Análisis Detallado",
+      "description": "Obtén información sobre 8 categorías clave de uso de IA"
+    },
+    "comparison": {
+      "title": "Comparación con Pares",
+      "description": "Ve cómo te comparas con otros en tu campo"
+    },
+    "roadmap": {
+      "title": "Hoja de Ruta Personalizada",
+      "description": "Obtén un plan personalizado para aumentar la aumentación con IA"
+    },
+    "badges": {
+      "title": "Gana Insignias",
+      "description": "Desbloquea logros mientras mejoras"
+    },
+    "tracking": {
+      "title": "Seguimiento del Progreso",
+      "description": "Monitorea tu viaje de adopción de IA a lo largo del tiempo"
+    }
+  },
+  "wizard": {
+    "progress": "Pregunta {{current}} de {{total}}",
+    "skip": "Omitir",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "submit": "Enviar Evaluación",
+    "selectAnswer": "Selecciona tu respuesta",
+    "multipleAnswers": "Selecciona todas las que correspondan"
+  },
+  "results": {
+    "title": "Tus Resultados de Evaluación",
+    "score": "Tu Puntuación",
+    "level": "Tu Nivel",
+    "recommendations": "Recomendaciones",
+    "shareResults": "Compartir Resultados",
+    "retakeAssessment": "Repetir Evaluación",
+    "viewDetails": "Ver Informe Detallado"
+  }
+}

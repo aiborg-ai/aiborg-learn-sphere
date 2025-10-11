@@ -45,16 +45,37 @@ export function BulkEnrollmentDialog({ open, onOpenChange, onSuccess }: BulkEnro
   const [validData, setValidData] = useState<BulkEnrollmentRow[]>([]);
   const [parseErrors, setParseErrors] = useState<CSVRowError[]>([]);
   const [results, setResults] = useState<EnrollmentResult[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { isProcessing, progress, processEnrollments, resetProgress } = useBulkEnrollment();
   const { toast } = useToast();
 
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+  };
+
   const handleFileSelect = (selectedFile: File) => {
+    // Validate file type
     if (!selectedFile.name.endsWith('.csv')) {
       toast({
         title: 'Invalid file type',
         description: 'Please upload a CSV file',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (selectedFile.size > maxSize) {
+      toast({
+        title: 'File too large',
+        description: 'Please upload a file smaller than 5MB',
         variant: 'destructive',
       });
       return;
@@ -86,6 +107,7 @@ export function BulkEnrollmentDialog({ open, onOpenChange, onSuccess }: BulkEnro
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    setIsDragging(false);
     const droppedFile = e.dataTransfer.files[0];
     if (droppedFile) {
       handleFileSelect(droppedFile);
@@ -94,6 +116,12 @@ export function BulkEnrollmentDialog({ open, onOpenChange, onSuccess }: BulkEnro
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
   };
 
   const handleProcess = async () => {
@@ -169,6 +197,7 @@ export function BulkEnrollmentDialog({ open, onOpenChange, onSuccess }: BulkEnro
     setValidData([]);
     setParseErrors([]);
     setResults([]);
+    setIsDragging(false);
     resetProgress();
     onOpenChange(false);
   };
@@ -190,14 +219,26 @@ export function BulkEnrollmentDialog({ open, onOpenChange, onSuccess }: BulkEnro
         {step === 'upload' && (
           <div className="space-y-4">
             <div
-              className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer"
+              className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 cursor-pointer ${
+                isDragging
+                  ? 'border-primary bg-primary/5 scale-105'
+                  : 'border-gray-300 hover:border-primary hover:bg-gray-50'
+              }`}
               onDrop={handleDrop}
               onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
               onClick={() => fileInputRef.current?.click()}
             >
-              <Upload className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-              <p className="text-lg font-medium mb-2">Drop your CSV file here</p>
+              <Upload
+                className={`h-12 w-12 mx-auto mb-4 transition-colors ${
+                  isDragging ? 'text-primary' : 'text-gray-400'
+                }`}
+              />
+              <p className={`text-lg font-medium mb-2 ${isDragging ? 'text-primary' : ''}`}>
+                {isDragging ? 'Drop the file here!' : 'Drop your CSV file here'}
+              </p>
               <p className="text-sm text-gray-500 mb-4">or click to browse</p>
+              <p className="text-xs text-gray-400">Max file size: 5MB</p>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -237,8 +278,14 @@ export function BulkEnrollmentDialog({ open, onOpenChange, onSuccess }: BulkEnro
         {step === 'preview' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium">File: {file?.name}</p>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-primary" />
+                  <p className="text-sm font-medium">{file?.name}</p>
+                  <Badge variant="outline" className="text-xs">
+                    {file && formatFileSize(file.size)}
+                  </Badge>
+                </div>
                 <p className="text-sm text-gray-500">
                   {validData.length} valid rows
                   {parseErrors.length > 0 && <span> , {parseErrors.length} errors</span>}

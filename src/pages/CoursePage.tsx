@@ -149,24 +149,24 @@ export default function CoursePage() {
 
   if (loading || enrollmentsLoading) {
     return (
-      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-white" />
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center" role="status" aria-live="polite">
+        <Loader2 className="h-8 w-8 animate-spin text-white" aria-label="Loading course content" />
       </div>
     );
   }
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center" role="alert">
         <Card className="max-w-md">
           <CardContent className="pt-6 text-center">
-            <AlertCircle className="h-12 w-12 mx-auto text-destructive mb-4" />
+            <AlertCircle className="h-12 w-12 mx-auto text-destructive mb-4" aria-hidden="true" />
             <h2 className="text-2xl font-bold mb-2">Course Not Found</h2>
             <p className="text-muted-foreground mb-4">
               The course you're looking for doesn't exist or has been removed.
             </p>
-            <Button onClick={() => navigate('/dashboard')}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+            <Button onClick={() => navigate('/dashboard')} aria-label="Return to dashboard">
+              <ArrowLeft className="h-4 w-4 mr-2" aria-hidden="true" />
               Back to Dashboard
             </Button>
           </CardContent>
@@ -177,21 +177,21 @@ export default function CoursePage() {
 
   if (!isEnrolled) {
     return (
-      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center" role="alert">
         <Card className="max-w-md">
           <CardContent className="pt-6 text-center">
-            <Lock className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
+            <Lock className="h-12 w-12 mx-auto text-yellow-500 mb-4" aria-hidden="true" />
             <h2 className="text-2xl font-bold mb-2">Enrollment Required</h2>
             <p className="text-muted-foreground mb-4">
               You need to enroll in this course to access its content.
             </p>
-            <div className="flex gap-3">
-              <Button variant="outline" onClick={() => navigate('/dashboard')}>
-                <ArrowLeft className="h-4 w-4 mr-2" />
+            <div className="flex gap-3" role="group" aria-label="Course enrollment actions">
+              <Button variant="outline" onClick={() => navigate('/dashboard')} aria-label="Return to dashboard">
+                <ArrowLeft className="h-4 w-4 mr-2" aria-hidden="true" />
                 Back to Dashboard
               </Button>
-              <Button onClick={() => navigate('/#training-programs')}>
-                <BookOpen className="h-4 w-4 mr-2" />
+              <Button onClick={() => navigate('/#training-programs')} aria-label="Browse available courses">
+                <BookOpen className="h-4 w-4 mr-2" aria-hidden="true" />
                 Browse Courses
               </Button>
             </div>
@@ -205,7 +205,7 @@ export default function CoursePage() {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8" role="main" aria-label={`${course.title} course content`}>
         {/* Header */}
         <CourseHeader
           course={course}
@@ -215,30 +215,30 @@ export default function CoursePage() {
         />
 
         {/* Main Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-white/10 border-white/20">
-            <TabsTrigger value="overview" className="text-white data-[state=active]:bg-white/20">
-              <BookOpen className="h-4 w-4 mr-2" />
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6" aria-label="Course content sections">
+          <TabsList className="bg-white/10 border-white/20" role="tablist" aria-label="Course navigation tabs">
+            <TabsTrigger value="overview" className="text-white data-[state=active]:bg-white/20" aria-label="Overview tab" aria-controls="overview-panel">
+              <BookOpen className="h-4 w-4 mr-2" aria-hidden="true" />
               Overview
             </TabsTrigger>
-            <TabsTrigger value="materials" className="text-white data-[state=active]:bg-white/20">
-              <Video className="h-4 w-4 mr-2" />
+            <TabsTrigger value="materials" className="text-white data-[state=active]:bg-white/20" aria-label="Course materials tab" aria-controls="materials-panel">
+              <Video className="h-4 w-4 mr-2" aria-hidden="true" />
               Materials
             </TabsTrigger>
-            <TabsTrigger value="quizzes" className="text-white data-[state=active]:bg-white/20">
-              <HelpCircle className="h-4 w-4 mr-2" />
+            <TabsTrigger value="quizzes" className="text-white data-[state=active]:bg-white/20" aria-label={`Quizzes tab, ${quizzes?.length || 0} quizzes available`} aria-controls="quizzes-panel">
+              <HelpCircle className="h-4 w-4 mr-2" aria-hidden="true" />
               Quizzes ({quizzes?.length || 0})
             </TabsTrigger>
-            <TabsTrigger value="exercises" className="text-white data-[state=active]:bg-white/20">
-              <PenTool className="h-4 w-4 mr-2" />
+            <TabsTrigger value="exercises" className="text-white data-[state=active]:bg-white/20" aria-label={`Exercises tab, ${exercises?.length || 0} exercises available`} aria-controls="exercises-panel">
+              <PenTool className="h-4 w-4 mr-2" aria-hidden="true" />
               Exercises ({exercises?.length || 0})
             </TabsTrigger>
-            <TabsTrigger value="workshops" className="text-white data-[state=active]:bg-white/20">
-              <UsersRound className="h-4 w-4 mr-2" />
+            <TabsTrigger value="workshops" className="text-white data-[state=active]:bg-white/20" aria-label={`Workshops tab, ${workshops?.length || 0} workshops available`} aria-controls="workshops-panel">
+              <UsersRound className="h-4 w-4 mr-2" aria-hidden="true" />
               Workshops ({workshops?.length || 0})
             </TabsTrigger>
-            <TabsTrigger value="assignments" className="text-white data-[state=active]:bg-white/20">
-              <FileText className="h-4 w-4 mr-2" />
+            <TabsTrigger value="assignments" className="text-white data-[state=active]:bg-white/20" aria-label={`Assignments tab, ${assignments.length} assignments available`} aria-controls="assignments-panel">
+              <FileText className="h-4 w-4 mr-2" aria-hidden="true" />
               Assignments ({assignments.length})
             </TabsTrigger>
           </TabsList>

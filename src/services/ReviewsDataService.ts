@@ -159,9 +159,14 @@ export class DataService {
 
 export const subscribeToReviewChanges = (callback: () => void) => {
   logger.log('👂 Setting up real-time review subscriptions...');
-  
+
   const subscription = supabase
-    .channel('reviews-changes')
+    .channel('reviews-changes', {
+      config: {
+        broadcast: { self: false },
+        presence: { key: '' },
+      },
+    })
     .on(
       'postgres_changes',
       {
@@ -175,8 +180,18 @@ export const subscribeToReviewChanges = (callback: () => void) => {
         callback();
       }
     )
-    .subscribe((status) => {
-      logger.log('📡 Review subscription status:', status);
+    .subscribe((status, err) => {
+      if (status === 'SUBSCRIBED') {
+        logger.log('✅ Review subscription active');
+      } else if (status === 'CHANNEL_ERROR') {
+        logger.error('❌ Review subscription error:', err);
+      } else if (status === 'TIMED_OUT') {
+        logger.error('⏱️ Review subscription timed out');
+      } else if (status === 'CLOSED') {
+        logger.log('🔌 Review subscription closed');
+      } else {
+        logger.log('📡 Review subscription status:', status);
+      }
     });
 
   return () => {

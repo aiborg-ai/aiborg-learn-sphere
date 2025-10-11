@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import React, { useState, useMemo } from 'react';
 import { Bookmark, BookmarkCheck } from 'lucide-react';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { useToast } from '@/hooks/use-toast';
@@ -12,11 +11,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import { ActionButton, ActionButtonConfig } from '@/components/shared/ActionButton';
 
 interface BookmarkButtonProps {
   type: BookmarkType;
@@ -42,7 +42,7 @@ export function BookmarkButton({
   showLabel = false,
 }: BookmarkButtonProps) {
   const { toast } = useToast();
-  const { bookmarks, createBookmark, deleteBookmark, isBookmarked, getBookmark } = useBookmarks();
+  const { createBookmark, deleteBookmark, isBookmarked, getBookmark } = useBookmarks();
 
   const [showDialog, setShowDialog] = useState(false);
   const [customTitle, setCustomTitle] = useState(defaultTitle);
@@ -52,6 +52,17 @@ export function BookmarkButton({
 
   const bookmarked = isBookmarked(contentId, type);
   const existingBookmark = getBookmark(contentId, type);
+
+  // Define button configuration
+  const config: ActionButtonConfig = useMemo(() => ({
+    defaultIcon: Bookmark,
+    activeIcon: BookmarkCheck,
+    defaultLabel: 'Bookmark',
+    activeLabel: 'Bookmarked',
+    defaultTitle: 'Add bookmark',
+    activeTitle: 'Remove bookmark',
+    activeColorClass: 'text-yellow-500 hover:text-yellow-600',
+  }), []);
 
   const handleQuickBookmark = async () => {
     if (bookmarked && existingBookmark) {
@@ -133,24 +144,15 @@ export function BookmarkButton({
 
   return (
     <>
-      <Button
+      <ActionButton
+        config={config}
+        isActive={bookmarked}
+        onClick={handleQuickBookmark}
         variant={variant}
         size={size}
-        onClick={handleQuickBookmark}
-        className={cn(
-          'transition-colors',
-          bookmarked && 'text-yellow-500 hover:text-yellow-600',
-          className
-        )}
-        title={bookmarked ? 'Remove bookmark' : 'Add bookmark'}
-      >
-        {bookmarked ? (
-          <BookmarkCheck className={cn('h-4 w-4', showLabel && 'mr-2')} />
-        ) : (
-          <Bookmark className={cn('h-4 w-4', showLabel && 'mr-2')} />
-        )}
-        {showLabel && (bookmarked ? 'Bookmarked' : 'Bookmark')}
-      </Button>
+        className={className}
+        showLabel={showLabel}
+      />
 
       {/* Add Bookmark Dialog */}
       <Dialog open={showDialog} onOpenChange={handleDialogClose}>

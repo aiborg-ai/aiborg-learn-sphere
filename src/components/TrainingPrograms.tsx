@@ -7,19 +7,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Audience } from "@/contexts/PersonalizationContext";
 import { usePersonalization, AUDIENCE_CONFIG } from "@/contexts/PersonalizationContext";
-import { EnrollmentForm } from "@/components/EnrollmentForm";
-import { CourseDetailsModal } from "@/components/CourseDetailsModal";
+import { EnrollmentForm } from "@/components/forms";
+import { CourseDetailsModal, CourseRecordingsModal } from "@/components/modals";
 import type { Course } from "@/hooks/useCourses";
 import { useCourses } from "@/hooks/useCourses";
 import { useEnrollments } from "@/hooks/useEnrollments";
 import { useReviewCounts } from "@/hooks/useReviewCounts";
 import { useAuth } from "@/hooks/useAuth";
-import { 
-  Search, 
-  Filter, 
-  Clock, 
-  Calendar, 
-  Award, 
+import {
+  Search,
+  Filter,
+  Clock,
+  Calendar,
+  Award,
   ArrowRight,
   BookOpen,
   Video,
@@ -37,8 +37,7 @@ import {
   Star,
   MessageSquare
 } from "lucide-react";
-import { ShareButton } from "@/components/ShareButton";
-import { CourseRecordingsModal } from "@/components/CourseRecordingsModal";
+import { ShareButton } from "@/components/shared";
 
 export const TrainingPrograms = () => {
   const { courses, loading, error, refetch } = useCourses();

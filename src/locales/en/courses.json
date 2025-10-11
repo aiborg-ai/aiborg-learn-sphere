@@ -1,0 +1,61 @@
+{
+  "common": {
+    "course": "Course",
+    "courses": "Courses",
+    "myCourses": "My Courses",
+    "allCourses": "All Courses",
+    "enrolledCourses": "Enrolled Courses",
+    "availableCourses": "Available Courses"
+  },
+  "actions": {
+    "enroll": "Enroll Now",
+    "viewCourse": "View Course",
+    "continueCourse": "Continue Course",
+    "startCourse": "Start Course",
+    "completeCourse": "Complete Course",
+    "browseCourses": "Browse Courses"
+  },
+  "details": {
+    "overview": "Overview",
+    "materials": "Materials",
+    "quizzes": "Quizzes",
+    "exercises": "Exercises",
+    "workshops": "Workshops",
+    "assignments": "Assignments",
+    "description": "Description",
+    "instructor": "Instructor",
+    "duration": "Duration",
+    "level": "Level",
+    "price": "Price",
+    "free": "Free"
+  },
+  "progress": {
+    "title": "Your Progress",
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "notStarted": "Not Started",
+    "percentage": "{{percent}}% Complete",
+    "materials": "{{completed}} of {{total}} materials completed",
+    "quizzes": "{{completed}} of {{total}} quizzes completed"
+  },
+  "enrollment": {
+    "required": "Enrollment Required",
+    "requirementMessage": "You need to enroll in this course to access its content.",
+    "success": "Successfully enrolled in course",
+    "backToDashboard": "Back to Dashboard"
+  },
+  "errors": {
+    "notFound": "Course Not Found",
+    "notFoundMessage": "The course you're looking for doesn't exist or has been removed.",
+    "loadError": "Error loading course",
+    "enrollError": "Error enrolling in course"
+  },
+  "tabs": {
+    "overviewTab": "Overview tab",
+    "materialsTab": "Course materials tab",
+    "quizzesTab": "Quizzes tab, {{count}} quizzes available",
+    "exercisesTab": "Exercises tab, {{count}} exercises available",
+    "workshopsTab": "Workshops tab, {{count}} workshops available",
+    "assignmentsTab": "Assignments tab, {{count}} assignments available"
+  }
+}

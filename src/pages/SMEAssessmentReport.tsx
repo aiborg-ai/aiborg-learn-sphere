@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Navbar } from '@/components/Navbar';
-import { Footer } from '@/components/Footer';
+import { Navbar, Footer } from '@/components/navigation';
 import { useSMEAssessmentReport } from '@/hooks/useSMEAssessmentReport';
 import { exportSMEAssessmentReportToPDF } from '@/utils/pdfExport';
 import {

@@ -40,7 +40,8 @@ import {
 import { MiniCalendarWidget } from '@/components/calendar/MiniCalendarWidget';
 import { AIInsightsWidget } from '@/components/dashboard/AIInsightsWidget';
 import { StudyRecommendations } from '@/components/dashboard/StudyRecommendations';
-import { AIStudyAssistant } from '@/components/AIStudyAssistant';
+import { AIStudyAssistant } from '@/components/features';
+import { CompactLearningPathRecommendations } from '@/components/recommendations/CompactLearningPathRecommendations';
 import { ResourcesSection } from '@/components/dashboard/ResourcesSection';
 import { useUserResources } from '@/hooks/useUserResources';
 import { AttendanceTicketsSection } from '@/components/dashboard/AttendanceTicketsSection';
@@ -436,9 +437,10 @@ export default function DashboardRefactored() {
             </div>
 
             {/* AI-Powered Features Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <AIInsightsWidget />
               <StudyRecommendations />
+              {user && <CompactLearningPathRecommendations userId={user.id} />}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

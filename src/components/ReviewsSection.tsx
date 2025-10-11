@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useReviews } from "@/hooks/useReviews";
 import UnifiedReviewForm from "@/components/UnifiedReviewForm";
-import { MediaPlayer } from "@/components/MediaPlayer";
+import { MediaPlayer } from "@/components/media";
 import { 
   Star, 
   MessageSquare, 

@@ -1,0 +1,61 @@
+{
+  "common": {
+    "course": "Curso",
+    "courses": "Cursos",
+    "myCourses": "Mis Cursos",
+    "allCourses": "Todos los Cursos",
+    "enrolledCourses": "Cursos Inscritos",
+    "availableCourses": "Cursos Disponibles"
+  },
+  "actions": {
+    "enroll": "Inscribirse Ahora",
+    "viewCourse": "Ver Curso",
+    "continueCourse": "Continuar Curso",
+    "startCourse": "Iniciar Curso",
+    "completeCourse": "Completar Curso",
+    "browseCourses": "Explorar Cursos"
+  },
+  "details": {
+    "overview": "Resumen",
+    "materials": "Materiales",
+    "quizzes": "Cuestionarios",
+    "exercises": "Ejercicios",
+    "workshops": "Talleres",
+    "assignments": "Tareas",
+    "description": "Descripción",
+    "instructor": "Instructor",
+    "duration": "Duración",
+    "level": "Nivel",
+    "price": "Precio",
+    "free": "Gratis"
+  },
+  "progress": {
+    "title": "Tu Progreso",
+    "completed": "Completado",
+    "inProgress": "En Progreso",
+    "notStarted": "No Iniciado",
+    "percentage": "{{percent}}% Completado",
+    "materials": "{{completed}} de {{total}} materiales completados",
+    "quizzes": "{{completed}} de {{total}} cuestionarios completados"
+  },
+  "enrollment": {
+    "required": "Inscripción Requerida",
+    "requirementMessage": "Necesitas inscribirte en este curso para acceder a su contenido.",
+    "success": "Inscrito exitosamente en el curso",
+    "backToDashboard": "Volver al Panel"
+  },
+  "errors": {
+    "notFound": "Curso No Encontrado",
+    "notFoundMessage": "El curso que buscas no existe o ha sido eliminado.",
+    "loadError": "Error al cargar el curso",
+    "enrollError": "Error al inscribirse en el curso"
+  },
+  "tabs": {
+    "overviewTab": "Pestaña de resumen",
+    "materialsTab": "Pestaña de materiales del curso",
+    "quizzesTab": "Pestaña de cuestionarios, {{count}} cuestionarios disponibles",
+    "exercisesTab": "Pestaña de ejercicios, {{count}} ejercicios disponibles",
+    "workshopsTab": "Pestaña de talleres, {{count}} talleres disponibles",
+    "assignmentsTab": "Pestaña de tareas, {{count}} tareas disponibles"
+  }
+}

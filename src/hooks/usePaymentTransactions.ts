@@ -84,8 +84,7 @@ export const usePaymentTransactions = (options: UsePaymentTransactionsOptions = 
           *,
           user:profiles!user_id(display_name, email),
           course:courses(title)
-        `)
-        .order('payment_date', { ascending: false });
+        `);
 
       // Apply filters
       if (options.userId) {
@@ -106,6 +105,9 @@ export const usePaymentTransactions = (options: UsePaymentTransactionsOptions = 
       if (options.endDate) {
         query = query.lte('payment_date', options.endDate.toISOString());
       }
+
+      // Apply ordering last
+      query = query.order('payment_date', { ascending: false });
 
       const { data, error: fetchError } = await query;
 

@@ -1,0 +1,41 @@
+{
+  "menu": {
+    "home": "Home",
+    "programs": "Programs",
+    "blog": "Blog",
+    "events": "Events",
+    "reviews": "Reviews",
+    "about": "About",
+    "contact": "Contact",
+    "faq": "FAQ",
+    "terms": "Terms"
+  },
+  "aiAssessment": {
+    "title": "AI Assessment",
+    "badge": "NEW"
+  },
+  "user": {
+    "menu": "User Menu",
+    "dashboard": "My Dashboard",
+    "profile": "Profile",
+    "settings": "Settings",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "adminDashboard": "Admin Dashboard"
+  },
+  "features": {
+    "search": "Search",
+    "keyboardShortcuts": "Keyboard Shortcuts",
+    "themeToggle": "Toggle Theme"
+  },
+  "mobile": {
+    "openMenu": "Open Menu",
+    "closeMenu": "Close Menu"
+  },
+  "aria": {
+    "mainNavigation": "Main navigation",
+    "primaryMenu": "Primary menu",
+    "userAccountMenu": "User account menu",
+    "mobileMenu": "Mobile navigation menu"
+  }
+}

@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BookOpen, Calendar } from 'lucide-react';
-import { ReviewForm } from './ReviewForm';
-import EventReviewForm from './EventReviewForm';
+import { ReviewForm } from '@/components/forms';
+import EventReviewForm from '@/components/events/EventReviewForm';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function UnifiedReviewForm() {

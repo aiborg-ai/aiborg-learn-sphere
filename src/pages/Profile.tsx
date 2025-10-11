@@ -11,17 +11,31 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserReviews } from '@/hooks/useUserReviews';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, User, ArrowLeft, Save, Star, MessageSquare, Mic, Video, RefreshCw, ExternalLink, Brain, Target } from 'lucide-react';
+import { Loader2, User, ArrowLeft, Save, Star, MessageSquare, Mic, Video, RefreshCw, ExternalLink, Brain, Target, Trophy, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { NotificationSettings } from '@/components/NotificationSettings';
+import { NotificationSettings } from '@/components/shared';
 import AssessmentResultsCard from '@/components/assessment/AssessmentResultsCard';
 import { supabase } from '@/integrations/supabase/client';
+import { AchievementService, PointsService, LeaderboardService } from '@/services/gamification';
+import { LevelProgressBar, PointsDisplay, BadgeCollection, LeaderboardTable, TransactionHistory, ProgressChart } from '@/components/gamification';
+import type { UserProgress, Achievement, UserAchievement, Leaderboard, LeaderboardEntry, PointTransaction } from '@/services/gamification';
 
 export default function Profile() {
   const [isLoading, setIsLoading] = useState(false);
   const [displayName, setDisplayName] = useState('');
   const [assessments, setAssessments] = useState<unknown[]>([]);
   const [assessmentsLoading, setAssessmentsLoading] = useState(false);
+
+  // Gamification state
+  const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [userAchievements, setUserAchievements] = useState<UserAchievement[]>([]);
+  const [leaderboards, setLeaderboards] = useState<Leaderboard[]>([]);
+  const [leaderboardEntries, setLeaderboardEntries] = useState<Record<string, LeaderboardEntry[]>>({});
+  const [transactions, setTransactions] = useState<PointTransaction[]>([]);
+  const [progressData, setProgressData] = useState<Array<{ date: string; points: number; level: number; streak: number }>>([]);
+  const [gamificationLoading, setGamificationLoading] = useState(false);
+
   const { user, profile, updateProfile, loading } = useAuth();
   const { userReviews, loading: reviewsLoading, refetch: refetchReviews } = useUserReviews();
   const { toast } = useToast();
@@ -43,7 +57,9 @@ export default function Profile() {
 
     if (user) {
       fetchAssessments();
+      fetchGamificationData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, profile, loading, navigate]);
 
   const fetchAssessments = async () => {
@@ -65,6 +81,79 @@ export default function Profile() {
       logger.error('Error fetching assessments:', error);
     } finally {
       setAssessmentsLoading(false);
+    }
+  };
+
+  const fetchGamificationData = async () => {
+    if (!user) return;
+
+    setGamificationLoading(true);
+    try {
+      // Fetch user progress
+      const progress = await PointsService.getUserProgress(user.id);
+      setUserProgress(progress);
+
+      // Fetch all achievements
+      const allAchievements = await AchievementService.getAll();
+      setAchievements(allAchievements);
+
+      // Fetch user's unlocked achievements
+      const unlocked = await AchievementService.getUserAchievements(user.id);
+      setUserAchievements(unlocked);
+
+      // Fetch all leaderboards
+      const allLeaderboards = await LeaderboardService.getAll();
+      setLeaderboards(allLeaderboards);
+
+      // Fetch top entries for each leaderboard
+      const entriesMap: Record<string, LeaderboardEntry[]> = {};
+      for (const leaderboard of allLeaderboards) {
+        const entries = await LeaderboardService.getTopEntries(leaderboard.id, 10);
+        entriesMap[leaderboard.id] = entries;
+      }
+      setLeaderboardEntries(entriesMap);
+
+      // Fetch recent transactions
+      const recentTransactions = await PointsService.getRecentTransactions(user.id, 20);
+      setTransactions(recentTransactions);
+
+      // Generate progress data from transactions for charting
+      if (recentTransactions.length > 0) {
+        const progressPoints: Array<{ date: string; points: number; level: number; streak: number }> = [];
+        let runningPoints = 0;
+
+        // Sort transactions by date
+        const sorted = [...recentTransactions].sort((a, b) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        );
+
+        sorted.forEach((transaction, index) => {
+          runningPoints += transaction.amount;
+          const level = PointsService.calculateLevelFromPoints(runningPoints);
+          const date = new Date(transaction.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+          // Only add if date changed or it's the last one
+          if (index === 0 || date !== progressPoints[progressPoints.length - 1]?.date || index === sorted.length - 1) {
+            progressPoints.push({
+              date,
+              points: runningPoints,
+              level,
+              streak: progress?.current_streak || 0,
+            });
+          }
+        });
+
+        setProgressData(progressPoints);
+      }
+    } catch (error) {
+      logger.error('Error fetching gamification data:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load gamification data',
+        variant: 'destructive',
+      });
+    } finally {
+      setGamificationLoading(false);
     }
   };
 
@@ -147,7 +236,7 @@ export default function Profile() {
         </div>
 
         <Tabs defaultValue={defaultTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 bg-white/10 backdrop-blur-md border-white/20 md:grid-cols-5 overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-6 bg-white/10 backdrop-blur-md border-white/20 md:grid-cols-6 overflow-x-auto">
             <TabsTrigger value="profile" className="text-white data-[state=active]:bg-white/20">
               <User className="h-4 w-4 mr-2" />
               Profile
@@ -155,6 +244,10 @@ export default function Profile() {
             <TabsTrigger value="assessments" className="text-white data-[state=active]:bg-white/20">
               <Brain className="h-4 w-4 mr-2" />
               Assessments
+            </TabsTrigger>
+            <TabsTrigger value="gamification" className="text-white data-[state=active]:bg-white/20">
+              <Trophy className="h-4 w-4 mr-2" />
+              Stats
             </TabsTrigger>
             <TabsTrigger value="learning-paths" className="text-white data-[state=active]:bg-white/20">
               <Target className="h-4 w-4 mr-2" />
@@ -336,6 +429,136 @@ export default function Profile() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="gamification">
+            <div className="space-y-6">
+              {gamificationLoading ? (
+                <Card className="bg-white/10 backdrop-blur-md border-white/20">
+                  <CardContent className="p-12">
+                    <div className="text-center">
+                      <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-white" />
+                      <p className="text-white/80">Loading your stats...</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <>
+                  {/* Progress & Points Overview */}
+                  {userProgress && (
+                    <Card className="bg-white/10 backdrop-blur-md border-white/20">
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <CardTitle className="text-white flex items-center gap-2">
+                              <Award className="h-5 w-5" />
+                              Your Progress
+                            </CardTitle>
+                            <CardDescription className="text-white/80">
+                              Level, points, and achievements
+                            </CardDescription>
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={fetchGamificationData}
+                            className="text-white border-white/20 hover:bg-white/10"
+                          >
+                            <RefreshCw className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        {/* Level Progress Bar */}
+                        <div className="bg-white/5 rounded-lg p-4">
+                          <LevelProgressBar progress={userProgress} showDetails={true} />
+                        </div>
+
+                        {/* Points Display */}
+                        <div className="bg-white/5 rounded-lg p-4">
+                          <PointsDisplay progress={userProgress} variant="full" showStreak={true} />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Progress Chart */}
+                  {progressData.length > 0 && (
+                    <div className="bg-white/10 backdrop-blur-md rounded-lg p-1">
+                      <ProgressChart
+                        data={progressData}
+                        type="area"
+                        showStreak={true}
+                        height={300}
+                      />
+                    </div>
+                  )}
+
+                  {/* Transaction History */}
+                  {transactions.length > 0 && (
+                    <div className="bg-white/10 backdrop-blur-md rounded-lg">
+                      <TransactionHistory
+                        transactions={transactions}
+                        showTitle={true}
+                        maxHeight="400px"
+                      />
+                    </div>
+                  )}
+
+                  {/* Achievements / Badges */}
+                  <Card className="bg-white/10 backdrop-blur-md border-white/20">
+                    <CardHeader>
+                      <CardTitle className="text-white flex items-center gap-2">
+                        <Trophy className="h-5 w-5" />
+                        Achievements ({userAchievements.length}/{achievements.length})
+                      </CardTitle>
+                      <CardDescription className="text-white/80">
+                        Unlock badges by completing challenges
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      {achievements.length === 0 ? (
+                        <div className="text-center py-8">
+                          <Trophy className="h-12 w-12 text-white/50 mx-auto mb-4" />
+                          <p className="text-white/60">No achievements available yet</p>
+                        </div>
+                      ) : (
+                        <BadgeCollection
+                          achievements={achievements}
+                          userAchievements={userAchievements}
+                          showProgress={true}
+                          userName={profile?.display_name || user?.email || 'AIBORG Learner'}
+                        />
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Leaderboards */}
+                  {leaderboards.map((leaderboard) => (
+                    <div key={leaderboard.id}>
+                      <LeaderboardTable
+                        leaderboard={leaderboard}
+                        entries={leaderboardEntries[leaderboard.id] || []}
+                        currentUserId={user?.id}
+                        highlightCurrent={true}
+                        showMedals={true}
+                      />
+                    </div>
+                  ))}
+
+                  {leaderboards.length === 0 && (
+                    <Card className="bg-white/10 backdrop-blur-md border-white/20">
+                      <CardContent className="p-12">
+                        <div className="text-center">
+                          <Trophy className="h-12 w-12 text-white/50 mx-auto mb-4" />
+                          <p className="text-white/60">Leaderboards coming soon!</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </>
+              )}
+            </div>
           </TabsContent>
 
           <TabsContent value="learning-paths">

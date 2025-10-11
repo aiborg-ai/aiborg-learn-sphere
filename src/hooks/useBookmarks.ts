@@ -44,8 +44,7 @@ export const useBookmarks = (options: UseBookmarksOptions = {}) => {
           material:course_materials(id, title, material_type, file_url),
           assignment:homework_assignments(id, title, due_date)
         `)
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .eq('user_id', user.id);
 
       // Apply filters
       if (filters?.bookmark_type) {
@@ -67,6 +66,9 @@ export const useBookmarks = (options: UseBookmarksOptions = {}) => {
       if (filters?.search) {
         query = query.or(`title.ilike.%${filters.search}%,note.ilike.%${filters.search}%`);
       }
+
+      // Apply ordering last
+      query = query.order('created_at', { ascending: false });
 
       const { data, error: fetchError } = await query;
 

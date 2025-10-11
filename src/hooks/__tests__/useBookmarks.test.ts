@@ -141,7 +141,9 @@ describe('useBookmarks', () => {
       );
 
       await waitFor(() => {
-        expect(mockQuery.eq).toHaveBeenCalledWith('bookmark_type', 'course');
+        // First call is for user_id, second call is for bookmark_type
+        expect(mockQuery.eq).toHaveBeenNthCalledWith(1, 'user_id', mockUser.id);
+        expect(mockQuery.eq).toHaveBeenNthCalledWith(2, 'bookmark_type', 'course');
       });
     });
 
@@ -322,9 +324,8 @@ describe('useBookmarks', () => {
 
       const mockDeleteQuery = {
         delete: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockResolvedValue({
-          error: null,
-        }),
+        eq: vi.fn().mockReturnThis(),
+        then: vi.fn((resolve) => resolve({ error: null })),
       };
 
       (supabase.from as ReturnType<typeof vi.fn>)

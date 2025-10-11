@@ -6,17 +6,17 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { PersonalizationProvider } from '@/contexts/PersonalizationContext';
 import { ThemeProvider } from '@/components/theme-provider';
-import { Loader2 } from 'lucide-react';
+import { Icon } from '@/utils/iconLoader';
 import { useGlobalShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { CommandPalette } from '@/components/CommandPalette';
-import { KeyboardShortcutsHelp } from '@/components/KeyboardShortcutsHelp';
-import { OfflineBanner } from '@/components/OfflineBanner';
+import { CommandPalette } from '@/components/features';
+import { KeyboardShortcutsHelp, OfflineBanner } from '@/components/shared';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { PerformanceMonitoring } from '@/components/monitoring/PerformanceMonitoring';
 
 // Create a loading component
 const PageLoader = () => (
   <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
-    <Loader2 className="h-8 w-8 animate-spin text-white" />
+    <Icon name="Loader2" size={32} className="animate-spin text-white" />
   </div>
 );
 
@@ -57,6 +57,7 @@ const LearningPathWizard = lazy(() => import('./components/learning-path/Learnin
 const AILearningPathDetail = lazy(() => import('./pages/AILearningPathDetail'));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 const GamificationPage = lazy(() => import('./pages/GamificationPage'));
+const IconTest = lazy(() => import('@/components/shared/IconTest').then(m => ({ default: m.IconTest })));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -76,6 +77,7 @@ const AppWithShortcuts = () => {
   return (
     <>
       <OfflineBanner />
+      <PerformanceMonitoring />
       <CommandPalette />
       <KeyboardShortcutsHelp shortcuts={shortcuts} />
       <Toaster />
@@ -119,6 +121,7 @@ const AppWithShortcuts = () => {
             <Route path="/learning-path/ai/:pathId" element={<AILearningPathDetail />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/gamification" element={<GamificationPage />} />
+            <Route path="/test-icons" element={<IconTest />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

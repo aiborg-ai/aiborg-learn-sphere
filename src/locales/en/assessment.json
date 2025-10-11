@@ -1,0 +1,61 @@
+{
+  "hero": {
+    "title": "Discover Your",
+    "titleHighlight": "AI Augmentation Level",
+    "description": "Take our comprehensive assessment to understand how AI-augmented you are in your daily work and get a personalized roadmap to increase your productivity with AI tools.",
+    "startButton": "Start Free Assessment",
+    "learnMore": "Learn More",
+    "requirements": "Sign in required • No credit card needed • Takes 10-15 minutes • Instant results"
+  },
+  "stats": {
+    "assessmentsTaken": "Assessments Taken",
+    "userSatisfaction": "User Satisfaction",
+    "productivityGain": "Avg. Productivity Gain"
+  },
+  "features": {
+    "title": "Why Take This Assessment?",
+    "subtitle": "Get actionable insights to transform your productivity with AI",
+    "duration": {
+      "title": "10-15 Minutes",
+      "description": "Quick, comprehensive assessment of your AI tool usage"
+    },
+    "analysis": {
+      "title": "Detailed Analysis",
+      "description": "Get insights across 8 key AI usage categories"
+    },
+    "comparison": {
+      "title": "Peer Comparison",
+      "description": "See how you compare to others in your field"
+    },
+    "roadmap": {
+      "title": "Personalized Roadmap",
+      "description": "Get a custom plan to increase AI augmentation"
+    },
+    "badges": {
+      "title": "Earn Badges",
+      "description": "Unlock achievements as you improve"
+    },
+    "tracking": {
+      "title": "Track Progress",
+      "description": "Monitor your AI adoption journey over time"
+    }
+  },
+  "wizard": {
+    "progress": "Question {{current}} of {{total}}",
+    "skip": "Skip",
+    "previous": "Previous",
+    "next": "Next",
+    "submit": "Submit Assessment",
+    "selectAnswer": "Select your answer",
+    "multipleAnswers": "Select all that apply"
+  },
+  "results": {
+    "title": "Your Assessment Results",
+    "score": "Your Score",
+    "level": "Your Level",
+    "recommendations": "Recommendations",
+    "shareResults": "Share Results",
+    "retakeAssessment": "Retake Assessment",
+    "viewDetails": "View Detailed Report"
+  }
+}

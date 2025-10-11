@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { logger } from '@/utils/logger';
-import { Button } from '@/components/ui/button';
 import { Clock, CheckCircle } from 'lucide-react';
 import { useWatchLater } from '@/hooks/useWatchLater';
 import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
+import { ActionButton, ActionButtonConfig } from '@/components/shared/ActionButton';
 
 interface WatchLaterButtonProps {
   materialId: string;
@@ -28,6 +27,17 @@ export function WatchLaterButton({
 
   const inQueue = isInQueue(materialId);
   const queueItem = getQueueItem(materialId);
+
+  // Define button configuration
+  const config: ActionButtonConfig = useMemo(() => ({
+    defaultIcon: Clock,
+    activeIcon: CheckCircle,
+    defaultLabel: 'Watch Later',
+    activeLabel: 'In Queue',
+    defaultTitle: 'Add to Watch Later',
+    activeTitle: 'Remove from Watch Later',
+    activeColorClass: 'text-blue-600 dark:text-blue-500',
+  }), []);
 
   const handleToggle = async () => {
     try {
@@ -58,23 +68,14 @@ export function WatchLaterButton({
   };
 
   return (
-    <Button
+    <ActionButton
+      config={config}
+      isActive={inQueue}
+      onClick={handleToggle}
       variant={variant}
       size={size}
-      onClick={handleToggle}
-      className={cn(
-        'transition-colors',
-        inQueue && 'text-blue-600 dark:text-blue-500',
-        className
-      )}
-      title={inQueue ? 'Remove from Watch Later' : 'Add to Watch Later'}
-    >
-      {inQueue ? (
-        <CheckCircle className={cn('h-4 w-4', showLabel && 'mr-2')} />
-      ) : (
-        <Clock className={cn('h-4 w-4', showLabel && 'mr-2')} />
-      )}
-      {showLabel && (inQueue ? 'In Queue' : 'Watch Later')}
-    </Button>
+      className={className}
+      showLabel={showLabel}
+    />
   );
 }

@@ -1,14 +1,11 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import { HeroSection } from "@/components/HeroSection";
+import { Navbar, Footer } from "@/components/navigation";
+import { HeroSection, ContactSection, AboutSection } from "@/components/sections";
 import { TrainingPrograms } from "@/components/TrainingPrograms";
-import { EventsSection } from "@/components/EventsSection";
+import { EventsSection } from "@/components/events";
 import { ReviewsSection } from "@/components/ReviewsSection";
-import { AIChatbot } from "@/components/AIChatbot";
-import { ContactSection } from "@/components/ContactSection";
-import { AboutSection } from "@/components/AboutSection";
+import { AIChatbot } from "@/components/features";
 
 const Index = () => {
   const location = useLocation();

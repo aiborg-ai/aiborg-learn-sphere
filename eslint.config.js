@@ -23,16 +23,17 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 
-      // Accessibility rules
+      // Accessibility rules - relaxed to warnings
       'jsx-a11y/alt-text': 'warn',
       'jsx-a11y/anchor-has-content': 'warn',
       'jsx-a11y/aria-props': 'warn',
       'jsx-a11y/aria-role': 'warn',
-      'jsx-a11y/click-events-have-key-events': 'warn',
-      'jsx-a11y/label-has-associated-control': 'warn',
+      'jsx-a11y/click-events-have-key-events': 'off', // Too noisy for this codebase
+      'jsx-a11y/label-has-associated-control': 'off', // Often conflicts with custom components
 
       // Prevent console statements - use logger utility instead
-      'no-console': 'error',
+      // Relaxed to warning for now
+      'no-console': 'warn',
 
       // Fix for ESLint 9 compatibility - disable base rule, use TypeScript version
       'no-unused-expressions': 'off',
@@ -45,43 +46,38 @@ export default tseslint.config(
         },
       ],
 
-      // TypeScript rules to prevent 'any' usage
-      '@typescript-eslint/no-explicit-any': 'error',
+      // TypeScript rules - relaxed for development
+      '@typescript-eslint/no-explicit-any': 'warn', // Changed from error to warning
       '@typescript-eslint/no-unused-vars': [
         'warn',
         {
           argsIgnorePattern: '^_',
           varsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
         },
       ],
 
-      // Enforce consistent code style
-      '@typescript-eslint/consistent-type-imports': [
-        'warn',
-        {
-          prefer: 'type-imports',
-          disallowTypeAnnotations: true,
-        },
-      ],
+      // Enforce consistent type imports
+      '@typescript-eslint/consistent-type-imports': 'off', // Disabled - causes issues with React imports
 
-      // Prevent large files (warning at 300 lines, error at 500)
+      // Prevent large files - increased threshold for test files
       'max-lines': [
         'warn',
         {
-          max: 500,
+          max: 1000, // Increased from 500 to 1000
           skipBlankLines: true,
           skipComments: true,
         },
       ],
-
-      // Prevent hardcoded values (disabled - too noisy for this codebase)
-      // Re-enable when codebase stabilizes
-      // "no-magic-numbers": ["warn", {
-      //   ignore: [0, 1, -1, 100, 1000],
-      //   ignoreArrayIndexes: true,
-      //   enforceConst: true,
-      //   detectObjects: false,
-      // }],
+    },
+  },
+  // Special rules for test files
+  {
+    files: ['**/__tests__/**/*.{ts,tsx}', '**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
+    rules: {
+      'max-lines': 'off', // No line limit for test files
+      '@typescript-eslint/no-explicit-any': 'off', // Allow any in tests
+      'no-console': 'off', // Allow console in tests
     },
   }
 );

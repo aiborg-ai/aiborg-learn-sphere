@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { logger } from '@/utils/logger';
-import { Button } from '@/components/ui/button';
 import { Download, CheckCircle, Loader2 } from 'lucide-react';
 import { useDownloads, getDeviceInfo } from '@/hooks/useDownloads';
 import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
+import { ActionButton, ActionButtonConfig } from '@/components/shared/ActionButton';
 import type { CreateDownloadInput, FileType } from '@/types/content-access';
 
 interface DownloadButtonProps {
@@ -43,6 +42,19 @@ export function DownloadButton({
   const [downloading, setDownloading] = useState(false);
 
   const alreadyDownloaded = isDownloaded(materialId);
+
+  // Define button configuration
+  const config: ActionButtonConfig = useMemo(() => ({
+    defaultIcon: Download,
+    activeIcon: CheckCircle,
+    loadingIcon: Loader2,
+    defaultLabel: 'Download',
+    activeLabel: 'Downloaded',
+    loadingLabel: 'Downloading...',
+    defaultTitle: 'Download',
+    activeTitle: 'Downloaded before',
+    activeColorClass: 'text-green-600 dark:text-green-500',
+  }), []);
 
   const handleDownload = async () => {
     try {
@@ -96,26 +108,15 @@ export function DownloadButton({
   };
 
   return (
-    <Button
+    <ActionButton
+      config={config}
+      isActive={alreadyDownloaded}
+      isLoading={downloading}
+      onClick={handleDownload}
       variant={variant}
       size={size}
-      onClick={handleDownload}
-      disabled={downloading}
-      className={cn(
-        'transition-colors',
-        alreadyDownloaded && 'text-green-600 dark:text-green-500',
-        className
-      )}
-      title={alreadyDownloaded ? 'Downloaded before' : 'Download'}
-    >
-      {downloading ? (
-        <Loader2 className={cn('h-4 w-4 animate-spin', showLabel && 'mr-2')} />
-      ) : alreadyDownloaded ? (
-        <CheckCircle className={cn('h-4 w-4', showLabel && 'mr-2')} />
-      ) : (
-        <Download className={cn('h-4 w-4', showLabel && 'mr-2')} />
-      )}
-      {showLabel && (downloading ? 'Downloading...' : alreadyDownloaded ? 'Downloaded' : 'Download')}
-    </Button>
+      className={className}
+      showLabel={showLabel}
+    />
   );
 }

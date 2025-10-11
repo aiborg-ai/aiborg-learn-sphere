@@ -165,6 +165,11 @@ describe('useEnrollments', () => {
 
       const enrollment = await result.current.enrollInCourse(3, 199.99);
 
+      // Wait for state update after enrollment
+      await waitFor(() => {
+        expect(result.current.enrollments).toContainEqual(newEnrollment);
+      });
+
       expect(enrollment).toEqual(newEnrollment);
       expect(mockInsertQuery.insert).toHaveBeenCalledWith({
         user_id: mockUser.id,
@@ -235,6 +240,11 @@ describe('useEnrollments', () => {
 
       await result.current.enrollInCourse(4);
 
+      // Wait for state update after enrollment
+      await waitFor(() => {
+        expect(result.current.enrollments).toContainEqual(newEnrollment);
+      });
+
       expect(invokeFunc).toHaveBeenCalledWith('generate-invoice', {
         body: {
           enrollmentId: newEnrollment.id,
@@ -287,6 +297,11 @@ describe('useEnrollments', () => {
       });
 
       const enrollment = await result.current.enrollInCourse(5);
+
+      // Wait for state update after enrollment
+      await waitFor(() => {
+        expect(result.current.enrollments).toContainEqual(newEnrollment);
+      });
 
       expect(enrollment).toEqual(newEnrollment);
       expect(result.current.enrollments).toContainEqual(newEnrollment);

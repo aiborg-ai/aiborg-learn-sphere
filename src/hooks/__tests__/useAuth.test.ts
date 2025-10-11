@@ -278,7 +278,7 @@ describe('useAuth', () => {
       const mockFrom = vi.fn().mockReturnValue({
         select: vi.fn().mockReturnThis(),
         update: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
+        eq: vi.fn().mockResolvedValue({ data: mockProfile, error: null }),
         single: vi.fn().mockResolvedValue({ data: mockProfile, error: null }),
       });
 

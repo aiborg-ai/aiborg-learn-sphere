@@ -1,0 +1,67 @@
+{
+  "app": {
+    "name": "Aiborg",
+    "tagline": "Plataforma de Aprendizaje Impulsada por IA"
+  },
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "submit": "Enviar",
+    "continue": "Continuar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "finish": "Finalizar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "export": "Exportar",
+    "import": "Importar",
+    "download": "Descargar",
+    "upload": "Subir",
+    "refresh": "Actualizar",
+    "loading": "Cargando...",
+    "viewMore": "Ver Más",
+    "viewLess": "Ver Menos",
+    "learnMore": "Saber Más",
+    "getStarted": "Comenzar"
+  },
+  "status": {
+    "success": "Éxito",
+    "error": "Error",
+    "warning": "Advertencia",
+    "info": "Información",
+    "pending": "Pendiente",
+    "completed": "Completado",
+    "inProgress": "En Progreso",
+    "failed": "Fallido"
+  },
+  "messages": {
+    "success": "Operación completada exitosamente",
+    "error": "Ocurrió un error. Por favor, inténtalo de nuevo.",
+    "noData": "No hay datos disponibles",
+    "loading": "Cargando datos...",
+    "saved": "Cambios guardados exitosamente",
+    "deleted": "Eliminado exitosamente",
+    "confirmDelete": "¿Estás seguro de que quieres eliminar este elemento?"
+  },
+  "time": {
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "tomorrow": "Mañana",
+    "thisWeek": "Esta Semana",
+    "thisMonth": "Este Mes",
+    "lastWeek": "Semana Pasada",
+    "lastMonth": "Mes Pasado"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "email": "Por favor, introduce una dirección de correo válida",
+    "minLength": "La longitud mínima es {{min}} caracteres",
+    "maxLength": "La longitud máxima es {{max}} caracteres",
+    "password": "La contraseña debe tener al menos 8 caracteres",
+    "passwordMatch": "Las contraseñas no coinciden"
+  }
+}

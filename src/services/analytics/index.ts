@@ -12,6 +12,7 @@ export { SkillGapService } from './SkillGapService';
 export { CompetencyService } from './CompetencyService';
 export { AIRecommendationService } from './AIRecommendationService';
 export { BenchmarkService } from './BenchmarkService';
+export { AdminAnalyticsService } from './AdminAnalyticsService';
 
 // Re-export legacy unified service (facade for backward compatibility)
 export { AnalyticsService } from '../AnalyticsService';
