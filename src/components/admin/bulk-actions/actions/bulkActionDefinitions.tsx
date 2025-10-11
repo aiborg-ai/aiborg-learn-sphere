@@ -185,7 +185,7 @@ export const createBulkActions = (
       if (eventIds.length > 0) {
         await supabase
           .from('events')
-          .update({ is_active: false, display: false })
+          .update({ is_active: false, is_visible: false })
           .in('id', eventIds);
       }
 

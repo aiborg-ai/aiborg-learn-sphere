@@ -47,7 +47,7 @@ interface Event {
   location: string;
   max_capacity: number;
   registration_count?: number;
-  display: boolean;
+  is_visible: boolean;
   is_active: boolean;
   is_past: boolean;
   event_type: string;
@@ -80,7 +80,7 @@ export function EventsManagementEnhanced() {
       event_time: '10:00',
       location: 'Online',
       max_capacity: 50,
-      display: true,
+      is_visible: true,
       is_active: true,
       is_past: false,
       event_type: 'workshop',
@@ -122,7 +122,7 @@ export function EventsManagementEnhanced() {
       event_time: '10:00',
       location: 'Online',
       max_capacity: 50,
-      display: true,
+      is_visible: true,
       is_active: true,
       is_past: false,
       event_type: 'workshop',
@@ -158,7 +158,7 @@ export function EventsManagementEnhanced() {
             event_time: data.event_time,
             location: data.location,
             max_capacity: data.max_capacity,
-            display: data.display,
+            is_visible: data.is_visible,
             is_active: data.is_active,
             is_past: data.is_past,
             event_type: data.event_type,
@@ -182,7 +182,7 @@ export function EventsManagementEnhanced() {
           location: data.location,
           max_capacity: data.max_capacity,
           registration_count: 0,
-          display: data.display,
+          is_visible: data.is_visible,
           is_active: data.is_active,
           is_past: data.is_past,
           event_type: data.event_type,
@@ -240,7 +240,7 @@ export function EventsManagementEnhanced() {
     }
   };
 
-  const toggleEventStatus = async (event: Event, field: 'is_active' | 'display') => {
+  const toggleEventStatus = async (event: Event, field: 'is_active' | 'is_visible') => {
     try {
       const { error } = await supabase
         .from('events')
@@ -424,8 +424,8 @@ export function EventsManagementEnhanced() {
                       </TableCell>
                       <TableCell>
                         <Switch
-                          checked={event.display}
-                          onCheckedChange={() => toggleEventStatus(event, 'display')}
+                          checked={event.is_visible}
+                          onCheckedChange={() => toggleEventStatus(event, 'is_visible')}
                         />
                       </TableCell>
                       <TableCell>
@@ -566,8 +566,8 @@ export function EventsManagementEnhanced() {
               </div>
 
               <div className="flex items-center space-x-2">
-                <Switch id="display" {...register('display')} defaultChecked={watch('display')} />
-                <Label htmlFor="display">Visible on Website</Label>
+                <Switch id="is_visible" {...register('is_visible')} defaultChecked={watch('is_visible')} />
+                <Label htmlFor="is_visible">Visible on Website</Label>
               </div>
             </div>
 

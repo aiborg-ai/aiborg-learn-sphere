@@ -38,6 +38,7 @@ export function EventsSection() {
           .from('events')
           .select('*')
           .eq('is_past', true)
+          .eq('is_visible', true)
           .order('event_date', { ascending: false });
 
         if (eventsError) throw eventsError;

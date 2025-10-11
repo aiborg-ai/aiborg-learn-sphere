@@ -27,6 +27,7 @@ export interface Event {
   max_capacity: number | null;
   current_registrations: number;
   is_active: boolean;
+  is_visible: boolean;
   is_past: boolean;
   created_at: string;
   updated_at: string;
@@ -46,6 +47,7 @@ export const useEvents = () => {
         .from('events')
         .select('*')
         .eq('is_active', true)
+        .eq('is_visible', true)
         .order('event_date', { ascending: true });
 
       if (error) {
