@@ -94,7 +94,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-4-turbo-preview', // Or use 'gpt-3.5-turbo' for lower cost
         messages: [
           { role: 'system', content: enhancedSystemPrompt },
           ...sanitizedMessages
