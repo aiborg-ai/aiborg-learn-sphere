@@ -27,7 +27,7 @@ export interface Event {
   max_capacity: number | null;
   current_registrations: number;
   is_active: boolean;
-  is_visible: boolean;
+  is_visible?: boolean; // Optional for backward compatibility
   is_past: boolean;
   created_at: string;
   updated_at: string;
@@ -43,18 +43,37 @@ export const useEvents = () => {
     try {
       setLoading(true);
       setError(null);
-      const { data, error } = await supabase
+
+      // Try with is_visible filter first
+      let { data, error } = await supabase
         .from('events')
         .select('*')
         .eq('is_active', true)
         .eq('is_visible', true)
         .order('event_date', { ascending: true });
 
+      // Fallback if is_visible column doesn't exist yet
+      if (error && error.message?.includes('column')) {
+        logger.warn('is_visible column not found, falling back to is_active only');
+        const fallback = await supabase
+          .from('events')
+          .select('*')
+          .eq('is_active', true)
+          .order('event_date', { ascending: true});
+        data = fallback.data;
+        error = fallback.error;
+      }
+
       if (error) {
         throw error;
       }
 
-      setEvents(data || []);
+      // Filter by is_visible client-side if column exists
+      const filteredData = (data || []).filter(event =>
+        event.is_visible === undefined || event.is_visible === true
+      );
+
+      setEvents(filteredData);
     } catch (err) {
       logger.error('Error fetching events:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch events');

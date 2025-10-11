@@ -34,12 +34,24 @@ export function EventsSection() {
   useEffect(() => {
     const fetchPastEvents = async () => {
       try {
-        const { data: pastEvents, error: eventsError } = await supabase
+        // Try with is_visible filter
+        let { data: pastEvents, error: eventsError } = await supabase
           .from('events')
           .select('*')
           .eq('is_past', true)
           .eq('is_visible', true)
-          .order('event_date', { ascending: false });
+          .order('event_date', { ascending: false});
+
+        // Fallback if is_visible column doesn't exist yet
+        if (eventsError && eventsError.message?.includes('column')) {
+          const fallback = await supabase
+            .from('events')
+            .select('*')
+            .eq('is_past', true)
+            .order('event_date', { ascending: false});
+          pastEvents = fallback.data;
+          eventsError = fallback.error;
+        }
 
         if (eventsError) throw eventsError;
 
