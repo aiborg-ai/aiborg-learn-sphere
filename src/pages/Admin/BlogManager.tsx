@@ -58,6 +58,9 @@ export default function BlogManager() {
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [isPostDialogOpen, setIsPostDialogOpen] = useState(false);
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [pageSize, setPageSize] = useState(50); // Show 50 posts per page
 
   // Form state for new/edit post
   const [postForm, setPostForm] = useState({
@@ -86,16 +89,21 @@ export default function BlogManager() {
     if (isAdmin) {
       fetchData();
     }
-  }, [isAdmin]);
+  }, [isAdmin, currentPage, pageSize]);
 
   const fetchData = async () => {
     try {
       setLoading(true);
       const [postsData, categoriesData] = await Promise.all([
-        BlogService.getPosts({ status: undefined }), // Get all posts
+        BlogService.getPosts({
+          status: undefined, // Get all posts regardless of status
+          page: currentPage,
+          limit: pageSize,
+        }),
         BlogService.getCategories(),
       ]);
       setPosts(postsData.posts);
+      setTotalCount(postsData.count || 0);
       setCategories(categoriesData);
     } catch (error) {
       logger.error('Error fetching blog data:', error);
@@ -342,7 +350,8 @@ export default function BlogManager() {
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{posts.length}</div>
+            <div className="text-2xl font-bold">{totalCount}</div>
+            <p className="text-xs text-muted-foreground mt-1">{posts.length} on this page</p>
           </CardContent>
         </Card>
         <Card>
@@ -381,8 +390,34 @@ export default function BlogManager() {
       {/* Posts Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Blog Posts</CardTitle>
-          <CardDescription>Manage your blog content</CardDescription>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle>Blog Posts</CardTitle>
+              <CardDescription>
+                Showing {posts.length} of {totalCount} posts (Page {currentPage} of{' '}
+                {Math.ceil(totalCount / pageSize)})
+              </CardDescription>
+            </div>
+            <div className="flex gap-2 items-center">
+              <Select
+                value={pageSize.toString()}
+                onValueChange={val => {
+                  setPageSize(Number(val));
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Posts per page" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="25">25 per page</SelectItem>
+                  <SelectItem value="50">50 per page</SelectItem>
+                  <SelectItem value="100">100 per page</SelectItem>
+                  <SelectItem value="500">500 per page</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -477,6 +512,41 @@ export default function BlogManager() {
                 ))}
               </TableBody>
             </Table>
+          )}
+
+          {/* Pagination Controls */}
+          {!loading && totalCount > 0 && (
+            <div className="flex justify-between items-center mt-4 pt-4 border-t">
+              <div className="text-sm text-muted-foreground">
+                Showing {(currentPage - 1) * pageSize + 1} to{' '}
+                {Math.min(currentPage * pageSize, totalCount)} of {totalCount} posts
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </Button>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">
+                    Page {currentPage} of {Math.ceil(totalCount / pageSize)}
+                  </span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setCurrentPage(p => Math.min(Math.ceil(totalCount / pageSize), p + 1))
+                  }
+                  disabled={currentPage >= Math.ceil(totalCount / pageSize)}
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>
