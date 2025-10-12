@@ -21,9 +21,40 @@ The admin dashboard was only showing **12 posts** because:
 
 ---
 
+## ⚠️ IMPORTANT: Fix Author ID First
+
+**Before deploying batches**, you need to fix the author_id foreign key constraint.
+
+### Quick Fix (30 seconds)
+
+Run this in Supabase SQL Editor first:
+
+```sql
+ALTER TABLE blog_posts ALTER COLUMN author_id DROP NOT NULL;
+```
+
+**Why?** The SQL batches use a system user ID that doesn't exist in your database.
+
+📖 See `scripts/blog_inserts/FIX_AUTHOR_ERROR.md` for detailed explanation.
+
+---
+
 ## Deployment Options
 
-### Option 1: Supabase Dashboard SQL Editor (Recommended)
+### Option 1: Automated Script (Fastest - Recommended)
+
+**Fixes author_id AND deploys all batches automatically:**
+
+```bash
+cd /home/vik/aiborg_CC/aiborg-learn-sphere/scripts/blog_inserts
+./fix_and_deploy.sh
+```
+
+**Time:** 5-10 minutes | **Steps:** 1 command
+
+---
+
+### Option 2: Supabase Dashboard SQL Editor
 
 **Best for:** Production deployment with visual confirmation
 
