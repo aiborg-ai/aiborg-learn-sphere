@@ -7,13 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -47,6 +41,7 @@ import {
   Edit,
   Trash2,
   Eye,
+  EyeOff,
   FileText,
   TrendingUp,
   Users,
@@ -197,6 +192,26 @@ export default function BlogManager() {
     }
   };
 
+  const handleTogglePostStatus = async (post: BlogPost) => {
+    const newStatus = post.status === 'published' ? 'archived' : 'published';
+
+    try {
+      await BlogService.updatePost(post.id, { status: newStatus });
+      toast({
+        title: 'Success',
+        description: `Post ${newStatus === 'published' ? 'published' : 'archived'} successfully`,
+      });
+      fetchData();
+    } catch (error) {
+      logger.error('Error updating post status:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update post status',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const handleCreateCategory = async () => {
     try {
       await BlogService.createCategory(categoryForm);
@@ -269,18 +284,14 @@ export default function BlogManager() {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Create Category</DialogTitle>
-                <DialogDescription>
-                  Add a new category for blog posts
-                </DialogDescription>
+                <DialogDescription>Add a new category for blog posts</DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
                   <Label>Name</Label>
                   <Input
                     value={categoryForm.name}
-                    onChange={(e) =>
-                      setCategoryForm({ ...categoryForm, name: e.target.value })
-                    }
+                    onChange={e => setCategoryForm({ ...categoryForm, name: e.target.value })}
                     placeholder="e.g., Technology"
                   />
                 </div>
@@ -288,9 +299,7 @@ export default function BlogManager() {
                   <Label>Slug</Label>
                   <Input
                     value={categoryForm.slug}
-                    onChange={(e) =>
-                      setCategoryForm({ ...categoryForm, slug: e.target.value })
-                    }
+                    onChange={e => setCategoryForm({ ...categoryForm, slug: e.target.value })}
                     placeholder="e.g., technology"
                   />
                 </div>
@@ -298,7 +307,7 @@ export default function BlogManager() {
                   <Label>Description</Label>
                   <Textarea
                     value={categoryForm.description}
-                    onChange={(e) =>
+                    onChange={e =>
                       setCategoryForm({ ...categoryForm, description: e.target.value })
                     }
                     placeholder="Category description..."
@@ -309,9 +318,7 @@ export default function BlogManager() {
                   <Input
                     type="color"
                     value={categoryForm.color}
-                    onChange={(e) =>
-                      setCategoryForm({ ...categoryForm, color: e.target.value })
-                    }
+                    onChange={e => setCategoryForm({ ...categoryForm, color: e.target.value })}
                   />
                 </div>
               </div>
@@ -345,7 +352,7 @@ export default function BlogManager() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {posts.filter((p) => p.status === 'published').length}
+              {posts.filter(p => p.status === 'published').length}
             </div>
           </CardContent>
         </Card>
@@ -356,7 +363,7 @@ export default function BlogManager() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {posts.filter((p) => p.status === 'draft').length}
+              {posts.filter(p => p.status === 'draft').length}
             </div>
           </CardContent>
         </Card>
@@ -394,14 +401,12 @@ export default function BlogManager() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {posts.map((post) => (
+                {posts.map(post => (
                   <TableRow key={post.id}>
                     <TableCell>
                       <div>
                         <p className="font-medium">{post.title}</p>
-                        <p className="text-sm text-muted-foreground">
-                          /{post.slug}
-                        </p>
+                        <p className="text-sm text-muted-foreground">/{post.slug}</p>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -418,9 +423,7 @@ export default function BlogManager() {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Badge className={getStatusColor(post.status)}>
-                        {post.status}
-                      </Badge>
+                      <Badge className={getStatusColor(post.status)}>{post.status}</Badge>
                     </TableCell>
                     <TableCell>{post.author_name}</TableCell>
                     <TableCell>{formatDate(post.published_at)}</TableCell>
@@ -435,7 +438,20 @@ export default function BlogManager() {
                         <Button
                           variant="ghost"
                           size="icon"
+                          onClick={() => handleTogglePostStatus(post)}
+                          title={post.status === 'published' ? 'Hide article' : 'Show article'}
+                        >
+                          {post.status === 'published' ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleEditPost(post)}
+                          title="Edit article"
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -443,6 +459,7 @@ export default function BlogManager() {
                           variant="ghost"
                           size="icon"
                           onClick={() => window.open(`/blog/${post.slug}`, '_blank')}
+                          title="View article"
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
@@ -450,6 +467,7 @@ export default function BlogManager() {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleDeletePost(post.id)}
+                          title="Delete article"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -467,9 +485,7 @@ export default function BlogManager() {
       <Dialog open={isPostDialogOpen} onOpenChange={setIsPostDialogOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>
-              {editingPost ? 'Edit Post' : 'Create New Post'}
-            </DialogTitle>
+            <DialogTitle>{editingPost ? 'Edit Post' : 'Create New Post'}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -477,9 +493,7 @@ export default function BlogManager() {
                 <Label>Title</Label>
                 <Input
                   value={postForm.title}
-                  onChange={(e) =>
-                    setPostForm({ ...postForm, title: e.target.value })
-                  }
+                  onChange={e => setPostForm({ ...postForm, title: e.target.value })}
                   placeholder="Post title"
                 />
               </div>
@@ -487,9 +501,7 @@ export default function BlogManager() {
                 <Label>Slug</Label>
                 <Input
                   value={postForm.slug}
-                  onChange={(e) =>
-                    setPostForm({ ...postForm, slug: e.target.value })
-                  }
+                  onChange={e => setPostForm({ ...postForm, slug: e.target.value })}
                   placeholder="post-slug (auto-generated if empty)"
                 />
               </div>
@@ -499,9 +511,7 @@ export default function BlogManager() {
               <Label>Excerpt</Label>
               <Textarea
                 value={postForm.excerpt}
-                onChange={(e) =>
-                  setPostForm({ ...postForm, excerpt: e.target.value })
-                }
+                onChange={e => setPostForm({ ...postForm, excerpt: e.target.value })}
                 placeholder="Brief description of the post..."
                 rows={2}
               />
@@ -511,9 +521,7 @@ export default function BlogManager() {
               <Label>Content</Label>
               <Textarea
                 value={postForm.content}
-                onChange={(e) =>
-                  setPostForm({ ...postForm, content: e.target.value })
-                }
+                onChange={e => setPostForm({ ...postForm, content: e.target.value })}
                 placeholder="Write your post content here..."
                 rows={10}
                 className="font-mono"
@@ -525,15 +533,13 @@ export default function BlogManager() {
                 <Label>Category</Label>
                 <Select
                   value={postForm.category_id}
-                  onValueChange={(value) =>
-                    setPostForm({ ...postForm, category_id: value })
-                  }
+                  onValueChange={value => setPostForm({ ...postForm, category_id: value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories.map((category) => (
+                    {categories.map(category => (
                       <SelectItem key={category.id} value={category.id}>
                         {category.name}
                       </SelectItem>
@@ -545,7 +551,7 @@ export default function BlogManager() {
                 <Label>Status</Label>
                 <Select
                   value={postForm.status}
-                  onValueChange={(value) =>
+                  onValueChange={value =>
                     setPostForm({
                       ...postForm,
                       status: value as BlogPost['status'],
@@ -569,9 +575,7 @@ export default function BlogManager() {
               <Label>Featured Image URL</Label>
               <Input
                 value={postForm.featured_image}
-                onChange={(e) =>
-                  setPostForm({ ...postForm, featured_image: e.target.value })
-                }
+                onChange={e => setPostForm({ ...postForm, featured_image: e.target.value })}
                 placeholder="https://example.com/image.jpg"
               />
             </div>
@@ -581,9 +585,7 @@ export default function BlogManager() {
                 <Label>Meta Title (SEO)</Label>
                 <Input
                   value={postForm.meta_title}
-                  onChange={(e) =>
-                    setPostForm({ ...postForm, meta_title: e.target.value })
-                  }
+                  onChange={e => setPostForm({ ...postForm, meta_title: e.target.value })}
                   placeholder="SEO title (max 160 chars)"
                   maxLength={160}
                 />
@@ -592,9 +594,7 @@ export default function BlogManager() {
                 <Label>Meta Description (SEO)</Label>
                 <Input
                   value={postForm.meta_description}
-                  onChange={(e) =>
-                    setPostForm({ ...postForm, meta_description: e.target.value })
-                  }
+                  onChange={e => setPostForm({ ...postForm, meta_description: e.target.value })}
                   placeholder="SEO description (max 320 chars)"
                   maxLength={320}
                 />
@@ -606,16 +606,14 @@ export default function BlogManager() {
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={postForm.is_featured}
-                    onCheckedChange={(checked) =>
-                      setPostForm({ ...postForm, is_featured: checked })
-                    }
+                    onCheckedChange={checked => setPostForm({ ...postForm, is_featured: checked })}
                   />
                   <Label>Featured Post</Label>
                 </div>
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={postForm.allow_comments}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={checked =>
                       setPostForm({ ...postForm, allow_comments: checked })
                     }
                   />
@@ -628,9 +626,7 @@ export default function BlogManager() {
             <Button variant="outline" onClick={() => setIsPostDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSavePost}>
-              {editingPost ? 'Update Post' : 'Create Post'}
-            </Button>
+            <Button onClick={handleSavePost}>{editingPost ? 'Update Post' : 'Create Post'}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
