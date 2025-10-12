@@ -24,13 +24,13 @@
  * ```
  */
 
-import { onCLS, onFID, onFCP, onLCP, onTTFB, Metric } from 'web-vitals';
+import { onCLS, onINP, onFCP, onLCP, onTTFB, Metric } from 'web-vitals';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 
 export interface WebVitalsMetrics {
   lcp?: number; // Largest Contentful Paint
-  fid?: number; // First Input Delay
+  inp?: number; // Interaction to Next Paint (replaces FID in web-vitals v4)
   cls?: number; // Cumulative Layout Shift
   fcp?: number; // First Contentful Paint
   ttfb?: number; // Time to First Byte
@@ -128,10 +128,10 @@ class PerformanceMonitoringServiceClass {
       this.evaluateMetric('LCP', metric.value, 2500, 4000);
     });
 
-    onFID((metric: Metric) => {
-      this.webVitals.fid = metric.value;
-      logger.log('[PerformanceMonitoring] FID:', metric.value);
-      this.evaluateMetric('FID', metric.value, 100, 300);
+    onINP((metric: Metric) => {
+      this.webVitals.inp = metric.value;
+      logger.log('[PerformanceMonitoring] INP:', metric.value);
+      this.evaluateMetric('INP', metric.value, 200, 500);
     });
 
     onCLS((metric: Metric) => {
