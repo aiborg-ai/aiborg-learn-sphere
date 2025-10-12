@@ -10,9 +10,6 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/components/ui/use-toast';
@@ -36,7 +33,6 @@ import {
   Brain,
   CheckCircle,
   AlertCircle,
-  Info,
   TrendingUp,
   TrendingDown,
   Minus,
@@ -153,15 +149,11 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
       setAssessmentId(data.id);
 
       // Track assessment started event
-      await AdaptiveAssessmentEngagementService.trackEvent(
-        user.id,
-        'assessment_started',
-        {
-          assessment_id: data.id,
-          audience_type: data.audience_type,
-          is_adaptive: true,
-        }
-      );
+      await AdaptiveAssessmentEngagementService.trackEvent(user.id, 'assessment_started', {
+        assessment_id: data.id,
+        audience_type: data.audience_type,
+        is_adaptive: true,
+      });
 
       // Update daily streak for gamification
       try {
@@ -318,18 +310,14 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
 
       // Track question answered event
       if (user) {
-        await AdaptiveAssessmentEngagementService.trackEvent(
-          user.id,
-          'question_answered',
-          {
-            assessment_id: assessmentId,
-            question_id: currentQuestion.id,
-            is_correct: result.isCorrect,
-            ability_before: previousAbility,
-            ability_after: result.newAbility,
-            time_spent: timeSpent,
-          }
-        );
+        await AdaptiveAssessmentEngagementService.trackEvent(user.id, 'question_answered', {
+          assessment_id: assessmentId,
+          question_id: currentQuestion.id,
+          is_correct: result.isCorrect,
+          ability_before: previousAbility,
+          ability_after: result.newAbility,
+          time_spent: timeSpent,
+        });
       }
 
       // Award points and check achievements for correct answers
@@ -369,7 +357,9 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
 
           // Update level progress for live stats
           if (pointsAwarded) {
-            const pointsToNextLevel = PointsService.calculatePointsForLevel(pointsAwarded.newLevel + 1);
+            const pointsToNextLevel = PointsService.calculatePointsForLevel(
+              pointsAwarded.newLevel + 1
+            );
             const pointsProgress = ((pointsAwarded.newPoints % 100) / 100) * 100;
             setLevelProgress(pointsProgress);
           }
@@ -437,17 +427,13 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
 
       // Track assessment completed event
       if (user) {
-        await AdaptiveAssessmentEngagementService.trackEvent(
-          user.id,
-          'assessment_completed',
-          {
-            assessment_id: assessmentId,
-            final_ability: finalScore.abilityScore,
-            augmentation_level: finalScore.augmentationLevel,
-            questions_answered: state.questionsAnswered,
-            confidence_level: state.confidenceLevel,
-          }
-        );
+        await AdaptiveAssessmentEngagementService.trackEvent(user.id, 'assessment_completed', {
+          assessment_id: assessmentId,
+          final_ability: finalScore.abilityScore,
+          augmentation_level: finalScore.augmentationLevel,
+          questions_answered: state.questionsAnswered,
+          confidence_level: state.confidenceLevel,
+        });
       }
 
       // Award completion bonus points and check achievements
@@ -455,7 +441,7 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
         try {
           // Calculate completion bonus based on performance
           const completionBonus = Math.floor(
-            100 + (finalScore.abilityScore * 50) + (state.confidenceLevel * 2)
+            100 + finalScore.abilityScore * 50 + state.confidenceLevel * 2
           );
 
           // Award completion points
@@ -496,13 +482,16 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
 
           // Show level-up notification if applicable
           if (pointsAwarded?.leveledUp) {
-            setTimeout(() => {
-              toast({
-                title: '🎉 Level Up!',
-                description: `You've reached level ${pointsAwarded.newLevel}!`,
-                duration: 4000,
-              });
-            }, (unlockedAchievements?.length || 0) * 1000);
+            setTimeout(
+              () => {
+                toast({
+                  title: '🎉 Level Up!',
+                  description: `You've reached level ${pointsAwarded.newLevel}!`,
+                  duration: 4000,
+                });
+              },
+              (unlockedAchievements?.length || 0) * 1000
+            );
           }
 
           // Show completion summary with points

@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -28,9 +27,7 @@ import {
   Lock,
   Loader2,
   PlayCircle,
-  Clock,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import type { PlaylistWithRelations } from '@/types/content-access';
 import {
   AlertDialog,
@@ -45,8 +42,15 @@ import {
 
 export default function PlaylistsPage() {
   const navigate = useNavigate();
-  const { playlists, loading, stats, createPlaylist, updatePlaylist, deletePlaylist, clonePlaylist } =
-    usePlaylists();
+  const {
+    playlists,
+    loading,
+    stats,
+    createPlaylist,
+    updatePlaylist,
+    deletePlaylist,
+    clonePlaylist,
+  } = usePlaylists();
 
   const [createDialog, setCreateDialog] = useState(false);
   const [editingPlaylist, setEditingPlaylist] = useState<PlaylistWithRelations | null>(null);
@@ -203,9 +207,7 @@ export default function PlaylistsPage() {
           <Card>
             <CardContent className="py-12 text-center">
               <ListVideo className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-muted-foreground mb-4">
-                You haven't created any playlists yet
-              </p>
+              <p className="text-muted-foreground mb-4">You haven't created any playlists yet</p>
               <Button onClick={() => setCreateDialog(true)}>
                 <Plus className="h-4 w-4 mr-2" />
                 Create Your First Playlist
@@ -214,7 +216,7 @@ export default function PlaylistsPage() {
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {playlists.map((playlist) => (
+            {playlists.map(playlist => (
               <Card key={playlist.id} className="group hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-start justify-between">
@@ -245,9 +247,7 @@ export default function PlaylistsPage() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Duration</p>
-                      <p className="text-xl font-bold">
-                        {formatDuration(playlist.total_duration)}
-                      </p>
+                      <p className="text-xl font-bold">{formatDuration(playlist.total_duration)}</p>
                     </div>
                   </div>
 
@@ -262,11 +262,7 @@ export default function PlaylistsPage() {
                       <PlayCircle className="h-4 w-4 mr-1" />
                       Play
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => startEditing(playlist)}
-                    >
+                    <Button size="sm" variant="outline" onClick={() => startEditing(playlist)}>
                       <Edit className="h-4 w-4" />
                     </Button>
                     <Button
@@ -295,7 +291,7 @@ export default function PlaylistsPage() {
       {/* Create/Edit Dialog */}
       <Dialog
         open={createDialog || !!editingPlaylist}
-        onOpenChange={(open) => {
+        onOpenChange={open => {
           if (!open) {
             setCreateDialog(false);
             setEditingPlaylist(null);
@@ -305,9 +301,7 @@ export default function PlaylistsPage() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              {editingPlaylist ? 'Edit Playlist' : 'Create New Playlist'}
-            </DialogTitle>
+            <DialogTitle>{editingPlaylist ? 'Edit Playlist' : 'Create New Playlist'}</DialogTitle>
             <DialogDescription>
               {editingPlaylist
                 ? 'Update your playlist details'
@@ -321,7 +315,7 @@ export default function PlaylistsPage() {
               <Input
                 id="title"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={e => setTitle(e.target.value)}
                 placeholder="My Learning Playlist"
               />
             </div>
@@ -331,18 +325,14 @@ export default function PlaylistsPage() {
               <Textarea
                 id="description"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={e => setDescription(e.target.value)}
                 placeholder="What's this playlist about?"
                 rows={3}
               />
             </div>
 
             <div className="flex items-center space-x-2">
-              <Switch
-                id="public"
-                checked={isPublic}
-                onCheckedChange={setIsPublic}
-              />
+              <Switch id="public" checked={isPublic} onCheckedChange={setIsPublic} />
               <Label htmlFor="public" className="cursor-pointer">
                 Make this playlist public
               </Label>
@@ -381,7 +371,8 @@ export default function PlaylistsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Playlist?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete this playlist and all its items. This action cannot be undone.
+              This will permanently delete this playlist and all its items. This action cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

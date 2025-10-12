@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Plus, Edit, Trash2, Save, X, FileText } from 'lucide-react';
@@ -103,7 +102,7 @@ export function PDFAnnotations({
     if (!user || !noteText.trim()) return;
 
     try {
-      const annotation = annotations.find((a) => a.id === id);
+      const annotation = annotations.find(a => a.id === id);
       if (!annotation) return;
 
       const { error } = await supabase
@@ -229,14 +228,14 @@ export function PDFAnnotations({
               <Input
                 placeholder="Highlighted text (optional)"
                 value={highlightText}
-                onChange={(e) => setHighlightText(e.target.value)}
+                onChange={e => setHighlightText(e.target.value)}
                 className="text-sm"
               />
 
               <Textarea
                 placeholder="Your note..."
                 value={noteText}
-                onChange={(e) => setNoteText(e.target.value)}
+                onChange={e => setNoteText(e.target.value)}
                 className="text-sm min-h-[100px]"
               />
 
@@ -266,7 +265,7 @@ export function PDFAnnotations({
             </div>
           )}
 
-          {annotations.map((annotation) => (
+          {annotations.map(annotation => (
             <div
               key={annotation.id}
               className={`border rounded-lg p-3 transition-colors ${

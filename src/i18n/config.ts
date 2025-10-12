@@ -11,7 +11,6 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import enCommon from '@/locales/en/common.json';
 import enNavigation from '@/locales/en/navigation.json';
 import enAssessment from '@/locales/en/assessment.json';
-import enCourses from '@/locales/en/courses.json';
 import enAuth from '@/locales/en/auth.json';
 
 import esCommon from '@/locales/es/common.json';

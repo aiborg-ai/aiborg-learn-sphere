@@ -4,14 +4,7 @@
  * Delegates to focused service modules
  */
 
-import type {
-  BlogPost,
-  BlogCategory,
-  BlogTag,
-  BlogComment,
-  BlogFilters,
-  BlogStats,
-} from '@/types/blog';
+import type { BlogPost, BlogCategory, BlogFilters, BlogStats } from '@/types/blog';
 import { BlogPostService } from './BlogPostService';
 import { BlogCategoryService } from './BlogCategoryService';
 import { BlogTagService } from './BlogTagService';

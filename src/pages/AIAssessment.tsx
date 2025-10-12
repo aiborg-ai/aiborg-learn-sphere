@@ -1,9 +1,8 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Navbar, Footer } from '@/components/navigation';
 import { AIAssessmentWizard } from '@/components/ai-assessment/AIAssessmentWizard';
 import { AIAssessmentWizardAdaptive } from '@/components/ai-assessment/AIAssessmentWizardAdaptive';
@@ -21,11 +20,9 @@ import {
   Award,
   BarChart3,
   Target,
-  Zap,
   ArrowRight,
   CheckCircle,
   Star,
-  Info,
   Play,
 } from 'lucide-react';
 
@@ -136,11 +133,18 @@ export default function AIAssessment() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 bg-gradient-hero overflow-hidden" aria-label="AI Assessment hero section">
+      <section
+        className="relative py-20 px-4 bg-gradient-hero overflow-hidden"
+        aria-label="AI Assessment hero section"
+      >
         <div className="absolute inset-0 bg-grid-pattern opacity-5" aria-hidden="true" />
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center mb-12">
-            <Badge className="mb-4 px-4 py-1.5 text-sm bg-primary/10 text-primary border-primary/20" role="status" aria-label="New feature">
+            <Badge
+              className="mb-4 px-4 py-1.5 text-sm bg-primary/10 text-primary border-primary/20"
+              role="status"
+              aria-label="New feature"
+            >
               <Sparkles className="h-3 w-3 mr-1" aria-hidden="true" />
               New Assessment Tool
             </Badge>
@@ -152,8 +156,17 @@ export default function AIAssessment() {
               Take our comprehensive assessment to understand how AI-augmented you are in your daily
               work and get a personalized roadmap to increase your productivity with AI tools.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center" role="group" aria-label="Assessment actions">
-              <Button onClick={startAssessment} size="lg" className="btn-hero text-lg px-8 py-6" aria-label="Start free AI assessment">
+            <div
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+              role="group"
+              aria-label="Assessment actions"
+            >
+              <Button
+                onClick={startAssessment}
+                size="lg"
+                className="btn-hero text-lg px-8 py-6"
+                aria-label="Start free AI assessment"
+              >
                 <Play className="mr-2 h-5 w-5" aria-hidden="true" />
                 Start Free Assessment
               </Button>
@@ -176,17 +189,36 @@ export default function AIAssessment() {
           </div>
 
           {/* Stats Bar */}
-          <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto mt-12" role="region" aria-label="Assessment statistics">
+          <div
+            className="grid grid-cols-3 gap-8 max-w-2xl mx-auto mt-12"
+            role="region"
+            aria-label="Assessment statistics"
+          >
             <div className="text-center">
-              <div className="text-3xl font-bold text-white" aria-label="Over 5,000 assessments taken">5,000+</div>
+              <div
+                className="text-3xl font-bold text-white"
+                aria-label="Over 5,000 assessments taken"
+              >
+                5,000+
+              </div>
               <div className="text-sm text-white/60">Assessments Taken</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-white" aria-label="92 percent user satisfaction">92%</div>
+              <div
+                className="text-3xl font-bold text-white"
+                aria-label="92 percent user satisfaction"
+              >
+                92%
+              </div>
               <div className="text-sm text-white/60">User Satisfaction</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-white" aria-label="40 percent average productivity gain">40%</div>
+              <div
+                className="text-3xl font-bold text-white"
+                aria-label="40 percent average productivity gain"
+              >
+                40%
+              </div>
               <div className="text-sm text-white/60">Avg. Productivity Gain</div>
             </div>
           </div>
@@ -197,19 +229,28 @@ export default function AIAssessment() {
       <section className="py-20 px-4 bg-background" aria-labelledby="features-heading">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
-            <h2 id="features-heading" className="text-3xl font-bold mb-4">Why Take This Assessment?</h2>
+            <h2 id="features-heading" className="text-3xl font-bold mb-4">
+              Why Take This Assessment?
+            </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Get actionable insights to transform your productivity with AI
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" role="list" aria-label="Assessment features">
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            role="list"
+            aria-label="Assessment features"
+          >
             {FEATURES.map((feature, index) => {
               const Icon = feature.icon;
               return (
                 <Card key={index} className="hover:shadow-lg transition-shadow" role="listitem">
                   <CardHeader>
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4" aria-hidden="true">
+                    <div
+                      className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4"
+                      aria-hidden="true"
+                    >
                       <Icon className="h-6 w-6 text-primary" />
                     </div>
                     <CardTitle className="text-lg">{feature.title}</CardTitle>

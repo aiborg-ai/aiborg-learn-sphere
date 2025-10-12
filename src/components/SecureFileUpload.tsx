@@ -6,11 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import type { FileValidationConfig } from '@/lib/security/file-validator';
-import {
-  validateFiles,
-  FileValidationPresets,
-  createSecureUploadHandler,
-} from '@/lib/security/file-validator';
+import { FileValidationPresets, createSecureUploadHandler } from '@/lib/security/file-validator';
 import { rateLimiter, RateLimitPresets } from '@/lib/security/rate-limiter';
 import type { Action, Resource } from '@/lib/security/rbac';
 import { rbac } from '@/lib/security/rbac';

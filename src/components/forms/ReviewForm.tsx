@@ -1,31 +1,25 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/hooks/useAuth";
-import { useCourses } from "@/hooks/useCourses";
-import { useReviews } from "@/hooks/useReviews";
-import { useToast } from "@/hooks/use-toast";
-import { 
-  Star, 
-  StarIcon,
-  MessageSquare, 
-  Mic, 
-  Video, 
-  Send,
-  User,
-  UserX,
-  CheckCircle,
-  AlertCircle
-} from "lucide-react";
-import { VoiceRecorder, VideoRecorder } from "@/components/media";
-import { supabase } from "@/integrations/supabase/client";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { useAuth } from '@/hooks/useAuth';
+import { useCourses } from '@/hooks/useCourses';
+import { useReviews } from '@/hooks/useReviews';
+import { useToast } from '@/hooks/use-toast';
+import { Star, MessageSquare, Mic, Video, Send, User, UserX, AlertCircle } from 'lucide-react';
+import { VoiceRecorder, VideoRecorder } from '@/components/media';
+import { supabase } from '@/integrations/supabase/client';
 
 import { logger } from '@/utils/logger';
 interface ReviewFormData {
@@ -44,7 +38,7 @@ export function ReviewForm() {
   const { submitReview } = useReviews();
   const { toast } = useToast();
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState<ReviewFormData>({
     courseId: '',
     displayNameOption: 'full_name',
@@ -52,9 +46,9 @@ export function ReviewForm() {
     writtenReview: '',
     coursePeriod: '',
     courseMode: 'online',
-    rating: 5
+    rating: 5,
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [voiceBlob, setVoiceBlob] = useState<Blob | null>(null);
@@ -68,52 +62,52 @@ export function ReviewForm() {
 
     if (!user) {
       toast({
-        title: "Authentication Required",
-        description: "Please log in to submit a review.",
-        variant: "destructive",
+        title: 'Authentication Required',
+        description: 'Please log in to submit a review.',
+        variant: 'destructive',
       });
       return;
     }
 
     if (!formData.courseId || !formData.coursePeriod) {
       toast({
-        title: "Required Fields",
-        description: "Please fill in all required fields.",
-        variant: "destructive",
+        title: 'Required Fields',
+        description: 'Please fill in all required fields.',
+        variant: 'destructive',
       });
       return;
     }
 
     if (formData.reviewType === 'written' && !formData.writtenReview.trim()) {
       toast({
-        title: "Review Content Required",
-        description: "Please provide your review content.",
-        variant: "destructive",
+        title: 'Review Content Required',
+        description: 'Please provide your review content.',
+        variant: 'destructive',
       });
       return;
     }
 
     if (formData.reviewType === 'voice' && !voiceBlob) {
       toast({
-        title: "Voice Recording Required",
-        description: "Please record your voice review.",
-        variant: "destructive",
+        title: 'Voice Recording Required',
+        description: 'Please record your voice review.',
+        variant: 'destructive',
       });
       return;
     }
 
     if (formData.reviewType === 'video' && !videoBlob) {
       toast({
-        title: "Video Recording Required",
-        description: "Please record your video review.",
-        variant: "destructive",
+        title: 'Video Recording Required',
+        description: 'Please record your video review.',
+        variant: 'destructive',
       });
       return;
     }
 
     try {
       setIsSubmitting(true);
-      
+
       let voiceReviewUrl = null;
       let videoReviewUrl = null;
 
@@ -124,7 +118,7 @@ export function ReviewForm() {
           .from('review-voices')
           .upload(fileName, voiceBlob, {
             contentType: 'audio/webm',
-            upsert: false
+            upsert: false,
           });
 
         if (voiceError) {
@@ -141,7 +135,7 @@ export function ReviewForm() {
           .from('review-videos')
           .upload(fileName, videoBlob, {
             contentType: 'video/webm',
-            upsert: false
+            upsert: false,
           });
 
         if (videoError) {
@@ -150,7 +144,7 @@ export function ReviewForm() {
 
         videoReviewUrl = fileName;
       }
-      
+
       await submitReview({
         user_id: user.id,
         course_id: parseInt(formData.courseId),
@@ -161,12 +155,13 @@ export function ReviewForm() {
         video_review_url: videoReviewUrl,
         course_period: formData.coursePeriod,
         course_mode: formData.courseMode,
-        rating: formData.rating
+        rating: formData.rating,
       });
 
       toast({
-        title: "Review Submitted Successfully!",
-        description: "Your review has been sent to our admin team for approval. You'll see it published on the website once approved. Thank you for your feedback!",
+        title: 'Review Submitted Successfully!',
+        description:
+          "Your review has been sent to our admin team for approval. You'll see it published on the website once approved. Thank you for your feedback!",
       });
 
       // Reset form
@@ -177,32 +172,31 @@ export function ReviewForm() {
         writtenReview: '',
         coursePeriod: '',
         courseMode: 'online',
-        rating: 5
+        rating: 5,
       });
-      
+
       // Reset media blobs
       setVoiceBlob(null);
       setVideoBlob(null);
-
     } catch (error) {
       logger.error('Review submission error:', error);
 
-      let errorMessage = "Failed to submit review";
+      let errorMessage = 'Failed to submit review';
       if (error instanceof Error) {
         errorMessage = error.message;
 
         // Check for specific Supabase error patterns
         if (error.message.includes('violates row-level security policy')) {
-          errorMessage = "Authentication error. Please sign out and sign back in.";
+          errorMessage = 'Authentication error. Please sign out and sign back in.';
         } else if (error.message.includes('JWT')) {
-          errorMessage = "Session expired. Please sign in again.";
+          errorMessage = 'Session expired. Please sign in again.';
         }
       }
 
       toast({
-        title: "Submission Failed",
+        title: 'Submission Failed',
         description: errorMessage,
-        variant: "destructive",
+        variant: 'destructive',
       });
     } finally {
       setIsSubmitting(false);
@@ -212,7 +206,7 @@ export function ReviewForm() {
   const renderStarRating = () => {
     return (
       <div className="flex items-center gap-1">
-        {[1, 2, 3, 4, 5].map((star) => (
+        {[1, 2, 3, 4, 5].map(star => (
           <button
             key={star}
             type="button"
@@ -221,9 +215,7 @@ export function ReviewForm() {
           >
             <Star
               className={`h-6 w-6 ${
-                star <= formData.rating
-                  ? 'fill-yellow-400 text-yellow-400'
-                  : 'text-gray-300'
+                star <= formData.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
               }`}
             />
           </button>
@@ -245,10 +237,7 @@ export function ReviewForm() {
         <p className="text-muted-foreground mb-4">
           Sign in to write a review and help other learners make informed decisions.
         </p>
-        <Button
-          className="btn-hero"
-          onClick={() => navigate('/auth')}
-        >
+        <Button className="btn-hero" onClick={() => navigate('/auth')}>
           Sign In to Review
         </Button>
       </Card>
@@ -266,21 +255,21 @@ export function ReviewForm() {
           Help other learners by sharing your honest feedback about the course you completed.
         </p>
       </CardHeader>
-      
+
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Course Selection */}
           <div className="space-y-2">
             <Label htmlFor="course">Course Completed *</Label>
-            <Select 
-              value={formData.courseId} 
-              onValueChange={(value) => setFormData(prev => ({ ...prev, courseId: value }))}
+            <Select
+              value={formData.courseId}
+              onValueChange={value => setFormData(prev => ({ ...prev, courseId: value }))}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select the course you completed" />
               </SelectTrigger>
               <SelectContent>
-                {courses.map((course) => (
+                {courses.map(course => (
                   <SelectItem key={course.id} value={course.id.toString()}>
                     {course.title}
                   </SelectItem>
@@ -295,7 +284,7 @@ export function ReviewForm() {
             <Input
               id="period"
               value={formData.coursePeriod}
-              onChange={(e) => setFormData(prev => ({ ...prev, coursePeriod: e.target.value }))}
+              onChange={e => setFormData(prev => ({ ...prev, coursePeriod: e.target.value }))}
               placeholder="e.g., January 2024, Q1 2024, etc."
             />
           </div>
@@ -305,7 +294,7 @@ export function ReviewForm() {
             <Label>Course Mode *</Label>
             <RadioGroup
               value={formData.courseMode}
-              onValueChange={(value: 'online' | 'in-person' | 'hybrid') => 
+              onValueChange={(value: 'online' | 'in-person' | 'hybrid') =>
                 setFormData(prev => ({ ...prev, courseMode: value }))
               }
               className="flex gap-6"
@@ -330,7 +319,7 @@ export function ReviewForm() {
             <Label>Display Preference</Label>
             <RadioGroup
               value={formData.displayNameOption}
-              onValueChange={(value: 'full_name' | 'anonymous') => 
+              onValueChange={(value: 'full_name' | 'anonymous') =>
                 setFormData(prev => ({ ...prev, displayNameOption: value }))
               }
               className="flex gap-6"
@@ -358,11 +347,10 @@ export function ReviewForm() {
             {renderStarRating()}
           </div>
 
-
           {/* Review Content */}
           <div className="space-y-2">
             <Label htmlFor="review">Your Review *</Label>
-            
+
             {/* Review Type Controls */}
             <div className="flex gap-2 mb-4">
               <Button
@@ -410,17 +398,17 @@ export function ReviewForm() {
             <Textarea
               id="review"
               value={formData.writtenReview}
-              onChange={(e) => setFormData(prev => ({ ...prev, writtenReview: e.target.value }))}
+              onChange={e => setFormData(prev => ({ ...prev, writtenReview: e.target.value }))}
               placeholder={
-                formData.reviewType === 'written' 
-                  ? "Share your experience with this course. What did you learn? How was the quality? Would you recommend it to others?"
-                  : "Transcribed text will appear here..."
+                formData.reviewType === 'written'
+                  ? 'Share your experience with this course. What did you learn? How was the quality? Would you recommend it to others?'
+                  : 'Transcribed text will appear here...'
               }
               rows={5}
               className="resize-none"
               readOnly={formData.reviewType !== 'written'}
             />
-            
+
             {formData.reviewType === 'written' && (
               <p className="text-xs text-muted-foreground">
                 Minimum 50 characters recommended for a helpful review.
@@ -430,18 +418,18 @@ export function ReviewForm() {
 
           {/* Voice Recording */}
           {formData.reviewType === 'voice' && (
-            <VoiceRecorder 
-              onTranscription={(text) => setFormData(prev => ({ ...prev, writtenReview: text }))}
-              onRecording={(blob) => setVoiceBlob(blob)}
+            <VoiceRecorder
+              onTranscription={text => setFormData(prev => ({ ...prev, writtenReview: text }))}
+              onRecording={blob => setVoiceBlob(blob)}
               disabled={isSubmitting}
             />
           )}
 
           {/* Video Recording */}
           {formData.reviewType === 'video' && (
-            <VideoRecorder 
-              onTranscription={(text) => setFormData(prev => ({ ...prev, writtenReview: text }))}
-              onRecording={(blob) => setVideoBlob(blob)}
+            <VideoRecorder
+              onTranscription={text => setFormData(prev => ({ ...prev, writtenReview: text }))}
+              onRecording={blob => setVideoBlob(blob)}
               disabled={isSubmitting}
             />
           )}
@@ -463,10 +451,15 @@ export function ReviewForm() {
           </div>
 
           {/* Submit Button */}
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full btn-hero"
-            disabled={isSubmitting || (formData.reviewType !== 'written' && formData.reviewType !== 'voice' && formData.reviewType !== 'video')}
+            disabled={
+              isSubmitting ||
+              (formData.reviewType !== 'written' &&
+                formData.reviewType !== 'voice' &&
+                formData.reviewType !== 'video')
+            }
           >
             {isSubmitting ? (
               <>

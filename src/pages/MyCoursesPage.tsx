@@ -15,14 +15,12 @@ import {
   BookOpen,
   CheckCircle,
   Clock,
-  Filter,
   Grid,
   List,
   Search,
   TrendingUp,
   Loader2,
   Calendar,
-  Award,
   Play,
 } from 'lucide-react';
 import { logger } from '@/utils/logger';
@@ -110,7 +108,7 @@ export default function MyCoursesPage() {
 
       setEnrichedEnrollments(enriched);
     } catch (error) {
-      logger.error('Error fetching enriched enrollments:', error);
+      logger.error('Failed to fetch enriched enrollments', { error });
     } finally {
       setLoading(false);
     }

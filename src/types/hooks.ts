@@ -4,7 +4,7 @@
  * Type-safe patterns for common React hooks and custom hooks
  */
 
-import type { ApiResponse, ApiError } from './api';
+import type { ApiError } from './api';
 
 // ============================================================================
 // Generic Async State Types

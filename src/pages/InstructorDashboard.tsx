@@ -13,14 +13,11 @@ import {
   Users,
   FileText,
   Upload,
-  GraduationCap,
   BarChart,
   AlertCircle,
   Loader2,
-  PlusCircle,
   CheckCircle,
-  Clock,
-  Award,
+  MonitorPlay,
 } from 'lucide-react';
 import { logger } from '@/utils/logger';
 
@@ -288,6 +285,18 @@ export default function InstructorDashboard() {
                           {selectedCourse?.id === course.id && (
                             <CheckCircle className="h-5 w-5 text-green-500" />
                           )}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="btn-outline-ai"
+                            onClick={e => {
+                              e.stopPropagation();
+                              navigate(`/instructor/classroom/${course.id}`);
+                            }}
+                          >
+                            <MonitorPlay className="h-4 w-4 mr-2" />
+                            Live Classroom
+                          </Button>
                           <Button
                             size="sm"
                             variant="outline"

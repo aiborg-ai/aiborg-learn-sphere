@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, Zap } from 'lucide-react';
-import { PointsService, LEVEL_TIERS } from '@/services/gamification';
+import { PointsService } from '@/services/gamification';
 import type { UserProgress } from '@/services/gamification';
 
 interface LevelProgressBarProps {

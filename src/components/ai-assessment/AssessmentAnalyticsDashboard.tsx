@@ -6,11 +6,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  LineChart,
-  Line,
   BarChart,
   Bar,
   RadarChart,
@@ -111,7 +108,10 @@ export function AssessmentAnalyticsDashboard({ assessmentId, userId, onClose }: 
       if (historyError) throw historyError;
 
       const historicalPoints = (history || []).map(h => ({
-        date: new Date(h.completed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        date: new Date(h.completed_at).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+        }),
         ability: h.current_ability_estimate,
         confidence: 70 + Math.random() * 25, // Mock confidence for now
       }));
@@ -120,19 +120,24 @@ export function AssessmentAnalyticsDashboard({ assessmentId, userId, onClose }: 
       // Fetch responses for category breakdown
       const { data: responses, error: responsesError } = await supabase
         .from('assessment_responses')
-        .select(`
+        .select(
+          `
           is_correct,
           assessment_questions (
             category_name,
             difficulty_level
           )
-        `)
+        `
+        )
         .eq('assessment_id', assessmentId);
 
       if (responsesError) throw responsesError;
 
       // Calculate category performance
-      const categoryMap = new Map<string, { correct: number; total: number; difficulties: string[] }>();
+      const categoryMap = new Map<
+        string,
+        { correct: number; total: number; difficulties: string[] }
+      >();
 
       responses?.forEach((response: any) => {
         const category = response.assessment_questions?.category_name || 'Unknown';
@@ -145,20 +150,23 @@ export function AssessmentAnalyticsDashboard({ assessmentId, userId, onClose }: 
         categoryMap.set(category, existing);
       });
 
-      const categoryPerf: CategoryPerformance[] = Array.from(categoryMap.entries()).map(([category, stats]) => {
-        const difficultyScore = stats.difficulties.reduce((sum, diff) => {
-          const scores = { foundational: 1, applied: 2, advanced: 3, expert: 4 };
-          return sum + (scores[diff as keyof typeof scores] || 2);
-        }, 0) / stats.difficulties.length;
+      const categoryPerf: CategoryPerformance[] = Array.from(categoryMap.entries()).map(
+        ([category, stats]) => {
+          const difficultyScore =
+            stats.difficulties.reduce((sum, diff) => {
+              const scores = { foundational: 1, applied: 2, advanced: 3, expert: 4 };
+              return sum + (scores[diff as keyof typeof scores] || 2);
+            }, 0) / stats.difficulties.length;
 
-        return {
-          category,
-          correct: stats.correct,
-          total: stats.total,
-          accuracy: (stats.correct / stats.total) * 100,
-          avgDifficulty: difficultyScore,
-        };
-      });
+          return {
+            category,
+            correct: stats.correct,
+            total: stats.total,
+            accuracy: (stats.correct / stats.total) * 100,
+            avgDifficulty: difficultyScore,
+          };
+        }
+      );
 
       setCategoryPerformance(categoryPerf);
 
@@ -185,7 +193,6 @@ export function AssessmentAnalyticsDashboard({ assessmentId, userId, onClose }: 
       });
 
       setRecommendations(recs.slice(0, 5));
-
     } catch (error) {
       logger.error('Error fetching analytics:', error);
     } finally {
@@ -261,8 +268,11 @@ export function AssessmentAnalyticsDashboard({ assessmentId, userId, onClose }: 
                 )}
                 <span className="text-sm font-medium text-gray-600">Progress</span>
               </div>
-              <p className={`text-2xl font-bold ${abilityChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {abilityChange >= 0 ? '+' : ''}{abilityChange.toFixed(2)}
+              <p
+                className={`text-2xl font-bold ${abilityChange >= 0 ? 'text-green-600' : 'text-red-600'}`}
+              >
+                {abilityChange >= 0 ? '+' : ''}
+                {abilityChange.toFixed(2)}
               </p>
             </div>
           </div>
@@ -291,19 +301,21 @@ export function AssessmentAnalyticsDashboard({ assessmentId, userId, onClose }: 
           <Card>
             <CardHeader>
               <CardTitle>Performance Trend</CardTitle>
-              <CardDescription>Your ability score over your last {historicalData.length} assessments</CardDescription>
+              <CardDescription>
+                Your ability score over your last {historicalData.length} assessments
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={historicalData}>
                   <defs>
                     <linearGradient id="colorAbility" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="colorConfidence" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -429,9 +441,7 @@ export function AssessmentAnalyticsDashboard({ assessmentId, userId, onClose }: 
                 <BookOpen className="h-5 w-5" />
                 Personalized Learning Recommendations
               </CardTitle>
-              <CardDescription>
-                Based on your performance, here's what we recommend
-              </CardDescription>
+              <CardDescription>Based on your performance, here's what we recommend</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">

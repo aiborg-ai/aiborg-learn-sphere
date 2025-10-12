@@ -3,7 +3,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import {
   Select,
   SelectContent,
@@ -36,19 +43,13 @@ import {
   Loader2,
   Users,
   Award,
-  BarChart3,
 } from 'lucide-react';
 import { logger } from '@/utils/logger';
 
 export function AttendanceTicketManagement() {
   const { toast } = useToast();
-  const {
-    tickets,
-    loading,
-    bulkIssueTickets,
-    verifyTicket,
-    revokeTicket,
-  } = useAttendanceTicketManagement();
+  const { tickets, loading, bulkIssueTickets, verifyTicket, revokeTicket } =
+    useAttendanceTicketManagement();
 
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -209,12 +210,15 @@ export function AttendanceTicketManagement() {
               <Input
                 placeholder="Search tickets..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
 
-            <Select value={typeFilter} onValueChange={(value) => setTypeFilter(value as 'all' | 'event' | 'course_session')}>
+            <Select
+              value={typeFilter}
+              onValueChange={value => setTypeFilter(value as 'all' | 'event' | 'course_session')}
+            >
               <SelectTrigger className="w-full md:w-[180px]">
                 <Filter className="h-4 w-4 mr-2" />
                 <SelectValue placeholder="Filter by type" />
@@ -226,7 +230,10 @@ export function AttendanceTicketManagement() {
               </SelectContent>
             </Select>
 
-            <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as 'all' | 'verified' | 'pending')}>
+            <Select
+              value={statusFilter}
+              onValueChange={value => setStatusFilter(value as 'all' | 'verified' | 'pending')}
+            >
               <SelectTrigger className="w-full md:w-[180px]">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
@@ -278,9 +285,7 @@ export function AttendanceTicketManagement() {
                         <div>
                           <p className="font-medium line-clamp-1">{ticket.session_title}</p>
                           {ticket.location && (
-                            <p className="text-sm text-gray-500 line-clamp-1">
-                              {ticket.location}
-                            </p>
+                            <p className="text-sm text-gray-500 line-clamp-1">{ticket.location}</p>
                           )}
                         </div>
                       </TableCell>
@@ -289,9 +294,7 @@ export function AttendanceTicketManagement() {
                           {ticket.ticket_type === 'event' ? 'Event' : 'Session'}
                         </Badge>
                       </TableCell>
-                      <TableCell>
-                        {new Date(ticket.session_date).toLocaleDateString()}
-                      </TableCell>
+                      <TableCell>{new Date(ticket.session_date).toLocaleDateString()}</TableCell>
                       <TableCell>
                         {ticket.is_verified ? (
                           <Badge className="bg-green-500">

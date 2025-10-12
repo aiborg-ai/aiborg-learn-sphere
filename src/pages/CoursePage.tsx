@@ -32,9 +32,14 @@ import { CourseExercisesTab } from '@/components/course-page/CourseExercisesTab'
 import { CourseWorkshopsTab } from '@/components/course-page/CourseWorkshopsTab';
 import { CourseAssignmentsTab } from '@/components/course-page/CourseAssignmentsTab';
 import { MaterialViewerDialog } from '@/components/course-page/MaterialViewerDialog';
+import { ProgressSync } from '@/components/classroom/ProgressSync';
+import { ActiveStudentsBar } from '@/components/classroom/ActiveStudentsBar';
+import { LiveQuestionPanel } from '@/components/classroom/LiveQuestionPanel';
+import { useClassroomPresence } from '@/hooks/useClassroomPresence';
+import { MessageCircle } from 'lucide-react';
 
 /**
- * CoursePage Component - Refactored Version
+ * CoursePage Component - Refactored Version with Real-Time Collaboration
  *
  * Main course detail page that displays course content, materials,
  * quizzes, exercises, workshops, and assignments.
@@ -88,6 +93,12 @@ export default function CoursePage() {
   // Local UI state
   const [activeTab, setActiveTab] = useState('overview');
   const [viewingMaterial, setViewingMaterial] = useState<CourseMaterial | null>(null);
+
+  // Real-time classroom presence
+  const { currentSession } = useClassroomPresence({
+    courseId: courseId ? parseInt(courseId) : 0,
+    autoJoin: true,
+  });
 
   // Memoized calculations - prevent unnecessary re-calculations
   const progressPercentage = useMemo(
@@ -221,6 +232,16 @@ export default function CoursePage() {
   // Main content
   return (
     <div className="min-h-screen bg-gradient-hero">
+      {/* Auto-sync progress in background */}
+      {currentSession && (
+        <ProgressSync
+          sessionId={currentSession.id}
+          courseId={courseId ? parseInt(courseId) : null}
+          currentProgress={progressPercentage}
+          timeSpent={progress?.time_spent_minutes || 0}
+        />
+      )}
+
       <div
         className="container mx-auto px-4 py-8"
         role="main"
@@ -233,6 +254,13 @@ export default function CoursePage() {
           courseId={courseId!}
           onBack={handleBack}
         />
+
+        {/* Active Students Bar */}
+        {currentSession && (
+          <div className="mb-6">
+            <ActiveStudentsBar courseId={courseId ? parseInt(courseId) : 0} compact={false} />
+          </div>
+        )}
 
         {/* Main Content */}
         <Tabs
@@ -300,6 +328,17 @@ export default function CoursePage() {
               <FileText className="h-4 w-4 mr-2" aria-hidden="true" />
               Assignments ({tabCounts.assignments})
             </TabsTrigger>
+            {currentSession && (
+              <TabsTrigger
+                value="live-qa"
+                className="text-white data-[state=active]:bg-white/20"
+                aria-label="Live Q&A tab"
+                aria-controls="live-qa-panel"
+              >
+                <MessageCircle className="h-4 w-4 mr-2" aria-hidden="true" />
+                Live Q&A
+              </TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="overview">
@@ -337,6 +376,14 @@ export default function CoursePage() {
           <TabsContent value="assignments">
             <CourseAssignmentsTab assignments={assignments} onNavigate={navigate} />
           </TabsContent>
+
+          {currentSession && (
+            <TabsContent value="live-qa">
+              <div className="h-[600px]">
+                <LiveQuestionPanel sessionId={currentSession.id} compact={false} />
+              </div>
+            </TabsContent>
+          )}
         </Tabs>
       </div>
 

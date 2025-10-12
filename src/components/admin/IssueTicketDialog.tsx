@@ -23,7 +23,7 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
-import { Search, Calendar, Clock, MapPin, UserCheck, Loader2, Award } from 'lucide-react';
+import { Search, UserCheck, Loader2 } from 'lucide-react';
 
 interface UserProfile {
   id: string;
@@ -76,7 +76,9 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
   const [sessionDate, setSessionDate] = useState('');
   const [sessionTime, setSessionTime] = useState('');
   const [location, setLocation] = useState('');
-  const [badgeColor, setBadgeColor] = useState<'gold' | 'silver' | 'bronze' | 'blue' | 'green'>('silver');
+  const [badgeColor, setBadgeColor] = useState<'gold' | 'silver' | 'bronze' | 'blue' | 'green'>(
+    'silver'
+  );
   const [notes, setNotes] = useState('');
 
   // Users
@@ -222,7 +224,8 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
       await onIssueTickets(Array.from(selectedUsers), {
         ticket_type: ticketType,
         event_id: ticketType === 'event' && selectedEvent ? parseInt(selectedEvent) : undefined,
-        course_id: ticketType === 'course_session' && selectedCourse ? parseInt(selectedCourse) : undefined,
+        course_id:
+          ticketType === 'course_session' && selectedCourse ? parseInt(selectedCourse) : undefined,
         session_title: sessionTitle,
         session_date: sessionDate,
         session_time: sessionTime || undefined,
@@ -325,7 +328,7 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
               <Input
                 id="session_title"
                 value={sessionTitle}
-                onChange={(e) => setSessionTitle(e.target.value)}
+                onChange={e => setSessionTitle(e.target.value)}
                 placeholder="e.g., AI Fundamentals Workshop"
               />
             </div>
@@ -336,7 +339,7 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
                 id="session_date"
                 type="date"
                 value={sessionDate}
-                onChange={(e) => setSessionDate(e.target.value)}
+                onChange={e => setSessionDate(e.target.value)}
               />
             </div>
 
@@ -346,7 +349,7 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
                 id="session_time"
                 type="time"
                 value={sessionTime}
-                onChange={(e) => setSessionTime(e.target.value)}
+                onChange={e => setSessionTime(e.target.value)}
               />
             </div>
 
@@ -355,14 +358,19 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
               <Input
                 id="location"
                 value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                onChange={e => setLocation(e.target.value)}
                 placeholder="e.g., Online (Zoom) or Physical Address"
               />
             </div>
 
             <div className="space-y-2">
               <Label>Badge Color</Label>
-              <Select value={badgeColor} onValueChange={(v) => setBadgeColor(v as 'gold' | 'silver' | 'bronze' | 'blue' | 'green')}>
+              <Select
+                value={badgeColor}
+                onValueChange={v =>
+                  setBadgeColor(v as 'gold' | 'silver' | 'bronze' | 'blue' | 'green')
+                }
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -383,7 +391,7 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
             <Textarea
               id="notes"
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={e => setNotes(e.target.value)}
               placeholder="Add any notes about this attendance..."
               rows={2}
             />
@@ -403,7 +411,7 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
               <Input
                 placeholder="Search users..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>

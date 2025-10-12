@@ -4,7 +4,6 @@
  */
 
 import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Lock, Sparkles, Star, Award } from 'lucide-react';
@@ -105,11 +104,7 @@ export function AnimatedBadge({
       <Tooltip>
         <TooltipTrigger asChild>
           <div
-            className={cn(
-              'relative flex items-center justify-center',
-              sizes.container,
-              className
-            )}
+            className={cn('relative flex items-center justify-center', sizes.container, className)}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >

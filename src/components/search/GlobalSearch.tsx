@@ -19,15 +19,11 @@ import {
   Video,
   Calendar,
   User,
-  Settings,
   BookMarked,
   Download,
   Clock,
   List,
   Home,
-  BarChart,
-  Trophy,
-  Bell,
   Sparkles,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,10 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
 import {
   ArrowLeft,
-  ArrowRight,
   TrendingUp,
   BookOpen,
   CheckCircle,
@@ -19,7 +17,6 @@ import {
   Target,
   Star,
   Play,
-  Lock,
   Loader2,
   Award,
   Route as RouteIcon,
@@ -73,19 +70,7 @@ export default function LearningPathsPage() {
   const [activeTab, setActiveTab] = useState<'all' | 'enrolled' | 'completed'>('all');
   const [filteredPaths, setFilteredPaths] = useState<LearningPath[]>([]);
 
-  useEffect(() => {
-    if (!user) {
-      navigate('/auth');
-      return;
-    }
-    fetchLearningPaths();
-  }, [user, navigate]);
-
-  useEffect(() => {
-    filterPaths();
-  }, [learningPaths, activeTab]);
-
-  const fetchLearningPaths = async () => {
+  const fetchLearningPaths = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -155,9 +140,9 @@ export default function LearningPathsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, toast]);
 
-  const filterPaths = () => {
+  const filterPaths = useCallback(() => {
     let filtered = [...learningPaths];
 
     if (activeTab === 'enrolled') {
@@ -167,7 +152,19 @@ export default function LearningPathsPage() {
     }
 
     setFilteredPaths(filtered);
-  };
+  }, [learningPaths, activeTab]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+    fetchLearningPaths();
+  }, [user, navigate, fetchLearningPaths]);
+
+  useEffect(() => {
+    filterPaths();
+  }, [filterPaths]);
 
   const handleEnroll = async (pathId: string) => {
     if (!user) return;

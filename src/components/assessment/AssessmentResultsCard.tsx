@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
 import {
   Brain,
   TrendingUp,
@@ -14,7 +13,7 @@ import {
   Share2,
   ChevronRight,
   Zap,
-  Trophy
+  Trophy,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -52,7 +51,7 @@ const LEVEL_CONFIG = {
     borderColor: 'border-emerald-500/30',
     icon: Trophy,
     label: 'AI Expert',
-    description: 'Mastery level AI user'
+    description: 'Mastery level AI user',
   },
   advanced: {
     color: 'from-blue-500 to-indigo-600',
@@ -60,7 +59,7 @@ const LEVEL_CONFIG = {
     borderColor: 'border-blue-500/30',
     icon: Award,
     label: 'Advanced User',
-    description: 'Strong AI adoption'
+    description: 'Strong AI adoption',
   },
   intermediate: {
     color: 'from-amber-500 to-orange-600',
@@ -68,7 +67,7 @@ const LEVEL_CONFIG = {
     borderColor: 'border-amber-500/30',
     icon: Target,
     label: 'Intermediate',
-    description: 'Growing AI skills'
+    description: 'Growing AI skills',
   },
   beginner: {
     color: 'from-rose-500 to-pink-600',
@@ -76,17 +75,19 @@ const LEVEL_CONFIG = {
     borderColor: 'border-rose-500/30',
     icon: Sparkles,
     label: 'Beginner',
-    description: 'Starting AI journey'
-  }
+    description: 'Starting AI journey',
+  },
 };
 
 export default function AssessmentResultsCard({
   assessment,
   insights = [],
-  compact = false
+  compact = false,
 }: AssessmentResultsCardProps) {
   const navigate = useNavigate();
-  const scorePercentage = Math.round((assessment.total_score / assessment.max_possible_score) * 100);
+  const scorePercentage = Math.round(
+    (assessment.total_score / assessment.max_possible_score) * 100
+  );
   const level = assessment.augmentation_level || 'beginner';
   const config = LEVEL_CONFIG[level as keyof typeof LEVEL_CONFIG] || LEVEL_CONFIG.beginner;
   const LevelIcon = config.icon;
@@ -97,7 +98,7 @@ export default function AssessmentResultsCard({
       navigator.share({
         title: 'My AI Assessment Results',
         text: shareText,
-        url: window.location.origin + `/ai-assessment/results/${assessment.id}`
+        url: window.location.origin + `/ai-assessment/results/${assessment.id}`,
       });
     } else {
       navigator.clipboard.writeText(shareText);
@@ -110,7 +111,9 @@ export default function AssessmentResultsCard({
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${config.color} flex items-center justify-center`}>
+              <div
+                className={`w-16 h-16 rounded-full bg-gradient-to-br ${config.color} flex items-center justify-center`}
+              >
                 <span className="text-2xl font-bold text-white">{scorePercentage}%</span>
               </div>
               <div>
@@ -130,7 +133,8 @@ export default function AssessmentResultsCard({
                 </p>
                 {assessment.is_adaptive && assessment.current_ability_estimate !== undefined && (
                   <p className="text-xs text-white/50 mt-1">
-                    IRT Ability: {assessment.current_ability_estimate.toFixed(2)} ± {assessment.ability_standard_error?.toFixed(2)}
+                    IRT Ability: {assessment.current_ability_estimate.toFixed(2)} ±{' '}
+                    {assessment.ability_standard_error?.toFixed(2)}
                   </p>
                 )}
               </div>
@@ -153,7 +157,9 @@ export default function AssessmentResultsCard({
   return (
     <div className="space-y-6">
       {/* Hero Card */}
-      <Card className={`border-2 ${config.borderColor} ${config.bgColor} backdrop-blur-md overflow-hidden`}>
+      <Card
+        className={`border-2 ${config.borderColor} ${config.bgColor} backdrop-blur-md overflow-hidden`}
+      >
         <CardContent className="p-0">
           <div className={`h-2 bg-gradient-to-r ${config.color}`} />
           <div className="p-8">
@@ -206,7 +212,9 @@ export default function AssessmentResultsCard({
 
               {/* Level Badge */}
               <div className="flex flex-col items-center justify-center text-center">
-                <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${config.color} flex items-center justify-center mb-4`}>
+                <div
+                  className={`w-20 h-20 rounded-full bg-gradient-to-br ${config.color} flex items-center justify-center mb-4`}
+                >
                   <LevelIcon className="h-10 w-10 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-2">{config.label}</h3>
@@ -235,14 +243,17 @@ export default function AssessmentResultsCard({
                 {assessment.questions_answered_count && (
                   <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
                     <span className="text-sm text-white/70">Questions</span>
-                    <span className="font-semibold text-white">{assessment.questions_answered_count}</span>
+                    <span className="font-semibold text-white">
+                      {assessment.questions_answered_count}
+                    </span>
                   </div>
                 )}
                 {assessment.completion_time_seconds && (
                   <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
                     <span className="text-sm text-white/70">Time</span>
                     <span className="font-semibold text-white">
-                      {Math.floor(assessment.completion_time_seconds / 60)}m {assessment.completion_time_seconds % 60}s
+                      {Math.floor(assessment.completion_time_seconds / 60)}m{' '}
+                      {assessment.completion_time_seconds % 60}s
                     </span>
                   </div>
                 )}
@@ -273,17 +284,24 @@ export default function AssessmentResultsCard({
                 <div key={index} className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="font-medium text-white">{insight.category_name}</span>
-                    <Badge variant={
-                      insight.strength_level === 'strong' ? 'default' :
-                      insight.strength_level === 'proficient' ? 'secondary' :
-                      'outline'
-                    } className="text-white">
+                    <Badge
+                      variant={
+                        insight.strength_level === 'strong'
+                          ? 'default'
+                          : insight.strength_level === 'proficient'
+                            ? 'secondary'
+                            : 'outline'
+                      }
+                      className="text-white"
+                    >
                       {Math.round(insight.percentage)}%
                     </Badge>
                   </div>
                   <Progress value={insight.percentage} className="h-2" />
                   <div className="flex justify-between text-xs text-white/50">
-                    <span>{insight.category_score}/{insight.category_max_score} points</span>
+                    <span>
+                      {insight.category_score}/{insight.category_max_score} points
+                    </span>
                     <span className="capitalize">{insight.strength_level}</span>
                   </div>
                 </div>

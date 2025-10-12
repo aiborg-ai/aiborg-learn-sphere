@@ -10,7 +10,6 @@ import type {
   LeaderboardEntry,
   LeaderboardType,
   LeaderboardCriteria,
-  TimePeriod,
   UserLeaderboardPreferences,
   UserLeaderboardPosition,
 } from './types';
@@ -28,7 +27,7 @@ export class LeaderboardService {
         .order('type', { ascending: true });
 
       if (error) throw error;
-      return data as Leaderboard[] || [];
+      return (data as Leaderboard[]) || [];
     } catch (error) {
       logger.error('Error fetching leaderboards:', error);
       return [];
@@ -47,7 +46,7 @@ export class LeaderboardService {
         .eq('type', type);
 
       if (error) throw error;
-      return data as Leaderboard[] || [];
+      return (data as Leaderboard[]) || [];
     } catch (error) {
       logger.error('Error fetching leaderboards by type:', error);
       return [];
@@ -84,10 +83,12 @@ export class LeaderboardService {
     try {
       const { data, error } = await supabase
         .from('leaderboard_entries')
-        .select(`
+        .select(
+          `
           *,
           profiles!leaderboard_entries_user_id_fkey(display_name, avatar_url)
-        `)
+        `
+        )
         .eq('leaderboard_id', leaderboardId)
         .order('rank', { ascending: true })
         .range(offset, offset + limit - 1);
@@ -139,9 +140,10 @@ export class LeaderboardService {
       }
 
       const position = data[0];
-      const percentile = position.total_entries > 0
-        ? Math.round(((position.total_entries - position.rank) / position.total_entries) * 100)
-        : 0;
+      const percentile =
+        position.total_entries > 0
+          ? Math.round(((position.total_entries - position.rank) / position.total_entries) * 100)
+          : 0;
 
       return {
         ...position,
@@ -177,10 +179,12 @@ export class LeaderboardService {
 
       const { data, error } = await supabase
         .from('leaderboard_entries')
-        .select(`
+        .select(
+          `
           *,
           profiles!leaderboard_entries_user_id_fkey(display_name, avatar_url)
-        `)
+        `
+        )
         .eq('leaderboard_id', leaderboardId)
         .gte('rank', startRank)
         .lte('rank', endRank)
@@ -236,13 +240,11 @@ export class LeaderboardService {
     preferences: Partial<Omit<UserLeaderboardPreferences, 'user_id' | 'created_at' | 'updated_at'>>
   ): Promise<boolean> {
     try {
-      const { error } = await supabase
-        .from('user_leaderboard_preferences')
-        .upsert({
-          user_id: userId,
-          ...preferences,
-          updated_at: new Date().toISOString(),
-        });
+      const { error } = await supabase.from('user_leaderboard_preferences').upsert({
+        user_id: userId,
+        ...preferences,
+        updated_at: new Date().toISOString(),
+      });
 
       if (error) throw error;
       return true;
@@ -296,10 +298,7 @@ export class LeaderboardService {
       if (queryError) throw queryError;
 
       // Clear existing entries for this leaderboard
-      await supabase
-        .from('leaderboard_entries')
-        .delete()
-        .eq('leaderboard_id', leaderboardId);
+      await supabase.from('leaderboard_entries').delete().eq('leaderboard_id', leaderboardId);
 
       // Insert new entries
       const entries = (users || []).map((user: any, index: number) => ({
@@ -317,9 +316,7 @@ export class LeaderboardService {
       }));
 
       if (entries.length > 0) {
-        const { error: insertError } = await supabase
-          .from('leaderboard_entries')
-          .insert(entries);
+        const { error: insertError } = await supabase.from('leaderboard_entries').insert(entries);
 
         if (insertError) throw insertError;
       }
@@ -357,12 +354,12 @@ export class LeaderboardService {
   /**
    * Get multiple leaderboards with their top entries
    */
-  static async getLeaderboardsWithEntries(
-    topN: number = 10
-  ): Promise<Array<{
-    leaderboard: Leaderboard;
-    entries: LeaderboardEntry[];
-  }>> {
+  static async getLeaderboardsWithEntries(topN: number = 10): Promise<
+    Array<{
+      leaderboard: Leaderboard;
+      entries: LeaderboardEntry[];
+    }>
+  > {
     const leaderboards = await this.getAll();
 
     const results = await Promise.all(
@@ -378,10 +375,12 @@ export class LeaderboardService {
   /**
    * Get user's positions across all leaderboards
    */
-  static async getUserPositions(userId: string): Promise<Array<{
-    leaderboard: Leaderboard;
-    position: UserLeaderboardPosition | null;
-  }>> {
+  static async getUserPositions(userId: string): Promise<
+    Array<{
+      leaderboard: Leaderboard;
+      position: UserLeaderboardPosition | null;
+    }>
+  > {
     const leaderboards = await this.getAll();
 
     const results = await Promise.all(
@@ -397,17 +396,16 @@ export class LeaderboardService {
   /**
    * Search for users in leaderboard by name
    */
-  static async searchUsers(
-    leaderboardId: string,
-    searchTerm: string
-  ): Promise<LeaderboardEntry[]> {
+  static async searchUsers(leaderboardId: string, searchTerm: string): Promise<LeaderboardEntry[]> {
     try {
       const { data, error } = await supabase
         .from('leaderboard_entries')
-        .select(`
+        .select(
+          `
           *,
           profiles!leaderboard_entries_user_id_fkey(display_name, avatar_url)
-        `)
+        `
+        )
         .eq('leaderboard_id', leaderboardId)
         .ilike('profiles.display_name', `%${searchTerm}%`)
         .order('rank', { ascending: true })

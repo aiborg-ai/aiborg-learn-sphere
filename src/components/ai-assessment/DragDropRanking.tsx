@@ -2,14 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  GripVertical,
-  ArrowUp,
-  ArrowDown,
-  RotateCcw,
-  Info,
-  Image as ImageIcon,
-} from 'lucide-react';
+import { GripVertical, ArrowUp, ArrowDown, RotateCcw, Info } from 'lucide-react';
 
 export interface DragDropRankingProps {
   question: {
@@ -47,14 +40,13 @@ export const DragDropRanking: React.FC<DragDropRankingProps> = ({
     if (selectedOrdering.length === 0) {
       const initialOrder = question.options
         .sort((a, b) => a.order_index - b.order_index)
-        .map((opt) => opt.id);
+        .map(opt => opt.id);
       onOrderingChange(initialOrder);
     }
   }, [question.options, selectedOrdering.length, onOrderingChange]);
 
-  const currentOrdering = selectedOrdering.length > 0
-    ? selectedOrdering
-    : question.options.map((opt) => opt.id);
+  const currentOrdering =
+    selectedOrdering.length > 0 ? selectedOrdering : question.options.map(opt => opt.id);
 
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);
@@ -98,10 +90,7 @@ export const DragDropRanking: React.FC<DragDropRankingProps> = ({
 
     const newOrdering = [...currentOrdering];
     const toIndex = direction === 'up' ? fromIndex - 1 : fromIndex + 1;
-    [newOrdering[fromIndex], newOrdering[toIndex]] = [
-      newOrdering[toIndex],
-      newOrdering[fromIndex],
-    ];
+    [newOrdering[fromIndex], newOrdering[toIndex]] = [newOrdering[toIndex], newOrdering[fromIndex]];
 
     onOrderingChange(newOrdering);
   };
@@ -109,12 +98,12 @@ export const DragDropRanking: React.FC<DragDropRankingProps> = ({
   const resetOrder = () => {
     const initialOrder = question.options
       .sort((a, b) => a.order_index - b.order_index)
-      .map((opt) => opt.id);
+      .map(opt => opt.id);
     onOrderingChange(initialOrder);
   };
 
   const getOptionData = (optionId: string) => {
-    return question.options.find((opt) => opt.id === optionId);
+    return question.options.find(opt => opt.id === optionId);
   };
 
   const getRankingLabel = (index: number) => {
@@ -142,9 +131,7 @@ export const DragDropRanking: React.FC<DragDropRankingProps> = ({
                   ? '📊 Rank from highest to lowest'
                   : '🔢 Arrange in correct order'}
               </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {question.metadata.instruction}
-              </p>
+              <p className="text-sm text-muted-foreground mt-1">{question.metadata.instruction}</p>
             </div>
           )}
           {question.metadata?.ranking_criteria && (
@@ -177,8 +164,8 @@ export const DragDropRanking: React.FC<DragDropRankingProps> = ({
                   key={optionId}
                   draggable
                   onDragStart={() => handleDragStart(index)}
-                  onDragOver={(e) => handleDragOver(e, index)}
-                  onDrop={(e) => handleDrop(e, index)}
+                  onDragOver={e => handleDragOver(e, index)}
+                  onDrop={e => handleDrop(e, index)}
                   onDragEnd={handleDragEnd}
                   className={`
                     group flex items-center gap-3 p-4 rounded-lg border-2
@@ -211,7 +198,7 @@ export const DragDropRanking: React.FC<DragDropRankingProps> = ({
                           src={option.option_image_url}
                           alt={option.option_text}
                           className="h-16 w-16 object-cover rounded border"
-                          onError={(e) => {
+                          onError={e => {
                             e.currentTarget.style.display = 'none';
                           }}
                         />

@@ -5,14 +5,26 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import {
-  Trophy, Award, Star, Calendar, Clock, BookOpen, Target,
-  Flame, Shield, CheckCircle, TrendingUp, ArrowLeft, Share2,
-  Loader2, User, Mail, Globe, Twitter, Linkedin, Github,
-  Medal, Zap, Crown, Diamond
+  Trophy,
+  Award,
+  Star,
+  Calendar,
+  Clock,
+  Target,
+  Flame,
+  Shield,
+  CheckCircle,
+  TrendingUp,
+  ArrowLeft,
+  Share2,
+  Loader2,
+  Medal,
+  Zap,
+  Crown,
+  Diamond,
 } from 'lucide-react';
 
 interface PublicProfileData {
@@ -93,10 +105,12 @@ export default function PublicProfile() {
       // Fetch featured achievements
       const { data: achievementsData, error: achievementsError } = await supabase
         .from('user_achievements')
-        .select(`
+        .select(
+          `
           *,
           achievements!inner(name, description, icon_emoji, rarity, category, points)
-        `)
+        `
+        )
         .eq('user_id', userId)
         .eq('is_featured', true)
         .order('earned_at', { ascending: false });
@@ -106,10 +120,12 @@ export default function PublicProfile() {
       // Fetch completed courses with certificates
       const { data: certificatesData, error: certificatesError } = await supabase
         .from('certificates')
-        .select(`
+        .select(
+          `
           *,
           courses!inner(title)
-        `)
+        `
+        )
         .eq('user_id', userId)
         .order('issued_date', { ascending: false });
 
@@ -122,11 +138,13 @@ export default function PublicProfile() {
         .eq('user_id', userId)
         .eq('completed_at', 'not.null');
 
-      const totalLearningMinutes = progressData?.reduce((sum, p) => sum + (p.time_spent_minutes || 0), 0) || 0;
+      const totalLearningMinutes =
+        progressData?.reduce((sum, p) => sum + (p.time_spent_minutes || 0), 0) || 0;
 
       // Fetch current streak
-      const { data: streakData } = await supabase
-        .rpc('calculate_learning_streak', { p_user_id: userId });
+      const { data: streakData } = await supabase.rpc('calculate_learning_streak', {
+        p_user_id: userId,
+      });
 
       // Count total achievements
       const { count: totalAchievementsCount } = await supabase
@@ -142,30 +160,34 @@ export default function PublicProfile() {
         memberSince: profileData?.created_at || '',
         certificatesEarned: certificatesData?.length || 0,
         totalAchievements: totalAchievementsCount || 0,
-        featuredAchievements: achievementsData?.map(a => ({
-          id: a.id,
-          name: a.achievements.name,
-          description: a.achievements.description,
-          iconEmoji: a.achievements.icon_emoji,
-          rarity: a.achievements.rarity,
-          category: a.achievements.category,
-          points: a.achievements.points,
-          earnedAt: a.earned_at
-        })) || [],
-        completedCourses: certificatesData?.map(c => ({
-          id: c.course_id,
-          title: c.courses?.title || '',
-          completedAt: c.issued_date,
-          certificateNumber: c.certificate_number,
-          score: c.final_score
-        })) || [],
+        featuredAchievements:
+          achievementsData?.map(a => ({
+            id: a.id,
+            name: a.achievements.name,
+            description: a.achievements.description,
+            iconEmoji: a.achievements.icon_emoji,
+            rarity: a.achievements.rarity,
+            category: a.achievements.category,
+            points: a.achievements.points,
+            earnedAt: a.earned_at,
+          })) || [],
+        completedCourses:
+          certificatesData?.map(c => ({
+            id: c.course_id,
+            title: c.courses?.title || '',
+            completedAt: c.issued_date,
+            certificateNumber: c.certificate_number,
+            score: c.final_score,
+          })) || [],
         learningStats: {
           totalCoursesCompleted: certificatesData?.length || 0,
           totalLearningHours: Math.round(totalLearningMinutes / 60),
           currentStreak: streakData || 0,
           longestStreak: 0, // Would need additional tracking
-          averageScore: certificatesData?.reduce((sum, c) => sum + (c.final_score || 0), 0) / (certificatesData?.length || 1) || 0
-        }
+          averageScore:
+            certificatesData?.reduce((sum, c) => sum + (c.final_score || 0), 0) /
+              (certificatesData?.length || 1) || 0,
+        },
       };
 
       setProfile(profileInfo);
@@ -239,10 +261,7 @@ export default function PublicProfile() {
         <Card className="bg-white/10 backdrop-blur-md border-white/20">
           <CardContent className="p-8">
             <p className="text-white text-center">Profile not found</p>
-            <Button
-              className="w-full mt-4"
-              onClick={() => navigate('/')}
-            >
+            <Button className="w-full mt-4" onClick={() => navigate('/')}>
               Back to Home
             </Button>
           </CardContent>
@@ -272,9 +291,7 @@ export default function PublicProfile() {
                 {profile.displayName.charAt(0).toUpperCase()}
               </div>
               <div>
-                <h1 className="text-4xl font-bold text-white mb-2">
-                  {profile.displayName}
-                </h1>
+                <h1 className="text-4xl font-bold text-white mb-2">{profile.displayName}</h1>
                 <p className="text-white/80 flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   Member since {new Date(profile.memberSince).toLocaleDateString()}
@@ -309,7 +326,9 @@ export default function PublicProfile() {
             <Card className="bg-white/10 backdrop-blur-md border-white/20">
               <CardContent className="p-4 text-center">
                 <Clock className="h-8 w-8 text-blue-400 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-white">{profile.learningStats.totalLearningHours}</p>
+                <p className="text-2xl font-bold text-white">
+                  {profile.learningStats.totalLearningHours}
+                </p>
                 <p className="text-white/60 text-sm">Learning Hours</p>
               </CardContent>
             </Card>
@@ -317,7 +336,9 @@ export default function PublicProfile() {
             <Card className="bg-white/10 backdrop-blur-md border-white/20">
               <CardContent className="p-4 text-center">
                 <Flame className="h-8 w-8 text-orange-400 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-white">{profile.learningStats.currentStreak}</p>
+                <p className="text-2xl font-bold text-white">
+                  {profile.learningStats.currentStreak}
+                </p>
                 <p className="text-white/60 text-sm">Day Streak</p>
               </CardContent>
             </Card>
@@ -339,10 +360,16 @@ export default function PublicProfile() {
       <div className="container mx-auto px-6 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid grid-cols-2 bg-white/10 backdrop-blur-md border-white/20">
-            <TabsTrigger value="achievements" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="achievements"
+              className="text-white data-[state=active]:bg-white/20"
+            >
               Featured Achievements
             </TabsTrigger>
-            <TabsTrigger value="certificates" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="certificates"
+              className="text-white data-[state=active]:bg-white/20"
+            >
               Certificates
             </TabsTrigger>
           </TabsList>
@@ -350,7 +377,7 @@ export default function PublicProfile() {
           <TabsContent value="achievements">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {profile.featuredAchievements.length > 0 ? (
-                profile.featuredAchievements.map((achievement) => (
+                profile.featuredAchievements.map(achievement => (
                   <Card
                     key={achievement.id}
                     className={`relative overflow-hidden ${getRarityColor(achievement.rarity)} border-0`}
@@ -362,9 +389,7 @@ export default function PublicProfile() {
                       <div className="text-center mb-4">
                         <span className="text-5xl">{achievement.iconEmoji}</span>
                       </div>
-                      <h3 className="text-xl font-bold text-center mb-2">
-                        {achievement.name}
-                      </h3>
+                      <h3 className="text-xl font-bold text-center mb-2">{achievement.name}</h3>
                       <p className="text-sm text-center opacity-90 mb-4">
                         {achievement.description}
                       </p>
@@ -373,9 +398,7 @@ export default function PublicProfile() {
                           {getCategoryIcon(achievement.category)}
                           <span className="ml-1">{achievement.category.replace('_', ' ')}</span>
                         </Badge>
-                        <span className="text-sm font-bold">
-                          {achievement.points} pts
-                        </span>
+                        <span className="text-sm font-bold">{achievement.points} pts</span>
                       </div>
                       <p className="text-xs text-center mt-3 opacity-75">
                         Earned {new Date(achievement.earnedAt).toLocaleDateString()}
@@ -397,7 +420,7 @@ export default function PublicProfile() {
           <TabsContent value="certificates">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {profile.completedCourses.length > 0 ? (
-                profile.completedCourses.map((course) => (
+                profile.completedCourses.map(course => (
                   <Card key={course.id} className="bg-white/10 backdrop-blur-md border-white/20">
                     <CardHeader>
                       <div className="flex items-start justify-between">
@@ -422,7 +445,9 @@ export default function PublicProfile() {
                           <div className="space-y-2">
                             <div className="flex justify-between text-sm">
                               <span className="text-white/60">Final Score</span>
-                              <span className="text-white font-medium">{Math.round(course.score)}%</span>
+                              <span className="text-white font-medium">
+                                {Math.round(course.score)}%
+                              </span>
                             </div>
                             <Progress value={course.score} className="h-2" />
                           </div>
@@ -430,7 +455,9 @@ export default function PublicProfile() {
                         <Button
                           variant="secondary"
                           className="w-full"
-                          onClick={() => window.open(`/certificate/${course.certificateNumber}`, '_blank')}
+                          onClick={() =>
+                            window.open(`/certificate/${course.certificateNumber}`, '_blank')
+                          }
                         >
                           <CheckCircle className="h-4 w-4 mr-2" />
                           Verify Certificate

@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Progress } from '@/components/ui/progress';
 import {
   Select,
   SelectContent,
@@ -30,7 +29,6 @@ import {
   Loader2,
   Filter,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import type { FileType, DownloadWithRelations } from '@/types/content-access';
 import {
   AlertDialog,

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/components/ui/use-toast';
 import {
   Sparkles,
@@ -255,11 +254,7 @@ export function LearningPathRecommendations({
                     </>
                   )}
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSelectedPath(rec)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => setSelectedPath(rec)}>
                   Details
                 </Button>
               </div>
@@ -380,10 +375,7 @@ export function LearningPathRecommendations({
       )}
 
       {selectedPath && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40"
-          onClick={() => setSelectedPath(null)}
-        />
+        <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setSelectedPath(null)} />
       )}
     </div>
   );

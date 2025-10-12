@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
-import { Shield, BarChart3, FileText, MessageSquare, Image, Tags, FolderOpen } from 'lucide-react';
+import { Shield, BarChart3, FileText, MessageSquare, Image, FolderOpen } from 'lucide-react';
 import BlogCMSDashboard from './components/BlogCMSDashboard';
 import BlogPostManager from './components/BlogPostManager';
 import BlogMediaLibrary from './components/BlogMediaLibrary';
@@ -25,9 +25,7 @@ function BlogCMS() {
             <Shield className="h-8 w-8 text-destructive" />
           </div>
           <h2 className="font-semibold text-xl mb-2">Access Denied</h2>
-          <p className="text-muted-foreground">
-            You don't have permission to access the Blog CMS.
-          </p>
+          <p className="text-muted-foreground">You don't have permission to access the Blog CMS.</p>
         </Card>
       </div>
     );

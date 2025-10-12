@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { BookOpen, Edit, Plus, Trash2, Save, X, DollarSign, Users } from 'lucide-react';
+import { BookOpen, Edit, Plus, Trash2, Save, X } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';

@@ -4,7 +4,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Play, Clock, CheckCircle, BookOpen, TrendingUp } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 export interface UserProgress {
@@ -61,15 +60,13 @@ export function CourseProgress({ userProgress, enrollments, courses }: CoursePro
             <TrendingUp className="h-5 w-5" />
             Learning Progress
           </CardTitle>
-          <CardDescription>
-            Track your progress across all enrolled courses
-          </CardDescription>
+          <CardDescription>Track your progress across all enrolled courses</CardDescription>
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-[400px] pr-4">
             <div className="space-y-4">
               {userProgress.length > 0 ? (
-                userProgress.map((progress) => {
+                userProgress.map(progress => {
                   const { course } = getEnrolledCourseDetails(progress.courseId);
                   return (
                     <div
@@ -135,13 +132,11 @@ export function CourseProgress({ userProgress, enrollments, courses }: CoursePro
             <BookOpen className="h-5 w-5" />
             Enrolled Courses
           </CardTitle>
-          <CardDescription>
-            All courses you're currently enrolled in
-          </CardDescription>
+          <CardDescription>All courses you're currently enrolled in</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
-            {enrollments.map((enrollment) => {
+            {enrollments.map(enrollment => {
               const course = courses.find(c => c.id === enrollment.course_id);
               const progress = userProgress.find(p => p.courseId === enrollment.course_id);
 
@@ -182,13 +177,8 @@ export function CourseProgress({ userProgress, enrollments, courses }: CoursePro
 
             {enrollments.length === 0 && (
               <div className="text-center py-8">
-                <p className="text-muted-foreground">
-                  You haven't enrolled in any courses yet.
-                </p>
-                <Button
-                  className="mt-4"
-                  onClick={() => navigate('/courses')}
-                >
+                <p className="text-muted-foreground">You haven't enrolled in any courses yet.</p>
+                <Button className="mt-4" onClick={() => navigate('/courses')}>
                   Browse Courses
                 </Button>
               </div>

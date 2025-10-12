@@ -7,7 +7,6 @@ import { useToast } from '@/components/ui/use-toast';
 import {
   DollarSign,
   Users,
-  TrendingUp,
   BookOpen,
   Activity,
   Loader2,
@@ -17,9 +16,7 @@ import {
   PieChart as PieChartIcon,
   Target,
   Award,
-  Calendar,
   ArrowUp,
-  ArrowDown,
 } from 'lucide-react';
 import {
   LineChart,
@@ -156,7 +153,9 @@ export function EnhancedAnalyticsDashboard() {
             <Users className="h-4 w-4 text-purple-600 dark:text-purple-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatNumber(platformMetrics?.totalUsers || 0)}</div>
+            <div className="text-2xl font-bold">
+              {formatNumber(platformMetrics?.totalUsers || 0)}
+            </div>
             <div className="flex items-center gap-2 mt-2">
               <Badge variant="secondary" className="text-xs">
                 {platformMetrics?.totalStudents || 0} Students
@@ -466,7 +465,7 @@ export function EnhancedAnalyticsDashboard() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" />
                     <YAxis />
-                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <Tooltip formatter={value => formatCurrency(Number(value))} />
                     <Area
                       type="monotone"
                       dataKey="amount"
@@ -490,7 +489,7 @@ export function EnhancedAnalyticsDashboard() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="courseTitle" angle={-45} textAnchor="end" height={100} />
                     <YAxis />
-                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <Tooltip formatter={value => formatCurrency(Number(value))} />
                     <Bar dataKey="amount" fill="#10b981" />
                   </BarChart>
                 </ResponsiveContainer>
@@ -584,9 +583,11 @@ export function EnhancedAnalyticsDashboard() {
                       fill="#8884d8"
                       dataKey="count"
                     >
-                      {(assessmentAnalytics?.assessmentsByType || []).map((_: any, index: number) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
+                      {(assessmentAnalytics?.assessmentsByType || []).map(
+                        (_: any, index: number) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        )
+                      )}
                     </Pie>
                     <Tooltip />
                   </PieChart>

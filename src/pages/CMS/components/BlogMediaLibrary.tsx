@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,14 +17,9 @@ import {
   Download,
   Edit,
   X,
-  Check
+  Check,
 } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface MediaItem {
   id: string;
@@ -71,7 +66,7 @@ function BlogMediaLibrary() {
       toast({
         title: 'Error',
         description: 'Failed to fetch media library',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -103,7 +98,7 @@ function BlogMediaLibrary() {
           // If bucket doesn't exist, create it
           if (uploadError.message.includes('bucket')) {
             const { error: bucketError } = await supabase.storage.createBucket('blog-images', {
-              public: true
+              public: true,
             });
 
             if (!bucketError) {
@@ -120,9 +115,7 @@ function BlogMediaLibrary() {
         }
 
         // Get public URL
-        const { data: urlData } = supabase.storage
-          .from('blog-images')
-          .getPublicUrl(filePath);
+        const { data: urlData } = supabase.storage.from('blog-images').getPublicUrl(filePath);
 
         // Get image dimensions if it's an image
         let width = null;
@@ -130,7 +123,7 @@ function BlogMediaLibrary() {
         if (file.type.startsWith('image/')) {
           const img = new Image();
           const objectUrl = URL.createObjectURL(file);
-          await new Promise((resolve) => {
+          await new Promise(resolve => {
             img.onload = () => {
               width = img.width;
               height = img.height;
@@ -142,25 +135,23 @@ function BlogMediaLibrary() {
         }
 
         // Save metadata to database
-        const { error: dbError } = await supabase
-          .from('blog_media')
-          .insert({
-            filename: fileName,
-            original_filename: file.name,
-            file_url: urlData.publicUrl,
-            file_type: file.type,
-            file_size: file.size,
-            width,
-            height,
-            uploaded_by: user.id
-          });
+        const { error: dbError } = await supabase.from('blog_media').insert({
+          filename: fileName,
+          original_filename: file.name,
+          file_url: urlData.publicUrl,
+          file_type: file.type,
+          file_size: file.size,
+          width,
+          height,
+          uploaded_by: user.id,
+        });
 
         if (dbError) throw dbError;
       }
 
       toast({
         title: 'Success',
-        description: `${files.length} file(s) uploaded successfully`
+        description: `${files.length} file(s) uploaded successfully`,
       });
 
       fetchMedia();
@@ -169,7 +160,7 @@ function BlogMediaLibrary() {
       toast({
         title: 'Error',
         description: 'Failed to upload files',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setUploading(false);
@@ -182,21 +173,16 @@ function BlogMediaLibrary() {
     try {
       // Delete from storage
       const filePath = `blog-media/${item.filename}`;
-      await supabase.storage
-        .from('blog-images')
-        .remove([filePath]);
+      await supabase.storage.from('blog-images').remove([filePath]);
 
       // Delete from database
-      const { error } = await supabase
-        .from('blog_media')
-        .delete()
-        .eq('id', item.id);
+      const { error } = await supabase.from('blog_media').delete().eq('id', item.id);
 
       if (error) throw error;
 
       toast({
         title: 'Success',
-        description: 'File deleted successfully'
+        description: 'File deleted successfully',
       });
 
       fetchMedia();
@@ -204,7 +190,7 @@ function BlogMediaLibrary() {
       toast({
         title: 'Error',
         description: 'Failed to delete file',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -217,7 +203,7 @@ function BlogMediaLibrary() {
         .from('blog_media')
         .update({
           alt_text: editingMedia.alt_text,
-          caption: editingMedia.caption
+          caption: editingMedia.caption,
         })
         .eq('id', editingMedia.id);
 
@@ -225,7 +211,7 @@ function BlogMediaLibrary() {
 
       toast({
         title: 'Success',
-        description: 'Media details updated'
+        description: 'Media details updated',
       });
 
       fetchMedia();
@@ -234,7 +220,7 @@ function BlogMediaLibrary() {
       toast({
         title: 'Error',
         description: 'Failed to update media',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -243,7 +229,7 @@ function BlogMediaLibrary() {
     navigator.clipboard.writeText(url);
     toast({
       title: 'Copied',
-      description: 'URL copied to clipboard'
+      description: 'URL copied to clipboard',
     });
   };
 
@@ -253,10 +239,11 @@ function BlogMediaLibrary() {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
-  const filteredMedia = media.filter(item =>
-    item.original_filename.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.alt_text?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.caption?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredMedia = media.filter(
+    item =>
+      item.original_filename.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.alt_text?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.caption?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -297,7 +284,7 @@ function BlogMediaLibrary() {
             <Input
               placeholder="Search media..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               className="pl-10"
             />
           </div>
@@ -335,7 +322,7 @@ function BlogMediaLibrary() {
                     <Button
                       size="sm"
                       variant="secondary"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         setEditingMedia(item);
                       }}
@@ -345,7 +332,7 @@ function BlogMediaLibrary() {
                     <Button
                       size="sm"
                       variant="secondary"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         copyUrl(item.file_url);
                       }}
@@ -355,7 +342,7 @@ function BlogMediaLibrary() {
                     <Button
                       size="sm"
                       variant="destructive"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         handleDelete(item);
                       }}
@@ -386,25 +373,13 @@ function BlogMediaLibrary() {
                     </p>
                   </div>
                   <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setEditingMedia(item)}
-                    >
+                    <Button size="sm" variant="outline" onClick={() => setEditingMedia(item)}>
                       <Edit className="h-3 w-3" />
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => copyUrl(item.file_url)}
-                    >
+                    <Button size="sm" variant="outline" onClick={() => copyUrl(item.file_url)}>
                       <Copy className="h-3 w-3" />
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => handleDelete(item)}
-                    >
+                    <Button size="sm" variant="destructive" onClick={() => handleDelete(item)}>
                       <Trash2 className="h-3 w-3" />
                     </Button>
                   </div>
@@ -437,7 +412,9 @@ function BlogMediaLibrary() {
                   {selectedMedia.width && selectedMedia.height && (
                     <div>
                       <p className="text-muted-foreground">Dimensions</p>
-                      <p className="font-medium">{selectedMedia.width} × {selectedMedia.height}</p>
+                      <p className="font-medium">
+                        {selectedMedia.width} × {selectedMedia.height}
+                      </p>
                     </div>
                   )}
                   <div>
@@ -460,11 +437,7 @@ function BlogMediaLibrary() {
                     <Copy className="mr-2 h-4 w-4" />
                     Copy URL
                   </Button>
-                  <Button
-                    variant="outline"
-                    asChild
-                    className="flex-1"
-                  >
+                  <Button variant="outline" asChild className="flex-1">
                     <a href={selectedMedia.file_url} download>
                       <Download className="mr-2 h-4 w-4" />
                       Download
@@ -496,7 +469,7 @@ function BlogMediaLibrary() {
                   <Input
                     id="alt-text"
                     value={editingMedia.alt_text || ''}
-                    onChange={(e) => setEditingMedia({ ...editingMedia, alt_text: e.target.value })}
+                    onChange={e => setEditingMedia({ ...editingMedia, alt_text: e.target.value })}
                     placeholder="Describe this image..."
                   />
                 </div>
@@ -505,12 +478,16 @@ function BlogMediaLibrary() {
                   <Input
                     id="caption"
                     value={editingMedia.caption || ''}
-                    onChange={(e) => setEditingMedia({ ...editingMedia, caption: e.target.value })}
+                    onChange={e => setEditingMedia({ ...editingMedia, caption: e.target.value })}
                     placeholder="Optional caption..."
                   />
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => setEditingMedia(null)} className="flex-1">
+                  <Button
+                    variant="outline"
+                    onClick={() => setEditingMedia(null)}
+                    className="flex-1"
+                  >
                     <X className="mr-2 h-4 w-4" />
                     Cancel
                   </Button>

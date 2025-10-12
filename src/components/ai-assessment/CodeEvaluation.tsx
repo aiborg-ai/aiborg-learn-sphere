@@ -7,20 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import {
-  vscDarkPlus,
-  vs,
-} from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { vscDarkPlus, vs } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useTheme } from '@/components/theme-provider';
-import {
-  Code,
-  Copy,
-  CheckCircle,
-  FileCode,
-  Lightbulb,
-  Play,
-  Terminal,
-} from 'lucide-react';
+import { Code, Copy, CheckCircle, FileCode, Lightbulb, Terminal } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
 export interface CodeEvaluationProps {
@@ -83,7 +72,7 @@ export const CodeEvaluation: React.FC<CodeEvaluationProps> = ({
 
   const handleMultipleChoice = (optionId: string) => {
     const newSelection = selectedOptions.includes(optionId)
-      ? selectedOptions.filter((id) => id !== optionId)
+      ? selectedOptions.filter(id => id !== optionId)
       : [...selectedOptions, optionId];
     onSelectionChange(newSelection);
   };
@@ -112,7 +101,9 @@ export const CodeEvaluation: React.FC<CodeEvaluationProps> = ({
     return icons[lang] || '💻';
   };
 
-  const isDarkTheme = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const isDarkTheme =
+    theme === 'dark' ||
+    (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   return (
     <div className="space-y-6">
@@ -213,13 +204,17 @@ export const CodeEvaluation: React.FC<CodeEvaluationProps> = ({
                       {question.metadata.time_complexity && (
                         <div className="flex items-center gap-2">
                           <Badge>Time</Badge>
-                          <code className="text-sm font-mono">{question.metadata.time_complexity}</code>
+                          <code className="text-sm font-mono">
+                            {question.metadata.time_complexity}
+                          </code>
                         </div>
                       )}
                       {question.metadata.space_complexity && (
                         <div className="flex items-center gap-2">
                           <Badge>Space</Badge>
-                          <code className="text-sm font-mono">{question.metadata.space_complexity}</code>
+                          <code className="text-sm font-mono">
+                            {question.metadata.space_complexity}
+                          </code>
                         </div>
                       )}
                     </CardContent>
@@ -253,7 +248,7 @@ export const CodeEvaluation: React.FC<CodeEvaluationProps> = ({
             >
               {question.options
                 .sort((a, b) => a.order_index - b.order_index)
-                .map((option) => (
+                .map(option => (
                   <div
                     key={option.id}
                     className={`flex items-start space-x-3 p-4 rounded-lg border-2 transition-colors ${
@@ -282,7 +277,7 @@ export const CodeEvaluation: React.FC<CodeEvaluationProps> = ({
               <p className="text-sm text-muted-foreground">Select all that apply:</p>
               {question.options
                 .sort((a, b) => a.order_index - b.order_index)
-                .map((option) => (
+                .map(option => (
                   <div
                     key={option.id}
                     className={`flex items-start space-x-3 p-4 rounded-lg border-2 transition-colors ${

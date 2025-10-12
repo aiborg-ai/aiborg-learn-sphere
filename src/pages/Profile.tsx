@@ -7,18 +7,46 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserReviews } from '@/hooks/useUserReviews';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, User, ArrowLeft, Save, Star, MessageSquare, Mic, Video, RefreshCw, ExternalLink, Brain, Target, Trophy, Award } from 'lucide-react';
+import {
+  Loader2,
+  User,
+  ArrowLeft,
+  Save,
+  Star,
+  MessageSquare,
+  Mic,
+  Video,
+  RefreshCw,
+  ExternalLink,
+  Brain,
+  Target,
+  Trophy,
+  Award,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { NotificationSettings } from '@/components/shared';
 import AssessmentResultsCard from '@/components/assessment/AssessmentResultsCard';
 import { supabase } from '@/integrations/supabase/client';
 import { AchievementService, PointsService, LeaderboardService } from '@/services/gamification';
-import { LevelProgressBar, PointsDisplay, BadgeCollection, LeaderboardTable, TransactionHistory, ProgressChart } from '@/components/gamification';
-import type { UserProgress, Achievement, UserAchievement, Leaderboard, LeaderboardEntry, PointTransaction } from '@/services/gamification';
+import {
+  LevelProgressBar,
+  PointsDisplay,
+  BadgeCollection,
+  LeaderboardTable,
+  TransactionHistory,
+  ProgressChart,
+} from '@/components/gamification';
+import type {
+  UserProgress,
+  Achievement,
+  UserAchievement,
+  Leaderboard,
+  LeaderboardEntry,
+  PointTransaction,
+} from '@/services/gamification';
 
 export default function Profile() {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,9 +59,13 @@ export default function Profile() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [userAchievements, setUserAchievements] = useState<UserAchievement[]>([]);
   const [leaderboards, setLeaderboards] = useState<Leaderboard[]>([]);
-  const [leaderboardEntries, setLeaderboardEntries] = useState<Record<string, LeaderboardEntry[]>>({});
+  const [leaderboardEntries, setLeaderboardEntries] = useState<Record<string, LeaderboardEntry[]>>(
+    {}
+  );
   const [transactions, setTransactions] = useState<PointTransaction[]>([]);
-  const [progressData, setProgressData] = useState<Array<{ date: string; points: number; level: number; streak: number }>>([]);
+  const [progressData, setProgressData] = useState<
+    Array<{ date: string; points: number; level: number; streak: number }>
+  >([]);
   const [gamificationLoading, setGamificationLoading] = useState(false);
 
   const { user, profile, updateProfile, loading } = useAuth();
@@ -119,21 +151,33 @@ export default function Profile() {
 
       // Generate progress data from transactions for charting
       if (recentTransactions.length > 0) {
-        const progressPoints: Array<{ date: string; points: number; level: number; streak: number }> = [];
+        const progressPoints: Array<{
+          date: string;
+          points: number;
+          level: number;
+          streak: number;
+        }> = [];
         let runningPoints = 0;
 
         // Sort transactions by date
-        const sorted = [...recentTransactions].sort((a, b) =>
-          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        const sorted = [...recentTransactions].sort(
+          (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
         );
 
         sorted.forEach((transaction, index) => {
           runningPoints += transaction.amount;
           const level = PointsService.calculateLevelFromPoints(runningPoints);
-          const date = new Date(transaction.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          const date = new Date(transaction.created_at).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+          });
 
           // Only add if date changed or it's the last one
-          if (index === 0 || date !== progressPoints[progressPoints.length - 1]?.date || index === sorted.length - 1) {
+          if (
+            index === 0 ||
+            date !== progressPoints[progressPoints.length - 1]?.date ||
+            index === sorted.length - 1
+          ) {
             progressPoints.push({
               date,
               points: runningPoints,
@@ -162,19 +206,19 @@ export default function Profile() {
     setIsLoading(true);
 
     const { error } = await updateProfile({
-      display_name: displayName
+      display_name: displayName,
     });
 
     if (error) {
       toast({
-        title: "Error",
+        title: 'Error',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
     } else {
       toast({
-        title: "Success",
-        description: "Profile updated successfully",
+        title: 'Success',
+        description: 'Profile updated successfully',
       });
     }
     setIsLoading(false);
@@ -183,13 +227,11 @@ export default function Profile() {
   const renderStars = (rating: number) => {
     return (
       <div className="flex items-center">
-        {[1, 2, 3, 4, 5].map((star) => (
+        {[1, 2, 3, 4, 5].map(star => (
           <Star
             key={star}
             className={`h-4 w-4 ${
-              star <= rating
-                ? 'fill-yellow-400 text-yellow-400'
-                : 'text-gray-300'
+              star <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
             }`}
           />
         ))}
@@ -224,7 +266,10 @@ export default function Profile() {
     <div className="min-h-screen bg-gradient-hero p-4">
       <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 text-white hover:text-secondary transition-colors mb-4">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-white hover:text-secondary transition-colors mb-4"
+          >
             <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Link>
@@ -245,15 +290,24 @@ export default function Profile() {
               <Brain className="h-4 w-4 mr-2" />
               Assessments
             </TabsTrigger>
-            <TabsTrigger value="gamification" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="gamification"
+              className="text-white data-[state=active]:bg-white/20"
+            >
               <Trophy className="h-4 w-4 mr-2" />
               Stats
             </TabsTrigger>
-            <TabsTrigger value="learning-paths" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="learning-paths"
+              className="text-white data-[state=active]:bg-white/20"
+            >
               <Target className="h-4 w-4 mr-2" />
               Learning Paths
             </TabsTrigger>
-            <TabsTrigger value="notifications" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="notifications"
+              className="text-white data-[state=active]:bg-white/20"
+            >
               Notifications
             </TabsTrigger>
             <TabsTrigger value="reviews" className="text-white data-[state=active]:bg-white/20">
@@ -285,7 +339,9 @@ export default function Profile() {
               <CardContent>
                 <form onSubmit={handleUpdateProfile} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-white">Email</Label>
+                    <Label htmlFor="email" className="text-white">
+                      Email
+                    </Label>
                     <Input
                       id="email"
                       type="email"
@@ -295,15 +351,17 @@ export default function Profile() {
                     />
                     <p className="text-xs text-white/60">Email cannot be changed</p>
                   </div>
-                  
+
                   <div className="space-y-2">
-                    <Label htmlFor="displayName" className="text-white">Display Name</Label>
+                    <Label htmlFor="displayName" className="text-white">
+                      Display Name
+                    </Label>
                     <Input
                       id="displayName"
                       type="text"
                       placeholder="Enter your display name"
                       value={displayName}
-                      onChange={(e) => setDisplayName(e.target.value)}
+                      onChange={e => setDisplayName(e.target.value)}
                       className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     />
                   </div>
@@ -317,11 +375,7 @@ export default function Profile() {
                     </div>
                   )}
 
-                  <Button
-                    type="submit"
-                    className="w-full btn-hero"
-                    disabled={isLoading}
-                  >
+                  <Button type="submit" className="w-full btn-hero" disabled={isLoading}>
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     <Save className="mr-2 h-4 w-4" />
                     Update Profile
@@ -376,12 +430,10 @@ export default function Profile() {
                     <Target className="h-16 w-16 text-white/50 mx-auto mb-4" />
                     <h3 className="text-white font-medium mb-2 text-xl">No Assessments Yet</h3>
                     <p className="text-white/60 mb-6 max-w-md mx-auto">
-                      Take your first AI assessment to discover your augmentation level and get personalized learning recommendations
+                      Take your first AI assessment to discover your augmentation level and get
+                      personalized learning recommendations
                     </p>
-                    <Button
-                      onClick={() => navigate('/ai-assessment')}
-                      className="btn-hero"
-                    >
+                    <Button onClick={() => navigate('/ai-assessment')} className="btn-hero">
                       <Brain className="h-4 w-4 mr-2" />
                       Take Assessment
                     </Button>
@@ -402,9 +454,11 @@ export default function Profile() {
                     {/* Previous Assessments - Compact */}
                     {assessments.length > 1 && (
                       <div>
-                        <h3 className="text-white/80 text-sm font-medium mb-4">Assessment History</h3>
+                        <h3 className="text-white/80 text-sm font-medium mb-4">
+                          Assessment History
+                        </h3>
                         <div className="space-y-3">
-                          {assessments.slice(1).map((assessment) => (
+                          {assessments.slice(1).map(assessment => (
                             <AssessmentResultsCard
                               key={assessment.id}
                               assessment={assessment}
@@ -534,7 +588,7 @@ export default function Profile() {
                   </Card>
 
                   {/* Leaderboards */}
-                  {leaderboards.map((leaderboard) => (
+                  {leaderboards.map(leaderboard => (
                     <div key={leaderboard.id}>
                       <LeaderboardTable
                         leaderboard={leaderboard}
@@ -574,10 +628,7 @@ export default function Profile() {
                       AI-powered personalized learning journeys
                     </CardDescription>
                   </div>
-                  <Button
-                    onClick={() => navigate('/learning-path/generate')}
-                    className="btn-hero"
-                  >
+                  <Button onClick={() => navigate('/learning-path/generate')} className="btn-hero">
                     <Brain className="h-4 w-4 mr-2" />
                     Create New Path
                   </Button>
@@ -586,9 +637,12 @@ export default function Profile() {
               <CardContent>
                 <div className="text-center py-12">
                   <Target className="h-16 w-16 text-white/50 mx-auto mb-4" />
-                  <h3 className="text-white font-medium mb-2 text-xl">Start Your Learning Journey</h3>
+                  <h3 className="text-white font-medium mb-2 text-xl">
+                    Start Your Learning Journey
+                  </h3>
                   <p className="text-white/60 mb-6 max-w-md mx-auto">
-                    Create an AI-powered personalized learning path based on your assessment results and goals
+                    Create an AI-powered personalized learning path based on your assessment results
+                    and goals
                   </p>
                   <div className="flex gap-3 justify-center">
                     <Button
@@ -647,67 +701,65 @@ export default function Profile() {
                     <MessageSquare className="h-12 w-12 text-white/50 mx-auto mb-4" />
                     <h3 className="text-white font-medium mb-2">No Reviews Yet</h3>
                     <p className="text-white/60 mb-4">You haven't written any reviews yet.</p>
-                    <Button 
-                      onClick={() => navigate('/#reviews')}
-                      className="btn-hero"
-                    >
+                    <Button onClick={() => navigate('/#reviews')} className="btn-hero">
                       Write Your First Review
                     </Button>
                   </div>
                 ) : (
                   <div className="space-y-4 max-h-96 overflow-y-auto">
-                    {userReviews.map((review) => (
+                    {userReviews.map(review => (
                       <Card key={review.id} className="bg-white/5 border-white/20">
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex items-center gap-2">
                               {renderStars(review.rating)}
-                              <span className="text-sm text-white/60">
-                                {review.rating}/5
-                              </span>
+                              <span className="text-sm text-white/60">{review.rating}/5</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Badge 
-                                variant={review.approved ? "default" : "secondary"} 
+                              <Badge
+                                variant={review.approved ? 'default' : 'secondary'}
                                 className="text-xs"
                               >
-                                {review.approved ? "Approved" : "Pending"}
+                                {review.approved ? 'Approved' : 'Pending'}
                               </Badge>
-                              <Badge variant="outline" className="flex items-center gap-1 text-xs border-white/20">
+                              <Badge
+                                variant="outline"
+                                className="flex items-center gap-1 text-xs border-white/20"
+                              >
                                 {getReviewTypeIcon(review.review_type)}
                                 {review.review_type}
                               </Badge>
                             </div>
                           </div>
-                          
+
                           <h4 className="text-white font-medium mb-2">
                             {review.courses?.title || `Course ${review.course_id}`}
                           </h4>
-                          
+
                           <div className="text-sm text-white/60 mb-2">
                             {review.course_period} • {review.course_mode.replace('-', ' ')}
                           </div>
-                          
+
                           {review.review_type === 'written' && review.written_review && (
                             <p className="text-white/80 text-sm leading-relaxed">
                               "{review.written_review}"
                             </p>
                           )}
-                          
+
                           {review.review_type === 'voice' && review.voice_review_url && (
                             <div className="text-center py-2">
                               <Mic className="h-6 w-6 text-white/60 mx-auto mb-1" />
                               <p className="text-xs text-white/60">Voice review submitted</p>
                             </div>
                           )}
-                          
+
                           {review.review_type === 'video' && review.video_review_url && (
                             <div className="text-center py-2">
                               <Video className="h-6 w-6 text-white/60 mx-auto mb-1" />
                               <p className="text-xs text-white/60">Video review submitted</p>
                             </div>
                           )}
-                          
+
                           <div className="mt-3 pt-3 border-t border-white/20">
                             <p className="text-xs text-white/50">
                               Submitted on {new Date(review.created_at).toLocaleDateString()}

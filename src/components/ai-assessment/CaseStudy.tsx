@@ -4,7 +4,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -78,7 +77,7 @@ export const CaseStudy: React.FC<CaseStudyProps> = ({
   const caseData = question.case_study_data;
 
   const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections((prev) => ({
+    setExpandedSections(prev => ({
       ...prev,
       [section]: !prev[section],
     }));
@@ -90,7 +89,7 @@ export const CaseStudy: React.FC<CaseStudyProps> = ({
 
   const handleMultipleChoice = (optionId: string) => {
     const newSelection = selectedOptions.includes(optionId)
-      ? selectedOptions.filter((id) => id !== optionId)
+      ? selectedOptions.filter(id => id !== optionId)
       : [...selectedOptions, optionId];
     onSelectionChange(newSelection);
   };
@@ -124,11 +123,7 @@ export const CaseStudy: React.FC<CaseStudyProps> = ({
                 </div>
               )}
               <div className="flex flex-wrap gap-2">
-                {caseData.industry && (
-                  <Badge variant="secondary">
-                    {caseData.industry}
-                  </Badge>
-                )}
+                {caseData.industry && <Badge variant="secondary">{caseData.industry}</Badge>}
                 {caseData.company_size && (
                   <Badge variant="outline">
                     <Users className="h-3 w-3 mr-1" />
@@ -136,16 +131,12 @@ export const CaseStudy: React.FC<CaseStudyProps> = ({
                   </Badge>
                 )}
                 {question.metadata?.difficulty && (
-                  <Badge variant="outline">
-                    {question.metadata.difficulty}
-                  </Badge>
+                  <Badge variant="outline">{question.metadata.difficulty}</Badge>
                 )}
               </div>
             </div>
             {question.metadata?.time_estimate && (
-              <Badge className="text-sm">
-                ⏱️ {question.metadata.time_estimate}
-              </Badge>
+              <Badge className="text-sm">⏱️ {question.metadata.time_estimate}</Badge>
             )}
           </div>
         </CardHeader>
@@ -164,10 +155,7 @@ export const CaseStudy: React.FC<CaseStudyProps> = ({
           {/* Background */}
           {caseData.background && (
             <Card>
-              <CardHeader
-                className="cursor-pointer"
-                onClick={() => toggleSection('background')}
-              >
+              <CardHeader className="cursor-pointer" onClick={() => toggleSection('background')}>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">Background</CardTitle>
                   {expandedSections.background ? (
@@ -221,9 +209,7 @@ export const CaseStudy: React.FC<CaseStudyProps> = ({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                  {caseData.challenge}
-                </p>
+                <p className="text-sm leading-relaxed whitespace-pre-wrap">{caseData.challenge}</p>
               </CardContent>
             </Card>
           )}
@@ -274,7 +260,10 @@ export const CaseStudy: React.FC<CaseStudyProps> = ({
               <CardContent>
                 <div className="space-y-3">
                   {caseData.metrics.map((metric, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
+                    >
                       <span className="text-sm font-medium">{metric.name}</span>
                       <div className="flex items-center gap-2">
                         <span className="text-lg font-bold">{metric.value}</span>
@@ -319,14 +308,11 @@ export const CaseStudy: React.FC<CaseStudyProps> = ({
       <Card className="border-2 border-primary">
         <CardHeader>
           <CardTitle className="text-lg">{question.question_text}</CardTitle>
-          {question.help_text && (
-            <CardDescription>{question.help_text}</CardDescription>
-          )}
+          {question.help_text && <CardDescription>{question.help_text}</CardDescription>}
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Answer Options */}
-          {question.question_type === 'single_choice' ||
-          question.question_type === 'case_study' ? (
+          {question.question_type === 'single_choice' || question.question_type === 'case_study' ? (
             <RadioGroup
               value={selectedOptions[0] || ''}
               onValueChange={handleSingleChoice}
@@ -334,7 +320,7 @@ export const CaseStudy: React.FC<CaseStudyProps> = ({
             >
               {question.options
                 .sort((a, b) => a.order_index - b.order_index)
-                .map((option) => (
+                .map(option => (
                   <div
                     key={option.id}
                     className={`flex items-start space-x-3 p-4 rounded-lg border-2 transition-colors ${
@@ -363,7 +349,7 @@ export const CaseStudy: React.FC<CaseStudyProps> = ({
               <p className="text-sm text-muted-foreground">Select all that apply:</p>
               {question.options
                 .sort((a, b) => a.order_index - b.order_index)
-                .map((option) => (
+                .map(option => (
                   <div
                     key={option.id}
                     className={`flex items-start space-x-3 p-4 rounded-lg border-2 transition-colors ${

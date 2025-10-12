@@ -13,7 +13,6 @@ import {
   BookOpen,
   Target,
   Award,
-  Calendar,
   Flame,
   BarChart3,
   Loader2,

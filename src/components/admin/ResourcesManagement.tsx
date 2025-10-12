@@ -5,7 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import {
   Select,
   SelectContent,
@@ -44,7 +51,6 @@ import {
   Link as LinkIcon,
   FileText,
   Video,
-  Eye,
   UserPlus,
   Loader2,
   Search,
@@ -278,9 +284,7 @@ export function ResourcesManagement() {
                 <Folder className="h-5 w-5" />
                 Resources Management
               </CardTitle>
-              <CardDescription>
-                Upload and manage resources for your users
-              </CardDescription>
+              <CardDescription>Upload and manage resources for your users</CardDescription>
             </div>
             <Button onClick={handleOpenCreateDialog}>
               <Plus className="h-4 w-4 mr-2" />
@@ -295,7 +299,7 @@ export function ResourcesManagement() {
               <Input
                 placeholder="Search resources..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -364,9 +368,7 @@ export function ResourcesManagement() {
                         <TableCell>
                           <Badge>{resource.allocation_count || 0} users</Badge>
                         </TableCell>
-                        <TableCell>
-                          {new Date(resource.created_at).toLocaleDateString()}
-                        </TableCell>
+                        <TableCell>{new Date(resource.created_at).toLocaleDateString()}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
                             <Button
@@ -406,7 +408,8 @@ export function ResourcesManagement() {
 
           {filteredResources.length > 0 && (
             <div className="mt-4 text-sm text-muted-foreground">
-              Showing {filteredResources.length} of {resources.filter(r => r.is_active).length} resources
+              Showing {filteredResources.length} of {resources.filter(r => r.is_active).length}{' '}
+              resources
             </div>
           )}
         </CardContent>
@@ -416,9 +419,7 @@ export function ResourcesManagement() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>
-              {editingResource ? 'Edit Resource' : 'Add New Resource'}
-            </DialogTitle>
+            <DialogTitle>{editingResource ? 'Edit Resource' : 'Add New Resource'}</DialogTitle>
             <DialogDescription>
               {editingResource
                 ? 'Update the resource information'
@@ -492,9 +493,7 @@ export function ResourcesManagement() {
                   id="video_url"
                   placeholder="https://youtube.com/watch?v=..."
                   value={formData.video_url}
-                  onChange={(e) =>
-                    setFormData(prev => ({ ...prev, video_url: e.target.value }))
-                  }
+                  onChange={e => setFormData(prev => ({ ...prev, video_url: e.target.value }))}
                 />
               </div>
             )}
@@ -506,7 +505,7 @@ export function ResourcesManagement() {
                 <Input
                   id="title"
                   value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
                   placeholder="Resource title"
                 />
               </div>
@@ -516,9 +515,7 @@ export function ResourcesManagement() {
                 <Textarea
                   id="description"
                   value={formData.description}
-                  onChange={(e) =>
-                    setFormData(prev => ({ ...prev, description: e.target.value }))
-                  }
+                  onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Brief description of the resource"
                   rows={3}
                 />
@@ -528,8 +525,11 @@ export function ResourcesManagement() {
                 <Label htmlFor="resource_type">Type</Label>
                 <Select
                   value={formData.resource_type}
-                  onValueChange={(value) =>
-                    setFormData(prev => ({ ...prev, resource_type: value as 'pdf' | 'video_link' | 'document' | 'presentation' }))
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      resource_type: value as 'pdf' | 'video_link' | 'document' | 'presentation',
+                    }))
                   }
                 >
                   <SelectTrigger>
@@ -549,9 +549,7 @@ export function ResourcesManagement() {
                 <Input
                   id="category"
                   value={formData.category}
-                  onChange={(e) =>
-                    setFormData(prev => ({ ...prev, category: e.target.value }))
-                  }
+                  onChange={e => setFormData(prev => ({ ...prev, category: e.target.value }))}
                   placeholder="e.g., Training, Reference"
                 />
               </div>
@@ -561,7 +559,7 @@ export function ResourcesManagement() {
                 <Input
                   id="tags"
                   value={formData.tags}
-                  onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, tags: e.target.value }))}
                   placeholder="tag1, tag2, tag3"
                 />
               </div>

@@ -2,16 +2,7 @@ import { useState, memo } from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  Calendar,
-  Clock,
-  MapPin,
-  Users,
-  DollarSign,
-  ExternalLink,
-  Star,
-  CheckCircle,
-} from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, ExternalLink, CheckCircle } from 'lucide-react';
 import { ShareButton } from '@/components/shared';
 import type { Event } from '@/hooks/useEvents';
 import { useEventRegistrations } from '@/hooks/useEventRegistrations';

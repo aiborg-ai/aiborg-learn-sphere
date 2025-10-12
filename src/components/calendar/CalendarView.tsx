@@ -4,10 +4,16 @@ import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { format, isSameDay, parseISO, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
-import { CalendarDays, Clock, AlertCircle, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { format, isSameDay, parseISO, startOfMonth, endOfMonth } from 'date-fns';
+import {
+  CalendarDays,
+  Clock,
+  AlertCircle,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -46,14 +52,16 @@ export function CalendarView() {
       // Fetch assignments
       const { data: assignments, error: assignmentsError } = await supabase
         .from('assignments')
-        .select(`
+        .select(
+          `
           id,
           title,
           description,
           due_date,
           course_id,
           courses (title)
-        `)
+        `
+        )
         .gte('due_date', monthStart.toISOString())
         .lte('due_date', monthEnd.toISOString());
 
@@ -65,9 +73,7 @@ export function CalendarView() {
         .select('assignment_id, created_at')
         .eq('user_id', user?.id);
 
-      const submissionMap = new Map(
-        submissions?.map(s => [s.assignment_id, s.created_at]) || []
-      );
+      const submissionMap = new Map(submissions?.map(s => [s.assignment_id, s.created_at]) || []);
 
       const assignmentEvents: CalendarEvent[] = (assignments || []).map(assignment => {
         const dueDate = parseISO(assignment.due_date);
@@ -82,7 +88,11 @@ export function CalendarView() {
           course_name: assignment.courses?.title,
           description: assignment.description,
           status: isSubmitted ? 'completed' : isOverdue ? 'overdue' : 'pending',
-          priority: isOverdue ? 'high' : dueDate.getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000 ? 'medium' : 'low',
+          priority: isOverdue
+            ? 'high'
+            : dueDate.getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000
+              ? 'medium'
+              : 'low',
           url: `/assignment/${assignment.id}`,
         };
       });
@@ -109,30 +119,44 @@ export function CalendarView() {
 
   const getEventTypeColor = (type: CalendarEvent['type']) => {
     switch (type) {
-      case 'assignment': return 'bg-blue-500';
-      case 'exam': return 'bg-red-500';
-      case 'lecture': return 'bg-green-500';
-      case 'deadline': return 'bg-orange-500';
-      case 'event': return 'bg-purple-500';
-      default: return 'bg-gray-500';
+      case 'assignment':
+        return 'bg-blue-500';
+      case 'exam':
+        return 'bg-red-500';
+      case 'lecture':
+        return 'bg-green-500';
+      case 'deadline':
+        return 'bg-orange-500';
+      case 'event':
+        return 'bg-purple-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
   const getStatusColor = (status: CalendarEvent['status']) => {
     switch (status) {
-      case 'completed': return 'text-green-600 dark:text-green-400';
-      case 'overdue': return 'text-red-600 dark:text-red-400';
-      case 'pending': return 'text-orange-600 dark:text-orange-400';
-      default: return 'text-gray-600 dark:text-gray-400';
+      case 'completed':
+        return 'text-green-600 dark:text-green-400';
+      case 'overdue':
+        return 'text-red-600 dark:text-red-400';
+      case 'pending':
+        return 'text-orange-600 dark:text-orange-400';
+      default:
+        return 'text-gray-600 dark:text-gray-400';
     }
   };
 
   const getPriorityBadge = (priority: CalendarEvent['priority']) => {
     switch (priority) {
-      case 'high': return <Badge variant="destructive">High Priority</Badge>;
-      case 'medium': return <Badge variant="secondary">Medium</Badge>;
-      case 'low': return <Badge variant="outline">Low</Badge>;
-      default: return null;
+      case 'high':
+        return <Badge variant="destructive">High Priority</Badge>;
+      case 'medium':
+        return <Badge variant="secondary">Medium</Badge>;
+      case 'low':
+        return <Badge variant="outline">Low</Badge>;
+      default:
+        return null;
     }
   };
 
@@ -184,7 +208,7 @@ export function CalendarView() {
             <Calendar
               mode="single"
               selected={selectedDate}
-              onSelect={(date) => date && setSelectedDate(date)}
+              onSelect={date => date && setSelectedDate(date)}
               month={currentMonth}
               onMonthChange={setCurrentMonth}
               className="rounded-md border"
@@ -227,9 +251,7 @@ export function CalendarView() {
           {/* Selected Day Events */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">
-                {format(selectedDate, 'EEEE, MMMM d')}
-              </CardTitle>
+              <CardTitle className="text-base">{format(selectedDate, 'EEEE, MMMM d')}</CardTitle>
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[300px]">
@@ -239,10 +261,14 @@ export function CalendarView() {
                       <div
                         key={event.id}
                         className="p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors cursor-pointer"
-                        onClick={() => { if (event.url) window.location.href = event.url; }}
+                        onClick={() => {
+                          if (event.url) window.location.href = event.url;
+                        }}
                       >
                         <div className="flex items-start gap-2">
-                          <div className={`w-1 h-full rounded ${getEventTypeColor(event.type)}`}></div>
+                          <div
+                            className={`w-1 h-full rounded ${getEventTypeColor(event.type)}`}
+                          ></div>
                           <div className="flex-1 space-y-1">
                             <div className="flex items-center justify-between">
                               <h4 className="font-medium text-sm">{event.title}</h4>
@@ -289,7 +315,9 @@ export function CalendarView() {
                       <div
                         key={event.id}
                         className="p-2 rounded-lg border bg-card hover:bg-muted/50 transition-colors cursor-pointer text-sm"
-                        onClick={() => { if (event.url) window.location.href = event.url; }}
+                        onClick={() => {
+                          if (event.url) window.location.href = event.url;
+                        }}
                       >
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-medium truncate">{event.title}</span>

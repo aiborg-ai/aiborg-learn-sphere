@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Play, FileText, Presentation, Download, Lock, Clock, Calendar } from 'lucide-react';
-import { useCourseMaterials, CourseMaterial } from '@/hooks/useCourseMaterials';
+import { useCourseMaterials } from '@/hooks/useCourseMaterials';
 import { useEnrollments } from '@/hooks/useEnrollments';
 import { useAuth } from '@/hooks/useAuth';
 import { format } from 'date-fns';

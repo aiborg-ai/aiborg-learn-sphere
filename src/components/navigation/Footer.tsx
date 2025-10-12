@@ -11,7 +11,6 @@ import {
   Phone,
   MapPin,
   ArrowRight,
-  ExternalLink
 } from 'lucide-react';
 
 export function Footer() {
@@ -58,7 +57,8 @@ export function Footer() {
           <div className="max-w-4xl mx-auto text-center">
             <h3 className="text-2xl font-bold mb-4">Stay Updated with AI Insights</h3>
             <p className="text-muted-foreground mb-6">
-              Subscribe to our newsletter for the latest AI education news, course updates, and exclusive resources
+              Subscribe to our newsletter for the latest AI education news, course updates, and
+              exclusive resources
             </p>
             <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input
@@ -84,7 +84,8 @@ export function Footer() {
               <img src="/logo.jpeg" alt="Aiborg" className="h-12 w-auto object-contain" />
             </Link>
             <p className="text-muted-foreground mb-6 max-w-sm">
-              Empowering the future with AI education. Learn, grow, and innovate with Aiborg's comprehensive training programs.
+              Empowering the future with AI education. Learn, grow, and innovate with Aiborg's
+              comprehensive training programs.
             </p>
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
@@ -110,7 +111,7 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              {quickLinks.map((link) => (
+              {quickLinks.map(link => (
                 <li key={link.label}>
                   <Link
                     to={link.href}
@@ -127,7 +128,7 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Our Programs</h4>
             <ul className="space-y-2">
-              {programs.map((program) => (
+              {programs.map(program => (
                 <li key={program.label}>
                   <Link
                     to={program.href}
@@ -144,12 +145,10 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Resources</h4>
             <ul className="space-y-2">
-              {resources.map((resource) => (
+              {resources.map(resource => (
                 <li key={resource.label}>
                   {resource.isModal ? (
-                    <button
-                      className="text-muted-foreground hover:text-foreground transition-colors text-sm text-left"
-                    >
+                    <button className="text-muted-foreground hover:text-foreground transition-colors text-sm text-left">
                       {resource.label}
                     </button>
                   ) : (
@@ -176,7 +175,7 @@ export function Footer() {
 
           {/* Social Links */}
           <div className="flex items-center gap-4">
-            {socialLinks.map((social) => {
+            {socialLinks.map(social => {
               const Icon = social.icon;
               return (
                 <a

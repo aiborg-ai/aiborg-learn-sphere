@@ -1,4 +1,3 @@
-import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 
 /**
@@ -75,7 +74,7 @@ export class ApiClient {
         '23505': 'This record already exists',
         '23503': 'Cannot delete this record as it is referenced elsewhere',
         '42P01': 'The requested resource does not exist',
-        'PGRST116': 'Record not found',
+        PGRST116: 'Record not found',
         '22P02': 'Invalid input format',
         '23514': 'Invalid data provided',
         '42501': 'You do not have permission to perform this action',
@@ -84,36 +83,26 @@ export class ApiClient {
         '53300': 'Too many connections - please try again later',
       };
 
-      const message = errorMessages[errorWithCode.code] || errorWithCode.message || 'An unexpected error occurred';
+      const message =
+        errorMessages[errorWithCode.code] ||
+        errorWithCode.message ||
+        'An unexpected error occurred';
       return new ApiError(message, errorWithCode.code, errorWithCode.status || 500, error);
     }
 
     // Handle network errors
     if (error instanceof TypeError && error.message === 'Failed to fetch') {
-      return new ApiError(
-        'Network error - please check your connection',
-        'NETWORK_ERROR',
-        0
-      );
+      return new ApiError('Network error - please check your connection', 'NETWORK_ERROR', 0);
     }
 
     // Handle auth errors
     if (error instanceof Error && error.message?.includes('JWT')) {
-      return new ApiError(
-        'Your session has expired. Please sign in again.',
-        'AUTH_EXPIRED',
-        401
-      );
+      return new ApiError('Your session has expired. Please sign in again.', 'AUTH_EXPIRED', 401);
     }
 
     // Generic error
     const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-    return new ApiError(
-      errorMessage,
-      'UNKNOWN_ERROR',
-      errorWithCode?.status || 500,
-      error
-    );
+    return new ApiError(errorMessage, 'UNKNOWN_ERROR', errorWithCode?.status || 500, error);
   }
 
   /**

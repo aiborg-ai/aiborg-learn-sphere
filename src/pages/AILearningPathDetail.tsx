@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   ArrowLeft,
@@ -24,7 +23,7 @@ import {
   FileText,
   Users,
   CalendarDays,
-  Star
+  Star,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -82,15 +81,30 @@ const ITEM_TYPE_CONFIG = {
   quiz: { icon: Brain, color: 'text-orange-500', bg: 'bg-orange-500/10', label: 'Quiz' },
   workshop: { icon: Users, color: 'text-green-500', bg: 'bg-green-500/10', label: 'Workshop' },
   event: { icon: CalendarDays, color: 'text-pink-500', bg: 'bg-pink-500/10', label: 'Event' },
-  assessment: { icon: Target, color: 'text-yellow-500', bg: 'bg-yellow-500/10', label: 'Assessment' }
+  assessment: {
+    icon: Target,
+    color: 'text-yellow-500',
+    bg: 'bg-yellow-500/10',
+    label: 'Assessment',
+  },
 };
 
 const STATUS_CONFIG = {
   locked: { icon: Lock, color: 'text-gray-400', bg: 'bg-gray-500/10', label: 'Locked' },
   available: { icon: Play, color: 'text-blue-400', bg: 'bg-blue-500/10', label: 'Available' },
-  in_progress: { icon: Zap, color: 'text-yellow-400', bg: 'bg-yellow-500/10', label: 'In Progress' },
-  completed: { icon: CheckCircle, color: 'text-green-400', bg: 'bg-green-500/10', label: 'Completed' },
-  skipped: { icon: ArrowLeft, color: 'text-gray-400', bg: 'bg-gray-500/10', label: 'Skipped' }
+  in_progress: {
+    icon: Zap,
+    color: 'text-yellow-400',
+    bg: 'bg-yellow-500/10',
+    label: 'In Progress',
+  },
+  completed: {
+    icon: CheckCircle,
+    color: 'text-green-400',
+    bg: 'bg-green-500/10',
+    label: 'Completed',
+  },
+  skipped: { icon: ArrowLeft, color: 'text-gray-400', bg: 'bg-gray-500/10', label: 'Skipped' },
 };
 
 export default function AILearningPathDetail() {
@@ -141,12 +155,15 @@ export default function AILearningPathDetail() {
       setItems(itemsData || []);
 
       // Group items by week
-      const grouped = (itemsData || []).reduce((acc, item) => {
-        const week = item.week_number || 1;
-        if (!acc[week]) acc[week] = [];
-        acc[week].push(item);
-        return acc;
-      }, {} as Record<number, PathItem[]>);
+      const grouped = (itemsData || []).reduce(
+        (acc, item) => {
+          const week = item.week_number || 1;
+          if (!acc[week]) acc[week] = [];
+          acc[week].push(item);
+          return acc;
+        },
+        {} as Record<number, PathItem[]>
+      );
       setGroupedByWeek(grouped);
 
       // Fetch milestones
@@ -158,13 +175,12 @@ export default function AILearningPathDetail() {
 
       if (milestonesError) throw milestonesError;
       setMilestones(milestonesData || []);
-
     } catch (error) {
       logger.error('Error fetching path data:', error);
       toast({
         title: 'Error',
         description: 'Failed to load learning path',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -176,7 +192,7 @@ export default function AILearningPathDetail() {
       toast({
         title: 'Item Locked',
         description: 'Complete previous items to unlock this one',
-        variant: 'destructive'
+        variant: 'destructive',
       });
       return;
     }
@@ -205,13 +221,13 @@ export default function AILearningPathDetail() {
         .from('learning_path_items')
         .update({
           status: 'completed',
-          completed_at: new Date().toISOString()
+          completed_at: new Date().toISOString(),
         })
         .eq('id', itemId);
 
       toast({
         title: 'Item Completed! 🎉',
-        description: 'Great progress on your learning journey!'
+        description: 'Great progress on your learning journey!',
       });
 
       fetchPathData();
@@ -238,7 +254,9 @@ export default function AILearningPathDetail() {
     );
   }
 
-  const currentItem = items[path.current_item_index] || items.find(i => i.status === 'available' || i.status === 'in_progress');
+  const currentItem =
+    items[path.current_item_index] ||
+    items.find(i => i.status === 'available' || i.status === 'in_progress');
   const nextMilestone = milestones.find(m => !m.is_completed);
 
   return (
@@ -271,7 +289,9 @@ export default function AILearningPathDetail() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-white/60 text-sm">Progress</p>
-                    <p className="text-2xl font-bold text-white">{Math.round(path.progress_percentage)}%</p>
+                    <p className="text-2xl font-bold text-white">
+                      {Math.round(path.progress_percentage)}%
+                    </p>
                   </div>
                   <TrendingUp className="h-8 w-8 text-blue-400" />
                 </div>
@@ -284,7 +304,9 @@ export default function AILearningPathDetail() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-white/60 text-sm">Completed</p>
-                    <p className="text-2xl font-bold text-white">{path.items_completed}/{path.total_items}</p>
+                    <p className="text-2xl font-bold text-white">
+                      {path.items_completed}/{path.total_items}
+                    </p>
                   </div>
                   <CheckCircle className="h-8 w-8 text-green-400" />
                 </div>
@@ -296,7 +318,9 @@ export default function AILearningPathDetail() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-white/60 text-sm">Duration</p>
-                    <p className="text-2xl font-bold text-white">{path.estimated_completion_weeks}w</p>
+                    <p className="text-2xl font-bold text-white">
+                      {path.estimated_completion_weeks}w
+                    </p>
                   </div>
                   <Calendar className="h-8 w-8 text-purple-400" />
                 </div>
@@ -308,7 +332,9 @@ export default function AILearningPathDetail() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-white/60 text-sm">Milestones</p>
-                    <p className="text-2xl font-bold text-white">{path.milestones_completed}/{path.total_milestones}</p>
+                    <p className="text-2xl font-bold text-white">
+                      {path.milestones_completed}/{path.total_milestones}
+                    </p>
                   </div>
                   <Trophy className="h-8 w-8 text-yellow-400" />
                 </div>
@@ -323,7 +349,9 @@ export default function AILearningPathDetail() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <Badge className="mb-2">{STATUS_CONFIG[currentItem.status as keyof typeof STATUS_CONFIG].label}</Badge>
+                  <Badge className="mb-2">
+                    {STATUS_CONFIG[currentItem.status as keyof typeof STATUS_CONFIG].label}
+                  </Badge>
                   <h3 className="text-xl font-bold text-white mb-1">Continue Learning</h3>
                   <p className="text-white/80">{currentItem.item_title}</p>
                   <p className="text-white/60 text-sm mt-2">
@@ -388,7 +416,8 @@ export default function AILearningPathDetail() {
 
                   <div className="ml-6 pl-6 border-l-2 border-white/10 space-y-4">
                     {weekItems.map((item, index) => {
-                      const typeConfig = ITEM_TYPE_CONFIG[item.item_type as keyof typeof ITEM_TYPE_CONFIG];
+                      const typeConfig =
+                        ITEM_TYPE_CONFIG[item.item_type as keyof typeof ITEM_TYPE_CONFIG];
                       const statusConfig = STATUS_CONFIG[item.status as keyof typeof STATUS_CONFIG];
                       const TypeIcon = typeConfig.icon;
                       const StatusIcon = statusConfig.icon;
@@ -412,12 +441,17 @@ export default function AILearningPathDetail() {
                                 <div className="flex items-center gap-2 mb-1">
                                   <h4 className="text-white font-medium">{item.item_title}</h4>
                                   {item.is_required && (
-                                    <Badge variant="outline" className="text-xs border-red-500/30 text-red-400">
+                                    <Badge
+                                      variant="outline"
+                                      className="text-xs border-red-500/30 text-red-400"
+                                    >
                                       Required
                                     </Badge>
                                   )}
                                 </div>
-                                <p className="text-white/60 text-sm mb-2">{item.item_description}</p>
+                                <p className="text-white/60 text-sm mb-2">
+                                  {item.item_description}
+                                </p>
                                 <div className="flex items-center gap-4 text-xs text-white/50">
                                   <span>
                                     <Clock className="h-3 w-3 inline mr-1" />
@@ -439,7 +473,7 @@ export default function AILearningPathDetail() {
                             {item.status === 'in_progress' && (
                               <Button
                                 size="sm"
-                                onClick={(e) => {
+                                onClick={e => {
                                   e.stopPropagation();
                                   handleCompleteItem(item.id);
                                 }}
@@ -469,7 +503,7 @@ export default function AILearningPathDetail() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {milestones.map((milestone) => (
+              {milestones.map(milestone => (
                 <div
                   key={milestone.id}
                   className={`p-4 rounded-lg border ${

@@ -1,55 +1,64 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Brain, GraduationCap, Briefcase, Building2, ArrowRight, Sparkles, BarChart3 } from "lucide-react";
-import { usePersonalization, AUDIENCE_CONFIG } from "@/contexts/PersonalizationContext";
-import { Link } from "react-router-dom";
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import {
+  Brain,
+  GraduationCap,
+  Briefcase,
+  Building2,
+  ArrowRight,
+  Sparkles,
+  BarChart3,
+} from 'lucide-react';
+import { usePersonalization } from '@/contexts/PersonalizationContext';
+import { Link } from 'react-router-dom';
 
 const audiences = [
   {
-    id: "primary" as const,
-    title: "Young Learners",
-    subtitle: "Ages 8-11",
-    description: "Fun, interactive AI learning for young minds",
+    id: 'primary' as const,
+    title: 'Young Learners',
+    subtitle: 'Ages 8-11',
+    description: 'Fun, interactive AI learning for young minds',
     icon: GraduationCap,
-    image: "/lovable-uploads/fd4d8f4b-a05e-497b-baa1-b38b134dddd3.png",
-    color: "from-pink-300 to-purple-300",
-    features: ["Visual Learning", "Games & Puzzles", "Safe Environment", "Parent Dashboard"]
+    image: '/lovable-uploads/fd4d8f4b-a05e-497b-baa1-b38b134dddd3.png',
+    color: 'from-pink-300 to-purple-300',
+    features: ['Visual Learning', 'Games & Puzzles', 'Safe Environment', 'Parent Dashboard'],
   },
   {
-    id: "secondary" as const,
-    title: "Teenagers", 
-    subtitle: "Ages 12-18",
-    description: "Advanced AI concepts for future innovators",
+    id: 'secondary' as const,
+    title: 'Teenagers',
+    subtitle: 'Ages 12-18',
+    description: 'Advanced AI concepts for future innovators',
     icon: Brain,
-    image: "/lovable-uploads/a7179cc3-d562-480e-bb31-34c805ea7621.png",
-    color: "from-blue-300 to-indigo-300",
-    features: ["Coding Projects", "AI Ethics", "Career Paths", "Peer Learning"]
+    image: '/lovable-uploads/a7179cc3-d562-480e-bb31-34c805ea7621.png',
+    color: 'from-blue-300 to-indigo-300',
+    features: ['Coding Projects', 'AI Ethics', 'Career Paths', 'Peer Learning'],
   },
   {
-    id: "professional" as const,
-    title: "Professionals",
-    subtitle: "Career Growth",
-    description: "AI skills for advancing your career",
+    id: 'professional' as const,
+    title: 'Professionals',
+    subtitle: 'Career Growth',
+    description: 'AI skills for advancing your career',
     icon: Briefcase,
-    image: "/lovable-uploads/ce815291-0430-4cf1-b0ca-c223bc962ef6.png",
-    color: "from-green-300 to-emerald-300", 
-    features: ["Industry Skills", "Certifications", "Real Projects", "Networking"]
+    image: '/lovable-uploads/ce815291-0430-4cf1-b0ca-c223bc962ef6.png',
+    color: 'from-green-300 to-emerald-300',
+    features: ['Industry Skills', 'Certifications', 'Real Projects', 'Networking'],
   },
   {
-    id: "business" as const,
-    title: "SMEs",
-    subtitle: "Enterprise",
-    description: "Transform your business with AI training",
+    id: 'business' as const,
+    title: 'SMEs',
+    subtitle: 'Enterprise',
+    description: 'Transform your business with AI training',
     icon: Building2,
-    image: "/lovable-uploads/ea754477-6d41-40d8-824f-5d0275f282c7.png",
-    color: "from-orange-300 to-red-300",
-    features: ["Team Training", "Custom Programs", "ROI Tracking", "Expert Support"]
-  }
+    image: '/lovable-uploads/ea754477-6d41-40d8-824f-5d0275f282c7.png',
+    color: 'from-orange-300 to-red-300',
+    features: ['Team Training', 'Custom Programs', 'ROI Tracking', 'Expert Support'],
+  },
 ];
 
 export function HeroSection() {
-  const { selectedAudience, setSelectedAudience, getPersonalizedContent, getPersonalizedStyles } = usePersonalization();
+  const { selectedAudience, setSelectedAudience, getPersonalizedContent, getPersonalizedStyles } =
+    usePersonalization();
 
   return (
     <section className="relative min-h-screen bg-gradient-hero overflow-hidden">
@@ -67,21 +76,23 @@ export function HeroSection() {
             <Sparkles className="h-5 w-5 text-secondary animate-pulse" />
             <span className="text-white font-medium">Convert AI Opportunity !</span>
           </div>
-          
+
           <h1 className="font-display text-7xl md:text-8xl lg:text-9xl font-bold mb-6">
             <span className="block text-secondary">
               aiborg
-              <sup className="text-2xl md:text-3xl lg:text-4xl text-secondary/80 font-normal ml-1">™</sup>
+              <sup className="text-2xl md:text-3xl lg:text-4xl text-secondary/80 font-normal ml-1">
+                ™
+              </sup>
             </span>
           </h1>
-          
+
           <p className="text-2xl md:text-3xl text-accent font-semibold mb-4 font-display drop-shadow-sm">
             AI-augmented Human
           </p>
-          
+
           <p className="text-xl text-white/90 max-w-2xl mx-auto mb-12 leading-relaxed">
-            Transform your future with cutting-edge AI education. Personalized learning paths 
-            for every age and profession.
+            Transform your future with cutting-edge AI education. Personalized learning paths for
+            every age and profession.
           </p>
 
           {!selectedAudience && (
@@ -132,10 +143,10 @@ export function HeroSection() {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {audiences.map((audience) => {
+            {audiences.map(audience => {
               const Icon = audience.icon;
               const isSelected = selectedAudience === audience.id;
-              
+
               return (
                 <Card
                   key={audience.id}
@@ -146,40 +157,49 @@ export function HeroSection() {
                 >
                   {/* Background Image */}
                   <div className="relative h-80 overflow-hidden">
-                    <img 
-                      src={audience.image} 
+                    <img
+                      src={audience.image}
                       alt={`${audience.title} representative`}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
-                    
+
                     {/* Gradient Overlay */}
-                    <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent transition-opacity duration-300 ${
-                      isSelected ? 'opacity-60' : 'opacity-40 group-hover:opacity-60'
-                    }`}></div>
-                    
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent transition-opacity duration-300 ${
+                        isSelected ? 'opacity-60' : 'opacity-40 group-hover:opacity-60'
+                      }`}
+                    ></div>
+
                     {/* Icon Badge */}
-                    <div className={`absolute top-4 right-4 w-12 h-12 rounded-full bg-gradient-to-br ${audience.color} p-3 shadow-lg transition-transform duration-300 group-hover:scale-110`}>
+                    <div
+                      className={`absolute top-4 right-4 w-12 h-12 rounded-full bg-gradient-to-br ${audience.color} p-3 shadow-lg transition-transform duration-300 group-hover:scale-110`}
+                    >
                       <Icon className="h-6 w-6 text-white" />
                     </div>
-                    
+
                     {/* Content Overlay */}
                     <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
-                      <Badge variant="secondary" className="self-start mb-2 bg-white/20 backdrop-blur-sm text-white border-white/30">
+                      <Badge
+                        variant="secondary"
+                        className="self-start mb-2 bg-white/20 backdrop-blur-sm text-white border-white/30"
+                      >
                         {audience.subtitle}
                       </Badge>
-                      
-                      <h3 className="font-display font-bold text-2xl mb-2">
-                        {audience.title}
-                      </h3>
-                      
+
+                      <h3 className="font-display font-bold text-2xl mb-2">{audience.title}</h3>
+
                       {/* Hover Content */}
-                      <div className={`transition-all duration-300 ${
-                        isSelected ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0'
-                      }`}>
+                      <div
+                        className={`transition-all duration-300 ${
+                          isSelected
+                            ? 'opacity-100 translate-y-0'
+                            : 'opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0'
+                        }`}
+                      >
                         <p className="text-white/90 text-sm mb-4 leading-relaxed">
                           {audience.description}
                         </p>
-                        
+
                         <div className="space-y-2 mb-4">
                           {audience.features.slice(0, 3).map((feature, index) => (
                             <div key={index} className="flex items-center gap-2">
@@ -188,11 +208,11 @@ export function HeroSection() {
                             </div>
                           ))}
                         </div>
-                        
-                        <Button 
-                          size="sm" 
+
+                        <Button
+                          size="sm"
                           className="w-full btn-hero"
-                          onClick={(e) => {
+                          onClick={e => {
                             e.stopPropagation();
                             // Set URL hash to pass audience filter
                             window.location.hash = `audience-${audience.id}`;
@@ -200,9 +220,9 @@ export function HeroSection() {
                             setTimeout(() => {
                               const element = document.getElementById('training-programs');
                               if (element) {
-                                element.scrollIntoView({ 
+                                element.scrollIntoView({
                                   behavior: 'smooth',
-                                  block: 'start'
+                                  block: 'start',
                                 });
                               }
                             }, 200);
@@ -221,13 +241,21 @@ export function HeroSection() {
 
           {selectedAudience && (
             <div className="text-center">
-              <div className={`inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-3 ${getPersonalizedStyles({
-                primary: "bg-gradient-to-r from-pink-200/25 to-peach-200/25 border border-pink-300/40",
-                secondary: "bg-gradient-to-r from-blue-200/25 to-purple-200/25 border border-purple-300/40",
-                professional: "bg-gradient-to-r from-slate-200/25 to-gray-200/25 border border-slate-300/40",
-                business: "bg-gradient-to-r from-green-200/25 to-teal-200/25 border border-emerald-300/40",
-                default: "bg-white/15 border border-white/25"
-              })}`}>
+              <div
+                className={`inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-3 ${getPersonalizedStyles(
+                  {
+                    primary:
+                      'bg-gradient-to-r from-pink-200/25 to-peach-200/25 border border-pink-300/40',
+                    secondary:
+                      'bg-gradient-to-r from-blue-200/25 to-purple-200/25 border border-purple-300/40',
+                    professional:
+                      'bg-gradient-to-r from-slate-200/25 to-gray-200/25 border border-slate-300/40',
+                    business:
+                      'bg-gradient-to-r from-green-200/25 to-teal-200/25 border border-emerald-300/40',
+                    default: 'bg-white/15 border border-white/25',
+                  }
+                )}`}
+              >
                 <Brain className="h-5 w-5 text-primary" />
                 <span className="text-white drop-shadow-sm">
                   {getPersonalizedContent({
@@ -235,7 +263,7 @@ export function HeroSection() {
                     secondary: `🚀 Advanced learning mode activated for ${audiences.find(a => a.id === selectedAudience)?.title}!`,
                     professional: `✨ Professional training mode activated for ${audiences.find(a => a.id === selectedAudience)?.title}!`,
                     business: `💼 Enterprise mode activated for ${audiences.find(a => a.id === selectedAudience)?.title}!`,
-                    default: `Personalized experience for ${audiences.find(a => a.id === selectedAudience)?.title} activated`
+                    default: `Personalized experience for ${audiences.find(a => a.id === selectedAudience)?.title} activated`,
                   })}
                 </span>
               </div>

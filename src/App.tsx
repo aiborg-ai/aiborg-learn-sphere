@@ -45,6 +45,7 @@ const SMEAssessment = lazy(() => import('./pages/SMEAssessment'));
 const SMEAssessmentReport = lazy(() => import('./pages/SMEAssessmentReport'));
 const CoursePage = lazy(() => import('./pages/CoursePage'));
 const InstructorDashboard = lazy(() => import('./pages/InstructorDashboard'));
+const ClassroomPage = lazy(() => import('./pages/instructor/ClassroomPage'));
 const BookmarksPage = lazy(() => import('./pages/BookmarksPage'));
 const DownloadsPage = lazy(() => import('./pages/DownloadsPage'));
 const WatchLaterPage = lazy(() => import('./pages/WatchLaterPage'));
@@ -57,7 +58,9 @@ const LearningPathWizard = lazy(() => import('./components/learning-path/Learnin
 const AILearningPathDetail = lazy(() => import('./pages/AILearningPathDetail'));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 const GamificationPage = lazy(() => import('./pages/GamificationPage'));
-const IconTest = lazy(() => import('@/components/shared/IconTest').then(m => ({ default: m.IconTest })));
+const IconTest = lazy(() =>
+  import('@/components/shared/IconTest').then(m => ({ default: m.IconTest }))
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -105,6 +108,7 @@ const AppWithShortcuts = () => {
             <Route path="/user/:userId" element={<PublicProfile />} />
             <Route path="/course/:courseId" element={<CoursePage />} />
             <Route path="/instructor" element={<InstructorDashboard />} />
+            <Route path="/instructor/classroom/:courseId" element={<ClassroomPage />} />
             <Route path="/ai-assessment" element={<AIAssessment />} />
             <Route path="/ai-assessment/results/:assessmentId" element={<AIAssessmentResults />} />
             <Route path="/sme-assessment" element={<SMEAssessment />} />

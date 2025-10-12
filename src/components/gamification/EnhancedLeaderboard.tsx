@@ -6,20 +6,10 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  Crown,
-  Medal,
-  Trophy,
-  TrendingUp,
-  Flame,
-  Zap,
-  Award,
-  ChevronRight,
-} from 'lucide-react';
+import { Crown, Medal, Trophy, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface LeaderboardEntry {
@@ -224,7 +214,7 @@ function PodiumPlace({
   isFeatured = false,
 }: {
   entry: LeaderboardEntry;
-  config: typeof RANK_CONFIG[1];
+  config: (typeof RANK_CONFIG)[1];
   isCurrentUser: boolean;
   scoreLabel: string;
   isFeatured?: boolean;
@@ -241,9 +231,7 @@ function PodiumPlace({
       {/* Crown/Medal Icon */}
       <div className="mb-2 relative">
         <Icon className={cn('h-8 w-8', config.iconColor, isFeatured && 'animate-pulse')} />
-        {isFeatured && (
-          <div className="absolute -inset-2 bg-yellow-400/20 rounded-full blur-lg" />
-        )}
+        {isFeatured && <div className="absolute -inset-2 bg-yellow-400/20 rounded-full blur-lg" />}
       </div>
 
       {/* Avatar */}
@@ -315,9 +303,7 @@ function LeaderboardRow({
     >
       {/* Rank */}
       <div className="flex-shrink-0 w-10 text-center">
-        <span className="text-lg font-bold text-gray-600 dark:text-gray-400">
-          #{entry.rank}
-        </span>
+        <span className="text-lg font-bold text-gray-600 dark:text-gray-400">#{entry.rank}</span>
       </div>
 
       {/* Avatar */}

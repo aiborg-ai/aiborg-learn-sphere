@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import type { TemplateField } from '../types';
-import { TemplateType } from '../types';
 
 export function useTemplateForm() {
   const [formData, setFormData] = useState<Record<string, unknown>>({});

@@ -6,9 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
 import {
   Select,
   SelectContent,
@@ -30,7 +28,6 @@ import {
   Loader2,
   Filter,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import type { BookmarkType, BookmarkWithRelations } from '@/types/content-access';
 import {
   AlertDialog,

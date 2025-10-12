@@ -93,7 +93,7 @@ class RUMService {
    */
   private setupErrorTracking() {
     // Global error handler
-    window.addEventListener('error', (event) => {
+    window.addEventListener('error', event => {
       this.trackError({
         message: event.message,
         stack: event.error?.stack,
@@ -108,7 +108,7 @@ class RUMService {
     });
 
     // Unhandled promise rejection
-    window.addEventListener('unhandledrejection', (event) => {
+    window.addEventListener('unhandledrejection', event => {
       this.trackError({
         message: `Unhandled Promise Rejection: ${event.reason}`,
         stack: event.reason?.stack,
@@ -139,47 +139,59 @@ class RUMService {
    */
   private setupInteractionTracking() {
     // Track clicks
-    document.addEventListener('click', (event) => {
-      const target = event.target as HTMLElement;
-      this.trackInteraction({
-        type: 'click',
-        target: this.getElementDescriptor(target),
-        timestamp: Date.now(),
-        metadata: {
-          x: event.clientX,
-          y: event.clientY,
-        },
-      });
-    }, { capture: true, passive: true });
+    document.addEventListener(
+      'click',
+      event => {
+        const target = event.target as HTMLElement;
+        this.trackInteraction({
+          type: 'click',
+          target: this.getElementDescriptor(target),
+          timestamp: Date.now(),
+          metadata: {
+            x: event.clientX,
+            y: event.clientY,
+          },
+        });
+      },
+      { capture: true, passive: true }
+    );
 
     // Track scrolling
     let scrollTimeout: NodeJS.Timeout;
-    window.addEventListener('scroll', () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        this.trackInteraction({
-          type: 'scroll',
-          target: 'window',
-          timestamp: Date.now(),
-          metadata: {
-            scrollY: window.scrollY,
-            scrollX: window.scrollX,
-          },
-        });
-      }, 200);
-    }, { passive: true });
+    window.addEventListener(
+      'scroll',
+      () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          this.trackInteraction({
+            type: 'scroll',
+            target: 'window',
+            timestamp: Date.now(),
+            metadata: {
+              scrollY: window.scrollY,
+              scrollX: window.scrollX,
+            },
+          });
+        }, 200);
+      },
+      { passive: true }
+    );
 
     // Track form inputs
-    document.addEventListener('input', (event) => {
-      const target = event.target as HTMLElement;
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-        this.trackInteraction({
-          type: 'input',
-          target: this.getElementDescriptor(target),
-          timestamp: Date.now(),
-        });
-      }
-    }, { capture: true, passive: true });
+    document.addEventListener(
+      'input',
+      event => {
+        const target = event.target as HTMLElement;
+        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+          this.trackInteraction({
+            type: 'input',
+            target: this.getElementDescriptor(target),
+            timestamp: Date.now(),
+          });
+        }
+      },
+      { capture: true, passive: true }
+    );
   }
 
   /**
@@ -226,31 +238,30 @@ class RUMService {
     const originalOpen = XMLHttpRequest.prototype.open;
     const originalSend = XMLHttpRequest.prototype.send;
 
-    XMLHttpRequest.prototype.open = function(method: string, url: string | URL) {
+    XMLHttpRequest.prototype.open = function (method: string, url: string | URL, ...args: any[]) {
       (this as any).__rum_method = method;
       (this as any).__rum_url = url.toString();
       (this as any).__rum_start = performance.now();
-      return originalOpen.apply(this, arguments as any);
+      return originalOpen.apply(this, [method, url, ...args]);
     };
 
-    XMLHttpRequest.prototype.send = function() {
-      const xhr = this;
-      const method = (xhr as any).__rum_method;
-      const url = (xhr as any).__rum_url;
-      const startTime = (xhr as any).__rum_start;
+    XMLHttpRequest.prototype.send = function (...args: any[]) {
+      const method = (this as any).__rum_method;
+      const url = (this as any).__rum_url;
+      const startTime = (this as any).__rum_start;
 
-      xhr.addEventListener('loadend', () => {
+      this.addEventListener('loadend', () => {
         const duration = performance.now() - startTime;
         rumService.trackAPICall({
           url,
           method,
           duration,
-          status: xhr.status,
+          status: this.status,
           timestamp: Date.now(),
         });
       });
 
-      return originalSend.apply(this, arguments as any);
+      return originalSend.apply(this, args);
     };
   }
 
@@ -258,7 +269,10 @@ class RUMService {
    * Setup network tracking
    */
   private setupNetworkTracking() {
-    const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+    const connection =
+      (navigator as any).connection ||
+      (navigator as any).mozConnection ||
+      (navigator as any).webkitConnection;
 
     if (connection) {
       // Track connection changes
@@ -407,7 +421,8 @@ class RUMService {
     return {
       ...this.session,
       duration: Date.now() - this.session.startTime,
-      averageInteractionRate: this.session.interactions / ((Date.now() - this.session.startTime) / 60000),
+      averageInteractionRate:
+        this.session.interactions / ((Date.now() - this.session.startTime) / 60000),
     };
   }
 

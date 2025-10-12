@@ -34,20 +34,8 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { logger } from '@/utils/logger';
-import {
-  Plus,
-  Edit,
-  Trash2,
-  Eye,
-  EyeOff,
-  FileText,
-  TrendingUp,
-  Users,
-  Calendar,
-  ArrowUpDown,
-} from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, EyeOff, FileText, TrendingUp } from 'lucide-react';
 
 export default function BlogManager() {
   const { isAdmin } = useAuth();

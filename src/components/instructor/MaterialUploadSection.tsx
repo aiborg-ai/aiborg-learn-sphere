@@ -12,11 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Upload,
   Video,
@@ -24,7 +23,6 @@ import {
   Download,
   Trash2,
   CheckCircle,
-  AlertCircle,
   Loader2,
   Link as LinkIcon,
   CloudUpload,

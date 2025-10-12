@@ -1,10 +1,16 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   Mail,
   MessageSquare,
@@ -14,11 +20,10 @@ import {
   CheckCircle,
   ExternalLink,
   Clock,
-  Globe,
-  Heart
-} from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+  Heart,
+} from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 import { logger } from '@/utils/logger';
 interface ContactForm {
@@ -31,50 +36,50 @@ interface ContactForm {
 
 const contactChannels = [
   {
-    title: "Email Support",
-    description: "Get detailed help from our education experts",
-    contact: "hirendra.vikram@aiborg.ai",
+    title: 'Email Support',
+    description: 'Get detailed help from our education experts',
+    contact: 'hirendra.vikram@aiborg.ai',
     icon: Mail,
-    action: "Send Email",
-    response: "24 hours",
-    color: "from-blue-500 to-blue-600"
+    action: 'Send Email',
+    response: '24 hours',
+    color: 'from-blue-500 to-blue-600',
   },
   {
-    title: "Discord Community", 
-    description: "Join real-time discussions with learners worldwide",
-    contact: "Join Discord Server",
+    title: 'Discord Community',
+    description: 'Join real-time discussions with learners worldwide',
+    contact: 'Join Discord Server',
     icon: MessageSquare,
-    action: "Join Now",
-    response: "Instant",
-    color: "from-indigo-500 to-purple-600"
+    action: 'Join Now',
+    response: 'Instant',
+    color: 'from-indigo-500 to-purple-600',
   },
   {
-    title: "Skool Community",
-    description: "Structured learning communities and peer support",
-    contact: "Join Skool Platform",
+    title: 'Skool Community',
+    description: 'Structured learning communities and peer support',
+    contact: 'Join Skool Platform',
     icon: Users,
-    action: "Access Platform", 
-    response: "Instant",
-    color: "from-green-500 to-emerald-600"
+    action: 'Access Platform',
+    response: 'Instant',
+    color: 'from-green-500 to-emerald-600',
   },
   {
-    title: "WhatsApp Support",
-    description: "Direct messaging for quick questions and support",
-    contact: "+44 7404568207",
+    title: 'WhatsApp Support',
+    description: 'Direct messaging for quick questions and support',
+    contact: '+44 7404568207',
     icon: Phone,
-    action: "Chat Now",
-    response: "Few hours",
-    color: "from-green-600 to-green-700"
-  }
+    action: 'Chat Now',
+    response: 'Few hours',
+    color: 'from-green-600 to-green-700',
+  },
 ];
 
 export function ContactSection() {
   const [formData, setFormData] = useState<ContactForm>({
-    name: "",
-    email: "",
-    subject: "",
-    audience: "",
-    message: ""
+    name: '',
+    email: '',
+    subject: '',
+    audience: '',
+    message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -95,7 +100,7 @@ export function ContactSection() {
         p_email: formData.email,
         p_subject: formData.subject || '',
         p_audience: formData.audience,
-        p_message: formData.message
+        p_message: formData.message,
       });
 
       if (error) {
@@ -113,8 +118,8 @@ export function ContactSection() {
             email: formData.email,
             subject: formData.subject,
             audience: formData.audience,
-            message: formData.message
-          }
+            message: formData.message,
+          },
         });
 
         if (emailError) {
@@ -132,7 +137,7 @@ export function ContactSection() {
       setIsSubmitting(false);
 
       toast({
-        title: "✅ Message Received Successfully!",
+        title: '✅ Message Received Successfully!',
         description: `Thank you, ${formData.name}! Your message has been saved and our team at hirendra.vikram@aiborg.ai will respond within 24 hours to ${formData.email}.`,
       });
 
@@ -140,22 +145,24 @@ export function ContactSection() {
       setTimeout(() => {
         setIsSubmitted(false);
         setFormData({
-          name: "",
-          email: "",
-          subject: "",
-          audience: "",
-          message: ""
+          name: '',
+          email: '',
+          subject: '',
+          audience: '',
+          message: '',
         });
       }, 3000);
-
     } catch (error) {
       logger.error('Error submitting contact form:', error);
       setIsSubmitting(false);
 
       toast({
-        title: "Failed to send message",
-        description: error instanceof Error ? error.message : "Please try again later or contact us directly via email.",
-        variant: "destructive",
+        title: 'Failed to send message',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Please try again later or contact us directly via email.',
+        variant: 'destructive',
       });
     }
   };
@@ -171,27 +178,33 @@ export function ContactSection() {
             <span className="gradient-text">Get in Touch</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Have questions about our AI education programs? Need personalized guidance? 
-            We're here to help you start your AI learning journey.
+            Have questions about our AI education programs? Need personalized guidance? We're here
+            to help you start your AI learning journey.
           </p>
         </div>
 
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            
             {/* Contact Channels */}
             <div>
-              <h3 className="font-display text-2xl font-bold mb-8">Choose Your Preferred Channel</h3>
+              <h3 className="font-display text-2xl font-bold mb-8">
+                Choose Your Preferred Channel
+              </h3>
               <div className="space-y-6">
                 {contactChannels.map((channel, index) => {
                   const Icon = channel.icon;
                   return (
-                    <Card key={index} className="p-6 hover:shadow-primary transition-all duration-300 group cursor-pointer">
+                    <Card
+                      key={index}
+                      className="p-6 hover:shadow-primary transition-all duration-300 group cursor-pointer"
+                    >
                       <div className="flex items-start gap-4">
-                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-r ${channel.color} p-3 flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                        <div
+                          className={`w-14 h-14 rounded-2xl bg-gradient-to-r ${channel.color} p-3 flex items-center justify-center group-hover:scale-110 transition-transform`}
+                        >
                           <Icon className="h-8 w-8 text-white" />
                         </div>
-                        
+
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-2">
                             <h4 className="font-semibold text-lg">{channel.title}</h4>
@@ -200,16 +213,20 @@ export function ContactSection() {
                               {channel.response}
                             </Badge>
                           </div>
-                          
+
                           <p className="text-muted-foreground text-sm mb-3 leading-relaxed">
                             {channel.description}
                           </p>
-                          
+
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-medium text-primary">
                               {channel.contact}
                             </span>
-                            <Button size="sm" variant="outline" className="group-hover:bg-primary group-hover:text-primary-foreground">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="group-hover:bg-primary group-hover:text-primary-foreground"
+                            >
                               {channel.action}
                               <ExternalLink className="h-3 w-3 ml-2" />
                             </Button>
@@ -240,7 +257,9 @@ export function ContactSection() {
                     <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <CheckCircle className="h-10 w-10 text-green-600" />
                     </div>
-                    <h4 className="font-semibold text-lg mb-2">✅ Message Received Successfully!</h4>
+                    <h4 className="font-semibold text-lg mb-2">
+                      ✅ Message Received Successfully!
+                    </h4>
                     <p className="text-muted-foreground mb-4">
                       Thank you for contacting Aiborg™! Your message has been saved to our system.
                     </p>
@@ -252,7 +271,15 @@ export function ContactSection() {
                         <li>• Your message has been stored in our database</li>
                         <li>• Our team will review it within 24 hours</li>
                         <li>• You'll receive a response at the email you provided</li>
-                        <li>• For urgent matters, email directly: <a href="mailto:hirendra.vikram@aiborg.ai" className="text-primary hover:underline">hirendra.vikram@aiborg.ai</a></li>
+                        <li>
+                          • For urgent matters, email directly:{' '}
+                          <a
+                            href="mailto:hirendra.vikram@aiborg.ai"
+                            className="text-primary hover:underline"
+                          >
+                            hirendra.vikram@aiborg.ai
+                          </a>
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -263,7 +290,7 @@ export function ContactSection() {
                         <label className="text-sm font-medium mb-2 block">Full Name *</label>
                         <Input
                           value={formData.name}
-                          onChange={(e) => handleInputChange("name", e.target.value)}
+                          onChange={e => handleInputChange('name', e.target.value)}
                           placeholder="Your full name"
                           required
                         />
@@ -273,7 +300,7 @@ export function ContactSection() {
                         <Input
                           type="email"
                           value={formData.email}
-                          onChange={(e) => handleInputChange("email", e.target.value)}
+                          onChange={e => handleInputChange('email', e.target.value)}
                           placeholder="your.email@example.com"
                           required
                         />
@@ -282,7 +309,10 @@ export function ContactSection() {
 
                     <div>
                       <label className="text-sm font-medium mb-2 block">Target Audience *</label>
-                      <Select value={formData.audience} onValueChange={(value) => handleInputChange("audience", value)}>
+                      <Select
+                        value={formData.audience}
+                        onValueChange={value => handleInputChange('audience', value)}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select your target audience" />
                         </SelectTrigger>
@@ -300,7 +330,7 @@ export function ContactSection() {
                       <label className="text-sm font-medium mb-2 block">Subject</label>
                       <Input
                         value={formData.subject}
-                        onChange={(e) => handleInputChange("subject", e.target.value)}
+                        onChange={e => handleInputChange('subject', e.target.value)}
                         placeholder="Brief subject of your inquiry"
                       />
                     </div>
@@ -309,7 +339,7 @@ export function ContactSection() {
                       <label className="text-sm font-medium mb-2 block">Message *</label>
                       <Textarea
                         value={formData.message}
-                        onChange={(e) => handleInputChange("message", e.target.value)}
+                        onChange={e => handleInputChange('message', e.target.value)}
                         placeholder="Tell us about your AI learning goals, questions, or how we can help..."
                         rows={5}
                         required

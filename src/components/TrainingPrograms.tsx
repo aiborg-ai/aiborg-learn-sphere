@@ -1,30 +1,33 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { Audience } from "@/contexts/PersonalizationContext";
-import { usePersonalization, AUDIENCE_CONFIG } from "@/contexts/PersonalizationContext";
-import { EnrollmentForm } from "@/components/forms";
-import { CourseDetailsModal, CourseRecordingsModal } from "@/components/modals";
-import type { Course } from "@/hooks/useCourses";
-import { useCourses } from "@/hooks/useCourses";
-import { useEnrollments } from "@/hooks/useEnrollments";
-import { useReviewCounts } from "@/hooks/useReviewCounts";
-import { useAuth } from "@/hooks/useAuth";
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import type { Audience } from '@/contexts/PersonalizationContext';
+import { usePersonalization, AUDIENCE_CONFIG } from '@/contexts/PersonalizationContext';
+import { EnrollmentForm } from '@/components/forms';
+import { CourseDetailsModal, CourseRecordingsModal } from '@/components/modals';
+import type { Course } from '@/hooks/useCourses';
+import { useCourses } from '@/hooks/useCourses';
+import { useEnrollments } from '@/hooks/useEnrollments';
+import { useReviewCounts } from '@/hooks/useReviewCounts';
+import { useAuth } from '@/hooks/useAuth';
 import {
   Search,
   Filter,
   Clock,
   Calendar,
-  Award,
   ArrowRight,
   BookOpen,
-  Video,
   Monitor,
-  MapPin,
   Baby,
   GraduationCap,
   Briefcase,
@@ -35,18 +38,17 @@ import {
   CheckCircle,
   Play,
   Star,
-  MessageSquare
-} from "lucide-react";
-import { ShareButton } from "@/components/shared";
+} from 'lucide-react';
+import { ShareButton } from '@/components/shared';
 
 export const TrainingPrograms = () => {
   const { courses, loading, error, refetch } = useCourses();
   const { getEnrollmentStatus } = useEnrollments();
   const { getReviewCount, loading: reviewCountsLoading } = useReviewCounts();
   const { user } = useAuth();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All Categories");
-  const [selectedLevel, setSelectedLevel] = useState("All Levels");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All Categories');
+  const [selectedLevel, setSelectedLevel] = useState('All Levels');
   const [showFilters, setShowFilters] = useState(false);
   const [enrollmentFormOpen, setEnrollmentFormOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
@@ -73,23 +75,28 @@ export const TrainingPrograms = () => {
     category: course.category,
     keywords: course.keywords,
     prerequisites: course.prerequisites,
-    currentlyEnrolling: course.currently_enrolling
+    currentlyEnrolling: course.currently_enrolling,
   }));
 
   // Map database audience names to internal IDs for filtering
   const audienceMapping = {
-    "Young Learners": "primary",
-    "Teenagers": "secondary", 
-    "Professionals": "professional",
-    "SMEs": "business"
+    'Young Learners': 'primary',
+    Teenagers: 'secondary',
+    Professionals: 'professional',
+    SMEs: 'business',
   };
 
   // Helper function to check if a date is in current or next month
   const isInCurrentOrNextMonth = (dateString: string) => {
-    if (!dateString || dateString === "Ongoing" || dateString === "Flexible" || dateString === "Enquire for start date") {
+    if (
+      !dateString ||
+      dateString === 'Ongoing' ||
+      dateString === 'Flexible' ||
+      dateString === 'Enquire for start date'
+    ) {
       return false;
     }
-    
+
     try {
       // Parse date string (assuming format like "15 Oct 2025")
       const courseDate = new Date(dateString);
@@ -98,51 +105,71 @@ export const TrainingPrograms = () => {
       const currentYear = now.getFullYear();
       const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
       const nextMonthYear = currentMonth === 11 ? currentYear + 1 : currentYear;
-      
+
       const courseMonth = courseDate.getMonth();
       const courseYear = courseDate.getFullYear();
-      
+
       // Check if course is in current month (July 2025) or next month (August 2025)
-      return (courseYear === currentYear && courseMonth === currentMonth) ||
-             (courseYear === nextMonthYear && courseMonth === nextMonth);
+      return (
+        (courseYear === currentYear && courseMonth === currentMonth) ||
+        (courseYear === nextMonthYear && courseMonth === nextMonth)
+      );
     } catch {
       return false;
     }
   };
 
   // Filter programs based on selected audience and search criteria
-  const filteredPrograms = programs.filter((program) => {
+  const filteredPrograms = programs.filter(program => {
     // Check if any of the program's audiences match the selected audience
-    const matchesAudience = selectedAudience === "All" ||
+    const matchesAudience =
+      selectedAudience === 'All' ||
       program.audiences.some(aud => {
         const audienceId = audienceMapping[aud as keyof typeof audienceMapping];
         return audienceId === selectedAudience;
       });
 
-    const matchesSearch = program.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         program.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         program.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = selectedCategory === "All Categories" || program.category === selectedCategory;
-    const matchesLevel = selectedLevel === "All Levels" || program.level === selectedLevel;
+    const matchesSearch =
+      program.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      program.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      program.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesCategory =
+      selectedCategory === 'All Categories' || program.category === selectedCategory;
+    const matchesLevel = selectedLevel === 'All Levels' || program.level === selectedLevel;
     const matchesCurrentlyEnrolling = !currentlyEnrolling || program.currentlyEnrolling;
 
     // Filter for enrolled courses if the user is logged in and showEnrolledOnly is true
-    const matchesEnrolledFilter = !showEnrolledOnly || !user || getEnrollmentStatus(program.id, program.startDate) !== 'not_enrolled';
+    const matchesEnrolledFilter =
+      !showEnrolledOnly ||
+      !user ||
+      getEnrollmentStatus(program.id, program.startDate) !== 'not_enrolled';
 
-    return matchesAudience && matchesSearch && matchesCategory && matchesLevel && matchesCurrentlyEnrolling && matchesEnrolledFilter;
+    return (
+      matchesAudience &&
+      matchesSearch &&
+      matchesCategory &&
+      matchesLevel &&
+      matchesCurrentlyEnrolling &&
+      matchesEnrolledFilter
+    );
   });
 
   // Get unique categories and levels for filter options
-  const categories = ["All Categories", ...Array.from(new Set(programs.map(p => p.category)))];
-  const levels = ["All Levels", ...Array.from(new Set(programs.map(p => p.level)))];
+  const categories = ['All Categories', ...Array.from(new Set(programs.map(p => p.category)))];
+  const levels = ['All Levels', ...Array.from(new Set(programs.map(p => p.level)))];
 
   const getAudienceIcon = (audience: string) => {
     switch (audience) {
-      case "Young Learners": return Baby;
-      case "Teenagers": return GraduationCap;
-      case "Professionals": return Briefcase;
-      case "SMEs": return Building2;
-      default: return BookOpen;
+      case 'Young Learners':
+        return Baby;
+      case 'Teenagers':
+        return GraduationCap;
+      case 'Professionals':
+        return Briefcase;
+      case 'SMEs':
+        return Building2;
+      default:
+        return BookOpen;
     }
   };
 
@@ -214,12 +241,16 @@ export const TrainingPrograms = () => {
         </div>
 
         {/* Audience Selection Tabs */}
-        <Tabs value={selectedAudience} onValueChange={(value) => setSelectedAudience(value as Audience)} className="mb-8">
+        <Tabs
+          value={selectedAudience}
+          onValueChange={value => setSelectedAudience(value as Audience)}
+          className="mb-8"
+        >
           <TabsList className="grid w-full grid-cols-5 max-w-2xl mx-auto">
-            {(Object.keys(AUDIENCE_CONFIG) as Audience[]).map((audience) => {
+            {(Object.keys(AUDIENCE_CONFIG) as Audience[]).map(audience => {
               const config = AUDIENCE_CONFIG[audience];
               const displayName = 'displayName' in config ? config.displayName : config.name;
-              const Icon = audience === "All" ? BookOpen : getAudienceIcon(displayName);
+              const Icon = audience === 'All' ? BookOpen : getAudienceIcon(displayName);
               return (
                 <TabsTrigger key={audience} value={audience} className="flex items-center gap-2">
                   <Icon className="h-4 w-4" />
@@ -238,7 +269,7 @@ export const TrainingPrograms = () => {
               <Input
                 placeholder="Search programs..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10 pr-10"
               />
               {searchTerm && (
@@ -246,7 +277,7 @@ export const TrainingPrograms = () => {
                   variant="ghost"
                   size="sm"
                   className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-muted"
-                  onClick={() => setSearchTerm("")}
+                  onClick={() => setSearchTerm('')}
                 >
                   <X className="h-3 w-3" />
                 </Button>
@@ -255,7 +286,7 @@ export const TrainingPrograms = () => {
             <div className="flex gap-2">
               {user && (
                 <Button
-                  variant={showEnrolledOnly ? "default" : "outline"}
+                  variant={showEnrolledOnly ? 'default' : 'outline'}
                   onClick={() => setShowEnrolledOnly(!showEnrolledOnly)}
                   className="flex items-center gap-2"
                 >
@@ -264,7 +295,7 @@ export const TrainingPrograms = () => {
                 </Button>
               )}
               <Button
-                variant={currentlyEnrolling ? "default" : "outline"}
+                variant={currentlyEnrolling ? 'default' : 'outline'}
                 onClick={() => setCurrentlyEnrolling(!currentlyEnrolling)}
                 className="flex items-center gap-2"
               >
@@ -289,7 +320,7 @@ export const TrainingPrograms = () => {
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {categories.map((category) => (
+                  {categories.map(category => (
                     <SelectItem key={category} value={category}>
                       {category}
                     </SelectItem>
@@ -302,7 +333,7 @@ export const TrainingPrograms = () => {
                   <SelectValue placeholder="Level" />
                 </SelectTrigger>
                 <SelectContent>
-                  {levels.map((level) => (
+                  {levels.map(level => (
                     <SelectItem key={level} value={level}>
                       {level}
                     </SelectItem>
@@ -316,12 +347,14 @@ export const TrainingPrograms = () => {
         {/* Results Count */}
         <div className="mb-6 text-sm text-muted-foreground">
           Showing {filteredPrograms.length} of {programs.length} programs
-          {selectedAudience !== "All" && (() => {
-            const config = AUDIENCE_CONFIG[selectedAudience];
-            const displayName = config && 'displayName' in config ? config.displayName : config?.name;
-            return ` for ${displayName} audience`;
-          })()}
-          {currentlyEnrolling && " (Currently Enrolling)"}
+          {selectedAudience !== 'All' &&
+            (() => {
+              const config = AUDIENCE_CONFIG[selectedAudience];
+              const displayName =
+                config && 'displayName' in config ? config.displayName : config?.name;
+              return ` for ${displayName} audience`;
+            })()}
+          {currentlyEnrolling && ' (Currently Enrolling)'}
         </div>
 
         {/* Programs Grid */}
@@ -329,20 +362,15 @@ export const TrainingPrograms = () => {
           <div className="text-center py-12">
             <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">
-              {showEnrolledOnly && user ? "No enrolled programs" : "No programs found"}
+              {showEnrolledOnly && user ? 'No enrolled programs' : 'No programs found'}
             </h3>
             <p className="text-muted-foreground">
-              {showEnrolledOnly && user 
-                ? "You currently have no enrolled programs. Browse available courses and enroll to start your learning journey!" 
-                : "Try adjusting your search terms or filters to find relevant programs."
-              }
+              {showEnrolledOnly && user
+                ? 'You currently have no enrolled programs. Browse available courses and enroll to start your learning journey!'
+                : 'Try adjusting your search terms or filters to find relevant programs.'}
             </p>
             {showEnrolledOnly && user && (
-              <Button 
-                onClick={() => setShowEnrolledOnly(false)} 
-                className="mt-4"
-                variant="outline"
-              >
+              <Button onClick={() => setShowEnrolledOnly(false)} className="mt-4" variant="outline">
                 Browse All Programs
               </Button>
             )}
@@ -350,112 +378,132 @@ export const TrainingPrograms = () => {
         ) : (
           <>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(showAllPrograms ? filteredPrograms : filteredPrograms.slice(0, 3)).map((program) => {
-              return (
-                <Card key={program.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden">
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex flex-wrap gap-1">
-                        {program.audiences.map((aud, index) => {
-                          const AudienceIcon = getAudienceIcon(aud);
-                          return (
-                            <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                              <AudienceIcon className="h-3 w-3" />
-                              {aud}
+              {(showAllPrograms ? filteredPrograms : filteredPrograms.slice(0, 3)).map(program => {
+                return (
+                  <Card
+                    key={program.id}
+                    className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+                  >
+                    <div className="p-6">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex flex-wrap gap-1">
+                          {program.audiences.map((aud, index) => {
+                            const AudienceIcon = getAudienceIcon(aud);
+                            return (
+                              <Badge
+                                key={index}
+                                variant="secondary"
+                                className="flex items-center gap-1"
+                              >
+                                <AudienceIcon className="h-3 w-3" />
+                                {aud}
+                              </Badge>
+                            );
+                          })}
+                        </div>
+                        <Badge variant="outline">{program.level}</Badge>
+                      </div>
+
+                      <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">
+                        {program.title}
+                      </h3>
+
+                      <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                        {program.description}
+                      </p>
+
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Clock className="h-4 w-4" />
+                          {program.duration}
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Calendar className="h-4 w-4" />
+                          {program.startDate}
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Monitor className="h-4 w-4" />
+                          {program.mode}
+                        </div>
+                        {/* Reviews count display */}
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Star className="h-4 w-4" />
+                          <button
+                            onClick={() => handleReviewsClick(program.id)}
+                            className="hover:text-primary hover:underline cursor-pointer"
+                          >
+                            {getReviewCount(program.id)} review
+                            {getReviewCount(program.id) !== 1 ? 's' : ''}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl font-bold text-primary">{program.price}</span>
+                          {(program.price === 'Free' ||
+                            program.price === '₹0' ||
+                            program.price === '0' ||
+                            program.price?.toLowerCase().includes('free')) && (
+                            <Badge
+                              variant="secondary"
+                              className="bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20"
+                            >
+                              Free Course
                             </Badge>
-                          );
-                        })}
+                          )}
+                        </div>
+                        <ShareButton title={program.title} description={program.description} />
                       </div>
-                      <Badge variant="outline">{program.level}</Badge>
-                    </div>
-                    
-                    <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">
-                      {program.title}
-                    </h3>
-                    
-                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                      {program.description}
-                    </p>
 
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        {program.duration}
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Calendar className="h-4 w-4" />
-                        {program.startDate}
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Monitor className="h-4 w-4" />
-                        {program.mode}
-                       </div>
-                       {/* Reviews count display */}
-                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                         <Star className="h-4 w-4" />
-                         <button 
-                           onClick={() => handleReviewsClick(program.id)}
-                           className="hover:text-primary hover:underline cursor-pointer"
-                         >
-                           {getReviewCount(program.id)} review{getReviewCount(program.id) !== 1 ? 's' : ''}
-                         </button>
-                       </div>
-                     </div>
-
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl font-bold text-primary">{program.price}</span>
-                        {(program.price === "Free" || program.price === "₹0" || program.price === "0" || program.price?.toLowerCase().includes("free")) && (
-                          <Badge variant="secondary" className="bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20">
-                            Free Course
-                          </Badge>
-                        )}
-                      </div>
-                      <ShareButton
-                        title={program.title}
-                        description={program.description}
-                      />
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDetailsClick(program)}
-                      >
-                        Details
-                      </Button>
-                      {user && getEnrollmentStatus(program.id, program.startDate) !== 'not_enrolled' && (
+                      <div className="flex gap-2">
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => {
-                            // Find the original course object from the courses array
-                            const originalCourse = courses.find(c => c.id === program.id);
-                            if (originalCourse) {
-                              setSelectedCourse(originalCourse);
-                              setRecordingsModalOpen(true);
-                            }
-                          }}
+                          onClick={() => handleDetailsClick(program)}
                         >
-                          <Play className="h-3 w-3 mr-1" />
-                          Recordings
+                          Details
                         </Button>
-                      )}
+                        {user &&
+                          getEnrollmentStatus(program.id, program.startDate) !== 'not_enrolled' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                // Find the original course object from the courses array
+                                const originalCourse = courses.find(c => c.id === program.id);
+                                if (originalCourse) {
+                                  setSelectedCourse(originalCourse);
+                                  setRecordingsModalOpen(true);
+                                }
+                              }}
+                            >
+                              <Play className="h-3 w-3 mr-1" />
+                              Recordings
+                            </Button>
+                          )}
                         {user ? (
                           (() => {
                             const status = getEnrollmentStatus(program.id, program.startDate);
                             switch (status) {
                               case 'enrolled':
                                 return (
-                                  <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" disabled>
+                                  <Button
+                                    size="sm"
+                                    className="bg-green-600 hover:bg-green-700 text-white"
+                                    disabled
+                                  >
                                     <CheckCircle className="mr-1 h-4 w-4" />
                                     Enrolled
                                   </Button>
                                 );
                               case 'completed':
                                 return (
-                                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white" disabled>
+                                  <Button
+                                    size="sm"
+                                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                                    disabled
+                                  >
                                     <CheckCircle className="mr-1 h-4 w-4" />
                                     Completed
                                   </Button>
@@ -483,21 +531,23 @@ export const TrainingPrograms = () => {
                             <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                           </Button>
                         )}
+                      </div>
                     </div>
-                  </div>
-                </Card>
-              );
+                  </Card>
+                );
               })}
             </div>
-            
+
             {filteredPrograms.length > 3 && (
               <div className="text-center mt-8">
-                <Button 
+                <Button
                   onClick={() => setShowAllPrograms(!showAllPrograms)}
                   variant="outline"
                   className="px-8 py-2"
                 >
-                  {showAllPrograms ? 'Show Less' : `Show More (${filteredPrograms.length - 3} more)`}
+                  {showAllPrograms
+                    ? 'Show Less'
+                    : `Show More (${filteredPrograms.length - 3} more)`}
                 </Button>
               </div>
             )}
@@ -508,7 +558,7 @@ export const TrainingPrograms = () => {
         <EnrollmentForm
           isOpen={enrollmentFormOpen}
           onClose={() => setEnrollmentFormOpen(false)}
-          courseName={selectedCourse?.title || ""}
+          courseName={selectedCourse?.title || ''}
           coursePrice={selectedCourse?.price}
           courseId={selectedCourse?.id}
         />
@@ -526,7 +576,7 @@ export const TrainingPrograms = () => {
           open={recordingsModalOpen}
           onOpenChange={setRecordingsModalOpen}
           courseId={selectedCourse?.id || 0}
-          courseTitle={selectedCourse?.title || ""}
+          courseTitle={selectedCourse?.title || ''}
         />
       </div>
     </section>

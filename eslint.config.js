@@ -4,6 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import tseslint from 'typescript-eslint';
+import unusedImports from 'eslint-plugin-unused-imports';
 
 export default tseslint.config(
   { ignores: ['dist', 'scripts/**/*', 'supabase/functions/**/*', '*.config.ts', '*.config.js'] },
@@ -18,6 +19,7 @@ export default tseslint.config(
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       'jsx-a11y': jsxA11y,
+      'unused-imports': unusedImports,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -48,7 +50,11 @@ export default tseslint.config(
 
       // TypeScript rules - relaxed for development
       '@typescript-eslint/no-explicit-any': 'warn', // Changed from error to warning
-      '@typescript-eslint/no-unused-vars': [
+
+      // Unused imports/vars - use plugin for auto-fix
+      '@typescript-eslint/no-unused-vars': 'off', // Turned off in favor of unused-imports plugin
+      'unused-imports/no-unused-imports': 'warn',
+      'unused-imports/no-unused-vars': [
         'warn',
         {
           argsIgnorePattern: '^_',
