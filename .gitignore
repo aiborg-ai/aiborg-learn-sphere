@@ -12,11 +12,21 @@ dist
 dist-ssr
 *.local
 
-# Environment variables
+# Environment variables - NEVER COMMIT THESE
 .env
 .env.local
 .env.production
 .env.development
+.env.*.local
+.env.vercel
+*.env
+
+# Secrets and credentials
+secrets/
+*.pem
+*.key
+*.cert
+*.p12
 
 # Editor directories and files
 .vscode/*

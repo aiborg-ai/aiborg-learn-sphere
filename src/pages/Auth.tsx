@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { Loader2, Brain, ArrowLeft } from 'lucide-react';
+import { Loader2, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { GoogleIcon } from '@/components/icons/GoogleIcon';
 import { GitHubIcon } from '@/components/icons/GitHubIcon';
@@ -22,6 +22,14 @@ import {
 } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
+import { validatePassword } from '@/utils/passwordValidation';
+import {
+  checkSignInLimit,
+  checkSignUpLimit,
+  checkPasswordResetLimit,
+  checkOAuthLimit,
+  resetAuthLimit,
+} from '@/utils/rateLimiter';
 
 export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
@@ -52,11 +60,21 @@ export default function Auth() {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
+    // Check rate limit
+    const rateLimit = checkSignInLimit(email);
+    if (!rateLimit.allowed) {
+      setError(rateLimit.message || 'Too many sign-in attempts. Please try again later.');
+      setIsLoading(false);
+      return;
+    }
+
     const { error } = await signIn(email, password);
 
     if (error) {
       setError(error.message);
     } else {
+      // Reset rate limit on successful sign in
+      resetAuthLimit(email);
       navigate('/');
     }
     setIsLoading(false);
@@ -65,6 +83,14 @@ export default function Auth() {
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     setError(null);
+
+    // Check rate limit for OAuth
+    const rateLimit = checkOAuthLimit('google');
+    if (!rateLimit.allowed) {
+      setError(rateLimit.message || 'Too many OAuth attempts. Please try again later.');
+      setIsGoogleLoading(false);
+      return;
+    }
 
     const { error } = await signInWithGoogle();
 
@@ -78,6 +104,14 @@ export default function Auth() {
   const handleGitHubSignIn = async () => {
     setIsGitHubLoading(true);
     setError(null);
+
+    // Check rate limit for OAuth
+    const rateLimit = checkOAuthLimit('github');
+    if (!rateLimit.allowed) {
+      setError(rateLimit.message || 'Too many OAuth attempts. Please try again later.');
+      setIsGitHubLoading(false);
+      return;
+    }
 
     const { error } = await signInWithGitHub();
 
@@ -99,19 +133,49 @@ export default function Auth() {
     const confirmPassword = formData.get('confirmPassword') as string;
     const displayName = formData.get('displayName') as string;
 
+    // Check rate limit
+    const rateLimit = checkSignUpLimit(email);
+    if (!rateLimit.allowed) {
+      setError(rateLimit.message || 'Too many sign-up attempts. Please try again later.');
+      setIsLoading(false);
+      return;
+    }
+
+    // Validate display name
+    if (!displayName || displayName.trim().length < 2) {
+      setError('Display name must be at least 2 characters long');
+      setIsLoading(false);
+      return;
+    }
+
+    if (displayName.length > 50) {
+      setError('Display name must be less than 50 characters');
+      setIsLoading(false);
+      return;
+    }
+
+    // Check for invalid characters in display name
+    if (!/^[a-zA-Z0-9\s\-_]+$/.test(displayName)) {
+      setError('Display name can only contain letters, numbers, spaces, hyphens, and underscores');
+      setIsLoading(false);
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       setIsLoading(false);
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
+    // Validate password strength
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.valid) {
+      setError(passwordValidation.message);
       setIsLoading(false);
       return;
     }
 
-    const { error } = await signUp(email, password, displayName);
+    const { error } = await signUp(email, password, displayName.trim());
 
     if (error) {
       if (error.message.includes('already registered')) {
@@ -133,10 +197,21 @@ export default function Auth() {
     setIsResetting(true);
 
     try {
-      // Use the production URL for password reset
-      const redirectUrl = window.location.hostname === 'localhost'
-        ? `${window.location.origin}/auth/reset-password`
-        : 'https://aiborg-ai-web.vercel.app/auth/reset-password';
+      // Check rate limit
+      const rateLimit = checkPasswordResetLimit(resetEmail);
+      if (!rateLimit.allowed) {
+        toast({
+          title: 'Too many requests',
+          description: rateLimit.message || 'Please try again later.',
+          variant: 'destructive',
+        });
+        setIsResetting(false);
+        return;
+      }
+
+      // Use environment variable for redirect URL (security improvement)
+      const appUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+      const redirectUrl = `${appUrl}/auth/reset-password`;
 
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
         redirectTo: redirectUrl,
@@ -151,7 +226,8 @@ export default function Auth() {
       setShowResetDialog(false);
       setResetEmail('');
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to send password reset email';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to send password reset email';
       toast({
         title: 'Error',
         description: errorMessage,
@@ -166,7 +242,10 @@ export default function Auth() {
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 text-white hover:text-secondary transition-colors mb-4">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-white hover:text-secondary transition-colors mb-4"
+          >
             <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Link>
@@ -196,9 +275,7 @@ export default function Auth() {
 
               {error && (
                 <Alert className="mt-4 bg-red-500/20 border-red-500/50">
-                  <AlertDescription className="text-white">
-                    {error}
-                  </AlertDescription>
+                  <AlertDescription className="text-white">{error}</AlertDescription>
                 </Alert>
               )}
 
@@ -248,13 +325,17 @@ export default function Auth() {
                     <Separator className="w-full bg-white/20" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-transparent px-2 text-white/60">Or continue with email</span>
+                    <span className="bg-transparent px-2 text-white/60">
+                      Or continue with email
+                    </span>
                   </div>
                 </div>
 
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-white">Email</Label>
+                    <Label htmlFor="email" className="text-white">
+                      Email
+                    </Label>
                     <Input
                       id="email"
                       name="email"
@@ -266,7 +347,9 @@ export default function Auth() {
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="password" className="text-white">Password</Label>
+                      <Label htmlFor="password" className="text-white">
+                        Password
+                      </Label>
                       <Button
                         type="button"
                         variant="link"
@@ -285,11 +368,7 @@ export default function Auth() {
                       className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     />
                   </div>
-                  <Button
-                    type="submit"
-                    className="w-full btn-hero"
-                    disabled={isLoading}
-                  >
+                  <Button type="submit" className="w-full btn-hero" disabled={isLoading}>
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Sign In
                   </Button>
@@ -340,7 +419,9 @@ export default function Auth() {
 
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="displayName" className="text-white">Display Name</Label>
+                    <Label htmlFor="displayName" className="text-white">
+                      Display Name
+                    </Label>
                     <Input
                       id="displayName"
                       name="displayName"
@@ -351,7 +432,9 @@ export default function Auth() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email" className="text-white">Email</Label>
+                    <Label htmlFor="signup-email" className="text-white">
+                      Email
+                    </Label>
                     <Input
                       id="signup-email"
                       name="email"
@@ -362,34 +445,41 @@ export default function Auth() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password" className="text-white">Password</Label>
+                    <Label htmlFor="signup-password" className="text-white">
+                      Password
+                    </Label>
                     <Input
                       id="signup-password"
                       name="password"
                       type="password"
                       placeholder="Enter your password"
                       required
-                      minLength={6}
+                      minLength={12}
+                      maxLength={128}
                       className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                      title="Password must be at least 12 characters with uppercase, lowercase, numbers, and special characters"
                     />
+                    <p className="text-xs text-white/60">
+                      Must be 12+ characters with uppercase, lowercase, numbers, and special
+                      characters
+                    </p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-white">Confirm Password</Label>
+                    <Label htmlFor="confirmPassword" className="text-white">
+                      Confirm Password
+                    </Label>
                     <Input
                       id="confirmPassword"
                       name="confirmPassword"
                       type="password"
                       placeholder="Confirm your password"
                       required
-                      minLength={6}
+                      minLength={12}
+                      maxLength={128}
                       className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     />
                   </div>
-                  <Button
-                    type="submit"
-                    className="w-full btn-hero"
-                    disabled={isLoading}
-                  >
+                  <Button type="submit" className="w-full btn-hero" disabled={isLoading}>
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Create Account
                   </Button>
@@ -416,7 +506,7 @@ export default function Auth() {
                 type="email"
                 placeholder="Enter your email"
                 value={resetEmail}
-                onChange={(e) => setResetEmail(e.target.value)}
+                onChange={e => setResetEmail(e.target.value)}
                 required
                 disabled={isResetting}
               />
@@ -431,11 +521,7 @@ export default function Auth() {
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                disabled={isResetting}
-                className="flex-1"
-              >
+              <Button type="submit" disabled={isResetting} className="flex-1">
                 {isResetting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
