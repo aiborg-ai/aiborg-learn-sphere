@@ -7,12 +7,13 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
-import {
-  chat,
-  createStudyAssistantSystemPrompt,
-  checkOllamaHealth,
-} from '@/services/ollamaService';
-import type { ChatMessage } from '@/services/ollamaService';
+// Ollama service removed - using ai-chat edge function instead
+// import {
+//   chat,
+//   createStudyAssistantSystemPrompt,
+//   checkOllamaHealth,
+// } from '@/services/ollamaService';
+// import type { ChatMessage } from '@/services/ollamaService';
 import {
   Send,
   X,
@@ -69,7 +70,7 @@ export function AIStudyAssistant() {
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [_studyContext, setStudyContext] = useState<StudyContext>({});
-  const [ollamaAvailable, setOllamaAvailable] = useState(true);
+  const [ollamaAvailable, setOllamaAvailable] = useState(false); // Ollama disabled - using edge function
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -174,66 +175,9 @@ export function AIStudyAssistant() {
     setIsLoading(true);
 
     try {
-      // Check Ollama availability
-      if (ollamaAvailable) {
-        const isHealthy = await checkOllamaHealth();
-        if (!isHealthy) {
-          setOllamaAvailable(false);
-          throw new Error('Ollama is not available');
-        }
-      }
-
-      // Create system prompt
-      const systemPrompt = createStudyAssistantSystemPrompt();
-
-      // Prepare messages for Ollama
-      const conversationMessages: ChatMessage[] = [
-        {
-          role: 'system',
-          content: systemPrompt,
-        },
-        ...messages.map(m => ({
-          role: m.role === 'user' ? ('user' as const) : ('assistant' as const),
-          content: m.content,
-        })),
-        {
-          role: 'user' as const,
-          content: textToSend,
-        },
-      ];
-
-      // Call Ollama
-      const response = await chat(conversationMessages, {
-        temperature: 0.7,
-      });
-
-      const aiMessage: Message = {
-        id: crypto.randomUUID(),
-        content: response || "I apologize, but I couldn't generate a response. Please try again.",
-        role: 'assistant',
-        timestamp: new Date(),
-      };
-
-      setMessages(prev => [...prev, aiMessage]);
-
-      // Save conversation to database (async, don't wait)
-      if (sessionId) {
-        supabase
-          .from('ai_study_sessions')
-          .update({
-            context: {
-              messages: [...messages, userMessage, aiMessage].map(m => ({
-                role: m.role,
-                content: m.content,
-                timestamp: m.timestamp,
-              })),
-            },
-          })
-          .eq('id', sessionId)
-          .then(({ error }) => {
-            if (error) logger.error('Error saving conversation:', error);
-          });
-      }
+      // Ollama functionality disabled - using fallback responses
+      // TODO: Integrate with ai-chat edge function for production
+      throw new Error('Using fallback responses');
     } catch (error) {
       logger.error('Error sending message to AI:', error);
 

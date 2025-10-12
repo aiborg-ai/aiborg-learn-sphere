@@ -7,8 +7,9 @@ import { usePersonalization } from '@/contexts/PersonalizationContext';
 import { useCourses } from '@/hooks/useCourses';
 import { logger } from '@/utils/logger';
 import { MessageCircle, Send, X, Bot, User, Phone } from 'lucide-react';
-import { chat, createChatbotSystemPrompt, checkOllamaHealth } from '@/services/ollamaService';
-import type { ChatMessage } from '@/services/ollamaService';
+// Ollama service removed - using ai-chat edge function instead
+// import { chat, createChatbotSystemPrompt, checkOllamaHealth } from '@/services/ollamaService';
+// import type { ChatMessage } from '@/services/ollamaService';
 
 interface Message {
   id: string;
@@ -97,7 +98,7 @@ export function AIChatbot() {
   const [_conversationContext, setConversationContext] = useState<ConversationContext>(
     initialConversationContext
   );
-  const [ollamaAvailable, setOllamaAvailable] = useState(true);
+  const [ollamaAvailable, setOllamaAvailable] = useState(false); // Ollama disabled - using edge function
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize welcome message based on audience
@@ -271,53 +272,9 @@ export function AIChatbot() {
 
   const generateAIResponse = async (userMessage: string): Promise<string> => {
     try {
-      // Check Ollama availability on first use
-      if (ollamaAvailable) {
-        const isHealthy = await checkOllamaHealth();
-        if (!isHealthy) {
-          setOllamaAvailable(false);
-          throw new Error('Ollama is not available');
-        }
-      }
-
-      // Prepare courses data for context
-      const coursesData = courses.map(course => ({
-        title: course.title,
-        price: course.price,
-        duration: course.duration,
-        level: course.level,
-        audience: course.audience,
-        description: course.description,
-        category: course.category,
-      }));
-
-      // Create system prompt with course data
-      const systemPrompt = createChatbotSystemPrompt(selectedAudience, coursesData);
-
-      // Prepare messages array for Ollama
-      const conversationMessages: ChatMessage[] = [
-        {
-          role: 'system',
-          content: systemPrompt,
-        },
-        ...messages
-          .filter(msg => msg.type === 'text' || !msg.type)
-          .map(msg => ({
-            role: msg.sender === 'user' ? ('user' as const) : ('assistant' as const),
-            content: msg.content,
-          })),
-        {
-          role: 'user' as const,
-          content: userMessage,
-        },
-      ];
-
-      // Call Ollama
-      const response = await chat(conversationMessages, {
-        temperature: 0.7,
-      });
-
-      return response;
+      // Ollama functionality disabled - using fallback responses
+      // TODO: Integrate with ai-chat edge function for production
+      throw new Error('Using fallback responses');
     } catch (error) {
       logger.error('Error generating AI response:', error);
 
