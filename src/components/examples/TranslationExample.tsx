@@ -114,5 +114,5 @@ export function TranslationExample() {
  * Getting current language:
  *
  * const { i18n } = useTranslation();
- * console.log(i18n.language); // e.g., 'en'
+ * logger.log(i18n.language); // e.g., 'en'
  */

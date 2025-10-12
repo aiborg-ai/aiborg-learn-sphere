@@ -1,5 +1,6 @@
 import { lazy, Suspense, ComponentType } from 'react';
 import type { LucideProps } from 'lucide-react';
+import { logger } from './logger';
 
 /**
  * Icon Loader Utility
@@ -84,7 +85,9 @@ export const Icons = {
   Image: lazy(() => import('lucide-react').then(mod => ({ default: mod.Image }))),
   Info: lazy(() => import('lucide-react').then(mod => ({ default: mod.Info }))),
   Keyboard: lazy(() => import('lucide-react').then(mod => ({ default: mod.Keyboard }))),
-  LayoutDashboard: lazy(() => import('lucide-react').then(mod => ({ default: mod.LayoutDashboard }))),
+  LayoutDashboard: lazy(() =>
+    import('lucide-react').then(mod => ({ default: mod.LayoutDashboard }))
+  ),
   Link: lazy(() => import('lucide-react').then(mod => ({ default: mod.Link }))),
   List: lazy(() => import('lucide-react').then(mod => ({ default: mod.List }))),
   Loader2: lazy(() => import('lucide-react').then(mod => ({ default: mod.Loader2 }))),
@@ -177,17 +180,14 @@ export interface IconProps extends Omit<LucideProps, 'ref'> {
  * />
  * ```
  */
-export function Icon({
-  name,
-  className = '',
-  size = 16,
-  fallback,
-  ...props
-}: IconProps) {
+export function Icon({ name, className = '', size = 16, fallback, ...props }: IconProps) {
   const IconComponent = Icons[name];
 
   if (!IconComponent) {
-    console.warn(`[Icon Loader] Icon "${name}" not found in Icons map`);
+    logger.warn(`Icon "${name}" not found in Icons map`, {
+      name,
+      availableIcons: Object.keys(Icons).length,
+    });
     return null;
   }
 
@@ -198,7 +198,7 @@ export function Icon({
       style={{
         width: size,
         height: size,
-        display: 'inline-block'
+        display: 'inline-block',
       }}
       aria-hidden="true"
     />

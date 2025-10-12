@@ -12,7 +12,12 @@ import { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supab
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from './logger';
 
-export type SubscriptionStatus = 'CONNECTING' | 'SUBSCRIBED' | 'CHANNEL_ERROR' | 'TIMED_OUT' | 'CLOSED';
+export type SubscriptionStatus =
+  | 'CONNECTING'
+  | 'SUBSCRIBED'
+  | 'CHANNEL_ERROR'
+  | 'TIMED_OUT'
+  | 'CLOSED';
 
 export interface RealtimeSubscriptionOptions {
   channelName: string;
@@ -110,7 +115,7 @@ export class RealtimeSubscription {
       changeConfig.filter = this.options.filter;
     }
 
-    this.channel.on('postgres_changes', changeConfig, (payload) => {
+    this.channel.on('postgres_changes', changeConfig, payload => {
       logger.log('🔔 Realtime event:', this.options.table, payload.eventType);
       this.options.onData(payload);
     });
@@ -205,11 +210,11 @@ export class RealtimeSubscription {
  *   table: 'reviews',
  *   filter: 'approved=eq.true',
  *   onData: (payload) => {
- *     console.log('Review changed:', payload);
+ *     logger.log('Review changed:', payload);
  *   },
  *   onStatusChange: (status, error) => {
  *     if (status === 'CHANNEL_ERROR') {
- *       console.error('Connection error:', error);
+ *       logger.error('Connection error:', error);
  *     }
  *   }
  * });

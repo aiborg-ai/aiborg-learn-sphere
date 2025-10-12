@@ -5,9 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { usePersonalization } from '@/contexts/PersonalizationContext';
 import { useCourses } from '@/hooks/useCourses';
-import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import { MessageCircle, Send, X, Bot, User, Phone } from 'lucide-react';
+import { chat, createChatbotSystemPrompt, checkOllamaHealth } from '@/services/ollamaService';
+import type { ChatMessage } from '@/services/ollamaService';
 
 interface Message {
   id: string;
@@ -96,6 +97,7 @@ export function AIChatbot() {
   const [_conversationContext, setConversationContext] = useState<ConversationContext>(
     initialConversationContext
   );
+  const [ollamaAvailable, setOllamaAvailable] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize welcome message based on audience
@@ -269,19 +271,14 @@ export function AIChatbot() {
 
   const generateAIResponse = async (userMessage: string): Promise<string> => {
     try {
-      // Prepare messages array for OpenAI
-      const conversationMessages = messages
-        .filter(msg => msg.type === 'text' || !msg.type) // Include all text messages
-        .map(msg => ({
-          role: msg.sender === 'user' ? 'user' : 'assistant',
-          content: msg.content,
-        }));
-
-      // Add the current user message
-      conversationMessages.push({
-        role: 'user',
-        content: userMessage,
-      });
+      // Check Ollama availability on first use
+      if (ollamaAvailable) {
+        const isHealthy = await checkOllamaHealth();
+        if (!isHealthy) {
+          setOllamaAvailable(false);
+          throw new Error('Ollama is not available');
+        }
+      }
 
       // Prepare courses data for context
       const coursesData = courses.map(course => ({
@@ -294,21 +291,33 @@ export function AIChatbot() {
         category: course.category,
       }));
 
-      // Call the OpenAI edge function
-      const { data, error } = await supabase.functions.invoke('ai-chat', {
-        body: {
-          messages: conversationMessages,
-          audience: selectedAudience,
-          coursesData: coursesData,
+      // Create system prompt with course data
+      const systemPrompt = createChatbotSystemPrompt(selectedAudience, coursesData);
+
+      // Prepare messages array for Ollama
+      const conversationMessages: ChatMessage[] = [
+        {
+          role: 'system',
+          content: systemPrompt,
         },
+        ...messages
+          .filter(msg => msg.type === 'text' || !msg.type)
+          .map(msg => ({
+            role: msg.sender === 'user' ? ('user' as const) : ('assistant' as const),
+            content: msg.content,
+          })),
+        {
+          role: 'user' as const,
+          content: userMessage,
+        },
+      ];
+
+      // Call Ollama
+      const response = await chat(conversationMessages, {
+        temperature: 0.7,
       });
 
-      if (error) {
-        logger.error('AI chat error:', error);
-        throw new Error(error.message || 'Failed to get AI response');
-      }
-
-      return data.response;
+      return response;
     } catch (error) {
       logger.error('Error generating AI response:', error);
 

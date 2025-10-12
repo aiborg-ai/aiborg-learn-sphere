@@ -3,6 +3,8 @@
  * Helper functions for sharing content on social media platforms
  */
 
+import { logger } from './logger';
+
 export interface ShareData {
   title: string;
   text: string;
@@ -69,7 +71,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
       document.body.removeChild(textArea);
       return true;
     } catch (fallbackError) {
-      console.error('Failed to copy to clipboard:', fallbackError);
+      logger.error('Failed to copy to clipboard', fallbackError);
       return false;
     }
   }
@@ -78,7 +80,11 @@ export async function copyToClipboard(text: string): Promise<boolean> {
 /**
  * Generate achievement share text
  */
-export function generateAchievementShareText(achievementName: string, tier: string, points: number): ShareData {
+export function generateAchievementShareText(
+  achievementName: string,
+  tier: string,
+  points: number
+): ShareData {
   const baseUrl = window.location.origin;
 
   return {
@@ -170,8 +176,8 @@ export async function nativeShare(data: ShareData): Promise<boolean> {
     });
     return true;
   } catch (error) {
-    // User cancelled or error occurred
-    console.error('Native share failed:', error);
+    // User cancelled or error occurred (not necessarily an error - user may have cancelled)
+    logger.debug('Native share dismissed or failed', { error });
     return false;
   }
 }
