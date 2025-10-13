@@ -62,6 +62,15 @@ const IconTest = lazy(() =>
   import('@/components/shared/IconTest').then(m => ({ default: m.IconTest }))
 );
 
+// Quiz pages
+const QuizTaker = lazy(() => import('./components/quiz').then(m => ({ default: m.QuizTaker })));
+const QuizResults = lazy(() => import('./components/quiz').then(m => ({ default: m.QuizResults })));
+const QuizReview = lazy(() => import('./components/quiz').then(m => ({ default: m.QuizReview })));
+
+// Exercise pages
+const ExerciseSubmissionPage = lazy(() => import('./pages/ExerciseSubmissionPage'));
+const ExerciseResultsPage = lazy(() => import('./pages/ExerciseResultsPage'));
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -126,6 +135,19 @@ const AppWithShortcuts = () => {
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/gamification" element={<GamificationPage />} />
             <Route path="/test-icons" element={<IconTest />} />
+
+            {/* Quiz routes */}
+            <Route path="/quiz/:quizId" element={<QuizTaker />} />
+            <Route path="/quiz/:quizId/results/:attemptId" element={<QuizResults />} />
+            <Route path="/quiz/:quizId/review/:attemptId" element={<QuizReview />} />
+
+            {/* Exercise routes */}
+            <Route path="/exercise/:exerciseId/submit" element={<ExerciseSubmissionPage />} />
+            <Route
+              path="/exercise/:exerciseId/results/:submissionId"
+              element={<ExerciseResultsPage />}
+            />
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
