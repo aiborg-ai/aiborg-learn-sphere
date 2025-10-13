@@ -34,3 +34,32 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     },
   },
 });
+
+// Enhanced realtime authentication helper
+// This ensures WebSocket connections include the user's access token
+let realtimeAccessToken: string | null = null;
+
+// Update access token when auth state changes
+supabase.auth.onAuthStateChange((event, session) => {
+  if (session?.access_token) {
+    realtimeAccessToken = session.access_token;
+    // Update realtime connection with new token
+    if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+      supabase.realtime.setAuth(session.access_token);
+    }
+  } else if (event === 'SIGNED_OUT') {
+    realtimeAccessToken = null;
+    supabase.realtime.setAuth(null);
+  }
+});
+
+// Initialize token from existing session
+(async () => {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (session?.access_token) {
+    realtimeAccessToken = session.access_token;
+    supabase.realtime.setAuth(session.access_token);
+  }
+})();

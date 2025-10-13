@@ -169,7 +169,7 @@ export const useAssessmentSubmit = ({
         await calculateCategoryInsights(assessmentId);
       }
 
-      // Navigate to profile with assessments tab
+      // Navigate to results page
       if (assessmentId) {
         const bonusMessage =
           bonusScore > 0
@@ -180,7 +180,10 @@ export const useAssessmentSubmit = ({
           title: 'Assessment Complete!',
           description: `Your results have been saved to your profile.${bonusMessage}`,
         });
-        window.location.href = `/profile?tab=assessments`;
+        // Redirect to results page instead of profile
+        setTimeout(() => {
+          window.location.href = `/ai-assessment/results/${assessmentId}`;
+        }, 2000);
       } else {
         // For non-logged in users, show results in modal or redirect
         const finalScore = totalScore + bonusScore;

@@ -516,9 +516,9 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
         });
       }
 
-      // Navigate to profile with assessments tab after a delay to allow toasts to show
+      // Navigate to results page after a delay to allow toasts to show
       setTimeout(() => {
-        window.location.href = `/profile?tab=assessments`;
+        navigate(`/ai-assessment/results/${assessmentId}`);
       }, 2000);
     } catch (error) {
       logger.error('Error submitting adaptive assessment:', error);

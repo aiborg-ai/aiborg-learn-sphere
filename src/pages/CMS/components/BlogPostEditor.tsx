@@ -1,42 +1,19 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import {
-  ArrowLeft,
-  Save,
-  Eye,
-  Settings,
-  Image,
-  Search,
-  Tag,
-  Bold,
-  Italic,
-  List,
-  Link2,
-  Code,
-  Quote,
-  Hash,
-  ImageIcon,
-} from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-
 import { logger } from '@/utils/logger';
+import {
+  EditorHeader,
+  ContentEditor,
+  SEOSettings,
+  PostSettings,
+  BlogPreview,
+} from '@/components/blog-editor';
+
 interface BlogPost {
   id: string;
   title?: string;
+  published_at?: string;
   [key: string]: unknown;
 }
 
@@ -93,6 +70,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
     if (post) {
       loadPost();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post]);
 
   const fetchCategories = async () => {
@@ -171,31 +149,24 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
           .single();
       } else {
         // Create new post
-        result = await supabase
-          .from('blog_posts')
-          .insert({
-            ...saveData,
-            author_id: (await supabase.auth.getUser()).data.user?.id,
-          })
-          .select()
-          .single();
+        result = await supabase.from('blog_posts').insert(saveData).select().single();
       }
 
       if (result.error) throw result.error;
 
-      // Update tags
+      // Handle tags
       if (result.data) {
-        // Remove existing tags
+        // Delete existing tags
         await supabase.from('blog_post_tags').delete().eq('post_id', result.data.id);
 
-        // Add new tags
+        // Insert new tags
         if (selectedTags.length > 0) {
-          const tagInserts = selectedTags.map(tagId => ({
-            post_id: result.data.id,
-            tag_id: tagId,
-          }));
-
-          await supabase.from('blog_post_tags').insert(tagInserts);
+          await supabase.from('blog_post_tags').insert(
+            selectedTags.map(tag_id => ({
+              post_id: result.data.id,
+              tag_id,
+            }))
+          );
         }
       }
 
@@ -239,367 +210,78 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
     }, 0);
   };
 
+  const handleFieldChange = (field: string, value: string | boolean) => {
+    setFormData({ ...formData, [field]: value });
+  };
+
+  const handleTagToggle = (tagId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedTags([...selectedTags, tagId]);
+    } else {
+      setSelectedTags(selectedTags.filter(id => id !== tagId));
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Button>
-          <h2 className="text-2xl font-bold">{post ? 'Edit Post' : 'Create New Post'}</h2>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => setPreview(!preview)}>
-            <Eye className="mr-2 h-4 w-4" />
-            {preview ? 'Edit' : 'Preview'}
-          </Button>
-          <Button variant="outline" onClick={() => handleSave(false)} disabled={loading}>
-            <Save className="mr-2 h-4 w-4" />
-            Save Draft
-          </Button>
-          <Button className="btn-hero" onClick={() => handleSave(true)} disabled={loading}>
-            Publish Now
-          </Button>
-        </div>
-      </div>
+      <EditorHeader
+        isEditMode={!!post}
+        isPreview={preview}
+        loading={loading}
+        onBack={onClose}
+        onTogglePreview={() => setPreview(!preview)}
+        onSaveDraft={() => handleSave(false)}
+        onPublish={() => handleSave(true)}
+      />
 
       {preview ? (
-        // Preview Mode
-        <Card>
-          <CardContent className="p-8">
-            <article className="prose prose-lg dark:prose-invert max-w-none">
-              <h1>{formData.title || 'Untitled Post'}</h1>
-              {formData.excerpt && (
-                <p className="text-xl text-muted-foreground">{formData.excerpt}</p>
-              )}
-              {formData.featured_image && (
-                <img
-                  src={formData.featured_image}
-                  alt={formData.title}
-                  className="w-full rounded-lg"
-                />
-              )}
-              <div dangerouslySetInnerHTML={{ __html: parseMarkdown(formData.content) }} />
-            </article>
-          </CardContent>
-        </Card>
+        <BlogPreview
+          title={formData.title}
+          excerpt={formData.excerpt}
+          featuredImage={formData.featured_image}
+          content={formData.content}
+          parseMarkdown={parseMarkdown}
+        />
       ) : (
-        // Edit Mode
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            <Card>
-              <CardContent className="p-6 space-y-4">
-                <div>
-                  <Label htmlFor="title">Title</Label>
-                  <Input
-                    id="title"
-                    value={formData.title}
-                    onChange={e => setFormData({ ...formData, title: e.target.value })}
-                    placeholder="Enter post title..."
-                    className="text-lg"
-                  />
-                </div>
+            <ContentEditor
+              title={formData.title}
+              slug={formData.slug}
+              excerpt={formData.excerpt}
+              content={formData.content}
+              readingTime={calculateReadingTime(formData.content)}
+              onChange={handleFieldChange}
+              onGenerateSlug={() => handleFieldChange('slug', generateSlug(formData.title))}
+              onInsertMarkdown={insertMarkdown}
+            />
 
-                <div>
-                  <Label htmlFor="slug">Slug</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="slug"
-                      value={formData.slug}
-                      onChange={e => setFormData({ ...formData, slug: e.target.value })}
-                      placeholder="post-url-slug"
-                    />
-                    <Button
-                      variant="outline"
-                      onClick={() =>
-                        setFormData({ ...formData, slug: generateSlug(formData.title) })
-                      }
-                    >
-                      Generate
-                    </Button>
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="excerpt">Excerpt</Label>
-                  <Textarea
-                    id="excerpt"
-                    value={formData.excerpt}
-                    onChange={e => setFormData({ ...formData, excerpt: e.target.value })}
-                    placeholder="Brief description of the post..."
-                    rows={3}
-                  />
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <Label htmlFor="content">Content</Label>
-                    <div className="flex gap-1">
-                      <Button size="sm" variant="ghost" onClick={() => insertMarkdown('**', '**')}>
-                        <Bold className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="ghost" onClick={() => insertMarkdown('*', '*')}>
-                        <Italic className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="ghost" onClick={() => insertMarkdown('\n## ', '')}>
-                        <Hash className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="ghost" onClick={() => insertMarkdown('\n- ', '')}>
-                        <List className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => insertMarkdown('[', '](url)')}
-                      >
-                        <Link2 className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="ghost" onClick={() => insertMarkdown('`', '`')}>
-                        <Code className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="ghost" onClick={() => insertMarkdown('\n> ', '')}>
-                        <Quote className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => insertMarkdown('![alt text](', ')')}
-                      >
-                        <ImageIcon className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  <Textarea
-                    id="content-editor"
-                    value={formData.content}
-                    onChange={e => setFormData({ ...formData, content: e.target.value })}
-                    placeholder="Write your content in Markdown..."
-                    rows={20}
-                    className="font-mono"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Supports Markdown formatting • {calculateReadingTime(formData.content)} min read
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* SEO Settings */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Search className="h-5 w-5" />
-                  SEO Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="meta_title">Meta Title</Label>
-                  <Input
-                    id="meta_title"
-                    value={formData.meta_title}
-                    onChange={e => setFormData({ ...formData, meta_title: e.target.value })}
-                    placeholder="SEO title (max 60 characters)"
-                    maxLength={60}
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {formData.meta_title.length}/60 characters
-                  </p>
-                </div>
-
-                <div>
-                  <Label htmlFor="meta_description">Meta Description</Label>
-                  <Textarea
-                    id="meta_description"
-                    value={formData.meta_description}
-                    onChange={e => setFormData({ ...formData, meta_description: e.target.value })}
-                    placeholder="SEO description (max 160 characters)"
-                    maxLength={160}
-                    rows={3}
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {formData.meta_description.length}/160 characters
-                  </p>
-                </div>
-
-                <div>
-                  <Label htmlFor="seo_keywords">SEO Keywords</Label>
-                  <Input
-                    id="seo_keywords"
-                    value={formData.seo_keywords}
-                    onChange={e => setFormData({ ...formData, seo_keywords: e.target.value })}
-                    placeholder="keyword1, keyword2, keyword3"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="canonical_url">Canonical URL</Label>
-                  <Input
-                    id="canonical_url"
-                    value={formData.canonical_url}
-                    onChange={e => setFormData({ ...formData, canonical_url: e.target.value })}
-                    placeholder="https://example.com/original-post"
-                  />
-                </div>
-              </CardContent>
-            </Card>
+            <SEOSettings
+              metaTitle={formData.meta_title}
+              metaDescription={formData.meta_description}
+              seoKeywords={formData.seo_keywords}
+              canonicalUrl={formData.canonical_url}
+              onChange={handleFieldChange}
+            />
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Publish Settings */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  Publish Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="status">Status</Label>
-                  <Select
-                    value={formData.status}
-                    onValueChange={value => setFormData({ ...formData, status: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="draft">Draft</SelectItem>
-                      <SelectItem value="published">Published</SelectItem>
-                      <SelectItem value="scheduled">Scheduled</SelectItem>
-                      <SelectItem value="archived">Archived</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {formData.status === 'scheduled' && (
-                  <div>
-                    <Label htmlFor="scheduled_for">Schedule For</Label>
-                    <Input
-                      id="scheduled_for"
-                      type="datetime-local"
-                      value={formData.scheduled_for}
-                      onChange={e => setFormData({ ...formData, scheduled_for: e.target.value })}
-                    />
-                  </div>
-                )}
-
-                <div>
-                  <Label htmlFor="category">Category</Label>
-                  <Select
-                    value={formData.category_id}
-                    onValueChange={value => setFormData({ ...formData, category_id: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map(category => (
-                        <SelectItem key={category.id} value={category.id}>
-                          <div className="flex items-center gap-2">
-                            <div
-                              className="w-3 h-3 rounded-full"
-                              style={{ backgroundColor: category.color }}
-                            />
-                            {category.name}
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="is_featured">Featured Post</Label>
-                  <Switch
-                    id="is_featured"
-                    checked={formData.is_featured}
-                    onCheckedChange={checked => setFormData({ ...formData, is_featured: checked })}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="is_sticky">Pin to Top</Label>
-                  <Switch
-                    id="is_sticky"
-                    checked={formData.is_sticky}
-                    onCheckedChange={checked => setFormData({ ...formData, is_sticky: checked })}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="allow_comments">Allow Comments</Label>
-                  <Switch
-                    id="allow_comments"
-                    checked={formData.allow_comments}
-                    onCheckedChange={checked =>
-                      setFormData({ ...formData, allow_comments: checked })
-                    }
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Featured Image */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Image className="h-5 w-5" />
-                  Featured Image
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {formData.featured_image && (
-                    <img
-                      src={formData.featured_image}
-                      alt="Featured"
-                      className="w-full rounded-lg"
-                    />
-                  )}
-                  <Input
-                    value={formData.featured_image}
-                    onChange={e => setFormData({ ...formData, featured_image: e.target.value })}
-                    placeholder="Image URL"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Tags */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Tag className="h-5 w-5" />
-                  Tags
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {tags.map(tag => (
-                    <label key={tag.id} className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedTags.includes(tag.id)}
-                        onChange={e => {
-                          if (e.target.checked) {
-                            setSelectedTags([...selectedTags, tag.id]);
-                          } else {
-                            setSelectedTags(selectedTags.filter(id => id !== tag.id));
-                          }
-                        }}
-                      />
-                      <Badge variant="outline">{tag.name}</Badge>
-                    </label>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+          <div>
+            <PostSettings
+              status={formData.status}
+              scheduledFor={formData.scheduled_for}
+              categoryId={formData.category_id}
+              isFeatured={formData.is_featured}
+              isSticky={formData.is_sticky}
+              allowComments={formData.allow_comments}
+              featuredImage={formData.featured_image}
+              categories={categories}
+              tags={tags}
+              selectedTags={selectedTags}
+              onChange={handleFieldChange}
+              onTagToggle={handleTagToggle}
+            />
           </div>
         </div>
       )}
