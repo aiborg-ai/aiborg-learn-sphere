@@ -7,6 +7,7 @@ import React from 'react';
 import { Award, Star, Sparkles, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { UserAchievement } from '@/services/gamification';
+import type { ToastProps } from '@/types/charts';
 
 interface AchievementUnlockToastProps {
   achievement: UserAchievement;
@@ -97,7 +98,7 @@ export function AchievementUnlockToast({ achievement, onShare }: AchievementUnlo
  */
 export function showAchievementToast(
   achievement: UserAchievement,
-  toast: (props: any) => void,
+  toast: (props: ToastProps) => void,
   onShare?: () => void
 ) {
   toast({

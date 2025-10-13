@@ -6,15 +6,17 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
+import type { Course } from '@/types/api';
+import type { CategoryPerformance, ProfilingData } from '@/types/assessment';
 
 export interface AssessmentResult {
   id: string;
   final_score: number;
   augmentation_level: string;
   current_ability_estimate: number;
-  weak_categories: any[];
-  strong_categories: any[];
-  profiling_data: any;
+  weak_categories: CategoryPerformance[];
+  strong_categories: CategoryPerformance[];
+  profiling_data: ProfilingData;
 }
 
 export interface LearningPathRecommendation {
@@ -48,8 +50,8 @@ export interface UserLearningProfile {
   currentLevel: string;
   irtAbility: number;
   assessmentId?: string;
-  weakCategories: string[];
-  strongCategories: string[];
+  weakCategories: CategoryPerformance[];
+  strongCategories: CategoryPerformance[];
   audienceType: string;
   industry?: string;
   role?: string;
@@ -82,10 +84,7 @@ export class LearningPathRecommendationEngine {
       }
 
       // Get available courses
-      const { data: courses } = await supabase
-        .from('courses')
-        .select('*')
-        .eq('is_published', true);
+      const { data: courses } = await supabase.from('courses').select('*').eq('is_published', true);
 
       if (!courses) return [];
 
@@ -181,8 +180,8 @@ export class LearningPathRecommendationEngine {
       audienceType: assessmentData?.profiling_data?.audience_type || 'professional',
       industry: assessmentData?.profiling_data?.industry,
       role: assessmentData?.profiling_data?.role,
-      completedCourses: progress?.map((p) => p.course_id) || [],
-      enrolledCourses: enrollments?.map((e) => e.course_id) || [],
+      completedCourses: progress?.map(p => p.course_id) || [],
+      enrolledCourses: enrollments?.map(e => e.course_id) || [],
     };
   }
 
@@ -191,7 +190,7 @@ export class LearningPathRecommendationEngine {
    */
   private static async generateWeaknessFocusedPath(
     profile: UserLearningProfile,
-    allCourses: any[],
+    allCourses: Course[],
     assessmentResult: AssessmentResult | null
   ): Promise<LearningPathRecommendation | null> {
     const weakCategories = profile.weakCategories;
@@ -199,21 +198,21 @@ export class LearningPathRecommendationEngine {
 
     // Find courses that address weak categories
     const relevantCourses = allCourses
-      .filter((course) => {
+      .filter(course => {
         // Check if course category matches weak categories
-        return weakCategories.some((weak: any) =>
+        return weakCategories.some(weak =>
           course.category?.toLowerCase().includes(weak.category_name?.toLowerCase())
         );
       })
-      .filter((course) => !profile.completedCourses.includes(course.id))
-      .map((course) => ({
+      .filter(course => !profile.completedCourses.includes(course.id))
+      .map(course => ({
         ...course,
         relevanceScore: this.calculateRelevanceScore(course, weakCategories),
         addressesWeakness: weakCategories
-          .filter((weak: any) =>
+          .filter(weak =>
             course.category?.toLowerCase().includes(weak.category_name?.toLowerCase())
           )
-          .map((w: any) => w.category_name),
+          .map(w => w.category_name),
       }))
       .sort((a, b) => b.relevanceScore - a.relevanceScore)
       .slice(0, 5);
@@ -229,13 +228,13 @@ export class LearningPathRecommendationEngine {
     return {
       id: `weakness-${Date.now()}`,
       title: 'Skill Gap Elimination Path',
-      description: `Focused on strengthening your weak areas: ${weakCategories.map((w: any) => w.category_name).join(', ')}`,
+      description: `Focused on strengthening your weak areas: ${weakCategories.map(w => w.category_name).join(', ')}`,
       reason: `Based on your assessment, we've identified areas where targeted learning can have the most impact.`,
       matchScore: 95,
       estimatedWeeks,
       estimatedHours: totalHours,
       difficulty: this.getDifficultyForLevel(profile.currentLevel),
-      courses: relevantCourses.map((c) => ({
+      courses: relevantCourses.map(c => ({
         id: c.id,
         title: c.title,
         description: c.description,
@@ -245,11 +244,7 @@ export class LearningPathRecommendationEngine {
         relevanceScore: c.relevanceScore,
         addressesWeakness: c.addressesWeakness,
       })),
-      skills: [
-        ...new Set(
-          relevantCourses.flatMap((c) => c.addressesWeakness || [])
-        ),
-      ] as string[],
+      skills: [...new Set(relevantCourses.flatMap(c => c.addressesWeakness || []))] as string[],
       targetLevel: this.getNextLevel(profile.currentLevel),
       benefits: [
         'Address your biggest skill gaps',
@@ -265,14 +260,13 @@ export class LearningPathRecommendationEngine {
    */
   private static async generateCareerAdvancementPath(
     profile: UserLearningProfile,
-    allCourses: any[]
+    allCourses: Course[]
   ): Promise<LearningPathRecommendation | null> {
     // Focus on advanced courses relevant to user's role/industry
     const advancedCourses = allCourses
-      .filter((course) => {
+      .filter(course => {
         if (profile.completedCourses.includes(course.id)) return false;
-        const isAdvanced =
-          course.difficulty === 'advanced' || course.difficulty === 'intermediate';
+        const isAdvanced = course.difficulty === 'advanced' || course.difficulty === 'intermediate';
         const isRelevant = profile.industry
           ? course.title.toLowerCase().includes(profile.industry.toLowerCase()) ||
             course.description?.toLowerCase().includes(profile.industry.toLowerCase())
@@ -297,7 +291,7 @@ export class LearningPathRecommendationEngine {
       estimatedWeeks: Math.ceil(totalHours / 8),
       estimatedHours: totalHours,
       difficulty: 'advanced',
-      courses: advancedCourses.map((c) => ({
+      courses: advancedCourses.map(c => ({
         id: c.id,
         title: c.title,
         description: c.description,
@@ -306,7 +300,7 @@ export class LearningPathRecommendationEngine {
         estimatedHours: c.estimated_duration_hours || 15,
         relevanceScore: 85,
       })),
-      skills: advancedCourses.map((c) => c.category).filter(Boolean),
+      skills: advancedCourses.map(c => c.category).filter(Boolean),
       targetLevel: 'expert',
       benefits: [
         'Stand out in your profession',
@@ -322,11 +316,11 @@ export class LearningPathRecommendationEngine {
    */
   private static async generateQuickWinsPath(
     profile: UserLearningProfile,
-    allCourses: any[]
+    allCourses: Course[]
   ): Promise<LearningPathRecommendation | null> {
     // Short, high-impact courses
     const quickCourses = allCourses
-      .filter((course) => {
+      .filter(course => {
         if (profile.completedCourses.includes(course.id)) return false;
         const isQuick = (course.estimated_duration_hours || 10) <= 8;
         const isRelevant = !profile.enrolledCourses.includes(course.id);
@@ -347,7 +341,7 @@ export class LearningPathRecommendationEngine {
       estimatedWeeks: 2,
       estimatedHours: totalHours,
       difficulty: this.getDifficultyForLevel(profile.currentLevel),
-      courses: quickCourses.map((c) => ({
+      courses: quickCourses.map(c => ({
         id: c.id,
         title: c.title,
         description: c.description,
@@ -356,7 +350,7 @@ export class LearningPathRecommendationEngine {
         estimatedHours: c.estimated_duration_hours || 5,
         relevanceScore: 75,
       })),
-      skills: quickCourses.map((c) => c.category).filter(Boolean),
+      skills: quickCourses.map(c => c.category).filter(Boolean),
       targetLevel: profile.currentLevel,
       benefits: [
         'See results fast',
@@ -372,11 +366,11 @@ export class LearningPathRecommendationEngine {
    */
   private static async generateMasteryPath(
     profile: UserLearningProfile,
-    allCourses: any[]
+    allCourses: Course[]
   ): Promise<LearningPathRecommendation | null> {
     // Comprehensive curriculum
     const masteryCourses = allCourses
-      .filter((course) => !profile.completedCourses.includes(course.id))
+      .filter(course => !profile.completedCourses.includes(course.id))
       .slice(0, 8);
 
     if (masteryCourses.length === 0) return null;
@@ -395,7 +389,7 @@ export class LearningPathRecommendationEngine {
       estimatedWeeks: Math.ceil(totalHours / 6),
       estimatedHours: totalHours,
       difficulty: 'intermediate',
-      courses: masteryCourses.map((c) => ({
+      courses: masteryCourses.map(c => ({
         id: c.id,
         title: c.title,
         description: c.description,
@@ -404,7 +398,7 @@ export class LearningPathRecommendationEngine {
         estimatedHours: c.estimated_duration_hours || 12,
         relevanceScore: 80,
       })),
-      skills: [...new Set(masteryCourses.map((c) => c.category).filter(Boolean))],
+      skills: [...new Set(masteryCourses.map(c => c.category).filter(Boolean))],
       targetLevel: 'expert',
       benefits: [
         'Complete AI proficiency',
@@ -416,10 +410,13 @@ export class LearningPathRecommendationEngine {
   }
 
   // Helper methods
-  private static calculateRelevanceScore(course: any, weakCategories: any[]): number {
+  private static calculateRelevanceScore(
+    course: Course,
+    weakCategories: CategoryPerformance[]
+  ): number {
     let score = 50; // Base score
 
-    weakCategories.forEach((weak: any) => {
+    weakCategories.forEach(weak => {
       if (course.category?.toLowerCase().includes(weak.category_name?.toLowerCase())) {
         score += 20;
       }

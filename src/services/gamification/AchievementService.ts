@@ -6,6 +6,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import type { Achievement, UserAchievement, AchievementTier, AchievementCategory } from './types';
+import type { AchievementCriteria, AchievementContext } from '@/types/gamification';
 
 export class AchievementService {
   /**
@@ -38,7 +39,7 @@ export class AchievementService {
         .select('*')
         .eq('is_active', true)
         .eq('category', category)
-        .order('points_value', { ascending: true});
+        .order('points_value', { ascending: true });
 
       if (error) throw error;
       return data || [];
@@ -75,15 +76,17 @@ export class AchievementService {
     try {
       const { data, error } = await supabase
         .from('user_achievements')
-        .select(`
+        .select(
+          `
           *,
           achievement:achievements(*)
-        `)
+        `
+        )
         .eq('user_id', userId)
         .order('earned_at', { ascending: false });
 
       if (error) throw error;
-      return data as UserAchievement[] || [];
+      return (data as UserAchievement[]) || [];
     } catch (error) {
       logger.error('Error fetching user achievements:', error);
       return [];
@@ -295,77 +298,88 @@ export class AchievementService {
   }
 
   private static async checkCountCriteria(
-    criteria: any,
-    context: any,
+    criteria: AchievementCriteria,
+    context: AchievementContext,
     userId: string
   ): Promise<boolean> {
     // For assessments_completed
     if (criteria.metric === 'assessments_completed') {
-      const { data } = await supabase
+      const { count } = await supabase
         .from('user_ai_assessments')
         .select('id', { count: 'exact', head: true })
         .eq('user_id', userId)
         .eq('is_complete', true);
 
-      const count = (data as any)?.count || 0;
-      return count >= criteria.threshold;
+      return (count || 0) >= (criteria.threshold || 0);
     }
 
     // For shares
     if (criteria.metric === 'shares') {
-      const { data } = await supabase
+      const { count } = await supabase
         .from('engagement_events')
         .select('id', { count: 'exact', head: true })
         .eq('user_id', userId)
         .eq('event_type', 'result_shared');
 
-      const count = (data as any)?.count || 0;
-      return count >= criteria.threshold;
+      return (count || 0) >= (criteria.threshold || 0);
     }
 
     return false;
   }
 
-  private static checkScoreCriteria(criteria: any, context: any): boolean {
+  private static checkScoreCriteria(
+    criteria: AchievementCriteria,
+    context: AchievementContext
+  ): boolean {
     if (criteria.metric === 'ability_percentage') {
       const abilityPercentage = context.metadata?.ability_percentage || 0;
-      return abilityPercentage >= criteria.threshold;
+      return abilityPercentage >= (criteria.threshold || 0);
     }
     return false;
   }
 
-  private static checkTimeCriteria(criteria: any, context: any): boolean {
+  private static checkTimeCriteria(
+    criteria: AchievementCriteria,
+    context: AchievementContext
+  ): boolean {
     if (criteria.metric === 'completion_time') {
       const timeSeconds = context.metadata?.completion_time_seconds || Infinity;
-      return timeSeconds <= criteria.threshold;
+      return timeSeconds <= (criteria.threshold || Infinity);
     }
     return false;
   }
 
-  private static checkStreakCriteria(criteria: any, context: any): boolean {
+  private static checkStreakCriteria(
+    criteria: AchievementCriteria,
+    context: AchievementContext
+  ): boolean {
     if (criteria.metric === 'login_streak') {
       const streak = context.metadata?.current_streak || 0;
-      return streak >= criteria.threshold;
+      return streak >= (criteria.threshold || 0);
     }
     return false;
   }
 
-  private static checkImprovementCriteria(criteria: any, context: any): boolean {
+  private static checkImprovementCriteria(
+    criteria: AchievementCriteria,
+    context: AchievementContext
+  ): boolean {
     if (criteria.metric === 'score_improvement') {
       const improvement = context.metadata?.improvement_percentage || 0;
-      return improvement >= criteria.threshold;
+      return improvement >= (criteria.threshold || 0);
     }
     return false;
   }
 
-  private static checkTimeOfDayCriteria(criteria: any): boolean {
+  private static checkTimeOfDayCriteria(criteria: AchievementCriteria): boolean {
     const hour = new Date().getHours();
-    if (criteria.threshold < 12) {
+    const threshold = criteria.threshold || 12;
+    if (threshold < 12) {
       // Early bird (before threshold)
-      return hour < criteria.threshold;
+      return hour < threshold;
     } else {
       // Night owl (after threshold)
-      return hour >= criteria.threshold;
+      return hour >= threshold;
     }
   }
 
@@ -381,16 +395,18 @@ export class AchievementService {
     try {
       const { data, error } = await supabase
         .from('user_achievements')
-        .select(`
+        .select(
+          `
           *,
           achievement:achievements(*),
           user:profiles!user_achievements_user_id_fkey(display_name, avatar_url)
-        `)
+        `
+        )
         .order('earned_at', { ascending: false })
         .limit(limit);
 
       if (error) throw error;
-      return data as UserAchievement[] || [];
+      return (data as UserAchievement[]) || [];
     } catch (error) {
       logger.error('Error fetching recently unlocked achievements:', error);
       return [];

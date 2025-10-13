@@ -584,7 +584,7 @@ export function EnhancedAnalyticsDashboard() {
                       dataKey="count"
                     >
                       {(assessmentAnalytics?.assessmentsByType || []).map(
-                        (_: any, index: number) => (
+                        (_: unknown, index: number) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         )
                       )}

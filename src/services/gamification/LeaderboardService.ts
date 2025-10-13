@@ -13,6 +13,7 @@ import type {
   UserLeaderboardPreferences,
   UserLeaderboardPosition,
 } from './types';
+import type { LeaderboardUser } from '@/types/gamification';
 
 export class LeaderboardService {
   /**
@@ -301,7 +302,7 @@ export class LeaderboardService {
       await supabase.from('leaderboard_entries').delete().eq('leaderboard_id', leaderboardId);
 
       // Insert new entries
-      const entries = (users || []).map((user: any, index: number) => ({
+      const entries = (users || []).map((user: LeaderboardUser, index: number) => ({
         leaderboard_id: leaderboardId,
         user_id: user.user_id,
         rank: index + 1,
@@ -446,7 +447,7 @@ export class LeaderboardService {
     }
   }
 
-  private static getScore(user: any, criteria: LeaderboardCriteria): number {
+  private static getScore(user: LeaderboardUser, criteria: LeaderboardCriteria): number {
     switch (criteria) {
       case 'points':
         return user.total_points || 0;

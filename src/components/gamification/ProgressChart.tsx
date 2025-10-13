@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import type { ChartTooltipProps } from '@/types/charts';
 import {
   LineChart,
   Line,
@@ -62,17 +63,14 @@ export function ProgressChart({
     );
   }
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: ChartTooltipProps) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
           <p className="font-semibold text-gray-900 mb-2">{label}</p>
-          {payload.map((entry: any, index: number) => (
+          {payload.map((entry, index: number) => (
             <div key={index} className="flex items-center gap-2 text-sm">
-              <div
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: entry.color }}
-              />
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
               <span className="text-gray-600">{entry.name}:</span>
               <span className="font-semibold text-gray-900">{entry.value}</span>
             </div>
@@ -89,11 +87,7 @@ export function ProgressChart({
         return (
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis
-              dataKey="date"
-              stroke="#6b7280"
-              style={{ fontSize: '12px' }}
-            />
+            <XAxis dataKey="date" stroke="#6b7280" style={{ fontSize: '12px' }} />
             <YAxis
               yAxisId="left"
               stroke="#6b7280"
@@ -149,14 +143,19 @@ export function ProgressChart({
           <ComposedChart data={data}>
             <defs>
               <linearGradient id="colorPoints" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis dataKey="date" stroke="#6b7280" style={{ fontSize: '12px' }} />
             <YAxis yAxisId="left" stroke="#6b7280" style={{ fontSize: '12px' }} />
-            <YAxis yAxisId="right" orientation="right" stroke="#6b7280" style={{ fontSize: '12px' }} />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              stroke="#6b7280"
+              style={{ fontSize: '12px' }}
+            />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Area
@@ -184,24 +183,17 @@ export function ProgressChart({
           <AreaChart data={data}>
             <defs>
               <linearGradient id="colorPoints" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1} />
               </linearGradient>
               <linearGradient id="colorLevel" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.1}/>
+                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.1} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis
-              dataKey="date"
-              stroke="#6b7280"
-              style={{ fontSize: '12px' }}
-            />
-            <YAxis
-              stroke="#6b7280"
-              style={{ fontSize: '12px' }}
-            />
+            <XAxis dataKey="date" stroke="#6b7280" style={{ fontSize: '12px' }} />
+            <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Area
@@ -230,9 +222,7 @@ export function ProgressChart({
   // Calculate stats
   const totalGrowth = data.length > 1 ? data[data.length - 1].points - data[0].points : 0;
   const levelGrowth = data.length > 1 ? data[data.length - 1].level - data[0].level : 0;
-  const maxStreak = showStreak && data.length > 0
-    ? Math.max(...data.map(d => d.streak || 0))
-    : 0;
+  const maxStreak = showStreak && data.length > 0 ? Math.max(...data.map(d => d.streak || 0)) : 0;
 
   return (
     <Card>

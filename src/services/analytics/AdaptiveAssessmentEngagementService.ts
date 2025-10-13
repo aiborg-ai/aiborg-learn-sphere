@@ -5,6 +5,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
+import type { AlertItem } from '@/types/assessment';
 
 /**
  * Engagement metrics for adaptive assessments
@@ -75,10 +76,7 @@ export class AdaptiveAssessmentEngagementService {
     endDate?: string
   ): Promise<AdaptiveEngagementMetrics | null> {
     try {
-      let query = supabase
-        .from('user_ai_assessments')
-        .select('*')
-        .eq('is_adaptive', true);
+      let query = supabase.from('user_ai_assessments').select('*').eq('is_adaptive', true);
 
       if (startDate) {
         query = query.gte('started_at', startDate);
@@ -164,8 +162,9 @@ export class AdaptiveAssessmentEngagementService {
       const abilityDistribution = this.calculateAbilityDistribution(abilityScores);
 
       // Engagement indicators
-      const quickExits = assessments.filter(a => !a.is_complete && a.questions_answered_count <= 2)
-        .length;
+      const quickExits = assessments.filter(
+        a => !a.is_complete && a.questions_answered_count <= 2
+      ).length;
 
       // Return rate - users who have multiple attempts
       const userCounts = new Map<string, number>();
@@ -276,7 +275,9 @@ export class AdaptiveAssessmentEngagementService {
         .map(([userId, data]) => {
           const profile = profileMap.get(userId);
           const latestAbility =
-            data.abilityScores.length > 0 ? data.abilityScores[data.abilityScores.length - 1] : null;
+            data.abilityScores.length > 0
+              ? data.abilityScores[data.abilityScores.length - 1]
+              : null;
           const avgTime =
             data.completionTimes.length > 0
               ? data.completionTimes.reduce((sum: number, t: number) => sum + t, 0) /
@@ -393,7 +394,12 @@ export class AdaptiveAssessmentEngagementService {
    */
   static async trackEvent(
     userId: string,
-    eventType: 'assessment_started' | 'assessment_completed' | 'assessment_abandoned' | 'question_answered' | 'early_exit',
+    eventType:
+      | 'assessment_started'
+      | 'assessment_completed'
+      | 'assessment_abandoned'
+      | 'question_answered'
+      | 'early_exit',
     metadata: Record<string, any>
   ): Promise<void> {
     try {
@@ -412,13 +418,15 @@ export class AdaptiveAssessmentEngagementService {
   /**
    * Get alerts for engagement issues
    */
-  static async getEngagementAlerts(): Promise<{
-    type: 'warning' | 'critical';
-    message: string;
-    metric: string;
-    value: number;
-  }[]> {
-    const alerts: any[] = [];
+  static async getEngagementAlerts(): Promise<
+    {
+      type: 'warning' | 'critical';
+      message: string;
+      metric: string;
+      value: number;
+    }[]
+  > {
+    const alerts: AlertItem[] = [];
     const metrics = await this.getEngagementMetrics();
 
     if (!metrics) return alerts;
@@ -503,9 +511,7 @@ export class AdaptiveAssessmentEngagementService {
     return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
   }
 
-  private static calculateAbilityDistribution(
-    abilityScores: number[]
-  ): Record<string, number> {
+  private static calculateAbilityDistribution(abilityScores: number[]): Record<string, number> {
     const distribution: Record<string, number> = {
       beginner: 0,
       intermediate: 0,

@@ -40,13 +40,14 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
+import type { ProfilingData, AssessmentResponse } from '@/types/assessment';
 
 interface AssessmentData {
   id: string;
   completed_at: string;
   current_ability_estimate: number;
   augmentation_level: string;
-  profiling_data: any;
+  profiling_data: ProfilingData;
 }
 
 interface CategoryPerformance {
@@ -139,7 +140,7 @@ export function AssessmentAnalyticsDashboard({ assessmentId, userId, onClose }: 
         { correct: number; total: number; difficulties: string[] }
       >();
 
-      responses?.forEach((response: any) => {
+      responses?.forEach((response: AssessmentResponse) => {
         const category = response.assessment_questions?.category_name || 'Unknown';
         const existing = categoryMap.get(category) || { correct: 0, total: 0, difficulties: [] };
 

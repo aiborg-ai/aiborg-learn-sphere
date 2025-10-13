@@ -29,6 +29,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
+import type { MetricData } from '@/types/gamification';
 
 export interface PageViewMetric {
   userId?: string;
@@ -359,7 +360,7 @@ class UserMetricsTrackerClass {
   /**
    * Send metric to backend
    */
-  private async sendMetric(table: string, metric: any): Promise<void> {
+  private async sendMetric(table: string, metric: MetricData): Promise<void> {
     try {
       const { error } = await supabase.from(table).insert(metric);
 

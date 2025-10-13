@@ -238,14 +238,18 @@ class RUMService {
     const originalOpen = XMLHttpRequest.prototype.open;
     const originalSend = XMLHttpRequest.prototype.send;
 
-    XMLHttpRequest.prototype.open = function (method: string, url: string | URL, ...args: any[]) {
+    XMLHttpRequest.prototype.open = function (
+      method: string,
+      url: string | URL,
+      ...args: unknown[]
+    ) {
       (this as any).__rum_method = method;
       (this as any).__rum_url = url.toString();
       (this as any).__rum_start = performance.now();
       return originalOpen.apply(this, [method, url, ...args]);
     };
 
-    XMLHttpRequest.prototype.send = function (...args: any[]) {
+    XMLHttpRequest.prototype.send = function (...args: unknown[]) {
       const method = (this as any).__rum_method;
       const url = (this as any).__rum_url;
       const startTime = (this as any).__rum_start;

@@ -27,6 +27,7 @@
 import { onCLS, onINP, onFCP, onLCP, onTTFB, Metric } from 'web-vitals';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
+import type { NetworkConnection } from '@/types/charts';
 
 export interface WebVitalsMetrics {
   lcp?: number; // Largest Contentful Paint
@@ -299,7 +300,7 @@ class PerformanceMonitoringServiceClass {
    * Get user metrics (browser, device, connection info)
    */
   private getUserMetrics(): UserMetrics {
-    const connection = (navigator as Navigator & { connection?: any }).connection;
+    const connection = (navigator as Navigator & { connection?: NetworkConnection }).connection;
 
     return {
       sessionId: this.sessionId,
