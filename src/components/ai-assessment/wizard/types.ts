@@ -1,3 +1,7 @@
+/**
+ * Shared types for assessments (standard and adaptive)
+ */
+
 export interface AssessmentQuestion {
   id: string;
   category_id: string;
@@ -51,4 +55,24 @@ export interface ProfilingData {
   goals?: string[];
   current_tools?: string[];
   challenges?: string[];
+}
+
+/**
+ * Adaptive assessment specific types
+ */
+
+export interface AssessmentState {
+  questionsAnswered: number;
+  currentAbility: number;
+  confidenceLevel: number;
+  performanceTrend: 'up' | 'down' | 'stable';
+  lastAnswerCorrect: boolean | null;
+}
+
+export interface LiveStats {
+  correctAnswers: number;
+  totalPointsEarned: number;
+  questionTimes: number[];
+  currentStreak: number;
+  levelProgress: number;
 }
