@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,7 +25,12 @@ interface EventPhotosUploadProps {
   onClose: () => void;
 }
 
-export function EventPhotosUpload({ eventId, eventTitle, isOpen, onClose }: EventPhotosUploadProps) {
+export function EventPhotosUpload({
+  eventId,
+  eventTitle,
+  isOpen,
+  onClose,
+}: EventPhotosUploadProps) {
   const [photos, setPhotos] = useState<EventPhoto[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,13 +38,7 @@ export function EventPhotosUpload({ eventId, eventTitle, isOpen, onClose }: Even
   const [photoCaption, setPhotoCaption] = useState('');
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (isOpen) {
-      fetchEventPhotos();
-    }
-  }, [isOpen, eventId]);
-
-  const fetchEventPhotos = async () => {
+  const fetchEventPhotos = useCallback(async () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase
@@ -60,7 +59,13 @@ export function EventPhotosUpload({ eventId, eventTitle, isOpen, onClose }: Even
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [eventId, toast]);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchEventPhotos();
+    }
+  }, [isOpen, fetchEventPhotos]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -111,19 +116,17 @@ export function EventPhotosUpload({ eventId, eventTitle, isOpen, onClose }: Even
       if (uploadError) throw uploadError;
 
       // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('event-photos')
-        .getPublicUrl(fileName);
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('event-photos').getPublicUrl(fileName);
 
       // Save photo metadata
-      const { error: insertError } = await supabase
-        .from('event_photos')
-        .insert({
-          event_id: eventId,
-          photo_url: publicUrl,
-          photo_caption: photoCaption || null,
-          display_order: photos.length,
-        });
+      const { error: insertError } = await supabase.from('event_photos').insert({
+        event_id: eventId,
+        photo_url: publicUrl,
+        photo_caption: photoCaption || null,
+        display_order: photos.length,
+      });
 
       if (insertError) throw insertError;
 
@@ -160,10 +163,7 @@ export function EventPhotosUpload({ eventId, eventTitle, isOpen, onClose }: Even
       }
 
       // Delete from database
-      const { error } = await supabase
-        .from('event_photos')
-        .delete()
-        .eq('id', photoId);
+      const { error } = await supabase.from('event_photos').delete().eq('id', photoId);
 
       if (error) throw error;
 
@@ -234,7 +234,7 @@ export function EventPhotosUpload({ eventId, eventTitle, isOpen, onClose }: Even
                 id="photo-caption"
                 placeholder="Add a caption for this photo..."
                 value={photoCaption}
-                onChange={(e) => setPhotoCaption(e.target.value)}
+                onChange={e => setPhotoCaption(e.target.value)}
                 disabled={isUploading}
                 rows={2}
               />
@@ -264,9 +264,7 @@ export function EventPhotosUpload({ eventId, eventTitle, isOpen, onClose }: Even
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Uploaded Photos ({photos.length})</CardTitle>
-            <CardDescription>
-              Photos will be displayed in the past events section
-            </CardDescription>
+            <CardDescription>Photos will be displayed in the past events section</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading ? (
@@ -280,7 +278,7 @@ export function EventPhotosUpload({ eventId, eventTitle, isOpen, onClose }: Even
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {photos.map((photo) => (
+                {photos.map(photo => (
                   <div key={photo.id} className="relative group">
                     <img
                       src={photo.photo_url}

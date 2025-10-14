@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -41,11 +41,7 @@ export function LearningPathRecommendations({
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchRecommendations();
-  }, [userId, assessmentId]);
-
-  const fetchRecommendations = async () => {
+  const fetchRecommendations = useCallback(async () => {
     try {
       setLoading(true);
       const recs = await LearningPathRecommendationEngine.generateRecommendations(
@@ -63,7 +59,11 @@ export function LearningPathRecommendations({
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId, assessmentId, toast]);
+
+  useEffect(() => {
+    fetchRecommendations();
+  }, [fetchRecommendations]);
 
   const handleEnrollInPath = async (recommendation: LearningPathRecommendation) => {
     try {

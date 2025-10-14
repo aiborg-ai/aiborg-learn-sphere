@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -32,11 +32,7 @@ export function ReviewsManagement() {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchReviews();
-  }, []);
-
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     setLoading(true);
     try {
       // Fetch reviews without embedded relations to avoid foreign key errors
@@ -83,11 +79,18 @@ export function ReviewsManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
 
   const handleApprove = async (reviewId: string) => {
     try {
-      const { error } = await supabase.from('reviews').update({ approved: true }).eq('id', reviewId);
+      const { error } = await supabase
+        .from('reviews')
+        .update({ approved: true })
+        .eq('id', reviewId);
 
       if (error) throw error;
 
@@ -191,7 +194,7 @@ export function ReviewsManagement() {
           </CardContent>
         </Card>
       ) : (
-        reviews.map((review) => (
+        reviews.map(review => (
           <Card key={review.id}>
             <CardHeader>
               <div className="flex items-start justify-between">
@@ -279,11 +282,7 @@ export function ReviewsManagement() {
                   >
                     {review.display ? 'Hide' : 'Show'}
                   </Button>
-                  <Button
-                    onClick={() => handleReject(review.id)}
-                    variant="destructive"
-                    size="sm"
-                  >
+                  <Button onClick={() => handleReject(review.id)} variant="destructive" size="sm">
                     <X className="h-4 w-4 mr-1" />
                     Delete
                   </Button>

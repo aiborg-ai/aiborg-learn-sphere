@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   BarChart,
   Bar,
@@ -94,11 +94,7 @@ export function ImportDashboard() {
   const [recentImports, setRecentImports] = useState<ImportLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, [timeRange]);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       setIsLoading(true);
 
@@ -183,7 +179,11 @@ export function ImportDashboard() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [timeRange]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   const processImportHistory = (logs: ImportLog[], startDate: Date, endDate: Date) => {
     const dailyData: { [key: string]: { courses: number; events: number } } = {};

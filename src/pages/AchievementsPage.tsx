@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -104,15 +104,7 @@ export default function AchievementsPage() {
     legendary: 0,
   });
 
-  useEffect(() => {
-    if (!user) {
-      navigate('/auth');
-      return;
-    }
-    fetchAchievements();
-  }, [user, navigate]);
-
-  const fetchAchievements = async () => {
+  const fetchAchievements = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -170,7 +162,15 @@ export default function AchievementsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, toast]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+    fetchAchievements();
+  }, [user, navigate, fetchAchievements]);
 
   const handleFeatureAchievement = async (achievementId: string, currentFeatured: boolean) => {
     try {
