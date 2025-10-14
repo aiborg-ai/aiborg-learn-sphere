@@ -14,7 +14,7 @@ export function EarlySubmissionBadge({
   result,
   showBonus = true,
   bonusPoints,
-  variant = 'badge'
+  variant = 'badge',
 }: EarlySubmissionBadgeProps) {
   const getIcon = () => {
     switch (result.badge) {
@@ -106,9 +106,7 @@ export function EarlySubmissionBadge({
               {showBonus && result.bonusPercentage > 0 && (
                 <p className="text-sm">
                   🎉 Bonus earned: <strong>+{result.bonusPercentage}%</strong>
-                  {bonusPoints !== undefined && (
-                    <span> ({bonusPoints} points)</span>
-                  )}
+                  {bonusPoints !== undefined && <span> ({bonusPoints} points)</span>}
                 </p>
               )}
               {result.isEarly && (
@@ -125,15 +123,13 @@ export function EarlySubmissionBadge({
 
   // variant === 'inline'
   return (
-    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg ${getBackgroundColor()}`}>
+    <div
+      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg ${getBackgroundColor()}`}
+    >
       <span className={getTextColor()}>{getIcon()}</span>
-      <span className={`text-sm font-medium ${getTextColor()}`}>
-        {result.message}
-      </span>
+      <span className={`text-sm font-medium ${getTextColor()}`}>{result.message}</span>
       {showBonus && result.bonusPercentage > 0 && (
-        <span className={`text-sm font-bold ${getTextColor()}`}>
-          +{result.bonusPercentage}%
-        </span>
+        <span className={`text-sm font-bold ${getTextColor()}`}>+{result.bonusPercentage}%</span>
       )}
     </div>
   );
@@ -153,9 +149,9 @@ interface SubmissionUrgencyIndicatorProps {
 }
 
 export function SubmissionUrgencyIndicator({
-  dueDate,
+  _dueDate,
   urgency,
-  timeRemaining
+  timeRemaining,
 }: SubmissionUrgencyIndicatorProps) {
   const getBackgroundColor = () => {
     switch (urgency.colorScheme) {
@@ -198,12 +194,8 @@ export function SubmissionUrgencyIndicator({
       <div className="flex items-center gap-2">
         <Clock className={`h-5 w-5 ${getTextColor()}`} />
         <div>
-          <p className={`text-sm font-semibold ${getTextColor()}`}>
-            {urgency.message}
-          </p>
-          <p className={`text-xs ${getTextColor()}`}>
-            {timeRemaining}
-          </p>
+          <p className={`text-sm font-semibold ${getTextColor()}`}>{urgency.message}</p>
+          <p className={`text-xs ${getTextColor()}`}>{timeRemaining}</p>
         </div>
       </div>
     </div>
@@ -224,7 +216,7 @@ interface EarlySubmissionIncentiveProps {
 
 export function EarlySubmissionIncentive({
   daysUntilDue,
-  bonusConfig
+  bonusConfig,
 }: EarlySubmissionIncentiveProps) {
   const veryEarlyBonus = bonusConfig?.veryEarly ?? 5;
   const earlyBonus = bonusConfig?.early ?? 3;
@@ -236,17 +228,23 @@ export function EarlySubmissionIncentive({
       <AlertDescription className="text-blue-700">
         <p className="font-semibold mb-2">Early Submission Bonus Available!</p>
         <div className="space-y-1 text-sm">
-          <p>• Submit 7+ days early: <strong>+{veryEarlyBonus}% bonus</strong> 🏆</p>
-          <p>• Submit 3-6 days early: <strong>+{earlyBonus}% bonus</strong> ⭐</p>
-          <p>• Submit 1-2 days early: <strong>+{onTimeBonus}% bonus</strong> ✓</p>
+          <p>
+            • Submit 7+ days early: <strong>+{veryEarlyBonus}% bonus</strong> 🏆
+          </p>
+          <p>
+            • Submit 3-6 days early: <strong>+{earlyBonus}% bonus</strong> ⭐
+          </p>
+          <p>
+            • Submit 1-2 days early: <strong>+{onTimeBonus}% bonus</strong> ✓
+          </p>
         </div>
         {daysUntilDue > 0 && (
           <p className="mt-2 text-xs font-semibold">
             {daysUntilDue >= 7
               ? `You can still earn the maximum ${veryEarlyBonus}% bonus!`
               : daysUntilDue >= 3
-              ? `You can still earn a ${earlyBonus}% bonus!`
-              : `You can still earn a ${onTimeBonus}% bonus!`}
+                ? `You can still earn a ${earlyBonus}% bonus!`
+                : `You can still earn a ${onTimeBonus}% bonus!`}
           </p>
         )}
       </AlertDescription>

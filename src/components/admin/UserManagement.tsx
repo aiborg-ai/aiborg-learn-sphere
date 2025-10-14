@@ -1,9 +1,22 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Trash2, Shield, UserCheck, Search } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
@@ -26,35 +39,33 @@ interface UserManagementProps {
   onRefresh: () => void;
 }
 
-export function UserManagement({ users, setUsers, onRefresh }: UserManagementProps) {
+export function UserManagement({ users, setUsers, _onRefresh }: UserManagementProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
 
-  const filteredUsers = users.filter(user =>
-    user.display_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(
+    user =>
+      user.display_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const deleteUser = async (userId: string) => {
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('user_id', userId);
+      const { error } = await supabase.from('profiles').delete().eq('user_id', userId);
 
       if (error) throw error;
 
       setUsers(users.filter(u => u.user_id !== userId));
       toast({
-        title: "Success",
-        description: "User deleted successfully",
+        title: 'Success',
+        description: 'User deleted successfully',
       });
     } catch (error) {
       logger.error('Error deleting user:', error);
       toast({
-        title: "Error",
-        description: "Failed to delete user",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to delete user',
+        variant: 'destructive',
       });
     }
   };
@@ -68,20 +79,18 @@ export function UserManagement({ users, setUsers, onRefresh }: UserManagementPro
 
       if (error) throw error;
 
-      setUsers(users.map(u =>
-        u.user_id === userId ? { ...u, role: newRole } : u
-      ));
+      setUsers(users.map(u => (u.user_id === userId ? { ...u, role: newRole } : u)));
 
       toast({
-        title: "Success",
-        description: "User role updated successfully",
+        title: 'Success',
+        description: 'User role updated successfully',
       });
     } catch (error) {
       logger.error('Error updating user role:', error);
       toast({
-        title: "Error",
-        description: "Failed to update user role",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update user role',
+        variant: 'destructive',
       });
     }
   };
@@ -96,7 +105,7 @@ export function UserManagement({ users, setUsers, onRefresh }: UserManagementPro
           <Input
             placeholder="Search users..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="pl-10"
           />
         </div>
@@ -114,11 +123,9 @@ export function UserManagement({ users, setUsers, onRefresh }: UserManagementPro
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers.map((user) => (
+              {filteredUsers.map(user => (
                 <TableRow key={user.id}>
-                  <TableCell className="font-medium">
-                    {user.display_name || 'N/A'}
-                  </TableCell>
+                  <TableCell className="font-medium">{user.display_name || 'N/A'}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
                     <Badge variant={user.role === 'admin' ? 'destructive' : 'default'}>
@@ -130,14 +137,12 @@ export function UserManagement({ users, setUsers, onRefresh }: UserManagementPro
                       {user.role}
                     </Badge>
                   </TableCell>
-                  <TableCell>
-                    {new Date(user.created_at).toLocaleDateString()}
-                  </TableCell>
+                  <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
                       <Select
                         defaultValue={user.role}
-                        onValueChange={(value) => updateUserRole(user.user_id, value)}
+                        onValueChange={value => updateUserRole(user.user_id, value)}
                       >
                         <SelectTrigger className="w-24">
                           <SelectValue />

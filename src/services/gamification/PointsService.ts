@@ -5,7 +5,12 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
-import type { UserProgress, PointTransaction, PointsAwardResult, StreakUpdateResult } from './types';
+import type {
+  UserProgress,
+  PointTransaction,
+  PointsAwardResult,
+  StreakUpdateResult,
+} from './types';
 
 /**
  * Level calculation constants
@@ -84,7 +89,7 @@ export class PointsService {
     amount: number,
     source: string,
     description?: string,
-    metadata: Record<string, any> = {}
+    metadata: Record<string, unknown> = {}
   ): Promise<PointsAwardResult | null> {
     try {
       const { data, error } = await supabase.rpc('award_points', {
@@ -136,7 +141,7 @@ export class PointsService {
         .limit(limit);
 
       if (error) throw error;
-      return data as PointTransaction[] || [];
+      return (data as PointTransaction[]) || [];
     } catch (error) {
       logger.error('Error fetching transaction history:', error);
       return [];
@@ -209,7 +214,9 @@ export class PointsService {
     label: string;
     nextTier?: { minStreak: number; multiplier: number };
   } {
-    const current = STREAK_MULTIPLIERS.find(sm => streak >= sm.minStreak) || STREAK_MULTIPLIERS[STREAK_MULTIPLIERS.length - 1];
+    const current =
+      STREAK_MULTIPLIERS.find(sm => streak >= sm.minStreak) ||
+      STREAK_MULTIPLIERS[STREAK_MULTIPLIERS.length - 1];
 
     // Find next tier
     const nextTierIndex = STREAK_MULTIPLIERS.findIndex(sm => streak < sm.minStreak);
@@ -250,9 +257,8 @@ export class PointsService {
         .from('user_progress')
         .select('*', { count: 'exact', head: true });
 
-      const percentile = totalUsers && rank
-        ? Math.round(((totalUsers - rank) / totalUsers) * 100)
-        : null;
+      const percentile =
+        totalUsers && rank ? Math.round(((totalUsers - rank) / totalUsers) * 100) : null;
 
       return {
         totalPoints: progress.total_points,
@@ -307,7 +313,7 @@ export class PointsService {
     action: {
       type: 'complete' | 'correct_answer' | 'first_try' | 'speed_bonus' | 'perfect_score';
       points: number;
-      metadata: Record<string, any>;
+      metadata: Record<string, unknown>;
     }
   ): Promise<PointsAwardResult | null> {
     const descriptions: Record<string, string> = {
@@ -338,12 +344,7 @@ export class PointsService {
     const streakUpdate = await this.updateStreak(userId);
 
     // Award base daily login points (10 points)
-    const pointsAwarded = await this.awardPoints(
-      userId,
-      10,
-      'daily_login',
-      'Daily login bonus'
-    );
+    const pointsAwarded = await this.awardPoints(userId, 10, 'daily_login', 'Daily login bonus');
 
     return {
       streakUpdate,
@@ -358,13 +359,9 @@ export class PointsService {
     referrerId: string,
     referredUserId: string
   ): Promise<PointsAwardResult | null> {
-    return this.awardPoints(
-      referrerId,
-      500,
-      'referral',
-      'Friend referral bonus',
-      { referred_user_id: referredUserId }
-    );
+    return this.awardPoints(referrerId, 500, 'referral', 'Friend referral bonus', {
+      referred_user_id: referredUserId,
+    });
   }
 
   /**
@@ -374,36 +371,34 @@ export class PointsService {
     userId: string,
     platform: string
   ): Promise<PointsAwardResult | null> {
-    return this.awardPoints(
-      userId,
-      25,
-      'social_share',
-      `Shared on ${platform}`,
-      { platform }
-    );
+    return this.awardPoints(userId, 25, 'social_share', `Shared on ${platform}`, { platform });
   }
 
   /**
    * Get top performers (for showcasing)
    */
-  static async getTopPerformers(limit: number = 10): Promise<Array<{
-    user_id: string;
-    total_points: number;
-    current_level: number;
-    current_streak: number;
-    display_name?: string;
-    avatar_url?: string;
-  }>> {
+  static async getTopPerformers(limit: number = 10): Promise<
+    Array<{
+      user_id: string;
+      total_points: number;
+      current_level: number;
+      current_streak: number;
+      display_name?: string;
+      avatar_url?: string;
+    }>
+  > {
     try {
       const { data, error } = await supabase
         .from('user_progress')
-        .select(`
+        .select(
+          `
           user_id,
           total_points,
           current_level,
           current_streak,
           profiles!user_progress_user_id_fkey(display_name, avatar_url)
-        `)
+        `
+        )
         .order('total_points', { ascending: false })
         .limit(limit);
 
@@ -418,23 +413,27 @@ export class PointsService {
   /**
    * Get users with longest streaks
    */
-  static async getLongestStreaks(limit: number = 10): Promise<Array<{
-    user_id: string;
-    current_streak: number;
-    longest_streak: number;
-    total_points: number;
-    display_name?: string;
-  }>> {
+  static async getLongestStreaks(limit: number = 10): Promise<
+    Array<{
+      user_id: string;
+      current_streak: number;
+      longest_streak: number;
+      total_points: number;
+      display_name?: string;
+    }>
+  > {
     try {
       const { data, error } = await supabase
         .from('user_progress')
-        .select(`
+        .select(
+          `
           user_id,
           current_streak,
           longest_streak,
           total_points,
           profiles!user_progress_user_id_fkey(display_name)
-        `)
+        `
+        )
         .order('current_streak', { ascending: false })
         .limit(limit);
 

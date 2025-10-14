@@ -28,7 +28,7 @@ interface Event {
 
 export default function EventReviewForm() {
   const [events, setEvents] = useState<Event[]>([]);
-  const [attendedEvents, setAttendedEvents] = useState<number[]>([]);
+  const [_attendedEvents, setAttendedEvents] = useState<number[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<number | ''>('');
   const [eventDateAttended, setEventDateAttended] = useState('');
   const [eventMode, setEventMode] = useState<'online' | 'in-person' | 'hybrid'>('online');

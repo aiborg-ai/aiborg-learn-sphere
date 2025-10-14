@@ -25,7 +25,7 @@ export function EarlyCompletionIncentive({
   currentScore,
 }: EarlyCompletionIncentiveProps) {
   const timePercentageUsed = (elapsedTimeMinutes / estimatedTimeMinutes) * 100;
-  const progressPercentage = (questionsAnswered / questionCount) * 100;
+  const _progressPercentage = (questionsAnswered / questionCount) * 100;
 
   // Determine potential bonus tier
   let bonusTier: 'excellent' | 'great' | 'good' | 'standard' | null = null;
@@ -99,7 +99,7 @@ export function EarlyCompletionIncentive({
  * Compact version for sidebar or minimal space
  */
 export function EarlyCompletionBadge({
-  timePercentageUsed,
+  _timePercentageUsed,
   bonusPercentage,
 }: {
   timePercentageUsed: number;

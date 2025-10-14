@@ -14,7 +14,9 @@ test.describe('Cross-Feature Integration Tests', () => {
     // Wait for materials to load
     await page.waitForSelector('text=/Material|Video|PDF/', { timeout: 5000 });
 
-    const firstMaterial = page.locator('[data-testid="material-item"]').first()
+    const firstMaterial = page
+      .locator('[data-testid="material-item"]')
+      .first()
       .or(page.locator('div:has(button:has-text("View"))').first());
 
     // Bookmark the material
@@ -47,7 +49,7 @@ test.describe('Cross-Feature Integration Tests', () => {
 
     // Add to watch later
     const watchLaterBtn = videoMaterial.locator('button[title*="watch later" i]');
-    if (await watchLaterBtn.count() > 0) {
+    if ((await watchLaterBtn.count()) > 0) {
       await watchLaterBtn.click();
       await expect(page.locator('text=Added to Watch Later')).toBeVisible();
 
@@ -131,7 +133,10 @@ test.describe('Cross-Feature Integration Tests', () => {
   test('should persist data across page reloads', async ({ page }) => {
     // Create a bookmark
     await page.goto('/course/1');
-    const bookmarkBtn = page.locator('button').filter({ hasText: /Bookmark/ }).first();
+    const bookmarkBtn = page
+      .locator('button')
+      .filter({ hasText: /Bookmark/ })
+      .first();
     await bookmarkBtn.click();
     await page.fill('input#title', 'Persistent Bookmark');
     await page.click('button:has-text("Save Bookmark")');
@@ -160,12 +165,12 @@ test.describe('Cross-Feature Integration Tests', () => {
 
     // Check playlists empty state
     await page.goto('/playlists');
-    const playlistsEmpty = page.locator('text=/no.*playlist|haven.*created/i');
+    const _playlistsEmpty = page.locator('text=/no.*playlist|haven.*created/i');
     // If no playlists exist, empty state should show
 
     // Check watch later empty state
     await page.goto('/watch-later');
-    const queueEmpty = page.locator('text=/queue.*empty/i');
+    const _queueEmpty = page.locator('text=/queue.*empty/i');
     // If queue is empty, empty state should show
   });
 });

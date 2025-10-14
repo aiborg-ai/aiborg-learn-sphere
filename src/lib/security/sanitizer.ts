@@ -226,7 +226,7 @@ export function sanitizeURL(url: string, allowDataUri: boolean = false): string 
     }
 
     return urlObj.toString();
-  } catch (error) {
+  } catch (_error) {
     // Invalid URL format
     return null;
   }

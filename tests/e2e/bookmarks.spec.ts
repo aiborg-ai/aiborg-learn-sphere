@@ -16,7 +16,10 @@ test.describe('Bookmarks Feature', () => {
       await page.waitForSelector('h1:has-text("Course")');
 
       // Find and click the bookmark button on course header
-      const bookmarkButton = page.locator('button').filter({ hasText: /Bookmark/ }).first();
+      const bookmarkButton = page
+        .locator('button')
+        .filter({ hasText: /Bookmark/ })
+        .first();
       await bookmarkButton.click();
 
       // Fill in bookmark dialog
@@ -49,7 +52,9 @@ test.describe('Bookmarks Feature', () => {
       });
 
       // Click bookmark on first material
-      const firstMaterial = page.locator('[data-testid="material-item"]').first()
+      const firstMaterial = page
+        .locator('[data-testid="material-item"]')
+        .first()
         .or(page.locator('div:has-text("Material")').first());
 
       const materialBookmarkBtn = firstMaterial.locator('button[title*="bookmark" i]');
@@ -68,7 +73,10 @@ test.describe('Bookmarks Feature', () => {
       await page.goto('/course/1');
 
       // Bookmark first
-      const bookmarkBtn = page.locator('button').filter({ hasText: /Bookmark/ }).first();
+      const bookmarkBtn = page
+        .locator('button')
+        .filter({ hasText: /Bookmark/ })
+        .first();
       await bookmarkBtn.click();
       await page.fill('input#title', 'Test Bookmark');
       await page.click('button:has-text("Save Bookmark")');
@@ -144,10 +152,12 @@ test.describe('Bookmarks Feature', () => {
       await page.waitForSelector('text=/bookmark/i', { timeout: 5000 }).catch(() => null);
 
       // Click first bookmark (if any exist)
-      const firstBookmark = page.locator('[data-testid="bookmark-card"]').first()
+      const firstBookmark = page
+        .locator('[data-testid="bookmark-card"]')
+        .first()
         .or(page.locator('div:has(button[title*="delete" i])').first());
 
-      if (await firstBookmark.count() > 0) {
+      if ((await firstBookmark.count()) > 0) {
         await firstBookmark.click();
 
         // Verify navigation occurred (URL changed)
@@ -162,7 +172,10 @@ test.describe('Bookmarks Feature', () => {
     test('should delete a bookmark', async ({ page }) => {
       // First, create a bookmark to delete
       await page.goto('/course/1');
-      const bookmarkBtn = page.locator('button').filter({ hasText: /Bookmark/ }).first();
+      const bookmarkBtn = page
+        .locator('button')
+        .filter({ hasText: /Bookmark/ })
+        .first();
       await bookmarkBtn.click();
       await page.fill('input#title', 'Bookmark to Delete');
       await page.click('button:has-text("Save Bookmark")');
@@ -176,9 +189,11 @@ test.describe('Bookmarks Feature', () => {
       const bookmarkCard = page.locator('text=Bookmark to Delete').locator('..');
 
       // Click delete button
-      await bookmarkCard.locator('button[title*="delete" i]').or(
-        bookmarkCard.locator('button:has-text("Delete")')
-      ).first().click();
+      await bookmarkCard
+        .locator('button[title*="delete" i]')
+        .or(bookmarkCard.locator('button:has-text("Delete")'))
+        .first()
+        .click();
 
       // Confirm deletion in dialog
       await page.click('button:has-text("Delete")');
@@ -196,7 +211,7 @@ test.describe('Bookmarks Feature', () => {
       await page.waitForLoadState('networkidle');
 
       // Check for empty state message (adjust text based on actual implementation)
-      const emptyState = page.locator('text=/no bookmarks/i, text=/bookmark.*to see them here/i');
+      const _emptyState = page.locator('text=/no bookmarks/i, text=/bookmark.*to see them here/i');
 
       // If there are bookmarks, this test would fail, which is expected
       // In a real test suite, you'd clear all bookmarks first

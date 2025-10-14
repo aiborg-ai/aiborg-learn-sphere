@@ -21,7 +21,7 @@ export function SimpleDatePicker({
   onChange,
   className,
   disabled,
-  placeholder = 'Select date',
+  _placeholder = 'Select date',
 }: SimpleDatePickerProps) {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 100 }, (_, i) => currentYear - i);

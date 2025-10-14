@@ -89,7 +89,7 @@ export function EnhancedLeaderboard({
     onTimePeriodChange?.(value);
   };
 
-  const formatScore = (score: number) => {
+  const _formatScore = (score: number) => {
     return score.toLocaleString();
   };
 

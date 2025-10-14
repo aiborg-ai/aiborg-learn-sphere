@@ -244,14 +244,19 @@ export function Navbar() {
           <Button
             variant="ghost"
             size="sm"
-            className="md:hidden text-foreground"
+            className="md:hidden text-foreground active:scale-95 transition-transform"
             onClick={() => setIsOpen(!isOpen)}
             aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
           >
             {isOpen ? (
-              <Icon name="X" size={24} aria-hidden="true" />
+              <Icon
+                name="X"
+                size={24}
+                aria-hidden="true"
+                className="rotate-90 transition-transform duration-300"
+              />
             ) : (
               <Icon name="Menu" size={24} aria-hidden="true" />
             )}
@@ -262,12 +267,12 @@ export function Navbar() {
         {isOpen && (
           <div
             id="mobile-menu"
-            className="md:hidden py-4 space-y-4 border-t border-white/20"
+            className="md:hidden py-4 space-y-4 border-t border-white/20 animate-in slide-in-from-top duration-300"
             role="navigation"
             aria-label="Mobile navigation menu"
           >
             <button
-              className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors"
+              className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
               onClick={() => {
                 handleNavClick('training-programs');
                 setIsOpen(false);
@@ -278,14 +283,14 @@ export function Navbar() {
             </button>
             <Link
               to="/blog"
-              className="block text-foreground/80 hover:text-foreground transition-colors"
+              className="block text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
               onClick={() => setIsOpen(false)}
               aria-label="Go to blog"
             >
               Blog
             </Link>
             <button
-              className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors"
+              className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
               onClick={() => {
                 handleNavClick('events');
                 setIsOpen(false);
@@ -295,7 +300,7 @@ export function Navbar() {
               Events
             </button>
             <button
-              className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors"
+              className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
               onClick={() => {
                 handleNavClick('reviews');
                 setIsOpen(false);
@@ -305,7 +310,7 @@ export function Navbar() {
               Reviews
             </button>
             <button
-              className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors"
+              className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
               onClick={() => {
                 handleNavClick('about');
                 setIsOpen(false);
@@ -315,7 +320,7 @@ export function Navbar() {
               About
             </button>
             <button
-              className="block w-full text-left text-foreground/80 hover:text-foreground transition-colors"
+              className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
               onClick={() => {
                 handleNavClick('contact');
                 setIsOpen(false);
@@ -329,7 +334,7 @@ export function Navbar() {
                 setIsFAQOpen(true);
                 setIsOpen(false);
               }}
-              className="block text-foreground/80 hover:text-foreground transition-colors text-left"
+              className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
               aria-label="Open frequently asked questions"
             >
               FAQ
@@ -339,15 +344,24 @@ export function Navbar() {
                 setIsTermsOpen(true);
                 setIsOpen(false);
               }}
-              className="block text-foreground/80 hover:text-foreground transition-colors text-left"
+              className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
               aria-label="Open terms and conditions"
             >
               Terms
             </button>
 
             {user ? (
-              <div className="space-y-2 pt-4 border-t border-muted/20" role="region" aria-label="User account menu">
-                <p className="text-foreground font-medium" aria-label={`Logged in as ${profile?.display_name || user.email}`}>{profile?.display_name || user.email}</p>
+              <div
+                className="space-y-2 pt-4 border-t border-muted/20"
+                role="region"
+                aria-label="User account menu"
+              >
+                <p
+                  className="text-foreground font-medium"
+                  aria-label={`Logged in as ${profile?.display_name || user.email}`}
+                >
+                  {profile?.display_name || user.email}
+                </p>
                 <Link to="/dashboard">
                   <Button
                     variant="ghost"
@@ -391,14 +405,24 @@ export function Navbar() {
                 </Button>
               </div>
             ) : (
-              <div className="space-y-2 pt-4 border-t border-muted/20" role="region" aria-label="Authentication options">
+              <div
+                className="space-y-2 pt-4 border-t border-muted/20"
+                role="region"
+                aria-label="Authentication options"
+              >
                 <Link to="/auth">
-                  <Button variant="ghost" className="w-full text-foreground hover:bg-muted/10" aria-label="Sign in to your account">
+                  <Button
+                    variant="ghost"
+                    className="w-full text-foreground hover:bg-muted/10"
+                    aria-label="Sign in to your account"
+                  >
                     Sign In
                   </Button>
                 </Link>
                 <Link to="/auth">
-                  <Button className="w-full btn-hero" aria-label="Get started with Aiborg">Get Started</Button>
+                  <Button className="w-full btn-hero" aria-label="Get started with Aiborg">
+                    Get Started
+                  </Button>
                 </Link>
               </div>
             )}

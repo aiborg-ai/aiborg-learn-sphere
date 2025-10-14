@@ -57,7 +57,7 @@ export const CodeEvaluation: React.FC<CodeEvaluationProps> = ({
         description: 'The code snippet has been copied to your clipboard.',
       });
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
+    } catch (_err) {
       toast({
         title: 'Failed to copy',
         description: 'Please try selecting and copying the code manually.',

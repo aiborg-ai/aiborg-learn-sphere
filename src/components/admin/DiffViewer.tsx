@@ -140,10 +140,6 @@ export function DiffViewer({
   const [viewMode, setViewMode] = useState<'side-by-side' | 'unified'>('side-by-side');
   const [selectedChanges, setSelectedChanges] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    calculateDiffs();
-  }, [originalData, updatedData, showUnchanged]);
-
   const calculateDiffs = () => {
     const diffItems: DiffItem[] = [];
     const allKeys = new Set([
@@ -186,6 +182,11 @@ export function DiffViewer({
 
     setDiffs(diffItems);
   };
+
+  useEffect(() => {
+    calculateDiffs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [originalData, updatedData, showUnchanged]);
 
   const toggleCategory = (category: string) => {
     setExpandedCategories(prev => ({

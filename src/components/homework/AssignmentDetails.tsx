@@ -30,7 +30,7 @@ interface AssignmentDetailsProps {
 export function AssignmentDetails({ assignment, course }: AssignmentDetailsProps) {
   const dueDate = new Date(assignment.due_date);
   const isOverdue = dueDate < new Date();
-  const daysUntilDue = getDaysUntilDue(dueDate);
+  const _daysUntilDue = getDaysUntilDue(dueDate);
   const timeRemaining = formatTimeRemaining(dueDate);
 
   return (
@@ -39,18 +39,14 @@ export function AssignmentDetails({ assignment, course }: AssignmentDetailsProps
         <div className="flex items-start justify-between">
           <div>
             <CardTitle className="text-2xl">{assignment.title}</CardTitle>
-            <CardDescription className="mt-2">
-              {course?.title || 'Loading...'}
-            </CardDescription>
+            <CardDescription className="mt-2">{course?.title || 'Loading...'}</CardDescription>
           </div>
           <div className="text-right">
             <Badge variant={isOverdue ? 'destructive' : 'default'}>
               {isOverdue ? 'Overdue' : 'Active'}
             </Badge>
             {assignment.allow_late_submission && isOverdue && (
-              <p className="text-xs text-muted-foreground mt-1">
-                Late submission allowed
-              </p>
+              <p className="text-xs text-muted-foreground mt-1">Late submission allowed</p>
             )}
           </div>
         </div>
@@ -101,9 +97,7 @@ export function AssignmentDetails({ assignment, course }: AssignmentDetailsProps
             <FileText className="h-4 w-4 text-muted-foreground" />
             <div>
               <p className="text-xs text-muted-foreground">File Types</p>
-              <p className="text-sm font-medium">
-                {assignment.allowed_file_types.join(', ')}
-              </p>
+              <p className="text-sm font-medium">{assignment.allowed_file_types.join(', ')}</p>
             </div>
           </div>
         </div>

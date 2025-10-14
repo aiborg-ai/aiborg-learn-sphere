@@ -168,7 +168,7 @@ export class AchievementService {
   static async unlock(
     userId: string,
     achievementId: string,
-    metadata: Record<string, any> = {}
+    metadata: Record<string, unknown> = {}
   ): Promise<boolean> {
     try {
       const { data, error } = await supabase.rpc('unlock_achievement', {
@@ -213,7 +213,7 @@ export class AchievementService {
     userId: string,
     context: {
       action: 'assessment_completed' | 'streak_updated' | 'share' | 'group_joined';
-      metadata: Record<string, any>;
+      metadata: Record<string, unknown>;
     }
   ): Promise<UserAchievement[]> {
     const unlockedAchievements: UserAchievement[] = [];
@@ -261,11 +261,11 @@ export class AchievementService {
     achievement: Achievement,
     context: {
       action: string;
-      metadata: Record<string, any>;
+      metadata: Record<string, unknown>;
     },
     userId: string
   ): Promise<boolean> {
-    const criteria = achievement.criteria as any;
+    const criteria = achievement.criteria as Record<string, unknown>;
 
     switch (criteria.type) {
       case 'count':

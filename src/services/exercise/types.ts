@@ -38,8 +38,8 @@ export interface Exercise {
 
 export interface TestCase {
   name: string;
-  input: any;
-  expected_output: any;
+  input: unknown;
+  expected_output: unknown;
   points: number;
   hidden?: boolean; // Hidden test cases not shown to students
 }
@@ -82,8 +82,8 @@ export interface ExerciseSubmission {
 export interface TestResult {
   test_name: string;
   passed: boolean;
-  expected: any;
-  actual: any;
+  expected: unknown;
+  actual: unknown;
   error?: string;
   points_earned: number;
   execution_time_ms?: number;

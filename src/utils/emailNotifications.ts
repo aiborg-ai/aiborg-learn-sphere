@@ -11,7 +11,7 @@ type NotificationType =
   | 'certificate_ready'
   | 'discussion_reply';
 
-interface EmailNotificationData {
+interface _EmailNotificationData {
   to: string;
   type: NotificationType;
   data: Record<string, unknown>;
@@ -23,7 +23,7 @@ export async function sendEmailNotification(
   data: Record<string, unknown>
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const { data: result, error } = await supabase.functions.invoke('send-email-notification', {
+    const { data: _result, error } = await supabase.functions.invoke('send-email-notification', {
       body: {
         to: recipientEmail,
         type,

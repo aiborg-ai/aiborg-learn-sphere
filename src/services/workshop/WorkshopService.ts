@@ -220,7 +220,8 @@ export class WorkshopService {
 
       if (!session) return;
 
-      const basePoints = (session as any).workshops.points_reward;
+      const basePoints = (session as WorkshopSession & { workshops: { points_reward: number } })
+        .workshops.points_reward;
 
       // Get participants who attended
       const { data: participants } = await supabase

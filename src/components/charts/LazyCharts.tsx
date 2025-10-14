@@ -17,7 +17,7 @@ const ChartLoader = () => (
 );
 
 // Wrapper component for lazy-loaded charts
-function createLazyChart<P = any>(
+function createLazyChart<P = Record<string, unknown>>(
   importFunc: () => Promise<{ default: ComponentType<P> }>
 ): ComponentType<P> {
   const LazyComponent = lazy(importFunc);

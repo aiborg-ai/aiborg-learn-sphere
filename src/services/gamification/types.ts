@@ -25,7 +25,18 @@ export interface Achievement {
 }
 
 export interface AchievementCriteria {
-  type: 'count' | 'score' | 'time' | 'streak' | 'boolean' | 'percentile' | 'improvement' | 'time_of_day' | 'day_of_week' | 'ability' | 'category_score';
+  type:
+    | 'count'
+    | 'score'
+    | 'time'
+    | 'streak'
+    | 'boolean'
+    | 'percentile'
+    | 'improvement'
+    | 'time_of_day'
+    | 'day_of_week'
+    | 'ability'
+    | 'category_score';
   threshold?: number;
   metric: string;
   category?: string;
@@ -36,7 +47,7 @@ export interface UserAchievement {
   user_id: string;
   achievement_id: string;
   earned_at: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   achievement?: Achievement;
 }
 
@@ -60,7 +71,7 @@ export interface PointTransaction {
   transaction_type: 'earned' | 'spent' | 'bonus' | 'penalty';
   source: string;
   description?: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   created_at: string;
 }
 

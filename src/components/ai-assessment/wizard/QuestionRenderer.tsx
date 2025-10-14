@@ -90,7 +90,7 @@ export const QuestionRenderer: React.FC<QuestionRendererProps> = ({
           <AnswerOptions
             question={currentQuestion}
             selectedOptions={selectedOptions}
-            onSingleChoice={(optionId, points) => onSingleChoice(optionId)}
+            onSingleChoice={(optionId, _points) => onSingleChoice(optionId)}
             onMultipleChoice={() => {}}
             onVoiceAnswer={onVoiceAnswer}
             enableVoiceInput={true}
@@ -111,7 +111,7 @@ export const QuestionRenderer: React.FC<QuestionRendererProps> = ({
             question={currentQuestion}
             selectedOptions={selectedOptions}
             onSingleChoice={() => {}}
-            onMultipleChoice={(optionId, points) => onMultipleChoice(optionId)}
+            onMultipleChoice={(optionId, _points) => onMultipleChoice(optionId)}
             onVoiceAnswer={onVoiceAnswer}
             enableVoiceInput={true}
           />

@@ -72,9 +72,9 @@ export interface WorkshopSession {
   meeting_link?: string;
   meeting_password?: string;
 
-  workspace?: any; // JSONB for real-time collaboration data
+  workspace?: Record<string, unknown>; // JSONB for real-time collaboration data
   shared_notes?: string;
-  deliverables?: any; // JSONB for files, links, results
+  deliverables?: Record<string, unknown>; // JSONB for files, links, results
 
   status: SessionStatus;
   created_at: string;
@@ -111,7 +111,7 @@ export interface WorkshopActivity {
   session_id: string;
   user_id?: string;
   activity_type: ActivityType;
-  activity_data?: any;
+  activity_data?: Record<string, unknown>;
   created_at: string;
 }
 
@@ -194,7 +194,7 @@ export interface LogActivityInput {
   session_id: string;
   user_id?: string;
   activity_type: ActivityType;
-  activity_data?: any;
+  activity_data?: Record<string, unknown>;
 }
 
 export interface WorkshopStatistics {

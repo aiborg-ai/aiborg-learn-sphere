@@ -29,7 +29,7 @@ export class ExerciseSubmissionService {
         .eq('status', 'draft')
         .single();
 
-      let data: any;
+      let data: ExerciseSubmission;
 
       if (existing) {
         // Update existing draft
@@ -85,7 +85,7 @@ export class ExerciseSubmissionService {
 
       if (subError) throw subError;
 
-      const exercise = (submission as any).exercises;
+      const exercise = (submission as ExerciseSubmission & { exercises: Exercise }).exercises;
 
       // Check if auto-grading is possible (coding exercise with test cases)
       let testResults: TestResult[] | undefined;
@@ -145,7 +145,7 @@ export class ExerciseSubmissionService {
 
       return {
         submission_id: submissionId,
-        status: status as any,
+        status: status as 'draft' | 'submitted' | 'graded' | 'needs_revision',
         test_results: testResults,
         score,
         points_earned: pointsEarned,
@@ -160,7 +160,10 @@ export class ExerciseSubmissionService {
   /**
    * Run code tests (mock implementation - would integrate with code execution service)
    */
-  private static async runCodeTests(code: string, testCases: any[]): Promise<CodeExecutionResult> {
+  private static async runCodeTests(
+    code: string,
+    testCases: TestCase[]
+  ): Promise<CodeExecutionResult> {
     // This is a mock implementation
     // In production, this would call a code execution service (e.g., Judge0, Piston, or custom sandbox)
 
@@ -261,7 +264,7 @@ export class ExerciseSubmissionService {
           await this.awardPoints(
             submission.user_id,
             submission_id,
-            (submission as any).exercises.points_reward
+            (submission as ExerciseSubmission & { exercises: Exercise }).exercises.points_reward
           );
         }
       }

@@ -339,7 +339,7 @@ async function scanForMalware(file: File): Promise<{ safe: boolean; reason?: str
           };
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // If we can't read the file, assume it's binary and continue
     }
   }

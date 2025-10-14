@@ -108,7 +108,7 @@ export function BadgeShowcase({
             {/* Secondary badges in a row */}
             {displayBadges.length > 1 && (
               <div className="flex justify-center gap-4 flex-wrap">
-                {displayBadges.slice(1).map((badge, index) => (
+                {displayBadges.slice(1).map((badge, _index) => (
                   <AnimatedBadge
                     key={badge.achievement.id}
                     iconUrl={badge.achievement.icon_url}
@@ -145,7 +145,16 @@ export function BadgeShowcase({
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-blue-600">
-                  {featuredBadges.filter(b => b.achievement.tier === 'gold' || b.achievement.tier === 'platinum' || b.achievement.tier === 'diamond').filter(b => b.isUnlocked).length}
+                  {
+                    featuredBadges
+                      .filter(
+                        b =>
+                          b.achievement.tier === 'gold' ||
+                          b.achievement.tier === 'platinum' ||
+                          b.achievement.tier === 'diamond'
+                      )
+                      .filter(b => b.isUnlocked).length
+                  }
                 </p>
                 <p className="text-xs text-muted-foreground">Rare Badges</p>
               </div>

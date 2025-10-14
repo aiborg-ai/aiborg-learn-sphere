@@ -70,7 +70,7 @@ export function AIStudyAssistant() {
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [_studyContext, setStudyContext] = useState<StudyContext>({});
-  const [ollamaAvailable, setOllamaAvailable] = useState(false); // Ollama disabled - using edge function
+  const [_ollamaAvailable, _setOllamaAvailable] = useState(false); // Ollama disabled - using edge function
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 

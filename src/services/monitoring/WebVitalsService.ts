@@ -31,7 +31,7 @@ export interface CustomMetric {
   name: string;
   value: number;
   unit: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   timestamp: number;
 }
 
@@ -149,7 +149,12 @@ class WebVitalsService {
   /**
    * Track custom metric
    */
-  public trackCustomMetric(name: string, value: number, unit: string = 'ms', metadata?: Record<string, any>) {
+  public trackCustomMetric(
+    name: string,
+    value: number,
+    unit: string = 'ms',
+    metadata?: Record<string, unknown>
+  ) {
     const metric: CustomMetric = {
       name,
       value,
@@ -169,11 +174,14 @@ class WebVitalsService {
   private trackRouteChanges() {
     let lastPath = window.location.pathname;
 
-    const observer = new PerformanceObserver((list) => {
+    const observer = new PerformanceObserver(list => {
       for (const entry of list.getEntries()) {
         if (entry.entryType === 'navigation') {
           const navEntry = entry as PerformanceNavigationTiming;
-          this.trackCustomMetric('route-change', navEntry.domContentLoadedEventEnd - navEntry.fetchStart);
+          this.trackCustomMetric(
+            'route-change',
+            navEntry.domContentLoadedEventEnd - navEntry.fetchStart
+          );
         }
       }
     });
@@ -184,7 +192,7 @@ class WebVitalsService {
 
     // Also track client-side navigation
     const originalPushState = history.pushState;
-    history.pushState = function(...args) {
+    history.pushState = function (...args) {
       const result = originalPushState.apply(this, args);
       const newPath = window.location.pathname;
 
@@ -204,7 +212,7 @@ class WebVitalsService {
    * Track resource loading performance
    */
   private trackResourceTiming() {
-    const observer = new PerformanceObserver((list) => {
+    const observer = new PerformanceObserver(list => {
       for (const entry of list.getEntries()) {
         const resourceEntry = entry as PerformanceResourceTiming;
 
@@ -235,7 +243,7 @@ class WebVitalsService {
    * Track long tasks (>50ms)
    */
   private trackLongTasks() {
-    const observer = new PerformanceObserver((list) => {
+    const observer = new PerformanceObserver(list => {
       for (const entry of list.getEntries()) {
         this.trackCustomMetric('long-task', entry.duration, 'ms', {
           startTime: entry.startTime,
@@ -270,7 +278,11 @@ class WebVitalsService {
     if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
       return 'tablet';
     }
-    if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+    if (
+      /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
+        ua
+      )
+    ) {
       return 'mobile';
     }
     return 'desktop';
@@ -280,7 +292,10 @@ class WebVitalsService {
    * Get connection type
    */
   private getConnectionType(): string | undefined {
-    const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+    const connection =
+      (navigator as Navigator & Record<string, unknown>).connection ||
+      (navigator as Navigator & Record<string, unknown>).mozConnection ||
+      (navigator as Navigator & Record<string, unknown>).webkitConnection;
     return connection?.effectiveType;
   }
 
@@ -288,7 +303,7 @@ class WebVitalsService {
    * Get device info
    */
   private getDeviceInfo() {
-    const memory = (performance as any).memory;
+    const memory = (performance as Performance & Record<string, unknown>).memory;
     return {
       type: this.getDeviceType(),
       screen: `${window.screen.width}x${window.screen.height}`,
@@ -387,7 +402,7 @@ class WebVitalsService {
    * Get current metrics summary
    */
   public getMetricsSummary() {
-    const summary: Record<string, any> = {};
+    const summary: Record<string, unknown> = {};
 
     this.metrics.forEach((metric, name) => {
       summary[name] = {

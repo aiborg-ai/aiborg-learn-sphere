@@ -72,7 +72,9 @@ test.describe('Downloads Feature', () => {
 
       // Verify metadata displayed (file size, type, date)
       await expect(page.locator('text=/\\d+\\s*(KB|MB|GB)/i')).toBeVisible();
-      await expect(page.locator('text=/\\d{4}-\\d{2}-\\d{2}|\\d+\\s*(second|minute|hour|day)s?\\s*ago/i')).toBeVisible();
+      await expect(
+        page.locator('text=/\\d{4}-\\d{2}-\\d{2}|\\d+\\s*(second|minute|hour|day)s?\\s*ago/i')
+      ).toBeVisible();
     });
 
     test('should show download button state change', async ({ page }) => {
@@ -132,7 +134,7 @@ test.describe('Downloads Feature', () => {
 
       // Verify only PDFs shown (if any exist)
       const fileItems = page.locator('[data-testid="download-item"]');
-      if (await fileItems.count() > 0) {
+      if ((await fileItems.count()) > 0) {
         await expect(fileItems.first()).toContainText(/\.pdf/i);
       }
     });
@@ -148,7 +150,7 @@ test.describe('Downloads Feature', () => {
 
       // Verify filtered results
       const results = page.locator('[data-testid="download-item"]');
-      if (await results.count() > 0) {
+      if ((await results.count()) > 0) {
         await expect(results.first()).toContainText(/handbook/i);
       }
     });
@@ -202,7 +204,9 @@ test.describe('Downloads Feature', () => {
 
       // Find the download and re-download it
       const downloadItem = page.locator(`text=${fileName}`).locator('..');
-      const redownloadBtn = downloadItem.locator('button:has-text("Download"), button[title*="download" i]');
+      const redownloadBtn = downloadItem.locator(
+        'button:has-text("Download"), button[title*="download" i]'
+      );
 
       const downloadPromise2 = page.waitForEvent('download');
       await redownloadBtn.click();
@@ -225,7 +229,10 @@ test.describe('Downloads Feature', () => {
       // Go to downloads page and get initial access count
       await page.goto('/downloads');
       const downloadItem = page.locator(`text=${download.suggestedFilename()}`).locator('..');
-      const initialAccessText = await downloadItem.locator('text=/accessed.*\\d+.*time/i').textContent().catch(() => '1');
+      const _initialAccessText = await downloadItem
+        .locator('text=/accessed.*\\d+.*time/i')
+        .textContent()
+        .catch(() => '1');
 
       // Re-download
       const redownloadPromise = page.waitForEvent('download');
@@ -237,7 +244,10 @@ test.describe('Downloads Feature', () => {
       await page.reload();
       await page.waitForLoadState('networkidle');
 
-      const newAccessText = await downloadItem.locator('text=/accessed.*\\d+.*time/i').textContent().catch(() => '2');
+      const newAccessText = await downloadItem
+        .locator('text=/accessed.*\\d+.*time/i')
+        .textContent()
+        .catch(() => '2');
 
       // Access count should have increased (basic check)
       expect(newAccessText).toContain('time');
@@ -261,7 +271,10 @@ test.describe('Downloads Feature', () => {
 
       // Find and delete the download record
       const downloadItem = page.locator(`text=${fileName}`).locator('..');
-      await downloadItem.locator('button[title*="delete" i], button:has-text("Delete")').first().click();
+      await downloadItem
+        .locator('button[title*="delete" i], button:has-text("Delete")')
+        .first()
+        .click();
 
       // Confirm deletion in dialog
       await page.click('button:has-text("Delete"), button:has-text("Confirm")');
@@ -287,7 +300,9 @@ test.describe('Downloads Feature', () => {
       await page.waitForLoadState('networkidle');
 
       // Click "Clear All" button
-      const clearAllBtn = page.locator('button:has-text("Clear All"), button:has-text("Clear History")');
+      const clearAllBtn = page.locator(
+        'button:has-text("Clear All"), button:has-text("Clear History")'
+      );
 
       if (await clearAllBtn.isVisible()) {
         await clearAllBtn.click();
@@ -303,7 +318,9 @@ test.describe('Downloads Feature', () => {
     test('should show confirmation before clearing all', async ({ page }) => {
       await page.goto('/downloads');
 
-      const clearAllBtn = page.locator('button:has-text("Clear All"), button:has-text("Clear History")');
+      const clearAllBtn = page.locator(
+        'button:has-text("Clear All"), button:has-text("Clear History")'
+      );
 
       if (await clearAllBtn.isVisible()) {
         await clearAllBtn.click();
@@ -392,7 +409,9 @@ test.describe('Downloads Feature', () => {
       await page.click('button[role="tab"]:has-text("Materials")');
 
       // Verify download indicator on material
-      const downloadedMaterial = page.locator('[data-testid="material-item"]').first()
+      const downloadedMaterial = page
+        .locator('[data-testid="material-item"]')
+        .first()
         .or(page.locator('button:has-text("Download")').first().locator('..'));
 
       await expect(downloadedMaterial).toContainText(/downloaded|✓/i);

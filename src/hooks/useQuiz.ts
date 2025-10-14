@@ -202,7 +202,7 @@ export function useCreateQuizBank() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: ({ input, userId }: { input: any; userId: string }) =>
+    mutationFn: ({ input, userId }: { input: Record<string, unknown>; userId: string }) =>
       QuizService.createQuizBank(input, userId),
     onSuccess: data => {
       toast({
@@ -230,7 +230,7 @@ export function useUpdateQuizBank() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (input: any) => QuizService.updateQuizBank(input),
+    mutationFn: (input: Record<string, unknown>) => QuizService.updateQuizBank(input),
     onSuccess: data => {
       toast({
         title: 'Success',
@@ -240,7 +240,7 @@ export function useUpdateQuizBank() {
       queryClient.invalidateQueries({ queryKey: ['quiz', data.id] });
       queryClient.invalidateQueries({ queryKey: ['quizzes', data.course_id] });
     },
-    onError: (error: Error) => {
+    onError: (_error: Error) => {
       toast({
         title: 'Error',
         description: 'Failed to update quiz',
@@ -267,7 +267,7 @@ export function useDeleteQuizBank() {
 
       queryClient.invalidateQueries({ queryKey: ['quizzes'] });
     },
-    onError: (error: Error) => {
+    onError: (_error: Error) => {
       toast({
         title: 'Error',
         description: 'Failed to delete quiz',

@@ -68,7 +68,7 @@ export interface QuizAttempt {
   percentage?: number;
   passed?: boolean;
   status: AttemptStatus;
-  answers?: Record<string, any>; // JSONB
+  answers?: Record<string, unknown>; // JSONB
   created_at: string;
 }
 

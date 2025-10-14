@@ -59,7 +59,8 @@ export const useUserResources = (userId?: string) => {
       // Fetch resources allocated to the user
       const { data: allocations, error: allocationsError } = await supabase
         .from('user_resource_allocations')
-        .select(`
+        .select(
+          `
           id,
           allocated_at,
           expires_at,
@@ -81,7 +82,8 @@ export const useUserResources = (userId?: string) => {
             category,
             created_at
           )
-        `)
+        `
+        )
         .eq('user_id', userId)
         .eq('is_active', true)
         .order('allocated_at', { ascending: false });
@@ -106,7 +108,7 @@ export const useUserResources = (userId?: string) => {
           return true;
         })
         .map(alloc => ({
-          ...(alloc.user_resources as any),
+          ...(alloc.user_resources as Record<string, unknown>),
           allocation_id: alloc.id,
           allocated_at: alloc.allocated_at,
           expires_at: alloc.expires_at,
@@ -135,42 +137,45 @@ export const useUserResources = (userId?: string) => {
     }
   }, [userId]);
 
-  const trackResourceView = useCallback(async (resourceId: string) => {
-    if (!userId) return;
+  const trackResourceView = useCallback(
+    async (resourceId: string) => {
+      if (!userId) return;
 
-    try {
-      logger.log('👁️ Tracking resource view...', { resourceId, userId });
+      try {
+        logger.log('👁️ Tracking resource view...', { resourceId, userId });
 
-      // Call the database function to track the view
-      const { error } = await supabase.rpc('track_resource_view', {
-        p_resource_id: resourceId,
-        p_user_id: userId,
-      });
+        // Call the database function to track the view
+        const { error } = await supabase.rpc('track_resource_view', {
+          p_resource_id: resourceId,
+          p_user_id: userId,
+        });
 
-      if (error) {
-        logger.error('❌ Error tracking resource view:', error);
-      } else {
-        logger.log('✅ Resource view tracked');
+        if (error) {
+          logger.error('❌ Error tracking resource view:', error);
+        } else {
+          logger.log('✅ Resource view tracked');
 
-        // Update local state to reflect the view
-        setState(prev => ({
-          ...prev,
-          resources: prev.resources.map(r =>
-            r.id === resourceId
-              ? {
-                  ...r,
-                  view_count: (r.view_count || 0) + 1,
-                  viewed_at: r.viewed_at || new Date().toISOString(),
-                  last_accessed_at: new Date().toISOString(),
-                }
-              : r
-          ),
-        }));
+          // Update local state to reflect the view
+          setState(prev => ({
+            ...prev,
+            resources: prev.resources.map(r =>
+              r.id === resourceId
+                ? {
+                    ...r,
+                    view_count: (r.view_count || 0) + 1,
+                    viewed_at: r.viewed_at || new Date().toISOString(),
+                    last_accessed_at: new Date().toISOString(),
+                  }
+                : r
+            ),
+          }));
+        }
+      } catch (err) {
+        logger.error('❌ Error tracking resource view:', err);
       }
-    } catch (err) {
-      logger.error('❌ Error tracking resource view:', err);
-    }
-  }, [userId]);
+    },
+    [userId]
+  );
 
   const refetch = useCallback(() => {
     logger.log('🔄 Manual refetch triggered');

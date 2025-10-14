@@ -13,7 +13,11 @@ interface PointsProgressProps {
   showHistory?: boolean;
 }
 
-export function PointsProgress({ variant = 'default', className, showHistory = false }: PointsProgressProps) {
+export function PointsProgress({
+  variant = 'default',
+  className,
+  showHistory = false,
+}: PointsProgressProps) {
   const { pointsData, levelInfo, pointsLoading, historyData } = useAiborgPoints();
 
   if (pointsLoading) {
@@ -35,7 +39,7 @@ export function PointsProgress({ variant = 'default', className, showHistory = f
   }
 
   const isCompact = variant === 'compact';
-  const isDashboard = variant === 'dashboard';
+  const _isDashboard = variant === 'dashboard';
 
   return (
     <Card className={cn('overflow-hidden', className)}>
@@ -50,7 +54,9 @@ export function PointsProgress({ variant = 'default', className, showHistory = f
           <div className="flex items-center gap-2">
             <span className="text-3xl">{levelInfo.icon}</span>
             <div>
-              <div className="text-sm font-normal text-muted-foreground">AIBORG Level {levelInfo.level}</div>
+              <div className="text-sm font-normal text-muted-foreground">
+                AIBORG Level {levelInfo.level}
+              </div>
               <div className="text-xl font-bold" style={{ color: levelInfo.color }}>
                 {levelInfo.rank}
               </div>
@@ -69,12 +75,8 @@ export function PointsProgress({ variant = 'default', className, showHistory = f
         {levelInfo.nextLevel && (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">
-                Progress to {levelInfo.nextLevel.name}
-              </span>
-              <span className="font-semibold">
-                {Math.round(levelInfo.progress)}%
-              </span>
+              <span className="text-muted-foreground">Progress to {levelInfo.nextLevel.name}</span>
+              <span className="font-semibold">{Math.round(levelInfo.progress)}%</span>
             </div>
             <Progress
               value={levelInfo.progress}
@@ -134,7 +136,7 @@ export function PointsProgress({ variant = 'default', className, showHistory = f
           <div className="pt-3 border-t">
             <div className="text-sm font-semibold mb-2">Recent Activity</div>
             <div className="space-y-2 max-h-40 overflow-y-auto">
-              {historyData.slice(0, 5).map((entry) => (
+              {historyData.slice(0, 5).map(entry => (
                 <div
                   key={entry.id}
                   className="flex items-center justify-between text-xs p-2 rounded bg-muted/50"

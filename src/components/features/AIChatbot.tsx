@@ -98,7 +98,7 @@ export function AIChatbot() {
   const [_conversationContext, setConversationContext] = useState<ConversationContext>(
     initialConversationContext
   );
-  const [ollamaAvailable, setOllamaAvailable] = useState(false); // Ollama disabled - using edge function
+  const [_ollamaAvailable, _setOllamaAvailable] = useState(false); // Ollama disabled - using edge function
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize welcome message based on audience

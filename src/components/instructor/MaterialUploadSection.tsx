@@ -114,7 +114,7 @@ export function MaterialUploadSection({
       const fileExt = file.name.split('.').pop();
       const fileName = `${courseId}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-      const { data, error } = await supabase.storage
+      const { _data, error } = await supabase.storage
         .from('course-materials')
         .upload(fileName, file, {
           cacheControl: '3600',

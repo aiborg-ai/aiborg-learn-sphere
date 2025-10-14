@@ -87,7 +87,7 @@ export const TrainingPrograms = () => {
   };
 
   // Helper function to check if a date is in current or next month
-  const isInCurrentOrNextMonth = (dateString: string) => {
+  const _isInCurrentOrNextMonth = (dateString: string) => {
     if (
       !dateString ||
       dateString === 'Ongoing' ||

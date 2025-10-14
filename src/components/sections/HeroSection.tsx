@@ -77,20 +77,20 @@ export function HeroSection() {
             <span className="text-white font-medium">Convert AI Opportunity !</span>
           </div>
 
-          <h1 className="font-display text-7xl md:text-8xl lg:text-9xl font-bold mb-6">
+          <h1 className="font-display text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold mb-4 md:mb-6">
             <span className="block text-secondary">
               aiborg
-              <sup className="text-2xl md:text-3xl lg:text-4xl text-secondary/80 font-normal ml-1">
+              <sup className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-secondary/80 font-normal ml-1">
                 ™
               </sup>
             </span>
           </h1>
 
-          <p className="text-2xl md:text-3xl text-accent font-semibold mb-4 font-display drop-shadow-sm">
+          <p className="text-xl sm:text-2xl md:text-3xl text-accent font-semibold mb-3 md:mb-4 font-display drop-shadow-sm">
             AI-augmented Human
           </p>
 
-          <p className="text-xl text-white/90 max-w-2xl mx-auto mb-12 leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-8 md:mb-12 leading-relaxed px-4 sm:px-0">
             Transform your future with cutting-edge AI education. Personalized learning paths for
             every age and profession.
           </p>
@@ -108,25 +108,25 @@ export function HeroSection() {
           )}
 
           {/* AI Assessment CTA */}
-          <div className="mb-16">
+          <div className="mb-12 md:mb-16 px-4 sm:px-0">
             <Link to="/ai-assessment">
-              <Card className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-yellow-500/30 hover:border-yellow-500/50 transition-all duration-300 transform hover:scale-105 max-w-2xl mx-auto">
-                <div className="p-6 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-full bg-yellow-500/20">
-                      <BarChart3 className="h-6 w-6 text-yellow-300" />
+              <Card className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-yellow-500/30 hover:border-yellow-500/50 active:border-yellow-500/60 transition-all duration-300 transform hover:scale-105 active:scale-95 max-w-2xl mx-auto">
+                <div className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 sm:justify-between">
+                  <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                    <div className="p-2 sm:p-3 rounded-full bg-yellow-500/20 flex-shrink-0">
+                      <BarChart3 className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-300" />
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                        Discover Your AI Augmentation Level
+                    <div className="flex-1">
+                      <h3 className="text-base sm:text-lg font-semibold text-white flex items-center gap-2 flex-wrap">
+                        <span>Discover Your AI Augmentation Level</span>
                         <Badge className="bg-red-500 text-white text-xs">NEW</Badge>
                       </h3>
-                      <p className="text-sm text-white/80">
+                      <p className="text-xs sm:text-sm text-white/80 mt-1">
                         Take our free assessment to measure your AI tool adoption
                       </p>
                     </div>
                   </div>
-                  <ArrowRight className="h-5 w-5 text-white/60" />
+                  <ArrowRight className="h-5 w-5 text-white/60 hidden sm:block flex-shrink-0" />
                 </div>
               </Card>
             </Link>
@@ -134,15 +134,15 @@ export function HeroSection() {
         </div>
 
         {/* Audience Selection */}
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-display font-bold text-center text-white mb-4">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <h2 className="text-2xl sm:text-3xl font-display font-bold text-center text-white mb-3 md:mb-4">
             Choose Your Learning Journey
           </h2>
-          <p className="text-lg text-white/80 text-center mb-12">
+          <p className="text-base sm:text-lg text-white/80 text-center mb-8 md:mb-12 px-4 sm:px-0">
             Discover personalized AI education programs
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 md:mb-12">
             {audiences.map(audience => {
               const Icon = audience.icon;
               const isSelected = selectedAudience === audience.id;
@@ -150,13 +150,13 @@ export function HeroSection() {
               return (
                 <Card
                   key={audience.id}
-                  className={`relative overflow-hidden cursor-pointer transition-all duration-500 group hover:scale-105 hover:shadow-2xl ${
+                  className={`relative overflow-hidden cursor-pointer transition-all duration-500 group hover:scale-105 hover:shadow-2xl active:scale-95 ${
                     isSelected ? 'ring-2 ring-primary shadow-lg scale-105' : ''
                   }`}
                   onClick={() => setSelectedAudience(audience.id)}
                 >
                   {/* Background Image */}
-                  <div className="relative h-80 overflow-hidden">
+                  <div className="relative h-64 sm:h-72 md:h-80 overflow-hidden">
                     <img
                       src={audience.image}
                       alt={`${audience.title} representative`}

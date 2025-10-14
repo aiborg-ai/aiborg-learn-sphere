@@ -34,7 +34,7 @@ export interface UserInteraction {
   type: 'click' | 'scroll' | 'input' | 'navigation';
   target: string;
   timestamp: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface APICall {
@@ -243,16 +243,16 @@ class RUMService {
       url: string | URL,
       ...args: unknown[]
     ) {
-      (this as any).__rum_method = method;
-      (this as any).__rum_url = url.toString();
-      (this as any).__rum_start = performance.now();
+      (this as XMLHttpRequest & Record<string, unknown>).__rum_method = method;
+      (this as XMLHttpRequest & Record<string, unknown>).__rum_url = url.toString();
+      (this as XMLHttpRequest & Record<string, unknown>).__rum_start = performance.now();
       return originalOpen.apply(this, [method, url, ...args]);
     };
 
     XMLHttpRequest.prototype.send = function (...args: unknown[]) {
-      const method = (this as any).__rum_method;
-      const url = (this as any).__rum_url;
-      const startTime = (this as any).__rum_start;
+      const method = (this as XMLHttpRequest & Record<string, unknown>).__rum_method;
+      const url = (this as XMLHttpRequest & Record<string, unknown>).__rum_url;
+      const startTime = (this as XMLHttpRequest & Record<string, unknown>).__rum_start;
 
       this.addEventListener('loadend', () => {
         const duration = performance.now() - startTime;
@@ -274,9 +274,9 @@ class RUMService {
    */
   private setupNetworkTracking() {
     const connection =
-      (navigator as any).connection ||
-      (navigator as any).mozConnection ||
-      (navigator as any).webkitConnection;
+      (navigator as Navigator & Record<string, unknown>).connection ||
+      (navigator as Navigator & Record<string, unknown>).mozConnection ||
+      (navigator as Navigator & Record<string, unknown>).webkitConnection;
 
     if (connection) {
       // Track connection changes

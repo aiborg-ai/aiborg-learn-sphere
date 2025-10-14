@@ -19,7 +19,7 @@ test.describe('App Smoke Tests', () => {
 
     // Page should not have console errors (critical ones)
     const errors: string[] = [];
-    page.on('console', (msg) => {
+    page.on('console', msg => {
       if (msg.type() === 'error') {
         errors.push(msg.text());
       }
@@ -30,10 +30,7 @@ test.describe('App Smoke Tests', () => {
 
     // Check no critical errors (filter out common non-critical errors)
     const criticalErrors = errors.filter(
-      (err) =>
-        !err.includes('favicon') &&
-        !err.includes('Source map') &&
-        !err.includes('DevTools')
+      err => !err.includes('favicon') && !err.includes('Source map') && !err.includes('DevTools')
     );
 
     expect(criticalErrors.length).toBe(0);
@@ -49,7 +46,7 @@ test.describe('App Smoke Tests', () => {
 
     // Common navigation items
     const homeLink = page.locator('a[href="/"]').or(page.locator('text=Home'));
-    if (await homeLink.count() > 0) {
+    if ((await homeLink.count()) > 0) {
       await expect(homeLink.first()).toBeVisible();
     }
   });
@@ -61,7 +58,7 @@ test.describe('App Smoke Tests', () => {
     // Look for courses section
     const coursesSection = page.locator('text=/courses|learning|training/i');
 
-    if (await coursesSection.count() > 0) {
+    if ((await coursesSection.count()) > 0) {
       await coursesSection.first().scrollIntoViewIfNeeded();
       await expect(coursesSection.first()).toBeVisible();
     }
@@ -81,9 +78,9 @@ test.describe('App Smoke Tests', () => {
     await page.goto('/auth');
 
     // Auth form should be visible
-    await expect(
-      page.locator('input[type="email"]').or(page.locator('text=Sign In'))
-    ).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('input[type="email"]').or(page.locator('text=Sign In'))).toBeVisible({
+      timeout: 5000,
+    });
   });
 
   test('should handle 404 page', async ({ page }) => {
@@ -91,9 +88,7 @@ test.describe('App Smoke Tests', () => {
 
     // Should show 404 page or redirect
     await expect(
-      page
-        .locator('text=/404|not found|page.*exist/i')
-        .or(page.locator('text=Home'))
+      page.locator('text=/404|not found|page.*exist/i').or(page.locator('text=Home'))
     ).toBeVisible({ timeout: 5000 });
   });
 
@@ -106,12 +101,12 @@ test.describe('App Smoke Tests', () => {
     await expect(page).toHaveURL('/');
 
     // Mobile menu or navigation should be accessible
-    const mobileMenu = page.locator('button[aria-label*="menu" i]').or(
-      page.locator('button:has-text("Menu")')
-    );
+    const mobileMenu = page
+      .locator('button[aria-label*="menu" i]')
+      .or(page.locator('button:has-text("Menu")'));
 
     // If mobile menu exists, it should be visible
-    if (await mobileMenu.count() > 0) {
+    if ((await mobileMenu.count()) > 0) {
       await expect(mobileMenu.first()).toBeVisible();
     }
   });
@@ -133,9 +128,9 @@ test.describe('App Smoke Tests', () => {
     await page.waitForLoadState('networkidle');
 
     // Look for search or filter inputs
-    const searchInput = page.locator('input[type="search"]').or(
-      page.locator('input[placeholder*="search" i]')
-    );
+    const searchInput = page
+      .locator('input[type="search"]')
+      .or(page.locator('input[placeholder*="search" i]'));
 
     const filterButton = page.locator('button').filter({ hasText: /filter|category/i });
 
@@ -148,7 +143,7 @@ test.describe('App Smoke Tests', () => {
 
   test('should handle network errors gracefully', async ({ page }) => {
     // Simulate offline mode
-    await page.route('**/*', (route) => {
+    await page.route('**/*', route => {
       if (route.request().url().includes('/api/')) {
         route.abort();
       } else {
@@ -175,16 +170,16 @@ test.describe('Critical User Flows', () => {
     // Look for course cards or links
     const courseLink = page.locator('a[href*="/course/"]').first();
 
-    if (await courseLink.count() > 0) {
+    if ((await courseLink.count()) > 0) {
       await courseLink.click();
 
       // Should navigate to course page
       await expect(page).toHaveURL(/\/course\/\d+/);
 
       // Course details should be visible
-      await expect(
-        page.locator('text=/description|overview|about/i')
-      ).toBeVisible({ timeout: 5000 });
+      await expect(page.locator('text=/description|overview|about/i')).toBeVisible({
+        timeout: 5000,
+      });
     }
   });
 
@@ -195,7 +190,7 @@ test.describe('Critical User Flows', () => {
     // Look for event cards
     const eventCard = page.locator('[data-testid="event-card"]').first();
 
-    if (await eventCard.count() > 0) {
+    if ((await eventCard.count()) > 0) {
       // Event cards should have key information
       await expect(eventCard.locator('text=/date|time/i')).toBeVisible();
       await expect(eventCard.locator('text=/location/i')).toBeVisible();
@@ -206,9 +201,9 @@ test.describe('Critical User Flows', () => {
     await page.goto('/');
 
     // Look for loading indicators (before content loads)
-    const loadingIndicator = page.locator('text=/loading|spinner/i').or(
-      page.locator('[role="progressbar"]')
-    );
+    const _loadingIndicator = page
+      .locator('text=/loading|spinner/i')
+      .or(page.locator('[role="progressbar"]'));
 
     // Loading state might be visible briefly
     // This is more of a check that it doesn't break
@@ -224,9 +219,9 @@ test.describe('Critical User Flows', () => {
     // Check for proper form labels
     const emailInput = page.locator('input[type="email"]');
 
-    if (await emailInput.count() > 0) {
+    if ((await emailInput.count()) > 0) {
       // Should have associated label or aria-label
-      const hasLabel = await emailInput.evaluate((el) => {
+      const hasLabel = await emailInput.evaluate(el => {
         const id = el.id;
         return (
           document.querySelector(`label[for="${id}"]`) !== null ||
@@ -245,7 +240,7 @@ test.describe('Critical User Flows', () => {
 
     // Scroll down
     await page.evaluate(() => window.scrollTo(0, 500));
-    const scrollPos = await page.evaluate(() => window.scrollY);
+    const _scrollPos = await page.evaluate(() => window.scrollY);
 
     // Navigate to another page
     await page.goto('/auth');
@@ -281,7 +276,7 @@ test.describe('Performance Checks', () => {
     const imageCount = await images.count();
 
     if (imageCount > 0) {
-      const hasLazyLoading = await images.first().evaluate((img) => {
+      const hasLazyLoading = await images.first().evaluate(img => {
         return img.loading === 'lazy' || img.hasAttribute('loading');
       });
 
@@ -293,10 +288,7 @@ test.describe('Performance Checks', () => {
 
   test('should handle concurrent requests', async ({ page }) => {
     // Navigate and trigger multiple requests
-    await Promise.all([
-      page.goto('/'),
-      page.waitForLoadState('networkidle'),
-    ]);
+    await Promise.all([page.goto('/'), page.waitForLoadState('networkidle')]);
 
     // Scroll to trigger lazy loading
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));

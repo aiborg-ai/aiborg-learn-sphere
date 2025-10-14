@@ -13,7 +13,7 @@ marked.setOptions({
 const renderer = new marked.Renderer();
 
 // Custom heading renderer with better spacing
-renderer.heading = function(text: string, level: number): string {
+renderer.heading = function (text: string, level: number): string {
   const sizes = {
     1: 'text-4xl md:text-5xl font-bold mb-6 mt-8',
     2: 'text-3xl md:text-4xl font-semibold mb-4 mt-6',
@@ -57,7 +57,7 @@ renderer.blockquote = (text: string) => {
 };
 
 // Custom code block renderer
-renderer.code = (code: string, language?: string) => {
+renderer.code = (code: string, _language?: string) => {
   return `<pre class="bg-secondary/10 rounded-lg p-4 mb-4 overflow-x-auto"><code class="text-sm md:text-base font-mono">${code}</code></pre>`;
 };
 
@@ -139,7 +139,7 @@ export function extractTableOfContents(markdown: string) {
       headings.push({
         level: token.depth,
         text: textStr,
-        id
+        id,
       });
     }
   });

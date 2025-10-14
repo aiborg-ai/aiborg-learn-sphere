@@ -231,7 +231,7 @@ export class AdaptiveAssessmentEngagementService {
       const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
 
       // Aggregate by user
-      const userMap = new Map<string, any>();
+      const userMap = new Map<string, Record<string, unknown>>();
 
       assessments?.forEach(assessment => {
         const userId = assessment.user_id;
@@ -334,7 +334,7 @@ export class AdaptiveAssessmentEngagementService {
       }
 
       // Group by date
-      const dateMap = new Map<string, any>();
+      const dateMap = new Map<string, Record<string, unknown>>();
 
       assessments.forEach(assessment => {
         const date = assessment.started_at.split('T')[0]; // Get YYYY-MM-DD
@@ -400,7 +400,7 @@ export class AdaptiveAssessmentEngagementService {
       | 'assessment_abandoned'
       | 'question_answered'
       | 'early_exit',
-    metadata: Record<string, any>
+    metadata: Record<string, unknown>
   ): Promise<void> {
     try {
       await supabase.from('engagement_events').insert({

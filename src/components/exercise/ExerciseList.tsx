@@ -165,7 +165,10 @@ export const ExerciseList: React.FC<ExerciseListProps> = ({
               className="pl-9"
             />
           </div>
-          <Select value={sortBy} onValueChange={v => setSortBy(v as any)}>
+          <Select
+            value={sortBy}
+            onValueChange={v => setSortBy(v as 'date' | 'title' | 'difficulty' | 'points')}
+          >
             <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
@@ -191,7 +194,7 @@ export const ExerciseList: React.FC<ExerciseListProps> = ({
 
         {/* Advanced Filters */}
         <div className="flex flex-wrap gap-3">
-          <Select value={filterType} onValueChange={v => setFilterType(v as any)}>
+          <Select value={filterType} onValueChange={v => setFilterType(v as ExerciseType | 'all')}>
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Type" />
             </SelectTrigger>
@@ -206,7 +209,10 @@ export const ExerciseList: React.FC<ExerciseListProps> = ({
             </SelectContent>
           </Select>
 
-          <Select value={filterDifficulty} onValueChange={v => setFilterDifficulty(v as any)}>
+          <Select
+            value={filterDifficulty}
+            onValueChange={v => setFilterDifficulty(v as DifficultyLevel | 'all')}
+          >
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Difficulty" />
             </SelectTrigger>

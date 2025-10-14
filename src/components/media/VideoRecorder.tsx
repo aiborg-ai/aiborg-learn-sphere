@@ -1,8 +1,8 @@
-import { useState, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Video, Square, Play, Pause, Trash2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { useState, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { Video, Square, Play, Pause, Trash2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface VideoRecorderProps {
   onTranscription: (text: string) => void;
@@ -10,7 +10,11 @@ interface VideoRecorderProps {
   disabled?: boolean;
 }
 
-export function VideoRecorder({ onTranscription, onRecording, disabled = false }: VideoRecorderProps) {
+export function VideoRecorder({
+  onTranscription,
+  onRecording,
+  disabled = false,
+}: VideoRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -23,18 +27,18 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
 
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
+      const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           width: { ideal: 640 },
           height: { ideal: 480 },
-          facingMode: 'user'
+          facingMode: 'user',
         },
         audio: {
           sampleRate: 16000,
           channelCount: 1,
           echoCancellation: true,
-          noiseSuppression: true
-        }
+          noiseSuppression: true,
+        },
       });
 
       if (previewRef.current) {
@@ -55,11 +59,11 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
       }
 
       mediaRecorderRef.current = new MediaRecorder(stream, {
-        mimeType: mimeType
+        mimeType: mimeType,
       });
       chunksRef.current = [];
 
-      mediaRecorderRef.current.ondataavailable = (event) => {
+      mediaRecorderRef.current.ondataavailable = event => {
         if (event.data.size > 0) {
           chunksRef.current.push(event.data);
         }
@@ -77,10 +81,10 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
 
       mediaRecorderRef.current.start();
       setIsRecording(true);
-      
+
       toast({
-        title: "Recording Started",
-        description: "Recording video review. Maximum 2 minutes.",
+        title: 'Recording Started',
+        description: 'Recording video review. Maximum 2 minutes.',
       });
 
       // Stop recording after 2 minutes
@@ -89,12 +93,11 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
           stopRecording();
         }
       }, 120000);
-
-    } catch (error) {
+    } catch (_error) {
       toast({
-        title: "Recording Error",
-        description: "Could not access camera/microphone. Please check permissions.",
-        variant: "destructive",
+        title: 'Recording Error',
+        description: 'Could not access camera/microphone. Please check permissions.',
+        variant: 'destructive',
       });
     }
   };
@@ -110,12 +113,12 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
     if (videoBlob && videoRef.current) {
       const videoUrl = URL.createObjectURL(videoBlob);
       videoRef.current.src = videoUrl;
-      
+
       videoRef.current.onended = () => {
         setIsPlaying(false);
         URL.revokeObjectURL(videoUrl);
       };
-      
+
       videoRef.current.play();
       setIsPlaying(true);
     }
@@ -143,15 +146,15 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
 
     try {
       setIsTranscribing(true);
-      
+
       // Convert blob to base64
       const reader = new FileReader();
       reader.onloadend = async () => {
         const base64Video = reader.result?.toString().split(',')[1];
-        
+
         if (base64Video) {
           const { data, error } = await supabase.functions.invoke('transcribe-video', {
-            body: { video: base64Video }
+            body: { video: base64Video },
           });
 
           if (error) {
@@ -161,20 +164,19 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
           if (data?.text) {
             onTranscription(data.text);
             toast({
-              title: "Transcription Complete",
-              description: "Your video audio has been converted to text.",
+              title: 'Transcription Complete',
+              description: 'Your video audio has been converted to text.',
             });
           }
         }
       };
-      
+
       reader.readAsDataURL(videoBlob);
-      
     } catch (error) {
       toast({
-        title: "Transcription Failed",
-        description: error instanceof Error ? error.message : "Failed to transcribe video audio",
-        variant: "destructive",
+        title: 'Transcription Failed',
+        description: error instanceof Error ? error.message : 'Failed to transcribe video audio',
+        variant: 'destructive',
       });
     } finally {
       setIsTranscribing(false);
@@ -194,7 +196,7 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
             playsInline
           />
         )}
-        
+
         {videoBlob && !isRecording && (
           <video
             ref={videoRef}
@@ -203,7 +205,7 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
             playsInline
           />
         )}
-        
+
         {!isRecording && !videoBlob && (
           <div className="w-full h-full flex items-center justify-center text-white">
             <Video className="h-12 w-12 opacity-50" />
@@ -234,12 +236,7 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
         )}
 
         {isRecording && (
-          <Button
-            type="button"
-            onClick={stopRecording}
-            variant="destructive"
-            size="sm"
-          >
+          <Button type="button" onClick={stopRecording} variant="destructive" size="sm">
             <Square className="h-4 w-4 mr-2" />
             Stop Recording
           </Button>
@@ -253,20 +250,11 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
               variant="outline"
               size="sm"
             >
-              {isPlaying ? (
-                <Pause className="h-4 w-4 mr-2" />
-              ) : (
-                <Play className="h-4 w-4 mr-2" />
-              )}
+              {isPlaying ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
               {isPlaying ? 'Pause' : 'Play'}
             </Button>
 
-            <Button
-              type="button"
-              onClick={transcribeVideo}
-              disabled={isTranscribing}
-              size="sm"
-            >
+            <Button type="button" onClick={transcribeVideo} disabled={isTranscribing} size="sm">
               {isTranscribing ? (
                 <>
                   <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -277,12 +265,7 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
               )}
             </Button>
 
-            <Button
-              type="button"
-              onClick={deleteRecording}
-              variant="outline"
-              size="sm"
-            >
+            <Button type="button" onClick={deleteRecording} variant="outline" size="sm">
               <Trash2 className="h-4 w-4 mr-2" />
               Delete
             </Button>
@@ -291,9 +274,7 @@ export function VideoRecorder({ onTranscription, onRecording, disabled = false }
       </div>
 
       {isRecording && (
-        <p className="text-sm text-muted-foreground">
-          Recording video review... (Max 2 minutes)
-        </p>
+        <p className="text-sm text-muted-foreground">Recording video review... (Max 2 minutes)</p>
       )}
 
       {videoBlob && !isRecording && (

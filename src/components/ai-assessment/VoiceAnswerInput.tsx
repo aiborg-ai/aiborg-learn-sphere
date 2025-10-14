@@ -14,7 +14,7 @@ interface VoiceAnswerInputProps {
 export const VoiceAnswerInput: React.FC<VoiceAnswerInputProps> = ({
   onVoiceTranscription,
   disabled = false,
-  questionText,
+  _questionText,
 }) => {
   const [transcribedText, setTranscribedText] = useState<string>('');
 

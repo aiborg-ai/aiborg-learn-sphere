@@ -106,7 +106,7 @@ export function useAiborgPoints() {
       sourceType,
       sourceId,
       description,
-      metadata,
+      _metadata,
     }: {
       points: number;
       sourceType: PointsHistory['source_type'];

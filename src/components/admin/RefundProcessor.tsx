@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -29,7 +36,7 @@ import {
   XCircle,
   Clock,
   AlertCircle,
-  RefreshCw
+  RefreshCw,
 } from 'lucide-react';
 import type { RefundRequest } from '@/hooks/usePaymentTransactions';
 
@@ -55,7 +62,10 @@ export function RefundProcessor() {
   });
 
   const getStatusBadge = (status: string) => {
-    const config: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline', icon: React.ReactNode }> = {
+    const config: Record<
+      string,
+      { variant: 'default' | 'secondary' | 'destructive' | 'outline'; icon: React.ReactNode }
+    > = {
       pending: { variant: 'secondary', icon: <Clock className="h-3 w-3 mr-1" /> },
       approved: { variant: 'default', icon: <CheckCircle2 className="h-3 w-3 mr-1" /> },
       rejected: { variant: 'destructive', icon: <XCircle className="h-3 w-3 mr-1" /> },
@@ -105,7 +115,7 @@ export function RefundProcessor() {
       setSelectedRefund(null);
       setAdminNotes('');
       refetch();
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: 'Failed to update refund status',
@@ -120,7 +130,9 @@ export function RefundProcessor() {
     const total = refundRequests.length;
     const pending = refundRequests.filter(r => r.refund_status === 'pending').length;
     const approved = refundRequests.filter(r => r.refund_status === 'approved').length;
-    const processed = refundRequests.filter(r => r.refund_status === 'processed' || r.refund_status === 'completed').length;
+    const processed = refundRequests.filter(
+      r => r.refund_status === 'processed' || r.refund_status === 'completed'
+    ).length;
     const totalAmount = refundRequests
       .filter(r => r.refund_status === 'completed')
       .reduce((sum, r) => sum + r.refund_amount, 0);
@@ -146,9 +158,7 @@ export function RefundProcessor() {
             <DollarSign className="h-5 w-5" />
             Refund Processor
           </CardTitle>
-          <CardDescription>
-            Manage refund requests and process refunds
-          </CardDescription>
+          <CardDescription>Manage refund requests and process refunds</CardDescription>
 
           {/* Statistics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
@@ -213,7 +223,7 @@ export function RefundProcessor() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredRefunds.map((refund) => (
+                  filteredRefunds.map(refund => (
                     <TableRow key={refund.id}>
                       <TableCell className="font-medium">
                         {refund.user?.display_name || 'N/A'}
@@ -228,9 +238,7 @@ export function RefundProcessor() {
                         </div>
                       </TableCell>
                       <TableCell>{getStatusBadge(refund.refund_status)}</TableCell>
-                      <TableCell>
-                        {new Date(refund.created_at).toLocaleDateString()}
-                      </TableCell>
+                      <TableCell>{new Date(refund.created_at).toLocaleDateString()}</TableCell>
                       <TableCell className="text-right">
                         <Button
                           size="sm"
@@ -258,9 +266,7 @@ export function RefundProcessor() {
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Process Refund Request</DialogTitle>
-            <DialogDescription>
-              Review and update the refund request status
-            </DialogDescription>
+            <DialogDescription>Review and update the refund request status</DialogDescription>
           </DialogHeader>
 
           {selectedRefund && (
@@ -294,7 +300,10 @@ export function RefundProcessor() {
               {/* Status Selection */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">Update Status</label>
-                <Select value={newStatus} onValueChange={(value) => setNewStatus(value as RefundRequest['refund_status'])}>
+                <Select
+                  value={newStatus}
+                  onValueChange={value => setNewStatus(value as RefundRequest['refund_status'])}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -314,7 +323,7 @@ export function RefundProcessor() {
                 <Textarea
                   placeholder="Add notes about this refund..."
                   value={adminNotes}
-                  onChange={(e) => setAdminNotes(e.target.value)}
+                  onChange={e => setAdminNotes(e.target.value)}
                   rows={4}
                 />
               </div>
@@ -325,7 +334,8 @@ export function RefundProcessor() {
                   <div className="flex gap-2">
                     <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0" />
                     <p className="text-sm text-yellow-800">
-                      Marking as completed indicates the refund has been processed and funds transferred.
+                      Marking as completed indicates the refund has been processed and funds
+                      transferred.
                     </p>
                   </div>
                 </div>

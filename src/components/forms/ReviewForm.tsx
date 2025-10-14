@@ -50,7 +50,7 @@ export function ReviewForm() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
+  const [_isRecording, _setIsRecording] = useState(false);
   const [voiceBlob, setVoiceBlob] = useState<Blob | null>(null);
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
 
@@ -114,7 +114,7 @@ export function ReviewForm() {
       // Upload voice file if present
       if (formData.reviewType === 'voice' && voiceBlob) {
         const fileName = `${user.id}/${Date.now()}_voice_review.webm`;
-        const { data: voiceData, error: voiceError } = await supabase.storage
+        const { data: _voiceData, error: voiceError } = await supabase.storage
           .from('review-voices')
           .upload(fileName, voiceBlob, {
             contentType: 'audio/webm',
@@ -131,7 +131,7 @@ export function ReviewForm() {
       // Upload video file if present
       if (formData.reviewType === 'video' && videoBlob) {
         const fileName = `${user.id}/${Date.now()}_video_review.webm`;
-        const { data: videoData, error: videoError } = await supabase.storage
+        const { data: _videoData, error: videoError } = await supabase.storage
           .from('review-videos')
           .upload(fileName, videoBlob, {
             contentType: 'video/webm',

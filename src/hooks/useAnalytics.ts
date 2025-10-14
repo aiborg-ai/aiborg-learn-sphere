@@ -73,31 +73,32 @@ export const useRevenueAnalytics = (dateRange: DateRange) => {
 
       if (enrollError) throw enrollError;
 
-      const successfulEnrollments = enrollments?.filter(
-        e => e.payment_status === 'completed' || e.payment_status === 'paid'
-      ) || [];
+      const successfulEnrollments =
+        enrollments?.filter(e => e.payment_status === 'completed' || e.payment_status === 'paid') ||
+        [];
 
-      const failedEnrollments = enrollments?.filter(
-        e => e.payment_status === 'failed'
-      ) || [];
+      const failedEnrollments = enrollments?.filter(e => e.payment_status === 'failed') || [];
 
       const totalRevenue = successfulEnrollments.reduce(
-        (sum, e) => sum + (e.payment_amount || 0), 0
+        (sum, e) => sum + (e.payment_amount || 0),
+        0
       );
 
-      const averageOrderValue = successfulEnrollments.length > 0
-        ? totalRevenue / successfulEnrollments.length
-        : 0;
+      const averageOrderValue =
+        successfulEnrollments.length > 0 ? totalRevenue / successfulEnrollments.length : 0;
 
       // Group by day
-      const revenueByDay = successfulEnrollments.reduce((acc, e) => {
-        const date = new Date(e.enrolled_at).toLocaleDateString();
-        if (!acc[date]) {
-          acc[date] = 0;
-        }
-        acc[date] += e.payment_amount || 0;
-        return acc;
-      }, {} as Record<string, number>);
+      const revenueByDay = successfulEnrollments.reduce(
+        (acc, e) => {
+          const date = new Date(e.enrolled_at).toLocaleDateString();
+          if (!acc[date]) {
+            acc[date] = 0;
+          }
+          acc[date] += e.payment_amount || 0;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
       const revenueByDayArray = Object.entries(revenueByDay)
         .map(([date, amount]) => ({ date, amount }))
@@ -155,10 +156,12 @@ export const useEnrollmentAnalytics = (dateRange: DateRange) => {
       // Fetch enrollments with course info
       const { data: enrollments, error: enrollError } = await supabase
         .from('enrollments')
-        .select(`
+        .select(
+          `
           *,
           courses(title)
-        `)
+        `
+        )
         .gte('enrolled_at', dateRange.startDate.toISOString())
         .lte('enrolled_at', dateRange.endDate.toISOString());
 
@@ -167,26 +170,32 @@ export const useEnrollmentAnalytics = (dateRange: DateRange) => {
       const uniqueStudents = new Set(enrollments?.map(e => e.user_id) || []).size;
 
       // Group by day
-      const enrollmentsByDay = (enrollments || []).reduce((acc, e) => {
-        const date = new Date(e.enrolled_at).toLocaleDateString();
-        acc[date] = (acc[date] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      const enrollmentsByDay = (enrollments || []).reduce(
+        (acc, e) => {
+          const date = new Date(e.enrolled_at).toLocaleDateString();
+          acc[date] = (acc[date] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
       const enrollmentsByDayArray = Object.entries(enrollmentsByDay)
         .map(([date, count]) => ({ date, count }))
         .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
       // Group by course
-      const enrollmentsByCourse = (enrollments || []).reduce((acc, e) => {
-        const title = e.courses?.title || 'Unknown';
-        if (!acc[title]) {
-          acc[title] = { count: 0, revenue: 0 };
-        }
-        acc[title].count += 1;
-        acc[title].revenue += e.payment_amount || 0;
-        return acc;
-      }, {} as Record<string, { count: number; revenue: number }>);
+      const enrollmentsByCourse = (enrollments || []).reduce(
+        (acc, e) => {
+          const title = e.courses?.title || 'Unknown';
+          if (!acc[title]) {
+            acc[title] = { count: 0, revenue: 0 };
+          }
+          acc[title].count += 1;
+          acc[title].revenue += e.payment_amount || 0;
+          return acc;
+        },
+        {} as Record<string, { count: number; revenue: number }>
+      );
 
       const enrollmentsByCourseArray = Object.entries(enrollmentsByCourse)
         .map(([courseTitle, data]) => ({ courseTitle, ...data }))
@@ -214,7 +223,7 @@ export const useEnrollmentAnalytics = (dateRange: DateRange) => {
   return { data, loading, error, refetch: fetchEnrollmentData };
 };
 
-export const useEngagementAnalytics = (dateRange: DateRange) => {
+export const useEngagementAnalytics = (_dateRange: DateRange) => {
   const [data, setData] = useState<EngagementData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -231,8 +240,7 @@ export const useEngagementAnalytics = (dateRange: DateRange) => {
       setError(null);
 
       // Fetch course progress data
-      const { data: progressData, error: progressError } = await supabase
-        .from('course_progress')
+      const { data: progressData, error: progressError } = await supabase.from('course_progress')
         .select(`
           *,
           courses(title)
@@ -271,19 +279,23 @@ export const useEngagementAnalytics = (dateRange: DateRange) => {
 
       // Calculate completion rates
       const overallCompletionRate = progressData?.length
-        ? progressData.reduce((sum, p) => sum + (p.completion_percentage || 0), 0) / progressData.length
+        ? progressData.reduce((sum, p) => sum + (p.completion_percentage || 0), 0) /
+          progressData.length
         : 0;
 
       // Completion rates by course
-      const completionByCourse = (progressData || []).reduce((acc, p) => {
-        const title = p.courses?.title || 'Unknown';
-        if (!acc[title]) {
-          acc[title] = { totalCompletion: 0, count: 0 };
-        }
-        acc[title].totalCompletion += p.completion_percentage || 0;
-        acc[title].count += 1;
-        return acc;
-      }, {} as Record<string, { totalCompletion: number; count: number }>);
+      const completionByCourse = (progressData || []).reduce(
+        (acc, p) => {
+          const title = p.courses?.title || 'Unknown';
+          if (!acc[title]) {
+            acc[title] = { totalCompletion: 0, count: 0 };
+          }
+          acc[title].totalCompletion += p.completion_percentage || 0;
+          acc[title].count += 1;
+          return acc;
+        },
+        {} as Record<string, { totalCompletion: number; count: number }>
+      );
 
       const completionByCourseArray = Object.entries(completionByCourse)
         .map(([courseTitle, data]) => ({
@@ -333,8 +345,7 @@ export const usePerformanceAnalytics = () => {
       setError(null);
 
       // Fetch assignment submissions
-      const { data: submissions, error: subError } = await supabase
-        .from('assignment_submissions')
+      const { data: submissions, error: subError } = await supabase.from('assignment_submissions')
         .select(`
           *,
           assignment:assignments(max_grade)
@@ -349,15 +360,17 @@ export const usePerformanceAnalytics = () => {
 
       if (assignError) throw assignError;
 
-      const assignmentCompletionRate = totalAssignments && submissions
-        ? (submissions.length / (totalAssignments.length || 1)) * 100
-        : 0;
+      const assignmentCompletionRate =
+        totalAssignments && submissions
+          ? (submissions.length / (totalAssignments.length || 1)) * 100
+          : 0;
 
       // Calculate average grade
       const gradedSubmissions = (submissions || []).filter(s => s.grade !== null);
-      const averageGradeOverall = gradedSubmissions.length > 0
-        ? gradedSubmissions.reduce((sum, s) => sum + (s.grade || 0), 0) / gradedSubmissions.length
-        : 0;
+      const averageGradeOverall =
+        gradedSubmissions.length > 0
+          ? gradedSubmissions.reduce((sum, s) => sum + (s.grade || 0), 0) / gradedSubmissions.length
+          : 0;
 
       // Grade distribution
       const gradeRanges = ['0-40', '40-60', '60-80', '80-100'];

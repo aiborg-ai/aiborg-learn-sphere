@@ -415,7 +415,7 @@ export default function AILearningPathDetail() {
                   </div>
 
                   <div className="ml-6 pl-6 border-l-2 border-white/10 space-y-4">
-                    {weekItems.map((item, index) => {
+                    {weekItems.map((item, _index) => {
                       const typeConfig =
                         ITEM_TYPE_CONFIG[item.item_type as keyof typeof ITEM_TYPE_CONFIG];
                       const statusConfig = STATUS_CONFIG[item.status as keyof typeof STATUS_CONFIG];

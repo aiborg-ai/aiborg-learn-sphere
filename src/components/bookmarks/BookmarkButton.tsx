@@ -54,15 +54,18 @@ export function BookmarkButton({
   const existingBookmark = getBookmark(contentId, type);
 
   // Define button configuration
-  const config: ActionButtonConfig = useMemo(() => ({
-    defaultIcon: Bookmark,
-    activeIcon: BookmarkCheck,
-    defaultLabel: 'Bookmark',
-    activeLabel: 'Bookmarked',
-    defaultTitle: 'Add bookmark',
-    activeTitle: 'Remove bookmark',
-    activeColorClass: 'text-yellow-500 hover:text-yellow-600',
-  }), []);
+  const config: ActionButtonConfig = useMemo(
+    () => ({
+      defaultIcon: Bookmark,
+      activeIcon: BookmarkCheck,
+      defaultLabel: 'Bookmark',
+      activeLabel: 'Bookmarked',
+      defaultTitle: 'Add bookmark',
+      activeTitle: 'Remove bookmark',
+      activeColorClass: 'text-yellow-500 hover:text-yellow-600',
+    }),
+    []
+  );
 
   const handleQuickBookmark = async () => {
     if (bookmarked && existingBookmark) {
@@ -73,7 +76,7 @@ export function BookmarkButton({
           title: 'Bookmark Removed',
           description: 'This item has been removed from your bookmarks',
         });
-      } catch (error) {
+      } catch (_error) {
         toast({
           title: 'Error',
           description: 'Failed to remove bookmark',
@@ -93,7 +96,12 @@ export function BookmarkButton({
         title: customTitle,
         note: note || undefined,
         folder: folder || 'default',
-        tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+        tags: tags
+          ? tags
+              .split(',')
+              .map(t => t.trim())
+              .filter(Boolean)
+          : [],
         metadata,
       };
 
@@ -121,7 +129,7 @@ export function BookmarkButton({
 
       setShowDialog(false);
       resetForm();
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: 'Failed to add bookmark',
@@ -171,7 +179,7 @@ export function BookmarkButton({
               <Input
                 id="title"
                 value={customTitle}
-                onChange={(e) => setCustomTitle(e.target.value)}
+                onChange={e => setCustomTitle(e.target.value)}
                 placeholder="Bookmark title"
               />
             </div>
@@ -182,7 +190,7 @@ export function BookmarkButton({
               <Textarea
                 id="note"
                 value={note}
-                onChange={(e) => setNote(e.target.value)}
+                onChange={e => setNote(e.target.value)}
                 placeholder="Add a note about why you bookmarked this..."
                 rows={3}
               />
@@ -194,12 +202,10 @@ export function BookmarkButton({
               <Input
                 id="folder"
                 value={folder}
-                onChange={(e) => setFolder(e.target.value)}
+                onChange={e => setFolder(e.target.value)}
                 placeholder="default"
               />
-              <p className="text-xs text-muted-foreground">
-                Organize bookmarks into folders
-              </p>
+              <p className="text-xs text-muted-foreground">Organize bookmarks into folders</p>
             </div>
 
             {/* Tags */}
@@ -208,7 +214,7 @@ export function BookmarkButton({
               <Input
                 id="tags"
                 value={tags}
-                onChange={(e) => setTags(e.target.value)}
+                onChange={e => setTags(e.target.value)}
                 placeholder="important, review, exam-prep"
               />
               <p className="text-xs text-muted-foreground">
@@ -223,7 +229,7 @@ export function BookmarkButton({
                 <div className="flex flex-wrap gap-2">
                   {metadata.timestamp && (
                     <Badge variant="secondary" className="text-xs">
-                      Timestamp: {Math.floor(metadata.timestamp as number / 60)}:
+                      Timestamp: {Math.floor((metadata.timestamp as number) / 60)}:
                       {String(Math.floor((metadata.timestamp as number) % 60)).padStart(2, '0')}
                     </Badge>
                   )}

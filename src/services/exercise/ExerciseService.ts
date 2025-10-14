@@ -188,7 +188,7 @@ export class ExerciseService {
 
       return {
         exercise_id: exerciseId,
-        status: latestSubmission.status as any,
+        status: latestSubmission.status as 'draft' | 'submitted' | 'graded' | 'needs_revision',
         score: latestSubmission.score,
         best_score: bestSubmission.score,
         attempts: submissions.length,
@@ -293,7 +293,10 @@ export class ExerciseService {
     try {
       const original = await this.getExercise(exerciseId);
 
-      const { id, created_at, updated_at, created_by, ...exerciseData } = original as any;
+      const { id, created_at, updated_at, created_by, ...exerciseData } = original as Record<
+        string,
+        unknown
+      >;
 
       return await this.createExercise(
         {

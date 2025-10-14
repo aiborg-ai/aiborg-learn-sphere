@@ -16,7 +16,7 @@ export function EnhancedVideoPlayer({
   videoUrl,
   contentId,
   courseId,
-  title,
+  _title,
   chapters = [],
   transcript,
   quizzes = [],

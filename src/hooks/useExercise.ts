@@ -211,7 +211,7 @@ export const useSubmitExercise = () => {
 
   return useMutation({
     mutationFn: (submissionId: string) => ExerciseSubmissionService.submitExercise(submissionId),
-    onSuccess: result => {
+    onSuccess: _result => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: ['exercise', 'submission'] });
       queryClient.invalidateQueries({ queryKey: ['exercise', 'progress'] });

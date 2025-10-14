@@ -23,7 +23,7 @@ export function CommentItem({
   onEdit,
   onDelete,
   onLike,
-  depth = 0
+  depth = 0,
 }: CommentItemProps) {
   const { user } = useAuth();
   const [showReplyForm, setShowReplyForm] = useState(false);
@@ -42,7 +42,7 @@ export function CommentItem({
 
     try {
       await onLike(comment.id);
-    } catch (error) {
+    } catch (_error) {
       // Revert on error
       setIsLiked(!isLiked);
       setLikeCount(isLiked ? likeCount + 1 : likeCount - 1);
@@ -70,9 +70,7 @@ export function CommentItem({
       <div className="flex gap-3 mb-4">
         <Avatar className="h-10 w-10">
           <AvatarImage src={comment.user_avatar || undefined} />
-          <AvatarFallback>
-            {comment.user_name?.charAt(0) || 'U'}
-          </AvatarFallback>
+          <AvatarFallback>{comment.user_name?.charAt(0) || 'U'}</AvatarFallback>
         </Avatar>
 
         <div className="flex-1">
@@ -81,9 +79,7 @@ export function CommentItem({
             <span className="text-sm text-muted-foreground">
               {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
             </span>
-            {comment.is_edited && (
-              <span className="text-xs text-muted-foreground">(edited)</span>
-            )}
+            {comment.is_edited && <span className="text-xs text-muted-foreground">(edited)</span>}
           </div>
 
           {showEditForm ? (
@@ -106,9 +102,7 @@ export function CommentItem({
               disabled={!user}
               className="h-8 px-2"
             >
-              <Heart
-                className={`h-4 w-4 mr-1 ${isLiked ? 'fill-current text-red-500' : ''}`}
-              />
+              <Heart className={`h-4 w-4 mr-1 ${isLiked ? 'fill-current text-red-500' : ''}`} />
               {likeCount > 0 && likeCount}
             </Button>
 
@@ -150,16 +144,13 @@ export function CommentItem({
 
           {showReplyForm && (
             <div className="mt-4">
-              <ReplyForm
-                onSubmit={handleReply}
-                onCancel={() => setShowReplyForm(false)}
-              />
+              <ReplyForm onSubmit={handleReply} onCancel={() => setShowReplyForm(false)} />
             </div>
           )}
 
           {comment.replies && comment.replies.length > 0 && (
             <div className="mt-4 space-y-4">
-              {comment.replies.map((reply) => (
+              {comment.replies.map(reply => (
                 <CommentItem
                   key={reply.id}
                   comment={reply}

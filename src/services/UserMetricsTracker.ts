@@ -46,7 +46,7 @@ export interface UserEventMetric {
   sessionId: string;
   eventName: string;
   eventCategory: string;
-  eventData?: Record<string, any>;
+  eventData?: Record<string, unknown>;
   timestamp: string;
 }
 
@@ -55,7 +55,7 @@ export interface ConversionMetric {
   sessionId: string;
   conversionType: string;
   conversionValue?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   timestamp: string;
 }
 
@@ -289,7 +289,7 @@ class UserMetricsTrackerClass {
   public trackEvent(
     eventName: string,
     eventCategory: string = 'general',
-    eventData?: Record<string, any>
+    eventData?: Record<string, unknown>
   ): void {
     const metric: UserEventMetric = {
       userId: this.userId,
@@ -310,7 +310,7 @@ class UserMetricsTrackerClass {
    */
   public trackConversion(
     conversionType: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
     conversionValue?: number
   ): void {
     const metric: ConversionMetric = {

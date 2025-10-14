@@ -14,7 +14,7 @@ import type { ProfilingData } from './types';
 /**
  * Custom hook for assessment business logic
  */
-export const useAssessmentLogic = (state: any) => {
+export const useAssessmentLogic = (state: Record<string, unknown>) => {
   const { user } = useAuth();
   const { selectedAudience } = usePersonalization();
   const { toast } = useToast();
@@ -234,7 +234,7 @@ export const useAssessmentLogic = (state: any) => {
           }
 
           if (pointsAwarded) {
-            const pointsToNextLevel = PointsService.calculatePointsForLevel(
+            const _pointsToNextLevel = PointsService.calculatePointsForLevel(
               pointsAwarded.newLevel + 1
             );
             const pointsProgress = ((pointsAwarded.newPoints % 100) / 100) * 100;

@@ -67,10 +67,12 @@ export const useResourcesManagement = () => {
 
       const { data, error } = await supabase
         .from('user_resources')
-        .select(`
+        .select(
+          `
           *,
           allocations:user_resource_allocations(count)
-        `)
+        `
+        )
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -106,11 +108,13 @@ export const useResourcesManagement = () => {
 
       let query = supabase
         .from('user_resource_allocations')
-        .select(`
+        .select(
+          `
           *,
           user_resources(*),
           profiles:user_id(display_name, email)
-        `)
+        `
+        )
         .order('allocated_at', { ascending: false });
 
       if (resourceId) {
@@ -285,34 +289,31 @@ export const useResourcesManagement = () => {
     [fetchAllocations]
   );
 
-  const removeAllocation = useCallback(
-    async (allocationId: string) => {
-      try {
-        logger.log('🗑️ Removing resource allocation...', { allocationId });
+  const removeAllocation = useCallback(async (allocationId: string) => {
+    try {
+      logger.log('🗑️ Removing resource allocation...', { allocationId });
 
-        const { error } = await supabase
-          .from('user_resource_allocations')
-          .delete()
-          .eq('id', allocationId);
+      const { error } = await supabase
+        .from('user_resource_allocations')
+        .delete()
+        .eq('id', allocationId);
 
-        if (error) throw error;
+      if (error) throw error;
 
-        logger.log('✅ Allocation removed');
+      logger.log('✅ Allocation removed');
 
-        // Update local state
-        setState(prev => ({
-          ...prev,
-          allocations: prev.allocations.filter(a => a.id !== allocationId),
-        }));
-      } catch (err) {
-        logger.error('❌ Error removing allocation:', err);
-        throw err;
-      }
-    },
-    []
-  );
+      // Update local state
+      setState(prev => ({
+        ...prev,
+        allocations: prev.allocations.filter(a => a.id !== allocationId),
+      }));
+    } catch (err) {
+      logger.error('❌ Error removing allocation:', err);
+      throw err;
+    }
+  }, []);
 
-  const uploadFile = useCallback(async (file: File, resourceType: string) => {
+  const uploadFile = useCallback(async (file: File, _resourceType: string) => {
     try {
       logger.log('📤 Uploading file...', { fileName: file.name, size: file.size });
 
@@ -320,12 +321,10 @@ export const useResourcesManagement = () => {
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      const { data, error } = await supabase.storage
-        .from('user-resources')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false,
-        });
+      const { data, error } = await supabase.storage.from('user-resources').upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
 
       if (error) throw error;
 
