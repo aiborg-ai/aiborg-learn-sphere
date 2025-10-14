@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { AdminAnalyticsService } from '@/services/analytics/AdminAnalyticsService';
 import { logger } from '@/utils/logger';
@@ -34,7 +34,7 @@ export function useAnalyticsData() {
     assessmentAnalytics: null,
   });
 
-  const fetchAllAnalytics = async () => {
+  const fetchAllAnalytics = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -65,7 +65,7 @@ export function useAnalyticsData() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -79,7 +79,7 @@ export function useAnalyticsData() {
 
   useEffect(() => {
     fetchAllAnalytics();
-  }, []);
+  }, [fetchAllAnalytics]);
 
   return {
     ...data,

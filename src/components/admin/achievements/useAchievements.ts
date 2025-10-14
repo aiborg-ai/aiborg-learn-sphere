@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import { useToast } from '@/components/ui/use-toast';
@@ -10,7 +10,7 @@ export const useAchievements = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  const fetchAchievements = async () => {
+  const fetchAchievements = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('achievements')
@@ -29,9 +29,9 @@ export const useAchievements = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const { data: profileData, error: profileError } = await supabase.from('profiles').select(`
           user_id,
@@ -68,7 +68,7 @@ export const useAchievements = () => {
     } catch (error) {
       logger.error('Error fetching users:', error);
     }
-  };
+  }, []);
 
   const createAchievement = async (formData: AchievementFormData) => {
     try {
@@ -230,7 +230,7 @@ export const useAchievements = () => {
   useEffect(() => {
     fetchAchievements();
     fetchUsers();
-  }, []);
+  }, [fetchAchievements, fetchUsers]);
 
   return {
     achievements,

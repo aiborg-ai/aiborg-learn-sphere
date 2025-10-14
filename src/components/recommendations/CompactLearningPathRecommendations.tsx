@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -35,11 +35,7 @@ export function CompactLearningPathRecommendations({
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchTopRecommendation();
-  }, [userId, assessmentId]);
-
-  const fetchTopRecommendation = async () => {
+  const fetchTopRecommendation = useCallback(async () => {
     try {
       setLoading(true);
       const recs = await LearningPathRecommendationEngine.generateRecommendations(
@@ -54,7 +50,11 @@ export function CompactLearningPathRecommendations({
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId, assessmentId]);
+
+  useEffect(() => {
+    fetchTopRecommendation();
+  }, [fetchTopRecommendation]);
 
   if (loading) {
     return (

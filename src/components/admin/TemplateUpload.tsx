@@ -26,6 +26,43 @@ export function TemplateUpload({ onFileUpload, isLoading }: TemplateUploadProps)
 
   const parseFile = useParseJSONFile();
 
+  const handleFile = useCallback(
+    async (file: File) => {
+      // Validate file type
+      if (file.type !== 'application/json') {
+        setError('Please upload a JSON file');
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setError('File size must be less than 5MB');
+        return;
+      }
+
+      setSelectedFile(file);
+
+      // Parse and validate JSON
+      try {
+        const data = await parseFile.mutateAsync(file);
+
+        // Auto-detect template type
+        if (data.courses && Array.isArray(data.courses)) {
+          setTemplateType('course');
+        } else if (data.events && Array.isArray(data.events)) {
+          setTemplateType('event');
+        } else {
+          setError('Invalid template format. Must contain "courses" or "events" array');
+          setSelectedFile(null);
+        }
+      } catch (_err) {
+        setError('Failed to parse JSON file');
+        setSelectedFile(null);
+      }
+    },
+    [parseFile]
+  );
+
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -60,40 +97,6 @@ export function TemplateUpload({ onFileUpload, isLoading }: TemplateUploadProps)
     },
     [handleFile]
   );
-
-  const handleFile = async (file: File) => {
-    // Validate file type
-    if (file.type !== 'application/json') {
-      setError('Please upload a JSON file');
-      return;
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setError('File size must be less than 5MB');
-      return;
-    }
-
-    setSelectedFile(file);
-
-    // Parse and validate JSON
-    try {
-      const data = await parseFile.mutateAsync(file);
-
-      // Auto-detect template type
-      if (data.courses && Array.isArray(data.courses)) {
-        setTemplateType('course');
-      } else if (data.events && Array.isArray(data.events)) {
-        setTemplateType('event');
-      } else {
-        setError('Invalid template format. Must contain "courses" or "events" array');
-        setSelectedFile(null);
-      }
-    } catch (_err) {
-      setError('Failed to parse JSON file');
-      setSelectedFile(null);
-    }
-  };
 
   const handleUpload = async () => {
     if (!selectedFile) return;

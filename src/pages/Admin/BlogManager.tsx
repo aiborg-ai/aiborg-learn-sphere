@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { BlogService } from '@/services/blog/BlogService';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/components/ui/use-toast';
@@ -48,13 +48,7 @@ export default function BlogManager() {
     color: '#6B46C1',
   });
 
-  useEffect(() => {
-    if (isAdmin) {
-      fetchData();
-    }
-  }, [isAdmin, currentPage, pageSize]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       const [postsData, categoriesData] = await Promise.all([
@@ -78,7 +72,13 @@ export default function BlogManager() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, pageSize, toast]);
+
+  useEffect(() => {
+    if (isAdmin) {
+      fetchData();
+    }
+  }, [isAdmin, fetchData]);
 
   const handleCreatePost = () => {
     setEditingPost(null);
