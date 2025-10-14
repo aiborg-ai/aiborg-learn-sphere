@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -92,15 +92,7 @@ export default function GamificationPage() {
   const [userRank, setUserRank] = useState<number>(0);
   const [activeTab, setActiveTab] = useState('profile');
 
-  useEffect(() => {
-    if (!user) {
-      navigate('/auth');
-      return;
-    }
-    fetchGamificationData();
-  }, [user, navigate]);
-
-  const fetchGamificationData = async () => {
+  const fetchGamificationData = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -230,7 +222,15 @@ export default function GamificationPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, toast]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+    fetchGamificationData();
+  }, [user, navigate, fetchGamificationData]);
 
   const getRankBadgeColor = (rank: number) => {
     if (rank === 1) return 'bg-gradient-to-r from-yellow-400 to-yellow-600';

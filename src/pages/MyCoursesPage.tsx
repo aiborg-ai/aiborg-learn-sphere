@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useEnrollments } from '@/hooks/useEnrollments';
@@ -63,21 +63,7 @@ export default function MyCoursesPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!user) {
-      navigate('/auth');
-      return;
-    }
-    if (!enrollmentsLoading && enrollments && courses) {
-      fetchEnrichedData();
-    }
-  }, [user, enrollmentsLoading, enrollments, courses, navigate]);
-
-  useEffect(() => {
-    filterEnrollments();
-  }, [enrichedEnrollments, searchQuery, activeTab]);
-
-  const fetchEnrichedData = async () => {
+  const fetchEnrichedData = useCallback(async () => {
     if (!user || !enrollments) return;
 
     try {
@@ -112,9 +98,9 @@ export default function MyCoursesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, enrollments, courses]);
 
-  const filterEnrollments = () => {
+  const filterEnrollments = useCallback(() => {
     let filtered = [...enrichedEnrollments];
 
     // Filter by status
@@ -139,7 +125,21 @@ export default function MyCoursesPage() {
     }
 
     setFilteredEnrollments(filtered);
-  };
+  }, [enrichedEnrollments, searchQuery, activeTab]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+    if (!enrollmentsLoading && enrollments && courses) {
+      fetchEnrichedData();
+    }
+  }, [user, enrollmentsLoading, enrollments, courses, navigate, fetchEnrichedData]);
+
+  useEffect(() => {
+    filterEnrollments();
+  }, [filterEnrollments]);
 
   const getStatusBadge = (enrollment: EnrichedEnrollment) => {
     const progress = enrollment.progress?.progress_percentage || 0;
