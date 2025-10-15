@@ -134,12 +134,14 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
           .select('id')
           .eq('user_id', user.id)
           .eq('course_id', courseId)
-          .single();
+          .maybeSingle();
 
         if (existingEnrollment) {
           toast({
             title: 'Already Enrolled',
-            description: 'You are already enrolled in this course. Check your dashboard!',
+            description:
+              'You are already enrolled in this course. Check your dashboard to access it!',
+            variant: 'default',
           });
           onClose();
           return;
@@ -159,6 +161,19 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
 
         if (enrollError) {
           logger.error('Free enrollment error:', enrollError);
+
+          // Handle duplicate enrollment error specifically
+          if (enrollError.code === '23505' || enrollError.message?.includes('duplicate')) {
+            toast({
+              title: 'Already Enrolled',
+              description:
+                'You are already enrolled in this course. Check your dashboard to access it!',
+              variant: 'default',
+            });
+            onClose();
+            return;
+          }
+
           throw enrollError;
         }
 

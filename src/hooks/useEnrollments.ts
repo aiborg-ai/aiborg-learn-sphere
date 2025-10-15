@@ -30,10 +30,7 @@ export const useEnrollments = () => {
     try {
       setLoading(true);
       setError(null);
-      const { data, error } = await supabase
-        .from('enrollments')
-        .select('*')
-        .eq('user_id', user.id);
+      const { data, error } = await supabase.from('enrollments').select('*').eq('user_id', user.id);
 
       if (error) {
         throw error;
@@ -53,18 +50,58 @@ export const useEnrollments = () => {
       throw new Error('User must be logged in to enroll');
     }
 
+    // Check if already enrolled (duplicate detection)
+    const existingEnrollment = enrollments.find(enrollment => enrollment.course_id === courseId);
+
+    if (existingEnrollment) {
+      const error = new Error(
+        'You are already enrolled in this course. Check your dashboard to access it!'
+      );
+      error.name = 'DuplicateEnrollmentError';
+      throw error;
+    }
+
+    // Double-check with database in case local state is stale
+    const { data: dbCheck, error: checkError } = await supabase
+      .from('enrollments')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('course_id', courseId)
+      .maybeSingle();
+
+    if (checkError) {
+      logger.error('Error checking existing enrollment:', checkError);
+      // Continue with enrollment attempt - constraint will catch it
+    }
+
+    if (dbCheck) {
+      const error = new Error(
+        'You are already enrolled in this course. Check your dashboard to access it!'
+      );
+      error.name = 'DuplicateEnrollmentError';
+      throw error;
+    }
+
     const { data, error } = await supabase
       .from('enrollments')
       .insert({
         user_id: user.id,
         course_id: courseId,
         payment_status: 'completed',
-        payment_amount: paymentAmount
+        payment_amount: paymentAmount,
       })
       .select()
       .single();
 
     if (error) {
+      // Handle unique constraint violation (23505 is PostgreSQL unique violation code)
+      if (error.code === '23505' || error.message.includes('duplicate')) {
+        const duplicateError = new Error(
+          'You are already enrolled in this course. Check your dashboard to access it!'
+        );
+        duplicateError.name = 'DuplicateEnrollmentError';
+        throw duplicateError;
+      }
       throw error;
     }
 
@@ -74,8 +111,8 @@ export const useEnrollments = () => {
         body: {
           enrollmentId: data.id,
           userId: user.id,
-          itemType: 'course'
-        }
+          itemType: 'course',
+        },
       });
     } catch (invoiceError) {
       logger.error('Invoice generation failed:', invoiceError);
@@ -93,14 +130,14 @@ export const useEnrollments = () => {
   const getEnrollmentStatus = (courseId: number, courseStartDate: string) => {
     const enrollment = enrollments.find(e => e.course_id === courseId);
     if (!enrollment) return 'not_enrolled';
-    
+
     const startDate = new Date(courseStartDate);
     const now = new Date();
-    
+
     if (startDate < now) {
       return 'completed';
     }
-    
+
     return 'enrolled';
   };
 
@@ -115,6 +152,6 @@ export const useEnrollments = () => {
     enrollInCourse,
     isEnrolled,
     getEnrollmentStatus,
-    refetch: fetchEnrollments
+    refetch: fetchEnrollments,
   };
 };
