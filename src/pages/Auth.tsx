@@ -6,13 +6,21 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Info } from 'lucide-react';
+import { Info, Building2, User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { GoogleIcon } from '@/components/icons/GoogleIcon';
 import { GitHubIcon } from '@/components/icons/GitHubIcon';
 import { Separator } from '@/components/ui/separator';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   Dialog,
   DialogContent,
@@ -40,6 +48,9 @@ export default function Auth() {
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [isResetting, setIsResetting] = useState(false);
+  const [accountType, setAccountType] = useState<'individual' | 'company_admin'>('individual');
+  const [industry, setIndustry] = useState('');
+  const [companySize, setCompanySize] = useState('');
   const { signIn, signUp, signInWithGoogle, signInWithGitHub, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -133,6 +144,9 @@ export default function Auth() {
     const confirmPassword = formData.get('confirmPassword') as string;
     const displayName = formData.get('displayName') as string;
 
+    // Company admin specific fields
+    const companyName = formData.get('companyName') as string;
+
     // Check rate limit
     const rateLimit = checkSignUpLimit(email);
     if (!rateLimit.allowed) {
@@ -161,6 +175,27 @@ export default function Auth() {
       return;
     }
 
+    // Validate company admin specific fields
+    if (accountType === 'company_admin') {
+      if (!companyName || companyName.trim().length < 2) {
+        setError('Company name is required and must be at least 2 characters long');
+        setIsLoading(false);
+        return;
+      }
+
+      if (!industry) {
+        setError('Please select an industry');
+        setIsLoading(false);
+        return;
+      }
+
+      if (!companySize) {
+        setError('Please select company size');
+        setIsLoading(false);
+        return;
+      }
+    }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       setIsLoading(false);
@@ -175,7 +210,17 @@ export default function Auth() {
       return;
     }
 
-    const { error } = await signUp(email, password, displayName.trim());
+    // Prepare company data if company admin
+    const companyData =
+      accountType === 'company_admin'
+        ? {
+            company_name: companyName.trim(),
+            industry,
+            company_size: companySize,
+          }
+        : undefined;
+
+    const { error } = await signUp(email, password, displayName.trim(), accountType, companyData);
 
     if (error) {
       if (error.message.includes('already registered')) {
@@ -187,7 +232,11 @@ export default function Auth() {
       setError(null);
       // Show success message
       setActiveTab('signin');
-      setError('Account created successfully! Please check your email and then sign in.');
+      const successMessage =
+        accountType === 'company_admin'
+          ? 'Company admin account created successfully! Please check your email and then sign in.'
+          : 'Account created successfully! Please check your email and then sign in.';
+      setError(successMessage);
     }
     setIsLoading(false);
   };
@@ -418,6 +467,49 @@ export default function Auth() {
                 </div>
 
                 <form onSubmit={handleSignUp} className="space-y-4">
+                  {/* Account Type Selection */}
+                  <div className="space-y-3">
+                    <Label className="text-white">Account Type</Label>
+                    <RadioGroup
+                      value={accountType}
+                      onValueChange={value =>
+                        setAccountType(value as 'individual' | 'company_admin')
+                      }
+                      className="flex gap-4"
+                    >
+                      <div className="flex items-center space-x-2 bg-white/10 rounded-lg p-3 flex-1 cursor-pointer hover:bg-white/20">
+                        <RadioGroupItem value="individual" id="individual" className="text-white" />
+                        <Label
+                          htmlFor="individual"
+                          className="text-white cursor-pointer flex items-center gap-2"
+                        >
+                          <User className="h-4 w-4" />
+                          Individual
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2 bg-white/10 rounded-lg p-3 flex-1 cursor-pointer hover:bg-white/20">
+                        <RadioGroupItem
+                          value="company_admin"
+                          id="company_admin"
+                          className="text-white"
+                        />
+                        <Label
+                          htmlFor="company_admin"
+                          className="text-white cursor-pointer flex items-center gap-2"
+                        >
+                          <Building2 className="h-4 w-4" />
+                          Company Admin
+                        </Label>
+                      </div>
+                    </RadioGroup>
+                    {accountType === 'company_admin' && (
+                      <p className="text-xs text-white/60">
+                        As a company admin, you can create your company profile and take AI
+                        readiness assessments for your organization.
+                      </p>
+                    )}
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="displayName" className="text-white">
                       Display Name
@@ -431,6 +523,69 @@ export default function Auth() {
                       className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     />
                   </div>
+
+                  {/* Company Admin Fields */}
+                  {accountType === 'company_admin' && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="companyName" className="text-white">
+                          Company Name <span className="text-red-400">*</span>
+                        </Label>
+                        <Input
+                          id="companyName"
+                          name="companyName"
+                          type="text"
+                          placeholder="Enter your company name"
+                          required={accountType === 'company_admin'}
+                          className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="industry" className="text-white">
+                          Industry <span className="text-red-400">*</span>
+                        </Label>
+                        <Select value={industry} onValueChange={setIndustry}>
+                          <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                            <SelectValue placeholder="Select industry" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="technology">Technology</SelectItem>
+                            <SelectItem value="healthcare">Healthcare</SelectItem>
+                            <SelectItem value="finance">Finance</SelectItem>
+                            <SelectItem value="education">Education</SelectItem>
+                            <SelectItem value="retail">Retail</SelectItem>
+                            <SelectItem value="manufacturing">Manufacturing</SelectItem>
+                            <SelectItem value="professional-services">
+                              Professional Services
+                            </SelectItem>
+                            <SelectItem value="hospitality">Hospitality</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="companySize" className="text-white">
+                          Company Size <span className="text-red-400">*</span>
+                        </Label>
+                        <Select value={companySize} onValueChange={setCompanySize}>
+                          <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                            <SelectValue placeholder="Select company size" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1-10">1-10 employees</SelectItem>
+                            <SelectItem value="11-50">11-50 employees</SelectItem>
+                            <SelectItem value="51-200">51-200 employees</SelectItem>
+                            <SelectItem value="201-500">201-500 employees</SelectItem>
+                            <SelectItem value="501-1000">501-1000 employees</SelectItem>
+                            <SelectItem value="1000+">1000+ employees</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  )}
+
                   <div className="space-y-2">
                     <Label htmlFor="signup-email" className="text-white">
                       Email

@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useSMEAssessmentSubmit } from '@/hooks/useSMEAssessmentSubmit';
 import type { AssessmentFormData } from '@/types/aiAssessment';
+import { supabase } from '@/integrations/supabase/client';
 
 // Import form sections
 import { Section1Mission } from '@/components/sme-assessment/Section1Mission';
@@ -27,8 +28,9 @@ export default function SMEAssessment() {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, isCompanyAdmin } = useAuth();
   const [currentSection, setCurrentSection] = useState(1);
+  const [companyProfileId, setCompanyProfileId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<AssessmentFormData>>({
     companyName: '',
     companyMission: '',
@@ -67,6 +69,54 @@ export default function SMEAssessment() {
     }
   }, [user, navigate, toast]);
 
+  // Fetch company profile for company admins
+  useEffect(() => {
+    const fetchCompanyProfile = async () => {
+      if (!user || !isCompanyAdmin) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('company_profiles')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error) {
+          if (error.code !== 'PGRST116') {
+            // PGRST116 means no rows found, which is okay for new company admins
+            toast({
+              title: 'Warning',
+              description: 'Could not load company profile. You can still complete the assessment.',
+              variant: 'default',
+            });
+          }
+          return;
+        }
+
+        if (data) {
+          // Store company profile ID for later use
+          setCompanyProfileId(data.id);
+
+          // Auto-populate form with company data
+          setFormData(prev => ({
+            ...prev,
+            companyName: data.company_name || '',
+            companyMission: data.description || prev.companyMission || '',
+          }));
+
+          toast({
+            title: 'Company Profile Loaded',
+            description: `Assessment for ${data.company_name}`,
+          });
+        }
+      } catch (error) {
+        // Silently handle errors - company profile is optional
+      }
+    };
+
+    fetchCompanyProfile();
+  }, [user, isCompanyAdmin, toast]);
+
   // Receive profiling data from navigation state and pre-fill form
   useEffect(() => {
     const state = location.state as {
@@ -95,6 +145,7 @@ export default function SMEAssessment() {
   const { saveDraft, submitAssessment, isSaving } = useSMEAssessmentSubmit({
     user,
     formData,
+    companyId: companyProfileId,
     onSuccess: assessmentId => {
       toast({
         title: 'Assessment Completed',

@@ -146,19 +146,43 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, displayName?: string) => {
+  const signUp = async (
+    email: string,
+    password: string,
+    displayName?: string,
+    accountType?: 'individual' | 'company_admin',
+    companyData?: {
+      company_name: string;
+      industry: string;
+      company_size: string;
+    }
+  ) => {
     // Use environment variable for redirect URL, fallback to current origin
     const appUrl = import.meta.env.VITE_APP_URL || window.location.origin;
     const redirectUrl = `${appUrl}/`;
+
+    // Prepare user metadata
+    const metadata: Record<string, unknown> = {
+      display_name: displayName,
+    };
+
+    // Add account type and company data if provided
+    if (accountType) {
+      metadata.account_type = accountType;
+    }
+
+    if (companyData) {
+      metadata.company_name = companyData.company_name;
+      metadata.industry = companyData.industry;
+      metadata.company_size = companyData.company_size;
+    }
 
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: {
-          display_name: displayName,
-        },
+        data: metadata,
       },
     });
     return { error };
@@ -240,6 +264,7 @@ export const useAuth = () => {
     signOut,
     updateProfile,
     fetchUserProfile,
-    isAdmin: profile?.role === 'admin',
+    isAdmin: profile?.role === 'admin' || profile?.role === 'super_admin',
+    isCompanyAdmin: profile?.role === 'company_admin',
   };
 };

@@ -8,6 +8,7 @@ import type { AssessmentFormData } from '@/types/aiAssessment';
 interface UseSMEAssessmentSubmitProps {
   user: User | null;
   formData: Partial<AssessmentFormData>;
+  companyId?: string | null;
   onSuccess?: (assessmentId: string) => void;
 }
 
@@ -21,6 +22,7 @@ interface UseSMEAssessmentSubmitReturn {
 export const useSMEAssessmentSubmit = ({
   user,
   formData,
+  companyId,
   onSuccess,
 }: UseSMEAssessmentSubmitProps): UseSMEAssessmentSubmitReturn => {
   const navigate = useNavigate();
@@ -42,6 +44,7 @@ export const useSMEAssessmentSubmit = ({
       // Create or update main assessment record
       const assessmentData = {
         user_id: user.id,
+        company_id: companyId || null,
         company_name: formData.companyName || '',
         company_mission: formData.companyMission,
         ai_enhancement_description: formData.aiEnhancementDescription,
