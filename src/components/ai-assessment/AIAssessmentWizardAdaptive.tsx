@@ -135,6 +135,9 @@ export const AIAssessmentWizardAdaptive: React.FC = () => {
         leaderboardChange={0}
         isCollapsed={state.liveStatsPanelCollapsed}
         onToggle={() => state.setLiveStatsPanelCollapsed(!state.liveStatsPanelCollapsed)}
+        lastAnswerCorrect={state.lastAnswerCorrect}
+        lastAnswerPointsEarned={state.lastAnswerPointsEarned}
+        showLastAnswerFeedback={state.showAnswerFeedback}
       />
     </div>
   );

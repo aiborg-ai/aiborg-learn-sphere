@@ -37,6 +37,9 @@ interface LiveStatsPanelProps {
   leaderboardChange?: number;
   isCollapsed?: boolean;
   onToggle?: () => void;
+  lastAnswerCorrect: boolean | null;
+  lastAnswerPointsEarned?: number;
+  showLastAnswerFeedback?: boolean;
 }
 
 export function LiveStatsPanel({
@@ -50,6 +53,9 @@ export function LiveStatsPanel({
   leaderboardChange = 0,
   isCollapsed = false,
   onToggle,
+  lastAnswerCorrect,
+  lastAnswerPointsEarned = 0,
+  showLastAnswerFeedback = false,
 }: LiveStatsPanelProps) {
   const accuracy = questionsAnswered > 0 ? (correctAnswers / questionsAnswered) * 100 : 0;
   const [animatedPoints, setAnimatedPoints] = useState(0);
@@ -58,7 +64,9 @@ export function LiveStatsPanel({
   useEffect(() => {
     const timer = setTimeout(() => {
       if (animatedPoints < totalPoints) {
-        setAnimatedPoints(Math.min(animatedPoints + Math.ceil((totalPoints - animatedPoints) / 10), totalPoints));
+        setAnimatedPoints(
+          Math.min(animatedPoints + Math.ceil((totalPoints - animatedPoints) / 10), totalPoints)
+        );
       }
     }, 50);
     return () => clearTimeout(timer);
@@ -119,6 +127,42 @@ export function LiveStatsPanel({
         </CardHeader>
 
         <CardContent className="space-y-4 max-h-[80vh] overflow-y-auto">
+          {/* Answer Feedback Banner */}
+          {showLastAnswerFeedback && lastAnswerCorrect !== null && (
+            <div
+              className={`
+                rounded-lg p-4 border-2 animate-in slide-in-from-top duration-300
+                ${
+                  lastAnswerCorrect
+                    ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-400'
+                    : 'bg-gradient-to-r from-orange-50 to-red-50 border-orange-400'
+                }
+              `}
+            >
+              <div className="flex items-center gap-3">
+                {lastAnswerCorrect ? (
+                  <CheckCircle className="h-6 w-6 text-green-600 flex-shrink-0" />
+                ) : (
+                  <XCircle className="h-6 w-6 text-orange-600 flex-shrink-0" />
+                )}
+                <div className="flex-1">
+                  <p
+                    className={`font-bold text-lg ${lastAnswerCorrect ? 'text-green-700' : 'text-orange-700'}`}
+                  >
+                    {lastAnswerCorrect ? '✓ Correct!' : '✗ Keep Going!'}
+                  </p>
+                  <p
+                    className={`text-sm ${lastAnswerCorrect ? 'text-green-600' : 'text-orange-600'}`}
+                  >
+                    {lastAnswerCorrect
+                      ? `Great job! +${lastAnswerPointsEarned} points 🎉`
+                      : "Don't worry, let's try the next question! 💪"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Points */}
           <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-lg p-4 border border-yellow-200">
             <div className="flex items-center justify-between mb-2">
@@ -145,9 +189,7 @@ export function LiveStatsPanel({
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-2xl font-bold ${getAccuracyColor()}`}>
-                  {accuracy.toFixed(0)}%
-                </p>
+                <p className={`text-2xl font-bold ${getAccuracyColor()}`}>{accuracy.toFixed(0)}%</p>
                 <p className="text-sm text-gray-600">
                   {correctAnswers} / {questionsAnswered} correct
                 </p>
@@ -157,7 +199,9 @@ export function LiveStatsPanel({
                 <span className="text-sm text-gray-500 ml-1">{correctAnswers}</span>
                 <br />
                 <XCircle className="h-6 w-6 text-red-500 inline-block" />
-                <span className="text-sm text-gray-500 ml-1">{questionsAnswered - correctAnswers}</span>
+                <span className="text-sm text-gray-500 ml-1">
+                  {questionsAnswered - correctAnswers}
+                </span>
               </div>
             </div>
           </div>
@@ -172,9 +216,11 @@ export function LiveStatsPanel({
               {formatTime(averageTimePerQuestion)}
             </p>
             <p className="text-xs text-gray-600 mt-1">
-              {averageTimePerQuestion < 30 ? 'Quick thinker! 🚀' :
-               averageTimePerQuestion < 60 ? 'Steady pace 👍' :
-               'Take your time ⏰'}
+              {averageTimePerQuestion < 30
+                ? 'Quick thinker! 🚀'
+                : averageTimePerQuestion < 60
+                  ? 'Steady pace 👍'
+                  : 'Take your time ⏰'}
             </p>
           </div>
 
@@ -239,10 +285,13 @@ export function LiveStatsPanel({
           {/* Motivational Message */}
           <div className="text-center p-3 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg">
             <p className="text-sm font-medium text-gray-700">
-              {accuracy >= 80 ? '🔥 You\'re on fire!' :
-               accuracy >= 60 ? '💪 Great job!' :
-               accuracy >= 40 ? '📚 Keep learning!' :
-               '🎯 Stay focused!'}
+              {accuracy >= 80
+                ? "🔥 You're on fire!"
+                : accuracy >= 60
+                  ? '💪 Great job!'
+                  : accuracy >= 40
+                    ? '📚 Keep learning!'
+                    : '🎯 Stay focused!'}
             </p>
           </div>
         </CardContent>

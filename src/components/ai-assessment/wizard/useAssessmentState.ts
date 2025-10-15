@@ -35,6 +35,10 @@ export const useAssessmentState = () => {
   const [currentStreak, setCurrentStreak] = useState(1);
   const [levelProgress, setLevelProgress] = useState(0);
 
+  // Answer feedback tracking
+  const [lastAnswerPointsEarned, setLastAnswerPointsEarned] = useState(0);
+  const [showAnswerFeedback, setShowAnswerFeedback] = useState(false);
+
   const questionStartTime = useRef<Date | null>(null);
 
   return {
@@ -91,6 +95,12 @@ export const useAssessmentState = () => {
     setCurrentStreak,
     levelProgress,
     setLevelProgress,
+
+    // Feedback state
+    lastAnswerPointsEarned,
+    setLastAnswerPointsEarned,
+    showAnswerFeedback,
+    setShowAnswerFeedback,
 
     // Refs
     questionStartTime,

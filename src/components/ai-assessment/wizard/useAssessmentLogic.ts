@@ -179,6 +179,15 @@ export const useAssessmentLogic = (state: Record<string, unknown>) => {
         state.setCorrectAnswers((prev: number) => prev + 1);
         state.setTotalPointsEarned((prev: number) => prev + result.pointsEarned);
       }
+
+      // Set feedback state for LiveStatsPanel
+      state.setLastAnswerPointsEarned(result.pointsEarned);
+      state.setShowAnswerFeedback(true);
+
+      // Auto-hide feedback after 4 seconds
+      setTimeout(() => {
+        state.setShowAnswerFeedback(false);
+      }, 4000);
       if (timeSpent !== undefined) {
         state.setQuestionTimes((prev: number[]) => [...prev, timeSpent]);
       }
@@ -253,15 +262,16 @@ export const useAssessmentLogic = (state: Record<string, unknown>) => {
         }
       }
 
-      if (ADAPTIVE_CONFIG.UI.SHOW_PERFORMANCE_TREND) {
-        toast({
-          title: result.isCorrect ? 'Correct!' : 'Incorrect',
-          description: result.isCorrect
-            ? `Great job! +${result.pointsEarned} points`
-            : "Don't worry, let's try a different question",
-          variant: result.isCorrect ? 'default' : 'destructive',
-        });
-      }
+      // Toast notification disabled - feedback now shown in LiveStatsPanel
+      // if (ADAPTIVE_CONFIG.UI.SHOW_PERFORMANCE_TREND) {
+      //   toast({
+      //     title: result.isCorrect ? 'Correct!' : 'Incorrect',
+      //     description: result.isCorrect
+      //       ? `Great job! +${result.pointsEarned} points`
+      //       : "Don't worry, let's try a different question",
+      //     variant: result.isCorrect ? 'default' : 'destructive',
+      //   });
+      // }
 
       await fetchNextQuestion();
     } catch (error) {
