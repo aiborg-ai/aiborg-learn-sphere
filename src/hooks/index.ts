@@ -24,6 +24,8 @@ export * from './useWatchLater';
 export * from './useQuizzes';
 export * from './useExercises';
 export * from './useWorkshops';
+export * from './useWorkshopSessions';
+export * from './useWorkshopRealtime';
 
 // Events & Reviews
 export * from './useEvents';

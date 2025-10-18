@@ -12,7 +12,27 @@ repository.
 - `npm run build` - Build for production
 - `npm run build:dev` - Build with development mode
 - `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
+- `npm run lint` - Run ESLint (includes accessibility linting)
+- `npm run lint:fix` - Auto-fix ESLint issues where possible
+- `npm run check:all` - Run lint + typecheck + format check
+
+### Code Quality & Accessibility
+
+This project enforces comprehensive **accessibility linting** using `eslint-plugin-jsx-a11y` (v6.10.2) to ensure WCAG 2.1 compliance.
+
+**Key accessibility rules**:
+- All images must have alt text
+- Interactive elements must support keyboard navigation
+- Form labels must be associated with controls
+- Media elements must have captions
+- Proper ARIA attributes and roles
+- No positive tabindex values
+
+See `docs/ACCESSIBILITY_LINTING.md` for detailed documentation on:
+- Complete rule reference
+- Current accessibility issues (6 errors, 349 warnings)
+- Fixing common patterns
+- Best practices and resources
 
 ## Architecture
 

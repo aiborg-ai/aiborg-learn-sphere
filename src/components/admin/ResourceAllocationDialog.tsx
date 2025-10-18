@@ -214,6 +214,14 @@ export function ResourceAllocationDialog({
                       key={user.user_id}
                       className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer"
                       onClick={() => handleToggleUser(user.user_id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleToggleUser(user.user_id);
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
                     >
                       <Checkbox
                         checked={selectedUsers.has(user.user_id)}

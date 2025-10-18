@@ -30,7 +30,7 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
 
   if (!question.options || question.options.length === 0) {
     return (
-      <Alert role="alert" aria-live="polite">
+      <Alert aria-live="polite">
         <AlertCircle className="h-4 w-4" aria-hidden="true" />
         <AlertDescription>
           No options available for this question. Please contact support.
@@ -45,7 +45,7 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
     if (!enableVoiceInput || !onVoiceAnswer) return null;
 
     return (
-      <div className="flex items-center gap-2 mb-4" role="group" aria-label="Answer input mode">
+      <div className="flex items-center gap-2 mb-4" aria-label="Answer input mode">
         <Button
           type="button"
           variant={inputMode === 'select' ? 'default' : 'outline'}
@@ -96,7 +96,6 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
               }
             }}
             aria-label="Select one answer option"
-            role="radiogroup"
           >
             {question.options?.map(option => (
               <div
@@ -138,7 +137,7 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
           onVoiceTranscription={onVoiceAnswer}
         />
       ) : (
-        <div className="space-y-3" role="group" aria-label="Select one or more answer options">
+        <div className="space-y-3" aria-label="Select one or more answer options">
           {question.options?.map(option => (
             <div
               key={option.id}
@@ -168,17 +167,18 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
                   </div>
                 )}
                 {option.tool_recommendations && option.tool_recommendations.length > 0 && (
-                  <div
+                  <ul
                     className="flex flex-wrap gap-1 mt-2"
-                    role="list"
                     aria-label="Recommended tools"
                   >
                     {option.tool_recommendations.map(tool => (
-                      <Badge key={tool} variant="outline" className="text-xs" role="listitem">
-                        {tool}
-                      </Badge>
+                      <li key={tool} className="list-none">
+                        <Badge variant="outline" className="text-xs">
+                          {tool}
+                        </Badge>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 )}
               </Label>
             </div>

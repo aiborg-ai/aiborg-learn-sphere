@@ -71,6 +71,14 @@ const QuizReview = lazy(() => import('./components/quiz').then(m => ({ default: 
 const ExerciseSubmissionPage = lazy(() => import('./pages/ExerciseSubmissionPage'));
 const ExerciseResultsPage = lazy(() => import('./pages/ExerciseResultsPage'));
 
+// Workshop pages
+const WorkshopsPage = lazy(() => import('./pages/WorkshopsPage'));
+const WorkshopSessionPage = lazy(() => import('./pages/WorkshopSessionPage'));
+
+// Membership pages
+const FamilyMembershipPage = lazy(() => import('./pages/FamilyMembershipPage'));
+const FamilyMembershipEnrollment = lazy(() => import('./pages/FamilyMembershipEnrollment'));
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -147,6 +155,15 @@ const AppWithShortcuts = () => {
               path="/exercise/:exerciseId/results/:submissionId"
               element={<ExerciseResultsPage />}
             />
+
+            {/* Workshop routes */}
+            <Route path="/workshops" element={<WorkshopsPage />} />
+            <Route path="/workshop/:workshopId" element={<WorkshopsPage />} />
+            <Route path="/workshop/session/:sessionId" element={<WorkshopSessionPage />} />
+
+            {/* Membership routes */}
+            <Route path="/family-membership" element={<FamilyMembershipPage />} />
+            <Route path="/family-membership/enroll" element={<FamilyMembershipEnrollment />} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

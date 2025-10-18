@@ -141,6 +141,14 @@ export function MiniCalendarWidget() {
                 key={event.id}
                 className="p-2 rounded-lg border bg-muted/50 hover:bg-muted transition-colors cursor-pointer"
                 onClick={() => navigate(`/assignment/${event.id}`)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    navigate(`/assignment/${event.id}`);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
@@ -167,6 +175,14 @@ export function MiniCalendarWidget() {
                 key={event.id}
                 className="flex items-center justify-between p-2 rounded-lg border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
                 onClick={() => navigate(`/assignment/${event.id}`)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    navigate(`/assignment/${event.id}`);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
               >
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{event.title}</p>

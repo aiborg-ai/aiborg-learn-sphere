@@ -95,6 +95,7 @@ export default function BookmarksPage() {
       case 'material':
         return <FileText className="h-4 w-4" />;
       case 'video_timestamp':
+        // eslint-disable-next-line jsx-a11y/media-has-caption
         return <Video className="h-4 w-4" />;
       case 'pdf_page':
         return <FileText className="h-4 w-4" />;
@@ -275,6 +276,14 @@ export default function BookmarksPage() {
                         <div
                           className="flex-1 min-w-0"
                           onClick={() => handleBookmarkClick(bookmark)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleBookmarkClick(bookmark);
+                            }
+                          }}
+                          role="button"
+                          tabIndex={0}
                         >
                           {/* Header */}
                           <div className="flex items-center gap-2 mb-2">

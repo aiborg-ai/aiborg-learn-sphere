@@ -103,10 +103,13 @@ export function AnimatedBadge({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
           <div
             className={cn('relative flex items-center justify-center', sizes.container, className)}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            onFocus={() => setIsHovered(true)}
+            onBlur={() => setIsHovered(false)}
           >
             {/* Sparkle effects */}
             {isUnlocked && showSparkles && (

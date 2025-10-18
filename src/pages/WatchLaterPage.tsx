@@ -267,6 +267,7 @@ export default function WatchLaterPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start gap-3 mb-2">
                             {item.material?.material_type === 'recording' ? (
+                              // eslint-disable-next-line jsx-a11y/media-has-caption
                               <Video className="h-5 w-5 text-blue-500 mt-0.5" />
                             ) : (
                               <FileText className="h-5 w-5 text-green-500 mt-0.5" />

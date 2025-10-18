@@ -312,6 +312,14 @@ function BlogMediaLibrary() {
                   key={item.id}
                   className="group relative aspect-square bg-muted rounded-lg overflow-hidden cursor-pointer"
                   onClick={() => setSelectedMedia(item)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedMedia(item);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
                 >
                   <img
                     src={item.thumbnail_url || item.file_url}

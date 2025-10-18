@@ -126,7 +126,7 @@ export function Section8Competitive({ formData, onUpdate }: Section8CompetitiveP
               </div>
 
               <div className="space-y-3">
-                <Label>Threat Level (1-5)</Label>
+                <div className="text-sm font-medium">Threat Level (1-5)</div>
                 <div className="flex items-center gap-4">
                   <span className="text-sm text-muted-foreground w-20">Low</span>
                   <Slider

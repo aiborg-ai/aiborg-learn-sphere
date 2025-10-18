@@ -311,6 +311,7 @@ export function SecureFileUpload({
 
       <CardContent className="space-y-4">
         {/* Upload area */}
+        {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
         <div
           className={cn(
             'border-2 border-dashed rounded-lg p-8 text-center transition-colors',

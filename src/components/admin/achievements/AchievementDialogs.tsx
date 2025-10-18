@@ -156,9 +156,9 @@ export const AllocateAchievementDialog: React.FC<AllocateDialogProps> = ({
 
         {selectedAchievement && !selectedUserId && (
           <div>
-            <Label>Select User</Label>
+            <Label htmlFor="allocate-user-select">Select User</Label>
             <Select value={selectedUserId} onValueChange={onUserSelect}>
-              <SelectTrigger className="bg-gray-800 border-gray-700">
+              <SelectTrigger id="allocate-user-select" className="bg-gray-800 border-gray-700">
                 <SelectValue placeholder="Choose a user..." />
               </SelectTrigger>
               <SelectContent>

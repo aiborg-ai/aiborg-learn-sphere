@@ -78,7 +78,7 @@ export function Section3PainPoints({ formData, onUpdate }: Section3PainPointsPro
               </div>
 
               <div className="space-y-3">
-                <Label>Current Impact (1-5)</Label>
+                <div className="text-sm font-medium">Current Impact (1-5)</div>
                 <div className="flex items-center gap-4">
                   <span className="text-sm text-muted-foreground w-20">Low</span>
                   <Slider
@@ -111,7 +111,7 @@ export function Section3PainPoints({ formData, onUpdate }: Section3PainPointsPro
               </div>
 
               <div className="space-y-3">
-                <Label>Impact After AI Implementation (1-5)</Label>
+                <div className="text-sm font-medium">Impact After AI Implementation (1-5)</div>
                 <div className="flex items-center gap-4">
                   <span className="text-sm text-muted-foreground w-20">Low</span>
                   <Slider

@@ -272,6 +272,14 @@ export default function InstructorDashboard() {
                         key={course.id}
                         className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
                         onClick={() => setSelectedCourse(course)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setSelectedCourse(course);
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
                       >
                         <div className="flex-1">
                           <h4 className="font-semibold">{course.title}</h4>

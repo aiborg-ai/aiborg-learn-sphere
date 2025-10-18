@@ -259,6 +259,7 @@ export function MaterialUploadSection({
   const getMaterialIcon = (type: string) => {
     switch (type) {
       case 'recording':
+        // eslint-disable-next-line jsx-a11y/media-has-caption
         return <Video className="h-5 w-5 text-blue-500" />;
       case 'handbook':
       case 'presentation':

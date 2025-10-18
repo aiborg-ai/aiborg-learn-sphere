@@ -111,10 +111,9 @@ export const EventCard = memo(function EventCard({ event, onRegister }: EventCar
   };
 
   return (
+    <article aria-label={`Event: ${event.title}`}>
     <Card
       className="h-full flex flex-col hover:shadow-lg transition-all duration-300 group"
-      role="article"
-      aria-label={`Event: ${event.title}`}
     >
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between mb-3">
@@ -149,7 +148,6 @@ export const EventCard = memo(function EventCard({ event, onRegister }: EventCar
         {/* Date & Time */}
         <div
           className="flex items-center gap-3 text-sm"
-          role="group"
           aria-label="Event date and time"
         >
           <div
@@ -176,7 +174,7 @@ export const EventCard = memo(function EventCard({ event, onRegister }: EventCar
         </div>
 
         {/* Location */}
-        <div className="flex items-start gap-3 text-sm" role="group" aria-label="Event location">
+        <div className="flex items-start gap-3 text-sm" aria-label="Event location">
           <div
             className="w-8 h-8 rounded-lg bg-secondary/50 flex items-center justify-center mt-0.5"
             aria-hidden="true"
@@ -195,7 +193,7 @@ export const EventCard = memo(function EventCard({ event, onRegister }: EventCar
 
         {/* Capacity */}
         {event.max_capacity && (
-          <div className="flex items-center gap-3 text-sm" role="group" aria-label="Event capacity">
+          <div className="flex items-center gap-3 text-sm" aria-label="Event capacity">
             <div
               className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center"
               aria-hidden="true"
@@ -224,18 +222,18 @@ export const EventCard = memo(function EventCard({ event, onRegister }: EventCar
         {/* Activities */}
         <div className="space-y-2">
           <div className="text-sm font-medium text-foreground">Activities</div>
-          <div className="flex flex-wrap gap-1" role="list" aria-label="Event activities">
+          <ul className="flex flex-wrap gap-1" aria-label="Event activities">
             {event.activities.map((activity, index) => (
-              <Badge
-                key={index}
-                variant="outline"
-                className="text-xs bg-accent/50 hover:bg-accent transition-colors"
-                role="listitem"
-              >
-                {activity}
-              </Badge>
+              <li key={index} className="list-none">
+                <Badge
+                  variant="outline"
+                  className="text-xs bg-accent/50 hover:bg-accent transition-colors"
+                >
+                  {activity}
+                </Badge>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </CardContent>
 
@@ -301,5 +299,6 @@ export const EventCard = memo(function EventCard({ event, onRegister }: EventCar
         </div>
       </CardFooter>
     </Card>
+    </article>
   );
 });

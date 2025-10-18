@@ -265,7 +265,7 @@ export function ReviewForm() {
               value={formData.courseId}
               onValueChange={value => setFormData(prev => ({ ...prev, courseId: value }))}
             >
-              <SelectTrigger>
+              <SelectTrigger id="course">
                 <SelectValue placeholder="Select the course you completed" />
               </SelectTrigger>
               <SelectContent>
@@ -291,7 +291,7 @@ export function ReviewForm() {
 
           {/* Course Mode */}
           <div className="space-y-2">
-            <Label>Course Mode *</Label>
+            <div className="text-sm font-medium">Course Mode *</div>
             <RadioGroup
               value={formData.courseMode}
               onValueChange={(value: 'online' | 'in-person' | 'hybrid') =>
@@ -316,7 +316,7 @@ export function ReviewForm() {
 
           {/* Display Name Option */}
           <div className="space-y-2">
-            <Label>Display Preference</Label>
+            <div className="text-sm font-medium">Display Preference</div>
             <RadioGroup
               value={formData.displayNameOption}
               onValueChange={(value: 'full_name' | 'anonymous') =>
@@ -343,7 +343,7 @@ export function ReviewForm() {
 
           {/* Rating */}
           <div className="space-y-2">
-            <Label>Overall Rating *</Label>
+            <div className="text-sm font-medium">Overall Rating *</div>
             {renderStarRating()}
           </div>
 
@@ -389,6 +389,7 @@ export function ReviewForm() {
                   setVideoBlob(null);
                 }}
               >
+                {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                 <Video className="h-4 w-4 mr-2" />
                 Video
               </Button>

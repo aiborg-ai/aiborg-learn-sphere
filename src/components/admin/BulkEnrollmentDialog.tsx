@@ -228,6 +228,14 @@ export function BulkEnrollmentDialog({ open, onOpenChange, onSuccess }: BulkEnro
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onClick={() => fileInputRef.current?.click()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  fileInputRef.current?.click();
+                }
+              }}
+              role="button"
+              tabIndex={0}
             >
               <Upload
                 className={`h-12 w-12 mx-auto mb-4 transition-colors ${

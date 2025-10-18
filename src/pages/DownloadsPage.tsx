@@ -86,6 +86,7 @@ export default function DownloadsPage() {
   const getFileIcon = (type: FileType | null) => {
     switch (type) {
       case 'video':
+        // eslint-disable-next-line jsx-a11y/media-has-caption
         return <Video className="h-5 w-5 text-blue-500" />;
       case 'pdf':
         return <FileText className="h-5 w-5 text-red-500" />;

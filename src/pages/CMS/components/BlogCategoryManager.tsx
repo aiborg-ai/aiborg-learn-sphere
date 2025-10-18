@@ -174,17 +174,19 @@ function BlogCategoryManager() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Name</Label>
+                <Label htmlFor="new-cat-name">Name</Label>
                 <Input
+                  id="new-cat-name"
                   value={newCategory.name}
                   onChange={e => setNewCategory({ ...newCategory, name: e.target.value })}
                   placeholder="Category name"
                 />
               </div>
               <div>
-                <Label>Slug</Label>
+                <Label htmlFor="new-cat-slug">Slug</Label>
                 <div className="flex gap-2">
                   <Input
+                    id="new-cat-slug"
                     value={newCategory.slug}
                     onChange={e => setNewCategory({ ...newCategory, slug: e.target.value })}
                     placeholder="category-slug"
@@ -201,8 +203,9 @@ function BlogCategoryManager() {
               </div>
             </div>
             <div>
-              <Label>Description</Label>
+              <Label htmlFor="new-cat-desc">Description</Label>
               <Textarea
+                id="new-cat-desc"
                 value={newCategory.description}
                 onChange={e => setNewCategory({ ...newCategory, description: e.target.value })}
                 placeholder="Category description"
@@ -211,23 +214,26 @@ function BlogCategoryManager() {
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label>Color</Label>
+                <Label htmlFor="new-cat-color-picker">Color</Label>
                 <div className="flex gap-2">
                   <Input
+                    id="new-cat-color-picker"
                     type="color"
                     value={newCategory.color}
                     onChange={e => setNewCategory({ ...newCategory, color: e.target.value })}
                     className="w-20"
                   />
                   <Input
+                    id="new-cat-color-text"
                     value={newCategory.color}
                     onChange={e => setNewCategory({ ...newCategory, color: e.target.value })}
                   />
                 </div>
               </div>
               <div>
-                <Label>Sort Order</Label>
+                <Label htmlFor="new-cat-sort">Sort Order</Label>
                 <Input
+                  id="new-cat-sort"
                   type="number"
                   value={newCategory.sort_order}
                   onChange={e =>
@@ -238,12 +244,13 @@ function BlogCategoryManager() {
               <div className="flex items-end">
                 <div className="flex items-center gap-2">
                   <Switch
+                    id="new-cat-active"
                     checked={newCategory.is_active}
                     onCheckedChange={checked =>
                       setNewCategory({ ...newCategory, is_active: checked })
                     }
                   />
-                  <Label>Active</Label>
+                  <Label htmlFor="new-cat-active">Active</Label>
                 </div>
               </div>
             </div>
@@ -280,29 +287,41 @@ function BlogCategoryManager() {
                   {editingCategory?.id === category.id ? (
                     <div className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
-                        <Input
-                          value={editingCategory.name}
+                        <div>
+                          <Label htmlFor="edit-cat-name">Category Name</Label>
+                          <Input
+                            id="edit-cat-name"
+                            value={editingCategory.name}
+                            onChange={e =>
+                              setEditingCategory({ ...editingCategory, name: e.target.value })
+                            }
+                            placeholder="Category name"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="edit-cat-slug">Category Slug</Label>
+                          <Input
+                            id="edit-cat-slug"
+                            value={editingCategory.slug}
+                            onChange={e =>
+                              setEditingCategory({ ...editingCategory, slug: e.target.value })
+                            }
+                            placeholder="category-slug"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <Label htmlFor="edit-cat-desc">Description</Label>
+                        <Textarea
+                          id="edit-cat-desc"
+                          value={editingCategory.description || ''}
                           onChange={e =>
-                            setEditingCategory({ ...editingCategory, name: e.target.value })
+                            setEditingCategory({ ...editingCategory, description: e.target.value })
                           }
-                          placeholder="Category name"
-                        />
-                        <Input
-                          value={editingCategory.slug}
-                          onChange={e =>
-                            setEditingCategory({ ...editingCategory, slug: e.target.value })
-                          }
-                          placeholder="category-slug"
+                          placeholder="Description"
+                          rows={2}
                         />
                       </div>
-                      <Textarea
-                        value={editingCategory.description || ''}
-                        onChange={e =>
-                          setEditingCategory({ ...editingCategory, description: e.target.value })
-                        }
-                        placeholder="Description"
-                        rows={2}
-                      />
                       <div className="flex gap-2">
                         <Button variant="outline" onClick={() => setEditingCategory(null)}>
                           Cancel

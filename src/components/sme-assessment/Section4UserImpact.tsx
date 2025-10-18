@@ -83,7 +83,7 @@ export function Section4UserImpact({ formData, onUpdate }: Section4UserImpactPro
               </div>
 
               <div className="space-y-3">
-                <Label>Current Satisfaction (1-5)</Label>
+                <div className="text-sm font-medium">Current Satisfaction (1-5)</div>
                 <div className="flex items-center gap-4">
                   <span className="text-sm text-muted-foreground w-20">Poor</span>
                   <Slider
@@ -132,7 +132,7 @@ export function Section4UserImpact({ formData, onUpdate }: Section4UserImpactPro
               </div>
 
               <div className="space-y-3">
-                <Label>Expected Impact (1-5)</Label>
+                <div className="text-sm font-medium">Expected Impact (1-5)</div>
                 <div className="flex items-center gap-4">
                   <span className="text-sm text-muted-foreground w-20">Low</span>
                   <Slider

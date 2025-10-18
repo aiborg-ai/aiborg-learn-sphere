@@ -375,7 +375,18 @@ export function LearningPathRecommendations({
       )}
 
       {selectedPath && (
-        <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setSelectedPath(null)} />
+        <div
+          className="fixed inset-0 bg-black/50 z-40"
+          onClick={() => setSelectedPath(null)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              setSelectedPath(null);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Close modal"
+        />
       )}
     </div>
   );

@@ -62,6 +62,7 @@ export function VideoControls({
   formatTime,
 }: VideoControlsProps) {
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4 transition-opacity ${
         showControls ? 'opacity-100' : 'opacity-0'
@@ -81,6 +82,19 @@ export function VideoControls({
             onSeek([percentage]);
           }
         }}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowLeft') {
+            onSkipBackward();
+          } else if (e.key === 'ArrowRight') {
+            onSkipForward();
+          }
+        }}
+        role="slider"
+        tabIndex={0}
+        aria-label="Video progress"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={(currentTime / duration) * 100}
       >
         <div
           className="absolute h-full bg-primary rounded-full"

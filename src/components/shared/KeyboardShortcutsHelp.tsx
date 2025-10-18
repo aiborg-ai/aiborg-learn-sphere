@@ -61,12 +61,11 @@ export const KeyboardShortcutsHelp: React.FC<KeyboardShortcutsHelpProps> = ({ sh
                 <Command className="h-3 w-3" aria-hidden="true" />
                 {category}
               </h3>
-              <div className="space-y-2">
+              <ul className="space-y-2">
                 {categoryShortcuts.map((shortcut, index) => (
-                  <div
+                  <li
                     key={`${category}-${index}`}
-                    className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                    role="listitem"
+                    className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors list-none"
                   >
                     <span className="text-sm">{shortcut.description}</span>
                     <Badge
@@ -76,9 +75,9 @@ export const KeyboardShortcutsHelp: React.FC<KeyboardShortcutsHelpProps> = ({ sh
                     >
                       {getShortcutDisplay(shortcut)}
                     </Badge>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           ))}
         </div>

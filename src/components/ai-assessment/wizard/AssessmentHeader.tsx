@@ -19,7 +19,7 @@ export const AssessmentHeader: React.FC<AssessmentHeaderProps> = ({
   progress,
 }) => {
   return (
-    <CardHeader role="banner" aria-label="Assessment information">
+    <CardHeader aria-label="Assessment information">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-full bg-primary/10" aria-hidden="true">
@@ -41,18 +41,17 @@ export const AssessmentHeader: React.FC<AssessmentHeaderProps> = ({
         </Badge>
       </div>
 
-      <Progress
+      <progress
         value={progress}
-        className="h-2"
+        max={100}
+        className="h-2 w-full"
         aria-label={`Assessment progress: ${Math.round(progress)}% complete`}
-        role="progressbar"
-        aria-valuenow={progress}
-        aria-valuemin={0}
-        aria-valuemax={100}
-      />
+      >
+        {Math.round(progress)}%
+      </progress>
 
       {currentQuestion.category && (
-        <div className="mt-4 flex items-center gap-2" role="group" aria-label="Question metadata">
+        <div className="mt-4 flex items-center gap-2" aria-label="Question metadata">
           <Badge variant="secondary" aria-label={`Category: ${currentQuestion.category.name}`}>
             {currentQuestion.category.name}
           </Badge>

@@ -177,7 +177,7 @@ export function QuestionQueue({ sessionId }: QuestionQueueProps) {
                 value={answerText}
                 onChange={e => setAnswerText(e.target.value)}
                 className="min-h-[100px]"
-                autoFocus
+                aria-label="Type your answer to student question"
               />
               <div className="flex gap-2">
                 <Button

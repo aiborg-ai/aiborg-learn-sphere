@@ -135,20 +135,19 @@ export default function AIAssessment() {
       {/* Hero Section */}
       <section
         className="relative py-20 px-4 bg-gradient-hero overflow-hidden"
-        aria-label="AI Assessment hero section"
+        aria-labelledby="hero-heading"
       >
         <div className="absolute inset-0 bg-grid-pattern opacity-5" aria-hidden="true" />
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center mb-12">
             <Badge
               className="mb-4 px-4 py-1.5 text-sm bg-primary/10 text-primary border-primary/20"
-              role="status"
               aria-label="New feature"
             >
               <Sparkles className="h-3 w-3 mr-1" aria-hidden="true" />
               New Assessment Tool
             </Badge>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white">
+            <h1 id="hero-heading" className="text-5xl md:text-6xl font-bold mb-6 text-white">
               Discover Your
               <span className="gradient-text block mt-2">AI Augmentation Level</span>
             </h1>
@@ -158,7 +157,6 @@ export default function AIAssessment() {
             </p>
             <div
               className="flex flex-col sm:flex-row gap-4 justify-center"
-              role="group"
               aria-label="Assessment actions"
             >
               <Button
@@ -189,9 +187,8 @@ export default function AIAssessment() {
           </div>
 
           {/* Stats Bar */}
-          <div
+          <section
             className="grid grid-cols-3 gap-8 max-w-2xl mx-auto mt-12"
-            role="region"
             aria-label="Assessment statistics"
           >
             <div className="text-center">
@@ -221,7 +218,7 @@ export default function AIAssessment() {
               </div>
               <div className="text-sm text-white/60">Avg. Productivity Gain</div>
             </div>
-          </div>
+          </section>
         </div>
       </section>
 
@@ -237,15 +234,15 @@ export default function AIAssessment() {
             </p>
           </div>
 
-          <div
+          <ul
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            role="list"
             aria-label="Assessment features"
           >
             {FEATURES.map((feature, index) => {
               const Icon = feature.icon;
               return (
-                <Card key={index} className="hover:shadow-lg transition-shadow" role="listitem">
+                <li key={index} className="list-none">
+                <Card className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <div
                       className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4"
@@ -259,9 +256,10 @@ export default function AIAssessment() {
                     <p className="text-muted-foreground">{feature.description}</p>
                   </CardContent>
                 </Card>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
       </section>
 

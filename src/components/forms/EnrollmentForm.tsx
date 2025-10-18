@@ -279,8 +279,9 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
             </div>
 
             <div className="space-y-2">
-              <Label>Date of Birth *</Label>
+              <Label htmlFor="date-of-birth">Date of Birth *</Label>
               <SimpleDatePicker
+                id="date-of-birth"
                 value={formData.dateOfBirth}
                 onChange={handleDateChange}
                 disabled={date => date > new Date() || date < new Date('1900-01-01')}

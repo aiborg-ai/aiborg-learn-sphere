@@ -287,8 +287,9 @@ export function ContactSection() {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="text-sm font-medium mb-2 block">Full Name *</label>
+                        <label htmlFor="contact-name" className="text-sm font-medium mb-2 block">Full Name *</label>
                         <Input
+                          id="contact-name"
                           value={formData.name}
                           onChange={e => handleInputChange('name', e.target.value)}
                           placeholder="Your full name"
@@ -296,8 +297,9 @@ export function ContactSection() {
                         />
                       </div>
                       <div>
-                        <label className="text-sm font-medium mb-2 block">Email Address *</label>
+                        <label htmlFor="contact-email" className="text-sm font-medium mb-2 block">Email Address *</label>
                         <Input
+                          id="contact-email"
                           type="email"
                           value={formData.email}
                           onChange={e => handleInputChange('email', e.target.value)}
@@ -308,12 +310,12 @@ export function ContactSection() {
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Target Audience *</label>
+                      <label htmlFor="contact-audience" className="text-sm font-medium mb-2 block">Target Audience *</label>
                       <Select
                         value={formData.audience}
                         onValueChange={value => handleInputChange('audience', value)}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger id="contact-audience">
                           <SelectValue placeholder="Select your target audience" />
                         </SelectTrigger>
                         <SelectContent>
@@ -327,8 +329,9 @@ export function ContactSection() {
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Subject</label>
+                      <label htmlFor="contact-subject" className="text-sm font-medium mb-2 block">Subject</label>
                       <Input
+                        id="contact-subject"
                         value={formData.subject}
                         onChange={e => handleInputChange('subject', e.target.value)}
                         placeholder="Brief subject of your inquiry"
@@ -336,8 +339,9 @@ export function ContactSection() {
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Message *</label>
+                      <label htmlFor="contact-message" className="text-sm font-medium mb-2 block">Message *</label>
                       <Textarea
+                        id="contact-message"
                         value={formData.message}
                         onChange={e => handleInputChange('message', e.target.value)}
                         placeholder="Tell us about your AI learning goals, questions, or how we can help..."

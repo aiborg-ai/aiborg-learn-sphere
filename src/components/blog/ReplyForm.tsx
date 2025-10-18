@@ -36,7 +36,7 @@ export function ReplyForm({ onSubmit, onCancel }: ReplyFormProps) {
         placeholder="Write a reply..."
         className="min-h-[80px] resize-none"
         disabled={isSubmitting}
-        autoFocus
+        aria-label="Write a reply"
       />
       <div className="flex gap-2">
         <Button

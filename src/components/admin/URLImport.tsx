@@ -179,7 +179,7 @@ export function URLImport({
 
             {/* Template Type */}
             <div className="space-y-2">
-              <Label>Template Type</Label>
+              <div className="text-sm font-medium">Template Type</div>
               <RadioGroup
                 value={templateType}
                 onValueChange={value => setTemplateType(value as 'auto' | 'course' | 'event')}
@@ -201,7 +201,7 @@ export function URLImport({
 
             {/* Format */}
             <div className="space-y-2">
-              <Label>File Format</Label>
+              <div className="text-sm font-medium">File Format</div>
               <RadioGroup
                 value={format}
                 onValueChange={value => setFormat(value as 'auto' | 'json' | 'csv')}
@@ -239,14 +239,14 @@ export function URLImport({
 
             {/* Auth Type */}
             <div className="space-y-2">
-              <Label>Authentication Type</Label>
+              <Label htmlFor="auth-type">Authentication Type</Label>
               <Select
                 value={authType}
                 onValueChange={value =>
                   setAuthType(value as 'none' | 'basic' | 'bearer' | 'api_key')
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger id="auth-type">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -289,7 +289,7 @@ export function URLImport({
           <TabsContent value="options" className="space-y-4">
             {/* Import Options */}
             <div className="space-y-2">
-              <Label>Import Options</Label>
+              <div className="text-sm font-medium">Import Options</div>
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <Checkbox

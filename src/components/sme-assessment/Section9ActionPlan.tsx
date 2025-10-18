@@ -77,9 +77,9 @@ export function Section9ActionPlan({ formData, onUpdate }: Section9ActionPlanPro
       </div>
 
       <div className="space-y-4">
-        <Label>
+        <div className="text-sm font-medium">
           Overall AI Opportunity Rating (1-5) <span className="text-red-500">*</span>
-        </Label>
+        </div>
         <Card className="p-6 bg-muted/30">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
@@ -106,7 +106,7 @@ export function Section9ActionPlan({ formData, onUpdate }: Section9ActionPlanPro
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label>Recommended Next Steps <span className="text-red-500">*</span></Label>
+          <div className="text-sm font-medium">Recommended Next Steps <span className="text-red-500">*</span></div>
           <span className="text-xs text-muted-foreground">Add 3-5 actionable steps</span>
         </div>
 
@@ -116,6 +116,7 @@ export function Section9ActionPlan({ formData, onUpdate }: Section9ActionPlanPro
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-green-600 mt-3" />
                 <Input
+                  id={`next-step-${index}`}
                   value={step}
                   onChange={(e) => updateNextStep(index, e.target.value)}
                   placeholder={`Step ${index + 1}: e.g., ${suggestedSteps[index % suggestedSteps.length]}`}

@@ -40,6 +40,7 @@ export function CourseMaterialsTab({
                   className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
+                    {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                     {isVideo && <Video className="h-5 w-5 text-blue-500" />}
                     {isPdf && <FileText className="h-5 w-5 text-green-500" />}
                     {!isVideo && !isPdf && <Download className="h-5 w-5 text-purple-500" />}

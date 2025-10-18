@@ -299,12 +299,14 @@ export function RefundProcessor() {
 
               {/* Status Selection */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">Update Status</label>
+                <label htmlFor="refund-status-select" className="text-sm font-medium">
+                  Update Status
+                </label>
                 <Select
                   value={newStatus}
                   onValueChange={value => setNewStatus(value as RefundRequest['refund_status'])}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger id="refund-status-select">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -319,8 +321,11 @@ export function RefundProcessor() {
 
               {/* Admin Notes */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">Admin Notes</label>
+                <label htmlFor="admin-notes" className="text-sm font-medium">
+                  Admin Notes
+                </label>
                 <Textarea
+                  id="admin-notes"
                   placeholder="Add notes about this refund..."
                   value={adminNotes}
                   onChange={e => setAdminNotes(e.target.value)}

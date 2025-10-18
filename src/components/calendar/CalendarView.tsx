@@ -264,6 +264,14 @@ export function CalendarView() {
                         onClick={() => {
                           if (event.url) window.location.href = event.url;
                         }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            if (event.url) window.location.href = event.url;
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
                       >
                         <div className="flex items-start gap-2">
                           <div
@@ -318,6 +326,14 @@ export function CalendarView() {
                         onClick={() => {
                           if (event.url) window.location.href = event.url;
                         }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            if (event.url) window.location.href = event.url;
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
                       >
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-medium truncate">{event.title}</span>

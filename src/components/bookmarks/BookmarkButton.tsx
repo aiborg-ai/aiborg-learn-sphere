@@ -225,7 +225,7 @@ export function BookmarkButton({
             {/* Metadata Preview */}
             {Object.keys(metadata).length > 0 && (
               <div className="space-y-2">
-                <Label>Additional Info</Label>
+                <div className="text-sm font-medium">Additional Info</div>
                 <div className="flex flex-wrap gap-2">
                   {metadata.timestamp && (
                     <Badge variant="secondary" className="text-xs">

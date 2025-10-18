@@ -469,7 +469,7 @@ export default function Auth() {
                 <form onSubmit={handleSignUp} className="space-y-4">
                   {/* Account Type Selection */}
                   <div className="space-y-3">
-                    <Label className="text-white">Account Type</Label>
+                    <div className="text-sm font-medium text-white">Account Type</div>
                     <RadioGroup
                       value={accountType}
                       onValueChange={value =>
@@ -546,7 +546,7 @@ export default function Auth() {
                           Industry <span className="text-red-400">*</span>
                         </Label>
                         <Select value={industry} onValueChange={setIndustry}>
-                          <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                          <SelectTrigger id="industry" className="bg-white/10 border-white/20 text-white">
                             <SelectValue placeholder="Select industry" />
                           </SelectTrigger>
                           <SelectContent>
@@ -570,7 +570,7 @@ export default function Auth() {
                           Company Size <span className="text-red-400">*</span>
                         </Label>
                         <Select value={companySize} onValueChange={setCompanySize}>
-                          <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                          <SelectTrigger id="companySize" className="bg-white/10 border-white/20 text-white">
                             <SelectValue placeholder="Select company size" />
                           </SelectTrigger>
                           <SelectContent>

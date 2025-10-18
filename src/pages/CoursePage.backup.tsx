@@ -256,6 +256,7 @@ export default function CoursePage() {
               aria-label="Course materials tab"
               aria-controls="materials-panel"
             >
+              {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
               <Video className="h-4 w-4 mr-2" aria-hidden="true" />
               Materials
             </TabsTrigger>

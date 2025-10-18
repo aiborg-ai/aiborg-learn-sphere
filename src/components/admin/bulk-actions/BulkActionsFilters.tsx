@@ -53,10 +53,11 @@ export function BulkActionsFilters({
       <CardContent>
         <div className="grid grid-cols-4 gap-4">
           <div className="space-y-2">
-            <Label>Search</Label>
+            <Label htmlFor="bulk-search">Search</Label>
             <div className="relative">
               <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
+                id="bulk-search"
                 placeholder="Search items..."
                 value={searchTerm}
                 onChange={e => onSearchChange(e.target.value)}
@@ -66,9 +67,9 @@ export function BulkActionsFilters({
           </div>
 
           <div className="space-y-2">
-            <Label>Type</Label>
+            <Label htmlFor="bulk-type">Type</Label>
             <Select value={filterType} onValueChange={v => onTypeChange(v as FilterType)}>
-              <SelectTrigger>
+              <SelectTrigger id="bulk-type">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -80,9 +81,9 @@ export function BulkActionsFilters({
           </div>
 
           <div className="space-y-2">
-            <Label>Category</Label>
+            <Label htmlFor="bulk-category">Category</Label>
             <Select value={filterCategory} onValueChange={onCategoryChange}>
-              <SelectTrigger>
+              <SelectTrigger id="bulk-category">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -96,9 +97,9 @@ export function BulkActionsFilters({
           </div>
 
           <div className="space-y-2">
-            <Label>Status</Label>
+            <Label htmlFor="bulk-status">Status</Label>
             <Select value={filterStatus} onValueChange={onStatusChange}>
-              <SelectTrigger>
+              <SelectTrigger id="bulk-status">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

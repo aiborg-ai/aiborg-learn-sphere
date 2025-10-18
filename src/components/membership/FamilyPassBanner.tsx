@@ -13,9 +13,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  GraduationCap,
-  Lock,
-  Calendar,
   Users,
   Sparkles,
   ArrowRight,
@@ -42,11 +39,6 @@ export function FamilyPassBanner({ compact = false }: FamilyPassBannerProps) {
   const [spotsRemaining, setSpotsRemaining] = useState(INITIAL_SPOTS_REMAINING);
   const { data: hasActiveMembership } = useHasActiveMembership();
 
-  // Don't show banner if user already has membership
-  if (hasActiveMembership) {
-    return null;
-  }
-
   // Simulate spot counter decreasing (for demo purposes)
   // In production, this would be real-time from database
   useEffect(() => {
@@ -63,6 +55,11 @@ export function FamilyPassBanner({ compact = false }: FamilyPassBannerProps) {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Don't show banner if user already has membership
+  if (hasActiveMembership) {
+    return null;
+  }
 
   if (compact) {
     return <CompactBanner spotsRemaining={spotsRemaining} />;

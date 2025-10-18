@@ -313,7 +313,7 @@ export function ScheduledImports() {
                           })
                         }
                       >
-                        <SelectTrigger>
+                        <SelectTrigger id="import-type">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -337,7 +337,7 @@ export function ScheduledImports() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>Schedule Type</Label>
+                      <Label htmlFor="schedule-type">Schedule Type</Label>
                       <Select
                         value={formData.schedule_type}
                         onValueChange={value =>
@@ -347,7 +347,7 @@ export function ScheduledImports() {
                           })
                         }
                       >
-                        <SelectTrigger>
+                        <SelectTrigger id="schedule-type">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -362,8 +362,9 @@ export function ScheduledImports() {
                     {formData.schedule_type === 'once' && (
                       <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-2">
-                          <Label>Date</Label>
+                          <Label htmlFor="scheduled-date">Date</Label>
                           <Input
+                            id="scheduled-date"
                             type="date"
                             value={formData.scheduled_at}
                             onChange={e =>
@@ -372,8 +373,9 @@ export function ScheduledImports() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label>Time</Label>
+                          <Label htmlFor="scheduled-time">Time</Label>
                           <Input
+                            id="scheduled-time"
                             type="time"
                             value={formData.scheduled_time}
                             onChange={e =>

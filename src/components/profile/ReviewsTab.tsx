@@ -47,6 +47,7 @@ const getReviewTypeIcon = (type: string) => {
     case 'voice':
       return <Mic className="h-4 w-4" />;
     case 'video':
+      // eslint-disable-next-line jsx-a11y/media-has-caption
       return <Video className="h-4 w-4" />;
     default:
       return <MessageSquare className="h-4 w-4" />;
@@ -140,6 +141,7 @@ export function ReviewsTab({ reviews, loading, onRefresh, onWriteReview }: Revie
 
                   {review.review_type === 'video' && review.video_review_url && (
                     <div className="text-center py-2">
+                      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                       <Video className="h-6 w-6 text-white/60 mx-auto mb-1" />
                       <p className="text-xs text-white/60">Video review submitted</p>
                     </div>

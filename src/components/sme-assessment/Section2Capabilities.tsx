@@ -14,9 +14,9 @@ export function Section2Capabilities({ formData, onUpdate }: Section2Capabilitie
   return (
     <div className="space-y-6">
       <div className="space-y-3">
-        <Label>
+        <div className="text-sm font-medium">
           Current AI adoption level <span className="text-red-500">*</span>
-        </Label>
+        </div>
         <RadioGroup
           value={formData.currentAIAdoptionLevel || 'none'}
           onValueChange={(value: AIAdoptionLevel) =>
@@ -51,9 +51,9 @@ export function Section2Capabilities({ formData, onUpdate }: Section2Capabilitie
       </div>
 
       <div className="space-y-4">
-        <Label>
+        <div className="text-sm font-medium">
           Internal AI Expertise (1-5) <span className="text-red-500">*</span>
-        </Label>
+        </div>
         <Card className="p-6 bg-muted/30">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
@@ -79,10 +79,10 @@ export function Section2Capabilities({ formData, onUpdate }: Section2Capabilitie
       </div>
 
       <div className="space-y-4">
-        <Label>
+        <div className="text-sm font-medium">
           Data Availability - Quality, Volume, Accessibility (1-5){' '}
           <span className="text-red-500">*</span>
-        </Label>
+        </div>
         <Card className="p-6 bg-muted/30">
           <div className="space-y-4">
             <div className="flex justify-between items-center">

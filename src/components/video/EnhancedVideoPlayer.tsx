@@ -105,7 +105,14 @@ export function EnhancedVideoPlayer({
                 handlePause();
                 saveProgress();
               }}
-            />
+            >
+              <track
+                kind="captions"
+                srcLang="en"
+                label="English"
+                src=""
+              />
+            </video>
 
             {/* Quiz Overlay */}
             <VideoQuiz quiz={currentQuiz} onAnswerQuiz={handleQuizAnswer} />

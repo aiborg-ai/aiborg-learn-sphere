@@ -24,10 +24,9 @@ interface CourseCardProps {
 export const MemoizedCourseCard = memo<CourseCardProps>(
   function CourseCard({ course, onEnroll, onViewDetails }) {
     return (
+      <article aria-label={`Course: ${course.title}`}>
       <Card
         className="h-full hover:shadow-lg transition-shadow"
-        role="article"
-        aria-label={`Course: ${course.title}`}
       >
         <CardHeader>
           <div className="flex items-start justify-between">
@@ -51,19 +50,21 @@ export const MemoizedCourseCard = memo<CourseCardProps>(
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground line-clamp-3">{course.description}</p>
 
-          <div className="flex flex-wrap gap-2" role="list" aria-label="Target audiences">
+          <ul className="flex flex-wrap gap-2" aria-label="Target audiences">
             {course.audiences.slice(0, 3).map(audience => (
-              <Badge key={audience} variant="secondary" role="listitem">
-                {audience}
-              </Badge>
+              <li key={audience} className="list-none">
+                <Badge variant="secondary">
+                  {audience}
+                </Badge>
+              </li>
             ))}
-          </div>
+          </ul>
 
           <div className="flex items-center justify-between pt-4">
             <span className="text-lg font-semibold" aria-label={`Course price: ${course.price}`}>
               {course.price}
             </span>
-            <div className="flex gap-2" role="group" aria-label="Course actions">
+            <div className="flex gap-2" aria-label="Course actions">
               {onViewDetails && (
                 <Button
                   variant="outline"
@@ -87,6 +88,7 @@ export const MemoizedCourseCard = memo<CourseCardProps>(
           </div>
         </CardContent>
       </Card>
+      </article>
     );
   },
   // Custom comparison function

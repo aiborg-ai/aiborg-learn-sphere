@@ -121,7 +121,7 @@ export function Section6Risks({ formData, onUpdate }: Section6RisksProps) {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-3">
-                    <Label>Likelihood (1-5)</Label>
+                    <div className="text-sm font-medium">Likelihood (1-5)</div>
                     <div className="flex items-center gap-2">
                       <Slider
                         value={[risk.likelihood]}
@@ -138,7 +138,7 @@ export function Section6Risks({ formData, onUpdate }: Section6RisksProps) {
                   </div>
 
                   <div className="space-y-3">
-                    <Label>Impact (1-5)</Label>
+                    <div className="text-sm font-medium">Impact (1-5)</div>
                     <div className="flex items-center gap-2">
                       <Slider
                         value={[risk.impactRating]}

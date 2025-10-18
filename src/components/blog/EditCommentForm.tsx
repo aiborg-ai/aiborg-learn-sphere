@@ -38,7 +38,7 @@ export function EditCommentForm({ initialContent, onSubmit, onCancel }: EditComm
         onChange={(e) => setContent(e.target.value)}
         className="min-h-[80px] resize-none"
         disabled={isSubmitting}
-        autoFocus
+        aria-label="Edit comment"
       />
       <div className="flex gap-2">
         <Button

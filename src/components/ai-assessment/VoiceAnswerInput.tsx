@@ -24,7 +24,8 @@ export const VoiceAnswerInput: React.FC<VoiceAnswerInputProps> = ({
   };
 
   return (
-    <Card className="border-primary/30 bg-primary/5" role="region" aria-label="Voice answer input">
+    <section aria-label="Voice answer input">
+      <Card className="border-primary/30 bg-primary/5">
       <CardHeader>
         <div className="flex items-center gap-2">
           <Mic className="h-5 w-5 text-primary" aria-hidden="true" />
@@ -35,7 +36,7 @@ export const VoiceAnswerInput: React.FC<VoiceAnswerInputProps> = ({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Alert role="status" aria-live="polite">
+        <Alert aria-live="polite">
           <Info className="h-4 w-4" aria-hidden="true" />
           <AlertDescription>
             Speak clearly and explain your answer to the question. Your response will be analyzed
@@ -46,9 +47,8 @@ export const VoiceAnswerInput: React.FC<VoiceAnswerInputProps> = ({
         <VoiceRecorder onTranscription={handleTranscription} disabled={disabled} />
 
         {transcribedText && (
-          <div
+          <section
             className="space-y-2"
-            role="region"
             aria-label="Transcribed answer"
             aria-live="polite"
           >
@@ -64,9 +64,10 @@ export const VoiceAnswerInput: React.FC<VoiceAnswerInputProps> = ({
             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
               Answer recorded successfully
             </Badge>
-          </div>
+          </section>
         )}
       </CardContent>
     </Card>
+    </section>
   );
 };

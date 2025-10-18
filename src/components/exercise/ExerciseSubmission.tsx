@@ -346,7 +346,7 @@ export const ExerciseSubmission: React.FC<ExerciseSubmissionProps> = ({ exercise
                 </div>
                 {files.length > 0 && (
                   <div className="space-y-2">
-                    <Label>Uploaded Files</Label>
+                    <div className="text-sm font-medium">Uploaded Files</div>
                     <div className="space-y-1">
                       {files.map((file, index) => (
                         <div key={index} className="flex items-center gap-2 p-2 bg-muted rounded">

@@ -9,11 +9,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { MembershipService } from '@/services/membership';
 import type {
-  MembershipPlan,
-  SubscriptionWithPlan,
   CreateSubscriptionParams,
-  ManageSubscriptionParams,
-  SubscriptionSavings,
 } from '@/services/membership/types';
 
 // ============================================================================

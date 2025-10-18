@@ -271,12 +271,12 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
         <div className="space-y-4">
           {/* Ticket Type */}
           <div className="space-y-2">
-            <Label>Ticket Type</Label>
+            <Label htmlFor="ticket-type">Ticket Type</Label>
             <Select
               value={ticketType}
               onValueChange={(value: 'event' | 'course_session') => setTicketType(value)}
             >
-              <SelectTrigger>
+              <SelectTrigger id="ticket-type">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -289,9 +289,9 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
           {/* Event/Course Selection */}
           {ticketType === 'event' ? (
             <div className="space-y-2">
-              <Label>Select Event</Label>
+              <Label htmlFor="select-event">Select Event</Label>
               <Select value={selectedEvent} onValueChange={handleEventChange}>
-                <SelectTrigger>
+                <SelectTrigger id="select-event">
                   <SelectValue placeholder="Choose an event" />
                 </SelectTrigger>
                 <SelectContent>
@@ -305,9 +305,9 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
             </div>
           ) : (
             <div className="space-y-2">
-              <Label>Select Course</Label>
+              <Label htmlFor="select-course">Select Course</Label>
               <Select value={selectedCourse} onValueChange={setSelectedCourse}>
-                <SelectTrigger>
+                <SelectTrigger id="select-course">
                   <SelectValue placeholder="Choose a course" />
                 </SelectTrigger>
                 <SelectContent>
@@ -364,14 +364,14 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
             </div>
 
             <div className="space-y-2">
-              <Label>Badge Color</Label>
+              <Label htmlFor="badge-color">Badge Color</Label>
               <Select
                 value={badgeColor}
                 onValueChange={v =>
                   setBadgeColor(v as 'gold' | 'silver' | 'bronze' | 'blue' | 'green')
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger id="badge-color">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -400,7 +400,7 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
           {/* User Selection */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label>Select Users</Label>
+              <div className="text-sm font-medium">Select Users</div>
               <Button variant="outline" onClick={handleSelectAll} size="sm">
                 {selectedUsers.size === filteredUsers.length ? 'Deselect All' : 'Select All'}
               </Button>
@@ -440,6 +440,14 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
                         key={user.user_id}
                         className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer"
                         onClick={() => handleToggleUser(user.user_id)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleToggleUser(user.user_id);
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
                       >
                         <Checkbox
                           checked={selectedUsers.has(user.user_id)}

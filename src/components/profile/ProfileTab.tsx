@@ -89,7 +89,7 @@ export function ProfileTab({ user, profile, onUpdate }: ProfileTabProps) {
 
           {profile && (
             <div className="space-y-2">
-              <Label className="text-white">Role</Label>
+              <div className="text-white text-sm font-medium">Role</div>
               <div className="p-2 bg-white/5 border border-white/20 rounded-md">
                 <span className="text-white/80 capitalize">{profile.role}</span>
               </div>

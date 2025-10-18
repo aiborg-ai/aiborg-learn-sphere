@@ -453,7 +453,7 @@ export function ResourcesManagement() {
             {/* File Upload */}
             {uploadMode === 'file' && (
               <div className="space-y-2">
-                <Label>File</Label>
+                <Label htmlFor="resource-file-upload">File</Label>
                 <div className="flex gap-2">
                   <Button
                     type="button"
@@ -466,6 +466,7 @@ export function ResourcesManagement() {
                     {formData.file_url ? 'Change File' : 'Choose File'}
                   </Button>
                   <input
+                    id="resource-file-upload"
                     ref={fileInputRef}
                     type="file"
                     accept=".pdf,.doc,.docx,.ppt,.pptx"

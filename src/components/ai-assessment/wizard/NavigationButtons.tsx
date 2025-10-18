@@ -21,10 +21,9 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   canGoPrevious,
 }) => {
   return (
+    <nav aria-label="Assessment navigation">
     <CardFooter
       className="flex justify-between"
-      role="navigation"
-      aria-label="Assessment navigation"
     >
       <Button
         variant="outline"
@@ -67,5 +66,6 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
         )}
       </Button>
     </CardFooter>
+    </nav>
   );
 };

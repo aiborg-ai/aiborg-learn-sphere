@@ -167,6 +167,18 @@ export const DragDropRanking: React.FC<DragDropRankingProps> = ({
                   onDragOver={e => handleDragOver(e, index)}
                   onDrop={e => handleDrop(e, index)}
                   onDragEnd={handleDragEnd}
+                  onKeyDown={(e) => {
+                    if (e.key === 'ArrowUp' && index > 0) {
+                      e.preventDefault();
+                      moveItem(index, 'up');
+                    } else if (e.key === 'ArrowDown' && index < currentOrdering.length - 1) {
+                      e.preventDefault();
+                      moveItem(index, 'down');
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Rank ${index + 1}: ${option?.option_text}`}
                   className={`
                     group flex items-center gap-3 p-4 rounded-lg border-2
                     transition-all duration-200 cursor-move
@@ -194,6 +206,7 @@ export const DragDropRanking: React.FC<DragDropRankingProps> = ({
                   <div className="flex-1 space-y-1">
                     {option.option_image_url && (
                       <div className="mb-2">
+                        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
                         <img
                           src={option.option_image_url}
                           alt={option.option_text}

@@ -6,6 +6,7 @@ import { TrainingPrograms } from "@/components/TrainingPrograms";
 import { EventsSection } from "@/components/events";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { AIChatbot } from "@/components/features";
+import { FamilyPassBanner } from "@/components/membership";
 
 const Index = () => {
   const location = useLocation();
@@ -37,6 +38,7 @@ const Index = () => {
     <div className="min-h-screen">
       <Navbar />
       <HeroSection />
+      <FamilyPassBanner />
       <div id="about">
         <AboutSection />
       </div>

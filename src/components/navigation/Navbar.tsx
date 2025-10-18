@@ -70,8 +70,6 @@ export function Navbar() {
           {/* Desktop Navigation */}
           <div
             className="hidden md:flex items-center gap-6"
-            role="navigation"
-            aria-label="Primary menu"
           >
             <Link to="/ai-assessment" className="relative" aria-label="AI Assessment - New feature">
               <Button
@@ -265,10 +263,9 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div
+          <nav
             id="mobile-menu"
             className="md:hidden py-4 space-y-4 border-t border-white/20 animate-in slide-in-from-top duration-300"
-            role="navigation"
             aria-label="Mobile navigation menu"
           >
             <button
@@ -351,9 +348,8 @@ export function Navbar() {
             </button>
 
             {user ? (
-              <div
+              <section
                 className="space-y-2 pt-4 border-t border-muted/20"
-                role="region"
                 aria-label="User account menu"
               >
                 <p
@@ -403,11 +399,10 @@ export function Navbar() {
                   <Icon name="LogOut" size={16} className="mr-2" aria-hidden="true" />
                   Sign Out
                 </Button>
-              </div>
+              </section>
             ) : (
-              <div
+              <section
                 className="space-y-2 pt-4 border-t border-muted/20"
-                role="region"
                 aria-label="Authentication options"
               >
                 <Link to="/auth">
@@ -424,9 +419,9 @@ export function Navbar() {
                     Get Started
                   </Button>
                 </Link>
-              </div>
+              </section>
             )}
-          </div>
+          </nav>
         )}
       </div>
 

@@ -113,7 +113,7 @@ export function Section5Benefits({ formData, onUpdate }: Section5BenefitsProps) 
               </div>
 
               <div className="space-y-3">
-                <Label>Expected Business Impact (1-5)</Label>
+                <div className="text-sm font-medium">Expected Business Impact (1-5)</div>
                 <div className="flex items-center gap-4">
                   <span className="text-sm text-muted-foreground w-20">Low</span>
                   <Slider

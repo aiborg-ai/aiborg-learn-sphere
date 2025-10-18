@@ -306,9 +306,9 @@ export function RoleManagementPanel({ users, onRefresh }: RoleManagementPanelPro
           </AlertDialogHeader>
 
           <div className="py-4">
-            <label className="text-sm font-medium mb-2 block">Select New Role</label>
+            <label htmlFor="new-role-select" className="text-sm font-medium mb-2 block">Select New Role</label>
             <Select value={newRole} onValueChange={setNewRole}>
-              <SelectTrigger>
+              <SelectTrigger id="new-role-select">
                 <SelectValue placeholder="Select role" />
               </SelectTrigger>
               <SelectContent>

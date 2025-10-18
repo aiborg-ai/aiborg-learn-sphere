@@ -143,13 +143,12 @@ export default function CoursePage() {
   const isLoading = courseLoading || enrollmentsLoading;
   if (isLoading) {
     return (
-      <div
+      <output
         className="min-h-screen bg-gradient-hero flex items-center justify-center"
-        role="status"
         aria-live="polite"
       >
         <Loader2 className="h-8 w-8 animate-spin text-white" aria-label="Loading course content" />
-      </div>
+      </output>
     );
   }
 
@@ -162,7 +161,7 @@ export default function CoursePage() {
             <AlertCircle className="h-12 w-12 mx-auto text-destructive mb-4" aria-hidden="true" />
             <h2 className="text-2xl font-bold mb-2">Error Loading Course</h2>
             <p className="text-muted-foreground mb-4">{courseError.message}</p>
-            <div className="flex gap-3 justify-center" role="group" aria-label="Error actions">
+            <div className="flex gap-3 justify-center" aria-label="Error actions">
               <Button onClick={refetch} aria-label="Retry loading course">
                 <RefreshCw className="h-4 w-4 mr-2" aria-hidden="true" />
                 Try Again
@@ -210,7 +209,7 @@ export default function CoursePage() {
             <p className="text-muted-foreground mb-4">
               You need to enroll in this course to access its content.
             </p>
-            <div className="flex gap-3" role="group" aria-label="Course enrollment actions">
+            <div className="flex gap-3" aria-label="Course enrollment actions">
               <Button variant="outline" onClick={handleBack} aria-label="Return to dashboard">
                 <ArrowLeft className="h-4 w-4 mr-2" aria-hidden="true" />
                 Back to Dashboard
@@ -242,9 +241,8 @@ export default function CoursePage() {
         />
       )}
 
-      <div
+      <main
         className="container mx-auto px-4 py-8"
-        role="main"
         aria-label={`${course.title} course content`}
       >
         {/* Header */}
@@ -289,6 +287,7 @@ export default function CoursePage() {
               aria-label="Course materials tab"
               aria-controls="materials-panel"
             >
+              {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
               <Video className="h-4 w-4 mr-2" aria-hidden="true" />
               Materials
             </TabsTrigger>
@@ -385,7 +384,7 @@ export default function CoursePage() {
             </TabsContent>
           )}
         </Tabs>
-      </div>
+      </main>
 
       {/* Material Viewer Dialog */}
       <MaterialViewerDialog

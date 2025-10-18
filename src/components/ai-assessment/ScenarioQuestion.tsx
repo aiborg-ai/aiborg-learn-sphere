@@ -79,6 +79,7 @@ export const ScenarioQuestion: React.FC<ScenarioQuestionProps> = ({
         return (
           <div className="space-y-2">
             <AspectRatio ratio={16 / 9} className="bg-muted rounded-lg overflow-hidden">
+              {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
               <img
                 src={question.media_url}
                 alt={question.media_caption || 'Scenario image'}
@@ -109,12 +110,18 @@ export const ScenarioQuestion: React.FC<ScenarioQuestionProps> = ({
                 onPause={() => setIsPlaying(false)}
                 muted={isMuted}
               >
-                <track kind="captions" />
+                <track
+                  kind="captions"
+                  srcLang="en"
+                  label="English"
+                  src=""
+                />
                 Your browser does not support the video tag.
               </video>
             </AspectRatio>
             {question.media_caption && (
               <p className="text-sm text-muted-foreground italic flex items-center gap-2">
+                {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                 <Video className="h-3 w-3" />
                 {question.media_caption}
               </p>
@@ -152,7 +159,12 @@ export const ScenarioQuestion: React.FC<ScenarioQuestionProps> = ({
                   muted={isMuted}
                   className="flex-1"
                 >
-                  <track kind="captions" />
+                  <track
+                    kind="captions"
+                    srcLang="en"
+                    label="English"
+                    src=""
+                  />
                   Your browser does not support the audio tag.
                 </audio>
                 <Button

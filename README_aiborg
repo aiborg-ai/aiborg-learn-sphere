@@ -22,8 +22,8 @@ HVOne2025
 
   Want me to help you get started with any of these improvements? I can:
   1.
-  2. Enable accessibility linting
-  3. Create accessibility templates
+  2. 
+  3.
   4. Set up testing infrastructure
   5. Refactor a large component as an example
 
@@ -33,7 +33,7 @@ HVOne2025
   - ✅ Instant validation with detailed error reports
   - ✅ Batch processing (10 at a time to prevent timeouts)
   - 
-  - ✅ Duplicate detection (won't re-enroll existing students)
+  - ✅ 
   - ✅ Download template, error reports, and results
   - ✅ Complete audit trail of all operations
 

@@ -77,6 +77,7 @@ export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
       case 'voice':
         return <Mic className="h-4 w-4" />;
       case 'video':
+        // eslint-disable-next-line jsx-a11y/media-has-caption
         return <Video className="h-4 w-4" />;
       default:
         return <MessageSquare className="h-4 w-4" />;
@@ -334,6 +335,7 @@ export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
                   
                   {review.review_type === 'video' && !review.video_review_url && (
                     <div className="text-center py-4">
+                      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                       <Video className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
                       <p className="text-xs text-muted-foreground">Video review (file not available)</p>
                     </div>

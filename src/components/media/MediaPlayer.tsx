@@ -208,7 +208,14 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
               className="w-full h-full object-cover"
               controls
               preload="metadata"
-            />
+            >
+              <track
+                kind="captions"
+                srcLang="en"
+                label="English"
+                src=""
+              />
+            </video>
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <Button

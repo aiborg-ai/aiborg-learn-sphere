@@ -40,32 +40,36 @@ export function CategoryDialog({
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <Label>Name</Label>
+            <Label htmlFor="category-name">Name</Label>
             <Input
+              id="category-name"
               value={categoryForm.name}
               onChange={e => onFormChange('name', e.target.value)}
               placeholder="e.g., Technology"
             />
           </div>
           <div>
-            <Label>Slug</Label>
+            <Label htmlFor="category-slug">Slug</Label>
             <Input
+              id="category-slug"
               value={categoryForm.slug}
               onChange={e => onFormChange('slug', e.target.value)}
               placeholder="e.g., technology"
             />
           </div>
           <div>
-            <Label>Description</Label>
+            <Label htmlFor="category-description">Description</Label>
             <Textarea
+              id="category-description"
               value={categoryForm.description}
               onChange={e => onFormChange('description', e.target.value)}
               placeholder="Category description..."
             />
           </div>
           <div>
-            <Label>Color</Label>
+            <Label htmlFor="category-color">Color</Label>
             <Input
+              id="category-color"
               type="color"
               value={categoryForm.color}
               onChange={e => onFormChange('color', e.target.value)}

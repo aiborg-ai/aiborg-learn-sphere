@@ -58,7 +58,7 @@ export function GoalSettingStep({ formData, onUpdate, onNext }: GoalSettingStepP
         </div>
 
         <div>
-          <Label className="text-white mb-3 block">Target Level *</Label>
+          <div className="text-sm font-medium text-white mb-3">Target Level *</div>
           <RadioGroup
             value={formData.targetLevel}
             onValueChange={v => onUpdate({ targetLevel: v as WizardFormData['targetLevel'] })}

@@ -250,7 +250,7 @@ export default function EventReviewForm() {
 
           {/* Event Mode */}
           <div className="space-y-2">
-            <Label>Event Mode *</Label>
+            <div className="text-sm font-medium">Event Mode *</div>
             <RadioGroup
               value={eventMode}
               onValueChange={value => setEventMode(value as 'online' | 'in-person' | 'hybrid')}
@@ -272,7 +272,7 @@ export default function EventReviewForm() {
 
           {/* Display Preference */}
           <div className="space-y-2">
-            <Label>Display Preference</Label>
+            <div className="text-sm font-medium">Display Preference</div>
             <RadioGroup
               value={displayPreference}
               onValueChange={value => setDisplayPreference(value as 'show_name' | 'anonymous')}
@@ -296,7 +296,7 @@ export default function EventReviewForm() {
 
           {/* Rating */}
           <div className="space-y-2">
-            <Label>Overall Rating *</Label>
+            <div className="text-sm font-medium">Overall Rating *</div>
             <div className="flex items-center gap-2">
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map(star => (
@@ -326,7 +326,7 @@ export default function EventReviewForm() {
 
           {/* Review Input Method */}
           <div className="space-y-2">
-            <Label>Your Review *</Label>
+            <div className="text-sm font-medium">Your Review *</div>
             <div className="flex gap-2 mb-2">
               <Button
                 type="button"
@@ -352,6 +352,7 @@ export default function EventReviewForm() {
                 size="sm"
                 onClick={() => setReviewMethod('video')}
               >
+                {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                 <Video className="h-4 w-4 mr-2" />
                 Video
               </Button>

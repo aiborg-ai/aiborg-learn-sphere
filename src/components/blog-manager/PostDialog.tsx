@@ -59,16 +59,18 @@ export function PostDialog({
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Title</Label>
+              <Label htmlFor="post-title">Title</Label>
               <Input
+                id="post-title"
                 value={postForm.title}
                 onChange={e => onFormChange('title', e.target.value)}
                 placeholder="Post title"
               />
             </div>
             <div>
-              <Label>Slug</Label>
+              <Label htmlFor="post-slug">Slug</Label>
               <Input
+                id="post-slug"
                 value={postForm.slug}
                 onChange={e => onFormChange('slug', e.target.value)}
                 placeholder="post-slug (auto-generated if empty)"
@@ -77,8 +79,9 @@ export function PostDialog({
           </div>
 
           <div>
-            <Label>Excerpt</Label>
+            <Label htmlFor="post-excerpt">Excerpt</Label>
             <Textarea
+              id="post-excerpt"
               value={postForm.excerpt}
               onChange={e => onFormChange('excerpt', e.target.value)}
               placeholder="Brief description of the post..."
@@ -87,8 +90,9 @@ export function PostDialog({
           </div>
 
           <div>
-            <Label>Content</Label>
+            <Label htmlFor="post-content">Content</Label>
             <Textarea
+              id="post-content"
               value={postForm.content}
               onChange={e => onFormChange('content', e.target.value)}
               placeholder="Write your post content here..."
@@ -99,12 +103,12 @@ export function PostDialog({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Category</Label>
+              <Label htmlFor="post-category">Category</Label>
               <Select
                 value={postForm.category_id}
                 onValueChange={value => onFormChange('category_id', value)}
               >
-                <SelectTrigger>
+                <SelectTrigger id="post-category">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -117,12 +121,12 @@ export function PostDialog({
               </Select>
             </div>
             <div>
-              <Label>Status</Label>
+              <Label htmlFor="post-status">Status</Label>
               <Select
                 value={postForm.status}
                 onValueChange={value => onFormChange('status', value)}
               >
-                <SelectTrigger>
+                <SelectTrigger id="post-status">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -136,8 +140,9 @@ export function PostDialog({
           </div>
 
           <div>
-            <Label>Featured Image URL</Label>
+            <Label htmlFor="post-featured-image">Featured Image URL</Label>
             <Input
+              id="post-featured-image"
               value={postForm.featured_image}
               onChange={e => onFormChange('featured_image', e.target.value)}
               placeholder="https://example.com/image.jpg"
@@ -146,8 +151,9 @@ export function PostDialog({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Meta Title (SEO)</Label>
+              <Label htmlFor="post-meta-title">Meta Title (SEO)</Label>
               <Input
+                id="post-meta-title"
                 value={postForm.meta_title}
                 onChange={e => onFormChange('meta_title', e.target.value)}
                 placeholder="SEO title (max 160 chars)"
@@ -155,8 +161,9 @@ export function PostDialog({
               />
             </div>
             <div>
-              <Label>Meta Description (SEO)</Label>
+              <Label htmlFor="post-meta-description">Meta Description (SEO)</Label>
               <Input
+                id="post-meta-description"
                 value={postForm.meta_description}
                 onChange={e => onFormChange('meta_description', e.target.value)}
                 placeholder="SEO description (max 320 chars)"
@@ -169,17 +176,19 @@ export function PostDialog({
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <Switch
+                  id="post-featured-switch"
                   checked={postForm.is_featured}
                   onCheckedChange={checked => onFormChange('is_featured', checked)}
                 />
-                <Label>Featured Post</Label>
+                <Label htmlFor="post-featured-switch">Featured Post</Label>
               </div>
               <div className="flex items-center gap-2">
                 <Switch
+                  id="post-comments-switch"
                   checked={postForm.allow_comments}
                   onCheckedChange={checked => onFormChange('allow_comments', checked)}
                 />
-                <Label>Allow Comments</Label>
+                <Label htmlFor="post-comments-switch">Allow Comments</Label>
               </div>
             </div>
           </div>

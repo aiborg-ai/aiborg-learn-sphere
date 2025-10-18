@@ -199,6 +199,7 @@ export function GlobalSearch() {
               description: material.courses?.title,
               icon:
                 material.type === 'video' ? (
+                  // eslint-disable-next-line jsx-a11y/media-has-caption
                   <Video className="h-4 w-4" />
                 ) : (
                   <FileText className="h-4 w-4" />

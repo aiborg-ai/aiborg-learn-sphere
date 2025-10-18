@@ -138,7 +138,7 @@ export function TemplateExport() {
           <TabsContent value="basic" className="space-y-4">
             {/* Export Type */}
             <div className="space-y-2">
-              <Label>Export Type</Label>
+              <div className="text-sm font-medium">Export Type</div>
               <RadioGroup
                 value={exportType}
                 onValueChange={value => setExportType(value as 'course' | 'event' | 'both')}
@@ -160,7 +160,7 @@ export function TemplateExport() {
 
             {/* Export Format */}
             <div className="space-y-2">
-              <Label>Export Format</Label>
+              <div className="text-sm font-medium">Export Format</div>
               <RadioGroup
                 value={exportFormat}
                 onValueChange={value => setExportFormat(value as 'json' | 'csv')}
@@ -226,7 +226,7 @@ export function TemplateExport() {
 
             {/* Status Filters */}
             <div className="space-y-2">
-              <Label>Status Filters</Label>
+              <div className="text-sm font-medium">Status Filters</div>
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -270,7 +270,7 @@ export function TemplateExport() {
 
           <TabsContent value="advanced" className="space-y-4">
             <div className="space-y-2">
-              <Label>Include Options</Label>
+              <div className="text-sm font-medium">Include Options</div>
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <Checkbox

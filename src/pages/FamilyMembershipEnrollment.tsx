@@ -40,7 +40,6 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { usePlanBySlug, useCreateSubscription } from '@/hooks/useMembership';
 import { CompactROICalculator } from '@/components/membership';
-import type { FamilyRelationship } from '@/services/membership/types';
 
 // Form validation schemas
 const accountInfoSchema = z.object({

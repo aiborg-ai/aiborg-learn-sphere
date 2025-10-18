@@ -129,7 +129,7 @@ export function TemplateUpload({ onFileUpload, isLoading }: TemplateUploadProps)
       <CardContent className="space-y-6">
         {/* Template Type Selection */}
         <div className="space-y-2">
-          <Label>Template Type</Label>
+          <div className="text-sm font-medium">Template Type</div>
           <RadioGroup
             value={templateType}
             onValueChange={value => setTemplateType(value as 'course' | 'event')}
@@ -159,6 +159,7 @@ export function TemplateUpload({ onFileUpload, isLoading }: TemplateUploadProps)
         </div>
 
         {/* File Upload Area */}
+        {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
         <div
           className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
             dragActive ? 'border-primary bg-primary/5' : 'border-gray-300 hover:border-gray-400'

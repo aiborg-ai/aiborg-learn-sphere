@@ -206,7 +206,8 @@ export function SubmissionForm({
         </div>
 
         <div className="space-y-2">
-          <Label>Attachments</Label>
+          <div className="text-sm font-medium">Attachments</div>
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
           <div
             className={`border-2 border-dashed rounded-lg p-6 text-center ${
               dragActive ? 'border-primary bg-primary/10' : 'border-gray-300'

@@ -431,6 +431,14 @@ export default function AILearningPathDetail() {
                               : 'bg-white/10 border-white/20 hover:bg-white/20'
                           }`}
                           onClick={() => handleItemClick(item)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleItemClick(item);
+                            }
+                          }}
+                          role="button"
+                          tabIndex={0}
                         >
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex items-start gap-3 flex-1">
