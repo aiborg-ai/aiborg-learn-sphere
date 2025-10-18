@@ -65,15 +65,44 @@ CREATE TABLE IF NOT EXISTS public.family_members (
   -- Timestamps
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  removed_at TIMESTAMP WITH TIME ZONE,
-
-  -- Constraints
-  CONSTRAINT check_subscription_member_limit CHECK (
-    (SELECT COUNT(*) FROM public.family_members fm2
-     WHERE fm2.subscription_id = subscription_id
-     AND fm2.status IN ('pending_invitation', 'invitation_sent', 'active')) <= 6
-  )
+  removed_at TIMESTAMP WITH TIME ZONE
 );
+
+-- Create trigger function to enforce family member limit
+CREATE OR REPLACE FUNCTION check_family_member_limit()
+RETURNS TRIGGER AS $$
+DECLARE
+  current_count INTEGER;
+  max_members INTEGER;
+BEGIN
+  -- Get the max_family_members from the subscription's plan
+  SELECT mp.max_family_members INTO max_members
+  FROM membership_subscriptions ms
+  JOIN membership_plans mp ON ms.plan_id = mp.id
+  WHERE ms.id = NEW.subscription_id;
+
+  -- Count current active family members for this subscription
+  SELECT COUNT(*) INTO current_count
+  FROM family_members
+  WHERE subscription_id = NEW.subscription_id
+  AND status IN ('pending_invitation', 'invitation_sent', 'active')
+  AND id != COALESCE(NEW.id, '00000000-0000-0000-0000-000000000000'::uuid);
+
+  -- Check if adding this member would exceed the limit
+  IF current_count >= max_members THEN
+    RAISE EXCEPTION 'Cannot add family member: subscription limit of % members reached', max_members;
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger to enforce limit on INSERT and UPDATE
+CREATE TRIGGER enforce_family_member_limit
+  BEFORE INSERT OR UPDATE ON public.family_members
+  FOR EACH ROW
+  WHEN (NEW.status IN ('pending_invitation', 'invitation_sent', 'active'))
+  EXECUTE FUNCTION check_family_member_limit();
 
 -- Create indexes
 CREATE INDEX idx_family_members_subscription_id ON public.family_members(subscription_id);
