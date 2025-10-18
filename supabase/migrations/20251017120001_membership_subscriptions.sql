@@ -56,12 +56,13 @@ CREATE TABLE IF NOT EXISTS public.membership_subscriptions (
 
   -- Timestamps
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-
-  -- Constraints
-  CONSTRAINT unique_user_active_subscription UNIQUE (user_id, status)
-    WHERE status IN ('trialing', 'active')
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Create partial unique index to ensure only one active/trialing subscription per user
+CREATE UNIQUE INDEX idx_unique_user_active_subscription
+  ON public.membership_subscriptions(user_id, status)
+  WHERE status IN ('trialing', 'active');
 
 -- Create indexes
 CREATE INDEX idx_membership_subscriptions_user_id ON public.membership_subscriptions(user_id);
