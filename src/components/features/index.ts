@@ -4,4 +4,5 @@
 export { AIChatbot } from './AIChatbot';
 export { AIStudyAssistant } from './AIStudyAssistant';
 export { CommandPalette } from './CommandPalette';
+export { DeepawaliBanner } from './DeepawaliBanner';
 export { PersonalizedContent, default as PersonalizedContentDefault } from './PersonalizedContent';

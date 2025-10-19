@@ -1,12 +1,12 @@
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { Navbar, Footer } from "@/components/navigation";
-import { HeroSection, ContactSection, AboutSection } from "@/components/sections";
-import { TrainingPrograms } from "@/components/TrainingPrograms";
-import { EventsSection } from "@/components/events";
-import { ReviewsSection } from "@/components/ReviewsSection";
-import { AIChatbot } from "@/components/features";
-import { FamilyPassBanner } from "@/components/membership";
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { Navbar, Footer } from '@/components/navigation';
+import { HeroSection, ContactSection, AboutSection } from '@/components/sections';
+import { TrainingPrograms } from '@/components/TrainingPrograms';
+import { EventsSection } from '@/components/events';
+import { ReviewsSection } from '@/components/ReviewsSection';
+import { AIChatbot, DeepawaliBanner } from '@/components/features';
+import { FamilyPassBanner } from '@/components/membership';
 
 const Index = () => {
   const location = useLocation();
@@ -36,6 +36,7 @@ const Index = () => {
   }, [location.hash]);
   return (
     <div className="min-h-screen">
+      <DeepawaliBanner />
       <Navbar />
       <HeroSection />
       <FamilyPassBanner />
