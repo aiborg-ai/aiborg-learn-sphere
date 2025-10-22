@@ -138,6 +138,8 @@ export class MembershipService {
 
   /**
    * Check if user has active membership
+   * Checks both Stripe subscriptions AND admin-granted Family Pass
+   * Hybrid logic: Admin can grant, but Stripe cancellations can revoke
    */
   static async hasActiveMembership(): Promise<boolean> {
     const {
@@ -146,16 +148,34 @@ export class MembershipService {
 
     if (!user) return false;
 
-    const { data, error } = await supabase.rpc('check_membership_access', {
+    // First check Stripe subscription
+    const { data: stripeData, error: stripeError } = await supabase.rpc('check_membership_access', {
       p_user_id: user.id,
     });
 
-    if (error) {
-      logger.error('Error checking membership access:', error);
+    if (stripeError) {
+      logger.error('Error checking Stripe membership access:', stripeError);
+    }
+
+    // If Stripe subscription is active, grant access
+    if (stripeData === true) {
+      return true;
+    }
+
+    // Check admin-granted Family Pass
+    const { data: adminData, error: adminError } = await supabase.rpc(
+      'check_admin_family_pass_access',
+      {
+        p_user_id: user.id,
+      }
+    );
+
+    if (adminError) {
+      logger.error('Error checking admin Family Pass access:', adminError);
       return false;
     }
 
-    return data === true;
+    return adminData === true;
   }
 
   /**

@@ -23,6 +23,7 @@ import {
   FileCheck,
   Folder,
   Ticket,
+  Crown,
 } from 'lucide-react';
 
 // Components
@@ -42,11 +43,19 @@ import { ProgressTrackingDashboard } from '@/components/admin/ProgressTrackingDa
 import { AssignmentTracker } from '@/components/admin/AssignmentTracker';
 import { ResourcesManagement } from '@/components/admin/ResourcesManagement';
 import { AttendanceTicketManagement } from '@/components/admin/AttendanceTicketManagement';
+import { FamilyPassManagement } from '@/components/admin/FamilyPassManagement';
 
 export default function AdminRefactored() {
   const { user } = useAuth();
   const { isAdmin, accessDenied, denialReason, loading: accessLoading } = useAdminAccess();
-  const { users, courses, announcements, enrollments, loading: dataLoading, refetch } = useAdminData();
+  const {
+    users,
+    courses,
+    announcements,
+    enrollments,
+    loading: dataLoading,
+    refetch,
+  } = useAdminData();
 
   // Fetch data when admin access is granted
   useEffect(() => {
@@ -109,7 +118,10 @@ export default function AdminRefactored() {
               <BarChart3 className="h-4 w-4 mr-2" />
               Analytics
             </TabsTrigger>
-            <TabsTrigger value="role-management" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="role-management"
+              className="text-white data-[state=active]:bg-white/20"
+            >
               <UserCog className="h-4 w-4 mr-2" />
               Role Management
             </TabsTrigger>
@@ -125,7 +137,14 @@ export default function AdminRefactored() {
               <UserCheck className="h-4 w-4 mr-2" />
               Enrollments ({enrollments.length})
             </TabsTrigger>
-            <TabsTrigger value="announcements" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger value="family-pass" className="text-white data-[state=active]:bg-white/20">
+              <Crown className="h-4 w-4 mr-2" />
+              Family Pass
+            </TabsTrigger>
+            <TabsTrigger
+              value="announcements"
+              className="text-white data-[state=active]:bg-white/20"
+            >
               <Megaphone className="h-4 w-4 mr-2" />
               Announcements ({announcements.length})
             </TabsTrigger>
@@ -141,7 +160,10 @@ export default function AdminRefactored() {
               <BookOpen className="h-4 w-4 mr-2" />
               Blog
             </TabsTrigger>
-            <TabsTrigger value="achievements" className="text-white data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="achievements"
+              className="text-white data-[state=active]:bg-white/20"
+            >
               <Trophy className="h-4 w-4 mr-2" />
               Achievements
             </TabsTrigger>
@@ -181,11 +203,19 @@ export default function AdminRefactored() {
           </TabsContent>
 
           <TabsContent value="courses">
-            <CourseManagementEnhanced courses={courses} setCourses={() => refetch()} onRefresh={refetch} />
+            <CourseManagementEnhanced
+              courses={courses}
+              setCourses={() => refetch()}
+              onRefresh={refetch}
+            />
           </TabsContent>
 
           <TabsContent value="enrollments">
             <EnrollmentManagementEnhanced enrollments={enrollments} onRefresh={refetch} />
+          </TabsContent>
+
+          <TabsContent value="family-pass">
+            <FamilyPassManagement />
           </TabsContent>
 
           <TabsContent value="announcements">
