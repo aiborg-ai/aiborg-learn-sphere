@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   Select,
   SelectContent,
@@ -18,7 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Trash2, Shield, UserCheck, Search } from 'lucide-react';
+import { Trash2, Shield, UserCheck, Search, Copy, Check } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
@@ -41,6 +42,7 @@ interface UserManagementProps {
 
 export function UserManagement({ users, setUsers, _onRefresh }: UserManagementProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const { toast } = useToast();
 
   const filteredUsers = users.filter(
@@ -95,6 +97,25 @@ export function UserManagement({ users, setUsers, _onRefresh }: UserManagementPr
     }
   };
 
+  const copyToClipboard = async (userId: string) => {
+    try {
+      await navigator.clipboard.writeText(userId);
+      setCopiedId(userId);
+      toast({
+        title: 'Copied!',
+        description: 'User ID copied to clipboard',
+      });
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (error) {
+      logger.error('Error copying to clipboard:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to copy to clipboard',
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <Card className="bg-white/95 backdrop-blur">
       <CardHeader>
@@ -117,6 +138,7 @@ export function UserManagement({ users, setUsers, _onRefresh }: UserManagementPr
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
+                <TableHead>User ID</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Joined</TableHead>
                 <TableHead>Actions</TableHead>
@@ -127,6 +149,34 @@ export function UserManagement({ users, setUsers, _onRefresh }: UserManagementPr
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.display_name || 'N/A'}</TableCell>
                   <TableCell>{user.email}</TableCell>
+                  <TableCell>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex items-center gap-2">
+                            <code className="text-xs bg-muted px-2 py-1 rounded">
+                              {user.user_id.substring(0, 8)}...{user.user_id.slice(-4)}
+                            </code>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 w-6 p-0"
+                              onClick={() => copyToClipboard(user.user_id)}
+                            >
+                              {copiedId === user.user_id ? (
+                                <Check className="h-3 w-3 text-green-600" />
+                              ) : (
+                                <Copy className="h-3 w-3" />
+                              )}
+                            </Button>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="font-mono text-xs">{user.user_id}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableCell>
                   <TableCell>
                     <Badge variant={user.role === 'admin' ? 'destructive' : 'default'}>
                       {user.role === 'admin' ? (
