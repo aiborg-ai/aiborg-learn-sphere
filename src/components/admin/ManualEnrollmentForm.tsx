@@ -149,7 +149,7 @@ export function ManualEnrollmentForm({ open, onOpenChange, onSuccess }: ManualEn
         .select('id')
         .eq('user_id', selectedUser.id)
         .eq('course_id', parseInt(selectedCourse))
-        .single();
+        .maybeSingle();
 
       if (existingEnrollment) {
         toast({
