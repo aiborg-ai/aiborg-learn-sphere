@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
@@ -12,7 +12,25 @@ const corsHeaders = {
 
 interface EmailNotification {
   to: string;
-  type: 'course_enrollment' | 'assignment_due' | 'assignment_graded' | 'course_update' | 'new_announcement' | 'deadline_reminder' | 'certificate_ready' | 'discussion_reply' | 'family_membership_welcome' | 'family_invitation' | 'membership_payment_success' | 'membership_payment_failed' | 'membership_lifecycle' | 'membership_expiration_warning';
+  type:
+    | 'course_enrollment'
+    | 'assignment_due'
+    | 'assignment_graded'
+    | 'course_update'
+    | 'new_announcement'
+    | 'deadline_reminder'
+    | 'certificate_ready'
+    | 'discussion_reply'
+    | 'family_membership_welcome'
+    | 'family_invitation'
+    | 'membership_payment_success'
+    | 'membership_payment_failed'
+    | 'membership_lifecycle'
+    | 'membership_expiration_warning'
+    | 'family_pass_granted'
+    | 'family_pass_revoked'
+    | 'family_pass_expiring'
+    | 'family_pass_extended';
   data: Record<string, any>;
 }
 
@@ -158,12 +176,16 @@ const emailTemplates = {
                 <p style="margin: 0; color: #065f46; font-size: 18px;">${data.grade} (${data.percentage}%)</p>
               </div>
 
-              ${data.feedback ? `
+              ${
+                data.feedback
+                  ? `
               <div class="feedback">
                 <h3 style="margin: 0 0 10px 0; color: #374151;">Instructor Feedback:</h3>
                 <p style="margin: 0;">${data.feedback}</p>
               </div>
-              ` : ''}
+              `
+                  : ''
+              }
 
               <p><strong>Course:</strong> ${data.courseName}<br>
               <strong>Submitted:</strong> ${data.submittedDate}<br>
@@ -838,31 +860,47 @@ const emailTemplates = {
                   <span style="color: #6b7280;">Status:</span>
                   <strong>${data.currentStatus}</strong>
                 </div>
-                ${data.effectiveDate ? `
+                ${
+                  data.effectiveDate
+                    ? `
                 <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #bfdbfe;">
                   <span style="color: #6b7280;">Effective Date:</span>
                   <strong>${data.effectiveDate}</strong>
                 </div>
-                ` : ''}
-                ${data.endDate ? `
+                `
+                    : ''
+                }
+                ${
+                  data.endDate
+                    ? `
                 <div style="display: flex; justify-content: space-between; padding: 10px 0;">
                   <span style="color: #6b7280;">End Date:</span>
                   <strong>${data.endDate}</strong>
                 </div>
-                ` : ''}
+                `
+                    : ''
+                }
               </div>
 
-              ${data.whatHappensNext ? `
+              ${
+                data.whatHappensNext
+                  ? `
               <h2>What Happens Next:</h2>
               <div class="info-box">
                 ${data.whatHappensNext}
               </div>
-              ` : ''}
+              `
+                  : ''
+              }
 
-              ${data.actionRequired ? `
+              ${
+                data.actionRequired
+                  ? `
               <h2>Action Required:</h2>
               <p>${data.actionRequired}</p>
-              ` : ''}
+              `
+                  : ''
+              }
 
               <center>
                 <a href="${data.dashboardUrl}" class="button">Go to Dashboard</a>
@@ -978,9 +1016,398 @@ const emailTemplates = {
       </html>
     `,
   }),
+
+  // ============================================================================
+  // ADMIN FAMILY PASS EMAIL TEMPLATES
+  // ============================================================================
+
+  family_pass_granted: (data: any) => ({
+    subject: `👑 You've Been Granted Family Pass Access!`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head><style>
+          body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #1f2937; background: #f9fafb; }
+          .container { max-width: 600px; margin: 0 auto; background: white; }
+          .header { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #78350f; padding: 40px 30px; text-align: center; }
+          .crown-icon { font-size: 64px; margin: 10px 0; }
+          .content { padding: 40px 30px; }
+          .grant-card { background: #fffbeb; border: 3px solid #fbbf24; padding: 30px; border-radius: 12px; margin: 20px 0; text-align: center; }
+          .date-info { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+          .date-box { background: #f3f4f6; padding: 15px; border-radius: 8px; text-align: center; }
+          .date-label { font-size: 12px; color: #6b7280; text-transform: uppercase; margin-bottom: 5px; }
+          .date-value { font-size: 18px; font-weight: bold; color: #374151; }
+          .button { display: inline-block; padding: 16px 32px; background: #f59e0b; color: white !important; text-decoration: none; border-radius: 8px; font-weight: 700; margin: 20px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+          .benefits { background: #f0fdf4; padding: 20px; border-radius: 8px; border-left: 4px solid #10b981; margin: 20px 0; }
+          .footer { background: #f9fafb; padding: 30px; text-align: center; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb; }
+          h1 { margin: 0; font-size: 32px; color: white; }
+          h2 { color: #374151; font-size: 20px; margin: 20px 0 10px 0; }
+          p { margin: 0 0 15px 0; }
+          ul { color: #4b5563; margin: 10px 0; padding-left: 25px; }
+          li { margin: 8px 0; }
+        </style></head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="crown-icon">👑</div>
+              <h1>Family Pass Granted!</h1>
+              <p style="margin: 10px 0 0 0; opacity: 0.9; color: white;">Welcome to Unlimited AI Learning</p>
+            </div>
+            <div class="content">
+              <p>Hi ${data.userName},</p>
+              <p>Exciting news! You've been granted <strong>Family Pass</strong> access to Aiborg's learning platform by our admin team.</p>
+
+              <div class="grant-card">
+                <h2 style="margin: 0 0 20px 0; color: #92400e;">Your Family Pass Access</h2>
+                <div class="date-info">
+                  <div class="date-box">
+                    <div class="date-label">Start Date</div>
+                    <div class="date-value">${data.startDate}</div>
+                  </div>
+                  <div class="date-box">
+                    <div class="date-label">End Date</div>
+                    <div class="date-value">${data.endDate}</div>
+                  </div>
+                </div>
+                ${
+                  data.notes
+                    ? `
+                <p style="margin: 20px 0 0 0; padding: 15px; background: #fef3c7; border-radius: 8px;">
+                  <strong>Admin Note:</strong> ${data.notes}
+                </p>
+                `
+                    : ''
+                }
+              </div>
+
+              <h2>🚀 What You Can Do Now:</h2>
+              <div class="benefits">
+                <ul style="margin: 0; padding-left: 20px;">
+                  <li>✅ <strong>Enroll in Any Course</strong> - All courses free with Family Pass</li>
+                  <li>✅ <strong>Access Premium Content</strong> - Vault resources & templates</li>
+                  <li>✅ <strong>Join Live Events</strong> - Workshops and Q&A sessions</li>
+                  <li>✅ <strong>Earn Certificates</strong> - Professional credentials</li>
+                  <li>✅ <strong>Community Access</strong> - Connect with learners</li>
+                </ul>
+              </div>
+
+              <center>
+                <a href="${data.dashboardUrl}" class="button">Start Learning Now →</a>
+              </center>
+
+              <p style="margin-top: 30px; padding: 20px; background: #eff6ff; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                <strong style="color: #1e40af;">💡 Pro Tip:</strong> Your Family Pass is active until <strong>${data.endDate}</strong>. Make the most of it by exploring all available courses and completing them before the access period ends!
+              </p>
+
+              <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280;">
+                Questions about your Family Pass? Contact our support team at support@aiborg.ai
+              </p>
+            </div>
+            <div class="footer">
+              <p><strong>Aiborg™ Learning Platform</strong></p>
+              <p>AI-Augmented Human Learning</p>
+              <p style="margin-top: 15px;">
+                <a href="${data.dashboardUrl}" style="color: #f59e0b;">Dashboard</a> |
+                <a href="${data.coursesUrl}" style="color: #f59e0b;">Browse Courses</a>
+              </p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+  }),
+
+  family_pass_revoked: (data: any) => ({
+    subject: `📋 Family Pass Access Update`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head><style>
+          body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #1f2937; }
+          .container { max-width: 600px; margin: 0 auto; background: white; }
+          .header { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); color: white; padding: 40px 30px; text-align: center; }
+          .content { padding: 40px 30px; }
+          .status-card { background: #f3f4f6; padding: 25px; border-radius: 12px; margin: 20px 0; border-left: 4px solid #6b7280; }
+          .date-box { background: white; padding: 15px; border-radius: 8px; margin: 10px 0; border: 1px solid #e5e7eb; }
+          .button { display: inline-block; padding: 14px 28px; background: #3b82f6; color: white !important; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 20px 0; }
+          .alternative { background: #eff6ff; padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6; margin: 20px 0; }
+          .footer { background: #f9fafb; padding: 30px; text-align: center; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb; }
+          h1 { margin: 0; font-size: 28px; }
+          h2 { color: #374151; font-size: 20px; margin: 20px 0 10px 0; }
+          p { margin: 0 0 15px 0; }
+          ul { color: #4b5563; margin: 10px 0; padding-left: 25px; }
+          li { margin: 8px 0; }
+        </style></head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1 style="color: white;">Family Pass Update</h1>
+              <p style="margin: 10px 0 0 0; opacity: 0.9;">Access Status Changed</p>
+            </div>
+            <div class="content">
+              <p>Hi ${data.userName},</p>
+              <p>We're writing to inform you that your Family Pass access has been updated by our admin team.</p>
+
+              <div class="status-card">
+                <h2 style="margin: 0 0 15px 0; color: #374151;">Access Status</h2>
+                <div class="date-box">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #6b7280;">Status:</span>
+                    <strong style="color: #dc2626;">Deactivated</strong>
+                  </div>
+                </div>
+                <div class="date-box">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #6b7280;">Deactivated On:</span>
+                    <strong>${data.revokedDate}</strong>
+                  </div>
+                </div>
+                ${
+                  data.reason
+                    ? `
+                <div style="margin-top: 15px; padding: 15px; background: #fef3c7; border-radius: 8px;">
+                  <strong>Reason:</strong> ${data.reason}
+                </div>
+                `
+                    : ''
+                }
+              </div>
+
+              <h2>What This Means:</h2>
+              <ul>
+                <li>❌ You can no longer enroll in courses using Family Pass</li>
+                <li>✅ Courses you're already enrolled in remain accessible</li>
+                <li>✅ Your learning progress and certificates are preserved</li>
+              </ul>
+
+              <div class="alternative">
+                <h2 style="margin: 0 0 15px 0; color: #1e40af;">💡 Continue Learning:</h2>
+                <p style="margin: 0;">You can still access all our courses by:</p>
+                <ul style="margin: 10px 0 0 0; padding-left: 20px;">
+                  <li>Purchasing individual courses</li>
+                  <li>Subscribing to a Family Membership</li>
+                  <li>Enrolling in free courses</li>
+                </ul>
+              </div>
+
+              <center>
+                <a href="${data.coursesUrl}" class="button">Browse Courses</a>
+              </center>
+
+              <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280;">
+                Questions about this change? Contact our support team at support@aiborg.ai
+              </p>
+            </div>
+            <div class="footer">
+              <p><strong>Aiborg™ Learning Platform</strong></p>
+              <p style="margin-top: 15px;">
+                <a href="${data.dashboardUrl}" style="color: #6b7280;">Dashboard</a> |
+                <a href="${data.membershipUrl}" style="color: #6b7280;">View Membership Options</a>
+              </p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+  }),
+
+  family_pass_expiring: (data: any) => ({
+    subject: `⏰ Your Family Pass Expires in ${data.daysRemaining} Days`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head><style>
+          body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #1f2937; }
+          .container { max-width: 600px; margin: 0 auto; background: white; }
+          .header { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 40px 30px; text-align: center; }
+          .content { padding: 40px 30px; }
+          .countdown-box { background: #fef3c7; border: 3px solid #f59e0b; padding: 30px; border-radius: 12px; text-align: center; margin: 20px 0; }
+          .countdown { font-size: 56px; font-weight: bold; color: #d97706; margin: 10px 0; }
+          .alert-box { background: #fee2e2; padding: 20px; border-radius: 8px; border-left: 4px solid #dc2626; margin: 20px 0; }
+          .progress-reminder { background: #f0fdf4; padding: 20px; border-radius: 8px; border-left: 4px solid #10b981; margin: 20px 0; }
+          .footer { background: #f9fafb; padding: 30px; text-align: center; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb; }
+          h1 { margin: 0; font-size: 28px; }
+          h2 { color: #374151; font-size: 20px; margin: 20px 0 10px 0; }
+          p { margin: 0 0 15px 0; }
+          ul { color: #4b5563; margin: 10px 0; padding-left: 25px; }
+          li { margin: 8px 0; }
+        </style></head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1 style="color: white;">⏰ Family Pass Expiring Soon</h1>
+              <p style="margin: 10px 0 0 0; opacity: 0.9;">Complete Your Learning Before Access Ends</p>
+            </div>
+            <div class="content">
+              <p>Hi ${data.userName},</p>
+
+              <div class="countdown-box">
+                <p style="margin: 0 0 10px 0; color: #92400e; font-size: 18px;">Your Family Pass access expires in:</p>
+                <div class="countdown">${data.daysRemaining}</div>
+                <p style="margin: 10px 0 0 0; color: #92400e; font-size: 18px;">Days</p>
+                <p style="margin: 15px 0 0 0; color: #78350f;">Expiration Date: <strong>${data.expiryDate}</strong></p>
+              </div>
+
+              <p>This is a reminder that your admin-granted Family Pass will expire on <strong>${data.expiryDate}</strong>. After this date, you'll no longer be able to use Family Pass for course enrollments.</p>
+
+              <div class="alert-box">
+                <h2 style="margin: 0 0 10px 0; color: #991b1b;">⚠️ What Will Happen:</h2>
+                <ul style="margin: 0; padding-left: 20px;">
+                  <li>You won't be able to enroll in new courses with Family Pass</li>
+                  <li>Courses you're already enrolled in will remain accessible</li>
+                  <li>Your progress and certificates will be preserved</li>
+                </ul>
+              </div>
+
+              ${
+                data.coursesInProgress
+                  ? `
+              <div class="progress-reminder">
+                <h2 style="margin: 0 0 10px 0; color: #065f46;">📚 Your Current Progress:</h2>
+                <ul style="margin: 0; padding-left: 20px;">
+                  <li><strong>${data.enrolledCourses}</strong> courses enrolled</li>
+                  <li><strong>${data.completedCourses}</strong> courses completed</li>
+                  <li><strong>${data.inProgressCourses}</strong> courses in progress</li>
+                </ul>
+                <p style="margin: 10px 0 0 0; color: #065f46;"><strong>💡 Tip:</strong> Focus on completing your in-progress courses before access expires!</p>
+              </div>
+              `
+                  : ''
+              }
+
+              <h2>🚀 Make the Most of Your Time:</h2>
+              <ul>
+                <li>Complete any courses you've started</li>
+                <li>Download course materials and certificates</li>
+                <li>Join upcoming workshops and events</li>
+                <li>Explore new courses you're interested in</li>
+              </ul>
+
+              <p style="margin-top: 30px; padding: 20px; background: #eff6ff; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                <strong style="color: #1e40af;">Want to Continue?</strong><br>
+                After your Family Pass expires, you can continue learning by purchasing courses individually or subscribing to a Family Membership.
+              </p>
+
+              <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280;">
+                Questions? Contact support@aiborg.ai
+              </p>
+            </div>
+            <div class="footer">
+              <p><strong>Aiborg™ Learning Platform</strong></p>
+              <p style="margin-top: 15px;">
+                <a href="${data.dashboardUrl}" style="color: #f59e0b;">Dashboard</a> |
+                <a href="${data.coursesUrl}" style="color: #f59e0b;">My Courses</a>
+              </p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+  }),
+
+  family_pass_extended: (data: any) => ({
+    subject: `🎉 Great News! Your Family Pass Has Been Extended`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head><style>
+          body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #1f2937; background: #f9fafb; }
+          .container { max-width: 600px; margin: 0 auto; background: white; }
+          .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 40px 30px; text-align: center; }
+          .success-icon { font-size: 64px; margin: 10px 0; }
+          .content { padding: 40px 30px; }
+          .extension-card { background: #f0fdf4; border: 3px solid #10b981; padding: 30px; border-radius: 12px; margin: 20px 0; }
+          .date-comparison { display: grid; grid-template-columns: 1fr auto 1fr; gap: 15px; align-items: center; margin: 20px 0; }
+          .date-box { background: white; padding: 20px; border-radius: 8px; text-align: center; border: 2px solid #e5e7eb; }
+          .date-label { font-size: 12px; color: #6b7280; text-transform: uppercase; margin-bottom: 5px; }
+          .date-value { font-size: 20px; font-weight: bold; color: #374151; }
+          .arrow { color: #10b981; font-size: 24px; }
+          .button { display: inline-block; padding: 16px 32px; background: #10b981; color: white !important; text-decoration: none; border-radius: 8px; font-weight: 700; margin: 20px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+          .celebration { background: #fffbeb; padding: 20px; border-radius: 8px; border-left: 4px solid #fbbf24; margin: 20px 0; }
+          .footer { background: #f9fafb; padding: 30px; text-align: center; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb; }
+          h1 { margin: 0; font-size: 32px; }
+          h2 { color: #374151; font-size: 20px; margin: 20px 0 10px 0; }
+          p { margin: 0 0 15px 0; }
+          ul { color: #4b5563; margin: 10px 0; padding-left: 25px; }
+          li { margin: 8px 0; }
+        </style></head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="success-icon">🎉</div>
+              <h1 style="color: white;">Family Pass Extended!</h1>
+              <p style="margin: 10px 0 0 0; opacity: 0.9;">More Time to Learn and Grow</p>
+            </div>
+            <div class="content">
+              <p>Hi ${data.userName},</p>
+              <p>Excellent news! Your Family Pass access has been extended by our admin team. You now have more time to continue your AI learning journey!</p>
+
+              <div class="extension-card">
+                <h2 style="margin: 0 0 20px 0; color: #065f46; text-align: center;">Updated Access Period</h2>
+                <div class="date-comparison">
+                  <div class="date-box">
+                    <div class="date-label">Previous End Date</div>
+                    <div class="date-value" style="color: #9ca3af; text-decoration: line-through;">${data.previousEndDate}</div>
+                  </div>
+                  <div class="arrow">→</div>
+                  <div class="date-box" style="border-color: #10b981; background: #f0fdf4;">
+                    <div class="date-label" style="color: #065f46;">New End Date</div>
+                    <div class="date-value" style="color: #059669;">${data.newEndDate}</div>
+                  </div>
+                </div>
+                <p style="text-align: center; margin: 20px 0 0 0; color: #059669; font-size: 18px;">
+                  <strong>+${data.additionalDays} Days Extended!</strong>
+                </p>
+                ${
+                  data.notes
+                    ? `
+                <div style="margin-top: 20px; padding: 15px; background: #fef3c7; border-radius: 8px;">
+                  <strong>Admin Note:</strong> ${data.notes}
+                </div>
+                `
+                    : ''
+                }
+              </div>
+
+              <div class="celebration">
+                <h2 style="margin: 0 0 15px 0; color: #92400e;">🚀 What You Can Do Now:</h2>
+                <ul style="margin: 0; padding-left: 20px;">
+                  <li>✨ <strong>Enroll in More Courses</strong> - Take advantage of the extra time</li>
+                  <li>📚 <strong>Complete Ongoing Courses</strong> - Finish what you started</li>
+                  <li>🎓 <strong>Earn More Certificates</strong> - Add to your credentials</li>
+                  <li>🔥 <strong>Join Live Events</strong> - Participate in workshops and webinars</li>
+                  <li>💎 <strong>Explore the Vault</strong> - Access premium resources</li>
+                </ul>
+              </div>
+
+              <center>
+                <a href="${data.dashboardUrl}" class="button">Continue Learning →</a>
+              </center>
+
+              <p style="margin-top: 30px; padding: 20px; background: #eff6ff; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                <strong style="color: #1e40af;">💡 Pro Tip:</strong> With ${data.additionalDays} extra days, you can comfortably complete ${Math.floor(data.additionalDays / 7)} to ${Math.floor(data.additionalDays / 5)} additional courses. Plan your learning path to make the most of this extended access!
+              </p>
+
+              <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280;">
+                Thank you for being part of our learning community. Questions? Contact support@aiborg.ai
+              </p>
+            </div>
+            <div class="footer">
+              <p><strong>Aiborg™ Learning Platform</strong></p>
+              <p>Making AI Learning Accessible to Everyone</p>
+              <p style="margin-top: 15px;">
+                <a href="${data.dashboardUrl}" style="color: #10b981;">Dashboard</a> |
+                <a href="${data.coursesUrl}" style="color: #10b981;">Browse Courses</a>
+              </p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+  }),
 };
 
-serve(async (req) => {
+serve(async req => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -1024,7 +1451,7 @@ serve(async (req) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
+        Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
         from: 'Aiborg Learning <notifications@aiborg.ai>',
@@ -1050,21 +1477,15 @@ serve(async (req) => {
       sent_at: new Date().toISOString(),
     });
 
-    return new Response(
-      JSON.stringify({ success: true, emailId: result.id }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      }
-    );
+    return new Response(JSON.stringify({ success: true, emailId: result.id }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
+    });
   } catch (error) {
     console.error('Error sending email:', error);
-    return new Response(
-      JSON.stringify({ success: false, error: error.message }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500,
-      }
-    );
+    return new Response(JSON.stringify({ success: false, error: error.message }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500,
+    });
   }
 });
