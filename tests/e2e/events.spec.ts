@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Events Section - Public View', () => {
-  test('should display events section on homepage', async ({ page }) => {
+  test('should display events section on homepage', async ({ page: _page }) => {
     await page.goto('/');
 
     // Wait for events section to load
@@ -16,7 +16,7 @@ test.describe('Events Section - Public View', () => {
     await expect(page.locator('text=Network Members')).toBeVisible();
   });
 
-  test('should display event cards', async ({ page }) => {
+  test('should display event cards', async ({ page: _page }) => {
     await page.goto('/');
 
     // Wait for events to load
@@ -27,12 +27,10 @@ test.describe('Events Section - Public View', () => {
     const emptyState = page.locator('text=No events found');
 
     // Either events exist or empty state is shown
-    await expect(
-      eventCards.first().or(emptyState)
-    ).toBeVisible({ timeout: 5000 });
+    await expect(eventCards.first().or(emptyState)).toBeVisible({ timeout: 5000 });
   });
 
-  test('should filter events by category', async ({ page }) => {
+  test('should filter events by category', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForSelector('text=Join Our Events', { timeout: 10000 });
 
@@ -50,7 +48,7 @@ test.describe('Events Section - Public View', () => {
     await expect(upcomingFilter).toHaveClass(/bg-primary|text-primary-foreground/);
   });
 
-  test('should display past events section if available', async ({ page }) => {
+  test('should display past events section if available', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForSelector('text=Join Our Events', { timeout: 10000 });
 
@@ -62,26 +60,26 @@ test.describe('Events Section - Public View', () => {
     const reliveTheMoments = page.locator('text=Relive the Moments');
 
     // If past events exist, verify section is properly displayed
-    if (await pastEventsSection.count() > 0) {
+    if ((await pastEventsSection.count()) > 0) {
       await expect(pastEventsSection).toBeVisible();
       await expect(reliveTheMoments).toBeVisible();
     }
   });
 
-  test('should display event photo gallery for past events', async ({ page }) => {
+  test('should display event photo gallery for past events', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForSelector('text=Join Our Events', { timeout: 10000 });
 
     // Look for past events section
     const pastEventsSection = page.locator('text=Past Events Gallery');
 
-    if (await pastEventsSection.count() > 0) {
+    if ((await pastEventsSection.count()) > 0) {
       await pastEventsSection.scrollIntoViewIfNeeded();
 
       // Check for photo gallery
       const photoGallery = page.locator('text=Event Photos');
 
-      if (await photoGallery.count() > 0) {
+      if ((await photoGallery.count()) > 0) {
         await expect(photoGallery).toBeVisible();
 
         // Check if photos are displayed
@@ -91,14 +89,14 @@ test.describe('Events Section - Public View', () => {
     }
   });
 
-  test('should open lightbox when clicking on event photo', async ({ page }) => {
+  test('should open lightbox when clicking on event photo', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForSelector('text=Join Our Events', { timeout: 10000 });
 
     // Look for past events with photos
     const photoGallery = page.locator('text=Event Photos');
 
-    if (await photoGallery.count() > 0) {
+    if ((await photoGallery.count()) > 0) {
       // Click on first photo
       const firstPhoto = page.locator('img[alt*="photo"]').first();
       await firstPhoto.click();
@@ -117,13 +115,13 @@ test.describe('Events Section - Public View', () => {
     }
   });
 
-  test('should navigate photos in lightbox', async ({ page }) => {
+  test('should navigate photos in lightbox', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForSelector('text=Join Our Events', { timeout: 10000 });
 
     const photoGallery = page.locator('text=Event Photos');
 
-    if (await photoGallery.count() > 0) {
+    if ((await photoGallery.count()) > 0) {
       const photos = page.locator('img[alt*="photo"]');
       const photoCount = await photos.count();
 
@@ -135,9 +133,12 @@ test.describe('Events Section - Public View', () => {
         await expect(dialog).toBeVisible();
 
         // Try to find next button
-        const nextButton = dialog.locator('button').filter({ has: page.locator('svg') }).nth(1);
+        const nextButton = dialog
+          .locator('button')
+          .filter({ has: page.locator('svg') })
+          .nth(1);
 
-        if (await nextButton.count() > 0) {
+        if ((await nextButton.count()) > 0) {
           await nextButton.click();
 
           // Verify photo changed (dialog still visible)
@@ -151,19 +152,19 @@ test.describe('Events Section - Public View', () => {
     }
   });
 
-  test('should show/hide more past events', async ({ page }) => {
+  test('should show/hide more past events', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForSelector('text=Join Our Events', { timeout: 10000 });
 
     const pastEventsSection = page.locator('text=Past Events Gallery');
 
-    if (await pastEventsSection.count() > 0) {
+    if ((await pastEventsSection.count()) > 0) {
       await pastEventsSection.scrollIntoViewIfNeeded();
 
       // Look for "View All" or "Show More" button
       const showMoreButton = page.locator('button').filter({ hasText: /view all|show more/i });
 
-      if (await showMoreButton.count() > 0) {
+      if ((await showMoreButton.count()) > 0) {
         await showMoreButton.click();
 
         // Button text should change to "Show Less"
@@ -178,7 +179,7 @@ test.describe('Events Section - Public View', () => {
 });
 
 test.describe('Events Section - Responsiveness', () => {
-  test('should display correctly on mobile', async ({ page }) => {
+  test('should display correctly on mobile', async ({ page: _page }) => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
 
@@ -193,7 +194,7 @@ test.describe('Events Section - Responsiveness', () => {
     await expect(filterButtons.first()).toBeVisible();
   });
 
-  test('should display correctly on tablet', async ({ page }) => {
+  test('should display correctly on tablet', async ({ page: _page }) => {
     // Set tablet viewport
     await page.setViewportSize({ width: 768, height: 1024 });
 

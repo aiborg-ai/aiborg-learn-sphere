@@ -39,7 +39,7 @@ export default function SMEAssessmentReport() {
     try {
       await navigator.clipboard.writeText(url);
       toast.success('Report link copied to clipboard!');
-    } catch (error) {
+    } catch {
       toast.error('Failed to copy link');
     }
   };
@@ -57,7 +57,7 @@ export default function SMEAssessmentReport() {
       await exportSMEAssessmentReportToPDF(report.assessment.company_name, report.assessment.id);
 
       toast.success('PDF downloaded successfully!');
-    } catch (error) {
+    } catch {
       toast.error('Failed to generate PDF. Please try again.');
       logger.error('PDF export error:', error);
     } finally {

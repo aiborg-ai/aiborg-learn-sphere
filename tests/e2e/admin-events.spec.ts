@@ -7,7 +7,12 @@ const TEST_ADMIN = {
   password: 'AdminPass123!',
 };
 
-async function loginAsAdmin(page: { goto: (url: string) => Promise<unknown>; fill: (selector: string, value: string) => Promise<void>; click: (selector: string) => Promise<void>; waitForURL: (pattern: RegExp, options?: { timeout?: number }) => Promise<void> }) {
+async function loginAsAdmin(page: {
+  goto: (url: string) => Promise<unknown>;
+  fill: (selector: string, value: string) => Promise<void>;
+  click: (selector: string) => Promise<void>;
+  waitForURL: (pattern: RegExp, options?: { timeout?: number }) => Promise<void>;
+}) {
   await page.goto('/auth');
   await page.fill('input[type="email"]', TEST_ADMIN.email);
   await page.fill('input[type="password"]', TEST_ADMIN.password);
@@ -16,46 +21,46 @@ async function loginAsAdmin(page: { goto: (url: string) => Promise<unknown>; fil
 }
 
 test.describe('Admin Event Management', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page: _page }) => {
     await loginAsAdmin(page);
   });
 
-  test('should navigate to admin events management', async ({ page }) => {
+  test('should navigate to admin events management', async ({ page: _page }) => {
     await page.goto('/admin');
 
     // Wait for admin page to load
     await page.waitForSelector('text=Admin Dashboard', { timeout: 10000 });
 
     // Look for Events Management section or tab
-    const eventsTab = page.locator('text=Events Management').or(
-      page.locator('button:has-text("Events")')
-    );
+    const eventsTab = page
+      .locator('text=Events Management')
+      .or(page.locator('button:has-text("Events")'));
 
-    if (await eventsTab.count() > 0) {
+    if ((await eventsTab.count()) > 0) {
       await eventsTab.click();
 
       // Verify events table is visible
-      await expect(
-        page.locator('text=Events Management').or(page.locator('table'))
-      ).toBeVisible({ timeout: 5000 });
+      await expect(page.locator('text=Events Management').or(page.locator('table'))).toBeVisible({
+        timeout: 5000,
+      });
     }
   });
 
-  test('should display events table with columns', async ({ page }) => {
+  test('should display events table with columns', async ({ page: _page }) => {
     await page.goto('/admin');
     await page.waitForSelector('text=Admin Dashboard', { timeout: 10000 });
 
     // Navigate to events section
-    const eventsTab = page.locator('text=Events Management').or(
-      page.locator('button:has-text("Events")')
-    );
+    const eventsTab = page
+      .locator('text=Events Management')
+      .or(page.locator('button:has-text("Events")'));
 
-    if (await eventsTab.count() > 0) {
+    if ((await eventsTab.count()) > 0) {
       await eventsTab.click();
 
       // Check for table headers
       const table = page.locator('table');
-      if (await table.count() > 0) {
+      if ((await table.count()) > 0) {
         await expect(table.locator('text=Title')).toBeVisible();
         await expect(table.locator('text=Date')).toBeVisible();
         await expect(table.locator('text=Status')).toBeVisible();
@@ -64,21 +69,21 @@ test.describe('Admin Event Management', () => {
     }
   });
 
-  test('should open create event dialog', async ({ page }) => {
+  test('should open create event dialog', async ({ page: _page }) => {
     await page.goto('/admin');
     await page.waitForSelector('text=Admin Dashboard', { timeout: 10000 });
 
-    const eventsTab = page.locator('text=Events Management').or(
-      page.locator('button:has-text("Events")')
-    );
+    const eventsTab = page
+      .locator('text=Events Management')
+      .or(page.locator('button:has-text("Events")'));
 
-    if (await eventsTab.count() > 0) {
+    if ((await eventsTab.count()) > 0) {
       await eventsTab.click();
 
       // Click "Add New Event" button
       const addButton = page.locator('button').filter({ hasText: /Add.*Event|Create.*Event/i });
 
-      if (await addButton.count() > 0) {
+      if ((await addButton.count()) > 0) {
         await addButton.click();
 
         // Dialog should open
@@ -93,20 +98,20 @@ test.describe('Admin Event Management', () => {
     }
   });
 
-  test('should validate required fields when creating event', async ({ page }) => {
+  test('should validate required fields when creating event', async ({ page: _page }) => {
     await page.goto('/admin');
     await page.waitForSelector('text=Admin Dashboard', { timeout: 10000 });
 
-    const eventsTab = page.locator('text=Events Management').or(
-      page.locator('button:has-text("Events")')
-    );
+    const eventsTab = page
+      .locator('text=Events Management')
+      .or(page.locator('button:has-text("Events")'));
 
-    if (await eventsTab.count() > 0) {
+    if ((await eventsTab.count()) > 0) {
       await eventsTab.click();
 
       const addButton = page.locator('button').filter({ hasText: /Add.*Event|Create.*Event/i });
 
-      if (await addButton.count() > 0) {
+      if ((await addButton.count()) > 0) {
         await addButton.click();
 
         const dialog = page.locator('[role="dialog"]');
@@ -123,51 +128,50 @@ test.describe('Admin Event Management', () => {
     }
   });
 
-  test('should move event to past events', async ({ page }) => {
+  test('should move event to past events', async ({ page: _page }) => {
     await page.goto('/admin');
     await page.waitForSelector('text=Admin Dashboard', { timeout: 10000 });
 
-    const eventsTab = page.locator('text=Events Management').or(
-      page.locator('button:has-text("Events")')
-    );
+    const eventsTab = page
+      .locator('text=Events Management')
+      .or(page.locator('button:has-text("Events")'));
 
-    if (await eventsTab.count() > 0) {
+    if ((await eventsTab.count()) > 0) {
       await eventsTab.click();
 
       // Look for "Move to Past" button on any event
-      const moveToPastButton = page.locator('button').filter({ hasText: /Move to Past/i }).first();
+      const moveToPastButton = page
+        .locator('button')
+        .filter({ hasText: /Move to Past/i })
+        .first();
 
-      if (await moveToPastButton.count() > 0) {
+      if ((await moveToPastButton.count()) > 0) {
         await moveToPastButton.click();
 
         // Should show success message
-        await expect(
-          page.locator('text=/moved.*past|success/i')
-        ).toBeVisible({ timeout: 5000 });
+        await expect(page.locator('text=/moved.*past|success/i')).toBeVisible({ timeout: 5000 });
 
         // Event should now show "Past Event" badge
-        await expect(
-          page.locator('text=Past Event').first()
-        ).toBeVisible({ timeout: 3000 });
+        await expect(page.locator('text=Past Event').first()).toBeVisible({ timeout: 3000 });
       }
     }
   });
 
-  test('should show photo upload button for past events', async ({ page }) => {
+  test('should show photo upload button for past events', async ({ page: _page }) => {
     await page.goto('/admin');
     await page.waitForSelector('text=Admin Dashboard', { timeout: 10000 });
 
-    const eventsTab = page.locator('text=Events Management').or(
-      page.locator('button:has-text("Events")')
-    );
+    const eventsTab = page
+      .locator('text=Events Management')
+      .or(page.locator('button:has-text("Events")'));
 
-    if (await eventsTab.count() > 0) {
+    if ((await eventsTab.count()) > 0) {
       await eventsTab.click();
 
       // Look for past event badge
       const pastEventBadge = page.locator('text=Past Event').first();
 
-      if (await pastEventBadge.count() > 0) {
+      if ((await pastEventBadge.count()) > 0) {
         // Look for photo/image button in the same row
         const row = pastEventBadge.locator('../..');
         const photoButton = row.locator('button').filter({ has: page.locator('svg') });
@@ -178,27 +182,30 @@ test.describe('Admin Event Management', () => {
     }
   });
 
-  test('should open photo upload dialog for past events', async ({ page }) => {
+  test('should open photo upload dialog for past events', async ({ page: _page }) => {
     await page.goto('/admin');
     await page.waitForSelector('text=Admin Dashboard', { timeout: 10000 });
 
-    const eventsTab = page.locator('text=Events Management').or(
-      page.locator('button:has-text("Events")')
-    );
+    const eventsTab = page
+      .locator('text=Events Management')
+      .or(page.locator('button:has-text("Events")'));
 
-    if (await eventsTab.count() > 0) {
+    if ((await eventsTab.count()) > 0) {
       await eventsTab.click();
 
       const pastEventBadge = page.locator('text=Past Event').first();
 
-      if (await pastEventBadge.count() > 0) {
+      if ((await pastEventBadge.count()) > 0) {
         // Find and click photo button
         const row = pastEventBadge.locator('../..');
-        const photoButton = row.locator('button').filter({
-          has: page.locator('svg')
-        }).first();
+        const photoButton = row
+          .locator('button')
+          .filter({
+            has: page.locator('svg'),
+          })
+          .first();
 
-        if (await photoButton.count() > 0) {
+        if ((await photoButton.count()) > 0) {
           await photoButton.click();
 
           // Photo upload dialog should open
@@ -214,25 +221,28 @@ test.describe('Admin Event Management', () => {
     }
   });
 
-  test('should edit existing event', async ({ page }) => {
+  test('should edit existing event', async ({ page: _page }) => {
     await page.goto('/admin');
     await page.waitForSelector('text=Admin Dashboard', { timeout: 10000 });
 
-    const eventsTab = page.locator('text=Events Management').or(
-      page.locator('button:has-text("Events")')
-    );
+    const eventsTab = page
+      .locator('text=Events Management')
+      .or(page.locator('button:has-text("Events")'));
 
-    if (await eventsTab.count() > 0) {
+    if ((await eventsTab.count()) > 0) {
       await eventsTab.click();
 
       // Click edit button on first event
-      const editButton = page.locator('button').filter({
-        has: page.locator('svg')
-      }).filter({ hasText: /edit/i }).or(
-        page.locator('button[title*="Edit"]')
-      ).first();
+      const editButton = page
+        .locator('button')
+        .filter({
+          has: page.locator('svg'),
+        })
+        .filter({ hasText: /edit/i })
+        .or(page.locator('button[title*="Edit"]'))
+        .first();
 
-      if (await editButton.count() > 0) {
+      if ((await editButton.count()) > 0) {
         await editButton.click();
 
         // Edit dialog should open
@@ -247,21 +257,21 @@ test.describe('Admin Event Management', () => {
     }
   });
 
-  test('should toggle event active status', async ({ page }) => {
+  test('should toggle event active status', async ({ page: _page }) => {
     await page.goto('/admin');
     await page.waitForSelector('text=Admin Dashboard', { timeout: 10000 });
 
-    const eventsTab = page.locator('text=Events Management').or(
-      page.locator('button:has-text("Events")')
-    );
+    const eventsTab = page
+      .locator('text=Events Management')
+      .or(page.locator('button:has-text("Events")'));
 
-    if (await eventsTab.count() > 0) {
+    if ((await eventsTab.count()) > 0) {
       await eventsTab.click();
 
       // Find active status toggle switch
       const statusSwitch = page.locator('[role="switch"]').first();
 
-      if (await statusSwitch.count() > 0) {
+      if ((await statusSwitch.count()) > 0) {
         const initialState = await statusSwitch.getAttribute('aria-checked');
 
         // Toggle the switch
@@ -277,21 +287,21 @@ test.describe('Admin Event Management', () => {
     }
   });
 
-  test('should toggle event visibility', async ({ page }) => {
+  test('should toggle event visibility', async ({ page: _page }) => {
     await page.goto('/admin');
     await page.waitForSelector('text=Admin Dashboard', { timeout: 10000 });
 
-    const eventsTab = page.locator('text=Events Management').or(
-      page.locator('button:has-text("Events")')
-    );
+    const eventsTab = page
+      .locator('text=Events Management')
+      .or(page.locator('button:has-text("Events")'));
 
-    if (await eventsTab.count() > 0) {
+    if ((await eventsTab.count()) > 0) {
       await eventsTab.click();
 
       // Find visibility toggle (usually second switch in row)
       const visibilitySwitch = page.locator('[role="switch"]').nth(1);
 
-      if (await visibilitySwitch.count() > 0) {
+      if ((await visibilitySwitch.count()) > 0) {
         const initialState = await visibilitySwitch.getAttribute('aria-checked');
 
         // Toggle the switch
@@ -307,41 +317,41 @@ test.describe('Admin Event Management', () => {
     }
   });
 
-  test('should delete event with confirmation', async ({ page }) => {
+  test('should delete event with confirmation', async ({ page: _page }) => {
     await page.goto('/admin');
     await page.waitForSelector('text=Admin Dashboard', { timeout: 10000 });
 
-    const eventsTab = page.locator('text=Events Management').or(
-      page.locator('button:has-text("Events")')
-    );
+    const eventsTab = page
+      .locator('text=Events Management')
+      .or(page.locator('button:has-text("Events")'));
 
-    if (await eventsTab.count() > 0) {
+    if ((await eventsTab.count()) > 0) {
       await eventsTab.click();
 
       // Find delete button (usually red/destructive)
-      const deleteButton = page.locator('button').filter({
-        hasText: /delete|remove/i
-      }).or(
-        page.locator('button.bg-destructive, button.text-destructive')
-      ).first();
+      const deleteButton = page
+        .locator('button')
+        .filter({
+          hasText: /delete|remove/i,
+        })
+        .or(page.locator('button.bg-destructive, button.text-destructive'))
+        .first();
 
-      if (await deleteButton.count() > 0) {
+      if ((await deleteButton.count()) > 0) {
         await deleteButton.click();
 
         // Confirmation dialog should appear
-        const confirmDialog = page.locator('[role="alertdialog"]').or(
-          page.locator('[role="dialog"]')
-        );
+        const confirmDialog = page
+          .locator('[role="alertdialog"]')
+          .or(page.locator('[role="dialog"]'));
         await expect(confirmDialog).toBeVisible({ timeout: 3000 });
 
         // Should ask for confirmation
-        await expect(
-          confirmDialog.locator('text=/are you sure|confirm|delete/i')
-        ).toBeVisible();
+        await expect(confirmDialog.locator('text=/are you sure|confirm|delete/i')).toBeVisible();
 
         // Click cancel to not actually delete in test
         const cancelButton = confirmDialog.locator('button').filter({ hasText: /cancel/i });
-        if (await cancelButton.count() > 0) {
+        if ((await cancelButton.count()) > 0) {
           await cancelButton.click();
         }
       }
@@ -350,13 +360,13 @@ test.describe('Admin Event Management', () => {
 });
 
 test.describe('Admin Event Management - Permissions', () => {
-  test('should not allow non-admin users to access admin panel', async ({ page }) => {
+  test('should not allow non-admin users to access admin panel', async ({ page: _page }) => {
     // Try to access admin panel without logging in
     await page.goto('/admin');
 
     // Should redirect to auth or show access denied
-    await expect(
-      page.locator('text=/login|sign in|access denied|unauthorized/i')
-    ).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('text=/login|sign in|access denied|unauthorized/i')).toBeVisible({
+      timeout: 5000,
+    });
   });
 });

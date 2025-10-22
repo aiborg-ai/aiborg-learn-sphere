@@ -73,7 +73,7 @@ const authSchema = z
       .regex(/[0-9]/, 'Password must contain at least one number'),
     confirmPassword: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine(data => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ['confirmPassword'],
   });
@@ -176,7 +176,7 @@ export default function FamilyMembershipEnrollment() {
           {currentStep === 2 && (
             <Step2AccountInfo
               initialData={enrollmentData.accountInfo}
-              onNext={(data) => {
+              onNext={data => {
                 setEnrollmentData({ ...enrollmentData, accountInfo: data });
                 setCurrentStep(3);
               }}
@@ -188,7 +188,7 @@ export default function FamilyMembershipEnrollment() {
             <Step3FamilyMembers
               initialMembers={enrollmentData.familyMembers}
               maxMembers={familyPlan?.max_family_members || 6}
-              onNext={(members) => {
+              onNext={members => {
                 setEnrollmentData({ ...enrollmentData, familyMembers: members });
                 setCurrentStep(4);
               }}
@@ -214,7 +214,7 @@ export default function FamilyMembershipEnrollment() {
               onStartTrial={() => {
                 setEnrollmentData({ ...enrollmentData, startTrial: true });
               }}
-              onSubscribe={(startTrial) => {
+              onSubscribe={startTrial => {
                 if (!enrollmentData.accountInfo) {
                   toast({
                     title: 'Missing Information',
@@ -239,7 +239,7 @@ export default function FamilyMembershipEnrollment() {
                   planSlug: 'family-pass',
                   customerEmail: enrollmentData.accountInfo.customerEmail,
                   customerName: enrollmentData.accountInfo.customerName,
-                  startTrial,
+                  startTrial: _startTrial,
                   metadata: {
                     phone: enrollmentData.accountInfo.phone || '',
                     country: enrollmentData.accountInfo.country,
@@ -277,6 +277,7 @@ export default function FamilyMembershipEnrollment() {
 // STEP 1: PLAN CONFIRMATION
 // ============================================================================
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any -- Stripe plan data structure */
 function Step1PlanConfirmation({ plan, onNext }: { plan: any; onNext: () => void }) {
   if (!plan) return null;
 
@@ -407,7 +408,7 @@ function Step2AccountInfo({
           <Label htmlFor="country">Country *</Label>
           <Select
             value={form.watch('country')}
-            onValueChange={(value) => form.setValue('country', value)}
+            onValueChange={value => form.setValue('country', value)}
           >
             <SelectTrigger className="mt-1">
               <SelectValue placeholder="Select country" />
@@ -550,7 +551,7 @@ function Step3FamilyMembers({
                 <Label htmlFor="relationship">Relationship *</Label>
                 <Select
                   value={form.watch('relationship')}
-                  onValueChange={(value) => form.setValue('relationship', value)}
+                  onValueChange={value => form.setValue('relationship', value)}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -908,7 +909,13 @@ function Step4Authentication({
       </div>
 
       {/* Back Button */}
-      <Button type="button" variant="ghost" onClick={onBack} className="w-full" disabled={isLoading}>
+      <Button
+        type="button"
+        variant="ghost"
+        onClick={onBack}
+        className="w-full"
+        disabled={isLoading}
+      >
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Family Members
       </Button>
@@ -949,8 +956,8 @@ function Step5Payment({
   plan,
   accountInfo,
   familyMembers,
-  startTrial,
-  onStartTrial,
+  startTrial: _startTrial,
+  onStartTrial: _onStartTrial,
   onSubscribe,
   onBack,
   isLoading,

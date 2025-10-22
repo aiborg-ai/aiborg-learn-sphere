@@ -24,6 +24,7 @@ interface UseVaultAccessReturn {
   /**
    * The active subscription (if any)
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Dynamic error object from Supabase
   subscription: any;
 
   /**
@@ -60,23 +61,17 @@ interface UseVaultAccessReturn {
  * return <VaultContent />;
  * ```
  */
-export function useVaultAccess(
-  enforceAccess: boolean = false
-): UseVaultAccessReturn {
+export function useVaultAccess(enforceAccess: boolean = false): UseVaultAccessReturn {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const { data: hasActiveMembership, isLoading: membershipLoading } =
-    useHasActiveMembership();
-  const { data: subscription, isLoading: subscriptionLoading } =
-    useActiveSubscription();
+  const { data: hasActiveMembership, isLoading: membershipLoading } = useHasActiveMembership();
+  const { data: subscription, isLoading: subscriptionLoading } = useActiveSubscription();
 
   const isLoading = membershipLoading || subscriptionLoading;
 
   // Check if subscription includes vault access
-  const hasVaultAccess =
-    hasActiveMembership &&
-    subscription?.plan?.includes_vault_access === true;
+  const hasVaultAccess = hasActiveMembership && subscription?.plan?.includes_vault_access === true;
 
   const redirectToMembership = () => {
     navigate('/family-membership?source=vault_access');
@@ -92,6 +87,7 @@ export function useVaultAccess(
     if (enforceAccess && !isLoading && !hasVaultAccess) {
       redirectToMembership();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- redirectToMembership is stable
   }, [enforceAccess, isLoading, hasVaultAccess]);
 
   return {
@@ -112,17 +108,13 @@ export function useEventAccess(enforceAccess: boolean = false) {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const { data: hasActiveMembership, isLoading: membershipLoading } =
-    useHasActiveMembership();
-  const { data: subscription, isLoading: subscriptionLoading } =
-    useActiveSubscription();
+  const { data: hasActiveMembership, isLoading: membershipLoading } = useHasActiveMembership();
+  const { data: subscription, isLoading: subscriptionLoading } = useActiveSubscription();
 
   const isLoading = membershipLoading || subscriptionLoading;
 
   // Check if subscription includes event access
-  const hasEventAccess =
-    hasActiveMembership &&
-    subscription?.plan?.includes_event_access === true;
+  const hasEventAccess = hasActiveMembership && subscription?.plan?.includes_event_access === true;
 
   const redirectToMembership = () => {
     navigate('/family-membership?source=event_access');
@@ -138,6 +130,7 @@ export function useEventAccess(enforceAccess: boolean = false) {
     if (enforceAccess && !isLoading && !hasEventAccess) {
       redirectToMembership();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- redirectToMembership is stable
   }, [enforceAccess, isLoading, hasEventAccess]);
 
   return {
@@ -159,14 +152,10 @@ export function getMembershipUpsellMessage(source: string): {
   description: string;
   benefits: string[];
 } {
-  const messages: Record<
-    string,
-    { title: string; description: string; benefits: string[] }
-  > = {
+  const messages: Record<string, { title: string; description: string; benefits: string[] }> = {
     vault_access: {
       title: 'Unlock the Vault',
-      description:
-        'Get instant access to 200+ premium resources with the Family Pass.',
+      description: 'Get instant access to 200+ premium resources with the Family Pass.',
       benefits: [
         'Exclusive video tutorials',
         'Downloadable templates & worksheets',
@@ -177,8 +166,7 @@ export function getMembershipUpsellMessage(source: string): {
     },
     event_access: {
       title: 'Priority Event Access',
-      description:
-        'Never miss an event with Family Pass priority registration.',
+      description: 'Never miss an event with Family Pass priority registration.',
       benefits: [
         'Free access to monthly seminars',
         'Priority registration (48hrs early)',
@@ -189,8 +177,7 @@ export function getMembershipUpsellMessage(source: string): {
     },
     course_access: {
       title: 'Unlimited Course Access',
-      description:
-        'Learn without limits with unlimited access to 50+ AI courses.',
+      description: 'Learn without limits with unlimited access to 50+ AI courses.',
       benefits: [
         'All courses for your entire family',
         'Primary to professional levels',
@@ -201,8 +188,7 @@ export function getMembershipUpsellMessage(source: string): {
     },
     default: {
       title: 'Join the Family Pass',
-      description:
-        'Unlock unlimited learning for your entire family with one subscription.',
+      description: 'Unlock unlimited learning for your entire family with one subscription.',
       benefits: [
         '50+ AI courses (all levels)',
         '200+ exclusive vault resources',

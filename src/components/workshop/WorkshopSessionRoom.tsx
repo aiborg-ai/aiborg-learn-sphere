@@ -62,7 +62,13 @@ export function WorkshopSessionRoom({ sessionId }: WorkshopSessionRoomProps) {
   const workshop = session.workshops;
 
   // Calculate progress
-  const stageOrder: WorkshopStage[] = ['setup', 'problem_statement', 'solving', 'reporting', 'completed'];
+  const stageOrder: WorkshopStage[] = [
+    'setup',
+    'problem_statement',
+    'solving',
+    'reporting',
+    'completed',
+  ];
   const currentStageIndex = stageOrder.indexOf(session.current_stage);
   const progress = (currentStageIndex / (stageOrder.length - 1)) * 100;
 
@@ -75,7 +81,7 @@ export function WorkshopSessionRoom({ sessionId }: WorkshopSessionRoomProps) {
       try {
         await WorkshopService.completeSession(sessionId);
         toast.success('🎉 Workshop completed successfully!');
-      } catch (error) {
+      } catch {
         toast.error('Failed to complete workshop');
       } finally {
         setIsChangingStage(false);
@@ -88,7 +94,7 @@ export function WorkshopSessionRoom({ sessionId }: WorkshopSessionRoomProps) {
           session_id: sessionId,
           new_stage: nextStage,
         });
-      } catch (error) {
+      } catch {
         toast.error('Failed to move to next stage');
       } finally {
         setIsChangingStage(false);
@@ -214,8 +220,8 @@ export function WorkshopSessionRoom({ sessionId }: WorkshopSessionRoomProps) {
                           index < currentStageIndex
                             ? 'bg-primary text-primary-foreground'
                             : index === currentStageIndex
-                            ? 'bg-primary/20 border-2 border-primary'
-                            : 'bg-muted'
+                              ? 'bg-primary/20 border-2 border-primary'
+                              : 'bg-muted'
                         }`}
                       >
                         {index < currentStageIndex ? (
@@ -224,7 +230,9 @@ export function WorkshopSessionRoom({ sessionId }: WorkshopSessionRoomProps) {
                           <span className="text-xs font-semibold">{index + 1}</span>
                         )}
                       </div>
-                      <span className="text-xs text-center hidden md:block">{getStageTitle(stage)}</span>
+                      <span className="text-xs text-center hidden md:block">
+                        {getStageTitle(stage)}
+                      </span>
                       <span className="text-xs text-muted-foreground hidden md:block">
                         {getStageDuration(stage)}min
                       </span>
@@ -252,41 +260,43 @@ export function WorkshopSessionRoom({ sessionId }: WorkshopSessionRoomProps) {
           </Card>
 
           {/* Facilitator Controls */}
-          {isFacilitator && session.status === 'in_progress' && session.current_stage !== 'completed' && (
-            <Card className="border-primary/50 bg-primary/5">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Icon name="Settings" size={20} />
-                  Facilitator Controls
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Button
-                  onClick={handleNextStage}
-                  disabled={isChangingStage}
-                  size="lg"
-                  className="w-full"
-                >
-                  {isChangingStage ? (
-                    <>
-                      <Icon name="Loader2" size={20} className="mr-2 animate-spin" />
-                      Processing...
-                    </>
-                  ) : currentStageIndex === stageOrder.length - 2 ? (
-                    <>
-                      <Icon name="CheckCircle" size={20} className="mr-2" />
-                      Complete Workshop
-                    </>
-                  ) : (
-                    <>
-                      <Icon name="ArrowRight" size={20} className="mr-2" />
-                      Move to {getStageTitle(stageOrder[currentStageIndex + 1])}
-                    </>
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-          )}
+          {isFacilitator &&
+            session.status === 'in_progress' &&
+            session.current_stage !== 'completed' && (
+              <Card className="border-primary/50 bg-primary/5">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Icon name="Settings" size={20} />
+                    Facilitator Controls
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Button
+                    onClick={handleNextStage}
+                    disabled={isChangingStage}
+                    size="lg"
+                    className="w-full"
+                  >
+                    {isChangingStage ? (
+                      <>
+                        <Icon name="Loader2" size={20} className="mr-2 animate-spin" />
+                        Processing...
+                      </>
+                    ) : currentStageIndex === stageOrder.length - 2 ? (
+                      <>
+                        <Icon name="CheckCircle" size={20} className="mr-2" />
+                        Complete Workshop
+                      </>
+                    ) : (
+                      <>
+                        <Icon name="ArrowRight" size={20} className="mr-2" />
+                        Move to {getStageTitle(stageOrder[currentStageIndex + 1])}
+                      </>
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
         </div>
 
         {/* Sidebar - 1 column */}
@@ -322,7 +332,8 @@ export function WorkshopSessionRoom({ sessionId }: WorkshopSessionRoomProps) {
                 </Button>
                 {session.meeting_password && (
                   <p className="text-sm text-muted-foreground mt-2">
-                    Password: <code className="bg-muted px-2 py-1 rounded">{session.meeting_password}</code>
+                    Password:{' '}
+                    <code className="bg-muted px-2 py-1 rounded">{session.meeting_password}</code>
                   </p>
                 )}
               </CardContent>

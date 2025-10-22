@@ -8,9 +8,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { MembershipService } from '@/services/membership';
-import type {
-  CreateSubscriptionParams,
-} from '@/services/membership/types';
+import type { CreateSubscriptionParams } from '@/services/membership/types';
 
 // ============================================================================
 // QUERY KEYS
@@ -118,8 +116,7 @@ export function useCalculateSavings(
 ) {
   return useQuery({
     queryKey: membershipKeys.savings(numMembers, coursesPerMember, months),
-    queryFn: () =>
-      MembershipService.calculateSavings(numMembers, coursesPerMember, months),
+    queryFn: () => MembershipService.calculateSavings(numMembers, coursesPerMember, months),
     staleTime: 60 * 60 * 1000, // 1 hour (savings formula doesn't change often)
   });
 }
@@ -143,13 +140,12 @@ export function useMembershipDashboard() {
  * Create subscription checkout session
  */
 export function useCreateSubscription() {
-  const queryClient = useQueryClient();
+  const _queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (params: CreateSubscriptionParams) =>
-      MembershipService.createSubscription(params),
-    onSuccess: (data) => {
+    mutationFn: (params: CreateSubscriptionParams) => MembershipService.createSubscription(params),
+    onSuccess: data => {
       // Redirect to Stripe Checkout
       if (data.url) {
         window.location.href = data.url;
@@ -169,7 +165,7 @@ export function useCreateSubscription() {
  * Cancel subscription at period end
  */
 export function useCancelSubscription() {
-  const queryClient = useQueryClient();
+  const _queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
@@ -182,7 +178,7 @@ export function useCancelSubscription() {
       reason?: string;
       feedback?: string;
     }) => MembershipService.cancelSubscription(subscriptionId, reason, feedback),
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: membershipKeys.subscriptions() });
       queryClient.invalidateQueries({ queryKey: membershipKeys.hasAccess() });
 
@@ -207,7 +203,7 @@ export function useCancelSubscription() {
  * Cancel subscription immediately
  */
 export function useCancelSubscriptionImmediately() {
-  const queryClient = useQueryClient();
+  const _queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
@@ -219,12 +215,7 @@ export function useCancelSubscriptionImmediately() {
       subscriptionId: string;
       reason?: string;
       feedback?: string;
-    }) =>
-      MembershipService.cancelSubscriptionImmediately(
-        subscriptionId,
-        reason,
-        feedback
-      ),
+    }) => MembershipService.cancelSubscriptionImmediately(subscriptionId, reason, feedback),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: membershipKeys.subscriptions() });
       queryClient.invalidateQueries({ queryKey: membershipKeys.hasAccess() });
@@ -248,18 +239,13 @@ export function useCancelSubscriptionImmediately() {
  * Pause subscription
  */
 export function usePauseSubscription() {
-  const queryClient = useQueryClient();
+  const _queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: ({
-      subscriptionId,
-      months,
-    }: {
-      subscriptionId: string;
-      months?: number;
-    }) => MembershipService.pauseSubscription(subscriptionId, months),
-    onSuccess: (data) => {
+    mutationFn: ({ subscriptionId, months }: { subscriptionId: string; months?: number }) =>
+      MembershipService.pauseSubscription(subscriptionId, months),
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: membershipKeys.subscriptions() });
 
       toast({
@@ -283,12 +269,11 @@ export function usePauseSubscription() {
  * Resume subscription
  */
 export function useResumeSubscription() {
-  const queryClient = useQueryClient();
+  const _queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (subscriptionId: string) =>
-      MembershipService.resumeSubscription(subscriptionId),
+    mutationFn: (subscriptionId: string) => MembershipService.resumeSubscription(subscriptionId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: membershipKeys.subscriptions() });
       queryClient.invalidateQueries({ queryKey: membershipKeys.hasAccess() });
@@ -315,14 +300,9 @@ export function useCustomerPortal() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: ({
-      subscriptionId,
-      returnUrl,
-    }: {
-      subscriptionId: string;
-      returnUrl?: string;
-    }) => MembershipService.getCustomerPortalUrl(subscriptionId, returnUrl),
-    onSuccess: (portalUrl) => {
+    mutationFn: ({ subscriptionId, returnUrl }: { subscriptionId: string; returnUrl?: string }) =>
+      MembershipService.getCustomerPortalUrl(subscriptionId, returnUrl),
+    onSuccess: portalUrl => {
       if (portalUrl) {
         window.location.href = portalUrl;
       }
@@ -367,7 +347,7 @@ export function useUpcomingEvents() {
  * Register for event
  */
 export function useRegisterForEvent() {
-  const queryClient = useQueryClient();
+  const _queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
@@ -395,7 +375,7 @@ export function useRegisterForEvent() {
  * Submit event feedback
  */
 export function useSubmitEventFeedback() {
-  const queryClient = useQueryClient();
+  const _queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
@@ -444,8 +424,6 @@ export function useSubscriptionStatus() {
     isPastDue: subscription?.status === 'past_due',
     isCanceled: subscription?.status === 'canceled',
     willCancelAtPeriodEnd: subscription?.cancel_at_period_end || false,
-    daysUntilPeriodEnd: subscription
-      ? MembershipService.getDaysUntilPeriodEnd(subscription)
-      : null,
+    daysUntilPeriodEnd: subscription ? MembershipService.getDaysUntilPeriodEnd(subscription) : null,
   };
 }

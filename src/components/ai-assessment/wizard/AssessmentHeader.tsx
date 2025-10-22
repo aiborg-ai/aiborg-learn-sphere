@@ -1,6 +1,5 @@
 import React from 'react';
 import { CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Brain } from 'lucide-react';
 import type { AssessmentQuestion } from './types';

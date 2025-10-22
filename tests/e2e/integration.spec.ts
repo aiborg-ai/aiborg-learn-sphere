@@ -2,11 +2,11 @@ import { test, expect } from '@playwright/test';
 import { login, TEST_USER } from './utils/auth';
 
 test.describe('Cross-Feature Integration Tests', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page: _page }) => {
     await login(page, TEST_USER.email, TEST_USER.password);
   });
 
-  test('should bookmark and download the same material', async ({ page }) => {
+  test('should bookmark and download the same material', async ({ page: _page }) => {
     // Navigate to course materials
     await page.goto('/course/1');
     await page.click('button[role="tab"]:has-text("Materials")');
@@ -39,7 +39,7 @@ test.describe('Cross-Feature Integration Tests', () => {
     await expect(page.locator('text=/download/i')).toBeVisible();
   });
 
-  test('should add video to watch later and bookmark it', async ({ page }) => {
+  test('should add video to watch later and bookmark it', async ({ page: _page }) => {
     // Navigate to course with videos
     await page.goto('/course/1');
     await page.click('button[role="tab"]:has-text("Materials")');
@@ -69,7 +69,7 @@ test.describe('Cross-Feature Integration Tests', () => {
     }
   });
 
-  test('should show all action buttons for video materials', async ({ page }) => {
+  test('should show all action buttons for video materials', async ({ page: _page }) => {
     // Navigate to course
     await page.goto('/course/1');
     await page.click('button[role="tab"]:has-text("Materials")');
@@ -84,7 +84,7 @@ test.describe('Cross-Feature Integration Tests', () => {
     await expect(videoMaterial.locator('button:has-text("Download")')).toBeVisible();
   });
 
-  test('should only show appropriate buttons for PDF materials', async ({ page }) => {
+  test('should only show appropriate buttons for PDF materials', async ({ page: _page }) => {
     // Navigate to course
     await page.goto('/course/1');
     await page.click('button[role="tab"]:has-text("Materials")');
@@ -102,7 +102,7 @@ test.describe('Cross-Feature Integration Tests', () => {
     expect(await watchLaterBtn.count()).toBe(0);
   });
 
-  test('should navigate between feature pages', async ({ page }) => {
+  test('should navigate between feature pages', async ({ page: _page }) => {
     // Test navigation flow between all new pages
     await page.goto('/dashboard');
 
@@ -130,7 +130,7 @@ test.describe('Cross-Feature Integration Tests', () => {
     await expect(page.locator('button:has-text("Back to Dashboard")')).toBeVisible();
   });
 
-  test('should persist data across page reloads', async ({ page }) => {
+  test('should persist data across page reloads', async ({ page: _page }) => {
     // Create a bookmark
     await page.goto('/course/1');
     const bookmarkBtn = page
@@ -155,7 +155,7 @@ test.describe('Cross-Feature Integration Tests', () => {
     await expect(page.locator('text=Persistent Bookmark')).toBeVisible();
   });
 
-  test('should show empty states correctly', async ({ page }) => {
+  test('should show empty states correctly', async ({ page: _page }) => {
     // This test assumes clean/empty state for the test user
     // In production, you'd create a fresh test user
 

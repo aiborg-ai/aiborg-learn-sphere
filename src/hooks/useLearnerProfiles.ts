@@ -38,6 +38,7 @@ export const useLearnerProfiles = () => {
       setProfiles((data || []) as LearnerProfile[]);
 
       // Set primary profile
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase returns dynamic data structure
       const primary = (data || []).find((p: any) => p.is_primary);
       setPrimaryProfile(primary || null);
     } catch (err) {
@@ -146,7 +147,7 @@ export const useLearnerProfiles = () => {
    */
   const getProfile = useCallback(
     (profileId: string): LearnerProfile | undefined => {
-      return profiles.find((p) => p.id === profileId);
+      return profiles.find(p => p.id === profileId);
     },
     [profiles]
   );

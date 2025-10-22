@@ -22,7 +22,8 @@ const validateEventTemplate = (data: Record<string, unknown>) => {
   }
 };
 
-type EventTemplate = z.infer<typeof EventTemplateSchema>;
+// Type definition for reference (unused in tests but helpful for documentation)
+// type EventTemplate = z.infer<typeof EventTemplateSchema>;
 
 describe('EventTemplateSchema', () => {
   let validEvent: Record<string, unknown>;

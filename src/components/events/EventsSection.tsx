@@ -1,28 +1,23 @@
-import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { EventCard } from "./EventCard";
-import { EventPhotoGallery } from "./EventPhotoGallery";
-import { useEvents } from "@/hooks/useEvents";
-import { useEventRegistrations } from "@/hooks/useEventRegistrations";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
-import {
-  Calendar,
-  Users,
-  MapPin,
-  Filter
-} from "lucide-react";
+import { useState, useEffect } from 'react';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { EventCard } from './EventCard';
+import { EventPhotoGallery } from './EventPhotoGallery';
+import { useEvents } from '@/hooks/useEvents';
+import { useEventRegistrations } from '@/hooks/useEventRegistrations';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { Calendar, Users, MapPin, Filter } from 'lucide-react';
 
 const filterOptions = [
-  { id: "all", label: "All Events", count: 0 },
-  { id: "upcoming", label: "Upcoming", count: 0 },
-  { id: "registered", label: "My Registrations", count: 0 },
+  { id: 'all', label: 'All Events', count: 0 },
+  { id: 'upcoming', label: 'Upcoming', count: 0 },
+  { id: 'registered', label: 'My Registrations', count: 0 },
 ];
 
 export function EventsSection() {
-  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [selectedFilter, setSelectedFilter] = useState('all');
   const [showAllEvents, setShowAllEvents] = useState(false);
   const [showAllPastEvents, setShowAllPastEvents] = useState(false);
   const [pastEventsWithPhotos, setPastEventsWithPhotos] = useState<Event[]>([]);
@@ -40,7 +35,7 @@ export function EventsSection() {
           .select('*')
           .eq('is_past', true)
           .eq('is_visible', true)
-          .order('event_date', { ascending: false});
+          .order('event_date', { ascending: false });
 
         // Fallback if is_visible column doesn't exist yet
         if (eventsError && eventsError.message?.includes('column')) {
@@ -48,7 +43,7 @@ export function EventsSection() {
             .from('events')
             .select('*')
             .eq('is_past', true)
-            .order('event_date', { ascending: false});
+            .order('event_date', { ascending: false });
           pastEvents = fallback.data;
           eventsError = fallback.error;
         }
@@ -58,7 +53,7 @@ export function EventsSection() {
         if (pastEvents && pastEvents.length > 0) {
           // Fetch photos for each past event
           const eventsWithPhotos = await Promise.all(
-            pastEvents.map(async (event) => {
+            pastEvents.map(async event => {
               const { data: photos, error: photosError } = await supabase
                 .from('event_photos')
                 .select('*')
@@ -75,7 +70,7 @@ export function EventsSection() {
 
           setPastEventsWithPhotos(eventsWithPhotos);
         }
-      } catch (_error) {
+      } catch {
         // Error fetching past events
       }
     };
@@ -92,9 +87,9 @@ export function EventsSection() {
     const today = new Date();
 
     switch (selectedFilter) {
-      case "upcoming":
+      case 'upcoming':
         return eventDate >= today;
-      case "registered":
+      case 'registered':
         return user && registrations.some(reg => reg.event_id === event.id);
       default:
         return true;
@@ -104,15 +99,20 @@ export function EventsSection() {
   // Update filter counts
   const updatedFilterOptions = filterOptions.map(option => ({
     ...option,
-    count: option.id === "all" ? events.length :
-           option.id === "upcoming" ? events.filter(e => new Date(e.event_date) >= new Date()).length :
-           option.id === "registered" ? registrations.length : 0
+    count:
+      option.id === 'all'
+        ? events.length
+        : option.id === 'upcoming'
+          ? events.filter(e => new Date(e.event_date) >= new Date()).length
+          : option.id === 'registered'
+            ? registrations.length
+            : 0,
   }));
 
   const getFilterButtonStyle = (filterId: string) => {
     const isSelected = selectedFilter === filterId;
-    const baseStyle = "text-sm transition-all duration-200 hover:scale-105";
-    
+    const baseStyle = 'text-sm transition-all duration-200 hover:scale-105';
+
     if (isSelected) {
       return `${baseStyle} bg-primary text-primary-foreground shadow-md`;
     }
@@ -153,14 +153,15 @@ export function EventsSection() {
             <Calendar className="h-4 w-4" />
             <span>Networking & Events</span>
           </div>
-          
+
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
             <span className="gradient-text">Join Our Events</span>
           </h2>
-          
+
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Connect with AI enthusiasts, entrepreneurs, and industry leaders at our exclusive networking events. 
-            Build meaningful relationships and discover new opportunities in the AI ecosystem.
+            Connect with AI enthusiasts, entrepreneurs, and industry leaders at our exclusive
+            networking events. Build meaningful relationships and discover new opportunities in the
+            AI ecosystem.
           </p>
         </div>
 
@@ -173,7 +174,7 @@ export function EventsSection() {
             <div className="text-2xl font-bold text-primary mb-2">{events.length}+</div>
             <div className="text-sm text-muted-foreground">Upcoming Events</div>
           </Card>
-          
+
           <Card className="p-6 text-center hover:shadow-lg transition-all duration-300 border-secondary/20">
             <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <Users className="h-6 w-6 text-secondary-foreground" />
@@ -181,7 +182,7 @@ export function EventsSection() {
             <div className="text-2xl font-bold text-secondary-foreground mb-2">500+</div>
             <div className="text-sm text-muted-foreground">Network Members</div>
           </Card>
-          
+
           <Card className="p-6 text-center hover:shadow-lg transition-all duration-300 border-accent/20">
             <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <MapPin className="h-6 w-6 text-accent-foreground" />
@@ -197,16 +198,16 @@ export function EventsSection() {
             <Filter className="h-5 w-5 text-muted-foreground" />
             <span className="text-sm font-medium text-muted-foreground">Filter by:</span>
           </div>
-          
+
           <div className="flex flex-wrap gap-2">
-            {updatedFilterOptions.map((option) => (
+            {updatedFilterOptions.map(option => (
               <Button
                 key={option.id}
-                variant={selectedFilter === option.id ? "default" : "outline"}
+                variant={selectedFilter === option.id ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setSelectedFilter(option.id)}
                 className={getFilterButtonStyle(option.id)}
-                disabled={option.id === "registered" && !user}
+                disabled={option.id === 'registered' && !user}
               >
                 {option.label}
                 <Badge variant="secondary" className="ml-2 text-xs">
@@ -218,7 +219,7 @@ export function EventsSection() {
         </div>
 
         {/* Authentication prompt for registered filter */}
-        {selectedFilter === "registered" && !user && (
+        {selectedFilter === 'registered' && !user && (
           <Card className="p-8 text-center mb-8 bg-muted/50">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <Users className="h-8 w-8 text-primary" />
@@ -227,9 +228,7 @@ export function EventsSection() {
             <p className="text-muted-foreground mb-4">
               Log in to see the events you've registered for and manage your participation.
             </p>
-            <Button className="btn-hero">
-              Sign In
-            </Button>
+            <Button className="btn-hero">Sign In</Button>
           </Card>
         )}
 
@@ -237,14 +236,14 @@ export function EventsSection() {
         {filteredEvents.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {(showAllEvents ? filteredEvents : filteredEvents.slice(0, 3)).map((event) => (
+              {(showAllEvents ? filteredEvents : filteredEvents.slice(0, 3)).map(event => (
                 <EventCard key={event.id} event={event} />
               ))}
             </div>
-            
+
             {filteredEvents.length > 3 && (
               <div className="text-center mt-8">
-                <Button 
+                <Button
                   onClick={() => setShowAllEvents(!showAllEvents)}
                   variant="outline"
                   className="px-8 py-2"
@@ -263,15 +262,12 @@ export function EventsSection() {
                 </div>
                 <h3 className="font-semibold text-lg mb-2">No events found</h3>
                 <p className="text-muted-foreground mb-6">
-                  {selectedFilter === "upcoming" && "No upcoming events at the moment."}
-                  {selectedFilter === "registered" && "You haven't registered for any events yet."}
-                  {selectedFilter === "all" && "No events available at the moment."}
+                  {selectedFilter === 'upcoming' && 'No upcoming events at the moment.'}
+                  {selectedFilter === 'registered' && "You haven't registered for any events yet."}
+                  {selectedFilter === 'all' && 'No events available at the moment.'}
                 </p>
-                {selectedFilter !== "all" && (
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setSelectedFilter("all")}
-                  >
+                {selectedFilter !== 'all' && (
+                  <Button variant="outline" onClick={() => setSelectedFilter('all')}>
                     View All Events
                   </Button>
                 )}
@@ -294,47 +290,53 @@ export function EventsSection() {
               </h2>
 
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                Take a look back at our previous events and the amazing connections made within our AI community.
+                Take a look back at our previous events and the amazing connections made within our
+                AI community.
               </p>
             </div>
 
             <div className="space-y-12">
-              {(showAllPastEvents ? pastEventsWithPhotos : pastEventsWithPhotos.slice(0, 3)).map((event) => (
-                <Card key={event.id} className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                  <div className="p-6 md:p-8">
-                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <Badge variant="secondary" className="bg-purple-100 text-purple-800">
-                            Past Event
-                          </Badge>
-                          <Badge variant="outline">{event.category || 'Networking'}</Badge>
+              {(showAllPastEvents ? pastEventsWithPhotos : pastEventsWithPhotos.slice(0, 3)).map(
+                event => (
+                  <Card
+                    key={event.id}
+                    className="overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                  >
+                    <div className="p-6 md:p-8">
+                      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                              Past Event
+                            </Badge>
+                            <Badge variant="outline">{event.category || 'Networking'}</Badge>
+                          </div>
+                          <h3 className="text-2xl font-bold mb-2">{event.title}</h3>
+                          <p className="text-muted-foreground mb-4">{event.description}</p>
                         </div>
-                        <h3 className="text-2xl font-bold mb-2">{event.title}</h3>
-                        <p className="text-muted-foreground mb-4">{event.description}</p>
+                        <div className="flex-shrink-0 text-right">
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                            <Calendar className="h-4 w-4" />
+                            {new Date(event.event_date).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })}
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <MapPin className="h-4 w-4" />
+                            {event.location}
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex-shrink-0 text-right">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                          <Calendar className="h-4 w-4" />
-                          {new Date(event.event_date).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })}
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <MapPin className="h-4 w-4" />
-                          {event.location}
-                        </div>
-                      </div>
-                    </div>
 
-                    {event.photos && event.photos.length > 0 && (
-                      <EventPhotoGallery photos={event.photos} eventTitle={event.title} />
-                    )}
-                  </div>
-                </Card>
-              ))}
+                      {event.photos && event.photos.length > 0 && (
+                        <EventPhotoGallery photos={event.photos} eventTitle={event.title} />
+                      )}
+                    </div>
+                  </Card>
+                )
+              )}
             </div>
 
             {pastEventsWithPhotos.length > 3 && (

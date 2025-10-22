@@ -56,7 +56,7 @@ export function ScheduledImports() {
   const [schedules, setSchedules] = useState<ScheduledImport[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [editingSchedule, setEditingSchedule] = useState<ScheduledImport | null>(null);
+  const [_editingSchedule, setEditingSchedule] = useState<ScheduledImport | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -77,6 +77,7 @@ export function ScheduledImports() {
 
   useEffect(() => {
     fetchSchedules();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fetchSchedules is stable
   }, []);
 
   const fetchSchedules = async () => {
@@ -194,7 +195,7 @@ export function ScheduledImports() {
     }
   };
 
-  const runNow = async (id: string) => {
+  const runNow = async (_id: string) => {
     try {
       // This would trigger the import immediately
       // Implementation would call the execute_scheduled_import function

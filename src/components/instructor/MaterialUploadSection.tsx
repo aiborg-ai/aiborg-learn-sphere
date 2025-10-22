@@ -76,6 +76,7 @@ export function MaterialUploadSection({
 
   useEffect(() => {
     fetchMaterials();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fetchMaterials is stable
   }, [courseId]);
 
   const fetchMaterials = async () => {

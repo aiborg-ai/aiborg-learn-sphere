@@ -55,7 +55,7 @@ export function TemplateUpload({ onFileUpload, isLoading }: TemplateUploadProps)
           setError('Invalid template format. Must contain "courses" or "events" array');
           setSelectedFile(null);
         }
-      } catch (_err) {
+      } catch {
         setError('Failed to parse JSON file');
         setSelectedFile(null);
       }
@@ -104,7 +104,7 @@ export function TemplateUpload({ onFileUpload, isLoading }: TemplateUploadProps)
     try {
       const data = await parseFile.mutateAsync(selectedFile);
       onFileUpload(data, templateType);
-    } catch (_err) {
+    } catch {
       setError('Failed to process file');
     }
   };

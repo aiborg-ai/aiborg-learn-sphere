@@ -48,7 +48,7 @@ function BlogCategoryManager() {
 
       if (error) throw error;
       setCategories(data || []);
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to fetch categories',
@@ -84,7 +84,7 @@ function BlogCategoryManager() {
       });
       setShowNewForm(false);
       fetchCategories();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to create category',
@@ -116,7 +116,7 @@ function BlogCategoryManager() {
 
       setEditingCategory(null);
       fetchCategories();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to update category',
@@ -139,7 +139,7 @@ function BlogCategoryManager() {
       });
 
       fetchCategories();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to delete category',

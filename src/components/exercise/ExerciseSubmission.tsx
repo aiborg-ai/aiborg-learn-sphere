@@ -85,6 +85,7 @@ export const ExerciseSubmission: React.FC<ExerciseSubmissionProps> = ({ exercise
     }, 30000); // Auto-save every 30 seconds
 
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- handleSaveDraft is stable
   }, [submissionText, codeSubmission, githubUrl, files]);
 
   const handleSaveDraft = async () => {

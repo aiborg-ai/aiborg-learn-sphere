@@ -155,9 +155,7 @@ function HeroSection({ plan }: { plan: any }) {
               size="lg"
               className="border-2 border-amber-500 text-amber-700 hover:bg-amber-50 text-lg px-8 py-6"
             >
-              <a href="#calculator">
-                Calculate Your Savings
-              </a>
+              <a href="#calculator">Calculate Your Savings</a>
             </Button>
           </div>
 
@@ -190,8 +188,7 @@ function ProblemSolutionSection() {
     <section className="py-16 sm:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl sm:text-4xl font-bold text-center text-gray-900 mb-12">
-          Traditional Learning is{' '}
-          <span className="text-red-600">Expensive & Limiting</span>
+          Traditional Learning is <span className="text-red-600">Expensive & Limiting</span>
         </h2>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -205,7 +202,10 @@ function ProblemSolutionSection() {
             <ul className="space-y-4">
               {[
                 { text: 'Individual courses cost £49 each', impact: '£588+/year per person' },
-                { text: 'Multiple family members = £hundreds per month', impact: '£2,352/year for 4 people' },
+                {
+                  text: 'Multiple family members = £hundreds per month',
+                  impact: '£2,352/year for 4 people',
+                },
                 { text: 'Limited content access', impact: 'Pay per course forever' },
                 { text: 'Pay per event separately', impact: '£20-50 per event' },
                 { text: 'No family sharing', impact: 'Everyone pays individually' },
@@ -247,9 +247,7 @@ function ProblemSolutionSection() {
             </ul>
 
             <div className="mt-6 p-4 bg-white rounded-lg border-2 border-green-300">
-              <p className="text-center text-2xl font-bold text-green-600">
-                Save £2,400+ Per Year
-              </p>
+              <p className="text-center text-2xl font-bold text-green-600">Save £2,400+ Per Year</p>
             </div>
           </Card>
         </div>
@@ -270,9 +268,7 @@ function SavingsCalculatorSection() {
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
             Calculate Your Exact Savings
           </h2>
-          <p className="text-xl text-gray-600">
-            See how much you'll save with the Family Pass
-          </p>
+          <p className="text-xl text-gray-600">See how much you'll save with the Family Pass</p>
         </div>
 
         <ROISavingsCalculator />
@@ -290,25 +286,49 @@ function WhatsIncludedSection({ plan }: { plan: any }) {
     {
       icon: GraduationCap,
       title: 'All Online Courses',
-      items: ['50+ AI courses', 'Primary (ages 8-11)', 'Secondary (ages 12-18)', 'Professional development', 'Business/SME training'],
+      items: [
+        '50+ AI courses',
+        'Primary (ages 8-11)',
+        'Secondary (ages 12-18)',
+        'Professional development',
+        'Business/SME training',
+      ],
       color: 'from-blue-500 to-indigo-600',
     },
     {
       icon: Lock,
       title: 'Exclusive Vault',
-      items: ['200+ video tutorials', 'Downloadable resources', 'Templates & worksheets', 'Member-only webinars', 'AI tools & scripts'],
+      items: [
+        '200+ video tutorials',
+        'Downloadable resources',
+        'Templates & worksheets',
+        'Member-only webinars',
+        'AI tools & scripts',
+      ],
       color: 'from-purple-500 to-pink-600',
     },
     {
       icon: Calendar,
       title: 'Event Access',
-      items: ['Monthly seminars (free)', 'Priority registration', 'Industry expert talks', '50% off conferences', 'Family learning days'],
+      items: [
+        'Monthly seminars (free)',
+        'Priority registration',
+        'Industry expert talks',
+        '50% off conferences',
+        'Family learning days',
+      ],
       color: 'from-orange-500 to-red-600',
     },
     {
       icon: Users,
       title: 'Family Sharing',
-      items: ['Up to 6 members', 'Individual accounts', 'Progress tracking', 'Certificate programs', 'Priority support'],
+      items: [
+        'Up to 6 members',
+        'Individual accounts',
+        'Progress tracking',
+        'Certificate programs',
+        'Priority support',
+      ],
       color: 'from-green-500 to-emerald-600',
     },
   ];
@@ -328,7 +348,9 @@ function WhatsIncludedSection({ plan }: { plan: any }) {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, i) => (
             <Card key={i} className="p-6 hover:shadow-xl transition-shadow duration-300">
-              <div className={`w-14 h-14 rounded-full bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4`}>
+              <div
+                className={`w-14 h-14 rounded-full bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4`}
+              >
                 <feature.icon className="w-7 h-7 text-white" />
               </div>
 
@@ -390,7 +412,9 @@ function ComparisonTableSection() {
             <thead>
               <tr className="bg-gray-100">
                 <th className="px-6 py-4 text-left font-semibold text-gray-900">Feature</th>
-                <th className="px-6 py-4 text-center font-semibold text-gray-900">Individual Courses</th>
+                <th className="px-6 py-4 text-center font-semibold text-gray-900">
+                  Individual Courses
+                </th>
                 <th className="px-6 py-4 text-center font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-500">
                   Family Pass ⭐
                 </th>
@@ -424,7 +448,8 @@ function TestimonialsSection() {
       family: 'The Johnson Family',
       location: 'Manchester, UK',
       members: 3,
-      quote: 'Our 3 kids (ages 9, 14, and 16) are all learning AI together. Best £20 we spend each month!',
+      quote:
+        'Our 3 kids (ages 9, 14, and 16) are all learning AI together. Best £20 we spend each month!',
       coursesCompleted: 23,
       rating: 5,
     },
@@ -432,7 +457,8 @@ function TestimonialsSection() {
       family: 'The Patel Family',
       location: 'Birmingham, UK',
       members: 5,
-      quote: 'As parents, we\'re learning alongside our children. The vault content is incredible value.',
+      quote:
+        "As parents, we're learning alongside our children. The vault content is incredible value.",
       coursesCompleted: 31,
       rating: 5,
     },
@@ -585,7 +611,7 @@ function FAQSection() {
       a: 'Yes! 30 days completely free, no credit card required. Full access to everything.',
     },
     {
-      q: 'What\'s included in the Vault?',
+      q: "What's included in the Vault?",
       a: '200+ premium resources: video tutorials, templates, worksheets, webinar recordings, and AI tools.',
     },
     {
@@ -627,9 +653,7 @@ function FAQSection() {
               <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-amber-600">
                 {faq.q}
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
-                {faq.a}
-              </AccordionContent>
+              <AccordionContent className="text-gray-600">{faq.a}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
@@ -670,7 +694,10 @@ function TrustSection() {
 
         <div className="grid md:grid-cols-3 gap-6">
           {badges.map((badge, i) => (
-            <Card key={i} className="p-6 text-center bg-white hover:shadow-xl transition-shadow duration-300">
+            <Card
+              key={i}
+              className="p-6 text-center bg-white hover:shadow-xl transition-shadow duration-300"
+            >
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
                 <badge.icon className="w-8 h-8 text-white" />
               </div>
@@ -732,9 +759,7 @@ function FinalCTASection({ plan }: { plan: any }) {
           Don't Miss Out - Early Bird Pricing Ends Soon
         </h2>
 
-        <p className="text-xl mb-8 opacity-90">
-          Lock in £20/month forever (normally £30/month)
-        </p>
+        <p className="text-xl mb-8 opacity-90">Lock in £20/month forever (normally £30/month)</p>
 
         {/* Countdown Timer */}
         <div className="flex items-center justify-center gap-4 mb-8">
@@ -750,9 +775,7 @@ function FinalCTASection({ plan }: { plan: any }) {
           ))}
         </div>
 
-        <p className="text-2xl font-bold mb-8">
-          Only 47 Spots Left at This Price
-        </p>
+        <p className="text-2xl font-bold mb-8">Only 47 Spots Left at This Price</p>
 
         <Button
           asChild
@@ -790,18 +813,17 @@ function LiveActivityBanner() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentActivity((prev) => (prev + 1) % activities.length);
+      setCurrentActivity(prev => (prev + 1) % activities.length);
     }, 3000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- activities.length is intentionally not a dependency
   }, []);
 
   return (
     <div className="bg-gradient-to-r from-blue-600 to-indigo-600 py-3 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 animate-pulse">
-        <p className="text-white text-center font-medium">
-          ✨ {activities[currentActivity]}
-        </p>
+        <p className="text-white text-center font-medium">✨ {activities[currentActivity]}</p>
       </div>
     </div>
   );

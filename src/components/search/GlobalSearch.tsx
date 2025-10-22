@@ -43,10 +43,11 @@ export function GlobalSearch() {
   const [search, setSearch] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
+  const { user: _user } = useAuth();
   const navigate = useNavigate();
 
   // Quick actions - always available
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- quickActions is intentionally recreated on each render for simplicity
   const quickActions: SearchResult[] = [
     {
       id: 'dashboard',

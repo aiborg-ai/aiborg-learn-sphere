@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/prefer-tag-over-role */
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logger } from '@/utils/logger';
@@ -276,7 +277,7 @@ export default function BookmarksPage() {
                         <div
                           className="flex-1 min-w-0"
                           onClick={() => handleBookmarkClick(bookmark)}
-                          onKeyDown={(e) => {
+                          onKeyDown={e => {
                             if (e.key === 'Enter' || e.key === ' ') {
                               e.preventDefault();
                               handleBookmarkClick(bookmark);

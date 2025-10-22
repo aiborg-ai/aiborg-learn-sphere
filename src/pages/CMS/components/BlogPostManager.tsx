@@ -80,6 +80,7 @@ function BlogPostManager() {
 
   useEffect(() => {
     fetchPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fetchPosts is stable
   }, [statusFilter]);
 
   const fetchPosts = async () => {
@@ -104,7 +105,7 @@ function BlogPostManager() {
 
       if (error) throw error;
       setPosts(data || []);
-    } catch (error) {
+    } catch {
       logger.error('Error fetching posts:', error);
       toast({
         title: 'Error',
@@ -129,7 +130,7 @@ function BlogPostManager() {
         description: 'Post deleted successfully',
       });
       fetchPosts();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to delete post',
@@ -155,7 +156,7 @@ function BlogPostManager() {
         description: `Post ${status === 'published' ? 'published' : `changed to ${status}`} successfully`,
       });
       fetchPosts();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to update post status',
@@ -178,7 +179,7 @@ function BlogPostManager() {
         description: `Post ${!is_featured ? 'featured' : 'unfeatured'} successfully`,
       });
       fetchPosts();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to update featured status',
@@ -201,7 +202,7 @@ function BlogPostManager() {
         description: `Post ${!is_sticky ? 'pinned' : 'unpinned'} successfully`,
       });
       fetchPosts();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to update sticky status',
@@ -243,7 +244,7 @@ function BlogPostManager() {
         description: 'Post duplicated successfully',
       });
       fetchPosts();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to duplicate post',

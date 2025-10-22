@@ -78,9 +78,7 @@ describe('LearningPathRecommendationEngine', () => {
     },
   ];
 
-  const mockEnrollments = [
-    { course_id: 1, progress_percentage: 50 },
-  ];
+  const mockEnrollments = [{ course_id: 1, progress_percentage: 50 }];
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -92,7 +90,8 @@ describe('LearningPathRecommendationEngine', () => {
 
   describe('generateRecommendations', () => {
     it('should generate learning path recommendations', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // profiles
           select: vi.fn().mockReturnValue({
@@ -172,15 +171,15 @@ describe('LearningPathRecommendationEngine', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const recommendations = await LearningPathRecommendationEngine.generateRecommendations(
-        mockUserId
-      );
+      const recommendations =
+        await LearningPathRecommendationEngine.generateRecommendations(mockUserId);
 
       expect(recommendations).toEqual([]);
     });
 
     it('should work without assessment ID', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // profiles
           select: vi.fn().mockReturnValue({
@@ -226,32 +225,30 @@ describe('LearningPathRecommendationEngine', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const recommendations = await LearningPathRecommendationEngine.generateRecommendations(
-        mockUserId
-      );
+      const recommendations =
+        await LearningPathRecommendationEngine.generateRecommendations(mockUserId);
 
       expect(recommendations).toBeDefined();
       expect(Array.isArray(recommendations)).toBe(true);
     });
 
     it('should generate weakness-focused path when weak categories exist', async () => {
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: mockAssessment,
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: mockAssessment,
+              error: null,
+            }),
+            order: vi.fn().mockReturnValue({
+              limit: vi.fn().mockResolvedValue({
+                data: [mockAssessment],
                 error: null,
-              }),
-              order: vi.fn().mockReturnValue({
-                limit: vi.fn().mockResolvedValue({
-                  data: [mockAssessment],
-                  error: null,
-                }),
               }),
             }),
           }),
-        });
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
@@ -266,7 +263,7 @@ describe('LearningPathRecommendationEngine', () => {
 
     it('should limit recommendations to top 5', async () => {
       // Create more courses to ensure we get more than 5 recommendations
-      const manyCourses = Array.from({ length: 20 }, (_, i) => ({
+      const _manyCourses = Array.from({ length: 20 }, (_, i) => ({
         id: i + 1,
         title: `Course ${i + 1}`,
         description: `Description ${i + 1}`,
@@ -277,17 +274,16 @@ describe('LearningPathRecommendationEngine', () => {
         price: '£500',
       }));
 
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: mockProfile,
-                error: null,
-              }),
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: mockProfile,
+              error: null,
             }),
           }),
-        });
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
@@ -302,17 +298,16 @@ describe('LearningPathRecommendationEngine', () => {
 
   describe('recommendation types', () => {
     it('should include match scores in recommendations', async () => {
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: mockProfile,
-                error: null,
-              }),
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: mockProfile,
+              error: null,
             }),
           }),
-        });
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
@@ -330,17 +325,16 @@ describe('LearningPathRecommendationEngine', () => {
     });
 
     it('should include estimated time in recommendations', async () => {
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: mockProfile,
-                error: null,
-              }),
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: mockProfile,
+              error: null,
             }),
           }),
-        });
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
@@ -358,17 +352,16 @@ describe('LearningPathRecommendationEngine', () => {
     });
 
     it('should include course details in recommendations', async () => {
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: mockProfile,
-                error: null,
-              }),
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: mockProfile,
+              error: null,
             }),
           }),
-        });
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
@@ -389,17 +382,16 @@ describe('LearningPathRecommendationEngine', () => {
     });
 
     it('should sort recommendations by match score', async () => {
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: mockProfile,
-                error: null,
-              }),
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: mockProfile,
+              error: null,
             }),
           }),
-        });
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
@@ -418,7 +410,8 @@ describe('LearningPathRecommendationEngine', () => {
 
   describe('personalization', () => {
     it('should filter out already enrolled courses', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // profiles
           select: vi.fn().mockReturnValue({
@@ -464,9 +457,8 @@ describe('LearningPathRecommendationEngine', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const recommendations = await LearningPathRecommendationEngine.generateRecommendations(
-        mockUserId
-      );
+      const recommendations =
+        await LearningPathRecommendationEngine.generateRecommendations(mockUserId);
 
       // Verify that course 1 is not in any recommendation
       recommendations.forEach(rec => {
@@ -478,20 +470,19 @@ describe('LearningPathRecommendationEngine', () => {
     });
 
     it('should consider user ability level in recommendations', async () => {
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: {
-                  ...mockAssessment,
-                  current_ability_estimate: -0.5, // Low ability
-                },
-                error: null,
-              }),
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: {
+                ...mockAssessment,
+                current_ability_estimate: -0.5, // Low ability
+              },
+              error: null,
             }),
           }),
-        });
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
@@ -520,15 +511,15 @@ describe('LearningPathRecommendationEngine', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const recommendations = await LearningPathRecommendationEngine.generateRecommendations(
-        mockUserId
-      );
+      const recommendations =
+        await LearningPathRecommendationEngine.generateRecommendations(mockUserId);
 
       expect(recommendations).toEqual([]);
     });
 
     it('should handle missing courses gracefully', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // profiles
           select: vi.fn().mockReturnValue({
@@ -574,9 +565,8 @@ describe('LearningPathRecommendationEngine', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const recommendations = await LearningPathRecommendationEngine.generateRecommendations(
-        mockUserId
-      );
+      const recommendations =
+        await LearningPathRecommendationEngine.generateRecommendations(mockUserId);
 
       expect(recommendations).toEqual([]);
     });
@@ -588,9 +578,8 @@ describe('LearningPathRecommendationEngine', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const recommendations = await LearningPathRecommendationEngine.generateRecommendations(
-        mockUserId
-      );
+      const recommendations =
+        await LearningPathRecommendationEngine.generateRecommendations(mockUserId);
 
       expect(recommendations).toEqual([]);
     });

@@ -1,0 +1,3 @@
+# Prettier ignore file
+# Ignore accessibility templates (they contain example code in comments)
+src/templates/

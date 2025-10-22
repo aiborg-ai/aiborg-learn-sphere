@@ -1,10 +1,11 @@
+/* eslint-disable react-refresh/only-export-components */
 import type { ReactNode } from 'react';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 /**
  * Target audience types for content personalization
  */
-export type Audience = "All" | "primary" | "secondary" | "professional" | "business";
+export type Audience = 'All' | 'primary' | 'secondary' | 'professional' | 'business';
 
 /**
  * Personalization context interface
@@ -81,11 +82,11 @@ export const PersonalizationProvider: React.FC<PersonalizationProviderProps> = (
       return stored as Audience;
     }
     // Default to "All"
-    return "All";
+    return 'All';
   });
 
   useEffect(() => {
-    if (selectedAudience && selectedAudience !== "All") {
+    if (selectedAudience && selectedAudience !== 'All') {
       localStorage.setItem('aiborg-selected-audience', selectedAudience);
       // Apply audience-specific body classes for global styling
       document.body.className = document.body.className.replace(/audience-\w+/g, '');
@@ -112,15 +113,15 @@ export const PersonalizationProvider: React.FC<PersonalizationProviderProps> = (
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const getPersonalizedContent = <T = unknown>(content: PersonalizedContent<T>): T => {
-    if (!selectedAudience || selectedAudience === "All" || !content[selectedAudience]) {
+  const getPersonalizedContent = <T = unknown,>(content: PersonalizedContent<T>): T => {
+    if (!selectedAudience || selectedAudience === 'All' || !content[selectedAudience]) {
       return (content.default || content) as T;
     }
     return content[selectedAudience] as T;
   };
 
   const getPersonalizedStyles = (styles: PersonalizedStyles) => {
-    if (!selectedAudience || selectedAudience === "All" || !styles[selectedAudience]) {
+    if (!selectedAudience || selectedAudience === 'All' || !styles[selectedAudience]) {
       return styles.default || '';
     }
     return styles[selectedAudience];
@@ -143,22 +144,22 @@ export const PersonalizationProvider: React.FC<PersonalizationProviderProps> = (
 // Personalization configuration
 export const AUDIENCE_CONFIG = {
   All: {
-    name: "All Audiences",
-    theme: "default",
+    name: 'All Audiences',
+    theme: 'default',
   },
   primary: {
-    name: "Young Learners",
-    displayName: "Young Learners",
-    theme: "playful",
+    name: 'Young Learners',
+    displayName: 'Young Learners',
+    theme: 'playful',
     colors: {
-      primary: "var(--primary-light)",
-      accent: "var(--accent-light)",
-      background: "var(--background-soft)",
+      primary: 'var(--primary-light)',
+      accent: 'var(--accent-light)',
+      background: 'var(--background-soft)',
     },
     language: {
-      level: "simple",
-      tone: "friendly", 
-      vocabulary: "basic",
+      level: 'simple',
+      tone: 'friendly',
+      vocabulary: 'basic',
     },
     features: {
       gamification: true,
@@ -169,18 +170,18 @@ export const AUDIENCE_CONFIG = {
     },
   },
   secondary: {
-    name: "Teenagers",
-    displayName: "Teenagers",
-    theme: "modern",
+    name: 'Teenagers',
+    displayName: 'Teenagers',
+    theme: 'modern',
     colors: {
-      primary: "var(--primary)",
-      accent: "var(--accent)",
-      background: "var(--background)",
+      primary: 'var(--primary)',
+      accent: 'var(--accent)',
+      background: 'var(--background)',
     },
     language: {
-      level: "intermediate",
-      tone: "engaging",
-      vocabulary: "technical",
+      level: 'intermediate',
+      tone: 'engaging',
+      vocabulary: 'technical',
     },
     features: {
       careerGuidance: true,
@@ -191,18 +192,18 @@ export const AUDIENCE_CONFIG = {
     },
   },
   professional: {
-    name: "Professionals",
-    displayName: "Professionals",
-    theme: "clean",
+    name: 'Professionals',
+    displayName: 'Professionals',
+    theme: 'clean',
     colors: {
-      primary: "var(--primary-dark)",
-      accent: "var(--accent-professional)",
-      background: "var(--background-professional)",
+      primary: 'var(--primary-dark)',
+      accent: 'var(--accent-professional)',
+      background: 'var(--background-professional)',
     },
     language: {
-      level: "advanced",
-      tone: "professional",
-      vocabulary: "industry",
+      level: 'advanced',
+      tone: 'professional',
+      vocabulary: 'industry',
     },
     features: {
       certifications: true,
@@ -214,18 +215,18 @@ export const AUDIENCE_CONFIG = {
     },
   },
   business: {
-    name: "SMEs",
-    displayName: "SMEs", 
-    theme: "enterprise",
+    name: 'SMEs',
+    displayName: 'SMEs',
+    theme: 'enterprise',
     colors: {
-      primary: "var(--primary-enterprise)",
-      accent: "var(--accent-enterprise)",
-      background: "var(--background-enterprise)",
+      primary: 'var(--primary-enterprise)',
+      accent: 'var(--accent-enterprise)',
+      background: 'var(--background-enterprise)',
     },
     language: {
-      level: "executive",
-      tone: "strategic",
-      vocabulary: "business",
+      level: 'executive',
+      tone: 'strategic',
+      vocabulary: 'business',
     },
     features: {
       analytics: true,

@@ -65,10 +65,12 @@ class CurriculumApprovalService {
 
       const { data: courses, error: coursesError } = await supabase
         .from('curriculum_courses')
-        .select(`
+        .select(
+          `
           *,
           course:courses(*)
-        `)
+        `
+        )
         .eq('curriculum_id', curriculumId)
         .order('sequence_order', { ascending: true });
 
@@ -139,7 +141,7 @@ class CurriculumApprovalService {
    */
   async bulkApprove(curriculumId: string, courseIds: number[]): Promise<void> {
     try {
-      const updates = courseIds.map((courseId) =>
+      const updates = courseIds.map(courseId =>
         supabase
           .from('curriculum_courses')
           .update({
@@ -164,7 +166,7 @@ class CurriculumApprovalService {
    */
   async bulkReject(curriculumId: string, courseIds: number[]): Promise<void> {
     try {
-      const updates = courseIds.map((courseId) =>
+      const updates = courseIds.map(courseId =>
         supabase
           .from('curriculum_courses')
           .update({
@@ -187,11 +189,7 @@ class CurriculumApprovalService {
   /**
    * Add user notes to a course
    */
-  async addCourseNotes(
-    curriculumId: string,
-    courseId: number,
-    notes: string
-  ): Promise<void> {
+  async addCourseNotes(curriculumId: string, courseId: number, notes: string): Promise<void> {
     try {
       const { error } = await supabase
         .from('curriculum_courses')
@@ -219,8 +217,8 @@ class CurriculumApprovalService {
       if (!curriculumData) throw new Error('Curriculum not found');
 
       // Count approved and rejected courses
-      const approvedCount = curriculumData.courses.filter((c) => c.user_approved === true).length;
-      const rejectedCount = curriculumData.courses.filter((c) => c.user_approved === false).length;
+      const approvedCount = curriculumData.courses.filter(c => c.user_approved === true).length;
+      const rejectedCount = curriculumData.courses.filter(c => c.user_approved === false).length;
 
       if (approvedCount === 0) {
         throw new Error('Cannot publish curriculum with no approved courses');
@@ -229,8 +227,8 @@ class CurriculumApprovalService {
       // Delete rejected courses
       if (rejectedCount > 0) {
         const rejectedIds = curriculumData.courses
-          .filter((c) => c.user_approved === false)
-          .map((c) => c.id);
+          .filter(c => c.user_approved === false)
+          .map(c => c.id);
 
         const { error: deleteError } = await supabase
           .from('curriculum_courses')
@@ -291,24 +289,21 @@ class CurriculumApprovalService {
         .order('sequence_order', { ascending: false })
         .limit(1);
 
-      const nextOrder = existingCourses && existingCourses.length > 0
-        ? existingCourses[0].sequence_order + 1
-        : 1;
+      const nextOrder =
+        existingCourses && existingCourses.length > 0 ? existingCourses[0].sequence_order + 1 : 1;
 
-      const { error } = await supabase
-        .from('curriculum_courses')
-        .insert({
-          curriculum_id: curriculumId,
-          course_id: courseId,
-          sequence_order: nextOrder,
-          module_name: options?.module_name,
-          ai_recommended: false,
-          recommendation_score: 0,
-          recommendation_reason: 'Manually added by user',
-          user_approved: true,
-          is_required: options?.is_required || false,
-          user_notes: options?.user_notes,
-        });
+      const { error } = await supabase.from('curriculum_courses').insert({
+        curriculum_id: curriculumId,
+        course_id: courseId,
+        sequence_order: nextOrder,
+        module_name: options?.module_name,
+        ai_recommended: false,
+        recommendation_score: 0,
+        recommendation_reason: 'Manually added by user',
+        user_approved: true,
+        is_required: options?.is_required || false,
+        user_notes: options?.user_notes,
+      });
 
       if (error) throw error;
 
@@ -379,13 +374,14 @@ class CurriculumApprovalService {
       if (!curriculumData) throw new Error('Curriculum not found');
 
       const courses = curriculumData.courses;
-      const approved = courses.filter((c) => c.user_approved === true).length;
-      const rejected = courses.filter((c) => c.user_approved === false).length;
-      const pending = courses.filter((c) => c.user_approved === null).length;
+      const approved = courses.filter(c => c.user_approved === true).length;
+      const rejected = courses.filter(c => c.user_approved === false).length;
+      const pending = courses.filter(c => c.user_approved === null).length;
 
-      const avgScore = courses.length > 0
-        ? courses.reduce((sum, c) => sum + c.recommendation_score, 0) / courses.length
-        : 0;
+      const avgScore =
+        courses.length > 0
+          ? courses.reduce((sum, c) => sum + c.recommendation_score, 0) / courses.length
+          : 0;
 
       return {
         total_courses: courses.length,
@@ -403,10 +399,13 @@ class CurriculumApprovalService {
   /**
    * Helper: Group courses by module
    */
-  private groupCoursesByModule(courses: any[]): Array<{ module_name: string; course_count: number }> {
+
+  private groupCoursesByModule(
+    courses: any[]
+  ): Array<{ module_name: string; course_count: number }> {
     const moduleMap = new Map<string, number>();
 
-    courses.forEach((course) => {
+    courses.forEach(course => {
       const moduleName = course.module_name || 'Ungrouped';
       moduleMap.set(moduleName, (moduleMap.get(moduleName) || 0) + 1);
     });
@@ -445,10 +444,7 @@ class CurriculumApprovalService {
   async deleteCurriculum(curriculumId: string): Promise<void> {
     try {
       // Courses will be deleted automatically via CASCADE
-      const { error } = await supabase
-        .from('user_curricula')
-        .delete()
-        .eq('id', curriculumId);
+      const { error } = await supabase.from('user_curricula').delete().eq('id', curriculumId);
 
       if (error) throw error;
 

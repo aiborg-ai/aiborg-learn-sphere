@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * Achievement Unlock Toast Component
  * Shows a celebratory notification when achievements are unlocked

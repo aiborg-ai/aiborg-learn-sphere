@@ -15,6 +15,7 @@ export interface WorkflowStep {
   description: string;
   step_type: 'form' | 'assessment' | 'selection' | 'review';
   fields_to_collect: FieldDefinition[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Dynamic profile data
   validation_rules: Record<string, any>;
   is_required: boolean;
   is_skippable: boolean;
@@ -28,6 +29,7 @@ export interface FieldDefinition {
   type: string;
   label: string;
   placeholder?: string;
+
   required: boolean;
   options?: any[];
   conditional?: {
@@ -37,6 +39,7 @@ export interface FieldDefinition {
   };
   min_length?: number;
   max_length?: number;
+
   min?: number;
   max?: number;
   default?: any;
@@ -45,6 +48,7 @@ export interface FieldDefinition {
 export interface WorkflowProgress {
   id: string;
   user_id: string;
+
   profile_id?: string;
   current_step_order: number;
   completed_steps: number[];
@@ -173,6 +177,7 @@ class ProfileWorkflowService {
 
   /**
    * Update step data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Dynamic update structure
    */
   async updateStepData(
     progressId: string,
@@ -457,13 +462,16 @@ class ProfileWorkflowService {
   /**
    * Validate step data
    */
-  validateStepData(step: WorkflowStep, data: Record<string, any>): {
+  validateStepData(
+    step: WorkflowStep,
+    data: Record<string, any>
+  ): {
     isValid: boolean;
     errors: Record<string, string>;
   } {
     const errors: Record<string, string> = {};
 
-    step.fields_to_collect.forEach((field) => {
+    step.fields_to_collect.forEach(field => {
       const value = data[field.name];
 
       // Required field check

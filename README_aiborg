@@ -1,6 +1,97 @@
 hirendra@gmail.com
 HVOne2025
 
+stripe password
+
+ ✅ What's Already Working
+
+  Course Payments System:
+  - ✅ create-payment Edge Function
+  - ✅ stripe-webhook Edge Function
+  - ✅ One-time £49 course purchases
+  - ✅ Stripe integration working in production
+
+  🔄 What Needs Deployment
+
+  Family Pass Subscription System:
+  - 🔄 create-subscription Edge Function
+  - 🔄 manage-subscription Edge Function
+  - 🔄 stripe-webhook-subscription Edge Function
+  - 🔄 Database migrations (3 files)
+  - 🔄 Stripe subscription product setup
+
+  📋 Deployment Checklist
+
+  Based on the guides I created, here's your action plan:
+
+  Phase 1: Database Setup (5 minutes)
+
+  Follow: RUN_MIGRATIONS_IN_ORDER.md
+
+  -- Run in Supabase SQL Editor in this order:
+  1. 20251017120000_membership_plans.sql
+  2. 20251017120001_membership_subscriptions.sql
+  3. 20251017120003_family_members.sql
+
+  Phase 2: Deploy Edge Functions (10 minutes)
+
+  Follow: DEPLOY_VIA_DASHBOARD.md
+
+  Deploy via Supabase Dashboard:
+  1. create-subscription/index.ts
+  2. manage-subscription/index.ts
+  3. stripe-webhook-subscription/index.ts
+
+  Phase 3: Configure Stripe
+
+  Choose one:
+
+  Option A: Test Mode First (Recommended)
+  Follow: STRIPE_SETUP_GUIDE.md
+  - Use test keys (sk_test_..., pk_test_...)
+  - Test card: 4242 4242 4242 4242
+  - Safe to experiment
+
+  Option B: Go Live Immediately
+  Follow: GO_LIVE_WITH_STRIPE.md
+  - Use live keys (sk_live_..., pk_live_...)
+  - Real payments, real money
+  - Requires business verification
+
+  🔑 Key Insight
+
+  You'll have TWO separate Stripe workflows running simultaneously:
+
+  Same Stripe Account
+  ├── Webhook 1: /functions/v1/stripe-webhook
+  │   └── Handles: One-time course payments
+  │
+  └── Webhook 2: /functions/v1/stripe-webhook-subscription
+      └── Handles: Recurring subscriptions (7+ event types)
+
+  Both can use the same Stripe API keys, but you'll configure two separate webhook endpoints in Stripe Dashboard.
+
+  📚 Quick Reference
+
+  | Document                   | Purpose          | Time   |
+  |----------------------------|------------------|--------|
+  | RUN_MIGRATIONS_IN_ORDER.md | Database setup   | 5 min  |
+  | DEPLOY_VIA_DASHBOARD.md    | Edge Functions   | 10 min |
+  | STRIPE_SETUP_GUIDE.md      | Test mode setup  | 15 min |
+  | GO_LIVE_WITH_STRIPE.md     | Production setup | 30 min |
+
+  🎯 Recommended Next Step
+
+  I suggest starting with Test Mode:
+
+  1. Run database migrations
+  2. Deploy Edge Functions
+  3. Configure Stripe in test mode
+  4. Test enrollment with test card
+  5. Once working, switch to live mode
+
+  Ready to start? Which phase would you like help with first?
+
 
 ---------------------------
   Option A: Stop Here & Deploy ⭐ (Recommended)
@@ -45,6 +136,26 @@ HVOne2025
   4. Create a working demo (quick proof-of-concept)?
 
 
+--------------------------------------------
+  1. Visit enrollment page:
+  https://aiborg-ai-web.vercel.app/family-membership/enroll
+  2. Use Stripe test card:
+  Card: 4242 4242 4242 4242
+  Expiry: 12/26
+  CVC: 123
+  3. Verify subscription created:
+  -- Run in Supabase SQL Editor
+  SELECT
+    s.id,
+    s.status,
+    s.stripe_subscription_id,
+    p.name as plan_name,
+    s.trial_end,
+    s.created_at
+  FROM membership_subscriptions s
+  JOIN membership_plans p ON s.plan_id = p.id
+  ORDER BY s.created_at DESC
+  LIMIT 1;
 
 
 

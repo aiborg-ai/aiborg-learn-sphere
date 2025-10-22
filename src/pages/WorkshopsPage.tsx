@@ -7,9 +7,14 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Navbar, Footer } from '@/components/navigation';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Icon } from '@/utils/iconLoader';
 import { WorkshopList } from '@/components/workshop/WorkshopList';
 import { useWorkshopSessions } from '@/hooks/useWorkshopSessions';
@@ -50,10 +55,7 @@ export default function WorkshopsPage() {
   });
 
   // Fetch all sessions
-  const {
-    data: sessions,
-    isLoading: sessionsLoading,
-  } = useQuery({
+  const { data: sessions, isLoading: sessionsLoading } = useQuery({
     queryKey: ['all-sessions'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -68,9 +70,7 @@ export default function WorkshopsPage() {
   });
 
   // Check user enrollment
-  const {
-    data: userEnrollments,
-  } = useQuery({
+  const { data: userEnrollments } = useQuery({
     queryKey: ['user-workshop-enrollments', user?.id],
     queryFn: async () => {
       if (!user) return [];
@@ -104,21 +104,26 @@ export default function WorkshopsPage() {
 
   // Check if user is enrolled in a workshop
   const isEnrolled = (workshopId: string) => {
-    return userEnrollments?.some(
-      (enrollment: { workshop_sessions: { workshop_id: string } }) =>
-        enrollment.workshop_sessions.workshop_id === workshopId
-    ) ?? false;
+    return (
+      userEnrollments?.some(
+        (enrollment: { workshop_sessions: { workshop_id: string } }) =>
+          enrollment.workshop_sessions.workshop_id === workshopId
+      ) ?? false
+    );
   };
 
   // Filter workshops
-  const filteredWorkshops = workshops?.filter(workshop => {
-    const matchesSearch = workshop.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      workshop.description.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredWorkshops =
+    workshops?.filter(workshop => {
+      const matchesSearch =
+        workshop.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        workshop.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesDifficulty = difficultyFilter === 'all' || workshop.difficulty_level === difficultyFilter;
+      const matchesDifficulty =
+        difficultyFilter === 'all' || workshop.difficulty_level === difficultyFilter;
 
-    return matchesSearch && matchesDifficulty;
-  }) || [];
+      return matchesSearch && matchesDifficulty;
+    }) || [];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -184,7 +189,7 @@ export default function WorkshopsPage() {
             <Input
               placeholder="Search workshops..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="w-full"
             />
           </div>

@@ -8,10 +8,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { FamilyMembersService } from '@/services/membership';
-import type {
-  FamilyMember,
-  AddFamilyMemberParams,
-} from '@/services/membership/types';
+import type { FamilyMember, AddFamilyMemberParams } from '@/services/membership/types';
 
 // ============================================================================
 // QUERY KEYS
@@ -21,12 +18,9 @@ export const familyMembersKeys = {
   all: ['familyMembers'] as const,
   subscription: (subscriptionId: string) =>
     [...familyMembersKeys.all, 'subscription', subscriptionId] as const,
-  member: (memberId: string) =>
-    [...familyMembersKeys.all, 'member', memberId] as const,
-  invitation: (token: string) =>
-    [...familyMembersKeys.all, 'invitation', token] as const,
-  stats: (subscriptionId: string) =>
-    [...familyMembersKeys.all, 'stats', subscriptionId] as const,
+  member: (memberId: string) => [...familyMembersKeys.all, 'member', memberId] as const,
+  invitation: (token: string) => [...familyMembersKeys.all, 'invitation', token] as const,
+  stats: (subscriptionId: string) => [...familyMembersKeys.all, 'stats', subscriptionId] as const,
   mostActive: (subscriptionId: string) =>
     [...familyMembersKeys.all, 'mostActive', subscriptionId] as const,
 };
@@ -41,8 +35,7 @@ export const familyMembersKeys = {
 export function useSubscriptionFamilyMembers(subscriptionId: string | undefined) {
   return useQuery({
     queryKey: familyMembersKeys.subscription(subscriptionId || ''),
-    queryFn: () =>
-      FamilyMembersService.getSubscriptionFamilyMembers(subscriptionId!),
+    queryFn: () => FamilyMembersService.getSubscriptionFamilyMembers(subscriptionId!),
     enabled: !!subscriptionId,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
@@ -95,8 +88,7 @@ export function useAddFamilyMember() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (params: AddFamilyMemberParams) =>
-      FamilyMembersService.addFamilyMember(params),
+    mutationFn: (params: AddFamilyMemberParams) => FamilyMembersService.addFamilyMember(params),
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({
         queryKey: familyMembersKeys.subscription(variables.subscription_id),
@@ -135,8 +127,8 @@ export function useRemoveFamilyMember() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (memberId: string) =>
-      FamilyMembersService.removeFamilyMember(memberId),
+    mutationFn: (memberId: string) => FamilyMembersService.removeFamilyMember(memberId),
+
     onSuccess: (_, memberId) => {
       // Invalidate all subscription queries as we don't know which subscription this member belongs to
       queryClient.invalidateQueries({ queryKey: familyMembersKeys.all });
@@ -164,13 +156,8 @@ export function useUpdateFamilyMember() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: ({
-      memberId,
-      updates,
-    }: {
-      memberId: string;
-      updates: Partial<FamilyMember>;
-    }) => FamilyMembersService.updateFamilyMember(memberId, updates),
+    mutationFn: ({ memberId, updates }: { memberId: string; updates: Partial<FamilyMember> }) =>
+      FamilyMembersService.updateFamilyMember(memberId, updates),
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({
         queryKey: familyMembersKeys.member(variables.memberId),
@@ -216,8 +203,7 @@ export function useAcceptInvitation() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (invitationToken: string) =>
-      FamilyMembersService.acceptInvitation(invitationToken),
+    mutationFn: (invitationToken: string) => FamilyMembersService.acceptInvitation(invitationToken),
     onSuccess: () => {
       // Invalidate all membership queries since user now has family access
       queryClient.invalidateQueries({ queryKey: ['membership'] });
@@ -254,8 +240,7 @@ export function useResendInvitation() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (memberId: string) =>
-      FamilyMembersService.resendInvitation(memberId),
+    mutationFn: (memberId: string) => FamilyMembersService.resendInvitation(memberId),
     onSuccess: (_, memberId) => {
       queryClient.invalidateQueries({
         queryKey: familyMembersKeys.member(memberId),
@@ -284,8 +269,7 @@ export function useCancelInvitation() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (memberId: string) =>
-      FamilyMembersService.cancelInvitation(memberId),
+    mutationFn: (memberId: string) => FamilyMembersService.cancelInvitation(memberId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: familyMembersKeys.all });
 
@@ -312,8 +296,7 @@ export function useSyncMemberStats() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (memberUserId: string) =>
-      FamilyMembersService.syncMemberStats(memberUserId),
+    mutationFn: (memberUserId: string) => FamilyMembersService.syncMemberStats(memberUserId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: familyMembersKeys.all });
 
@@ -340,37 +323,30 @@ export function useSyncMemberStats() {
  * Custom hook for family member summary
  */
 export function useFamilyMemberSummary(subscriptionId: string | undefined) {
-  const { data: members, isLoading: membersLoading } =
-    useSubscriptionFamilyMembers(subscriptionId);
-  const { data: stats, isLoading: statsLoading } =
-    useFamilyStatsSummary(subscriptionId);
+  const { data: members, isLoading: membersLoading } = useSubscriptionFamilyMembers(subscriptionId);
+  const { data: stats, isLoading: statsLoading } = useFamilyStatsSummary(subscriptionId);
 
   return {
     members: members || [],
     stats,
     isLoading: membersLoading || statsLoading,
     memberCount: members?.length || 0,
-    activeCount: members?.filter((m) => m.status === 'active').length || 0,
+    activeCount: members?.filter(m => m.status === 'active').length || 0,
     pendingCount:
-      members?.filter((m) =>
-        ['pending_invitation', 'invitation_sent'].includes(m.status)
-      ).length || 0,
+      members?.filter(m => ['pending_invitation', 'invitation_sent'].includes(m.status)).length ||
+      0,
   };
 }
 
 /**
  * Check if can add more members
  */
-export function useCanAddMembers(
-  subscriptionId: string | undefined,
-  maxMembers: number
-) {
+export function useCanAddMembers(subscriptionId: string | undefined, maxMembers: number) {
   const { data: members } = useSubscriptionFamilyMembers(subscriptionId);
 
   const currentCount =
-    members?.filter((m) =>
-      ['pending_invitation', 'invitation_sent', 'active'].includes(m.status)
-    ).length || 0;
+    members?.filter(m => ['pending_invitation', 'invitation_sent', 'active'].includes(m.status))
+      .length || 0;
 
   return {
     canAdd: currentCount < maxMembers,

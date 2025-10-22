@@ -49,11 +49,10 @@ export function DeepawaliBanner() {
   }
 
   return (
-    <div
+    <header
       className={`relative w-full bg-gradient-to-r from-orange-600 via-amber-500 to-purple-600 overflow-hidden transition-all duration-300 ${
         isAnimatingOut ? 'opacity-0 -translate-y-full' : 'opacity-100 translate-y-0'
       }`}
-      role="banner"
       aria-label="Deepawali celebration banner"
     >
       {/* Animated Background Patterns */}
@@ -157,6 +156,6 @@ export function DeepawaliBanner() {
           />
         ))}
       </div>
-    </div>
+    </header>
   );
 }

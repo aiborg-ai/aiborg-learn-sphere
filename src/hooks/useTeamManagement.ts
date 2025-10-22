@@ -6,12 +6,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { TeamManagementService } from '@/services/team';
-import type {
-  Organization,
-  OrganizationMember,
-  TeamInvitation,
-  BulkInviteResult,
-} from '@/services/team/types';
+import type { Organization, BulkInviteResult } from '@/services/team/types';
 import { useToast } from '@/components/ui/use-toast';
 
 // Query keys
@@ -20,12 +15,9 @@ export const teamKeys = {
   organizations: () => [...teamKeys.all, 'organizations'] as const,
   organization: (id: string) => [...teamKeys.all, 'organization', id] as const,
   members: (orgId: string) => [...teamKeys.all, 'members', orgId] as const,
-  member: (orgId: string, userId: string) =>
-    [...teamKeys.all, 'member', orgId, userId] as const,
-  invitations: (orgId: string) =>
-    [...teamKeys.all, 'invitations', orgId] as const,
-  invitation: (token: string) =>
-    [...teamKeys.all, 'invitation', token] as const,
+  member: (orgId: string, userId: string) => [...teamKeys.all, 'member', orgId, userId] as const,
+  invitations: (orgId: string) => [...teamKeys.all, 'invitations', orgId] as const,
+  invitation: (token: string) => [...teamKeys.all, 'invitation', token] as const,
 };
 
 // ============================================================================
@@ -68,7 +60,7 @@ export function useUpdateOrganization() {
       organizationId: string;
       updates: Partial<Organization>;
     }) => TeamManagementService.updateOrganization(organizationId, updates),
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: teamKeys.organizations() });
       queryClient.invalidateQueries({
         queryKey: teamKeys.organization(data.id),
@@ -161,13 +153,8 @@ export function useRemoveMember() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: ({
-      organizationId,
-      userId,
-    }: {
-      organizationId: string;
-      userId: string;
-    }) => TeamManagementService.removeMember(organizationId, userId),
+    mutationFn: ({ organizationId, userId }: { organizationId: string; userId: string }) =>
+      TeamManagementService.removeMember(organizationId, userId),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: teamKeys.members(variables.organizationId),
@@ -312,7 +299,7 @@ export function useAcceptInvitation() {
 
   return useMutation({
     mutationFn: (token: string) => TeamManagementService.acceptInvitation(token),
-    onSuccess: (result) => {
+    onSuccess: result => {
       if (result.success) {
         queryClient.invalidateQueries({ queryKey: teamKeys.organizations() });
         if (result.organizationId) {
@@ -350,8 +337,7 @@ export function useResendInvitation() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (invitationId: string) =>
-      TeamManagementService.resendInvitation(invitationId),
+    mutationFn: (invitationId: string) => TeamManagementService.resendInvitation(invitationId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: teamKeys.all });
       toast({
@@ -377,8 +363,7 @@ export function useCancelInvitation() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (invitationId: string) =>
-      TeamManagementService.cancelInvitation(invitationId),
+    mutationFn: (invitationId: string) => TeamManagementService.cancelInvitation(invitationId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: teamKeys.all });
       toast({
@@ -414,18 +399,10 @@ export function useMemberCount(organizationId: string) {
 /**
  * Check if user has manage permission
  */
-export function useHasManagePermission(
-  userId: string | undefined,
-  organizationId: string
-) {
+export function useHasManagePermission(userId: string | undefined, organizationId: string) {
   return useQuery({
-    queryKey: [
-      ...teamKeys.organization(organizationId),
-      'permission',
-      userId,
-    ],
-    queryFn: () =>
-      TeamManagementService.hasManagePermission(userId!, organizationId),
+    queryKey: [...teamKeys.organization(organizationId), 'permission', userId],
+    queryFn: () => TeamManagementService.hasManagePermission(userId!, organizationId),
     enabled: !!userId && !!organizationId,
   });
 }

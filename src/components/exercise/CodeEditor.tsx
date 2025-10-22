@@ -49,7 +49,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
         title: 'Copied!',
         description: 'Code copied to clipboard',
       });
-    } catch (_error) {
+    } catch {
       toast({
         title: 'Failed to copy',
         variant: 'destructive',

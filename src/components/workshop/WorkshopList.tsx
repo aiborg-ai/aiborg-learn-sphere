@@ -47,8 +47,9 @@ export function WorkshopList({
     return sessions
       .filter(s => s.workshop_id === workshopId)
       .filter(s => s.status === 'scheduled' || s.status === 'in_progress')
-      .sort((a, b) => new Date(a.scheduled_start).getTime() - new Date(b.scheduled_start).getTime())
-      [0];
+      .sort(
+        (a, b) => new Date(a.scheduled_start).getTime() - new Date(b.scheduled_start).getTime()
+      )[0];
   };
 
   return (

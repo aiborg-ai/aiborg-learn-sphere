@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/prefer-tag-over-role */
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -71,6 +72,7 @@ export function VideoControls({
       onMouseLeave={() => onSetShowControls(false)}
     >
       {/* Progress Bar */}
+      {}
       <div
         ref={progressBarRef}
         className="relative h-1 bg-white/20 rounded-full mb-4 cursor-pointer"
@@ -82,7 +84,7 @@ export function VideoControls({
             onSeek([percentage]);
           }
         }}
-        onKeyDown={(e) => {
+        onKeyDown={e => {
           if (e.key === 'ArrowLeft') {
             onSkipBackward();
           } else if (e.key === 'ArrowRight') {

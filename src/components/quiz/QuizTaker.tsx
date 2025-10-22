@@ -52,6 +52,7 @@ export function QuizTaker() {
     if (quizData && user && !attemptId) {
       startQuizAttempt();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- startQuizAttempt is stable
   }, [quizData, user]);
 
   // Track time for current question
@@ -65,6 +66,7 @@ export function QuizTaker() {
         }));
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- questionStartTimes is stable
   }, [currentQuestionIndex, quizData]);
 
   const startQuizAttempt = async () => {

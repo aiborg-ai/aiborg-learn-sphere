@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/prefer-tag-over-role */
 import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -59,7 +60,7 @@ export function LearningPathRecommendations({
     } finally {
       setLoading(false);
     }
-  }, [userId, assessmentId, toast]);
+  }, [userId, assessmentId, limit, toast]);
 
   useEffect(() => {
     fetchRecommendations();
@@ -378,7 +379,7 @@ export function LearningPathRecommendations({
         <div
           className="fixed inset-0 bg-black/50 z-40"
           onClick={() => setSelectedPath(null)}
-          onKeyDown={(e) => {
+          onKeyDown={e => {
             if (e.key === 'Escape') {
               setSelectedPath(null);
             }

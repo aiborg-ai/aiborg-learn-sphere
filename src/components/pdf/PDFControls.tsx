@@ -77,7 +77,7 @@ export function PDFControls({
   };
 
   const handleZoomChange = (value: string) => {
-    const zoomLevels: Record<string, () => void> = {
+    const _zoomLevels: Record<string, () => void> = {
       '50': () => onZoomReset(),
       '75': () => onZoomReset(),
       '100': () => onZoomReset(),
@@ -91,7 +91,7 @@ export function PDFControls({
     if (value === 'fit') {
       onFitToWidth();
     } else {
-      const scaleValue = parseInt(value, 10) / 100;
+      const _scaleValue = parseInt(value, 10) / 100;
       // In a real implementation, you'd pass the exact scale
       // For now, we'll use the existing zoom functions
       onZoomReset();
@@ -149,10 +149,7 @@ export function PDFControls({
           <ZoomOut className="h-4 w-4" />
         </Button>
 
-        <Select
-          value={Math.round(scale * 100).toString()}
-          onValueChange={handleZoomChange}
-        >
+        <Select value={Math.round(scale * 100).toString()} onValueChange={handleZoomChange}>
           <SelectTrigger className="w-24 h-8 text-sm">
             <SelectValue>{Math.round(scale * 100)}%</SelectValue>
           </SelectTrigger>

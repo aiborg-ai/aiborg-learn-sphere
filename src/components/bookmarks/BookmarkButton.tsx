@@ -76,7 +76,7 @@ export function BookmarkButton({
           title: 'Bookmark Removed',
           description: 'This item has been removed from your bookmarks',
         });
-      } catch (_error) {
+      } catch {
         toast({
           title: 'Error',
           description: 'Failed to remove bookmark',
@@ -129,7 +129,7 @@ export function BookmarkButton({
 
       setShowDialog(false);
       resetForm();
-    } catch (_error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to add bookmark',

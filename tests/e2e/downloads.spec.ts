@@ -2,12 +2,12 @@ import { test, expect } from '@playwright/test';
 import { login, TEST_USER } from './utils/auth';
 
 test.describe('Downloads Feature', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page: _page }) => {
     await login(page, TEST_USER.email, TEST_USER.password);
   });
 
   test.describe('Tracking Downloads', () => {
-    test('should track PDF download', async ({ page }) => {
+    test('should track PDF download', async ({ page: _page }) => {
       // Navigate to course materials
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -36,7 +36,7 @@ test.describe('Downloads Feature', () => {
       await expect(page.locator(`text=${download.suggestedFilename()}`)).toBeVisible();
     });
 
-    test('should track video download', async ({ page }) => {
+    test('should track video download', async ({ page: _page }) => {
       // Navigate to course materials
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -56,7 +56,7 @@ test.describe('Downloads Feature', () => {
       await expect(page.locator('text=/video|recording/i')).toBeVisible();
     });
 
-    test('should capture download metadata', async ({ page }) => {
+    test('should capture download metadata', async ({ page: _page }) => {
       // Download a file
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -77,7 +77,7 @@ test.describe('Downloads Feature', () => {
       ).toBeVisible();
     });
 
-    test('should show download button state change', async ({ page }) => {
+    test('should show download button state change', async ({ page: _page }) => {
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
 
@@ -97,7 +97,7 @@ test.describe('Downloads Feature', () => {
   });
 
   test.describe('Viewing Download History', () => {
-    test('should navigate to downloads page', async ({ page }) => {
+    test('should navigate to downloads page', async ({ page: _page }) => {
       await page.goto('/downloads');
 
       // Verify page loaded
@@ -105,7 +105,7 @@ test.describe('Downloads Feature', () => {
       await expect(page.locator('h1')).toContainText(/download/i);
     });
 
-    test('should display download statistics', async ({ page }) => {
+    test('should display download statistics', async ({ page: _page }) => {
       await page.goto('/downloads');
 
       // Wait for stats to load
@@ -117,7 +117,7 @@ test.describe('Downloads Feature', () => {
       await expect(page.locator('text=/\\d+\\s*(KB|MB|GB)/i')).toBeVisible();
     });
 
-    test('should filter downloads by file type', async ({ page }) => {
+    test('should filter downloads by file type', async ({ page: _page }) => {
       await page.goto('/downloads');
       await page.waitForLoadState('networkidle');
 
@@ -139,7 +139,7 @@ test.describe('Downloads Feature', () => {
       }
     });
 
-    test('should search downloads by filename', async ({ page }) => {
+    test('should search downloads by filename', async ({ page: _page }) => {
       await page.goto('/downloads');
 
       // Enter search query
@@ -155,7 +155,7 @@ test.describe('Downloads Feature', () => {
       }
     });
 
-    test('should sort downloads by date', async ({ page }) => {
+    test('should sort downloads by date', async ({ page: _page }) => {
       await page.goto('/downloads');
       await page.waitForLoadState('networkidle');
 
@@ -173,7 +173,7 @@ test.describe('Downloads Feature', () => {
       // This is a basic check - actual implementation would verify dates
     });
 
-    test('should display most accessed downloads', async ({ page }) => {
+    test('should display most accessed downloads', async ({ page: _page }) => {
       await page.goto('/downloads');
 
       // Look for "Most Accessed" section
@@ -187,7 +187,7 @@ test.describe('Downloads Feature', () => {
   });
 
   test.describe('Re-downloading Files', () => {
-    test('should re-download from history', async ({ page }) => {
+    test('should re-download from history', async ({ page: _page }) => {
       // First, download a file
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -216,7 +216,7 @@ test.describe('Downloads Feature', () => {
       expect(secondDownload.suggestedFilename()).toBe(fileName);
     });
 
-    test('should increment access count on re-download', async ({ page }) => {
+    test('should increment access count on re-download', async ({ page: _page }) => {
       // Download a file
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -255,7 +255,7 @@ test.describe('Downloads Feature', () => {
   });
 
   test.describe('Deleting Download Records', () => {
-    test('should delete single download record', async ({ page }) => {
+    test('should delete single download record', async ({ page: _page }) => {
       // Download a file first
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -284,7 +284,7 @@ test.describe('Downloads Feature', () => {
       await expect(page.locator(`text=${fileName}`)).not.toBeVisible();
     });
 
-    test('should clear all download records', async ({ page }) => {
+    test('should clear all download records', async ({ page: _page }) => {
       // Download a few files
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -315,7 +315,7 @@ test.describe('Downloads Feature', () => {
       }
     });
 
-    test('should show confirmation before clearing all', async ({ page }) => {
+    test('should show confirmation before clearing all', async ({ page: _page }) => {
       await page.goto('/downloads');
 
       const clearAllBtn = page.locator(
@@ -339,7 +339,7 @@ test.describe('Downloads Feature', () => {
   });
 
   test.describe('Download Analytics', () => {
-    test('should show downloads by file type breakdown', async ({ page }) => {
+    test('should show downloads by file type breakdown', async ({ page: _page }) => {
       await page.goto('/downloads');
       await page.waitForLoadState('networkidle');
 
@@ -352,7 +352,7 @@ test.describe('Downloads Feature', () => {
       }
     });
 
-    test('should show download trends over time', async ({ page }) => {
+    test('should show download trends over time', async ({ page: _page }) => {
       await page.goto('/downloads');
 
       // Look for recent downloads section
@@ -364,7 +364,7 @@ test.describe('Downloads Feature', () => {
       }
     });
 
-    test('should show total storage used', async ({ page }) => {
+    test('should show total storage used', async ({ page: _page }) => {
       await page.goto('/downloads');
 
       // Verify total size displayed
@@ -374,7 +374,7 @@ test.describe('Downloads Feature', () => {
   });
 
   test.describe('Empty State', () => {
-    test('should show empty state when no downloads', async ({ page }) => {
+    test('should show empty state when no downloads', async ({ page: _page }) => {
       // This test assumes a fresh user or after clearing all
       await page.goto('/downloads');
       await page.waitForLoadState('networkidle');
@@ -394,7 +394,7 @@ test.describe('Downloads Feature', () => {
   });
 
   test.describe('Integration with Course Page', () => {
-    test('should show download count on material card', async ({ page }) => {
+    test('should show download count on material card', async ({ page: _page }) => {
       // Download a file
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');

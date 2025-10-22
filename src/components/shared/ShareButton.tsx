@@ -43,7 +43,7 @@ export function ShareButton({ title, description, url = window.location.href }: 
         title: 'Link Copied!',
         description: 'The link has been copied to your clipboard.',
       });
-    } catch (error) {
+    } catch {
       toast({
         title: 'Copy Failed',
         description: 'Could not copy link to clipboard.',

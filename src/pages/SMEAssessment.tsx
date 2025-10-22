@@ -109,7 +109,7 @@ export default function SMEAssessment() {
             description: `Assessment for ${data.company_name}`,
           });
         }
-      } catch (error) {
+      } catch {
         // Silently handle errors - company profile is optional
       }
     };
@@ -181,7 +181,7 @@ export default function SMEAssessment() {
         title: 'Draft Saved',
         description: 'Your assessment progress has been saved.',
       });
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to save draft. Please try again.',
@@ -198,7 +198,7 @@ export default function SMEAssessment() {
       });
       await submitAssessment();
       // Navigation happens in the hook
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to submit assessment. Please try again.',

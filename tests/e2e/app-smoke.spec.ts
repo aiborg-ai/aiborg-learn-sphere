@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test.describe('App Smoke Tests', () => {
-  test('should load homepage successfully', async ({ page }) => {
+  test('should load homepage successfully', async ({ page: _page }) => {
     await page.goto('/');
 
     // Wait for main content to load
@@ -36,7 +36,7 @@ test.describe('App Smoke Tests', () => {
     expect(criticalErrors.length).toBe(0);
   });
 
-  test('should have working navigation', async ({ page }) => {
+  test('should have working navigation', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
@@ -51,7 +51,7 @@ test.describe('App Smoke Tests', () => {
     }
   });
 
-  test('should load courses section', async ({ page }) => {
+  test('should load courses section', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
@@ -64,7 +64,7 @@ test.describe('App Smoke Tests', () => {
     }
   });
 
-  test('should load events section', async ({ page }) => {
+  test('should load events section', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
@@ -74,7 +74,7 @@ test.describe('App Smoke Tests', () => {
     ).toBeVisible({ timeout: 10000 });
   });
 
-  test('should have auth page accessible', async ({ page }) => {
+  test('should have auth page accessible', async ({ page: _page }) => {
     await page.goto('/auth');
 
     // Auth form should be visible
@@ -83,7 +83,7 @@ test.describe('App Smoke Tests', () => {
     });
   });
 
-  test('should handle 404 page', async ({ page }) => {
+  test('should handle 404 page', async ({ page: _page }) => {
     await page.goto('/this-page-does-not-exist-12345');
 
     // Should show 404 page or redirect
@@ -92,7 +92,7 @@ test.describe('App Smoke Tests', () => {
     ).toBeVisible({ timeout: 5000 });
   });
 
-  test('should be responsive on mobile', async ({ page }) => {
+  test('should be responsive on mobile', async ({ page: _page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
     await page.waitForLoadState('networkidle');
@@ -111,7 +111,7 @@ test.describe('App Smoke Tests', () => {
     }
   });
 
-  test('should load faster than 5 seconds', async ({ page }) => {
+  test('should load faster than 5 seconds', async ({ page: _page }) => {
     const startTime = Date.now();
 
     await page.goto('/');
@@ -123,7 +123,7 @@ test.describe('App Smoke Tests', () => {
     expect(loadTime).toBeLessThan(5000);
   });
 
-  test('should have working search or filter', async ({ page }) => {
+  test('should have working search or filter', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
@@ -141,7 +141,7 @@ test.describe('App Smoke Tests', () => {
     expect(hasSearch || hasFilter).toBeTruthy();
   });
 
-  test('should handle network errors gracefully', async ({ page }) => {
+  test('should handle network errors gracefully', async ({ page: _page }) => {
     // Simulate offline mode
     await page.route('**/*', route => {
       if (route.request().url().includes('/api/')) {
@@ -163,7 +163,7 @@ test.describe('App Smoke Tests', () => {
 });
 
 test.describe('Critical User Flows', () => {
-  test('should allow viewing course details', async ({ page }) => {
+  test('should allow viewing course details', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
@@ -183,7 +183,7 @@ test.describe('Critical User Flows', () => {
     }
   });
 
-  test('should allow viewing event details', async ({ page }) => {
+  test('should allow viewing event details', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
@@ -197,7 +197,7 @@ test.describe('Critical User Flows', () => {
     }
   });
 
-  test('should show loading states', async ({ page }) => {
+  test('should show loading states', async ({ page: _page }) => {
     await page.goto('/');
 
     // Look for loading indicators (before content loads)
@@ -213,7 +213,7 @@ test.describe('Critical User Flows', () => {
     await expect(page.locator('text=AIBorg').or(page.locator('main'))).toBeVisible();
   });
 
-  test('should have accessible form labels', async ({ page }) => {
+  test('should have accessible form labels', async ({ page: _page }) => {
     await page.goto('/auth');
 
     // Check for proper form labels
@@ -234,7 +234,7 @@ test.describe('Critical User Flows', () => {
     }
   });
 
-  test('should maintain state on navigation', async ({ page }) => {
+  test('should maintain state on navigation', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
@@ -256,7 +256,7 @@ test.describe('Critical User Flows', () => {
 });
 
 test.describe('Performance Checks', () => {
-  test('should not have memory leaks in navigation', async ({ page }) => {
+  test('should not have memory leaks in navigation', async ({ page: _page }) => {
     const urls = ['/', '/auth', '/', '/auth', '/'];
 
     for (const url of urls) {
@@ -268,7 +268,7 @@ test.describe('Performance Checks', () => {
     await expect(page).toHaveURL('/');
   });
 
-  test('should lazy load images', async ({ page }) => {
+  test('should lazy load images', async ({ page: _page }) => {
     await page.goto('/');
 
     // Check if images use lazy loading
@@ -286,7 +286,7 @@ test.describe('Performance Checks', () => {
     }
   });
 
-  test('should handle concurrent requests', async ({ page }) => {
+  test('should handle concurrent requests', async ({ page: _page }) => {
     // Navigate and trigger multiple requests
     await Promise.all([page.goto('/'), page.waitForLoadState('networkidle')]);
 

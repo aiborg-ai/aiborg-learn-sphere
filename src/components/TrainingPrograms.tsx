@@ -44,7 +44,7 @@ import { ShareButton } from '@/components/shared';
 export const TrainingPrograms = () => {
   const { courses, loading, error, refetch } = useCourses();
   const { getEnrollmentStatus } = useEnrollments();
-  const { getReviewCount, loading: reviewCountsLoading } = useReviewCounts();
+  const { getReviewCount, loading: _reviewCountsLoading } = useReviewCounts();
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');

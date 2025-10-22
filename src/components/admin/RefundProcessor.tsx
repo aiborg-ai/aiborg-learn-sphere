@@ -115,7 +115,7 @@ export function RefundProcessor() {
       setSelectedRefund(null);
       setAdminNotes('');
       refetch();
-    } catch (_error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to update refund status',

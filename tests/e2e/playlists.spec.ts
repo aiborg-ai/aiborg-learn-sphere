@@ -2,12 +2,12 @@ import { test, expect } from '@playwright/test';
 import { login, TEST_USER } from './utils/auth';
 
 test.describe('Playlists Feature', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page: _page }) => {
     await login(page, TEST_USER.email, TEST_USER.password);
   });
 
   test.describe('Creating Playlists', () => {
-    test('should create a new playlist', async ({ page }) => {
+    test('should create a new playlist', async ({ page: _page }) => {
       await page.goto('/playlists');
 
       // Click "Create Playlist" button
@@ -15,7 +15,10 @@ test.describe('Playlists Feature', () => {
 
       // Fill in playlist details
       await page.fill('input[name="name"], input#name', 'My Exam Prep Playlist');
-      await page.fill('textarea[name="description"], textarea#description', 'Videos for final exam preparation');
+      await page.fill(
+        'textarea[name="description"], textarea#description',
+        'Videos for final exam preparation'
+      );
 
       // Select category
       await page.click('select[name="category"], [role="combobox"]:near(:text("Category"))');
@@ -33,7 +36,7 @@ test.describe('Playlists Feature', () => {
       await expect(page.locator('text=My Exam Prep Playlist')).toBeVisible();
     });
 
-    test('should create public playlist', async ({ page }) => {
+    test('should create public playlist', async ({ page: _page }) => {
       await page.goto('/playlists');
 
       await page.click('button:has-text("Create Playlist")');
@@ -56,7 +59,7 @@ test.describe('Playlists Feature', () => {
       await expect(playlistCard.locator('text=/public|🌐/i')).toBeVisible();
     });
 
-    test('should create private playlist by default', async ({ page }) => {
+    test('should create private playlist by default', async ({ page: _page }) => {
       await page.goto('/playlists');
 
       await page.click('button:has-text("Create Playlist")');
@@ -73,7 +76,7 @@ test.describe('Playlists Feature', () => {
       await expect(playlistCard.locator('text=/private|🔒/i')).toBeVisible();
     });
 
-    test('should validate required fields', async ({ page }) => {
+    test('should validate required fields', async ({ page: _page }) => {
       await page.goto('/playlists');
 
       await page.click('button:has-text("Create Playlist")');
@@ -85,7 +88,7 @@ test.describe('Playlists Feature', () => {
       await expect(page.locator('text=/required|name.*required/i')).toBeVisible();
     });
 
-    test('should add thumbnail to playlist', async ({ page }) => {
+    test('should add thumbnail to playlist', async ({ page: _page }) => {
       await page.goto('/playlists');
 
       await page.click('button:has-text("Create Playlist")');
@@ -95,7 +98,7 @@ test.describe('Playlists Feature', () => {
       // Upload thumbnail
       const fileInput = page.locator('input[type="file"]');
 
-      if (await fileInput.count() > 0) {
+      if ((await fileInput.count()) > 0) {
         // In real test, you'd provide a test image file path
         // await fileInput.setInputFiles('./test-assets/thumbnail.jpg');
       }
@@ -107,7 +110,7 @@ test.describe('Playlists Feature', () => {
   });
 
   test.describe('Viewing Playlists', () => {
-    test('should navigate to playlists page', async ({ page }) => {
+    test('should navigate to playlists page', async ({ page: _page }) => {
       await page.goto('/playlists');
 
       // Verify page loaded
@@ -115,7 +118,7 @@ test.describe('Playlists Feature', () => {
       await expect(page.locator('h1')).toContainText(/playlist/i);
     });
 
-    test('should display playlist statistics', async ({ page }) => {
+    test('should display playlist statistics', async ({ page: _page }) => {
       await page.goto('/playlists');
       await page.waitForLoadState('networkidle');
 
@@ -129,7 +132,7 @@ test.describe('Playlists Feature', () => {
       }
     });
 
-    test('should filter playlists by category', async ({ page }) => {
+    test('should filter playlists by category', async ({ page: _page }) => {
       await page.goto('/playlists');
       await page.waitForLoadState('networkidle');
 
@@ -146,7 +149,7 @@ test.describe('Playlists Feature', () => {
       // Verify filtered results (implementation dependent)
     });
 
-    test('should filter playlists by visibility', async ({ page }) => {
+    test('should filter playlists by visibility', async ({ page: _page }) => {
       await page.goto('/playlists');
 
       // Click visibility filter
@@ -159,12 +162,12 @@ test.describe('Playlists Feature', () => {
 
       // Verify only public playlists shown
       const playlistCards = page.locator('[data-testid="playlist-card"]');
-      if (await playlistCards.count() > 0) {
+      if ((await playlistCards.count()) > 0) {
         await expect(playlistCards.first().locator('text=/public/i')).toBeVisible();
       }
     });
 
-    test('should search playlists by name', async ({ page }) => {
+    test('should search playlists by name', async ({ page: _page }) => {
       await page.goto('/playlists');
 
       // Enter search query
@@ -175,12 +178,12 @@ test.describe('Playlists Feature', () => {
 
       // Verify filtered results
       const results = page.locator('[data-testid="playlist-card"]');
-      if (await results.count() > 0) {
+      if ((await results.count()) > 0) {
         await expect(results.first()).toContainText(/exam/i);
       }
     });
 
-    test('should display playlist card with metadata', async ({ page }) => {
+    test('should display playlist card with metadata', async ({ page: _page }) => {
       // Create a playlist first
       await page.goto('/playlists');
 
@@ -198,7 +201,7 @@ test.describe('Playlists Feature', () => {
       await expect(playlistCard.locator('text=/private|public/i')).toBeVisible();
     });
 
-    test('should click playlist to view details', async ({ page }) => {
+    test('should click playlist to view details', async ({ page: _page }) => {
       // Create a playlist
       await page.goto('/playlists');
 
@@ -217,7 +220,7 @@ test.describe('Playlists Feature', () => {
   });
 
   test.describe('Adding Items to Playlist', () => {
-    test('should add video to playlist from course page', async ({ page }) => {
+    test('should add video to playlist from course page', async ({ page: _page }) => {
       // Navigate to course materials
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -226,7 +229,9 @@ test.describe('Playlists Feature', () => {
       const videoMaterial = page.locator('text=/Video|recording/i').first().locator('..');
 
       // Click "Add to Playlist" button
-      await videoMaterial.locator('button:has-text("Add to Playlist"), button[title*="playlist" i]').click();
+      await videoMaterial
+        .locator('button:has-text("Add to Playlist"), button[title*="playlist" i]')
+        .click();
 
       // Select playlist from dialog
       await page.click('text=/select.*playlist|choose.*playlist/i');
@@ -246,7 +251,7 @@ test.describe('Playlists Feature', () => {
       await expect(page.locator('text=/added.*playlist/i')).toBeVisible();
     });
 
-    test('should add multiple videos to same playlist', async ({ page }) => {
+    test('should add multiple videos to same playlist', async ({ page: _page }) => {
       // Create playlist first
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -258,9 +263,11 @@ test.describe('Playlists Feature', () => {
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
 
-      const videos = page.locator('button:has-text("Add to Playlist"), button[title*="playlist" i]');
+      const videos = page.locator(
+        'button:has-text("Add to Playlist"), button[title*="playlist" i]'
+      );
 
-      if (await videos.count() >= 2) {
+      if ((await videos.count()) >= 2) {
         // Add first video
         await videos.nth(0).click();
         await page.click('text=Multi-Video Playlist');
@@ -282,7 +289,7 @@ test.describe('Playlists Feature', () => {
       }
     });
 
-    test('should prevent duplicate videos in playlist', async ({ page }) => {
+    test('should prevent duplicate videos in playlist', async ({ page: _page }) => {
       // Create playlist
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -309,7 +316,7 @@ test.describe('Playlists Feature', () => {
   });
 
   test.describe('Managing Playlist Items', () => {
-    test('should reorder items in playlist', async ({ page }) => {
+    test('should reorder items in playlist', async ({ page: _page }) => {
       // Create playlist with items
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -349,7 +356,7 @@ test.describe('Playlists Feature', () => {
       }
     });
 
-    test('should remove item from playlist', async ({ page }) => {
+    test('should remove item from playlist', async ({ page: _page }) => {
       // Create playlist with item
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -380,7 +387,7 @@ test.describe('Playlists Feature', () => {
       await expect(page.locator('text=/removed|empty/i')).toBeVisible();
     });
 
-    test('should drag and drop to reorder playlist items', async ({ page }) => {
+    test('should drag and drop to reorder playlist items', async ({ page: _page }) => {
       // Create playlist with multiple items
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -423,7 +430,7 @@ test.describe('Playlists Feature', () => {
   });
 
   test.describe('Playing Playlists', () => {
-    test('should play playlist from start', async ({ page }) => {
+    test('should play playlist from start', async ({ page: _page }) => {
       // Create playlist with video
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -446,10 +453,12 @@ test.describe('Playlists Feature', () => {
       await page.click('button:has-text("Play All"), button:has-text("Play Playlist")');
 
       // Verify video player opens
-      await expect(page.locator('video, [data-testid="video-player"]')).toBeVisible({ timeout: 5000 });
+      await expect(page.locator('video, [data-testid="video-player"]')).toBeVisible({
+        timeout: 5000,
+      });
     });
 
-    test('should play individual video from playlist', async ({ page }) => {
+    test('should play individual video from playlist', async ({ page: _page }) => {
       // Create playlist with video
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -476,7 +485,7 @@ test.describe('Playlists Feature', () => {
       await expect(page.locator('video')).toBeVisible();
     });
 
-    test('should show playlist progress', async ({ page }) => {
+    test('should show playlist progress', async ({ page: _page }) => {
       // Create playlist with videos
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -501,7 +510,7 @@ test.describe('Playlists Feature', () => {
   });
 
   test.describe('Editing Playlists', () => {
-    test('should edit playlist details', async ({ page }) => {
+    test('should edit playlist details', async ({ page: _page }) => {
       // Create playlist
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -527,7 +536,7 @@ test.describe('Playlists Feature', () => {
       await expect(page.locator('text=Original Name')).not.toBeVisible();
     });
 
-    test('should toggle playlist visibility', async ({ page }) => {
+    test('should toggle playlist visibility', async ({ page: _page }) => {
       // Create private playlist
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -553,7 +562,7 @@ test.describe('Playlists Feature', () => {
   });
 
   test.describe('Deleting Playlists', () => {
-    test('should delete playlist', async ({ page }) => {
+    test('should delete playlist', async ({ page: _page }) => {
       // Create playlist
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -573,7 +582,7 @@ test.describe('Playlists Feature', () => {
       await expect(page.locator('text=Playlist to Delete')).not.toBeVisible();
     });
 
-    test('should show confirmation before deleting', async ({ page }) => {
+    test('should show confirmation before deleting', async ({ page: _page }) => {
       // Create playlist
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -598,7 +607,7 @@ test.describe('Playlists Feature', () => {
   });
 
   test.describe('Cloning Playlists', () => {
-    test('should clone playlist', async ({ page }) => {
+    test('should clone playlist', async ({ page: _page }) => {
       // Create original playlist
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -623,10 +632,12 @@ test.describe('Playlists Feature', () => {
 
       // Verify clone created
       await expect(page.locator('text=/cloned|copy.*created/i')).toBeVisible();
-      await expect(page.locator('text=/Original Playlist.*Copy|Copy.*Original Playlist/i')).toBeVisible();
+      await expect(
+        page.locator('text=/Original Playlist.*Copy|Copy.*Original Playlist/i')
+      ).toBeVisible();
     });
 
-    test('should clone public playlist from another user', async ({ page }) => {
+    test('should clone public playlist from another user', async ({ page: _page }) => {
       // This test assumes there are public playlists from other users
       // In real testing, you'd set up test data
       await page.goto('/playlists');
@@ -651,7 +662,7 @@ test.describe('Playlists Feature', () => {
   });
 
   test.describe('Sharing Playlists', () => {
-    test('should get shareable link for public playlist', async ({ page }) => {
+    test('should get shareable link for public playlist', async ({ page: _page }) => {
       // Create public playlist
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -665,13 +676,15 @@ test.describe('Playlists Feature', () => {
       await playlistCard.locator('button[title*="share" i], button:has-text("Share")').click();
 
       // Verify share dialog with link
-      await expect(page.locator('input[readonly][value*="http"], input[value*="/playlists/"]')).toBeVisible();
+      await expect(
+        page.locator('input[readonly][value*="http"], input[value*="/playlists/"]')
+      ).toBeVisible();
 
       // Verify copy button
       await expect(page.locator('button:has-text("Copy Link")')).toBeVisible();
     });
 
-    test('should copy share link to clipboard', async ({ page }) => {
+    test('should copy share link to clipboard', async ({ page: _page }) => {
       // Create public playlist
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -691,7 +704,7 @@ test.describe('Playlists Feature', () => {
       await expect(page.locator('text=/copied|link copied/i')).toBeVisible();
     });
 
-    test('should not allow sharing private playlist', async ({ page }) => {
+    test('should not allow sharing private playlist', async ({ page: _page }) => {
       // Create private playlist
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');
@@ -703,7 +716,7 @@ test.describe('Playlists Feature', () => {
       const playlistCard = page.locator('text=Private Playlist').locator('..');
       const shareBtn = playlistCard.locator('button[title*="share" i]');
 
-      if (await shareBtn.count() > 0) {
+      if ((await shareBtn.count()) > 0) {
         // Share button may be disabled
         await expect(shareBtn).toBeDisabled();
       } else {
@@ -714,12 +727,14 @@ test.describe('Playlists Feature', () => {
   });
 
   test.describe('Empty State', () => {
-    test('should show empty state when no playlists', async ({ page }) => {
+    test('should show empty state when no playlists', async ({ page: _page }) => {
       await page.goto('/playlists');
       await page.waitForLoadState('networkidle');
 
       // Check for empty state
-      const emptyState = page.locator('text=/no.*playlists?|haven.*created|create.*first.*playlist/i');
+      const emptyState = page.locator(
+        'text=/no.*playlists?|haven.*created|create.*first.*playlist/i'
+      );
 
       // If playlists exist, this test would naturally fail
       if (await emptyState.isVisible()) {
@@ -732,13 +747,13 @@ test.describe('Playlists Feature', () => {
   });
 
   test.describe('Integration', () => {
-    test('should show playlist count in navigation', async ({ page }) => {
+    test('should show playlist count in navigation', async ({ page: _page }) => {
       await page.goto('/playlists');
 
       // Check navigation for playlist count
       const navLink = page.locator('a[href*="playlists"], button:has-text("Playlists")');
 
-      if (await navLink.count() > 0) {
+      if ((await navLink.count()) > 0) {
         // May show badge with count
         const badge = navLink.locator('text=/\\d+/');
 
@@ -748,7 +763,7 @@ test.describe('Playlists Feature', () => {
       }
     });
 
-    test('should show playlist indicator on video already in playlist', async ({ page }) => {
+    test('should show playlist indicator on video already in playlist', async ({ page: _page }) => {
       // Create playlist with video
       await page.goto('/playlists');
       await page.click('button:has-text("Create Playlist")');

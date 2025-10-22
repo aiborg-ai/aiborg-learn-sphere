@@ -60,6 +60,7 @@ export default function InstructorDashboard() {
 
     // Check if user has instructor role
     checkInstructorRole();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- checkInstructorRole is stable
   }, [user, navigate]);
 
   const checkInstructorRole = async () => {
@@ -272,7 +273,7 @@ export default function InstructorDashboard() {
                         key={course.id}
                         className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
                         onClick={() => setSelectedCourse(course)}
-                        onKeyDown={(e) => {
+                        onKeyDown={e => {
                           if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault();
                             setSelectedCourse(course);

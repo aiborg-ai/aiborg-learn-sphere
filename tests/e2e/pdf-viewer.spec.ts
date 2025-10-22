@@ -2,12 +2,12 @@ import { test, expect } from '@playwright/test';
 import { login, TEST_USER } from './utils/auth';
 
 test.describe('PDF Viewer Feature', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page: _page }) => {
     await login(page, TEST_USER.email, TEST_USER.password);
   });
 
   test.describe('Loading and Basic Navigation', () => {
-    test('should load PDF document', async ({ page }) => {
+    test('should load PDF document', async ({ page: _page }) => {
       // Navigate to course with PDF materials
       await page.goto('/course/1');
 
@@ -30,7 +30,7 @@ test.describe('PDF Viewer Feature', () => {
       await expect(page.locator('text=/Page.*of/i')).toBeVisible();
     });
 
-    test('should navigate to next page', async ({ page }) => {
+    test('should navigate to next page', async ({ page: _page }) => {
       // Open PDF (assuming test helper or direct navigation)
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -56,7 +56,7 @@ test.describe('PDF Viewer Feature', () => {
       expect(newPage).toBe(currentPage + 1);
     });
 
-    test('should navigate to previous page', async ({ page }) => {
+    test('should navigate to previous page', async ({ page: _page }) => {
       // Open PDF and go to page 2 first
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -80,7 +80,7 @@ test.describe('PDF Viewer Feature', () => {
       expect(newPage).toBe(currentPage - 1);
     });
 
-    test('should jump to specific page', async ({ page }) => {
+    test('should jump to specific page', async ({ page: _page }) => {
       // Open PDF
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -100,7 +100,7 @@ test.describe('PDF Viewer Feature', () => {
       expect(currentPage).toBe('3');
     });
 
-    test('should click thumbnail to navigate', async ({ page }) => {
+    test('should click thumbnail to navigate', async ({ page: _page }) => {
       // Open PDF
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -112,7 +112,7 @@ test.describe('PDF Viewer Feature', () => {
 
       // Click on page 2 thumbnail
       const thumbnails = page.locator('button:has(canvas)');
-      if (await thumbnails.count() > 1) {
+      if ((await thumbnails.count()) > 1) {
         await thumbnails.nth(1).click();
 
         // Verify navigated to page 2
@@ -124,7 +124,7 @@ test.describe('PDF Viewer Feature', () => {
   });
 
   test.describe('Zoom Controls', () => {
-    test('should zoom in', async ({ page }) => {
+    test('should zoom in', async ({ page: _page }) => {
       // Open PDF
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -145,7 +145,7 @@ test.describe('PDF Viewer Feature', () => {
       expect(parseInt(newZoom)).toBeGreaterThan(parseInt(initialZoom));
     });
 
-    test('should zoom out', async ({ page }) => {
+    test('should zoom out', async ({ page: _page }) => {
       // Open PDF at higher zoom first
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -156,18 +156,26 @@ test.describe('PDF Viewer Feature', () => {
       await page.click('button:has-text("+")');
       await page.waitForTimeout(500);
 
-      const currentZoom = await page.locator('select').first().inputValue().catch(() => '125');
+      const currentZoom = await page
+        .locator('select')
+        .first()
+        .inputValue()
+        .catch(() => '125');
 
       // Zoom out
       await page.click('button[title*="zoom out" i], button:has-text("-")');
       await page.waitForTimeout(500);
 
-      const newZoom = await page.locator('select').first().inputValue().catch(() => '100');
+      const newZoom = await page
+        .locator('select')
+        .first()
+        .inputValue()
+        .catch(() => '100');
 
       expect(parseInt(newZoom)).toBeLessThan(parseInt(currentZoom));
     });
 
-    test('should fit to width', async ({ page }) => {
+    test('should fit to width', async ({ page: _page }) => {
       // Open PDF
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -182,7 +190,7 @@ test.describe('PDF Viewer Feature', () => {
       // Just verify no errors occurred
     });
 
-    test('should select zoom percentage from dropdown', async ({ page }) => {
+    test('should select zoom percentage from dropdown', async ({ page: _page }) => {
       // Open PDF
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -203,7 +211,7 @@ test.describe('PDF Viewer Feature', () => {
   });
 
   test.describe('Search Functionality', () => {
-    test('should search within PDF', async ({ page }) => {
+    test('should search within PDF', async ({ page: _page }) => {
       // Open PDF
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -226,7 +234,7 @@ test.describe('PDF Viewer Feature', () => {
       // This depends on PDF content
     });
 
-    test('should navigate between search results', async ({ page }) => {
+    test('should navigate between search results', async ({ page: _page }) => {
       // Open PDF and perform search
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -251,7 +259,7 @@ test.describe('PDF Viewer Feature', () => {
   });
 
   test.describe('Annotations', () => {
-    test('should add annotation', async ({ page }) => {
+    test('should add annotation', async ({ page: _page }) => {
       // Open PDF
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -277,7 +285,7 @@ test.describe('PDF Viewer Feature', () => {
       await expect(page.locator('text=This is my test annotation')).toBeVisible();
     });
 
-    test('should edit annotation', async ({ page }) => {
+    test('should edit annotation', async ({ page: _page }) => {
       // Open PDF and add annotation first
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -293,7 +301,11 @@ test.describe('PDF Viewer Feature', () => {
       await page.waitForTimeout(1000);
 
       // Click edit button
-      await page.locator('text=Original annotation').locator('..').locator('button[title*="edit" i]').click();
+      await page
+        .locator('text=Original annotation')
+        .locator('..')
+        .locator('button[title*="edit" i]')
+        .click();
 
       // Modify text
       await page.fill('textarea', 'Updated annotation');
@@ -306,7 +318,7 @@ test.describe('PDF Viewer Feature', () => {
       await expect(page.locator('text=Original annotation')).not.toBeVisible();
     });
 
-    test('should delete annotation', async ({ page }) => {
+    test('should delete annotation', async ({ page: _page }) => {
       // Open PDF and add annotation
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -320,7 +332,11 @@ test.describe('PDF Viewer Feature', () => {
       await page.waitForTimeout(1000);
 
       // Click delete button
-      await page.locator('text=Annotation to delete').locator('..').locator('button[title*="delete" i]').click();
+      await page
+        .locator('text=Annotation to delete')
+        .locator('..')
+        .locator('button[title*="delete" i]')
+        .click();
 
       // Confirm deletion
       await page.click('button:has-text("Delete")');
@@ -329,7 +345,7 @@ test.describe('PDF Viewer Feature', () => {
       await expect(page.locator('text=Annotation to delete')).not.toBeVisible();
     });
 
-    test('should navigate to page by clicking annotation', async ({ page }) => {
+    test('should navigate to page by clicking annotation', async ({ page: _page }) => {
       // Open PDF, go to page 2, add annotation
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -362,7 +378,7 @@ test.describe('PDF Viewer Feature', () => {
   });
 
   test.describe('Progress Tracking', () => {
-    test('should save and resume progress', async ({ page }) => {
+    test('should save and resume progress', async ({ page: _page }) => {
       // Open PDF
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -390,7 +406,7 @@ test.describe('PDF Viewer Feature', () => {
       expect(parseInt(resumedPage)).toBe(3);
     });
 
-    test('should show progress percentage', async ({ page }) => {
+    test('should show progress percentage', async ({ page: _page }) => {
       // Open PDF
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -406,7 +422,7 @@ test.describe('PDF Viewer Feature', () => {
   });
 
   test.describe('Download', () => {
-    test('should download PDF', async ({ page }) => {
+    test('should download PDF', async ({ page: _page }) => {
       // Open PDF
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');

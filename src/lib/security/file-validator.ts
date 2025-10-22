@@ -256,7 +256,7 @@ async function checkFileSignature(file: File): Promise<boolean> {
 
     // Also verify MIME type matches
     return file.type === expectedSignature.mimeType;
-  } catch (error) {
+  } catch {
     logger.error('Error checking file signature:', error);
     return false;
   }
@@ -339,7 +339,7 @@ async function scanForMalware(file: File): Promise<{ safe: boolean; reason?: str
           };
         }
       }
-    } catch (_error) {
+    } catch {
       // If we can't read the file, assume it's binary and continue
     }
   }

@@ -383,7 +383,6 @@ const courseTabs = [
   tabs={courseTabs}
   defaultTab="materials"
   onTabChange={(tabId) => {
-    console.log('Switched to:', tabId);
     // Track analytics, update URL, etc.
   }}
 />

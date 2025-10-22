@@ -9,6 +9,7 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 import type {
   MembershipPlan,
   MembershipSubscription,
@@ -150,7 +151,7 @@ export class MembershipService {
     });
 
     if (error) {
-      console.error('Error checking membership access:', error);
+      logger.error('Error checking membership access:', error);
       return false;
     }
 
@@ -261,9 +262,7 @@ export class MembershipService {
   /**
    * Resume subscription
    */
-  static async resumeSubscription(
-    subscriptionId: string
-  ): Promise<SubscriptionActionResult> {
+  static async resumeSubscription(subscriptionId: string): Promise<SubscriptionActionResult> {
     return this.manageSubscription({
       action: 'resume',
       subscriptionId,
@@ -273,10 +272,7 @@ export class MembershipService {
   /**
    * Get Stripe Customer Portal URL
    */
-  static async getCustomerPortalUrl(
-    subscriptionId: string,
-    returnUrl?: string
-  ): Promise<string> {
+  static async getCustomerPortalUrl(subscriptionId: string, returnUrl?: string): Promise<string> {
     const result = await this.manageSubscription({
       action: 'get_portal',
       subscriptionId,

@@ -197,10 +197,12 @@ export function SecureFileUpload({
 
     try {
       // Upload to Supabase
-      const { data, error } = await supabase.storage.from(bucket).upload(filePath, item.file, {
-        cacheControl: '3600',
-        upsert: false,
-      });
+      const { data: _data, error } = await supabase.storage
+        .from(bucket)
+        .upload(filePath, item.file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
 
       if (error) {
         throw error;

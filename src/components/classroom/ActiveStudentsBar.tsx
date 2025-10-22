@@ -29,7 +29,13 @@ export function ActiveStudentsBar({
   compact = false,
   maxDisplay = 10,
 }: ActiveStudentsBarProps) {
-  const { students, activeCount, isJoined, joinSession, leaveSession } = useClassroomPresence({
+  const {
+    students,
+    activeCount,
+    isJoined,
+    joinSession: _joinSession,
+    leaveSession,
+  } = useClassroomPresence({
     courseId,
     lessonId,
     autoJoin: true,

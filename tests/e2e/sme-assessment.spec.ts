@@ -6,7 +6,9 @@ import { test, expect } from '@playwright/test';
  */
 
 test.describe('SME Assessment - Unauthenticated User', () => {
-  test('should redirect to auth when accessing SME assessment without login', async ({ page }) => {
+  test('should redirect to auth when accessing SME assessment without login', async ({
+    page: _page,
+  }) => {
     await page.goto('/sme-assessment');
 
     // Should redirect to auth page
@@ -19,13 +21,13 @@ test.describe('SME Assessment - Unauthenticated User', () => {
 });
 
 test.describe('SME Assessment - Company Admin Flow', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page: _page }) => {
     // Note: In real tests, you'd want to create a test user first
     // For now, we'll test the UI flow assuming we're logged in
     await page.goto('/sme-assessment');
   });
 
-  test('should display SME assessment page structure', async ({ page }) => {
+  test('should display SME assessment page structure', async ({ page: _page }) => {
     // Check for main heading
     await expect(page.getByRole('heading', { name: /AI Opportunity Assessment/i })).toBeVisible({
       timeout: 10000,
@@ -40,7 +42,7 @@ test.describe('SME Assessment - Company Admin Flow', () => {
     ).toBeVisible();
   });
 
-  test('should show progress indicator', async ({ page }) => {
+  test('should show progress indicator', async ({ page: _page }) => {
     // Progress bar should be visible
     await expect(
       page.locator('[role="progressbar"]').or(page.getByText(/Section 1 of 9/i))
@@ -50,7 +52,7 @@ test.describe('SME Assessment - Company Admin Flow', () => {
     await expect(page.getByText(/%/)).toBeVisible();
   });
 
-  test('should display first section (Company Mission)', async ({ page }) => {
+  test('should display first section (Company Mission)', async ({ page: _page }) => {
     await expect(page.getByText(/Company Mission & AI Alignment/i)).toBeVisible({ timeout: 10000 });
 
     // Check for company name field
@@ -62,7 +64,7 @@ test.describe('SME Assessment - Company Admin Flow', () => {
     ).toBeVisible();
   });
 
-  test('should auto-populate company name for company admin', async ({ page }) => {
+  test('should auto-populate company name for company admin', async ({ page: _page }) => {
     // If logged in as company admin with profile, company name should be pre-filled
     const companyNameInput = page.getByLabel(/company name/i);
 
@@ -73,7 +75,7 @@ test.describe('SME Assessment - Company Admin Flow', () => {
     }
   });
 
-  test('should navigate between sections', async ({ page }) => {
+  test('should navigate between sections', async ({ page: _page }) => {
     // Wait for page to load
     await page.waitForLoadState('networkidle');
 
@@ -93,7 +95,7 @@ test.describe('SME Assessment - Company Admin Flow', () => {
     }
   });
 
-  test('should allow navigating backward', async ({ page }) => {
+  test('should allow navigating backward', async ({ page: _page }) => {
     await page.waitForLoadState('networkidle');
 
     // Navigate forward first
@@ -113,7 +115,7 @@ test.describe('SME Assessment - Company Admin Flow', () => {
     }
   });
 
-  test('should have save draft functionality', async ({ page }) => {
+  test('should have save draft functionality', async ({ page: _page }) => {
     await page.waitForLoadState('networkidle');
 
     // Save Draft button should be visible
@@ -122,12 +124,12 @@ test.describe('SME Assessment - Company Admin Flow', () => {
     await expect(saveDraftButton).toBeEnabled();
   });
 
-  test('should show all 9 sections in navigation', async ({ page }) => {
+  test('should show all 9 sections in navigation', async ({ page: _page }) => {
     // Progress indicator should show total sections
     await expect(page.getByText(/of 9|9 sections/i)).toBeVisible({ timeout: 10000 });
   });
 
-  test('should validate required fields', async ({ page }) => {
+  test('should validate required fields', async ({ page: _page }) => {
     await page.waitForLoadState('networkidle');
 
     // Clear company name if filled
@@ -149,7 +151,7 @@ test.describe('SME Assessment - Company Admin Flow', () => {
     }
   });
 
-  test('should display complete assessment button on final section', async ({ page }) => {
+  test('should display complete assessment button on final section', async ({ page: _page }) => {
     await page.waitForLoadState('networkidle');
 
     // Navigate to last section by clicking Next multiple times
@@ -168,7 +170,7 @@ test.describe('SME Assessment - Company Admin Flow', () => {
     await expect(completeButton).toBeVisible({ timeout: 5000 });
   });
 
-  test('should handle Back to Home navigation', async ({ page }) => {
+  test('should handle Back to Home navigation', async ({ page: _page }) => {
     await page.waitForLoadState('networkidle');
 
     // Click Back to Home button
@@ -186,17 +188,17 @@ test.describe('SME Assessment - Company Admin Flow', () => {
 });
 
 test.describe('SME Assessment - Section Specific Tests', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page: _page }) => {
     await page.goto('/sme-assessment');
     await page.waitForLoadState('networkidle');
   });
 
-  test('Section 1: Company Mission should have required fields', async ({ page }) => {
+  test('Section 1: Company Mission should have required fields', async ({ page: _page }) => {
     await expect(page.getByLabel(/company name/i)).toBeVisible();
     await expect(page.getByLabel(/mission/i)).toBeVisible();
   });
 
-  test('Section 2: AI Capabilities should have rating controls', async ({ page }) => {
+  test('Section 2: AI Capabilities should have rating controls', async ({ page: _page }) => {
     // Navigate to section 2
     const nextButton = page.getByRole('button', { name: /next/i });
     if (await nextButton.isVisible()) {
@@ -208,7 +210,7 @@ test.describe('SME Assessment - Section Specific Tests', () => {
     }
   });
 
-  test('should maintain form data when navigating between sections', async ({ page }) => {
+  test('should maintain form data when navigating between sections', async ({ page: _page }) => {
     // Fill in company name
     const companyName = 'E2E Test Company';
     const companyNameInput = page.getByLabel(/company name/i);
@@ -234,7 +236,7 @@ test.describe('SME Assessment - Section Specific Tests', () => {
 });
 
 test.describe('SME Assessment - Responsive Design', () => {
-  test('should be responsive on mobile', async ({ page }) => {
+  test('should be responsive on mobile', async ({ page: _page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/sme-assessment');
     await page.waitForLoadState('networkidle');
@@ -247,7 +249,7 @@ test.describe('SME Assessment - Responsive Design', () => {
     await expect(nextButton).toBeVisible();
   });
 
-  test('should be responsive on tablet', async ({ page }) => {
+  test('should be responsive on tablet', async ({ page: _page }) => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto('/sme-assessment');
     await page.waitForLoadState('networkidle');
@@ -258,7 +260,7 @@ test.describe('SME Assessment - Responsive Design', () => {
 });
 
 test.describe('SME Assessment - Accessibility', () => {
-  test('should have proper heading hierarchy', async ({ page }) => {
+  test('should have proper heading hierarchy', async ({ page: _page }) => {
     await page.goto('/sme-assessment');
     await page.waitForLoadState('networkidle');
 
@@ -267,7 +269,7 @@ test.describe('SME Assessment - Accessibility', () => {
     await expect(h1).toBeVisible({ timeout: 10000 });
   });
 
-  test('should have accessible form labels', async ({ page }) => {
+  test('should have accessible form labels', async ({ page: _page }) => {
     await page.goto('/sme-assessment');
     await page.waitForLoadState('networkidle');
 
@@ -278,7 +280,7 @@ test.describe('SME Assessment - Accessibility', () => {
     }
   });
 
-  test('should have keyboard navigation support', async ({ page }) => {
+  test('should have keyboard navigation support', async ({ page: _page }) => {
     await page.goto('/sme-assessment');
     await page.waitForLoadState('networkidle');
 

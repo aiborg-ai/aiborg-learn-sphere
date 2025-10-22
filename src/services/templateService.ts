@@ -161,7 +161,7 @@ class TemplateService {
       }
 
       return await response.json();
-    } catch (error) {
+    } catch {
       logger.error('Validation error:', error);
       throw error;
     }
@@ -195,7 +195,7 @@ class TemplateService {
       }
 
       return await response.json();
-    } catch (error) {
+    } catch {
       logger.error('Import error:', error);
       throw error;
     }
@@ -248,7 +248,7 @@ class TemplateService {
       }
 
       return await response.json();
-    } catch (error) {
+    } catch {
       logger.error('History error:', error);
       throw error;
     }
@@ -281,7 +281,7 @@ class TemplateService {
 
       const result = await response.json();
       return result.imports?.[0];
-    } catch (error) {
+    } catch {
       logger.error('Import details error:', error);
       throw error;
     }
@@ -320,7 +320,7 @@ class TemplateService {
 
       const result = await response.json();
       return result.statistics;
-    } catch (error) {
+    } catch {
       logger.error('Statistics error:', error);
       throw error;
     }
@@ -338,7 +338,7 @@ class TemplateService {
           const content = e.target?.result as string;
           const data = JSON.parse(content);
           resolve(data);
-        } catch (error) {
+        } catch {
           reject(new Error('Invalid JSON format'));
         }
       };
@@ -435,7 +435,7 @@ export function validateCourseTemplate(data: unknown[]): ValidationResponse {
       try {
         const result = CourseTemplateSchema.parse(item);
         return { success: true, data: result };
-      } catch (error) {
+      } catch {
         if (error instanceof z.ZodError) {
           return {
             success: false,
@@ -467,7 +467,7 @@ export function validateCourseTemplate(data: unknown[]): ValidationResponse {
         warnings: 0,
       },
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       errors: [
@@ -487,7 +487,7 @@ export function validateEventTemplate(data: Record<string, unknown>[]): Validati
       try {
         const result = EventTemplateSchema.parse(item);
         return { success: true, data: result };
-      } catch (error) {
+      } catch {
         if (error instanceof z.ZodError) {
           return {
             success: false,
@@ -519,7 +519,7 @@ export function validateEventTemplate(data: Record<string, unknown>[]): Validati
         warnings: 0,
       },
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       errors: [

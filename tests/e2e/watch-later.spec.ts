@@ -2,12 +2,12 @@ import { test, expect } from '@playwright/test';
 import { login, TEST_USER } from './utils/auth';
 
 test.describe('Watch Later Feature', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page: _page }) => {
     await login(page, TEST_USER.email, TEST_USER.password);
   });
 
   test.describe('Adding to Queue', () => {
-    test('should add video to watch later queue', async ({ page }) => {
+    test('should add video to watch later queue', async ({ page: _page }) => {
       // Navigate to course materials
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -19,17 +19,21 @@ test.describe('Watch Later Feature', () => {
       const videoMaterial = page.locator('text=/Video|recording/i').first().locator('..');
 
       // Click "Watch Later" button
-      const watchLaterBtn = videoMaterial.locator('button[title*="watch later" i], button:has-text("Watch Later")');
+      const watchLaterBtn = videoMaterial.locator(
+        'button[title*="watch later" i], button:has-text("Watch Later")'
+      );
       await watchLaterBtn.click();
 
       // Verify success notification
-      await expect(page.locator('text=/added.*watch later|saved.*queue/i')).toBeVisible({ timeout: 5000 });
+      await expect(page.locator('text=/added.*watch later|saved.*queue/i')).toBeVisible({
+        timeout: 5000,
+      });
 
       // Verify button state changed
       await expect(watchLaterBtn).toContainText(/in queue|queued|✓/i);
     });
 
-    test('should add multiple videos to queue', async ({ page }) => {
+    test('should add multiple videos to queue', async ({ page: _page }) => {
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
 
@@ -51,14 +55,15 @@ test.describe('Watch Later Feature', () => {
         await page.goto('/watch-later');
 
         // Verify both videos in queue
-        const queueItems = page.locator('[data-testid="queue-item"]')
+        const queueItems = page
+          .locator('[data-testid="queue-item"]')
           .or(page.locator('div:has(button[title*="remove" i])'));
 
         expect(await queueItems.count()).toBeGreaterThanOrEqual(2);
       }
     });
 
-    test('should remove from queue by clicking again', async ({ page }) => {
+    test('should remove from queue by clicking again', async ({ page: _page }) => {
       // Add to queue first
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -78,7 +83,7 @@ test.describe('Watch Later Feature', () => {
       await expect(watchLaterBtn).not.toContainText(/in queue|queued/i);
     });
 
-    test('should show watch later button only for videos', async ({ page }) => {
+    test('should show watch later button only for videos', async ({ page: _page }) => {
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
 
@@ -97,7 +102,7 @@ test.describe('Watch Later Feature', () => {
       await expect(videoWatchLaterBtn).toBeVisible();
     });
 
-    test('should prevent duplicate entries in queue', async ({ page }) => {
+    test('should prevent duplicate entries in queue', async ({ page: _page }) => {
       // Add video to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -115,7 +120,7 @@ test.describe('Watch Later Feature', () => {
   });
 
   test.describe('Viewing Queue', () => {
-    test('should navigate to watch later page', async ({ page }) => {
+    test('should navigate to watch later page', async ({ page: _page }) => {
       await page.goto('/watch-later');
 
       // Verify page loaded
@@ -123,7 +128,7 @@ test.describe('Watch Later Feature', () => {
       await expect(page.locator('h1')).toContainText(/watch later/i);
     });
 
-    test('should display queue statistics', async ({ page }) => {
+    test('should display queue statistics', async ({ page: _page }) => {
       await page.goto('/watch-later');
       await page.waitForLoadState('networkidle');
 
@@ -132,12 +137,12 @@ test.describe('Watch Later Feature', () => {
 
       // Check for duration if videos exist
       const queueItems = page.locator('[data-testid="queue-item"]');
-      if (await queueItems.count() > 0) {
+      if ((await queueItems.count()) > 0) {
         await expect(page.locator('text=/total.*duration|watch.*time/i')).toBeVisible();
       }
     });
 
-    test('should show position numbers in queue', async ({ page }) => {
+    test('should show position numbers in queue', async ({ page: _page }) => {
       // Add videos to queue first
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -162,7 +167,7 @@ test.describe('Watch Later Feature', () => {
       }
     });
 
-    test('should display video metadata in queue', async ({ page }) => {
+    test('should display video metadata in queue', async ({ page: _page }) => {
       // Add video to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -174,7 +179,9 @@ test.describe('Watch Later Feature', () => {
       await page.goto('/watch-later');
 
       // Verify video details shown
-      const queueItem = page.locator('[data-testid="queue-item"]').first()
+      const queueItem = page
+        .locator('[data-testid="queue-item"]')
+        .first()
         .or(page.locator('div:has(button[title*="remove" i])').first());
 
       if (await queueItem.isVisible()) {
@@ -188,7 +195,7 @@ test.describe('Watch Later Feature', () => {
   });
 
   test.describe('Reordering Queue', () => {
-    test('should move item up in queue', async ({ page }) => {
+    test('should move item up in queue', async ({ page: _page }) => {
       // Add at least 2 videos to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -206,7 +213,9 @@ test.describe('Watch Later Feature', () => {
 
       if (btnCount >= 2) {
         // Get text of second item
-        const secondItem = page.locator('[data-testid="queue-item"]').nth(1)
+        const secondItem = page
+          .locator('[data-testid="queue-item"]')
+          .nth(1)
           .or(page.locator('text=/^2$|#2/i').locator('..'));
 
         const itemText = await secondItem.textContent();
@@ -222,7 +231,7 @@ test.describe('Watch Later Feature', () => {
       }
     });
 
-    test('should move item down in queue', async ({ page }) => {
+    test('should move item down in queue', async ({ page: _page }) => {
       // Add at least 2 videos to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -254,7 +263,7 @@ test.describe('Watch Later Feature', () => {
       }
     });
 
-    test('should move item to top of queue', async ({ page }) => {
+    test('should move item to top of queue', async ({ page: _page }) => {
       // Add at least 3 videos to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -286,7 +295,7 @@ test.describe('Watch Later Feature', () => {
       }
     });
 
-    test('should disable move up for first item', async ({ page }) => {
+    test('should disable move up for first item', async ({ page: _page }) => {
       // Add video to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -300,12 +309,12 @@ test.describe('Watch Later Feature', () => {
       const firstItem = page.locator('[data-testid="queue-item"]').first();
       const moveUpBtn = firstItem.locator('button[title*="move up" i]');
 
-      if (await moveUpBtn.count() > 0) {
+      if ((await moveUpBtn.count()) > 0) {
         await expect(moveUpBtn).toBeDisabled();
       }
     });
 
-    test('should disable move down for last item', async ({ page }) => {
+    test('should disable move down for last item', async ({ page: _page }) => {
       // Add videos to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -320,12 +329,12 @@ test.describe('Watch Later Feature', () => {
       const lastItem = page.locator('[data-testid="queue-item"]').last();
       const moveDownBtn = lastItem.locator('button[title*="move down" i]');
 
-      if (await moveDownBtn.count() > 0) {
+      if ((await moveDownBtn.count()) > 0) {
         await expect(moveDownBtn).toBeDisabled();
       }
     });
 
-    test('should drag and drop to reorder', async ({ page }) => {
+    test('should drag and drop to reorder', async ({ page: _page }) => {
       // Add multiple videos
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -361,7 +370,7 @@ test.describe('Watch Later Feature', () => {
   });
 
   test.describe('Playing from Queue', () => {
-    test('should play video from queue', async ({ page }) => {
+    test('should play video from queue', async ({ page: _page }) => {
       // Add video to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -376,10 +385,12 @@ test.describe('Watch Later Feature', () => {
       await queueItem.locator('button:has-text("Play"), button[title*="play" i]').click();
 
       // Verify video player opens
-      await expect(page.locator('video, [data-testid="video-player"]')).toBeVisible({ timeout: 5000 });
+      await expect(page.locator('video, [data-testid="video-player"]')).toBeVisible({
+        timeout: 5000,
+      });
     });
 
-    test('should show "Play Next" button', async ({ page }) => {
+    test('should show "Play Next" button', async ({ page: _page }) => {
       // Add multiple videos
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -396,10 +407,12 @@ test.describe('Watch Later Feature', () => {
 
       // Verify "Play Next" button exists for first item
       const firstItem = page.locator('[data-testid="queue-item"]').first();
-      await expect(firstItem.locator('button:has-text("Play Next"), button:has-text("Play")')).toBeVisible();
+      await expect(
+        firstItem.locator('button:has-text("Play Next"), button:has-text("Play")')
+      ).toBeVisible();
     });
 
-    test('should mark video as watched after playing', async ({ page }) => {
+    test('should mark video as watched after playing', async ({ page: _page }) => {
       // Add video to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -426,7 +439,7 @@ test.describe('Watch Later Feature', () => {
   });
 
   test.describe('Removing from Queue', () => {
-    test('should remove single item from queue', async ({ page }) => {
+    test('should remove single item from queue', async ({ page: _page }) => {
       // Add video to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -456,7 +469,7 @@ test.describe('Watch Later Feature', () => {
       }
     });
 
-    test('should clear entire queue', async ({ page }) => {
+    test('should clear entire queue', async ({ page: _page }) => {
       // Add videos to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -485,7 +498,7 @@ test.describe('Watch Later Feature', () => {
       }
     });
 
-    test('should show confirmation before clearing queue', async ({ page }) => {
+    test('should show confirmation before clearing queue', async ({ page: _page }) => {
       // Add video to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -515,7 +528,7 @@ test.describe('Watch Later Feature', () => {
   });
 
   test.describe('Queue Notes and Metadata', () => {
-    test('should add note to queued video', async ({ page }) => {
+    test('should add note to queued video', async ({ page: _page }) => {
       // Add video to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -539,7 +552,7 @@ test.describe('Watch Later Feature', () => {
       await expect(page.locator('text=Watch this for exam prep')).toBeVisible();
     });
 
-    test('should show added date for queued items', async ({ page }) => {
+    test('should show added date for queued items', async ({ page: _page }) => {
       // Add video to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -556,12 +569,14 @@ test.describe('Watch Later Feature', () => {
   });
 
   test.describe('Empty State', () => {
-    test('should show empty state when queue is empty', async ({ page }) => {
+    test('should show empty state when queue is empty', async ({ page: _page }) => {
       await page.goto('/watch-later');
       await page.waitForLoadState('networkidle');
 
       // Check for empty state message
-      const emptyState = page.locator('text=/queue.*empty|no.*videos?.*queue|add.*videos?.*watch.*later/i');
+      const emptyState = page.locator(
+        'text=/queue.*empty|no.*videos?.*queue|add.*videos?.*watch.*later/i'
+      );
 
       // If queue has items, this test would fail
       // In production, use fresh test user or clear queue first
@@ -575,7 +590,7 @@ test.describe('Watch Later Feature', () => {
   });
 
   test.describe('Integration', () => {
-    test('should show queue count badge in navigation', async ({ page }) => {
+    test('should show queue count badge in navigation', async ({ page: _page }) => {
       // Add videos to queue
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');
@@ -591,7 +606,7 @@ test.describe('Watch Later Feature', () => {
       // Check navigation for badge
       const navLink = page.locator('a[href*="watch-later"], button:has-text("Watch Later")');
 
-      if (await navLink.count() > 0) {
+      if ((await navLink.count()) > 0) {
         // Verify badge shows count
         const badge = navLink.locator('text=/\\d+/').first();
 
@@ -602,7 +617,7 @@ test.describe('Watch Later Feature', () => {
       }
     });
 
-    test('should sync queue state across pages', async ({ page }) => {
+    test('should sync queue state across pages', async ({ page: _page }) => {
       // Add video on course page
       await page.goto('/course/1');
       await page.click('button[role="tab"]:has-text("Materials")');

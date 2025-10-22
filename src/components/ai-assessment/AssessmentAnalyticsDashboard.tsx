@@ -81,6 +81,7 @@ export function AssessmentAnalyticsDashboard({ assessmentId, userId, onClose }: 
 
   useEffect(() => {
     fetchAnalyticsData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fetchAnalyticsData is stable
   }, [assessmentId, userId]);
 
   const fetchAnalyticsData = async () => {

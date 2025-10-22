@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/prefer-tag-over-role */
+/* eslint-disable react-refresh/only-export-components */
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Icon } from '@/utils/iconLoader';
@@ -92,6 +94,7 @@ export function MobileBottomSheet({
       />
 
       {/* Bottom Sheet */}
+      {}
       <div
         ref={sheetRef}
         className={cn(

@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test.describe('Public (Unauthenticated) User Access', () => {
-  test('should access public pages without authentication', async ({ page }) => {
+  test('should access public pages without authentication', async ({ page: _page }) => {
     // Homepage
     await page.goto('/');
     await expect(page).toHaveURL('/');
@@ -16,7 +16,7 @@ test.describe('Public (Unauthenticated) User Access', () => {
     await expect(page).toHaveURL('/blog');
   });
 
-  test('should redirect to auth for protected pages', async ({ page }) => {
+  test('should redirect to auth for protected pages', async ({ page: _page }) => {
     const protectedRoutes = ['/dashboard', '/profile', '/admin', '/sme-assessment', '/instructor'];
 
     for (const route of protectedRoutes) {
@@ -34,7 +34,7 @@ test.describe('Public (Unauthenticated) User Access', () => {
     }
   });
 
-  test('should see "Sign In" button when not authenticated', async ({ page }) => {
+  test('should see "Sign In" button when not authenticated', async ({ page: _page }) => {
     await page.goto('/');
 
     // Sign in link should be visible
@@ -44,7 +44,7 @@ test.describe('Public (Unauthenticated) User Access', () => {
 });
 
 test.describe('Student User Access', () => {
-  test.skip('should access student features when logged in', async ({ page }) => {
+  test.skip('should access student features when logged in', async ({ page: _page }) => {
     // Note: This would require actual authentication
     // In a real test suite, you'd create a test student account and login
 
@@ -58,7 +58,7 @@ test.describe('Student User Access', () => {
     expect(true).toBeTruthy();
   });
 
-  test.skip('should NOT access admin features', async ({ page }) => {
+  test.skip('should NOT access admin features', async ({ page: _page }) => {
     // Student should not see:
     // - Admin panel
     // - Instructor dashboard
@@ -69,7 +69,7 @@ test.describe('Student User Access', () => {
 });
 
 test.describe('Company Admin User Access', () => {
-  test('should have access to SME assessment page structure', async ({ page }) => {
+  test('should have access to SME assessment page structure', async ({ page: _page }) => {
     // Navigate to SME assessment (will redirect if not authenticated)
     await page.goto('/sme-assessment');
 
@@ -85,7 +85,7 @@ test.describe('Company Admin User Access', () => {
     }
   });
 
-  test.skip('should access company profile management', async ({ page }) => {
+  test.skip('should access company profile management', async ({ page: _page }) => {
     // Company admin should be able to:
     // - View company profile
     // - Edit company information
@@ -95,7 +95,7 @@ test.describe('Company Admin User Access', () => {
     expect(true).toBeTruthy();
   });
 
-  test.skip('should NOT access admin panel', async ({ page }) => {
+  test.skip('should NOT access admin panel', async ({ page: _page }) => {
     // Company admin should not access:
     // - Platform admin features
     // - User management
@@ -106,7 +106,7 @@ test.describe('Company Admin User Access', () => {
 });
 
 test.describe('Instructor User Access', () => {
-  test.skip('should access instructor dashboard', async ({ page }) => {
+  test.skip('should access instructor dashboard', async ({ page: _page }) => {
     // Instructor should access:
     // - Instructor dashboard
     // - Course creation/editing
@@ -117,7 +117,7 @@ test.describe('Instructor User Access', () => {
     expect(true).toBeTruthy();
   });
 
-  test.skip('should NOT access company admin features', async ({ page }) => {
+  test.skip('should NOT access company admin features', async ({ page: _page }) => {
     // Instructor should not access:
     // - SME assessments
     // - Company profiles
@@ -128,7 +128,7 @@ test.describe('Instructor User Access', () => {
 });
 
 test.describe('Admin User Access', () => {
-  test('admin panel should exist at /admin', async ({ page }) => {
+  test('admin panel should exist at /admin', async ({ page: _page }) => {
     await page.goto('/admin');
 
     // If not authenticated, should redirect to auth
@@ -148,7 +148,7 @@ test.describe('Admin User Access', () => {
     expect(validStates.some(state => state === true)).toBeTruthy();
   });
 
-  test.skip('should access all admin features', async ({ page }) => {
+  test.skip('should access all admin features', async ({ page: _page }) => {
     // Admin should access:
     // - User management
     // - Content management
@@ -174,7 +174,7 @@ test.describe('Feature Access Matrix', () => {
     { name: 'Instructor Dashboard', url: '/instructor', public: false },
   ];
 
-  test('public pages should be accessible without auth', async ({ page }) => {
+  test('public pages should be accessible without auth', async ({ page: _page }) => {
     const publicFeatures = features.filter(f => f.public);
 
     for (const feature of publicFeatures) {
@@ -186,7 +186,7 @@ test.describe('Feature Access Matrix', () => {
     }
   });
 
-  test('protected pages should require authentication', async ({ page }) => {
+  test('protected pages should require authentication', async ({ page: _page }) => {
     const protectedFeatures = features.filter(f => !f.public);
 
     for (const feature of protectedFeatures) {
@@ -205,7 +205,7 @@ test.describe('Feature Access Matrix', () => {
 });
 
 test.describe('Navigation Based on User Role', () => {
-  test('should show appropriate navigation items for public user', async ({ page }) => {
+  test('should show appropriate navigation items for public user', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
@@ -225,7 +225,7 @@ test.describe('Navigation Based on User Role', () => {
     }
   });
 
-  test.skip('authenticated user should see dashboard link', async ({ page }) => {
+  test.skip('authenticated user should see dashboard link', async ({ page: _page }) => {
     // After authentication, user should see:
     // - Dashboard link
     // - Profile link
@@ -235,7 +235,7 @@ test.describe('Navigation Based on User Role', () => {
     expect(true).toBeTruthy();
   });
 
-  test.skip('admin user should see admin panel link', async ({ page }) => {
+  test.skip('admin user should see admin panel link', async ({ page: _page }) => {
     // Admin users should see additional:
     // - Admin Panel link
     // - CMS link
@@ -243,7 +243,7 @@ test.describe('Navigation Based on User Role', () => {
     expect(true).toBeTruthy();
   });
 
-  test.skip('company admin should see assessment link', async ({ page }) => {
+  test.skip('company admin should see assessment link', async ({ page: _page }) => {
     // Company admin should see:
     // - SME Assessment link
     // - Company Profile link
@@ -253,7 +253,7 @@ test.describe('Navigation Based on User Role', () => {
 });
 
 test.describe('Authorization Error Handling', () => {
-  test('should show appropriate message for unauthorized access', async ({ page }) => {
+  test('should show appropriate message for unauthorized access', async ({ page: _page }) => {
     // Try to access admin panel without auth
     await page.goto('/admin');
     await page.waitForTimeout(2000);
@@ -266,7 +266,7 @@ test.describe('Authorization Error Handling', () => {
     expect(hasAuthError).toBeTruthy();
   });
 
-  test('should redirect to return URL after login', async ({ page }) => {
+  test('should redirect to return URL after login', async ({ page: _page }) => {
     // Try to access protected page
     await page.goto('/sme-assessment');
     await page.waitForTimeout(2000);
@@ -281,14 +281,14 @@ test.describe('Authorization Error Handling', () => {
 });
 
 test.describe('Session Management', () => {
-  test.skip('should maintain session across page reloads', async ({ page }) => {
+  test.skip('should maintain session across page reloads', async ({ page: _page }) => {
     // After login, refresh page
     // Should remain logged in
 
     expect(true).toBeTruthy();
   });
 
-  test.skip('should logout successfully', async ({ page }) => {
+  test.skip('should logout successfully', async ({ page: _page }) => {
     // After logout:
     // - Redirect to home
     // - Session cleared
@@ -299,7 +299,7 @@ test.describe('Session Management', () => {
 });
 
 test.describe('Role-Based UI Elements', () => {
-  test('course enrollment button should be visible to public', async ({ page }) => {
+  test('course enrollment button should be visible to public', async ({ page: _page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
@@ -311,7 +311,7 @@ test.describe('Role-Based UI Elements', () => {
     }
   });
 
-  test.skip('admin-only buttons should not be visible to public', async ({ page }) => {
+  test.skip('admin-only buttons should not be visible to public', async ({ page: _page }) => {
     await page.goto('/');
 
     // Should NOT see:

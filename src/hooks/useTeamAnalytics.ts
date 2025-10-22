@@ -6,15 +6,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { TeamAnalyticsService } from '@/services/team';
-import type {
-  TeamProgressSummary,
-  MemberActivitySummary,
-  TeamLearningTrend,
-  TopPerformer,
-  DepartmentComparison,
-  PopularCourse,
-  LearningVelocity,
-} from '@/services/team/types';
+import type {} from '@/services/team/types';
 
 // Query keys
 export const analyticsKeys = {
@@ -25,20 +17,16 @@ export const analyticsKeys = {
     [...analyticsKeys.all, 'members', orgId, filters] as const,
   member: (orgId: string, userId: string) =>
     [...analyticsKeys.all, 'member', orgId, userId] as const,
-  trends: (orgId: string, days?: number) =>
-    [...analyticsKeys.all, 'trends', orgId, days] as const,
+  trends: (orgId: string, days?: number) => [...analyticsKeys.all, 'trends', orgId, days] as const,
   topPerformers: (orgId: string, limit?: number) =>
     [...analyticsKeys.all, 'topPerformers', orgId, limit] as const,
-  departments: (orgId: string) =>
-    [...analyticsKeys.all, 'departments', orgId] as const,
+  departments: (orgId: string) => [...analyticsKeys.all, 'departments', orgId] as const,
   courses: (orgId: string, limit?: number) =>
     [...analyticsKeys.all, 'courses', orgId, limit] as const,
   velocity: (orgId: string, months?: number) =>
     [...analyticsKeys.all, 'velocity', orgId, months] as const,
-  engagement: (orgId: string) =>
-    [...analyticsKeys.all, 'engagement', orgId] as const,
-  comprehensive: (orgId: string) =>
-    [...analyticsKeys.all, 'comprehensive', orgId] as const,
+  engagement: (orgId: string) => [...analyticsKeys.all, 'engagement', orgId] as const,
+  comprehensive: (orgId: string) => [...analyticsKeys.all, 'comprehensive', orgId] as const,
 };
 
 // ============================================================================
@@ -152,8 +140,7 @@ export function useDepartmentComparison(organizationId: string) {
 export function useMemberCountByDepartment(organizationId: string) {
   return useQuery({
     queryKey: [...analyticsKeys.departments(organizationId), 'count'],
-    queryFn: () =>
-      TeamAnalyticsService.getMemberCountByDepartment(organizationId),
+    queryFn: () => TeamAnalyticsService.getMemberCountByDepartment(organizationId),
     enabled: !!organizationId,
   });
 }
@@ -180,8 +167,7 @@ export function usePopularCourses(organizationId: string, limit: number = 10) {
 export function useCourseCompletionRates(organizationId: string) {
   return useQuery({
     queryKey: [...analyticsKeys.courses(organizationId), 'completion'],
-    queryFn: () =>
-      TeamAnalyticsService.getCourseCompletionRates(organizationId),
+    queryFn: () => TeamAnalyticsService.getCourseCompletionRates(organizationId),
     enabled: !!organizationId,
     staleTime: 15 * 60 * 1000,
   });
@@ -310,13 +296,8 @@ export function useAssignmentSummaries(
   }
 ) {
   return useQuery({
-    queryKey: [
-      ...analyticsKeys.summary(organizationId),
-      'assignments',
-      filters,
-    ],
-    queryFn: () =>
-      TeamAnalyticsService.getAssignmentSummaries(organizationId, filters),
+    queryKey: [...analyticsKeys.summary(organizationId), 'assignments', filters],
+    queryFn: () => TeamAnalyticsService.getAssignmentSummaries(organizationId, filters),
     enabled: !!organizationId,
     staleTime: 5 * 60 * 1000,
   });
@@ -340,7 +321,7 @@ export function convertToCSV(data: Array<Record<string, string | number>>): stri
 
   // Add data rows
   for (const row of data) {
-    const values = headers.map((header) => {
+    const values = headers.map(header => {
       const value = row[header];
       // Escape values containing commas or quotes
       if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {

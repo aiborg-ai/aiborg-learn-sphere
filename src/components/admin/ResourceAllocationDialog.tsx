@@ -36,7 +36,7 @@ interface ResourceAllocationDialogProps {
     resourceId: string,
     userIds: string[],
     options?: { expires_at?: string; notes?: string }
-  ) => Promise<any>;
+  ) => Promise<void>;
 }
 
 export function ResourceAllocationDialog({
@@ -64,6 +64,7 @@ export function ResourceAllocationDialog({
       setNotes('');
       setSearchTerm('');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fetchUsers is stable
   }, [open]);
 
   const fetchUsers = async () => {
@@ -164,9 +165,7 @@ export function ResourceAllocationDialog({
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Allocate Resource to Users</DialogTitle>
-          <DialogDescription>
-            Assign "{resource.title}" to specific users
-          </DialogDescription>
+          <DialogDescription>Assign "{resource.title}" to specific users</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -177,7 +176,7 @@ export function ResourceAllocationDialog({
               <Input
                 placeholder="Search users..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -210,11 +209,12 @@ export function ResourceAllocationDialog({
               ) : (
                 <div className="divide-y">
                   {filteredUsers.map(user => (
+                    // eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- Interactive list item with button role, has proper keyboard support and ARIA
                     <div
                       key={user.user_id}
                       className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer"
                       onClick={() => handleToggleUser(user.user_id)}
-                      onKeyDown={(e) => {
+                      onKeyDown={e => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
                           handleToggleUser(user.user_id);
@@ -228,9 +228,7 @@ export function ResourceAllocationDialog({
                         onCheckedChange={() => handleToggleUser(user.user_id)}
                       />
                       <div className="flex-1">
-                        <p className="font-medium">
-                          {user.display_name || 'No Name'}
-                        </p>
+                        <p className="font-medium">{user.display_name || 'No Name'}</p>
                         <p className="text-sm text-gray-500">{user.email}</p>
                       </div>
                       <Badge variant="outline">{user.role}</Badge>
@@ -251,11 +249,9 @@ export function ResourceAllocationDialog({
               id="expires_at"
               type="datetime-local"
               value={expiresAt}
-              onChange={(e) => setExpiresAt(e.target.value)}
+              onChange={e => setExpiresAt(e.target.value)}
             />
-            <p className="text-xs text-gray-500">
-              Leave empty for permanent access
-            </p>
+            <p className="text-xs text-gray-500">Leave empty for permanent access</p>
           </div>
 
           {/* Notes */}
@@ -264,7 +260,7 @@ export function ResourceAllocationDialog({
             <Textarea
               id="notes"
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={e => setNotes(e.target.value)}
               placeholder="Add notes about this allocation..."
               rows={3}
             />
@@ -282,7 +278,9 @@ export function ResourceAllocationDialog({
                 Allocating...
               </>
             ) : (
-              <>Allocate to {selectedUsers.size} User{selectedUsers.size !== 1 ? 's' : ''}</>
+              <>
+                Allocate to {selectedUsers.size} User{selectedUsers.size !== 1 ? 's' : ''}
+              </>
             )}
           </Button>
         </DialogFooter>

@@ -16,7 +16,7 @@ export class LearningPathService {
     timeframe: number // weeks
   ): Promise<LearningPath> {
     const profile = await this.getUserProfile(userId);
-    const recommendations = await CourseRecommendationService.generateRecommendations(userId, 50);
+    const _recommendations = await CourseRecommendationService.generateRecommendations(userId, 50);
 
     // Filter courses that fit the timeframe and lead to target skill level
     const selectedCourses = this.selectOptimalCourses(
@@ -35,7 +35,7 @@ export class LearningPathService {
     return {
       id: this.generateId(),
       name: `Path to ${this.getSkillLevelName(targetSkillLevel)}`,
-      courses: orderedCourses.map((c) => c.courseId),
+      courses: orderedCourses.map(c => c.courseId),
       estimatedDuration: timeframe,
       targetSkillLevel,
       milestones,
@@ -45,7 +45,7 @@ export class LearningPathService {
   private static async getUserProfile(userId: string): Promise<UserProfile> {
     // Delegate to CourseRecommendationService's getUserProfile
     // This is a temporary implementation - ideally we'd extract this to a shared service
-    const recommendations = await CourseRecommendationService.generateRecommendations(userId, 1);
+    const _recommendations = await CourseRecommendationService.generateRecommendations(userId, 1);
     // Extract profile from context (simplified)
     return {
       id: userId,

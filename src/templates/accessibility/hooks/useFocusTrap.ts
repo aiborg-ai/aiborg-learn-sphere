@@ -252,11 +252,9 @@ function Popover({ isOpen }: Props) {
   const popoverRef = useFocusTrap<HTMLDivElement>({
     active: isOpen,
     onActivate: () => {
-      console.log('Focus trap activated');
       // Maybe announce to screen readers
     },
     onDeactivate: () => {
-      console.log('Focus trap deactivated');
       // Clean up any state
     },
   });

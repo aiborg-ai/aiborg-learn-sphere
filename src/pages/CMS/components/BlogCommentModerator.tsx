@@ -26,6 +26,7 @@ function BlogCommentModerator() {
 
   useEffect(() => {
     fetchComments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fetchComments is stable
   }, []);
 
   const fetchComments = async () => {
@@ -44,7 +45,7 @@ function BlogCommentModerator() {
 
       if (error) throw error;
       setComments(data || []);
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to fetch comments',
@@ -73,7 +74,7 @@ function BlogCommentModerator() {
         description: `Comment ${status}`,
       });
       fetchComments();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to update comment',

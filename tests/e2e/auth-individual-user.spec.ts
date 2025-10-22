@@ -11,7 +11,7 @@ test.describe('Individual User Signup', () => {
     displayName: 'Test Student User',
   });
 
-  test('should display individual signup as default option', async ({ page }) => {
+  test('should display individual signup as default option', async ({ page: _page }) => {
     await page.goto('/auth');
     await page.getByRole('tab', { name: /sign up/i }).click();
 
@@ -20,7 +20,7 @@ test.describe('Individual User Signup', () => {
     await expect(individualRadio).toBeChecked();
   });
 
-  test('should signup successfully as individual user', async ({ page }) => {
+  test('should signup successfully as individual user', async ({ page: _page }) => {
     const testUser = generateTestUser();
 
     await page.goto('/auth');
@@ -45,7 +45,7 @@ test.describe('Individual User Signup', () => {
     await expect(page.getByText(/account created successfully/i)).toBeVisible({ timeout: 5000 });
   });
 
-  test('should validate display name requirement', async ({ page }) => {
+  test('should validate display name requirement', async ({ page: _page }) => {
     await page.goto('/auth');
     await page.getByRole('tab', { name: /sign up/i }).click();
 
@@ -62,7 +62,7 @@ test.describe('Individual User Signup', () => {
     });
   });
 
-  test('should validate password strength', async ({ page }) => {
+  test('should validate password strength', async ({ page: _page }) => {
     await page.goto('/auth');
     await page.getByRole('tab', { name: /sign up/i }).click();
 
@@ -81,7 +81,7 @@ test.describe('Individual User Signup', () => {
     });
   });
 
-  test('should validate password confirmation match', async ({ page }) => {
+  test('should validate password confirmation match', async ({ page: _page }) => {
     await page.goto('/auth');
     await page.getByRole('tab', { name: /sign up/i }).click();
 
@@ -96,7 +96,7 @@ test.describe('Individual User Signup', () => {
     await expect(page.getByText(/passwords do not match/i)).toBeVisible({ timeout: 3000 });
   });
 
-  test('should show password requirements hint', async ({ page }) => {
+  test('should show password requirements hint', async ({ page: _page }) => {
     await page.goto('/auth');
     await page.getByRole('tab', { name: /sign up/i }).click();
 
@@ -104,7 +104,7 @@ test.describe('Individual User Signup', () => {
     await expect(page.getByText(/12.*characters.*uppercase.*lowercase.*numbers/i)).toBeVisible();
   });
 
-  test('should validate email format', async ({ page }) => {
+  test('should validate email format', async ({ page: _page }) => {
     await page.goto('/auth');
     await page.getByRole('tab', { name: /sign up/i }).click();
 
@@ -123,7 +123,7 @@ test.describe('Individual User Signup', () => {
 });
 
 test.describe('Individual User Login', () => {
-  test('should display signin form by default', async ({ page }) => {
+  test('should display signin form by default', async ({ page: _page }) => {
     await page.goto('/auth');
 
     // Sign In tab should be active by default
@@ -135,14 +135,14 @@ test.describe('Individual User Login', () => {
     await expect(page.locator('input[type="password"]')).toBeVisible();
   });
 
-  test('should have forgot password link', async ({ page }) => {
+  test('should have forgot password link', async ({ page: _page }) => {
     await page.goto('/auth');
 
     // Forgot password button should be visible
     await expect(page.getByText(/forgot password/i)).toBeVisible();
   });
 
-  test('should open password reset dialog', async ({ page }) => {
+  test('should open password reset dialog', async ({ page: _page }) => {
     await page.goto('/auth');
 
     // Click forgot password
@@ -155,7 +155,7 @@ test.describe('Individual User Login', () => {
     await expect(page.getByText(/send you a link/i)).toBeVisible();
   });
 
-  test('should close password reset dialog', async ({ page }) => {
+  test('should close password reset dialog', async ({ page: _page }) => {
     await page.goto('/auth');
 
     await page.getByRole('button', { name: /forgot password/i }).click();
@@ -173,7 +173,7 @@ test.describe('Individual User Login', () => {
     }
   });
 
-  test('should handle rate limiting on signin attempts', async ({ page }) => {
+  test('should handle rate limiting on signin attempts', async ({ page: _page }) => {
     await page.goto('/auth');
 
     // Try multiple failed login attempts
@@ -191,7 +191,7 @@ test.describe('Individual User Login', () => {
 });
 
 test.describe('Tab Navigation Between Signin and Signup', () => {
-  test('should switch between signin and signup tabs', async ({ page }) => {
+  test('should switch between signin and signup tabs', async ({ page: _page }) => {
     await page.goto('/auth');
 
     // Default is signin
@@ -215,7 +215,7 @@ test.describe('Tab Navigation Between Signin and Signup', () => {
     );
   });
 
-  test('should show different forms for signin and signup', async ({ page }) => {
+  test('should show different forms for signin and signup', async ({ page: _page }) => {
     await page.goto('/auth');
 
     // Signin tab - should not have display name field
@@ -230,7 +230,7 @@ test.describe('Tab Navigation Between Signin and Signup', () => {
 });
 
 test.describe('OAuth Providers', () => {
-  test('should have OAuth buttons on both signin and signup', async ({ page }) => {
+  test('should have OAuth buttons on both signin and signup', async ({ page: _page }) => {
     await page.goto('/auth');
 
     // Check signin tab
@@ -243,7 +243,7 @@ test.describe('OAuth Providers', () => {
     await expect(page.getByRole('button', { name: /continue with github/i })).toBeVisible();
   });
 
-  test('should have proper OAuth button styling', async ({ page }) => {
+  test('should have proper OAuth button styling', async ({ page: _page }) => {
     await page.goto('/auth');
 
     const googleButton = page.getByRole('button', { name: /continue with google/i });
@@ -269,7 +269,7 @@ test.describe('OAuth Providers', () => {
 });
 
 test.describe('Auth Page UI/UX', () => {
-  test('should have back to home link', async ({ page }) => {
+  test('should have back to home link', async ({ page: _page }) => {
     await page.goto('/auth');
 
     const backLink = page.getByRole('link', { name: /back to home/i });
@@ -280,7 +280,7 @@ test.describe('Auth Page UI/UX', () => {
     await expect(page).toHaveURL('/', { timeout: 5000 });
   });
 
-  test('should display branding/logo', async ({ page }) => {
+  test('should display branding/logo', async ({ page: _page }) => {
     await page.goto('/auth');
 
     // Logo should be visible
@@ -288,13 +288,13 @@ test.describe('Auth Page UI/UX', () => {
     await expect(logo.first()).toBeVisible();
   });
 
-  test('should have proper page title', async ({ page }) => {
+  test('should have proper page title', async ({ page: _page }) => {
     await page.goto('/auth');
 
     await expect(page.getByText(/welcome|sign in|join/i)).toBeVisible();
   });
 
-  test('should show divider between OAuth and email signup', async ({ page }) => {
+  test('should show divider between OAuth and email signup', async ({ page: _page }) => {
     await page.goto('/auth');
 
     // Should have "Or continue with email" text or similar divider

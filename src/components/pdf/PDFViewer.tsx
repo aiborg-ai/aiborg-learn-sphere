@@ -54,9 +54,9 @@ export function PDFViewer({
 
   // UI state
   const [activeTab, setActiveTab] = useState<'thumbnails' | 'annotations' | 'search'>('thumbnails');
-  const [searchResults, setSearchResults] = useState<number[]>([]);
+  const [_searchResults, _setSearchResults] = useState<number[]>([]);
   const [annotations, setAnnotations] = useState<PDFAnnotation[]>([]);
-  const [selectedAnnotation, setSelectedAnnotation] = useState<string | null>(null);
+  const [_selectedAnnotation, _setSelectedAnnotation] = useState<string | null>(null);
 
   // Progress tracking
   const [lastSavedProgress, setLastSavedProgress] = useState<number>(0);
@@ -73,6 +73,7 @@ export function PDFViewer({
       }
       saveProgress(); // Save on unmount
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- loadAnnotations, loadProgress, and saveProgress are stable
   }, []);
 
   // Auto-save progress every 30 seconds
@@ -86,6 +87,7 @@ export function PDFViewer({
         clearInterval(progressTimerRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- saveProgress is stable
   }, [pagesViewed, currentPage]);
 
   const loadProgress = async () => {

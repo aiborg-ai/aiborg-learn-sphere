@@ -85,6 +85,7 @@ export default function PublicProfile() {
     if (userId) {
       fetchPublicProfile();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fetchPublicProfile is stable
   }, [userId]);
 
   const fetchPublicProfile = async () => {

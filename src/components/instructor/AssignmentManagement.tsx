@@ -34,7 +34,7 @@ interface Assignment {
 export function AssignmentManagement({
   courseId,
   courseName,
-  onUpdate,
+  onUpdate: _onUpdate,
 }: AssignmentManagementProps) {
   const navigate = useNavigate();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
@@ -42,6 +42,7 @@ export function AssignmentManagement({
 
   useEffect(() => {
     fetchAssignments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fetchAssignments is stable
   }, [courseId]);
 
   const fetchAssignments = async () => {

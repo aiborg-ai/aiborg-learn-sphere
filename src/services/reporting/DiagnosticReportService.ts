@@ -26,7 +26,8 @@ export class DiagnosticReportService {
     const coursesCompleted = courses.filter((c: { progress: number }) => c.progress === 100).length;
     const avgAssessmentScore =
       assessments.length > 0
-        ? assessments.reduce((sum: number, a: { score: number }) => sum + a.score, 0) / assessments.length
+        ? assessments.reduce((sum: number, a: { score: number }) => sum + a.score, 0) /
+          assessments.length
         : 0;
 
     // Analyze strengths and weaknesses
@@ -61,7 +62,11 @@ export class DiagnosticReportService {
         report_data: {
           courses_completed: coursesCompleted,
           assessments_taken: assessments.length,
-          study_hours: sessions.reduce((sum: number, s: { duration_minutes?: number }) => sum + (s.duration_minutes || 0), 0) / 60,
+          study_hours:
+            sessions.reduce(
+              (sum: number, s: { duration_minutes?: number }) => sum + (s.duration_minutes || 0),
+              0
+            ) / 60,
         },
       })
       .select()
@@ -119,7 +124,11 @@ export class DiagnosticReportService {
   }
 
   // Helper methods
-  private static async getUserCourseProgress(userId: string, start: Date, end: Date): Promise<unknown[]> {
+  private static async getUserCourseProgress(
+    userId: string,
+    start: Date,
+    end: Date
+  ): Promise<unknown[]> {
     const { data } = await supabase
       .from('course_enrollments')
       .select('*')
@@ -129,7 +138,11 @@ export class DiagnosticReportService {
     return data || [];
   }
 
-  private static async getUserAssessmentResults(userId: string, start: Date, end: Date): Promise<unknown[]> {
+  private static async getUserAssessmentResults(
+    userId: string,
+    start: Date,
+    end: Date
+  ): Promise<unknown[]> {
     const { data } = await supabase
       .from('ai_assessment_results')
       .select('*')
@@ -139,7 +152,11 @@ export class DiagnosticReportService {
     return data || [];
   }
 
-  private static async getUserLearningSessions(userId: string, start: Date, end: Date): Promise<unknown[]> {
+  private static async getUserLearningSessions(
+    userId: string,
+    start: Date,
+    end: Date
+  ): Promise<unknown[]> {
     const { data } = await supabase
       .from('learning_sessions')
       .select('*')
@@ -152,7 +169,7 @@ export class DiagnosticReportService {
   private static analyzeSkillPerformance(assessments: unknown[]): Record<string, number> {
     const skillScores: Record<string, number[]> = {};
 
-    assessments.forEach((assessment) => {
+    assessments.forEach(assessment => {
       const a = assessment as { results?: Record<string, number> };
       if (a.results) {
         Object.entries(a.results).forEach(([skill, score]) => {
@@ -178,9 +195,7 @@ export class DiagnosticReportService {
     const recommendations: string[] = [];
 
     if (weaknesses.length > 0) {
-      recommendations.push(
-        `Focus on improving: ${weaknesses.slice(0, 3).join(', ')}`
-      );
+      recommendations.push(`Focus on improving: ${weaknesses.slice(0, 3).join(', ')}`);
     }
 
     if (courses.length > 0) {
@@ -188,9 +203,7 @@ export class DiagnosticReportService {
     }
 
     if (strengths.length > 0) {
-      recommendations.push(
-        `Leverage your strengths in ${strengths[0]} for advanced topics`
-      );
+      recommendations.push(`Leverage your strengths in ${strengths[0]} for advanced topics`);
     }
 
     return recommendations;
@@ -199,7 +212,10 @@ export class DiagnosticReportService {
   private static calculateEngagementScore(sessions: unknown[], courses: unknown[]): number {
     const sessionCount = sessions.length;
     const avgSessionDuration =
-      sessions.reduce((sum, s) => sum + ((s as { duration_minutes?: number }).duration_minutes || 0), 0) / Math.max(sessionCount, 1);
+      sessions.reduce(
+        (sum, s) => sum + ((s as { duration_minutes?: number }).duration_minutes || 0),
+        0
+      ) / Math.max(sessionCount, 1);
 
     const score = Math.min(100, sessionCount * 5 + avgSessionDuration / 2);
     return Math.round(score);
@@ -207,14 +223,24 @@ export class DiagnosticReportService {
 
   private static buildProgressTimeline(courses: unknown[], assessments: unknown[]): unknown[] {
     const events = [
-      ...courses.map((c) => ({ date: (c as { updated_at: string }).updated_at, type: 'course', data: c })),
-      ...assessments.map((a) => ({ date: (a as { created_at: string }).created_at, type: 'assessment', data: a })),
+      ...courses.map(c => ({
+        date: (c as { updated_at: string }).updated_at,
+        type: 'course',
+        data: c,
+      })),
+      ...assessments.map(a => ({
+        date: (a as { created_at: string }).created_at,
+        type: 'assessment',
+        data: a,
+      })),
     ];
 
     return events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }
 
-  private static async getUserMetrics(userId: string): Promise<{ avg_score: number; completion_rate: number }> {
+  private static async getUserMetrics(
+    userId: string
+  ): Promise<{ avg_score: number; completion_rate: number }> {
     const { data: courses } = await supabase
       .from('course_enrollments')
       .select('progress')
@@ -227,8 +253,7 @@ export class DiagnosticReportService {
 
     return {
       avg_score: assessments?.reduce((sum, a) => sum + a.score, 0) / (assessments?.length || 1),
-      completion_rate:
-        courses?.reduce((sum, c) => sum + c.progress, 0) / (courses?.length || 1),
+      completion_rate: courses?.reduce((sum, c) => sum + c.progress, 0) / (courses?.length || 1),
     };
   }
 }

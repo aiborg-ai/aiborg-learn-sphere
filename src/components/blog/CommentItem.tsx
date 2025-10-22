@@ -25,7 +25,7 @@ export function CommentItem({
   onLike,
   depth = 0,
 }: CommentItemProps) {
-  const { user } = useAuth();
+  const { user: _user } = useAuth();
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [isLiked, setIsLiked] = useState(comment.is_liked || false);
@@ -42,7 +42,7 @@ export function CommentItem({
 
     try {
       await onLike(comment.id);
-    } catch (_error) {
+    } catch {
       // Revert on error
       setIsLiked(!isLiked);
       setLikeCount(isLiked ? likeCount + 1 : likeCount - 1);

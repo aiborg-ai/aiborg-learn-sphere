@@ -8,11 +8,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { VaultContentService } from '@/services/membership';
-import type {
-  VaultContent,
-  VaultContentFilters,
-  UserVaultBookmark,
-} from '@/services/membership/types';
+import type { VaultContentFilters } from '@/services/membership/types';
 
 // ============================================================================
 // QUERY KEYS
@@ -21,24 +17,18 @@ import type {
 export const vaultContentKeys = {
   all: ['vaultContent'] as const,
   lists: () => [...vaultContentKeys.all, 'list'] as const,
-  list: (filters?: VaultContentFilters) =>
-    [...vaultContentKeys.lists(), filters] as const,
+  list: (filters?: VaultContentFilters) => [...vaultContentKeys.lists(), filters] as const,
   details: () => [...vaultContentKeys.all, 'detail'] as const,
   detail: (slug: string) => [...vaultContentKeys.details(), slug] as const,
-  featured: (limit?: number) =>
-    [...vaultContentKeys.all, 'featured', limit] as const,
-  recent: (limit?: number) =>
-    [...vaultContentKeys.all, 'recent', limit] as const,
-  category: (category: string) =>
-    [...vaultContentKeys.all, 'category', category] as const,
+  featured: (limit?: number) => [...vaultContentKeys.all, 'featured', limit] as const,
+  recent: (limit?: number) => [...vaultContentKeys.all, 'recent', limit] as const,
+  category: (category: string) => [...vaultContentKeys.all, 'category', category] as const,
   categories: () => [...vaultContentKeys.all, 'categories'] as const,
   tags: () => [...vaultContentKeys.all, 'tags'] as const,
   bookmarks: () => [...vaultContentKeys.all, 'bookmarks'] as const,
-  isBookmarked: (contentId: string) =>
-    [...vaultContentKeys.bookmarks(), contentId] as const,
+  isBookmarked: (contentId: string) => [...vaultContentKeys.bookmarks(), contentId] as const,
   stats: () => [...vaultContentKeys.all, 'stats'] as const,
-  history: (limit?: number) =>
-    [...vaultContentKeys.all, 'history', limit] as const,
+  history: (limit?: number) => [...vaultContentKeys.all, 'history', limit] as const,
 };
 
 // ============================================================================
@@ -132,16 +122,11 @@ export function useVaultTags() {
  * Log content view
  */
 export function useLogView() {
-  const queryClient = useQueryClient();
+  const _queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      contentId,
-      watchPercentage,
-    }: {
-      contentId: string;
-      watchPercentage?: number;
-    }) => VaultContentService.logView(contentId, watchPercentage),
+    mutationFn: ({ contentId, watchPercentage }: { contentId: string; watchPercentage?: number }) =>
+      VaultContentService.logView(contentId, watchPercentage),
     onSuccess: () => {
       // Invalidate stats after logging
       queryClient.invalidateQueries({ queryKey: vaultContentKeys.stats() });
@@ -153,7 +138,7 @@ export function useLogView() {
  * Log content download
  */
 export function useLogDownload() {
-  const queryClient = useQueryClient();
+  const _queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (contentId: string) => VaultContentService.logDownload(contentId),
@@ -194,17 +179,12 @@ export function useIsBookmarked(contentId: string | undefined) {
  * Add bookmark
  */
 export function useAddBookmark() {
-  const queryClient = useQueryClient();
+  const _queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: ({
-      contentId,
-      notes,
-    }: {
-      contentId: string;
-      notes?: string;
-    }) => VaultContentService.addBookmark(contentId, notes),
+    mutationFn: ({ contentId, notes }: { contentId: string; notes?: string }) =>
+      VaultContentService.addBookmark(contentId, notes),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: vaultContentKeys.bookmarks() });
       queryClient.invalidateQueries({
@@ -231,7 +211,7 @@ export function useAddBookmark() {
  * Remove bookmark
  */
 export function useRemoveBookmark() {
-  const queryClient = useQueryClient();
+  const _queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
@@ -261,17 +241,12 @@ export function useRemoveBookmark() {
  * Update bookmark notes
  */
 export function useUpdateBookmarkNotes() {
-  const queryClient = useQueryClient();
+  const _queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: ({
-      contentId,
-      notes,
-    }: {
-      contentId: string;
-      notes: string;
-    }) => VaultContentService.updateBookmarkNotes(contentId, notes),
+    mutationFn: ({ contentId, notes }: { contentId: string; notes: string }) =>
+      VaultContentService.updateBookmarkNotes(contentId, notes),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: vaultContentKeys.bookmarks() });
 
@@ -294,7 +269,7 @@ export function useUpdateBookmarkNotes() {
  * Toggle bookmark (add or remove)
  */
 export function useToggleBookmark() {
-  const queryClient = useQueryClient();
+  const _queryClient = useQueryClient();
   const addBookmark = useAddBookmark();
   const removeBookmark = useRemoveBookmark();
 
@@ -370,9 +345,7 @@ export function useVaultContentWithFilters(filters?: VaultContentFilters) {
  */
 export function useVaultContentDetail(slug: string | undefined) {
   const { data: content, isLoading, error } = useVaultContentBySlug(slug);
-  const { data: isBookmarked, isLoading: bookmarkLoading } = useIsBookmarked(
-    content?.id
-  );
+  const { data: isBookmarked, isLoading: bookmarkLoading } = useIsBookmarked(content?.id);
   const logView = useLogView();
 
   // Auto-log view when content loads
@@ -380,6 +353,7 @@ export function useVaultContentDetail(slug: string | undefined) {
     if (content?.id && !isLoading) {
       logView.mutate({ contentId: content.id });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- logView is stable
   }, [content?.id, isLoading]);
 
   return {

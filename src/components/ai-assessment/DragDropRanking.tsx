@@ -160,6 +160,7 @@ export const DragDropRanking: React.FC<DragDropRankingProps> = ({
               const isHovered = hoveredIndex === index;
 
               return (
+                // eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- Draggable ranking item with button role, has proper keyboard support and ARIA
                 <div
                   key={optionId}
                   draggable
@@ -167,7 +168,7 @@ export const DragDropRanking: React.FC<DragDropRankingProps> = ({
                   onDragOver={e => handleDragOver(e, index)}
                   onDrop={e => handleDrop(e, index)}
                   onDragEnd={handleDragEnd}
-                  onKeyDown={(e) => {
+                  onKeyDown={e => {
                     if (e.key === 'ArrowUp' && index > 0) {
                       e.preventDefault();
                       moveItem(index, 'up');

@@ -6,27 +6,20 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CourseAssignmentService } from '@/services/team';
-import type {
-  TeamCourseAssignment,
-  CreateAssignmentParams,
-  AssignmentCompletionSummary,
-} from '@/services/team/types';
+import type { TeamCourseAssignment, CreateAssignmentParams } from '@/services/team/types';
 import { useToast } from '@/components/ui/use-toast';
 
 // Query keys
 export const assignmentKeys = {
   all: ['assignments'] as const,
   lists: () => [...assignmentKeys.all, 'list'] as const,
-  list: (orgId: string, filters?: unknown) =>
-    [...assignmentKeys.lists(), orgId, filters] as const,
+  list: (orgId: string, filters?: unknown) => [...assignmentKeys.lists(), orgId, filters] as const,
   details: () => [...assignmentKeys.all, 'detail'] as const,
   detail: (id: string) => [...assignmentKeys.details(), id] as const,
-  users: (assignmentId: string) =>
-    [...assignmentKeys.all, 'users', assignmentId] as const,
+  users: (assignmentId: string) => [...assignmentKeys.all, 'users', assignmentId] as const,
   userAssignments: (userId: string, orgId?: string) =>
     [...assignmentKeys.all, 'userAssignments', userId, orgId] as const,
-  stats: (assignmentId: string) =>
-    [...assignmentKeys.all, 'stats', assignmentId] as const,
+  stats: (assignmentId: string) => [...assignmentKeys.all, 'stats', assignmentId] as const,
 };
 
 // ============================================================================
@@ -46,8 +39,7 @@ export function useAssignments(
 ) {
   return useQuery({
     queryKey: assignmentKeys.list(organizationId, filters),
-    queryFn: () =>
-      CourseAssignmentService.getAssignments(organizationId, filters),
+    queryFn: () => CourseAssignmentService.getAssignments(organizationId, filters),
     enabled: !!organizationId,
   });
 }
@@ -107,7 +99,7 @@ export function useUpdateAssignment() {
       assignmentId: string;
       updates: Partial<TeamCourseAssignment>;
     }) => CourseAssignmentService.updateAssignment(assignmentId, updates),
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: assignmentKeys.lists() });
       queryClient.invalidateQueries({
         queryKey: assignmentKeys.detail(data.id),
@@ -135,8 +127,7 @@ export function useDeleteAssignment() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (assignmentId: string) =>
-      CourseAssignmentService.deleteAssignment(assignmentId),
+    mutationFn: (assignmentId: string) => CourseAssignmentService.deleteAssignment(assignmentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: assignmentKeys.all });
       toast({
@@ -179,8 +170,7 @@ export function useUserAssignments(
 ) {
   return useQuery({
     queryKey: assignmentKeys.userAssignments(userId, organizationId),
-    queryFn: () =>
-      CourseAssignmentService.getUserAssignments(userId, organizationId, status),
+    queryFn: () => CourseAssignmentService.getUserAssignments(userId, organizationId, status),
     enabled: !!userId,
   });
 }
@@ -193,13 +183,8 @@ export function useAssignUsers() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: ({
-      assignmentId,
-      userIds,
-    }: {
-      assignmentId: string;
-      userIds: string[];
-    }) => CourseAssignmentService.assignUsers(assignmentId, userIds),
+    mutationFn: ({ assignmentId, userIds }: { assignmentId: string; userIds: string[] }) =>
+      CourseAssignmentService.assignUsers(assignmentId, userIds),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: assignmentKeys.users(variables.assignmentId),
@@ -230,13 +215,8 @@ export function useRemoveUserFromAssignment() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: ({
-      assignmentId,
-      userId,
-    }: {
-      assignmentId: string;
-      userId: string;
-    }) => CourseAssignmentService.removeUser(assignmentId, userId),
+    mutationFn: ({ assignmentId, userId }: { assignmentId: string; userId: string }) =>
+      CourseAssignmentService.removeUser(assignmentId, userId),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: assignmentKeys.users(variables.assignmentId),
@@ -268,13 +248,8 @@ export function useSendReminder() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: ({
-      assignmentId,
-      userId,
-    }: {
-      assignmentId: string;
-      userId: string;
-    }) => CourseAssignmentService.sendReminder(assignmentId, userId),
+    mutationFn: ({ assignmentId, userId }: { assignmentId: string; userId: string }) =>
+      CourseAssignmentService.sendReminder(assignmentId, userId),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: assignmentKeys.users(variables.assignmentId),
@@ -302,8 +277,7 @@ export function useSendBulkReminders() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (assignmentId: string) =>
-      CourseAssignmentService.sendBulkReminders(assignmentId),
+    mutationFn: (assignmentId: string) => CourseAssignmentService.sendBulkReminders(assignmentId),
     onSuccess: (count, assignmentId) => {
       queryClient.invalidateQueries({
         queryKey: assignmentKeys.users(assignmentId),
@@ -367,8 +341,7 @@ export function useRefreshStatistics() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (assignmentId: string) =>
-      CourseAssignmentService.refreshStatistics(assignmentId),
+    mutationFn: (assignmentId: string) => CourseAssignmentService.refreshStatistics(assignmentId),
     onSuccess: (_data, assignmentId) => {
       queryClient.invalidateQueries({
         queryKey: assignmentKeys.detail(assignmentId),

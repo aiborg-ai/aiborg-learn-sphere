@@ -18,7 +18,7 @@ interface CommentSectionProps {
 }
 
 export function CommentSection({ postId, onCommentCountChange }: CommentSectionProps) {
-  const { user } = useAuth();
+  const { user: _user } = useAuth();
   const { toast } = useToast();
   const [comments, setComments] = useState<BlogComment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,9 +52,9 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
     } catch (error) {
       logger.error('Failed to load comments:', error);
       toast({
-        title: "Error",
-        description: "Failed to load comments. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to load comments. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -81,7 +81,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
           table: 'blog_comments',
           filter: `post_id=eq.${postId}`,
         },
-        (payload) => {
+        payload => {
           logger.log('🔔 Comment change:', payload.eventType);
           // Reload comments when there's a change
           loadComments();
@@ -93,9 +93,9 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
         } else if (status === 'CHANNEL_ERROR') {
           logger.error('❌ Comments subscription error:', err);
           toast({
-            title: "Connection Issue",
-            description: "Real-time updates may be delayed. Refresh to see latest comments.",
-            variant: "destructive",
+            title: 'Connection Issue',
+            description: 'Real-time updates may be delayed. Refresh to see latest comments.',
+            variant: 'destructive',
           });
         } else if (status === 'TIMED_OUT') {
           logger.error('⏱️ Comments subscription timed out');
@@ -108,6 +108,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
       logger.log('🔌 Cleaning up comments subscription');
       supabase.removeChannel(channel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- loadComments and toast are stable
   }, [postId]);
 
   const handleAddComment = async (content: string) => {
@@ -125,15 +126,15 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
       }
 
       toast({
-        title: "Success",
-        description: "Your comment has been posted.",
+        title: 'Success',
+        description: 'Your comment has been posted.',
       });
     } catch (error) {
       logger.error('Failed to add comment:', error);
       toast({
-        title: "Error",
-        description: "Failed to post comment. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to post comment. Please try again.',
+        variant: 'destructive',
       });
       // Reload to sync state
       loadComments();
@@ -145,8 +146,8 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
       await BlogService.createComment(postId, content, parentId);
 
       toast({
-        title: "Success",
-        description: "Your reply has been posted.",
+        title: 'Success',
+        description: 'Your reply has been posted.',
       });
 
       // Reload comments to show the new reply
@@ -154,9 +155,9 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
     } catch (error) {
       logger.error('Failed to add reply:', error);
       toast({
-        title: "Error",
-        description: "Failed to post reply. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to post reply. Please try again.',
+        variant: 'destructive',
       });
     }
   };
@@ -166,8 +167,8 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
       await BlogService.updateComment(commentId, content);
 
       toast({
-        title: "Success",
-        description: "Your comment has been updated.",
+        title: 'Success',
+        description: 'Your comment has been updated.',
       });
 
       // Reload comments to show the update
@@ -175,9 +176,9 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
     } catch (error) {
       logger.error('Failed to edit comment:', error);
       toast({
-        title: "Error",
-        description: "Failed to update comment. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update comment. Please try again.',
+        variant: 'destructive',
       });
     }
   };
@@ -187,8 +188,8 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
       await BlogService.deleteComment(commentId);
 
       toast({
-        title: "Success",
-        description: "Your comment has been deleted.",
+        title: 'Success',
+        description: 'Your comment has been deleted.',
       });
 
       // Remove from UI optimistically
@@ -197,7 +198,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
           .filter(c => c.id !== commentId)
           .map(c => ({
             ...c,
-            replies: c.replies ? removeComment(c.replies) : []
+            replies: c.replies ? removeComment(c.replies) : [],
           }));
       };
 
@@ -212,9 +213,9 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
     } catch (error) {
       logger.error('Failed to delete comment:', error);
       toast({
-        title: "Error",
-        description: "Failed to delete comment. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to delete comment. Please try again.',
+        variant: 'destructive',
       });
       // Reload to sync state
       loadComments();
@@ -225,8 +226,8 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
     // This would need to be implemented in BlogService
     logger.log('Like comment:', commentId);
     toast({
-      title: "Info",
-      description: "Comment likes coming soon!",
+      title: 'Info',
+      description: 'Comment likes coming soon!',
     });
   };
 
@@ -253,11 +254,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
           <MessageCircle className="h-6 w-6 mr-2" />
           Comments ({commentCount})
         </h2>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={loadComments}
-        >
+        <Button variant="ghost" size="sm" onClick={loadComments}>
           <RefreshCw className="h-4 w-4 mr-2" />
           Refresh
         </Button>
@@ -275,13 +272,11 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
         <div className="bg-secondary/10 rounded-lg p-8 text-center">
           <MessageCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
           <p className="text-lg text-muted-foreground">No comments yet</p>
-          <p className="text-sm text-muted-foreground mt-2">
-            Be the first to share your thoughts!
-          </p>
+          <p className="text-sm text-muted-foreground mt-2">Be the first to share your thoughts!</p>
         </div>
       ) : (
         <div className="space-y-6">
-          {comments.map((comment) => (
+          {comments.map(comment => (
             <CommentItem
               key={comment.id}
               comment={comment}

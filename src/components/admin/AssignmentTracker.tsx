@@ -3,7 +3,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
@@ -16,15 +23,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { useAssignmentTracking } from '@/hooks/useProgressTracking';
 import { useToast } from '@/components/ui/use-toast';
-import {
-  FileText,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  Loader2,
-  Eye,
-  Award
-} from 'lucide-react';
+import { FileText, Clock, CheckCircle2, AlertCircle, Loader2, Eye, Award } from 'lucide-react';
 
 export function AssignmentTracker() {
   const [selectedSubmission, setSelectedSubmission] = useState<string | null>(null);
@@ -81,7 +80,7 @@ export function AssignmentTracker() {
     return 'text-red-600';
   };
 
-  const handleGradeClick = (submission: typeof submissions[0]) => {
+  const handleGradeClick = (submission: (typeof submissions)[0]) => {
     setSelectedSubmission(submission.id);
     setGradeValue(submission.grade?.toString() || '');
     setFeedback(submission.feedback || '');
@@ -112,7 +111,7 @@ export function AssignmentTracker() {
       setSelectedSubmission(null);
       setGradeValue('');
       setFeedback('');
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to submit grade',
@@ -126,13 +125,16 @@ export function AssignmentTracker() {
   const getStatistics = () => {
     const total = submissions.length;
     const graded = submissions.filter(s => s.status === 'graded').length;
-    const pending = submissions.filter(s => s.status === 'submitted' || s.status === 'pending').length;
+    const pending = submissions.filter(
+      s => s.status === 'submitted' || s.status === 'pending'
+    ).length;
     const late = submissions.filter(s => s.status === 'late').length;
 
     const gradedSubmissions = submissions.filter(s => s.grade !== null);
-    const averageGrade = gradedSubmissions.length > 0
-      ? gradedSubmissions.reduce((sum, s) => sum + (s.grade || 0), 0) / gradedSubmissions.length
-      : 0;
+    const averageGrade =
+      gradedSubmissions.length > 0
+        ? gradedSubmissions.reduce((sum, s) => sum + (s.grade || 0), 0) / gradedSubmissions.length
+        : 0;
 
     return { total, graded, pending, late, averageGrade };
   };
@@ -239,7 +241,7 @@ export function AssignmentTracker() {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    submissions.map((submission) => (
+                    submissions.map(submission => (
                       <TableRow key={submission.id}>
                         <TableCell className="font-medium">
                           {submission.user?.display_name || 'N/A'}
@@ -255,7 +257,12 @@ export function AssignmentTracker() {
                         </TableCell>
                         <TableCell>
                           {submission.grade !== null ? (
-                            <span className={getGradeColor(submission.grade, submission.assignment?.max_grade || 100)}>
+                            <span
+                              className={getGradeColor(
+                                submission.grade,
+                                submission.assignment?.max_grade || 100
+                              )}
+                            >
                               {submission.grade} / {submission.assignment?.max_grade || 100}
                             </span>
                           ) : (
@@ -286,13 +293,14 @@ export function AssignmentTracker() {
       </div>
 
       {/* Grading Dialog */}
-      <Dialog open={!!selectedSubmission} onOpenChange={(open) => !open && setSelectedSubmission(null)}>
+      <Dialog
+        open={!!selectedSubmission}
+        onOpenChange={open => !open && setSelectedSubmission(null)}
+      >
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Grade Assignment</DialogTitle>
-            <DialogDescription>
-              Review submission and provide grade with feedback
-            </DialogDescription>
+            <DialogDescription>Review submission and provide grade with feedback</DialogDescription>
           </DialogHeader>
 
           {currentSubmission && (
@@ -320,7 +328,10 @@ export function AssignmentTracker() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Status</p>
-                      {getStatusBadge(currentSubmission.status, currentSubmission.assignment?.due_date)}
+                      {getStatusBadge(
+                        currentSubmission.status,
+                        currentSubmission.assignment?.due_date
+                      )}
                     </div>
                   </div>
 
@@ -328,7 +339,9 @@ export function AssignmentTracker() {
                     <div className="pt-2">
                       <p className="text-sm text-gray-600 mb-1">Submission Text:</p>
                       <div className="p-3 bg-gray-50 rounded-md">
-                        <p className="text-sm whitespace-pre-wrap">{currentSubmission.submission_text}</p>
+                        <p className="text-sm whitespace-pre-wrap">
+                          {currentSubmission.submission_text}
+                        </p>
                       </div>
                     </div>
                   )}
@@ -362,7 +375,7 @@ export function AssignmentTracker() {
                     max={currentSubmission.assignment?.max_grade || 100}
                     step="0.5"
                     value={gradeValue}
-                    onChange={(e) => setGradeValue(e.target.value)}
+                    onChange={e => setGradeValue(e.target.value)}
                     placeholder="Enter grade"
                   />
                 </div>
@@ -372,7 +385,7 @@ export function AssignmentTracker() {
                   <Textarea
                     id="feedback"
                     value={feedback}
-                    onChange={(e) => setFeedback(e.target.value)}
+                    onChange={e => setFeedback(e.target.value)}
                     placeholder="Provide feedback to the student..."
                     rows={6}
                   />

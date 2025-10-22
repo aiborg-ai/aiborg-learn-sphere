@@ -1,8 +1,8 @@
-import { useState, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Mic, Square, Play, Pause, Trash2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { useState, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { Mic, Square, Play, Pause, Trash2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface VoiceRecorderProps {
   onTranscription: (text: string) => void;
@@ -10,7 +10,11 @@ interface VoiceRecorderProps {
   disabled?: boolean;
 }
 
-export function VoiceRecorder({ onTranscription, onRecording, disabled = false }: VoiceRecorderProps) {
+export function VoiceRecorder({
+  onTranscription,
+  onRecording,
+  disabled = false,
+}: VoiceRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -22,21 +26,21 @@ export function VoiceRecorder({ onTranscription, onRecording, disabled = false }
 
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
+      const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           sampleRate: 16000,
           channelCount: 1,
           echoCancellation: true,
-          noiseSuppression: true
-        }
+          noiseSuppression: true,
+        },
       });
 
       mediaRecorderRef.current = new MediaRecorder(stream, {
-        mimeType: 'audio/webm;codecs=opus'
+        mimeType: 'audio/webm;codecs=opus',
       });
       chunksRef.current = [];
 
-      mediaRecorderRef.current.ondataavailable = (event) => {
+      mediaRecorderRef.current.ondataavailable = event => {
         if (event.data.size > 0) {
           chunksRef.current.push(event.data);
         }
@@ -51,10 +55,10 @@ export function VoiceRecorder({ onTranscription, onRecording, disabled = false }
 
       mediaRecorderRef.current.start();
       setIsRecording(true);
-      
+
       toast({
-        title: "Recording Started",
-        description: "Speak clearly into your microphone. Maximum 2 minutes.",
+        title: 'Recording Started',
+        description: 'Speak clearly into your microphone. Maximum 2 minutes.',
       });
 
       // Stop recording after 2 minutes
@@ -63,12 +67,11 @@ export function VoiceRecorder({ onTranscription, onRecording, disabled = false }
           stopRecording();
         }
       }, 120000);
-
-    } catch (error) {
+    } catch {
       toast({
-        title: "Recording Error",
-        description: "Could not access microphone. Please check permissions.",
-        variant: "destructive",
+        title: 'Recording Error',
+        description: 'Could not access microphone. Please check permissions.',
+        variant: 'destructive',
       });
     }
   };
@@ -84,12 +87,12 @@ export function VoiceRecorder({ onTranscription, onRecording, disabled = false }
     if (audioBlob) {
       const audioUrl = URL.createObjectURL(audioBlob);
       audioRef.current = new Audio(audioUrl);
-      
+
       audioRef.current.onended = () => {
         setIsPlaying(false);
         URL.revokeObjectURL(audioUrl);
       };
-      
+
       audioRef.current.play();
       setIsPlaying(true);
     }
@@ -117,15 +120,15 @@ export function VoiceRecorder({ onTranscription, onRecording, disabled = false }
 
     try {
       setIsTranscribing(true);
-      
+
       // Convert blob to base64
       const reader = new FileReader();
       reader.onloadend = async () => {
         const base64Audio = reader.result?.toString().split(',')[1];
-        
+
         if (base64Audio) {
           const { data, error } = await supabase.functions.invoke('transcribe-audio', {
-            body: { audio: base64Audio }
+            body: { audio: base64Audio },
           });
 
           if (error) {
@@ -135,20 +138,19 @@ export function VoiceRecorder({ onTranscription, onRecording, disabled = false }
           if (data?.text) {
             onTranscription(data.text);
             toast({
-              title: "Transcription Complete",
-              description: "Your voice has been converted to text.",
+              title: 'Transcription Complete',
+              description: 'Your voice has been converted to text.',
             });
           }
         }
       };
-      
+
       reader.readAsDataURL(audioBlob);
-      
-    } catch (error) {
+    } catch {
       toast({
-        title: "Transcription Failed",
-        description: error instanceof Error ? error.message : "Failed to transcribe audio",
-        variant: "destructive",
+        title: 'Transcription Failed',
+        description: error instanceof Error ? error.message : 'Failed to transcribe audio',
+        variant: 'destructive',
       });
     } finally {
       setIsTranscribing(false);
@@ -172,12 +174,7 @@ export function VoiceRecorder({ onTranscription, onRecording, disabled = false }
         )}
 
         {isRecording && (
-          <Button
-            type="button"
-            onClick={stopRecording}
-            variant="destructive"
-            size="sm"
-          >
+          <Button type="button" onClick={stopRecording} variant="destructive" size="sm">
             <Square className="h-4 w-4 mr-2" />
             Stop Recording
           </Button>
@@ -191,20 +188,11 @@ export function VoiceRecorder({ onTranscription, onRecording, disabled = false }
               variant="outline"
               size="sm"
             >
-              {isPlaying ? (
-                <Pause className="h-4 w-4 mr-2" />
-              ) : (
-                <Play className="h-4 w-4 mr-2" />
-              )}
+              {isPlaying ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
               {isPlaying ? 'Pause' : 'Play'}
             </Button>
 
-            <Button
-              type="button"
-              onClick={transcribeAudio}
-              disabled={isTranscribing}
-              size="sm"
-            >
+            <Button type="button" onClick={transcribeAudio} disabled={isTranscribing} size="sm">
               {isTranscribing ? (
                 <>
                   <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -215,12 +203,7 @@ export function VoiceRecorder({ onTranscription, onRecording, disabled = false }
               )}
             </Button>
 
-            <Button
-              type="button"
-              onClick={deleteRecording}
-              variant="outline"
-              size="sm"
-            >
+            <Button type="button" onClick={deleteRecording} variant="outline" size="sm">
               <Trash2 className="h-4 w-4 mr-2" />
               Delete
             </Button>

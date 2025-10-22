@@ -27,7 +27,7 @@ export function ROISavingsCalculator() {
   const [months, setMonths] = useState(12);
 
   // Fetch real savings calculation from backend
-  const { data: savings, isLoading } = useCalculateSavings(
+  const { data: savings, isLoading: _isLoading } = useCalculateSavings(
     numMembers,
     coursesPerMember,
     months
@@ -86,7 +86,11 @@ export function ROISavingsCalculator() {
         {/* Number of Family Members */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <label className="flex items-center gap-2 font-semibold text-gray-900">
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+            <label
+              id="family-members-label"
+              className="flex items-center gap-2 font-semibold text-gray-900"
+            >
               <Users className="w-5 h-5 text-green-600" />
               Family Members
             </label>
@@ -94,11 +98,12 @@ export function ROISavingsCalculator() {
           </div>
           <Slider
             value={[numMembers]}
-            onValueChange={(value) => setNumMembers(value[0])}
+            onValueChange={value => setNumMembers(value[0])}
             min={1}
             max={6}
             step={1}
             className="w-full"
+            aria-labelledby="family-members-label"
           />
           <div className="flex justify-between text-xs text-gray-500 mt-1">
             <span>1</span>
@@ -109,7 +114,11 @@ export function ROISavingsCalculator() {
         {/* Courses Per Member Per Month */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <label className="flex items-center gap-2 font-semibold text-gray-900">
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+            <label
+              id="courses-per-person-label"
+              className="flex items-center gap-2 font-semibold text-gray-900"
+            >
               <BookOpen className="w-5 h-5 text-green-600" />
               Courses per Person
             </label>
@@ -117,11 +126,12 @@ export function ROISavingsCalculator() {
           </div>
           <Slider
             value={[coursesPerMember]}
-            onValueChange={(value) => setCoursesPerMember(value[0])}
+            onValueChange={value => setCoursesPerMember(value[0])}
             min={1}
             max={5}
             step={1}
             className="w-full"
+            aria-labelledby="courses-per-person-label"
           />
           <div className="flex justify-between text-xs text-gray-500 mt-1">
             <span>1</span>
@@ -136,9 +146,7 @@ export function ROISavingsCalculator() {
         <div className="space-y-4">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">
-                Individual Courses
-              </span>
+              <span className="text-sm font-medium text-gray-700">Individual Courses</span>
               <span className="text-lg font-bold text-red-600">
                 £{individualCost.toLocaleString()}/mo
               </span>
@@ -159,9 +167,7 @@ export function ROISavingsCalculator() {
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">
-                Family Pass
-              </span>
+              <span className="text-sm font-medium text-gray-700">Family Pass</span>
               <span className="text-lg font-bold text-green-600">
                 £{familyPassCost.toLocaleString()}/mo
               </span>
@@ -171,9 +177,7 @@ export function ROISavingsCalculator() {
                 className="bg-gradient-to-r from-green-500 to-emerald-600 h-6 rounded-full flex items-center justify-end px-3 transition-all duration-500"
                 style={{ width: `${familyBarWidth}%` }}
               >
-                <span className="text-xs font-semibold text-white">
-                  Unlimited
-                </span>
+                <span className="text-xs font-semibold text-white">Unlimited</span>
               </div>
             </div>
           </div>
@@ -182,18 +186,12 @@ export function ROISavingsCalculator() {
         {/* Savings Summary Cards */}
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="bg-white rounded-lg p-4 border-2 border-green-200">
-            <p className="text-sm font-medium text-gray-600 mb-1">
-              Monthly Savings
-            </p>
-            <p className="text-3xl font-bold text-green-600">
-              £{monthlySavings.toLocaleString()}
-            </p>
+            <p className="text-sm font-medium text-gray-600 mb-1">Monthly Savings</p>
+            <p className="text-3xl font-bold text-green-600">£{monthlySavings.toLocaleString()}</p>
           </div>
 
           <div className="bg-white rounded-lg p-4 border-2 border-green-200">
-            <p className="text-sm font-medium text-gray-600 mb-1">
-              Annual Savings
-            </p>
+            <p className="text-sm font-medium text-gray-600 mb-1">Annual Savings</p>
             <p className="text-3xl font-bold text-green-600">
               £{displayedSavings.toLocaleString()}
             </p>
@@ -205,9 +203,7 @@ export function ROISavingsCalculator() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm opacity-90 mb-1">Return on Investment</p>
-              <p className="text-4xl font-bold">
-                {roiPercentage.toLocaleString()}%
-              </p>
+              <p className="text-4xl font-bold">{roiPercentage.toLocaleString()}%</p>
             </div>
             <TrendingUp className="w-16 h-16 opacity-30" />
           </div>

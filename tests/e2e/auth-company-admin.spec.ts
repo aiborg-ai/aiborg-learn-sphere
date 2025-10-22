@@ -16,7 +16,7 @@ test.describe('Company Admin Authentication', () => {
     companySize: '51-200',
   });
 
-  test('should display company admin signup option', async ({ page }) => {
+  test('should display company admin signup option', async ({ page: _page }) => {
     await page.goto('/auth');
     await page.waitForLoadState('networkidle');
 
@@ -29,7 +29,7 @@ test.describe('Company Admin Authentication', () => {
     await expect(page.getByText('Company Admin')).toBeVisible();
   });
 
-  test('should show company fields when Company Admin is selected', async ({ page }) => {
+  test('should show company fields when Company Admin is selected', async ({ page: _page }) => {
     await page.goto('/auth');
     await page.getByRole('tab', { name: /sign up/i }).click();
 
@@ -47,7 +47,7 @@ test.describe('Company Admin Authentication', () => {
     ).toBeVisible();
   });
 
-  test('should hide company fields when Individual is selected', async ({ page }) => {
+  test('should hide company fields when Individual is selected', async ({ page: _page }) => {
     await page.goto('/auth');
     await page.getByRole('tab', { name: /sign up/i }).click();
 
@@ -62,7 +62,7 @@ test.describe('Company Admin Authentication', () => {
     await expect(page.getByLabel(/company name/i)).not.toBeVisible();
   });
 
-  test('should validate required company fields', async ({ page }) => {
+  test('should validate required company fields', async ({ page: _page }) => {
     await page.goto('/auth');
     await page.getByRole('tab', { name: /sign up/i }).click();
 
@@ -82,7 +82,7 @@ test.describe('Company Admin Authentication', () => {
     await expect(page.getByText(/company name is required/i)).toBeVisible({ timeout: 3000 });
   });
 
-  test('should successfully signup as company admin', async ({ page }) => {
+  test('should successfully signup as company admin', async ({ page: _page }) => {
     const testUser = generateTestUser();
 
     await page.goto('/auth');
@@ -116,7 +116,7 @@ test.describe('Company Admin Authentication', () => {
     });
   });
 
-  test('should handle duplicate company admin email', async ({ page }) => {
+  test('should handle duplicate company admin email', async ({ page: _page }) => {
     const testUser = generateTestUser();
 
     // First signup
@@ -160,7 +160,7 @@ test.describe('Company Admin Authentication', () => {
     });
   });
 
-  test('should validate company name length', async ({ page }) => {
+  test('should validate company name length', async ({ page: _page }) => {
     await page.goto('/auth');
     await page.getByRole('tab', { name: /sign up/i }).click();
     await page.getByLabel('Company Admin').click();
@@ -180,7 +180,7 @@ test.describe('Company Admin Authentication', () => {
 });
 
 test.describe('Company Admin Login Flow', () => {
-  test('should allow company admin to sign in', async ({ page }) => {
+  test('should allow company admin to sign in', async ({ page: _page }) => {
     await page.goto('/auth');
 
     // Should be on sign in tab by default
@@ -212,7 +212,7 @@ test.describe('Company Admin Login Flow', () => {
     }
   });
 
-  test('should show error for invalid credentials', async ({ page }) => {
+  test('should show error for invalid credentials', async ({ page: _page }) => {
     await page.goto('/auth');
 
     await page.locator('input[name="email"]').fill('nonexistent@example.com');
@@ -226,7 +226,7 @@ test.describe('Company Admin Login Flow', () => {
 });
 
 test.describe('OAuth Authentication', () => {
-  test('should have Google OAuth button', async ({ page }) => {
+  test('should have Google OAuth button', async ({ page: _page }) => {
     await page.goto('/auth');
 
     // Check for Google sign in button
@@ -235,7 +235,7 @@ test.describe('OAuth Authentication', () => {
     await expect(googleButton).toBeEnabled();
   });
 
-  test('should have GitHub OAuth button', async ({ page }) => {
+  test('should have GitHub OAuth button', async ({ page: _page }) => {
     await page.goto('/auth');
 
     // Check for GitHub sign in button

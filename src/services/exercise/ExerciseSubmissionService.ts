@@ -65,7 +65,7 @@ export class ExerciseSubmissionService {
 
       logger.info('Exercise submission saved', { submissionId: data.id });
       return data as ExerciseSubmission;
-    } catch (error) {
+    } catch {
       logger.error('Failed to save submission', { error, input });
       throw error;
     }
@@ -102,7 +102,7 @@ export class ExerciseSubmissionService {
           testResults = codeResults.test_results;
           score = testResults ? this.calculateTestScore(testResults) : undefined;
           autoGraded = true;
-        } catch (error) {
+        } catch {
           logger.error('Code execution failed', { error });
           testResults = undefined;
         }
@@ -151,7 +151,7 @@ export class ExerciseSubmissionService {
         points_earned: pointsEarned,
         auto_graded: autoGraded,
       };
-    } catch (error) {
+    } catch {
       logger.error('Failed to submit exercise', { error, submissionId });
       throw error;
     }
@@ -183,7 +183,7 @@ export class ExerciseSubmissionService {
         test_results: testResults,
         execution_time_ms: testResults.reduce((sum, t) => sum + (t.execution_time_ms || 0), 0),
       };
-    } catch (error) {
+    } catch {
       return {
         success: false,
         error: 'Code execution failed',
@@ -221,7 +221,7 @@ export class ExerciseSubmissionService {
       if (error) throw error;
 
       return basePoints;
-    } catch (error) {
+    } catch {
       logger.error('Failed to award points', { error, userId, submissionId });
       return 0;
     }
@@ -232,7 +232,7 @@ export class ExerciseSubmissionService {
    */
   static async gradeSubmission(input: GradeSubmissionInput): Promise<ExerciseSubmission> {
     try {
-      const { submission_id, score, feedback, rubric_scores, graded_by } = input;
+      const { submission_id, score, feedback, rubric_scores: _rubric_scores, graded_by } = input;
 
       // Determine status based on score
       const status = score >= 70 ? 'passed' : 'needs_revision';
@@ -271,7 +271,7 @@ export class ExerciseSubmissionService {
 
       logger.info('Submission graded', { submissionId: submission_id, score, status });
       return data as ExerciseSubmission;
-    } catch (error) {
+    } catch {
       logger.error('Failed to grade submission', { error, input });
       throw error;
     }
@@ -302,7 +302,7 @@ export class ExerciseSubmissionService {
 
       logger.info('Revision requested', { submissionId });
       return data as ExerciseSubmission;
-    } catch (error) {
+    } catch {
       logger.error('Failed to request revision', { error, submissionId });
       throw error;
     }
@@ -322,7 +322,7 @@ export class ExerciseSubmissionService {
       if (error) throw error;
 
       return data as ExerciseSubmission;
-    } catch (error) {
+    } catch {
       logger.error('Failed to get submission', { error, submissionId });
       throw error;
     }
@@ -347,7 +347,7 @@ export class ExerciseSubmissionService {
       if (error) throw error;
 
       return data as ExerciseSubmission[];
-    } catch (error) {
+    } catch {
       logger.error('Failed to get exercise submissions', { error, exerciseId });
       throw error;
     }
@@ -371,7 +371,7 @@ export class ExerciseSubmissionService {
       if (error) throw error;
 
       return data as ExerciseSubmission[];
-    } catch (error) {
+    } catch {
       logger.error('Failed to get user submissions', { error, userId, exerciseId });
       throw error;
     }

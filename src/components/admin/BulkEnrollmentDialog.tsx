@@ -48,7 +48,12 @@ export function BulkEnrollmentDialog({ open, onOpenChange, onSuccess }: BulkEnro
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { isProcessing, progress, processEnrollments, resetProgress } = useBulkEnrollment();
+  const {
+    isProcessing: _isProcessing,
+    progress,
+    processEnrollments,
+    resetProgress,
+  } = useBulkEnrollment();
   const { toast } = useToast();
 
   const formatFileSize = (bytes: number): string => {
@@ -56,7 +61,7 @@ export function BulkEnrollmentDialog({ open, onOpenChange, onSuccess }: BulkEnro
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
   };
 
   const handleFileSelect = (selectedFile: File) => {
@@ -218,6 +223,7 @@ export function BulkEnrollmentDialog({ open, onOpenChange, onSuccess }: BulkEnro
         {/* Upload Step */}
         {step === 'upload' && (
           <div className="space-y-4">
+            {/* eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- Drag-and-drop zone with button role, has proper keyboard support and ARIA */}
             <div
               className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 cursor-pointer ${
                 isDragging
@@ -228,7 +234,7 @@ export function BulkEnrollmentDialog({ open, onOpenChange, onSuccess }: BulkEnro
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onClick={() => fileInputRef.current?.click()}
-              onKeyDown={(e) => {
+              onKeyDown={e => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   fileInputRef.current?.click();

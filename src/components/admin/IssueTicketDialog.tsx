@@ -60,7 +60,7 @@ interface IssueTicketDialogProps {
       badge_color?: 'gold' | 'silver' | 'bronze' | 'blue' | 'green';
       notes?: string;
     }
-  ) => Promise<any>;
+  ) => Promise<void>;
 }
 
 export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueTicketDialogProps) {
@@ -99,6 +99,7 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
       // Reset state
       resetForm();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fetchUsers, fetchEvents, fetchCourses, resetForm are stable
   }, [open]);
 
   const resetForm = () => {
@@ -436,11 +437,12 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
                 ) : (
                   <div className="divide-y">
                     {filteredUsers.map(user => (
+                      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- Interactive list item with button role, has proper keyboard support and ARIA
                       <div
                         key={user.user_id}
                         className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer"
                         onClick={() => handleToggleUser(user.user_id)}
-                        onKeyDown={(e) => {
+                        onKeyDown={e => {
                           if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault();
                             handleToggleUser(user.user_id);

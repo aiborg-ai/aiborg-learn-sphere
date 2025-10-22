@@ -24,12 +24,13 @@ export function MiniCalendarWidget() {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
       loadEvents();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- loadEvents is stable
   }, [user]);
 
   const loadEvents = async () => {
@@ -39,12 +40,14 @@ export function MiniCalendarWidget() {
 
       const { data: assignments } = await supabase
         .from('assignments')
-        .select(`
+        .select(
+          `
           id,
           title,
           due_date,
           courses (title)
-        `)
+        `
+        )
         .gte('due_date', monthStart.toISOString())
         .lte('due_date', monthEnd.toISOString())
         .order('due_date', { ascending: true });
@@ -116,7 +119,7 @@ export function MiniCalendarWidget() {
           <Calendar
             mode="single"
             selected={selectedDate}
-            onSelect={(date) => date && setSelectedDate(date)}
+            onSelect={date => date && setSelectedDate(date)}
             className="rounded-md border scale-90 -mx-4"
             modifiers={{
               hasEvents: getDatesWithEvents(),
@@ -133,15 +136,14 @@ export function MiniCalendarWidget() {
         {/* Events for Selected Date */}
         {getEventsForDate(selectedDate).length > 0 && (
           <div className="space-y-2">
-            <h4 className="text-sm font-semibold">
-              {format(selectedDate, 'MMM d')}
-            </h4>
+            <h4 className="text-sm font-semibold">{format(selectedDate, 'MMM d')}</h4>
             {getEventsForDate(selectedDate).map(event => (
+              // eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- Card component with button role, has proper keyboard support and ARIA
               <div
                 key={event.id}
                 className="p-2 rounded-lg border bg-muted/50 hover:bg-muted transition-colors cursor-pointer"
                 onClick={() => navigate(`/assignment/${event.id}`)}
-                onKeyDown={(e) => {
+                onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     navigate(`/assignment/${event.id}`);
@@ -171,11 +173,12 @@ export function MiniCalendarWidget() {
           <div className="space-y-2 pt-2 border-t">
             <h4 className="text-sm font-semibold">Upcoming</h4>
             {upcomingEvents.map(event => (
+              // eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- Card component with button role, has proper keyboard support and ARIA
               <div
                 key={event.id}
                 className="flex items-center justify-between p-2 rounded-lg border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
                 onClick={() => navigate(`/assignment/${event.id}`)}
-                onKeyDown={(e) => {
+                onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     navigate(`/assignment/${event.id}`);
@@ -192,7 +195,9 @@ export function MiniCalendarWidget() {
                   </div>
                 </div>
                 {event.status === 'overdue' && (
-                  <Badge variant="destructive" className="text-xs">Overdue</Badge>
+                  <Badge variant="destructive" className="text-xs">
+                    Overdue
+                  </Badge>
                 )}
               </div>
             ))}

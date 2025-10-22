@@ -186,7 +186,7 @@ export function sanitizeJSON(json: string): object | null {
     };
 
     return sanitizeObject(parsed);
-  } catch (error) {
+  } catch {
     logger.error('Invalid JSON input:', error);
     return null;
   }
@@ -226,7 +226,7 @@ export function sanitizeURL(url: string, allowDataUri: boolean = false): string 
     }
 
     return urlObj.toString();
-  } catch (_error) {
+  } catch {
     // Invalid URL format
     return null;
   }

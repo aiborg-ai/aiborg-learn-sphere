@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test.describe('Duplicate Enrollment Detection', () => {
-  test.skip('should prevent duplicate enrollment in free course', async ({ page }) => {
+  test.skip('should prevent duplicate enrollment in free course', async ({ page: _page }) => {
     // Note: Requires authentication setup
     // This test verifies that attempting to enroll twice shows appropriate message
 
@@ -19,7 +19,7 @@ test.describe('Duplicate Enrollment Detection', () => {
     expect(true).toBeTruthy();
   });
 
-  test.skip('should show "Already Enrolled" status on course page', async ({ page }) => {
+  test.skip('should show "Already Enrolled" status on course page', async ({ page: _page }) => {
     // Note: Requires authentication setup
     // This test verifies that enrolled courses show enrollment status
 
@@ -32,7 +32,7 @@ test.describe('Duplicate Enrollment Detection', () => {
   });
 
   test.skip('should handle duplicate enrollment gracefully in enrollment form', async ({
-    page,
+    page: _page,
   }) => {
     // Note: Requires authentication setup
     // This test verifies the enrollment form handles duplicates
@@ -46,7 +46,7 @@ test.describe('Duplicate Enrollment Detection', () => {
     expect(true).toBeTruthy();
   });
 
-  test.skip('should prevent duplicate enrollment at database level', async ({ page }) => {
+  test.skip('should prevent duplicate enrollment at database level', async ({ page: _page }) => {
     // Note: Requires database access
     // This test verifies the unique constraint works at DB level
 
@@ -59,7 +59,7 @@ test.describe('Duplicate Enrollment Detection', () => {
 });
 
 test.describe('Enrollment Status Display', () => {
-  test.skip('should show enrollment status in dashboard', async ({ page }) => {
+  test.skip('should show enrollment status in dashboard', async ({ page: _page }) => {
     // 1. Login as enrolled user
     // 2. Navigate to dashboard
     // 3. Verify enrolled courses are displayed
@@ -68,7 +68,7 @@ test.describe('Enrollment Status Display', () => {
     expect(true).toBeTruthy();
   });
 
-  test.skip('should show "Access Course" for enrolled courses', async ({ page }) => {
+  test.skip('should show "Access Course" for enrolled courses', async ({ page: _page }) => {
     // 1. Login as enrolled user
     // 2. Navigate to course list
     // 3. Verify enrolled courses show "Access Course" instead of "Enroll"
@@ -76,7 +76,7 @@ test.describe('Enrollment Status Display', () => {
     expect(true).toBeTruthy();
   });
 
-  test.skip('should allow accessing enrolled course directly', async ({ page }) => {
+  test.skip('should allow accessing enrolled course directly', async ({ page: _page }) => {
     // 1. Login as enrolled user
     // 2. Navigate to enrolled course
     // 3. Verify course content loads without enrollment prompt
@@ -86,21 +86,24 @@ test.describe('Enrollment Status Display', () => {
 });
 
 test.describe('Enrollment Error Messages', () => {
-  test.skip('should show user-friendly duplicate enrollment message', async ({ page }) => {
+  test.skip('should show user-friendly duplicate enrollment message', async ({ page: _page }) => {
     // Verify error message says "already enrolled" not technical database error
 
     expect(true).toBeTruthy();
   });
 
   test.skip('should provide link to dashboard in duplicate enrollment message', async ({
-    page,
+    page: _page,
   }) => {
     // Verify duplicate enrollment message includes helpful next action
 
     expect(true).toBeTruthy();
   });
 
-  test.skip('should handle race condition in concurrent enrollments', async ({ page, context }) => {
+  test.skip('should handle race condition in concurrent enrollments', async ({
+    page: _page,
+    context,
+  }) => {
     // Test concurrent enrollment attempts (e.g., double-click)
     // Verify only one enrollment is created
 

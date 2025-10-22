@@ -66,6 +66,7 @@ export interface GeneratedCurriculum {
   total_courses: number;
   generation_metadata: {
     algorithm_version: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- OpenAI API response structure
     profile_snapshot: any;
     generation_timestamp: string;
     courses_analyzed: number;
@@ -86,10 +87,10 @@ class CurriculumGenerationService {
 
   // Scoring weights
   private readonly WEIGHTS = {
-    skill_gap_coverage: 0.40,
-    goal_alignment: 0.30,
-    difficulty_fit: 0.20,
-    schedule_fit: 0.10,
+    skill_gap_coverage: 0.4,
+    goal_alignment: 0.3,
+    difficulty_fit: 0.2,
+    schedule_fit: 0.1,
   };
 
   /**
@@ -114,7 +115,7 @@ class CurriculumGenerationService {
       if (jobError) throw jobError;
 
       // Process asynchronously
-      this.processGenerationJob(job.id, profileId).catch((error) => {
+      this.processGenerationJob(job.id, profileId).catch(error => {
         logger.error('Curriculum generation failed:', error);
       });
 
@@ -164,11 +165,7 @@ class CurriculumGenerationService {
       const courses = await this.fetchAvailableCourses(profile.user_id);
 
       // Run AI generation algorithm
-      const generatedCurriculum = await this.runGenerationAlgorithm(
-        profile,
-        courses,
-        assessment
-      );
+      const generatedCurriculum = await this.runGenerationAlgorithm(profile, courses, assessment);
 
       // Save curriculum to database
       const curriculumId = await this.saveCurriculum(generatedCurriculum, profile);
@@ -208,6 +205,7 @@ class CurriculumGenerationService {
    */
   private async runGenerationAlgorithm(
     profile: LearnerProfile,
+
     courses: Course[],
     assessment: any | null
   ): Promise<GeneratedCurriculum> {
@@ -218,7 +216,7 @@ class CurriculumGenerationService {
     logger.info(`Eligible courses: ${eligibleCourses.length} out of ${courses.length}`);
 
     // Step 2: Score each course
-    const scoredCourses = eligibleCourses.map((course) =>
+    const scoredCourses = eligibleCourses.map(course =>
       this.scoreCourse(course, profile, assessment)
     );
 
@@ -240,7 +238,7 @@ class CurriculumGenerationService {
     return {
       curriculum_id: '', // Will be set when saving
       curriculum_name: `${profile.profile_name} Learning Path`,
-      description: `AI-generated curriculum tailored for ${profile.experience_level} level with focus on: ${profile.learning_goals.map((g) => g.label).join(', ')}`,
+      description: `AI-generated curriculum tailored for ${profile.experience_level} level with focus on: ${profile.learning_goals.map(g => g.label).join(', ')}`,
       ai_confidence_score: avgConfidence,
       estimated_completion_weeks: estimatedWeeks,
       estimated_total_hours: estimatedHours,
@@ -264,7 +262,7 @@ class CurriculumGenerationService {
    * Filter courses by eligibility criteria
    */
   private filterEligibleCourses(courses: Course[], profile: LearnerProfile): Course[] {
-    return courses.filter((course) => {
+    return courses.filter(course => {
       // Must be active and displayed
       if (!course.is_active || !course.display) return false;
 
@@ -327,6 +325,7 @@ class CurriculumGenerationService {
   /**
    * Calculate skill gap coverage score
    */
+
   private calculateSkillGapCoverage(
     course: Course,
     profile: LearnerProfile,
@@ -335,13 +334,14 @@ class CurriculumGenerationService {
     if (!assessment || !profile.proficiency_areas) return 0.5; // Default moderate score
 
     // Check if course keywords match weak proficiency areas
-    const weakAreas = profile.proficiency_areas.filter((area) => area.score < 0.5);
+    const weakAreas = profile.proficiency_areas.filter(area => area.score < 0.5);
     const courseKeywords = course.keywords || [];
 
-    const matchedAreas = weakAreas.filter((area) =>
-      courseKeywords.some((keyword) =>
-        keyword.toLowerCase().includes(area.category.toLowerCase()) ||
-        area.category.toLowerCase().includes(keyword.toLowerCase())
+    const matchedAreas = weakAreas.filter(area =>
+      courseKeywords.some(
+        keyword =>
+          keyword.toLowerCase().includes(area.category.toLowerCase()) ||
+          area.category.toLowerCase().includes(keyword.toLowerCase())
       )
     );
 
@@ -355,11 +355,13 @@ class CurriculumGenerationService {
   private calculateGoalAlignment(course: Course, profile: LearnerProfile): number {
     if (profile.learning_goals.length === 0) return 0.5;
 
-    const courseText = `${course.title} ${course.description} ${course.keywords?.join(' ')}`.toLowerCase();
+    const courseText =
+      `${course.title} ${course.description} ${course.keywords?.join(' ')}`.toLowerCase();
 
-    const matchedGoals = profile.learning_goals.filter((goal) =>
-      courseText.includes(goal.label.toLowerCase()) ||
-      (goal.description && courseText.includes(goal.description.toLowerCase()))
+    const matchedGoals = profile.learning_goals.filter(
+      goal =>
+        courseText.includes(goal.label.toLowerCase()) ||
+        (goal.description && courseText.includes(goal.description.toLowerCase()))
     );
 
     return Math.min(matchedGoals.length / profile.learning_goals.length + 0.3, 1.0);
@@ -367,6 +369,8 @@ class CurriculumGenerationService {
 
   /**
    * Calculate difficulty fit score
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Assessment structure from external source
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- assessment parameter for future use
    */
   private calculateDifficultyFit(
     course: Course,
@@ -404,8 +408,10 @@ class CurriculumGenerationService {
     const unit = durationMatch[2].toLowerCase();
 
     let estimatedHours = 0;
-    if (unit.startsWith('week')) estimatedHours = value * 10; // Assume 10 hours/week
-    else if (unit.startsWith('day')) estimatedHours = value * 2; // Assume 2 hours/day
+    if (unit.startsWith('week'))
+      estimatedHours = value * 10; // Assume 10 hours/week
+    else if (unit.startsWith('day'))
+      estimatedHours = value * 2; // Assume 2 hours/day
     else if (unit.startsWith('hour')) estimatedHours = value;
 
     const weeksNeeded = estimatedHours / profile.available_hours_per_week;
@@ -455,6 +461,8 @@ class CurriculumGenerationService {
   }
 
   /**
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- assessment parameter for future use
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Assessment structure from external source
    * Identify specific skill gaps addressed by course
    */
   private identifySkillGapsAddressed(
@@ -465,14 +473,14 @@ class CurriculumGenerationService {
     if (!profile.proficiency_areas) return [];
 
     const weakAreas = profile.proficiency_areas
-      .filter((area) => area.score < 0.5)
-      .map((area) => area.category);
+      .filter(area => area.score < 0.5)
+      .map(area => area.category);
 
-    const courseKeywords = (course.keywords || []).map((k) => k.toLowerCase());
+    const courseKeywords = (course.keywords || []).map(k => k.toLowerCase());
 
-    return weakAreas.filter((area) =>
-      courseKeywords.some((keyword) =>
-        keyword.includes(area.toLowerCase()) || area.toLowerCase().includes(keyword)
+    return weakAreas.filter(area =>
+      courseKeywords.some(
+        keyword => keyword.includes(area.toLowerCase()) || area.toLowerCase().includes(keyword)
       )
     );
   }
@@ -485,7 +493,8 @@ class CurriculumGenerationService {
     const sorted = [...scoredCourses].sort((a, b) => b.relevance_score - a.relevance_score);
 
     // Select top 5-12 courses based on available time
-    const maxCourses = profile.available_hours_per_week >= 10 ? 12 : profile.available_hours_per_week >= 5 ? 8 : 5;
+    const maxCourses =
+      profile.available_hours_per_week >= 10 ? 12 : profile.available_hours_per_week >= 5 ? 8 : 5;
 
     return sorted.slice(0, maxCourses);
   }
@@ -512,9 +521,11 @@ class CurriculumGenerationService {
   private groupIntoModules(courses: ScoredCourse[]): CurriculumModule[] {
     const modules: CurriculumModule[] = [];
 
-    const beginnerCourses = courses.filter((c) => c.level?.toLowerCase() === 'beginner');
-    const intermediateCourses = courses.filter((c) => c.level?.toLowerCase() === 'intermediate');
-    const advancedCourses = courses.filter((c) => ['advanced', 'expert'].includes(c.level?.toLowerCase() || ''));
+    const beginnerCourses = courses.filter(c => c.level?.toLowerCase() === 'beginner');
+    const intermediateCourses = courses.filter(c => c.level?.toLowerCase() === 'intermediate');
+    const advancedCourses = courses.filter(c =>
+      ['advanced', 'expert'].includes(c.level?.toLowerCase() || '')
+    );
 
     if (beginnerCourses.length > 0) {
       modules.push({
@@ -607,7 +618,7 @@ class CurriculumGenerationService {
 
     // Create modules
     await Promise.all(
-      curriculum.modules.map((module) =>
+      curriculum.modules.map(module =>
         supabase.from('curriculum_modules').insert({
           curriculum_id: curriculumRecord.id,
           module_order: module.module_order,
@@ -651,6 +662,7 @@ class CurriculumGenerationService {
       .single();
 
     if (error) throw error;
+
     return data as LearnerProfile;
   }
 
@@ -687,10 +699,10 @@ class CurriculumGenerationService {
       .select('course_id')
       .eq('user_id', userId);
 
-    const enrolledCourseIds = new Set(enrollments?.map((e) => e.course_id) || []);
+    const enrolledCourseIds = new Set(enrollments?.map(e => e.course_id) || []);
 
     // Filter out enrolled courses
-    return (courses || []).filter((course) => !enrolledCourseIds.has(course.id));
+    return (courses || []).filter(course => !enrolledCourseIds.has(course.id));
   }
 }
 

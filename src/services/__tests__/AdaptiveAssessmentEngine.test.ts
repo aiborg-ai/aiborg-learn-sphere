@@ -105,30 +105,29 @@ describe('AdaptiveAssessmentEngine', () => {
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
       // Mock answered questions query
-      mockFrom.mockReturnValueOnce({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({
-              data: {
-                current_ability_estimate: 0.5,
-                ability_standard_error: 0.7,
-                questions_answered_count: 3,
-              },
+      mockFrom
+        .mockReturnValueOnce({
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: {
+                  current_ability_estimate: 0.5,
+                  ability_standard_error: 0.7,
+                  questions_answered_count: 3,
+                },
+                error: null,
+              }),
+            }),
+          }),
+        })
+        .mockReturnValueOnce({
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockResolvedValue({
+              data: [{ question_id: 'q1' }, { question_id: 'q2' }],
               error: null,
             }),
           }),
-        }),
-      }).mockReturnValueOnce({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockResolvedValue({
-            data: [
-              { question_id: 'q1' },
-              { question_id: 'q2' },
-            ],
-            error: null,
-          }),
-        }),
-      });
+        });
 
       await engine.initializeState();
 
@@ -170,15 +169,17 @@ describe('AdaptiveAssessmentEngine', () => {
     it('should select question closest to current ability', async () => {
       // Mock the RPC call returning the best matched question (RPC does the selection)
       (supabase.rpc as ReturnType<typeof vi.fn>).mockResolvedValue({
-        data: [{
-          question_id: 'q2',
-          question_text: mockQuestion.question_text,
-          question_type: mockQuestion.question_type,
-          difficulty_level: mockQuestion.difficulty_level,
-          irt_difficulty: 0.0,
-          category_name: mockQuestion.category_name,
-          options: mockQuestion.options,
-        }],
+        data: [
+          {
+            question_id: 'q2',
+            question_text: mockQuestion.question_text,
+            question_type: mockQuestion.question_type,
+            difficulty_level: mockQuestion.difficulty_level,
+            irt_difficulty: 0.0,
+            category_name: mockQuestion.category_name,
+            options: mockQuestion.options,
+          },
+        ],
         error: null,
       });
 
@@ -192,15 +193,17 @@ describe('AdaptiveAssessmentEngine', () => {
     it('should exclude already answered questions', async () => {
       // Mock the RPC call returning the next question (RPC excludes answered questions)
       (supabase.rpc as ReturnType<typeof vi.fn>).mockResolvedValue({
-        data: [{
-          question_id: 'q2',
-          question_text: mockQuestion.question_text,
-          question_type: mockQuestion.question_type,
-          difficulty_level: mockQuestion.difficulty_level,
-          irt_difficulty: 0.1,
-          category_name: mockQuestion.category_name,
-          options: mockQuestion.options,
-        }],
+        data: [
+          {
+            question_id: 'q2',
+            question_text: mockQuestion.question_text,
+            question_type: mockQuestion.question_type,
+            difficulty_level: mockQuestion.difficulty_level,
+            irt_difficulty: 0.1,
+            category_name: mockQuestion.category_name,
+            options: mockQuestion.options,
+          },
+        ],
         error: null,
       });
 
@@ -215,12 +218,14 @@ describe('AdaptiveAssessmentEngine', () => {
     it('should process correct answer and update ability', async () => {
       // Mock the RPC call
       (supabase.rpc as ReturnType<typeof vi.fn>).mockResolvedValue({
-        data: [{
-          is_correct: true,
-          points_earned: 10,
-          new_ability_estimate: 0.5,
-          new_standard_error: 0.8,
-        }],
+        data: [
+          {
+            is_correct: true,
+            points_earned: 10,
+            new_ability_estimate: 0.5,
+            new_standard_error: 0.8,
+          },
+        ],
         error: null,
       });
 
@@ -249,12 +254,14 @@ describe('AdaptiveAssessmentEngine', () => {
     it('should process incorrect answer and decrease ability', async () => {
       // Mock the RPC call for incorrect answer
       (supabase.rpc as ReturnType<typeof vi.fn>).mockResolvedValue({
-        data: [{
-          is_correct: false,
-          points_earned: 0,
-          new_ability_estimate: -0.3,
-          new_standard_error: 0.85,
-        }],
+        data: [
+          {
+            is_correct: false,
+            points_earned: 0,
+            new_ability_estimate: -0.3,
+            new_standard_error: 0.85,
+          },
+        ],
         error: null,
       });
 
@@ -280,7 +287,7 @@ describe('AdaptiveAssessmentEngine', () => {
     });
 
     it('should handle multiple choice questions', async () => {
-      const multiChoiceQuestion: AdaptiveQuestion = {
+      const _multiChoiceQuestion: AdaptiveQuestion = {
         ...mockQuestion,
         question_type: 'multiple_choice',
         options: [
@@ -313,12 +320,14 @@ describe('AdaptiveAssessmentEngine', () => {
 
       // Mock the RPC call for multiple choice
       (supabase.rpc as ReturnType<typeof vi.fn>).mockResolvedValue({
-        data: [{
-          is_correct: true,
-          points_earned: 10,
-          new_ability_estimate: 0.6,
-          new_standard_error: 0.75,
-        }],
+        data: [
+          {
+            is_correct: true,
+            points_earned: 10,
+            new_ability_estimate: 0.6,
+            new_standard_error: 0.75,
+          },
+        ],
         error: null,
       });
 
@@ -361,12 +370,14 @@ describe('AdaptiveAssessmentEngine', () => {
     it('should increase ability after correct answer', async () => {
       // Mock the RPC call
       (supabase.rpc as ReturnType<typeof vi.fn>).mockResolvedValue({
-        data: [{
-          is_correct: true,
-          points_earned: 10,
-          new_ability_estimate: 0.5,
-          new_standard_error: 0.8,
-        }],
+        data: [
+          {
+            is_correct: true,
+            points_earned: 10,
+            new_ability_estimate: 0.5,
+            new_standard_error: 0.8,
+          },
+        ],
         error: null,
       });
 
@@ -391,7 +402,8 @@ describe('AdaptiveAssessmentEngine', () => {
     });
 
     it('should decrease standard error as more questions are answered', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValue({
           select: vi.fn().mockReturnValue({
             eq: vi.fn().mockReturnValue({

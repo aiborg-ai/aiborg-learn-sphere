@@ -21,8 +21,8 @@ export function SolvingStage({ workshop }: SolvingStageProps) {
       <Alert>
         <Icon name="Sparkles" size={20} />
         <AlertDescription>
-          This is the main phase! Work collaboratively with your team to develop a solution. Use the solving
-          instructions as a guide.
+          This is the main phase! Work collaboratively with your team to develop a solution. Use the
+          solving instructions as a guide.
         </AlertDescription>
       </Alert>
 
@@ -139,24 +139,34 @@ export function SolvingStage({ workshop }: SolvingStageProps) {
         </h3>
         <div className="space-y-2">
           <div className="flex items-center gap-3 p-2 rounded hover:bg-muted">
-            <input type="checkbox" className="w-4 h-4" />
-            <label className="text-sm">Problem analysis completed</label>
+            <input type="checkbox" id="solving-analysis" className="w-4 h-4" />
+            <label htmlFor="solving-analysis" className="text-sm">
+              Problem analysis completed
+            </label>
           </div>
           <div className="flex items-center gap-3 p-2 rounded hover:bg-muted">
-            <input type="checkbox" className="w-4 h-4" />
-            <label className="text-sm">Solution approach defined</label>
+            <input type="checkbox" id="solving-approach" className="w-4 h-4" />
+            <label htmlFor="solving-approach" className="text-sm">
+              Solution approach defined
+            </label>
           </div>
           <div className="flex items-center gap-3 p-2 rounded hover:bg-muted">
-            <input type="checkbox" className="w-4 h-4" />
-            <label className="text-sm">Key components identified</label>
+            <input type="checkbox" id="solving-components" className="w-4 h-4" />
+            <label htmlFor="solving-components" className="text-sm">
+              Key components identified
+            </label>
           </div>
           <div className="flex items-center gap-3 p-2 rounded hover:bg-muted">
-            <input type="checkbox" className="w-4 h-4" />
-            <label className="text-sm">Implementation plan created</label>
+            <input type="checkbox" id="solving-plan" className="w-4 h-4" />
+            <label htmlFor="solving-plan" className="text-sm">
+              Implementation plan created
+            </label>
           </div>
           <div className="flex items-center gap-3 p-2 rounded hover:bg-muted">
-            <input type="checkbox" className="w-4 h-4" />
-            <label className="text-sm">Solution validated with team</label>
+            <input type="checkbox" id="solving-validated" className="w-4 h-4" />
+            <label htmlFor="solving-validated" className="text-sm">
+              Solution validated with team
+            </label>
           </div>
         </div>
       </Card>

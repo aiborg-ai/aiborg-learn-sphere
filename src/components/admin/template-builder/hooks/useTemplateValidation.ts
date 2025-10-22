@@ -49,7 +49,7 @@ export function useTemplateValidation() {
         description: 'Your template is ready for import',
       });
       return true;
-    } catch (_error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to validate template',

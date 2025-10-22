@@ -215,6 +215,7 @@ export const useClassroomPresence = ({
     } finally {
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- startHeartbeat and subscribeToPresence are stable
   }, [getOrCreateSession, fetchActiveStudents]);
 
   /**

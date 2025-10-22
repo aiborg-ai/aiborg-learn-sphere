@@ -5,7 +5,7 @@ import { HeroSection, ContactSection, AboutSection } from '@/components/sections
 import { TrainingPrograms } from '@/components/TrainingPrograms';
 import { EventsSection } from '@/components/events';
 import { ReviewsSection } from '@/components/ReviewsSection';
-import { AIChatbot, DeepawaliBanner } from '@/components/features';
+import { AIChatbot, AIComputerAssemblyBanner, DeepawaliBanner } from '@/components/features';
 import { FamilyPassBanner } from '@/components/membership';
 
 const Index = () => {
@@ -36,6 +36,7 @@ const Index = () => {
   }, [location.hash]);
   return (
     <div className="min-h-screen">
+      <AIComputerAssemblyBanner />
       <DeepawaliBanner />
       <Navbar />
       <HeroSection />

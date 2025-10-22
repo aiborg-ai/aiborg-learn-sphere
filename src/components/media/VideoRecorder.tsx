@@ -93,7 +93,7 @@ export function VideoRecorder({
           stopRecording();
         }
       }, 120000);
-    } catch (_error) {
+    } catch {
       toast({
         title: 'Recording Error',
         description: 'Could not access camera/microphone. Please check permissions.',
@@ -188,35 +188,14 @@ export function VideoRecorder({
       {/* Video Preview/Playback */}
       <div className="relative bg-black rounded-lg overflow-hidden" style={{ aspectRatio: '4/3' }}>
         {isRecording && (
-          <video
-            ref={previewRef}
-            className="w-full h-full object-cover"
-            autoPlay
-            muted
-            playsInline
-          >
-            <track
-              kind="captions"
-              srcLang="en"
-              label="English"
-              src=""
-            />
+          <video ref={previewRef} className="w-full h-full object-cover" autoPlay muted playsInline>
+            <track kind="captions" srcLang="en" label="English" src="" />
           </video>
         )}
 
         {videoBlob && !isRecording && (
-          <video
-            ref={videoRef}
-            className="w-full h-full object-cover"
-            controls={false}
-            playsInline
-          >
-            <track
-              kind="captions"
-              srcLang="en"
-              label="English"
-              src=""
-            />
+          <video ref={videoRef} className="w-full h-full object-cover" controls={false} playsInline>
+            <track kind="captions" srcLang="en" label="English" src="" />
           </video>
         )}
 

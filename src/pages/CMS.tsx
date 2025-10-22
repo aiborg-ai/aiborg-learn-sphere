@@ -55,7 +55,7 @@ function CMSAdmin() {
 
       if (error) throw error;
       setContent(data || []);
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to fetch CMS content',
@@ -93,7 +93,7 @@ function CMSAdmin() {
 
       setEditingId(null);
       fetchContent();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to update content',
@@ -121,7 +121,7 @@ function CMSAdmin() {
         description: '',
       });
       fetchContent();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to create content',
@@ -142,7 +142,7 @@ function CMSAdmin() {
       });
 
       fetchContent();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to delete content',
@@ -166,7 +166,7 @@ function CMSAdmin() {
       });
 
       fetchContent();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to toggle content status',

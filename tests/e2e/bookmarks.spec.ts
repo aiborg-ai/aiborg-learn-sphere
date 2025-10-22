@@ -2,13 +2,13 @@ import { test, expect } from '@playwright/test';
 import { login, TEST_USER } from './utils/auth';
 
 test.describe('Bookmarks Feature', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page: _page }) => {
     // Login before each test
     await login(page, TEST_USER.email, TEST_USER.password);
   });
 
   test.describe('Creating Bookmarks', () => {
-    test('should bookmark a course', async ({ page }) => {
+    test('should bookmark a course', async ({ page: _page }) => {
       // Navigate to a course page
       await page.goto('/course/1'); // Assuming course ID 1 exists
 
@@ -38,7 +38,7 @@ test.describe('Bookmarks Feature', () => {
       await expect(bookmarkButton).toContainText('Bookmarked');
     });
 
-    test('should bookmark a material', async ({ page }) => {
+    test('should bookmark a material', async ({ page: _page }) => {
       // Navigate to course materials
       await page.goto('/course/1');
 
@@ -68,7 +68,7 @@ test.describe('Bookmarks Feature', () => {
       await expect(page.locator('text=Bookmark Added')).toBeVisible();
     });
 
-    test('should unbookmark by clicking again', async ({ page }) => {
+    test('should unbookmark by clicking again', async ({ page: _page }) => {
       // Navigate to course
       await page.goto('/course/1');
 
@@ -94,7 +94,7 @@ test.describe('Bookmarks Feature', () => {
   });
 
   test.describe('Viewing Bookmarks', () => {
-    test('should navigate to bookmarks page', async ({ page }) => {
+    test('should navigate to bookmarks page', async ({ page: _page }) => {
       await page.goto('/bookmarks');
 
       // Verify page loaded
@@ -102,7 +102,7 @@ test.describe('Bookmarks Feature', () => {
       await expect(page.locator('h1')).toContainText('Bookmarks');
     });
 
-    test('should display bookmarks stats', async ({ page }) => {
+    test('should display bookmarks stats', async ({ page: _page }) => {
       await page.goto('/bookmarks');
 
       // Wait for stats card
@@ -114,7 +114,7 @@ test.describe('Bookmarks Feature', () => {
       await expect(statsCard.locator('text=Recent')).toBeVisible();
     });
 
-    test('should filter bookmarks by type', async ({ page }) => {
+    test('should filter bookmarks by type', async ({ page: _page }) => {
       await page.goto('/bookmarks');
 
       // Wait for page to load
@@ -133,7 +133,7 @@ test.describe('Bookmarks Feature', () => {
       // This is a placeholder - adjust based on actual implementation
     });
 
-    test('should search bookmarks', async ({ page }) => {
+    test('should search bookmarks', async ({ page: _page }) => {
       await page.goto('/bookmarks');
 
       // Enter search query
@@ -145,7 +145,7 @@ test.describe('Bookmarks Feature', () => {
       // Verify search applied (check URL or results count)
     });
 
-    test('should navigate to bookmarked content', async ({ page }) => {
+    test('should navigate to bookmarked content', async ({ page: _page }) => {
       await page.goto('/bookmarks');
 
       // Wait for bookmarks to load
@@ -169,7 +169,7 @@ test.describe('Bookmarks Feature', () => {
   });
 
   test.describe('Managing Bookmarks', () => {
-    test('should delete a bookmark', async ({ page }) => {
+    test('should delete a bookmark', async ({ page: _page }) => {
       // First, create a bookmark to delete
       await page.goto('/course/1');
       const bookmarkBtn = page
@@ -203,7 +203,7 @@ test.describe('Bookmarks Feature', () => {
       await expect(page.locator('text=Bookmark to Delete')).not.toBeVisible();
     });
 
-    test('should show empty state when no bookmarks', async ({ page }) => {
+    test('should show empty state when no bookmarks', async ({ page: _page }) => {
       // Navigate to bookmarks page (assuming clean state or after clearing all)
       await page.goto('/bookmarks');
 
@@ -219,7 +219,7 @@ test.describe('Bookmarks Feature', () => {
   });
 
   test.describe('Bookmark Metadata', () => {
-    test('should capture video timestamp in bookmark metadata', async ({ page }) => {
+    test('should capture video timestamp in bookmark metadata', async ({ page: _page }) => {
       // This test requires a course with video materials
       // Navigate to course with video
       await page.goto('/course/1');

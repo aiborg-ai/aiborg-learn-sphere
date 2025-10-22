@@ -21,8 +21,8 @@ export function ReportingStage({ workshop }: ReportingStageProps) {
       <Alert>
         <Icon name="Presentation" size={20} />
         <AlertDescription>
-          Final stage! Prepare your presentation and document your solution. This is your opportunity to
-          showcase your team's work.
+          Final stage! Prepare your presentation and document your solution. This is your
+          opportunity to showcase your team's work.
         </AlertDescription>
       </Alert>
 
@@ -142,7 +142,9 @@ export function ReportingStage({ workshop }: ReportingStageProps) {
             <Icon name="CheckCircle" size={18} className="text-primary mt-0.5" />
             <div>
               <p className="font-medium text-sm">Feasibility</p>
-              <p className="text-xs text-muted-foreground">Can this solution be realistically implemented?</p>
+              <p className="text-xs text-muted-foreground">
+                Can this solution be realistically implemented?
+              </p>
             </div>
           </div>
           <div className="flex items-start gap-3">
@@ -167,9 +169,7 @@ export function ReportingStage({ workshop }: ReportingStageProps) {
             <Icon name="CheckCircle" size={18} className="text-primary mt-0.5" />
             <div>
               <p className="font-medium text-sm">Teamwork</p>
-              <p className="text-xs text-muted-foreground">
-                How well did the team collaborate?
-              </p>
+              <p className="text-xs text-muted-foreground">How well did the team collaborate?</p>
             </div>
           </div>
         </div>
@@ -183,24 +183,34 @@ export function ReportingStage({ workshop }: ReportingStageProps) {
         </h3>
         <div className="space-y-2">
           <div className="flex items-center gap-3 p-2 rounded hover:bg-muted">
-            <input type="checkbox" className="w-4 h-4" />
-            <label className="text-sm">Presentation slides prepared</label>
+            <input type="checkbox" id="checklist-slides" className="w-4 h-4" />
+            <label htmlFor="checklist-slides" className="text-sm">
+              Presentation slides prepared
+            </label>
           </div>
           <div className="flex items-center gap-3 p-2 rounded hover:bg-muted">
-            <input type="checkbox" className="w-4 h-4" />
-            <label className="text-sm">All team members understand their role</label>
+            <input type="checkbox" id="checklist-roles" className="w-4 h-4" />
+            <label htmlFor="checklist-roles" className="text-sm">
+              All team members understand their role
+            </label>
           </div>
           <div className="flex items-center gap-3 p-2 rounded hover:bg-muted">
-            <input type="checkbox" className="w-4 h-4" />
-            <label className="text-sm">Practiced the presentation timing</label>
+            <input type="checkbox" id="checklist-timing" className="w-4 h-4" />
+            <label htmlFor="checklist-timing" className="text-sm">
+              Practiced the presentation timing
+            </label>
           </div>
           <div className="flex items-center gap-3 p-2 rounded hover:bg-muted">
-            <input type="checkbox" className="w-4 h-4" />
-            <label className="text-sm">Demo/prototype ready (if applicable)</label>
+            <input type="checkbox" id="checklist-demo" className="w-4 h-4" />
+            <label htmlFor="checklist-demo" className="text-sm">
+              Demo/prototype ready (if applicable)
+            </label>
           </div>
           <div className="flex items-center gap-3 p-2 rounded hover:bg-muted">
-            <input type="checkbox" className="w-4 h-4" />
-            <label className="text-sm">Prepared for Q&A session</label>
+            <input type="checkbox" id="checklist-qa" className="w-4 h-4" />
+            <label htmlFor="checklist-qa" className="text-sm">
+              Prepared for Q&A session
+            </label>
           </div>
         </div>
       </Card>
@@ -208,8 +218,8 @@ export function ReportingStage({ workshop }: ReportingStageProps) {
       <Alert className="bg-green-50 border-green-200">
         <Icon name="Trophy" size={20} className="text-green-600" />
         <AlertDescription className="text-green-900">
-          <strong>You're almost done!</strong> Once your presentation is ready, the facilitator will move to
-          the final stage and award your AIBORG points.
+          <strong>You're almost done!</strong> Once your presentation is ready, the facilitator will
+          move to the final stage and award your AIBORG points.
         </AlertDescription>
       </Alert>
     </div>
