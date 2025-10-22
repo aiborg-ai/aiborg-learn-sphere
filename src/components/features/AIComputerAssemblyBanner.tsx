@@ -11,8 +11,9 @@
  */
 
 import { useState, useEffect } from 'react';
-import { X, Cpu, Sparkles, ArrowRight, Calendar } from 'lucide-react';
+import { X, Cpu, Sparkles, ArrowRight, Calendar, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 
 // Banner active period: Until Friday evening (Oct 24, 2025 at 6 PM)
@@ -101,7 +102,7 @@ export function AIComputerAssemblyBanner() {
           </div>
 
           {/* Center Message */}
-          <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center">
+          <div className="flex-1 flex flex-col items-center justify-center gap-2 text-center">
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse" aria-hidden="true" />
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white drop-shadow-lg">
@@ -113,12 +114,19 @@ export function AIComputerAssemblyBanner() {
               />
             </div>
 
+            {/* FREE for FHOAI Vault Subscribers Badge */}
+            <Badge className="bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-amber-950 border-amber-300 px-4 py-1.5 text-sm sm:text-base font-bold shadow-lg animate-pulse">
+              <Crown className="w-4 h-4 mr-2 inline" />
+              FREE for FHOAI Vault Subscribers
+              <Crown className="w-4 h-4 ml-2 inline" />
+            </Badge>
+
             <p className="text-sm sm:text-base text-cyan-100 drop-shadow-md max-w-2xl">
               Join us for hands-on learning experience in building AI-powered computers from scratch
             </p>
 
             {/* Call-to-Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-2">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-1">
               <Button
                 onClick={handleLearnMore}
                 className="bg-white text-blue-600 hover:bg-cyan-50 font-semibold shadow-lg hover:shadow-xl transition-all group"
