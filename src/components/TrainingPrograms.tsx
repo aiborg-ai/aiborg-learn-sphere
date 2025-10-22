@@ -38,14 +38,19 @@ import {
   CheckCircle,
   Play,
   Star,
+  Crown,
 } from 'lucide-react';
 import { ShareButton } from '@/components/shared';
+import { useHasActiveMembership } from '@/hooks/useMembership';
+import { useToast } from '@/hooks/use-toast';
 
 export const TrainingPrograms = () => {
   const { courses, loading, error, refetch } = useCourses();
-  const { getEnrollmentStatus } = useEnrollments();
+  const { getEnrollmentStatus, enrollWithFamilyPass } = useEnrollments();
   const { getReviewCount, loading: _reviewCountsLoading } = useReviewCounts();
   const { user } = useAuth();
+  const { data: hasActiveMembership, isLoading: checkingMembership } = useHasActiveMembership();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [selectedLevel, setSelectedLevel] = useState('All Levels');
@@ -57,6 +62,7 @@ export const TrainingPrograms = () => {
   const [showEnrolledOnly, setShowEnrolledOnly] = useState(!!user); // Default to enrolled filter for logged in users
   const [recordingsModalOpen, setRecordingsModalOpen] = useState(false);
   const [showAllPrograms, setShowAllPrograms] = useState(false);
+  const [enrollingWithFamilyPass, setEnrollingWithFamilyPass] = useState<number | null>(null);
   const { selectedAudience, setSelectedAudience } = usePersonalization();
 
   // Convert database courses to the format expected by the component
@@ -202,6 +208,63 @@ export const TrainingPrograms = () => {
       reviewsSection.scrollIntoView({ behavior: 'smooth' });
       // We'll need to pass the course filter to the reviews section
       window.dispatchEvent(new CustomEvent('filterReviewsByCourse', { detail: { courseId } }));
+    }
+  };
+
+  const handleFamilyPassEnroll = async (program: Course) => {
+    if (!user) {
+      window.location.href = '/auth';
+      return;
+    }
+
+    try {
+      setEnrollingWithFamilyPass(program.id);
+      await enrollWithFamilyPass(program.id);
+
+      toast({
+        title: '🎉 Enrolled Successfully!',
+        description: `You've registered for ${program.title} with your Family Pass.`,
+      });
+
+      // Refresh enrollments
+      refetch();
+    } catch (err) {
+      const error = err as Error;
+
+      if (error.name === 'NoActiveMembershipError') {
+        toast({
+          title: '❌ Active Family Pass Required',
+          description: (
+            <div className="flex flex-col gap-2">
+              <p>{error.message}</p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => (window.location.href = '/family-membership')}
+                className="w-fit"
+              >
+                <Crown className="w-4 h-4 mr-2" />
+                View Family Pass
+              </Button>
+            </div>
+          ),
+          variant: 'destructive',
+        });
+      } else if (error.name === 'DuplicateEnrollmentError') {
+        toast({
+          title: 'Already Enrolled',
+          description: error.message,
+          variant: 'default',
+        });
+      } else {
+        toast({
+          title: 'Enrollment Failed',
+          description: error.message || 'Please try again later.',
+          variant: 'destructive',
+        });
+      }
+    } finally {
+      setEnrollingWithFamilyPass(null);
     }
   };
 
@@ -485,51 +548,79 @@ export const TrainingPrograms = () => {
                         {user ? (
                           (() => {
                             const status = getEnrollmentStatus(program.id, program.startDate);
-                            switch (status) {
-                              case 'enrolled':
-                                return (
-                                  <Button
-                                    size="sm"
-                                    className="bg-green-600 hover:bg-green-700 text-white"
-                                    disabled
-                                  >
-                                    <CheckCircle className="mr-1 h-4 w-4" />
-                                    Enrolled
-                                  </Button>
-                                );
-                              case 'completed':
-                                return (
-                                  <Button
-                                    size="sm"
-                                    className="bg-blue-600 hover:bg-blue-700 text-white"
-                                    disabled
-                                  >
-                                    <CheckCircle className="mr-1 h-4 w-4" />
-                                    Completed
-                                  </Button>
-                                );
-                              default:
-                                return (
-                                  <Button
-                                    size="sm"
-                                    onClick={() => handleEnrollClick(program)}
-                                    className="group/btn"
-                                  >
-                                    Enroll
-                                    <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-                                  </Button>
-                                );
+
+                            // Already enrolled or completed
+                            if (status === 'enrolled' || status === 'completed') {
+                              return (
+                                <Button
+                                  size="sm"
+                                  className={
+                                    status === 'enrolled'
+                                      ? 'bg-green-600 hover:bg-green-700 text-white'
+                                      : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                  }
+                                  disabled
+                                >
+                                  <CheckCircle className="mr-1 h-4 w-4" />
+                                  {status === 'enrolled' ? 'Enrolled' : 'Completed'}
+                                </Button>
+                              );
                             }
+
+                            // Not enrolled - show both buttons
+                            return (
+                              <>
+                                {/* Family Pass Register Button */}
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleFamilyPassEnroll(program)}
+                                  disabled={
+                                    enrollingWithFamilyPass === program.id || checkingMembership
+                                  }
+                                  className="bg-gradient-to-r from-amber-50 to-yellow-50 hover:from-amber-100 hover:to-yellow-100 border-amber-300 text-amber-900 font-semibold"
+                                >
+                                  {enrollingWithFamilyPass === program.id ? (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <Crown className="mr-2 h-4 w-4" />
+                                  )}
+                                  Family Pass
+                                </Button>
+
+                                {/* Regular Enroll Button */}
+                                <Button
+                                  size="sm"
+                                  onClick={() => handleEnrollClick(program)}
+                                  className="group/btn"
+                                >
+                                  Enroll
+                                  <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                                </Button>
+                              </>
+                            );
                           })()
                         ) : (
-                          <Button
-                            size="sm"
-                            onClick={() => handleEnrollClick(program)}
-                            className="group/btn"
-                          >
-                            Enroll
-                            <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-                          </Button>
+                          /* Not logged in - show both options */
+                          <>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => (window.location.href = '/auth')}
+                              className="bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-300 text-amber-900 font-semibold"
+                            >
+                              <Crown className="mr-2 h-4 w-4" />
+                              Family Pass
+                            </Button>
+                            <Button
+                              size="sm"
+                              onClick={() => handleEnrollClick(program)}
+                              className="group/btn"
+                            >
+                              Enroll
+                              <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                            </Button>
+                          </>
                         )}
                       </div>
                     </div>
