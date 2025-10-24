@@ -31,13 +31,36 @@ async function fetchAssessmentTools(
   try {
     const mappedAudience = AUDIENCE_MAPPING[audience] || 'All';
 
-    // Call the database function to get tools for audience
-    const { data: tools, error: toolsError } = await supabase.rpc(
-      'get_assessment_tools_for_audience',
-      {
+    // Try to call the database function first (preferred method)
+    let tools: AssessmentTool[] | null = null;
+    let toolsError = null;
+
+    try {
+      const result = await supabase.rpc('get_assessment_tools_for_audience', {
         p_audience: mappedAudience,
+      });
+      tools = result.data;
+      toolsError = result.error;
+    } catch (rpcError) {
+      // Function doesn't exist, fall back to direct query
+      logger.warn('Database function not found, using fallback query:', rpcError);
+      const { data, error } = await supabase
+        .from('assessment_tools')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true });
+
+      tools = data;
+      toolsError = error;
+
+      // Filter by audience if not "All"
+      if (tools && mappedAudience !== 'All') {
+        tools = tools.filter(
+          tool =>
+            tool.target_audiences.includes(mappedAudience) || tool.target_audiences.includes('All')
+        );
       }
-    );
+    }
 
     if (toolsError) throw toolsError;
     if (!tools) return [];
@@ -54,17 +77,30 @@ async function fetchAssessmentTools(
     const toolsWithProgress = await Promise.all(
       tools.map(async (tool: AssessmentTool) => {
         try {
-          // Get latest attempt
-          const { data: latestAttempt, error: attemptError } = await supabase.rpc(
-            'get_latest_attempt_for_tool',
-            {
+          // Get latest attempt - try RPC function first, then fallback
+          let latestAttempt = null;
+          try {
+            const result = await supabase.rpc('get_latest_attempt_for_tool', {
               p_user_id: userId,
               p_tool_id: tool.id,
+            });
+            latestAttempt = result.data;
+            if (result.error) {
+              logger.error('Error fetching latest attempt:', result.error);
             }
-          );
+          } catch (rpcError) {
+            // Function doesn't exist, use direct query
+            const { data } = await supabase
+              .from('assessment_tool_attempts')
+              .select(
+                'id, attempt_number, score_percentage, ability_estimate, is_completed, completed_at'
+              )
+              .eq('user_id', userId)
+              .eq('tool_id', tool.id)
+              .order('attempt_number', { ascending: false })
+              .limit(1);
 
-          if (attemptError) {
-            logger.error('Error fetching latest attempt:', attemptError);
+            latestAttempt = data && data.length > 0 ? data : null;
           }
 
           // Get total attempts count
@@ -171,11 +207,28 @@ export function useAssessmentTool(slug: string) {
           return tool as AssessmentToolWithProgress;
         }
 
-        // Get user's progress
-        const { data: latestAttempt } = await supabase.rpc('get_latest_attempt_for_tool', {
-          p_user_id: user.id,
-          p_tool_id: tool.id,
-        });
+        // Get user's progress - try RPC function first, then fallback
+        let latestAttempt = null;
+        try {
+          const result = await supabase.rpc('get_latest_attempt_for_tool', {
+            p_user_id: user.id,
+            p_tool_id: tool.id,
+          });
+          latestAttempt = result.data;
+        } catch (rpcError) {
+          // Function doesn't exist, use direct query
+          const { data } = await supabase
+            .from('assessment_tool_attempts')
+            .select(
+              'id, attempt_number, score_percentage, ability_estimate, is_completed, completed_at'
+            )
+            .eq('user_id', user.id)
+            .eq('tool_id', tool.id)
+            .order('attempt_number', { ascending: false })
+            .limit(1);
+
+          latestAttempt = data && data.length > 0 ? data : null;
+        }
 
         const { count: attemptCount } = await supabase
           .from('assessment_tool_attempts')
