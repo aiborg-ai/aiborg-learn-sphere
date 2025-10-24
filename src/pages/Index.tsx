@@ -7,6 +7,7 @@ import { EventsSection } from '@/components/events';
 import { ReviewsSection } from '@/components/ReviewsSection';
 import { AIChatbot, AIComputerAssemblyBanner, DeepawaliBanner } from '@/components/features';
 import { FamilyPassBanner } from '@/components/membership';
+import { AssessmentToolsSection } from '@/components/assessment-tools';
 
 const Index = () => {
   const location = useLocation();
@@ -49,6 +50,9 @@ const Index = () => {
       </div>
       <div id="events">
         <EventsSection />
+      </div>
+      <div id="assessment-tools">
+        <AssessmentToolsSection />
       </div>
       <div id="reviews">
         <ReviewsSection />

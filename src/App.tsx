@@ -43,6 +43,15 @@ const AIAssessment = lazy(() => import('./pages/AIAssessment'));
 const AIAssessmentResults = lazy(() => import('./pages/AIAssessmentResults'));
 const SMEAssessment = lazy(() => import('./pages/SMEAssessment'));
 const SMEAssessmentReport = lazy(() => import('./pages/SMEAssessmentReport'));
+
+// New Assessment Tool pages
+const AIReadinessAssessment = lazy(() => import('./pages/AIReadinessAssessment'));
+const AIAwarenessAssessment = lazy(() => import('./pages/AIAwarenessAssessment'));
+const AIFluencyAssessment = lazy(() => import('./pages/AIFluencyAssessment'));
+const AssessmentResultsPage = lazy(() => import('./pages/AssessmentResultsPage'));
+const AssessmentHistoryPanel = lazy(() =>
+  import('./components/assessment-tools').then(m => ({ default: m.AssessmentHistoryPanel }))
+);
 const CoursePage = lazy(() => import('./pages/CoursePage'));
 const InstructorDashboard = lazy(() => import('./pages/InstructorDashboard'));
 const ClassroomPage = lazy(() => import('./pages/instructor/ClassroomPage'));
@@ -130,6 +139,16 @@ const AppWithShortcuts = () => {
             <Route path="/ai-assessment/results/:assessmentId" element={<AIAssessmentResults />} />
             <Route path="/sme-assessment" element={<SMEAssessment />} />
             <Route path="/sme-assessment-report/:assessmentId" element={<SMEAssessmentReport />} />
+
+            {/* New Assessment Tool routes */}
+            <Route path="/assessment/ai-readiness" element={<AIReadinessAssessment />} />
+            <Route path="/assessment/ai-awareness" element={<AIAwarenessAssessment />} />
+            <Route path="/assessment/ai-fluency" element={<AIFluencyAssessment />} />
+            <Route
+              path="/assessment/:toolSlug/results/:attemptId"
+              element={<AssessmentResultsPage />}
+            />
+            <Route path="/assessment/:toolSlug/history" element={<AssessmentHistoryPanel />} />
             <Route path="/bookmarks" element={<BookmarksPage />} />
             <Route path="/downloads" element={<DownloadsPage />} />
             <Route path="/watch-later" element={<WatchLaterPage />} />

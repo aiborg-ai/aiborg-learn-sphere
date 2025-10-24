@@ -18,9 +18,16 @@ import { logger } from '@/utils/logger';
 export interface AdaptiveQuestion {
   id: string;
   question_text: string;
-  question_type: 'single_choice' | 'multiple_choice' | 'scale' | 'frequency' |
-                 'scenario_multimedia' | 'drag_drop_ranking' | 'drag_drop_ordering' |
-                 'code_evaluation' | 'case_study';
+  question_type:
+    | 'single_choice'
+    | 'multiple_choice'
+    | 'scale'
+    | 'frequency'
+    | 'scenario_multimedia'
+    | 'drag_drop_ranking'
+    | 'drag_drop_ordering'
+    | 'code_evaluation'
+    | 'case_study';
   difficulty_level: 'foundational' | 'applied' | 'advanced' | 'strategic';
   irt_difficulty: number;
   category_id: string;
@@ -53,6 +60,7 @@ export interface QuestionOption {
 
 export interface AssessmentState {
   assessmentId: string;
+  toolId?: string; // Optional: filter questions by assessment tool
   currentAbility: number;
   standardError: number;
   questionsAnswered: number;
@@ -74,12 +82,15 @@ export interface AnswerResult {
  */
 export class AdaptiveAssessmentEngine {
   private assessmentId: string;
+  private toolId?: string;
   private state: AssessmentState;
 
-  constructor(assessmentId: string) {
+  constructor(assessmentId: string, toolId?: string) {
     this.assessmentId = assessmentId;
+    this.toolId = toolId;
     this.state = {
       assessmentId,
+      toolId,
       currentAbility: ADAPTIVE_CONFIG.INITIAL_ABILITY,
       standardError: ADAPTIVE_CONFIG.INITIAL_STANDARD_ERROR,
       questionsAnswered: 0,
@@ -130,9 +141,16 @@ export class AdaptiveAssessmentEngine {
 
   /**
    * Get the next optimal question based on current ability
+   * If toolId is set, only questions from that tool's pool are considered
    */
   async getNextQuestion(categoryId?: string): Promise<AdaptiveQuestion | null> {
     try {
+      // If toolId is set, get questions filtered by tool's question pool
+      if (this.toolId) {
+        return await this.getNextQuestionForTool(categoryId);
+      }
+
+      // Original behavior for non-tool assessments
       const { data, error } = await supabase.rpc('get_next_adaptive_question', {
         p_assessment_id: this.assessmentId,
         p_current_ability: this.state.currentAbility,
@@ -169,6 +187,178 @@ export class AdaptiveAssessmentEngine {
       logger.error('Error in getNextQuestion:', error);
       throw error;
     }
+  }
+
+  /**
+   * Get next question filtered by assessment tool's question pool
+   */
+  private async getNextQuestionForTool(categoryId?: string): Promise<AdaptiveQuestion | null> {
+    try {
+      // Get questions from the tool's pool that haven't been answered
+      const { data: poolQuestions, error: poolError } = await supabase
+        .from('assessment_question_pools')
+        .select(
+          `
+          question_id,
+          weight,
+          assessment_questions (
+            id,
+            question_text,
+            question_type,
+            difficulty_level,
+            irt_difficulty,
+            category_id,
+            help_text,
+            media_type,
+            media_url,
+            media_caption,
+            scenario_context,
+            code_snippet,
+            code_language,
+            assessment_categories (
+              name
+            )
+          )
+        `
+        )
+        .eq('tool_id', this.toolId)
+        .eq('is_active', true)
+        .not('question_id', 'in', `(${this.state.answeredQuestionIds.join(',') || 'NULL'})`);
+
+      if (poolError) throw poolError;
+      if (!poolQuestions || poolQuestions.length === 0) {
+        logger.warn('No more questions available in tool pool');
+        return null;
+      }
+
+      // Filter by category if specified
+      let filteredQuestions = poolQuestions;
+      if (categoryId) {
+        filteredQuestions = poolQuestions.filter(
+          (pq: { assessment_questions: { category_id: string } }) =>
+            pq.assessment_questions.category_id === categoryId
+        );
+      }
+
+      if (filteredQuestions.length === 0) return null;
+
+      // Select question closest to current ability (IRT matching)
+      const selectedPool = this.selectBestQuestion(
+        filteredQuestions.map((pq: unknown) => {
+          const poolQ = pq as {
+            question_id: string;
+            weight: number;
+            assessment_questions: {
+              irt_difficulty: number;
+            };
+          };
+          return {
+            questionId: poolQ.question_id,
+            difficulty: poolQ.assessment_questions.irt_difficulty,
+            weight: poolQ.weight,
+          };
+        })
+      );
+
+      const selectedQuestion = filteredQuestions.find(
+        (pq: { question_id: string }) => pq.question_id === selectedPool.questionId
+      );
+
+      if (!selectedQuestion) return null;
+
+      // Fetch options for the selected question
+      const { data: options, error: optionsError } = await supabase
+        .from('assessment_question_options')
+        .select('*')
+        .eq('question_id', selectedQuestion.question_id)
+        .order('order_index', { ascending: true });
+
+      if (optionsError) throw optionsError;
+
+      const question = selectedQuestion.assessment_questions as {
+        id: string;
+        question_text: string;
+        question_type: string;
+        difficulty_level: string;
+        irt_difficulty: number;
+        category_id: string;
+        help_text?: string;
+        media_type?: string;
+        media_url?: string;
+        media_caption?: string;
+        scenario_context?: string;
+        code_snippet?: string;
+        code_language?: string;
+        assessment_categories: { name: string };
+      };
+
+      return {
+        id: question.id,
+        question_text: question.question_text,
+        question_type: question.question_type as AdaptiveQuestion['question_type'],
+        difficulty_level: question.difficulty_level as AdaptiveQuestion['difficulty_level'],
+        irt_difficulty: question.irt_difficulty,
+        category_id: question.category_id,
+        category_name: question.assessment_categories.name,
+        help_text: question.help_text,
+        media_type: question.media_type as AdaptiveQuestion['media_type'],
+        media_url: question.media_url,
+        media_caption: question.media_caption,
+        scenario_context: question.scenario_context,
+        code_snippet: question.code_snippet,
+        code_language: question.code_language,
+        options: (options || []).map((opt: unknown) => {
+          const option = opt as {
+            id: string;
+            option_text: string;
+            option_value: string;
+            points: number;
+            description?: string;
+            is_correct: boolean;
+            order_index: number;
+            correct_position?: number;
+            option_image_url?: string;
+          };
+          return {
+            id: option.id,
+            option_text: option.option_text,
+            option_value: option.option_value,
+            points: option.points,
+            description: option.description,
+            is_correct: option.is_correct,
+            order_index: option.order_index,
+            correct_position: option.correct_position,
+            option_image_url: option.option_image_url,
+          };
+        }),
+      };
+    } catch (error) {
+      logger.error('Error fetching next question for tool:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Select best question using IRT matching and weight
+   */
+  private selectBestQuestion(
+    questions: Array<{ questionId: string; difficulty: number; weight: number }>
+  ): { questionId: string; difficulty: number; weight: number } {
+    // Score each question based on IRT match and weight
+    const scored = questions.map(q => {
+      // IRT match: questions with difficulty close to ability are best
+      const difficultyMatch = Math.abs(q.difficulty - this.state.currentAbility);
+      const irtScore = Math.exp(-difficultyMatch); // Exponential decay
+
+      // Combine IRT score with weight
+      const finalScore = irtScore * q.weight;
+
+      return { ...q, score: finalScore };
+    });
+
+    // Sort by score and return best
+    scored.sort((a, b) => b.score - a.score);
+    return scored[0];
   }
 
   /**
@@ -355,9 +545,10 @@ export class AdaptiveAssessmentEngine {
  * Factory function to create and initialize engine
  */
 export async function createAdaptiveEngine(
-  assessmentId: string
+  assessmentId: string,
+  toolId?: string
 ): Promise<AdaptiveAssessmentEngine> {
-  const engine = new AdaptiveAssessmentEngine(assessmentId);
+  const engine = new AdaptiveAssessmentEngine(assessmentId, toolId);
   await engine.initializeState();
   return engine;
 }
