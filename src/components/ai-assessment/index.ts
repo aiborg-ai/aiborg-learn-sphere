@@ -3,15 +3,15 @@
  * Export all assessment-related components
  */
 
-export { default as AIAssessmentWizard } from './AIAssessmentWizard';
-export { default as AIAssessmentWizardAdaptive } from './AIAssessmentWizardAdaptive';
-export { default as AssessmentProgressIndicator } from './AssessmentProgressIndicator';
-export { default as AssessmentAnalyticsDashboard } from './AssessmentAnalyticsDashboard';
-export { default as CaseStudy } from './CaseStudy';
-export { default as CodeEvaluation } from './CodeEvaluation';
-export { default as DragDropRanking } from './DragDropRanking';
-export { default as EarlyCompletionIncentive } from './EarlyCompletionIncentive';
-export { default as LiveStatsPanel } from './LiveStatsPanel';
-export { default as ProfilingQuestionnaire } from './ProfilingQuestionnaire';
-export { default as ScenarioQuestion } from './ScenarioQuestion';
-export { default as VoiceAnswerInput } from './VoiceAnswerInput';
+export { AIAssessmentWizard } from './AIAssessmentWizard';
+export { AIAssessmentWizardAdaptive } from './AIAssessmentWizardAdaptive';
+export { AssessmentProgressIndicator } from './AssessmentProgressIndicator';
+export { AssessmentAnalyticsDashboard } from './AssessmentAnalyticsDashboard';
+export { CaseStudy } from './CaseStudy';
+export { CodeEvaluation } from './CodeEvaluation';
+export { DragDropRanking } from './DragDropRanking';
+export { EarlyCompletionIncentive, EarlyCompletionBadge } from './EarlyCompletionIncentive';
+export { LiveStatsPanel } from './LiveStatsPanel';
+export { ProfilingQuestionnaire } from './ProfilingQuestionnaire';
+export { ScenarioQuestion } from './ScenarioQuestion';
+export { VoiceAnswerInput } from './VoiceAnswerInput';
