@@ -36,4 +36,4 @@ UPDATE assessment_question_options
 SET is_correct = true
 WHERE points > 0 AND is_correct IS NULL;
 
-COMMENT ON MIGRATION IS 'Adds missing cognitive_level column and is_correct flag for compatibility with assessment tools';
+-- Migration complete: Added missing columns for assessment tools compatibility
