@@ -52,6 +52,7 @@ const AssessmentResultsPage = lazy(() => import('./pages/AssessmentResultsPage')
 const AssessmentHistoryPanel = lazy(() =>
   import('./components/assessment-tools').then(m => ({ default: m.AssessmentHistoryPanel }))
 );
+const AssessmentQuestionsManagement = lazy(() => import('./pages/AssessmentQuestionsManagement'));
 const CoursePage = lazy(() => import('./pages/CoursePage'));
 const InstructorDashboard = lazy(() => import('./pages/InstructorDashboard'));
 const ClassroomPage = lazy(() => import('./pages/instructor/ClassroomPage'));
@@ -125,6 +126,7 @@ const AppWithShortcuts = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/template-import" element={<TemplateImport />} />
+            <Route path="/admin/assessment-questions" element={<AssessmentQuestionsManagement />} />
             <Route path="/cms" element={<CMS />} />
             <Route path="/cms/blog" element={<BlogCMS />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
