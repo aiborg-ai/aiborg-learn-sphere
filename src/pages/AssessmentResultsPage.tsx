@@ -6,6 +6,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAssessmentAttempt } from '@/hooks/useAssessmentAttempts';
 import { useAssessmentTool } from '@/hooks/useAssessmentTools';
+import { useAssessmentRecommendations } from '@/hooks/useAssessmentRecommendations';
 import { AssessmentToolService } from '@/services/assessment-tools/AssessmentToolService';
 import { Navbar, Footer } from '@/components/navigation';
 import { Button } from '@/components/ui/button';
@@ -13,9 +14,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { EnhancedPerformanceBreakdown } from '@/components/assessment/EnhancedPerformanceBreakdown';
+import { RecommendedResources } from '@/components/assessment/RecommendedResources';
+import { LearningPathRoadmap } from '@/components/assessment/LearningPathRoadmap';
 import {
   Trophy,
-  TrendingUp,
   Clock,
   CheckCircle2,
   XCircle,
@@ -68,6 +71,12 @@ export default function AssessmentResultsPage() {
 
     generateResults();
   }, [attempt, tool]);
+
+  // Get personalized recommendations
+  const { data: recommendations, isLoading: recommendationsLoading } = useAssessmentRecommendations(
+    results,
+    toolSlug || ''
+  );
 
   if (attemptLoading || isLoadingResults) {
     return (
@@ -197,33 +206,12 @@ export default function AssessmentResultsPage() {
           </CardContent>
         </Card>
 
-        {/* Category Performance */}
+        {/* Enhanced Performance Breakdown */}
         {results.performance_by_category.length > 0 && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                Performance by Category
-              </CardTitle>
-              <CardDescription>See how you performed in each area</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {results.performance_by_category.map((cat, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{cat.category_name}</span>
-                    <span className="text-sm text-muted-foreground">
-                      {cat.correct_answers}/{cat.questions_answered} correct
-                    </span>
-                  </div>
-                  <Progress value={cat.score_percentage} className="h-2" />
-                  <div className="text-xs text-muted-foreground text-right">
-                    {cat.score_percentage.toFixed(1)}%
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+          <EnhancedPerformanceBreakdown
+            performance={results.performance_by_category}
+            averageScore={attempt.score_percentage}
+          />
         )}
 
         {/* Recommendations */}
@@ -269,6 +257,26 @@ export default function AssessmentResultsPage() {
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {/* Learning Path */}
+        {!recommendationsLoading &&
+          recommendations?.learningPath &&
+          recommendations.learningPath.length > 0 && (
+            <LearningPathRoadmap steps={recommendations.learningPath} className="mb-8" />
+          )}
+
+        {/* Recommended Resources */}
+        {!recommendationsLoading && recommendations && (
+          <div className="mb-8">
+            <RecommendedResources
+              courses={recommendations.courses}
+              blogPosts={recommendations.blogPosts}
+              weakCategories={results.performance_by_category
+                .filter(cat => cat.score_percentage < 70)
+                .map(cat => cat.category_name.toLowerCase())}
+            />
+          </div>
         )}
 
         {/* Action Buttons */}
