@@ -3,7 +3,7 @@
  * Manages user trust levels and permissions
  */
 
-import { useQuery, useMutation, useQueryClient } from '@tantml:react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ForumTrustLevelService } from '@/services/forum';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
