@@ -31,6 +31,7 @@ export const EventCard = memo(function EventCard({ event, onRegister }: EventCar
   const [registeringWithFamilyPass, setRegisteringWithFamilyPass] = useState(false);
   const [hasActiveMembership, setHasActiveMembership] = useState(false);
   const [checkingMembership, setCheckingMembership] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
   const { user } = useAuth();
   const { isRegisteredForEvent, registerForEvent, registerWithFamilyPass } =
     useEventRegistrations();
@@ -227,52 +228,62 @@ export const EventCard = memo(function EventCard({ event, onRegister }: EventCar
             {event.title}
           </h3>
 
-          <p className="text-muted-foreground text-sm italic">Information on Request</p>
+          <button
+            onClick={() => setShowDetails(!showDetails)}
+            className="text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1 transition-colors"
+            aria-label={showDetails ? 'Hide event details' : 'Show event details'}
+          >
+            {showDetails ? 'Hide Details' : 'View Date, Time & Location →'}
+          </button>
         </CardHeader>
 
         <CardContent className="flex-1 space-y-4">
-          {/* Date & Time */}
-          <div className="flex items-center gap-3 text-sm" aria-label="Event date and time">
-            <div
-              className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center"
-              aria-hidden="true"
-            >
-              <Calendar className="h-4 w-4 text-primary" />
-            </div>
-            <div>
-              <div
-                className="font-medium"
-                aria-label={`Event date: ${formatEventDate(event.event_date)}`}
-              >
-                {formatEventDate(event.event_date)}
+          {/* Date & Time - Hidden by default */}
+          {showDetails && (
+            <>
+              <div className="flex items-center gap-3 text-sm" aria-label="Event date and time">
+                <div
+                  className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center"
+                  aria-hidden="true"
+                >
+                  <Calendar className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <div
+                    className="font-medium"
+                    aria-label={`Event date: ${formatEventDate(event.event_date)}`}
+                  >
+                    {formatEventDate(event.event_date)}
+                  </div>
+                  <div
+                    className="text-muted-foreground flex items-center gap-1"
+                    aria-label={`Event time: ${formatTime(event.start_time)} to ${formatTime(event.end_time)}`}
+                  >
+                    <Clock className="h-3 w-3" aria-hidden="true" />
+                    {formatTime(event.start_time)} - {formatTime(event.end_time)}
+                  </div>
+                </div>
               </div>
-              <div
-                className="text-muted-foreground flex items-center gap-1"
-                aria-label={`Event time: ${formatTime(event.start_time)} to ${formatTime(event.end_time)}`}
-              >
-                <Clock className="h-3 w-3" aria-hidden="true" />
-                {formatTime(event.start_time)} - {formatTime(event.end_time)}
-              </div>
-            </div>
-          </div>
 
-          {/* Location */}
-          <div className="flex items-start gap-3 text-sm" aria-label="Event location">
-            <div
-              className="w-8 h-8 rounded-lg bg-secondary/50 flex items-center justify-center mt-0.5"
-              aria-hidden="true"
-            >
-              <MapPin className="h-4 w-4 text-secondary-foreground" />
-            </div>
-            <div className="flex-1">
-              <div
-                className="font-medium text-secondary-foreground"
-                aria-label={`Location: ${event.location}`}
-              >
-                {event.location}
+              {/* Location */}
+              <div className="flex items-start gap-3 text-sm" aria-label="Event location">
+                <div
+                  className="w-8 h-8 rounded-lg bg-secondary/50 flex items-center justify-center mt-0.5"
+                  aria-hidden="true"
+                >
+                  <MapPin className="h-4 w-4 text-secondary-foreground" />
+                </div>
+                <div className="flex-1">
+                  <div
+                    className="font-medium text-secondary-foreground"
+                    aria-label={`Location: ${event.location}`}
+                  >
+                    {event.location}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </>
+          )}
 
           {/* Capacity */}
           {event.max_capacity && (
