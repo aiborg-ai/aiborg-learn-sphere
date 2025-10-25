@@ -111,15 +111,17 @@ async function fetchAssessmentTools(
             .eq('tool_id', tool.id);
 
           // Get best score
-          const { data: bestAttempt } = await supabase
+          const { data: bestAttemptData } = await supabase
             .from('assessment_tool_attempts')
             .select('score_percentage')
             .eq('user_id', userId)
             .eq('tool_id', tool.id)
             .eq('is_completed', true)
             .order('score_percentage', { ascending: false })
-            .limit(1)
-            .single();
+            .limit(1);
+
+          const bestAttempt =
+            bestAttemptData && bestAttemptData.length > 0 ? bestAttemptData[0] : null;
 
           return {
             ...tool,
@@ -236,15 +238,17 @@ export function useAssessmentTool(slug: string) {
           .eq('user_id', user.id)
           .eq('tool_id', tool.id);
 
-        const { data: bestAttempt } = await supabase
+        const { data: bestAttemptData } = await supabase
           .from('assessment_tool_attempts')
           .select('score_percentage')
           .eq('user_id', user.id)
           .eq('tool_id', tool.id)
           .eq('is_completed', true)
           .order('score_percentage', { ascending: false })
-          .limit(1)
-          .single();
+          .limit(1);
+
+        const bestAttempt =
+          bestAttemptData && bestAttemptData.length > 0 ? bestAttemptData[0] : null;
 
         return {
           ...tool,

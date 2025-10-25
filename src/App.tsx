@@ -89,6 +89,11 @@ const WorkshopSessionPage = lazy(() => import('./pages/WorkshopSessionPage'));
 const FamilyMembershipPage = lazy(() => import('./pages/FamilyMembershipPage'));
 const FamilyMembershipEnrollment = lazy(() => import('./pages/FamilyMembershipEnrollment'));
 
+// Forum pages
+const ForumPage = lazy(() => import('./pages/ForumPage'));
+const ForumCategoryPage = lazy(() => import('./pages/ForumCategoryPage'));
+const ForumThreadPage = lazy(() => import('./pages/ForumThreadPage'));
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -185,6 +190,11 @@ const AppWithShortcuts = () => {
             {/* Membership routes */}
             <Route path="/family-membership" element={<FamilyMembershipPage />} />
             <Route path="/family-membership/enroll" element={<FamilyMembershipEnrollment />} />
+
+            {/* Forum routes */}
+            <Route path="/forum" element={<ForumPage />} />
+            <Route path="/forum/:categorySlug" element={<ForumCategoryPage />} />
+            <Route path="/forum/:categorySlug/:threadSlug" element={<ForumThreadPage />} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

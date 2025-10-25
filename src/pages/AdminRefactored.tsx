@@ -24,6 +24,7 @@ import {
   Folder,
   Ticket,
   Crown,
+  ShieldCheck,
 } from 'lucide-react';
 
 // Components
@@ -44,6 +45,7 @@ import { AssignmentTracker } from '@/components/admin/AssignmentTracker';
 import { ResourcesManagement } from '@/components/admin/ResourcesManagement';
 import { AttendanceTicketManagement } from '@/components/admin/AttendanceTicketManagement';
 import { FamilyPassManagement } from '@/components/admin/FamilyPassManagement';
+import { ModeratorDashboard } from '@/components/admin/ModeratorDashboard';
 
 export default function AdminRefactored() {
   const { user } = useAuth();
@@ -187,6 +189,10 @@ export default function AdminRefactored() {
               <Ticket className="h-4 w-4 mr-2" />
               Attendance
             </TabsTrigger>
+            <TabsTrigger value="moderation" className="text-white data-[state=active]:bg-white/20">
+              <ShieldCheck className="h-4 w-4 mr-2" />
+              Moderation
+            </TabsTrigger>
           </TabsList>
 
           {/* Tab Content */}
@@ -261,6 +267,10 @@ export default function AdminRefactored() {
 
           <TabsContent value="attendance">
             <AttendanceTicketManagement />
+          </TabsContent>
+
+          <TabsContent value="moderation">
+            <ModeratorDashboard />
           </TabsContent>
         </Tabs>
       </div>
