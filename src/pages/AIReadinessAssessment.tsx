@@ -18,7 +18,7 @@ import SMEAssessment from './SMEAssessment';
 export default function AIReadinessAssessment() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [attemptId, setAttemptId] = useState<string | null>(null);
 
   // Fetch the AI-Readiness tool
@@ -27,6 +27,10 @@ export default function AIReadinessAssessment() {
 
   // Create attempt on mount
   useEffect(() => {
+    // Wait for auth to finish loading
+    if (authLoading) return;
+
+    // Check if user is authenticated after loading is complete
     if (!user) {
       toast({
         title: 'Authentication Required',
@@ -56,7 +60,7 @@ export default function AIReadinessAssessment() {
         },
       });
     }
-  }, [user, tool, attemptId, createAttempt, toast, navigate]);
+  }, [authLoading, user, tool, attemptId, createAttempt, toast, navigate]);
 
   if (toolLoading || createAttempt.isPending || !attemptId) {
     return (

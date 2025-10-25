@@ -24,7 +24,7 @@ import { logger } from '@/utils/logger';
 export default function AIFluencyAssessment() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [assessmentId, setAssessmentId] = useState<string | null>(null);
@@ -38,6 +38,10 @@ export default function AIFluencyAssessment() {
   // Initialize assessment
   useEffect(() => {
     const initializeAssessment = async () => {
+      // Wait for auth to finish loading
+      if (authLoading) return;
+
+      // Check if user is authenticated after loading is complete
       if (!user) {
         toast({
           title: 'Authentication Required',
@@ -99,7 +103,7 @@ export default function AIFluencyAssessment() {
     };
 
     initializeAssessment();
-  }, [user, tool, attemptId, createAttempt, toast, navigate]);
+  }, [authLoading, user, tool, attemptId, createAttempt, toast, navigate]);
 
   // Handle assessment completion
   const handleAssessmentComplete = async () => {
