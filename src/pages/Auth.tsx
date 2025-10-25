@@ -51,16 +51,26 @@ export default function Auth() {
   const [accountType, setAccountType] = useState<'individual' | 'company_admin'>('individual');
   const [industry, setIndustry] = useState('');
   const [companySize, setCompanySize] = useState('');
-  const { signIn, signUp, signInWithGoogle, signInWithGitHub, user } = useAuth();
+  const {
+    signIn,
+    signUp,
+    signInWithGoogle,
+    signInWithGitHub,
+    user,
+    loading: authLoading,
+  } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   // Redirect if user is already logged in
   useEffect(() => {
+    // Wait for auth to finish loading before checking
+    if (authLoading) return;
+
     if (user) {
       navigate('/');
     }
-  }, [user, navigate]);
+  }, [authLoading, user, navigate]);
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -286,6 +296,18 @@ export default function Auth() {
       setIsResetting(false);
     }
   };
+
+  // Show loading state while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-white mx-auto mb-4" />
+          <p className="text-white/80">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
@@ -546,7 +568,10 @@ export default function Auth() {
                           Industry <span className="text-red-400">*</span>
                         </Label>
                         <Select value={industry} onValueChange={setIndustry}>
-                          <SelectTrigger id="industry" className="bg-white/10 border-white/20 text-white">
+                          <SelectTrigger
+                            id="industry"
+                            className="bg-white/10 border-white/20 text-white"
+                          >
                             <SelectValue placeholder="Select industry" />
                           </SelectTrigger>
                           <SelectContent>
@@ -570,7 +595,10 @@ export default function Auth() {
                           Company Size <span className="text-red-400">*</span>
                         </Label>
                         <Select value={companySize} onValueChange={setCompanySize}>
-                          <SelectTrigger id="companySize" className="bg-white/10 border-white/20 text-white">
+                          <SelectTrigger
+                            id="companySize"
+                            className="bg-white/10 border-white/20 text-white"
+                          >
                             <SelectValue placeholder="Select company size" />
                           </SelectTrigger>
                           <SelectContent>
