@@ -105,6 +105,7 @@ export interface AssessmentToolWithProgress extends AssessmentTool {
  * Attempt history item
  */
 export interface AttemptHistoryItem {
+  attempt_id: string;
   attempt_number: number;
   score_percentage: number;
   ability_estimate: number;

@@ -263,7 +263,7 @@ export function AssessmentHistoryPanel() {
                         variant="outline"
                         size="sm"
                         onClick={() =>
-                          navigate(`/assessment/${toolSlug}/results/${attempt.attempt_number}`)
+                          navigate(`/assessment/${toolSlug}/results/${attempt.attempt_id}`)
                         }
                       >
                         <Eye className="mr-2 h-4 w-4" />
