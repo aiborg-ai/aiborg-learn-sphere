@@ -3,22 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+
 import { usePersonalization } from '@/contexts/PersonalizationContext';
 import { useCourses } from '@/hooks/useCourses';
+import { useChatHistory } from '@/hooks/useChatHistory';
+import { generateFallbackResponse } from '@/utils/chatbotFallback';
 import { logger } from '@/utils/logger';
-import { MessageCircle, Send, X, Bot, User, Phone } from 'lucide-react';
+import { MessageCircle, Send, X, Bot, User, Phone, History, Download, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-// Ollama service removed - using ai-chat edge function instead
-// import { chat, createChatbotSystemPrompt, checkOllamaHealth } from '@/services/ollamaService';
-// import type { ChatMessage } from '@/services/ollamaService';
-
-interface Message {
-  id: string;
-  content: string;
-  sender: 'user' | 'ai';
-  timestamp: Date;
-  type?: 'text' | 'suggestion' | 'course_recommendation';
-}
 
 interface ConversationContext {
   askedAboutExperience: boolean;
@@ -91,42 +83,62 @@ const initialConversationContext: ConversationContext = {
 export function AIChatbot() {
   const { selectedAudience, getPersonalizedContent } = usePersonalization();
   const { courses, loading: coursesLoading } = useCourses();
+  const {
+    currentConversation,
+    conversationHistory,
+    startNewConversation,
+    addMessage,
+    loadConversation,
+    deleteConversation,
+    exportConversations,
+  } = useChatHistory();
+
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showWhatsApp, setShowWhatsApp] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [_conversationContext, setConversationContext] = useState<ConversationContext>(
     initialConversationContext
   );
-  const [_ollamaAvailable, _setOllamaAvailable] = useState(false); // Ollama disabled - using edge function
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Initialize welcome message based on audience
-  useEffect(() => {
-    const welcomeContent = getPersonalizedContent({
-      primary:
-        "Hi there! I'm aiborg chat! 🤖 I'm super excited to help you learn about AI in fun ways! What's your name, and do you like playing games or building things?",
-      secondary:
-        "Hey! I'm aiborg chat, your AI learning companion! 🚀 I can help you discover awesome AI courses that'll boost your grades and prepare you for the future. What subjects are you most interested in?",
-      professional:
-        "Hello! I'm aiborg chat, your professional AI learning assistant. I can help you find courses that will enhance your career and provide practical AI skills for your workplace. What's your current role, and what would you like to achieve with AI?",
-      business:
-        "Welcome! I'm aiborg chat, your strategic AI learning advisor. I help executives and business leaders understand AI implementation, ROI, and organizational transformation. What are your primary business objectives with AI?",
-      default:
-        "Hello! I'm aiborg chat, your AI learning assistant. I can help you find the perfect course and answer questions about our programs. What would you like to learn about AI?",
-    });
+  // Get messages from current conversation
+  const messages = currentConversation?.messages || [];
 
-    setMessages([
-      {
-        id: '1',
-        content: welcomeContent,
-        sender: 'ai',
-        timestamp: new Date(),
-        type: 'text',
-      },
-    ]);
-  }, [selectedAudience, getPersonalizedContent]);
+  // Initialize conversation when chatbot opens
+  useEffect(() => {
+    if (isOpen && !currentConversation) {
+      startNewConversation(selectedAudience).then(conversation => {
+        // Add welcome message
+        const welcomeContent = getPersonalizedContent({
+          primary:
+            "Hi there! I'm aiborg chat! 🤖 I'm super excited to help you learn about AI in fun ways! What's your name, and do you like playing games or building things?",
+          secondary:
+            "Hey! I'm aiborg chat, your AI learning companion! 🚀 I can help you discover awesome AI courses that'll boost your grades and prepare you for the future. What subjects are you most interested in?",
+          professional:
+            "Hello! I'm aiborg chat, your professional AI learning assistant. I can help you find courses that will enhance your career and provide practical AI skills for your workplace. What's your current role, and what would you like to achieve with AI?",
+          business:
+            "Welcome! I'm aiborg chat, your strategic AI learning advisor. I help executives and business leaders understand AI implementation, ROI, and organizational transformation. What are your primary business objectives with AI?",
+          default:
+            "Hello! I'm aiborg chat, your AI learning assistant. I can help you find the perfect course and answer questions about our programs. What would you like to learn about AI?",
+        });
+
+        addMessage({
+          content: welcomeContent,
+          sender: 'ai',
+          type: 'text',
+        });
+      });
+    }
+  }, [
+    isOpen,
+    currentConversation,
+    selectedAudience,
+    startNewConversation,
+    addMessage,
+    getPersonalizedContent,
+  ]);
 
   const updateConversationContext = (updates: Partial<ConversationContext>) => {
     setConversationContext(prev => ({ ...prev, ...updates }));
@@ -273,7 +285,7 @@ export function AIChatbot() {
 
   const generateAIResponse = async (userMessage: string): Promise<string> => {
     try {
-      // Call the ai-chat edge function with user message and context
+      // Call the ai-chat-with-analytics edge function with conversation tracking
       const coursesData = getCourseRecommendations().map(course => ({
         title: course.title,
         price: course.price,
@@ -282,11 +294,13 @@ export function AIChatbot() {
         audience: selectedAudience,
       }));
 
-      const { data, error } = await supabase.functions.invoke('ai-chat', {
+      const { data, error } = await supabase.functions.invoke('ai-chat-with-analytics', {
         body: {
           messages: [{ role: 'user', content: userMessage }],
           audience: selectedAudience,
           coursesData: coursesData,
+          sessionId: currentConversation?.sessionId,
+          conversationId: currentConversation?.id,
         },
       });
 
@@ -294,7 +308,10 @@ export function AIChatbot() {
 
       // Return the AI response
       if (data && data.response) {
-        logger.log('AI response generated successfully');
+        logger.log('AI response generated successfully', {
+          tokens: data.usage?.total_tokens,
+          cost: data.cost?.usd,
+        });
         return data.response;
       }
 
@@ -302,24 +319,19 @@ export function AIChatbot() {
     } catch (error) {
       logger.error('Error generating AI response:', error);
 
-      // Fallback to basic static response only on actual error
-      const lowerMessage = userMessage.toLowerCase();
+      // Use sophisticated fallback system
+      const fallback = generateFallbackResponse(
+        userMessage,
+        selectedAudience,
+        getCourseRecommendations()
+      );
 
-      if (lowerMessage.includes('cost') || lowerMessage.includes('price')) {
-        const priceRange = getPriceRange();
-        return `Our courses range from ${priceRange}. For detailed pricing and payment plans, contact us on WhatsApp: +44 7404568207`;
+      // Show WhatsApp if suggested
+      if (fallback.showWhatsApp) {
+        setShowWhatsApp(true);
       }
 
-      if (lowerMessage.includes('help') || lowerMessage.includes('support')) {
-        return "I'd be happy to connect you with our support team! Contact us on WhatsApp: +44 7404568207 for personalized assistance.";
-      }
-
-      if (lowerMessage.includes('recommend') || lowerMessage.includes('course')) {
-        const course = getCourseRecommendations()[0];
-        return `I recommend **${course.title}** (${course.price}, ${course.duration}). For more details, contact us on WhatsApp: +44 7404568207`;
-      }
-
-      return "I'm experiencing technical difficulties, but I'm still here to help! For immediate assistance, please contact us on WhatsApp: +44 7404568207";
+      return fallback.message;
     }
   };
 
@@ -334,14 +346,12 @@ export function AIChatbot() {
   const sendMessage = async (content: string) => {
     if (!content.trim()) return;
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
+    // Add user message to conversation history
+    addMessage({
       content,
       sender: 'user',
-      timestamp: new Date(),
-    };
+    });
 
-    setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsTyping(true);
 
@@ -352,14 +362,11 @@ export function AIChatbot() {
       // Simulate typing delay
       setTimeout(
         () => {
-          const aiMessage: Message = {
-            id: (Date.now() + 1).toString(),
+          addMessage({
             content: aiResponse,
             sender: 'ai',
-            timestamp: new Date(),
-          };
-
-          setMessages(prev => [...prev, aiMessage]);
+            type: 'text',
+          });
           setIsTyping(false);
         },
         1000 + Math.random() * 1000
@@ -368,15 +375,22 @@ export function AIChatbot() {
       logger.error('Error sending message:', error);
       setIsTyping(false);
 
-      // Show error message
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content:
-          "I'm experiencing technical difficulties. For immediate assistance, please contact us on WhatsApp: +44 7404568207",
+      // Use sophisticated fallback
+      const fallback = generateFallbackResponse(
+        content,
+        selectedAudience,
+        getCourseRecommendations()
+      );
+
+      addMessage({
+        content: fallback.message,
         sender: 'ai',
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, errorMessage]);
+        type: 'text',
+      });
+
+      if (fallback.showWhatsApp) {
+        setShowWhatsApp(true);
+      }
     }
   };
 
@@ -450,15 +464,98 @@ export function AIChatbot() {
               <p className="text-xs text-white/80">Online • Ready to help</p>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsOpen(false)}
-            className="text-white hover:bg-white/10"
-          >
-            <X className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            {/* Conversation History Dropdown */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowHistory(!showHistory)}
+              className="text-white hover:bg-white/10"
+              title="Conversation History"
+            >
+              <History className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsOpen(false)}
+              className="text-white hover:bg-white/10"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
+
+        {/* Conversation History Panel */}
+        {showHistory && (
+          <div className="border-b bg-muted/50 p-3">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-sm font-semibold">Conversation History</h4>
+                <div className="flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={exportConversations}
+                    className="h-7 px-2"
+                    title="Export conversations"
+                  >
+                    <Download className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => startNewConversation(selectedAudience)}
+                    className="h-7 px-2 text-xs"
+                  >
+                    New Chat
+                  </Button>
+                </div>
+              </div>
+
+              {conversationHistory.length === 0 ? (
+                <p className="text-xs text-muted-foreground text-center py-2">
+                  No previous conversations
+                </p>
+              ) : (
+                <div className="max-h-40 overflow-y-auto space-y-1">
+                  {conversationHistory.slice(0, 5).map(conv => (
+                    <div
+                      key={conv.id}
+                      className="flex items-center justify-between p-2 rounded hover:bg-muted cursor-pointer group"
+                    >
+                      <div
+                        className="flex-1"
+                        onClick={() => {
+                          loadConversation(conv.id);
+                          setShowHistory(false);
+                        }}
+                      >
+                        <p className="text-xs font-medium">
+                          {conv.startedAt.toLocaleDateString()} • {conv.messages.length} messages
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {conv.messages[conv.messages.length - 1]?.content.substring(0, 40)}...
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={e => {
+                          e.stopPropagation();
+                          deleteConversation(conv.id);
+                        }}
+                        className="opacity-0 group-hover:opacity-100 h-6 w-6 p-0"
+                      >
+                        <Trash2 className="h-3 w-3 text-destructive" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">

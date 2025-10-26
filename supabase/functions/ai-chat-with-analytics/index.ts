@@ -20,6 +20,217 @@ const PRICING = {
   },
 };
 
+// Query classification types
+type QueryType =
+  | 'greeting'
+  | 'pricing'
+  | 'course_recommendation'
+  | 'course_details'
+  | 'technical_question'
+  | 'scheduling'
+  | 'support'
+  | 'enrollment'
+  | 'general'
+  | 'unknown';
+
+interface ClassificationResult {
+  type: QueryType;
+  confidence: number; // 0-1
+  keywords: string[];
+}
+
+/**
+ * Classify user query based on keywords and patterns
+ */
+function classifyQuery(query: string): ClassificationResult {
+  const lowerQuery = query.toLowerCase().trim();
+  const words = lowerQuery.split(/\s+/);
+
+  // Greeting patterns
+  const greetingKeywords = ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening'];
+  if (greetingKeywords.some(kw => lowerQuery.startsWith(kw)) || lowerQuery.length < 15) {
+    return {
+      type: 'greeting',
+      confidence: 0.9,
+      keywords: greetingKeywords.filter(kw => lowerQuery.includes(kw)),
+    };
+  }
+
+  // Pricing queries
+  const pricingKeywords = [
+    'cost',
+    'price',
+    'pricing',
+    'how much',
+    'payment',
+    'pay',
+    'fee',
+    'expensive',
+    'cheap',
+    'afford',
+  ];
+  const pricingMatches = pricingKeywords.filter(kw => lowerQuery.includes(kw));
+  if (pricingMatches.length > 0) {
+    return {
+      type: 'pricing',
+      confidence: 0.85,
+      keywords: pricingMatches,
+    };
+  }
+
+  // Course recommendation queries
+  const recommendationKeywords = [
+    'recommend',
+    'suggest',
+    'best',
+    'which',
+    'should i',
+    'what course',
+    'help me choose',
+    'right for me',
+  ];
+  const recommendationMatches = recommendationKeywords.filter(kw => lowerQuery.includes(kw));
+  if (recommendationMatches.length > 0) {
+    return {
+      type: 'course_recommendation',
+      confidence: 0.8,
+      keywords: recommendationMatches,
+    };
+  }
+
+  // Course details queries
+  const detailsKeywords = [
+    'duration',
+    'how long',
+    'when',
+    'start',
+    'schedule',
+    'syllabus',
+    'curriculum',
+    'cover',
+    'learn',
+    'teach',
+  ];
+  const detailsMatches = detailsKeywords.filter(kw => lowerQuery.includes(kw));
+  if (detailsMatches.length > 0 && lowerQuery.includes('course')) {
+    return {
+      type: 'course_details',
+      confidence: 0.75,
+      keywords: detailsMatches,
+    };
+  }
+
+  // Technical questions (AI/ML concepts)
+  const technicalKeywords = [
+    'what is',
+    'explain',
+    'difference between',
+    'how does',
+    'machine learning',
+    'deep learning',
+    'neural network',
+    'algorithm',
+    'model',
+    'training',
+    'ai',
+    'artificial intelligence',
+  ];
+  const technicalMatches = technicalKeywords.filter(kw => lowerQuery.includes(kw));
+  if (technicalMatches.length > 0) {
+    return {
+      type: 'technical_question',
+      confidence: 0.7,
+      keywords: technicalMatches,
+    };
+  }
+
+  // Scheduling queries
+  const schedulingKeywords = [
+    'when',
+    'schedule',
+    'time',
+    'date',
+    'available',
+    'start date',
+    'next',
+    'upcoming',
+  ];
+  const schedulingMatches = schedulingKeywords.filter(kw => lowerQuery.includes(kw));
+  if (schedulingMatches.length > 0) {
+    return {
+      type: 'scheduling',
+      confidence: 0.75,
+      keywords: schedulingMatches,
+    };
+  }
+
+  // Support queries
+  const supportKeywords = [
+    'help',
+    'support',
+    'problem',
+    'issue',
+    'error',
+    'not working',
+    'cant',
+    'unable',
+  ];
+  const supportMatches = supportKeywords.filter(kw => lowerQuery.includes(kw));
+  if (supportMatches.length > 0) {
+    return {
+      type: 'support',
+      confidence: 0.8,
+      keywords: supportMatches,
+    };
+  }
+
+  // Enrollment queries
+  const enrollmentKeywords = [
+    'enroll',
+    'sign up',
+    'register',
+    'join',
+    'how to start',
+    'get started',
+    'apply',
+  ];
+  const enrollmentMatches = enrollmentKeywords.filter(kw => lowerQuery.includes(kw));
+  if (enrollmentMatches.length > 0) {
+    return {
+      type: 'enrollment',
+      confidence: 0.85,
+      keywords: enrollmentMatches,
+    };
+  }
+
+  // General queries (catch-all)
+  if (words.length > 3) {
+    return {
+      type: 'general',
+      confidence: 0.5,
+      keywords: [],
+    };
+  }
+
+  return {
+    type: 'unknown',
+    confidence: 0.3,
+    keywords: [],
+  };
+}
+
+/**
+ * Determine if query needs GPT-4 or can use GPT-3.5
+ */
+function shouldUseGPT4(classification: ClassificationResult): boolean {
+  // Use GPT-4 for complex queries
+  return (
+    classification.type === 'technical_question' ||
+    classification.type === 'course_recommendation' ||
+    classification.confidence < 0.6
+  );
+}
+
 serve(async req => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -49,6 +260,15 @@ serve(async req => {
       ...msg,
       content: typeof msg.content === 'string' ? msg.content.slice(0, maxMessageLength) : '',
     }));
+
+    // Query classification for cost optimization
+    const userMessage = sanitizedMessages[sanitizedMessages.length - 1];
+    const queryType = classifyQuery(userMessage?.content || '');
+    const useGPT4 = shouldUseGPT4(queryType);
+
+    console.log(
+      `📊 Query classified: ${queryType.type} (confidence: ${queryType.confidence}) → ${useGPT4 ? 'GPT-4' : 'GPT-3.5'}`
+    );
 
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     if (!OPENAI_API_KEY) {
@@ -112,7 +332,8 @@ serve(async req => {
     - Don't make up course information - use only the provided course data
     - If asked about pricing, payment plans, or detailed enrollment, suggest contacting via WhatsApp`;
 
-    const model = 'gpt-4-turbo-preview'; // Or use 'gpt-3.5-turbo' for lower cost
+    // Smart model selection based on query classification
+    const model = useGPT4 ? 'gpt-4-turbo-preview' : 'gpt-3.5-turbo';
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
