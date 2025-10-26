@@ -9,11 +9,14 @@ import {
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Save } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Save, ChevronDown } from 'lucide-react';
 import { Course } from './types';
 import { CourseBasicFields } from './CourseBasicFields';
 import { CourseDetailsFields } from './CourseDetailsFields';
 import { ArrayFieldManager } from './ArrayFieldManager';
+import { CourseTemplates } from './CourseTemplates';
+import { useState } from 'react';
 
 interface CourseFormDialogProps {
   open: boolean;
@@ -52,6 +55,22 @@ export function CourseFormDialog({
     formState: { errors },
   } = form;
 
+  const [showTemplates, setShowTemplates] = useState(!editingCourse);
+
+  const handleTemplateSelect = (templateData: Partial<Course>) => {
+    // Apply template data to form
+    Object.entries(templateData).forEach(([key, value]) => {
+      setValue(key as keyof Course, value);
+    });
+
+    // Update array fields
+    if (templateData.audiences) setAudiences(templateData.audiences);
+    if (templateData.features) setFeatures(templateData.features);
+    if (templateData.keywords) setKeywords(templateData.keywords);
+
+    setShowTemplates(false);
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -59,8 +78,30 @@ export function CourseFormDialog({
           <DialogTitle>{editingCourse ? 'Edit Course' : 'Create New Course'}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Templates Section - Only show when creating new course */}
+          {!editingCourse && (
+            <Collapsible open={showTemplates} onOpenChange={setShowTemplates}>
+              <CollapsibleTrigger asChild>
+                <Button type="button" variant="outline" className="w-full justify-between">
+                  <span>Use a Template (optional)</span>
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform ${showTemplates ? 'rotate-180' : ''}`}
+                  />
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="mt-4">
+                <CourseTemplates onSelectTemplate={handleTemplateSelect} />
+              </CollapsibleContent>
+            </Collapsible>
+          )}
+
           {/* Basic Information */}
-          <CourseBasicFields register={register} errors={errors} />
+          <CourseBasicFields
+            register={register}
+            errors={errors}
+            setValue={setValue}
+            watch={watch}
+          />
 
           {/* Course Details */}
           <CourseDetailsFields register={register} errors={errors} />

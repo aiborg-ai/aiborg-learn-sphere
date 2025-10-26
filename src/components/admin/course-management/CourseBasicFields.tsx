@@ -1,15 +1,21 @@
-import { UseFormRegister, FieldErrors } from 'react-hook-form';
+import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { RichTextEditor } from '@/components/ui/RichTextEditor';
+import { MediaUploadButton } from '@/components/ui/MediaUploadButton';
 import { Course } from './types';
 
 interface CourseBasicFieldsProps {
   register: UseFormRegister<Course>;
   errors: FieldErrors<Course>;
+  setValue: UseFormSetValue<Course>;
+  watch: UseFormWatch<Course>;
 }
 
-export function CourseBasicFields({ register, errors }: CourseBasicFieldsProps) {
+export function CourseBasicFields({ register, errors, setValue, watch }: CourseBasicFieldsProps) {
+  const currentDescription = watch('description') || '';
+  const currentImage = watch('image_url') || '';
+
   return (
     <div className="space-y-4">
       <h3 className="font-semibold text-lg">Basic Information</h3>
@@ -40,15 +46,27 @@ export function CourseBasicFields({ register, errors }: CourseBasicFieldsProps) 
         </div>
       </div>
 
+      {/* Rich Text Editor for Description */}
       <div className="space-y-2">
-        <Label htmlFor="description">Description *</Label>
-        <Textarea
-          id="description"
-          {...register('description', { required: 'Description is required' })}
+        <Label>Description * (supports rich formatting)</Label>
+        <RichTextEditor
+          content={currentDescription}
+          onChange={content => setValue('description', content)}
           placeholder="Learn the fundamentals of artificial intelligence..."
-          rows={4}
         />
         {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
+      </div>
+
+      {/* Course Image Upload */}
+      <div className="space-y-2">
+        <Label>Course Image/Thumbnail</Label>
+        <MediaUploadButton
+          bucketName="course-images"
+          onUploadComplete={url => setValue('image_url', url)}
+          currentImage={currentImage}
+          label="Upload Course Image"
+          maxSizeMB={5}
+        />
       </div>
     </div>
   );

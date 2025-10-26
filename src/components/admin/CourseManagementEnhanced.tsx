@@ -263,6 +263,32 @@ export function CourseManagementEnhanced({
     }
   };
 
+  const handleDuplicate = (course: Course) => {
+    // Create a copy with modified title and reset some fields
+    const duplicatedCourse = {
+      ...course,
+      id: undefined, // Remove ID so it creates a new course
+      title: `${course.title} (Copy)`,
+      is_active: false, // Set to inactive by default
+      display: false, // Hide by default
+      created_at: undefined,
+      updated_at: undefined,
+    };
+
+    // Open edit dialog with duplicated data
+    setEditingCourse(null); // Treat as new course
+    setFormAudiences(duplicatedCourse.audiences || []);
+    setFormFeatures(duplicatedCourse.features || []);
+    setFormKeywords(duplicatedCourse.keywords || []);
+    reset(duplicatedCourse);
+    setIsDialogOpen(true);
+
+    toast({
+      title: 'Course duplicated',
+      description: 'You can now edit and save the duplicated course',
+    });
+  };
+
   return (
     <>
       <Card>
@@ -286,6 +312,7 @@ export function CourseManagementEnhanced({
             courses={courses}
             onEdit={openEditDialog}
             onDelete={openDeleteDialog}
+            onDuplicate={handleDuplicate}
             onToggleStatus={toggleCourseStatus}
           />
         </CardContent>

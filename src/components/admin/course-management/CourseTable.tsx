@@ -9,17 +9,24 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, Copy } from 'lucide-react';
 import { Course } from './types';
 
 interface CourseTableProps {
   courses: Course[];
   onEdit: (course: Course) => void;
   onDelete: (course: Course) => void;
+  onDuplicate: (course: Course) => void;
   onToggleStatus: (course: Course, field: 'is_active' | 'display') => void;
 }
 
-export function CourseTable({ courses, onEdit, onDelete, onToggleStatus }: CourseTableProps) {
+export function CourseTable({
+  courses,
+  onEdit,
+  onDelete,
+  onDuplicate,
+  onToggleStatus,
+}: CourseTableProps) {
   return (
     <div className="rounded-md border">
       <Table>
@@ -109,10 +116,23 @@ export function CourseTable({ courses, onEdit, onDelete, onToggleStatus }: Cours
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => onEdit(course)}>
+                    <Button size="sm" variant="outline" onClick={() => onEdit(course)} title="Edit">
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button size="sm" variant="destructive" onClick={() => onDelete(course)}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => onDuplicate(course)}
+                      title="Duplicate"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => onDelete(course)}
+                      title="Delete"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>

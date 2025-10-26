@@ -2,6 +2,7 @@ export interface Course {
   id?: number;
   title: string;
   description: string;
+  image_url?: string; // Course thumbnail/banner image
   audience: string; // Kept for backward compatibility
   audiences: string[]; // Multi-audience support
   mode: string; // online, in-person, hybrid
