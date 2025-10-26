@@ -1,0 +1,1242 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+    - region "Notifications (F8)":
+        - list
+    - generic [ref=e3]:
+        - navigation "Main navigation" [ref=e4]:
+            - generic [ref=e6]:
+                - link "Aiborg home" [ref=e7] [cursor=pointer]:
+                    - /url: /
+                    - img "Aiborg logo" [ref=e8]
+                - generic [ref=e9]:
+                    - link "AI Assessment - New feature" [ref=e10] [cursor=pointer]:
+                        - /url: /ai-assessment
+                        - button "AI Assessment New feature" [ref=e11]:
+                            - img
+                            - text: AI Assessment
+                            - generic "New feature" [ref=e12]: NEW
+                    - button "Navigate to training programs section" [ref=e13] [cursor=pointer]: Programs
+                    - link "Go to blog" [ref=e14] [cursor=pointer]:
+                        - /url: /blog
+                        - text: Blog
+                    - button "Navigate to events section" [ref=e15] [cursor=pointer]: Events
+                    - button "Navigate to reviews section" [ref=e16] [cursor=pointer]: Reviews
+                    - button "Navigate to about section" [ref=e17] [cursor=pointer]: About
+                    - button "Navigate to contact section" [ref=e18] [cursor=pointer]: Contact
+                    - button "Open frequently asked questions" [ref=e19] [cursor=pointer]: FAQ
+                    - button "Open terms and conditions" [ref=e20] [cursor=pointer]: Terms
+                    - button "Show keyboard shortcuts (Shift+?)" [ref=e21] [cursor=pointer]:
+                        - img
+                    - button "Toggle theme" [ref=e22] [cursor=pointer]:
+                        - img
+                        - img
+                        - generic [ref=e23]: Toggle theme
+                    - button "Change language" [ref=e24] [cursor=pointer]:
+                        - img
+                    - generic [ref=e25]:
+                        - link "Sign in to your account" [ref=e26] [cursor=pointer]:
+                            - /url: /auth
+                            - button "Sign in to your account" [ref=e27]: Sign In
+                        - link "Get started with Aiborg" [ref=e28] [cursor=pointer]:
+                            - /url: /auth
+                            - button "Get started with Aiborg" [ref=e29]: Get Started
+        - generic [ref=e35]:
+            - generic [ref=e36]:
+                - generic [ref=e37]:
+                    - img [ref=e38]
+                    - generic [ref=e40]: Convert AI Opportunity !
+                - heading "aiborg™" [level=1] [ref=e41]:
+                    - generic [ref=e42]:
+                        - text: aiborg
+                        - superscript [ref=e43]: ™
+                - paragraph [ref=e44]: AI-augmented Human
+                - paragraph [ref=e45]:
+                    Transform your future with cutting-edge AI education. Personalized learning
+                    paths for every age and profession.
+                - ? link "Discover Your AI Augmentation Level NEW Take our free assessment to
+                    measure your AI tool adoption" [ref=e47] [cursor=pointer]
+                  : - /url: /ai-assessment
+                    - generic [ref=e49]:
+                        - generic [ref=e50]:
+                            - img [ref=e52]
+                            - generic [ref=e54]:
+                                - ? heading "Discover Your AI Augmentation Level NEW" [level=3]
+                                    [ref=e55]
+                                  : - generic [ref=e56]: Discover Your AI Augmentation Level
+                                    - generic [ref=e57]: NEW
+                                - paragraph [ref=e58]:
+                                    Take our free assessment to measure your AI tool adoption
+                        - img [ref=e59]
+            - generic [ref=e61]:
+                - heading "Choose Your Learning Journey" [level=2] [ref=e62]
+                - paragraph [ref=e63]: Discover personalized AI education programs
+                - generic [ref=e64]:
+                    - generic [ref=e66] [cursor=pointer]:
+                        - img "Young Learners representative" [ref=e67]
+                        - img [ref=e70]
+                        - generic [ref=e73]:
+                            - generic [ref=e74]: Ages 8-11
+                            - heading "Young Learners" [level=3] [ref=e75]
+                            - generic [ref=e76]:
+                                - paragraph [ref=e77]: Fun, interactive AI learning for young minds
+                                - generic [ref=e78]:
+                                    - generic [ref=e81]: Visual Learning
+                                    - generic [ref=e84]: Games & Puzzles
+                                    - generic [ref=e87]: Safe Environment
+                                - button "Explore Programs" [ref=e88]:
+                                    - text: Explore Programs
+                                    - img
+                    - generic [ref=e90] [cursor=pointer]:
+                        - img "Teenagers representative" [ref=e91]
+                        - img [ref=e94]
+                        - generic [ref=e104]:
+                            - generic [ref=e105]: Ages 12-18
+                            - heading "Teenagers" [level=3] [ref=e106]
+                            - generic [ref=e107]:
+                                - paragraph [ref=e108]: Advanced AI concepts for future innovators
+                                - generic [ref=e109]:
+                                    - generic [ref=e112]: Coding Projects
+                                    - generic [ref=e115]: AI Ethics
+                                    - generic [ref=e118]: Career Paths
+                                - button "Explore Programs" [ref=e119]:
+                                    - text: Explore Programs
+                                    - img
+                    - generic [ref=e121] [cursor=pointer]:
+                        - img "Professionals representative" [ref=e122]
+                        - img [ref=e125]
+                        - generic [ref=e128]:
+                            - generic [ref=e129]: Career Growth
+                            - heading "Professionals" [level=3] [ref=e130]
+                            - generic [ref=e131]:
+                                - paragraph [ref=e132]: AI skills for advancing your career
+                                - generic [ref=e133]:
+                                    - generic [ref=e136]: Industry Skills
+                                    - generic [ref=e139]: Certifications
+                                    - generic [ref=e142]: Real Projects
+                                - button "Explore Programs" [ref=e143]:
+                                    - text: Explore Programs
+                                    - img
+                    - generic [ref=e145] [cursor=pointer]:
+                        - img "SMEs representative" [ref=e146]
+                        - img [ref=e149]
+                        - generic [ref=e153]:
+                            - generic [ref=e154]: Enterprise
+                            - heading "SMEs" [level=3] [ref=e155]
+                            - generic [ref=e156]:
+                                - paragraph [ref=e157]: Transform your business with AI training
+                                - generic [ref=e158]:
+                                    - generic [ref=e161]: Team Training
+                                    - generic [ref=e164]: Custom Programs
+                                    - generic [ref=e167]: ROI Tracking
+                                - button "Explore Programs" [ref=e168]:
+                                    - text: Explore Programs
+                                    - img
+                - generic [ref=e170]:
+                    - img [ref=e171]
+                    - generic [ref=e181]: Personalized experience for undefined activated
+        - generic [ref=e184]:
+            - generic [ref=e186]:
+                - img [ref=e187]
+                - text: 'NEW: All Access Family Pass'
+            - generic [ref=e189]:
+                - generic [ref=e190]:
+                    - heading "Unlimited Learning for Your Entire Family" [level=2] [ref=e191]
+                    - paragraph [ref=e192]: Just £20/Month
+                    - paragraph [ref=e193]:
+                        Access 50+ AI courses, exclusive vault content, and priority event
+                        invitations for up to 6 family members.
+                    - generic [ref=e194]:
+                        - generic [ref=e195]:
+                            - img [ref=e196]
+                            - generic [ref=e199]:
+                                - paragraph [ref=e200]: All Courses
+                                - paragraph [ref=e201]: £2,500+ value
+                        - generic [ref=e202]:
+                            - img [ref=e203]
+                            - generic [ref=e206]:
+                                - paragraph [ref=e207]: Vault Content
+                                - paragraph [ref=e208]: 200+ resources
+                        - generic [ref=e209]:
+                            - img [ref=e210]
+                            - generic [ref=e213]:
+                                - paragraph [ref=e214]: Event Access
+                                - paragraph [ref=e215]: Priority registration
+                        - generic [ref=e216]:
+                            - img [ref=e217]
+                            - generic [ref=e220]:
+                                - paragraph [ref=e221]: 6 Members
+                                - paragraph [ref=e222]: Whole family
+                    - generic [ref=e223]:
+                        - link "Start Free Trial" [ref=e224] [cursor=pointer]:
+                            - /url: /family-membership
+                            - text: Start Free Trial
+                            - img
+                        - link "Learn More" [ref=e225] [cursor=pointer]:
+                            - /url: /family-membership
+                    - generic [ref=e226]:
+                        - generic [ref=e227]:
+                            - img [ref=e228]
+                            - generic [ref=e231]: 30-Day Guarantee
+                        - generic [ref=e232]:
+                            - img [ref=e233]
+                            - generic [ref=e236]: Cancel Anytime
+                        - generic [ref=e237]:
+                            - img [ref=e238]
+                            - generic [ref=e241]: No Credit Card
+                - generic [ref=e242]:
+                    - generic [ref=e244]:
+                        - generic [ref=e245]:
+                            - img [ref=e247]
+                            - img [ref=e253]
+                            - img [ref=e259]
+                            - img [ref=e265]
+                        - generic [ref=e270]:
+                            - paragraph [ref=e271]: 523+ Families
+                            - paragraph [ref=e272]: Already learning together
+                    - generic [ref=e273]:
+                        - generic [ref=e274]:
+                            - img [ref=e276]
+                            - generic [ref=e279]:
+                                - paragraph [ref=e280]: Early Bird Pricing Ends Soon
+                                - paragraph [ref=e281]: Only 47 Spots Left
+                                - paragraph [ref=e282]:
+                                    Lock in £20/month forever (normally £30/month)
+                        - generic [ref=e284]:
+                            - generic [ref=e285]: Early Bird Spots
+                            - generic [ref=e286]: 47 remaining
+                    - generic [ref=e289]:
+                        - paragraph [ref=e290]: Savings Calculator
+                        - generic [ref=e291]:
+                            - generic [ref=e292]: Save £2,400
+                            - generic [ref=e293]: per year
+                        - paragraph [ref=e294]: vs. £49/course × 4 members × 12 months
+        - generic [ref=e297]:
+            - generic [ref=e298]:
+                - generic [ref=e299]:
+                    - img [ref=e300]
+                    - generic [ref=e302]: About Aiborg™
+                - heading "Revolutionizing AI Education" [level=2] [ref=e303]
+                - paragraph [ref=e304]:
+                    We're democratizing AI education through innovative, accessible, and practical
+                    learning experiences. Our mission is to create AI-augmented humans who can
+                    thrive in the future economy while maintaining ethical standards and human
+                    values.
+            - generic [ref=e305]:
+                - generic [ref=e306]:
+                    - img [ref=e308]
+                    - generic [ref=e313]: 5,000+
+                    - generic [ref=e314]: Active Students
+                - generic [ref=e315]:
+                    - img [ref=e317]
+                    - generic [ref=e320]: 15,000+
+                    - generic [ref=e321]: Courses Completed
+                - generic [ref=e322]:
+                    - img [ref=e324]
+                    - generic [ref=e327]: 150+
+                    - generic [ref=e328]: Countries Reached
+                - generic [ref=e329]:
+                    - img [ref=e331]
+                    - generic [ref=e334]: 94%
+                    - generic [ref=e335]: Success Rate
+            - generic [ref=e337]:
+                - heading "Our Mission" [level=3] [ref=e338]
+                - blockquote [ref=e339]:
+                    To empower working professionals with practical AI knowledge that enhances
+                    career performance and opens new opportunities. We believe AI should augment
+                    your expertise and accelerate your professional growth.
+                - generic [ref=e340]:
+                    - img [ref=e341]
+                    - generic [ref=e343]: Founded on career-focused AI principles
+            - generic [ref=e344]:
+                - heading "Our Core Values" [level=3] [ref=e345]
+                - generic [ref=e346]:
+                    - generic [ref=e347]:
+                        - img [ref=e349]
+                        - heading "Practical Application" [level=4] [ref=e351]
+                        - paragraph [ref=e352]:
+                            Practical application and project-based education that directly enhances
+                            your work performance
+                        - generic [ref=e353]:
+                            - generic [ref=e354]:
+                                - img [ref=e355]
+                                - generic [ref=e358]: Real-world Projects
+                            - generic [ref=e359]:
+                                - img [ref=e360]
+                                - generic [ref=e363]: Career Building
+                            - generic [ref=e364]:
+                                - img [ref=e365]
+                                - generic [ref=e368]: Skill Enhancement
+                            - generic [ref=e369]:
+                                - img [ref=e370]
+                                - generic [ref=e373]: Portfolio Development
+                    - generic [ref=e374]:
+                        - img [ref=e376]
+                        - heading "Ethical AI Practices" [level=4] [ref=e378]
+                        - paragraph [ref=e379]:
+                            Professional standards for responsible AI development and deployment in
+                            workplace environments
+                        - generic [ref=e380]:
+                            - generic [ref=e381]:
+                                - img [ref=e382]
+                                - generic [ref=e385]: Professional Ethics
+                            - generic [ref=e386]:
+                                - img [ref=e387]
+                                - generic [ref=e390]: Workplace Standards
+                            - generic [ref=e391]:
+                                - img [ref=e392]
+                                - generic [ref=e395]: Data Privacy
+                            - generic [ref=e396]:
+                                - img [ref=e397]
+                                - generic [ref=e400]: Responsible Deployment
+                    - generic [ref=e401]:
+                        - img [ref=e403]
+                        - heading "Industry-Leading Expertise" [level=4] [ref=e413]
+                        - paragraph [ref=e414]:
+                            Advanced AI competencies aligned with current industry demands and
+                            emerging market opportunities
+                        - generic [ref=e415]:
+                            - generic [ref=e416]:
+                                - img [ref=e417]
+                                - generic [ref=e420]: Industry Alignment
+                            - generic [ref=e421]:
+                                - img [ref=e422]
+                                - generic [ref=e425]: Market Relevance
+                            - generic [ref=e426]:
+                                - img [ref=e427]
+                                - generic [ref=e430]: Career Advancement
+                            - generic [ref=e431]:
+                                - img [ref=e432]
+                                - generic [ref=e435]: Technical Leadership
+                    - generic [ref=e436]:
+                        - img [ref=e438]
+                        - heading "Professional Solutions" [level=4] [ref=e442]
+                        - paragraph [ref=e443]:
+                            Develop practical AI solutions that address workplace challenges and
+                            improve professional outcomes
+                        - generic [ref=e444]:
+                            - generic [ref=e445]:
+                                - img [ref=e446]
+                                - generic [ref=e449]: Workplace Solutions
+                            - generic [ref=e450]:
+                                - img [ref=e451]
+                                - generic [ref=e454]: Process Improvement
+                            - generic [ref=e455]:
+                                - img [ref=e456]
+                                - generic [ref=e459]: Client Value
+                            - generic [ref=e460]:
+                                - img [ref=e461]
+                                - generic [ref=e464]: Career Impact
+            - generic [ref=e465]:
+                - heading "Proven Learning Outcomes" [level=3] [ref=e466]
+                - generic [ref=e468]:
+                    - generic [ref=e469]:
+                        - generic [ref=e470]:
+                            - heading "Master AI Fundamentals" [level=4] [ref=e471]
+                            - generic [ref=e472]: 95%
+                        - paragraph [ref=e475]:
+                            Understanding LLMs, AI agents, and prompt engineering for workplace
+                            applications
+                    - generic [ref=e476]:
+                        - generic [ref=e477]:
+                            - heading "Enhanced Work Performance" [level=4] [ref=e478]
+                            - generic [ref=e479]: 88%
+                        - paragraph [ref=e482]:
+                            Apply AI to daily work tasks, presentations, analysis, and professional
+                            development
+                    - generic [ref=e483]:
+                        - generic [ref=e484]:
+                            - heading "Boost Productivity" [level=4] [ref=e485]
+                            - generic [ref=e486]: 92%
+                        - paragraph [ref=e489]:
+                            Practical hands-on usage of various Generative AI Tools for enhanced
+                            work efficiency
+                    - generic [ref=e490]:
+                        - generic [ref=e491]:
+                            - heading "Ethical AI Usage" [level=4] [ref=e492]
+                            - generic [ref=e493]: 96%
+                        - paragraph [ref=e496]:
+                            Build responsible AI habits and maintain professional integrity and
+                            workplace standards
+            - generic [ref=e497]:
+                - heading "Our Achievements" [level=3] [ref=e498]
+                - generic [ref=e499]:
+                    - generic [ref=e501]:
+                        - img [ref=e503]
+                        - generic [ref=e506]: Industry-recognized AI education leader
+                    - generic [ref=e508]:
+                        - img [ref=e510]
+                        - generic [ref=e513]: Partnership with leading tech companies
+                    - generic [ref=e515]:
+                        - img [ref=e517]
+                        - generic [ref=e520]: Featured in major educational publications
+                    - generic [ref=e522]:
+                        - img [ref=e524]
+                        - generic [ref=e527]: Award-winning curriculum design
+                    - generic [ref=e529]:
+                        - img [ref=e531]
+                        - generic [ref=e534]: Global accessibility and inclusion
+                    - generic [ref=e536]:
+                        - img [ref=e538]
+                        - generic [ref=e541]: Continuous innovation and improvement
+            - generic [ref=e542]:
+                - generic [ref=e543]:
+                    - heading "Why Choose Aiborg™?" [level=3] [ref=e544]
+                    - paragraph [ref=e545]: Advanced features that set us apart in AI education
+                - generic [ref=e546]:
+                    - generic [ref=e547]:
+                        - img [ref=e548]
+                        - heading "Comprehensive Curriculum" [level=4] [ref=e550]
+                        - paragraph [ref=e551]:
+                            From fundamentals to advanced applications, covering all aspects of AI
+                    - generic [ref=e552]:
+                        - img [ref=e553]
+                        - heading "Global Community" [level=4] [ref=e558]
+                        - paragraph [ref=e559]:
+                            Connect with learners and experts from 150+ countries worldwide
+                    - generic [ref=e560]:
+                        - img [ref=e561]
+                        - heading "Practical Focus" [level=4] [ref=e565]
+                        - paragraph [ref=e566]:
+                            Real-world projects and immediate application of skills
+                - button "Start Your AI Journey" [ref=e568] [cursor=pointer]:
+                    - text: Start Your AI Journey
+                    - img
+            - generic [ref=e569]:
+                - heading "Ready to Become AI-Augmented?" [level=3] [ref=e570]
+                - paragraph [ref=e571]:
+                    Join thousands of learners who are already transforming their careers with AI
+                - generic [ref=e572]:
+                    - button "Browse Courses" [ref=e573] [cursor=pointer]
+                    - button "Download Brochure" [ref=e574] [cursor=pointer]
+        - generic [ref=e577]:
+            - generic [ref=e578]:
+                - heading "AI Training Programs" [level=2] [ref=e579]
+                - paragraph [ref=e580]:
+                    Comprehensive AI education designed for different learning levels and career
+                    goals
+            - tablist [ref=e582]:
+                - tab "All Audiences" [selected] [ref=e583] [cursor=pointer]:
+                    - img [ref=e584]
+                    - generic [ref=e586]: All Audiences
+                - tab "Young Learners" [ref=e587] [cursor=pointer]:
+                    - img
+                    - generic [ref=e590]: Young Learners
+                - tab "Teenagers" [ref=e591] [cursor=pointer]:
+                    - img [ref=e592]
+                    - generic [ref=e595]: Teenagers
+                - tab "Professionals" [ref=e596] [cursor=pointer]:
+                    - img [ref=e597]
+                    - generic [ref=e600]: Professionals
+                - tab "SMEs" [ref=e601] [cursor=pointer]:
+                    - img [ref=e602]
+                    - generic [ref=e606]: SMEs
+            - generic [ref=e608]:
+                - generic [ref=e609]:
+                    - img [ref=e610]
+                    - textbox "Search programs..." [ref=e613]
+                - generic [ref=e614]:
+                    - button "Currently Enrolling" [ref=e615] [cursor=pointer]:
+                        - img
+                        - text: Currently Enrolling
+                    - button "Filters" [ref=e616] [cursor=pointer]:
+                        - img
+                        - text: Filters
+            - generic [ref=e617]: Showing 8 of 8 programs
+            - generic [ref=e618]:
+                - generic [ref=e620]:
+                    - generic [ref=e621]:
+                        - generic [ref=e623]:
+                            - img [ref=e624]
+                            - text: Professionals
+                        - generic [ref=e627]: Beginner
+                    - heading "Vibe Coding with Claude Code" [level=3] [ref=e628]
+                    - paragraph [ref=e629]:
+                        You will learn how to make Complex Applications by Claude Code
+                    - generic [ref=e630]:
+                        - generic [ref=e631]:
+                            - img [ref=e632]
+                            - text: 4 weeks
+                        - generic [ref=e635]:
+                            - img [ref=e636]
+                            - text: 2025-10-18
+                        - generic [ref=e638]:
+                            - img [ref=e639]
+                            - text: Online
+                        - generic [ref=e641]:
+                            - img [ref=e642]
+                            - button "0 reviews" [ref=e644] [cursor=pointer]
+                    - generic [ref=e645]:
+                        - generic [ref=e647]: £20
+                        - button "Share" [ref=e648] [cursor=pointer]:
+                            - img
+                            - text: Share
+                    - generic [ref=e649]:
+                        - button "Details" [ref=e650] [cursor=pointer]
+                        - button "Family Pass" [ref=e651] [cursor=pointer]:
+                            - img
+                            - text: Family Pass
+                        - button "Enroll" [ref=e652] [cursor=pointer]:
+                            - text: Enroll
+                            - img
+                - generic [ref=e654]:
+                    - generic [ref=e655]:
+                        - generic [ref=e657]:
+                            - img [ref=e658]
+                            - text: Young Learners
+                        - generic [ref=e661]: Beginner
+                    - heading "AI Art Creator" [level=3] [ref=e662]
+                    - paragraph [ref=e663]:
+                        Create amazing artwork using AI tools and learn about digital creativity
+                    - generic [ref=e664]:
+                        - generic [ref=e665]:
+                            - img [ref=e666]
+                            - text: 6 hrs/4 sessions
+                        - generic [ref=e669]:
+                            - img [ref=e670]
+                            - text: 2025-10-24
+                        - generic [ref=e672]:
+                            - img [ref=e673]
+                            - text: Online
+                        - generic [ref=e675]:
+                            - img [ref=e676]
+                            - button "0 reviews" [ref=e678] [cursor=pointer]
+                    - generic [ref=e679]:
+                        - generic [ref=e681]: £20
+                        - button "Share" [ref=e682] [cursor=pointer]:
+                            - img
+                            - text: Share
+                    - generic [ref=e683]:
+                        - button "Details" [ref=e684] [cursor=pointer]
+                        - button "Family Pass" [ref=e685] [cursor=pointer]:
+                            - img
+                            - text: Family Pass
+                        - button "Enroll" [ref=e686] [cursor=pointer]:
+                            - text: Enroll
+                            - img
+                - generic [ref=e688]:
+                    - generic [ref=e689]:
+                        - generic [ref=e691]:
+                            - img [ref=e692]
+                            - text: SMEs
+                        - generic [ref=e696]: Beginner
+                    - heading "AI Team Training Program" [level=3] [ref=e697]
+                    - paragraph [ref=e698]:
+                        Comprehensive AI literacy program for entire business teams
+                    - generic [ref=e699]:
+                        - generic [ref=e700]:
+                            - img [ref=e701]
+                            - text: 6 hrs/4 sessions
+                        - generic [ref=e704]:
+                            - img [ref=e705]
+                            - text: 2025-11-15
+                        - generic [ref=e707]:
+                            - img [ref=e708]
+                            - text: Hybrid
+                        - generic [ref=e710]:
+                            - img [ref=e711]
+                            - button "0 reviews" [ref=e713] [cursor=pointer]
+                    - generic [ref=e714]:
+                        - generic [ref=e716]: £3700
+                        - button "Share" [ref=e717] [cursor=pointer]:
+                            - img
+                            - text: Share
+                    - generic [ref=e718]:
+                        - button "Details" [ref=e719] [cursor=pointer]
+                        - button "Family Pass" [ref=e720] [cursor=pointer]:
+                            - img
+                            - text: Family Pass
+                        - button "Enroll" [ref=e721] [cursor=pointer]:
+                            - text: Enroll
+                            - img
+            - button "Show More (5 more)" [ref=e723] [cursor=pointer]
+        - generic [ref=e726]:
+            - generic [ref=e727]:
+                - generic [ref=e728]:
+                    - img [ref=e729]
+                    - generic [ref=e731]: Networking & Events
+                - heading "Join Our Events" [level=2] [ref=e732]
+                - paragraph [ref=e733]:
+                    Connect with AI enthusiasts, entrepreneurs, and industry leaders at our
+                    exclusive networking events. Build meaningful relationships and discover new
+                    opportunities in the AI ecosystem.
+            - generic [ref=e734]:
+                - generic [ref=e735]:
+                    - img [ref=e737]
+                    - generic [ref=e739]: 8+
+                    - generic [ref=e740]: Upcoming Events
+                - generic [ref=e741]:
+                    - img [ref=e743]
+                    - generic [ref=e748]: 500+
+                    - generic [ref=e749]: Network Members
+                - generic [ref=e750]:
+                    - img [ref=e752]
+                    - generic [ref=e755]: London
+                    - generic [ref=e756]: Prime Locations
+            - generic [ref=e757]:
+                - generic [ref=e758]:
+                    - img [ref=e759]
+                    - generic [ref=e761]: 'Filter by:'
+                - generic [ref=e762]:
+                    - button "All Events 8" [ref=e763] [cursor=pointer]:
+                        - text: All Events
+                        - generic [ref=e764]: '8'
+                    - button "Upcoming 8" [ref=e765] [cursor=pointer]:
+                        - text: Upcoming
+                        - generic [ref=e766]: '8'
+                    - button "My Registrations 0" [disabled]:
+                        - text: My Registrations
+                        - generic: '0'
+            - generic [ref=e767]:
+                - 'article "Event: AI Innovators Networking Mixer" [ref=e768]':
+                    - generic [ref=e769]:
+                        - generic [ref=e770]:
+                            - 'generic "Event category: Networking" [ref=e772]': Networking
+                            - heading "AI Innovators Networking Mixer" [level=3] [ref=e773]
+                            - button "Show event details" [ref=e774] [cursor=pointer]:
+                                View Date, Time & Location →
+                        - generic [ref=e775]:
+                            - generic "Event capacity" [ref=e776]:
+                                - img [ref=e778]
+                                - generic [ref=e783]:
+                                    - generic "0 out of 80 registered" [ref=e784]: 0 / 80 registered
+                                    - generic "80 spots remaining" [ref=e785]: 80 spots left
+                            - generic [ref=e786]:
+                                - generic [ref=e787]: Activities
+                                - list "Event activities" [ref=e788]:
+                                    - listitem [ref=e789]:
+                                        - generic [ref=e790]: Networking
+                                    - listitem [ref=e791]:
+                                        - generic [ref=e792]: Panel Discussion
+                                    - listitem [ref=e793]:
+                                        - generic [ref=e794]: Lightning Talks
+                                    - listitem [ref=e795]:
+                                        - generic [ref=e796]: Drinks & Canapés
+                        - generic [ref=e798]:
+                            - generic [ref=e799]:
+                                - 'generic "Event price: £0" [ref=e800]':
+                                    - generic [ref=e801]: £
+                                    - generic [ref=e802]: '0'
+                                - button "Share" [ref=e804] [cursor=pointer]:
+                                    - img
+                                    - text: Share
+                            - ? button "Register for AI Innovators Networking Mixer event"
+                                [ref=e805] [cursor=pointer]
+                              : - text: Register Now
+                                - img
+                - 'article "Event: Prompt Engineering Masterclass" [ref=e806]':
+                    - generic [ref=e807]:
+                        - generic [ref=e808]:
+                            - 'generic "Event category: Workshop" [ref=e810]': Workshop
+                            - heading "Prompt Engineering Masterclass" [level=3] [ref=e811]
+                            - button "Show event details" [ref=e812] [cursor=pointer]:
+                                View Date, Time & Location →
+                        - generic [ref=e813]:
+                            - generic "Event capacity" [ref=e814]:
+                                - img [ref=e816]
+                                - generic [ref=e821]:
+                                    - generic "0 out of 30 registered" [ref=e822]: 0 / 30 registered
+                                    - generic "30 spots remaining" [ref=e823]: 30 spots left
+                            - generic [ref=e824]:
+                                - generic [ref=e825]: Activities
+                                - list "Event activities" [ref=e826]:
+                                    - listitem [ref=e827]:
+                                        - generic [ref=e828]: Hands-on Workshop
+                                    - listitem [ref=e829]:
+                                        - generic [ref=e830]: Live Demonstrations
+                                    - listitem [ref=e831]:
+                                        - generic [ref=e832]: Practice Sessions
+                                    - listitem [ref=e833]:
+                                        - generic [ref=e834]: Lunch Included
+                        - generic [ref=e836]:
+                            - generic [ref=e837]:
+                                - 'generic "Event price: £49" [ref=e838]':
+                                    - generic [ref=e839]: £
+                                    - generic [ref=e840]: '49'
+                                - button "Share" [ref=e842] [cursor=pointer]:
+                                    - img
+                                    - text: Share
+                            - ? button "Register for Prompt Engineering Masterclass event"
+                                [ref=e843] [cursor=pointer]
+                              : - text: Register Now
+                                - img
+                - 'article "Event: AI Ethics & Responsibility Roundtable" [ref=e844]':
+                    - generic [ref=e845]:
+                        - generic [ref=e846]:
+                            - 'generic "Event category: Conference" [ref=e848]': Conference
+                            - heading "AI Ethics & Responsibility Roundtable" [level=3] [ref=e849]
+                            - button "Show event details" [ref=e850] [cursor=pointer]:
+                                View Date, Time & Location →
+                        - generic [ref=e851]:
+                            - generic "Event capacity" [ref=e852]:
+                                - img [ref=e854]
+                                - generic [ref=e859]:
+                                    - generic "0 out of 50 registered" [ref=e860]: 0 / 50 registered
+                                    - generic "50 spots remaining" [ref=e861]: 50 spots left
+                            - generic [ref=e862]:
+                                - generic [ref=e863]: Activities
+                                - list "Event activities" [ref=e864]:
+                                    - listitem [ref=e865]:
+                                        - generic [ref=e866]: Panel Discussion
+                                    - listitem [ref=e867]:
+                                        - generic [ref=e868]: Q&A Session
+                                    - listitem [ref=e869]:
+                                        - generic [ref=e870]: Networking
+                                    - listitem [ref=e871]:
+                                        - generic [ref=e872]: Afternoon Tea
+                        - generic [ref=e874]:
+                            - generic [ref=e875]:
+                                - 'generic "Event price: £0" [ref=e876]':
+                                    - generic [ref=e877]: £
+                                    - generic [ref=e878]: '0'
+                                - button "Share" [ref=e880] [cursor=pointer]:
+                                    - img
+                                    - text: Share
+                            - ? button "Register for AI Ethics & Responsibility Roundtable event"
+                                [ref=e881] [cursor=pointer]
+                              : - text: Register Now
+                                - img
+            - button "Show More (5 more)" [ref=e883] [cursor=pointer]
+        - generic [ref=e886]:
+            - generic [ref=e887]:
+                - img [ref=e889]
+                - heading "AI Assessment Tools" [level=2] [ref=e899]
+                - paragraph [ref=e900]:
+                    Test your AI knowledge and skills with our adaptive assessments. Track your
+                    progress, earn achievements, and get personalized recommendations.
+            - generic [ref=e901]:
+                - generic [ref=e902] [cursor=pointer]:
+                    - generic [ref=e904]:
+                        - generic [ref=e905]:
+                            - img [ref=e907]
+                            - generic [ref=e917]:
+                                - generic [ref=e918]: intermediate
+                                - generic [ref=e919]: Readiness
+                        - heading "AI-Readiness Assessment" [level=3] [ref=e920]
+                        - paragraph [ref=e921]:
+                            Evaluate your organization's readiness for AI adoption. Designed for
+                            SMEs to assess strategic alignment, capabilities, resources, and
+                            implementation roadmap.
+                    - generic [ref=e922]:
+                        - generic [ref=e923]:
+                            - generic [ref=e924]:
+                                - img [ref=e925]
+                                - generic [ref=e928]: 40 min
+                            - generic [ref=e929]:
+                                - img [ref=e930]
+                                - generic [ref=e933]: + questions
+                        - button "Start Assessment" [ref=e935]:
+                            - img
+                            - text: Start Assessment
+                        - generic [ref=e937]: 'Passing score: %'
+                - generic [ref=e938] [cursor=pointer]:
+                    - generic [ref=e940]:
+                        - generic [ref=e941]:
+                            - img [ref=e943]
+                            - generic [ref=e953]:
+                                - generic [ref=e954]: beginner
+                                - generic [ref=e955]: Awareness
+                        - heading "AI-Awareness Assessment" [level=3] [ref=e956]
+                        - paragraph [ref=e957]:
+                            Test your understanding of AI fundamentals, applications, and ethical
+                            considerations. Perfect for building a strong foundation in artificial
+                            intelligence.
+                    - generic [ref=e958]:
+                        - generic [ref=e959]:
+                            - generic [ref=e960]:
+                                - img [ref=e961]
+                                - generic [ref=e964]: 25 min
+                            - generic [ref=e965]:
+                                - img [ref=e966]
+                                - generic [ref=e969]: + questions
+                        - button "Start Assessment" [ref=e971]:
+                            - img
+                            - text: Start Assessment
+                        - generic [ref=e973]: 'Passing score: %'
+                - generic [ref=e974] [cursor=pointer]:
+                    - generic [ref=e976]:
+                        - generic [ref=e977]:
+                            - img [ref=e979]
+                            - generic [ref=e989]:
+                                - generic [ref=e990]: advanced
+                                - generic [ref=e991]: Fluency
+                        - heading "AI-Fluency Assessment" [level=3] [ref=e992]
+                        - paragraph [ref=e993]:
+                            Demonstrate your proficiency in using AI tools, prompt engineering, and
+                            practical problem-solving. For those ready to level up their AI skills.
+                    - generic [ref=e994]:
+                        - generic [ref=e995]:
+                            - generic [ref=e996]:
+                                - img [ref=e997]
+                                - generic [ref=e1000]: 35 min
+                            - generic [ref=e1001]:
+                                - img [ref=e1002]
+                                - generic [ref=e1005]: + questions
+                        - button "Start Assessment" [ref=e1007]:
+                            - img
+                            - text: Start Assessment
+                        - generic [ref=e1009]: 'Passing score: %'
+            - generic [ref=e1011]:
+                - generic [ref=e1012]:
+                    - generic [ref=e1013]: '3'
+                    - generic [ref=e1014]: Assessments Available
+                - generic [ref=e1015]:
+                    - generic [ref=e1016]: Adaptive
+                    - generic [ref=e1017]: AI-Powered Testing
+                - generic [ref=e1018]:
+                    - generic [ref=e1019]: Unlimited
+                    - generic [ref=e1020]: Retakes & Progress Tracking
+        - generic [ref=e1023]:
+            - generic [ref=e1024]:
+                - generic [ref=e1025]:
+                    - img [ref=e1026]
+                    - generic [ref=e1028]: Student Reviews
+                - heading "What Our Students Say" [level=2] [ref=e1029]
+                - paragraph [ref=e1030]:
+                    Real feedback from our AI education community. Read authentic experiences from
+                    learners who have transformed their careers through our programs.
+            - generic [ref=e1033]:
+                - generic [ref=e1034]:
+                    - generic [ref=e1035]: '4.9'
+                    - generic [ref=e1037]:
+                        - img [ref=e1038]
+                        - img [ref=e1040]
+                        - img [ref=e1042]
+                        - img [ref=e1044]
+                        - img [ref=e1046]
+                    - paragraph [ref=e1048]: Based on 7 reviews
+                - generic [ref=e1049]:
+                    - generic [ref=e1050]:
+                        - generic [ref=e1051]:
+                            - generic [ref=e1052]: '5'
+                            - img [ref=e1053]
+                        - generic [ref=e1057]: '6'
+                    - generic [ref=e1058]:
+                        - generic [ref=e1059]:
+                            - generic [ref=e1060]: '4'
+                            - img [ref=e1061]
+                        - generic [ref=e1065]: '1'
+                    - generic [ref=e1066]:
+                        - generic [ref=e1067]:
+                            - generic [ref=e1068]: '3'
+                            - img [ref=e1069]
+                        - generic [ref=e1072]: '0'
+                    - generic [ref=e1073]:
+                        - generic [ref=e1074]:
+                            - generic [ref=e1075]: '2'
+                            - img [ref=e1076]
+                        - generic [ref=e1079]: '0'
+                    - generic [ref=e1080]:
+                        - generic [ref=e1081]:
+                            - generic [ref=e1082]: '1'
+                            - img [ref=e1083]
+                        - generic [ref=e1086]: '0'
+            - generic [ref=e1088]:
+                - button "Write a Review" [ref=e1089] [cursor=pointer]:
+                    - img
+                    - text: Write a Review
+                - button "Refresh Reviews" [ref=e1090] [cursor=pointer]:
+                    - img
+                    - text: Refresh Reviews
+                - generic [ref=e1091]:
+                    - img [ref=e1092]
+                    - generic [ref=e1094]: 'Filter by rating:'
+                    - button "5 ⭐" [ref=e1095] [cursor=pointer]
+                    - button "4 ⭐" [ref=e1096] [cursor=pointer]
+                    - button "3 ⭐" [ref=e1097] [cursor=pointer]
+                    - button "2 ⭐" [ref=e1098] [cursor=pointer]
+                    - button "1 ⭐" [ref=e1099] [cursor=pointer]
+            - generic [ref=e1100]:
+                - generic [ref=e1101]:
+                    - generic [ref=e1102]:
+                        - generic [ref=e1103]:
+                            - generic [ref=e1104]:
+                                - generic [ref=e1105]:
+                                    - img [ref=e1106]
+                                    - img [ref=e1108]
+                                    - img [ref=e1110]
+                                    - img [ref=e1112]
+                                    - img [ref=e1114]
+                                - generic [ref=e1116]: 5/5
+                            - generic [ref=e1117]:
+                                - img [ref=e1118]
+                                - text: written
+                        - generic [ref=e1120]:
+                            - paragraph [ref=e1121]: Kickstarter AI Adventures
+                            - generic [ref=e1122]:
+                                - img [ref=e1123]
+                                - generic [ref=e1126]: HVikram
+                            - generic [ref=e1127]:
+                                - img [ref=e1128]
+                                - generic [ref=e1130]: July 2025
+                            - generic [ref=e1131]:
+                                - img [ref=e1132]
+                                - generic [ref=e1135]: online
+                    - generic [ref=e1136]:
+                        - paragraph [ref=e1137]: '"Amazing !"'
+                        - paragraph [ref=e1139]: Reviewed on September 15th, 2025
+                - generic [ref=e1140]:
+                    - generic [ref=e1141]:
+                        - generic [ref=e1142]:
+                            - generic [ref=e1143]:
+                                - generic [ref=e1144]:
+                                    - img [ref=e1145]
+                                    - img [ref=e1147]
+                                    - img [ref=e1149]
+                                    - img [ref=e1151]
+                                    - img [ref=e1153]
+                                - generic [ref=e1155]: 5/5
+                            - generic [ref=e1156]:
+                                - img [ref=e1157]
+                                - text: written
+                        - generic [ref=e1159]:
+                            - paragraph [ref=e1160]: Kickstarter AI Adventures
+                            - generic [ref=e1161]:
+                                - img [ref=e1162]
+                                - generic [ref=e1165]: HVikram
+                            - generic [ref=e1166]:
+                                - img [ref=e1167]
+                                - generic [ref=e1169]: August 2025
+                            - generic [ref=e1170]:
+                                - img [ref=e1171]
+                                - generic [ref=e1174]: online
+                    - generic [ref=e1175]:
+                        - paragraph [ref=e1176]: '"Amazing"'
+                        - paragraph [ref=e1178]: Reviewed on September 15th, 2025
+                - generic [ref=e1179]:
+                    - generic [ref=e1180]:
+                        - generic [ref=e1181]:
+                            - generic [ref=e1182]:
+                                - generic [ref=e1183]:
+                                    - img [ref=e1184]
+                                    - img [ref=e1186]
+                                    - img [ref=e1188]
+                                    - img [ref=e1190]
+                                    - img [ref=e1192]
+                                - generic [ref=e1194]: 5/5
+                            - generic [ref=e1195]:
+                                - img [ref=e1196]
+                                - text: video
+                        - generic [ref=e1199]:
+                            - paragraph [ref=e1200]: Course 403
+                            - generic [ref=e1201]:
+                                - img [ref=e1202]
+                                - generic [ref=e1205]: NITIN
+                            - generic [ref=e1206]:
+                                - img [ref=e1207]
+                                - generic [ref=e1209]: jan 2025
+                            - generic [ref=e1210]:
+                                - img [ref=e1211]
+                                - generic [ref=e1214]: online
+                    - generic [ref=e1215]:
+                        - button "Load Video" [ref=e1220] [cursor=pointer]:
+                            - img
+                            - generic [ref=e1221]: Load Video
+                        - paragraph [ref=e1223]: Reviewed on August 6th, 2025
+            - button "Show More (4 more)" [ref=e1225] [cursor=pointer]
+        - generic [ref=e1228]:
+            - generic [ref=e1229]:
+                - heading "Get in Touch" [level=2] [ref=e1230]
+                - paragraph [ref=e1231]:
+                    Have questions about our AI education programs? Need personalized guidance?
+                    We're here to help you start your AI learning journey.
+            - generic [ref=e1233]:
+                - generic [ref=e1234]:
+                    - heading "Choose Your Preferred Channel" [level=3] [ref=e1235]
+                    - generic [ref=e1236]:
+                        - generic [ref=e1238] [cursor=pointer]:
+                            - img [ref=e1240]
+                            - generic [ref=e1243]:
+                                - generic [ref=e1244]:
+                                    - heading "Email Support" [level=4] [ref=e1245]
+                                    - generic [ref=e1246]:
+                                        - img [ref=e1247]
+                                        - text: 24 hours
+                                - paragraph [ref=e1250]:
+                                    Get detailed help from our education experts
+                                - generic [ref=e1251]:
+                                    - generic [ref=e1252]: hirendra.vikram@aiborg.ai
+                                    - button "Send Email" [ref=e1253]:
+                                        - text: Send Email
+                                        - img
+                        - generic [ref=e1255] [cursor=pointer]:
+                            - img [ref=e1257]
+                            - generic [ref=e1259]:
+                                - generic [ref=e1260]:
+                                    - heading "Discord Community" [level=4] [ref=e1261]
+                                    - generic [ref=e1262]:
+                                        - img [ref=e1263]
+                                        - text: Instant
+                                - paragraph [ref=e1266]:
+                                    Join real-time discussions with learners worldwide
+                                - generic [ref=e1267]:
+                                    - generic [ref=e1268]: Join Discord Server
+                                    - button "Join Now" [ref=e1269]:
+                                        - text: Join Now
+                                        - img
+                        - generic [ref=e1271] [cursor=pointer]:
+                            - img [ref=e1273]
+                            - generic [ref=e1278]:
+                                - generic [ref=e1279]:
+                                    - heading "Skool Community" [level=4] [ref=e1280]
+                                    - generic [ref=e1281]:
+                                        - img [ref=e1282]
+                                        - text: Instant
+                                - paragraph [ref=e1285]:
+                                    Structured learning communities and peer support
+                                - generic [ref=e1286]:
+                                    - generic [ref=e1287]: Join Skool Platform
+                                    - button "Access Platform" [ref=e1288]:
+                                        - text: Access Platform
+                                        - img
+                        - generic [ref=e1290] [cursor=pointer]:
+                            - img [ref=e1292]
+                            - generic [ref=e1294]:
+                                - generic [ref=e1295]:
+                                    - heading "WhatsApp Support" [level=4] [ref=e1296]
+                                    - generic [ref=e1297]:
+                                        - img [ref=e1298]
+                                        - text: Few hours
+                                - paragraph [ref=e1301]:
+                                    Direct messaging for quick questions and support
+                                - generic [ref=e1302]:
+                                    - generic [ref=e1303]: +44 7404568207
+                                    - button "Chat Now" [ref=e1304]:
+                                        - text: Chat Now
+                                        - img
+                - generic [ref=e1305]:
+                    - generic [ref=e1306]:
+                        - generic [ref=e1307]:
+                            - img [ref=e1309]
+                            - generic [ref=e1312]:
+                                - heading "Send us a Message" [level=3] [ref=e1313]
+                                - paragraph [ref=e1314]: We'll respond within 24 hours
+                        - generic [ref=e1315]:
+                            - generic [ref=e1316]:
+                                - generic [ref=e1317]:
+                                    - generic [ref=e1318]: Full Name *
+                                    - textbox "Full Name *" [ref=e1319]:
+                                        - /placeholder: Your full name
+                                - generic [ref=e1320]:
+                                    - generic [ref=e1321]: Email Address *
+                                    - textbox "Email Address *" [ref=e1322]:
+                                        - /placeholder: your.email@example.com
+                            - generic [ref=e1323]:
+                                - generic [ref=e1324]: Target Audience *
+                                - combobox "Target Audience *" [ref=e1325] [cursor=pointer]:
+                                    - generic: Select your target audience
+                                    - img [ref=e1326]
+                                - combobox [ref=e1328]
+                            - generic [ref=e1329]:
+                                - generic [ref=e1330]: Subject
+                                - textbox "Subject" [ref=e1331]:
+                                    - /placeholder: Brief subject of your inquiry
+                            - generic [ref=e1332]:
+                                - generic [ref=e1333]: Message *
+                                - textbox "Message *" [ref=e1334]:
+                                    - /placeholder:
+                                        Tell us about your AI learning goals, questions, or how we
+                                        can help...
+                            - button "Send Message" [disabled]:
+                                - text: Send Message
+                                - img
+                            - paragraph [ref=e1335]:
+                                By sending this message, you agree to our terms of service and
+                                privacy policy.
+                    - generic [ref=e1336]:
+                        - generic [ref=e1337]:
+                            - img [ref=e1338]
+                            - generic [ref=e1340]: Made with care by the Aiborg™ team
+                        - paragraph [ref=e1341]:
+                            Every message is personally reviewed by our education experts
+        - contentinfo [ref=e1342]:
+            - generic [ref=e1345]:
+                - heading "Stay Updated with AI Insights" [level=3] [ref=e1346]
+                - paragraph [ref=e1347]:
+                    Subscribe to our newsletter for the latest AI education news, course updates,
+                    and exclusive resources
+                - generic [ref=e1348]:
+                    - textbox "Enter your email" [ref=e1349]
+                    - button "Subscribe" [ref=e1350] [cursor=pointer]:
+                        - text: Subscribe
+                        - img
+            - generic [ref=e1351]:
+                - generic [ref=e1352]:
+                    - generic [ref=e1353]:
+                        - link "Aiborg" [ref=e1354] [cursor=pointer]:
+                            - /url: /
+                            - img "Aiborg" [ref=e1355]
+                        - paragraph [ref=e1356]:
+                            Empowering the future with AI education. Learn, grow, and innovate with
+                            Aiborg's comprehensive training programs.
+                        - generic [ref=e1357]:
+                            - generic [ref=e1358]:
+                                - img [ref=e1359]
+                                - link "info@aiborg.ai" [ref=e1362] [cursor=pointer]:
+                                    - /url: mailto:info@aiborg.ai
+                            - generic [ref=e1363]:
+                                - img [ref=e1364]
+                                - link "+1 (234) 567-890" [ref=e1366] [cursor=pointer]:
+                                    - /url: tel:+1234567890
+                            - generic [ref=e1367]:
+                                - img [ref=e1368]
+                                - generic [ref=e1371]: 123 AI Street, Tech City, TC 12345
+                    - generic [ref=e1372]:
+                        - heading "Quick Links" [level=4] [ref=e1373]
+                        - list [ref=e1374]:
+                            - listitem [ref=e1375]:
+                                - link "Home" [ref=e1376] [cursor=pointer]:
+                                    - /url: /
+                            - listitem [ref=e1377]:
+                                - link "Programs" [ref=e1378] [cursor=pointer]:
+                                    - /url: /#training-programs
+                            - listitem [ref=e1379]:
+                                - link "Blog" [ref=e1380] [cursor=pointer]:
+                                    - /url: /blog
+                            - listitem [ref=e1381]:
+                                - link "Events" [ref=e1382] [cursor=pointer]:
+                                    - /url: /#events
+                            - listitem [ref=e1383]:
+                                - link "Reviews" [ref=e1384] [cursor=pointer]:
+                                    - /url: /#reviews
+                            - listitem [ref=e1385]:
+                                - link "About" [ref=e1386] [cursor=pointer]:
+                                    - /url: /#about
+                    - generic [ref=e1387]:
+                        - heading "Our Programs" [level=4] [ref=e1388]
+                        - list [ref=e1389]:
+                            - listitem [ref=e1390]:
+                                - link "AI Fundamentals" [ref=e1391] [cursor=pointer]:
+                                    - /url: /#training-programs
+                            - listitem [ref=e1392]:
+                                - link "Machine Learning" [ref=e1393] [cursor=pointer]:
+                                    - /url: /#training-programs
+                            - listitem [ref=e1394]:
+                                - link "Data Science" [ref=e1395] [cursor=pointer]:
+                                    - /url: /#training-programs
+                            - listitem [ref=e1396]:
+                                - link "Deep Learning" [ref=e1397] [cursor=pointer]:
+                                    - /url: /#training-programs
+                            - listitem [ref=e1398]:
+                                - link "NLP & Computer Vision" [ref=e1399] [cursor=pointer]:
+                                    - /url: /#training-programs
+                    - generic [ref=e1400]:
+                        - heading "Resources" [level=4] [ref=e1401]
+                        - list [ref=e1402]:
+                            - listitem [ref=e1403]:
+                                - button "FAQ" [ref=e1404] [cursor=pointer]
+                            - listitem [ref=e1405]:
+                                - button "Terms & Conditions" [ref=e1406] [cursor=pointer]
+                            - listitem [ref=e1407]:
+                                - link "Privacy Policy" [ref=e1408] [cursor=pointer]:
+                                    - /url: /privacy
+                            - listitem [ref=e1409]:
+                                - link "Contact Us" [ref=e1410] [cursor=pointer]:
+                                    - /url: /#contact
+                            - listitem [ref=e1411]:
+                                - link "Support" [ref=e1412] [cursor=pointer]:
+                                    - /url: /support
+                - generic [ref=e1413]:
+                    - generic [ref=e1414]:
+                        © 2025 Aiborg™. All rights reserved. Powered by AI innovation.
+                    - generic [ref=e1415]:
+                        - link "Facebook" [ref=e1416] [cursor=pointer]:
+                            - /url: https://facebook.com
+                            - img [ref=e1417]
+                        - link "Twitter" [ref=e1419] [cursor=pointer]:
+                            - /url: https://twitter.com
+                            - img [ref=e1420]
+                        - link "LinkedIn" [ref=e1422] [cursor=pointer]:
+                            - /url: https://linkedin.com
+                            - img [ref=e1423]
+                        - link "Instagram" [ref=e1427] [cursor=pointer]:
+                            - /url: https://instagram.com
+                            - img [ref=e1428]
+                        - link "YouTube" [ref=e1431] [cursor=pointer]:
+                            - /url: https://youtube.com
+                            - img [ref=e1432]
+        - generic [ref=e1436]:
+            - generic [ref=e1437]:
+                - generic [ref=e1438]:
+                    - img [ref=e1442]
+                    - generic [ref=e1446]:
+                        - heading "aiborg chat" [level=3] [ref=e1447]
+                        - paragraph [ref=e1448]: Online • Ready to help
+                - button [ref=e1449] [cursor=pointer]:
+                    - img
+            - generic [ref=e1450]:
+                - generic [ref=e1452]:
+                    - img [ref=e1455]
+                    - generic [ref=e1458]:
+                        - paragraph [ref=e1459]:
+                            Hello! I'm aiborg chat, your AI learning assistant. I can help you find
+                            the perfect course and answer questions about our programs. What would
+                            you like to learn about AI?
+                        - paragraph [ref=e1460]: 02:20 PM
+                - generic [ref=e1462]:
+                    - generic [ref=e1463]:
+                        - paragraph [ref=e1464]: What AI courses do you offer?
+                        - paragraph [ref=e1465]: 02:20 PM
+                    - img [ref=e1468]
+                - generic [ref=e1472]:
+                    - img [ref=e1475]
+                    - generic [ref=e1478]:
+                        - paragraph [ref=e1479]:
+                            'I recommend **Vibe Coding with Claude Code ** (£20, 4 weeks). For more
+                            details, contact us on WhatsApp: +44 7404568207'
+                        - paragraph [ref=e1480]: 02:20 PM
+                - generic [ref=e1482]:
+                    - generic [ref=e1483]:
+                        - paragraph [ref=e1484]: How much do your professional courses cost?
+                        - paragraph [ref=e1485]: 02:20 PM
+                    - img [ref=e1488]
+                - generic [ref=e1492]:
+                    - img [ref=e1495]
+                    - generic [ref=e1498]:
+                        - paragraph [ref=e1499]:
+                            'Our courses range from £25 to £499. For detailed pricing and payment
+                            plans, contact us on WhatsApp: +44 7404568207'
+                        - paragraph [ref=e1500]: 02:21 PM
+                - generic [ref=e1502]:
+                    - generic [ref=e1503]:
+                        - paragraph [ref=e1504]:
+                            I'm a software developer looking to learn AI. What do you recommend?
+                        - paragraph [ref=e1505]: 02:21 PM
+                    - img [ref=e1508]
+                - generic [ref=e1512]:
+                    - img [ref=e1515]
+                    - generic [ref=e1518]:
+                        - paragraph [ref=e1519]:
+                            'I recommend **Vibe Coding with Claude Code ** (£20, 4 weeks). For more
+                            details, contact us on WhatsApp: +44 7404568207'
+                        - paragraph [ref=e1520]: 02:21 PM
+                - generic [ref=e1522]:
+                    - generic [ref=e1523]:
+                        - paragraph [ref=e1524]:
+                            What is the difference between machine learning and deep learning?
+                        - paragraph [ref=e1525]: 02:21 PM
+                    - img [ref=e1528]
+                - generic [ref=e1532]:
+                    - img [ref=e1535]
+                    - generic [ref=e1538]:
+                        - paragraph [ref=e1539]:
+                            "I'm experiencing technical difficulties, but I'm still here to help!
+                            For immediate assistance, please contact us on WhatsApp: +44 7404568207"
+                        - paragraph [ref=e1540]: 02:21 PM
+                - generic [ref=e1542]:
+                    - generic [ref=e1543]:
+                        - paragraph [ref=e1544]:
+                            Can you help me choose the right course for my skill level?
+                        - paragraph [ref=e1545]: 02:21 PM
+                    - img [ref=e1548]
+                - img [ref=e1555]
+            - generic [ref=e1563]:
+                - generic [ref=e1564]:
+                    - textbox "Ask about courses, pricing, or anything..." [ref=e1565]
+                    - button "WhatsApp Support" [ref=e1566] [cursor=pointer]:
+                        - img
+                    - button [disabled]:
+                        - img
+                - paragraph [ref=e1567]: Powered by AI • Instant responses • Human support available
+```
