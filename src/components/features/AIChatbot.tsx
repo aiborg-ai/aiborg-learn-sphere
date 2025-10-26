@@ -7,6 +7,7 @@ import { usePersonalization } from '@/contexts/PersonalizationContext';
 import { useCourses } from '@/hooks/useCourses';
 import { logger } from '@/utils/logger';
 import { MessageCircle, Send, X, Bot, User, Phone } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 // Ollama service removed - using ai-chat edge function instead
 // import { chat, createChatbotSystemPrompt, checkOllamaHealth } from '@/services/ollamaService';
 // import type { ChatMessage } from '@/services/ollamaService';
@@ -272,13 +273,36 @@ export function AIChatbot() {
 
   const generateAIResponse = async (userMessage: string): Promise<string> => {
     try {
-      // Ollama functionality disabled - using fallback responses
-      // TODO: Integrate with ai-chat edge function for production
-      throw new Error('Using fallback responses');
+      // Call the ai-chat edge function with user message and context
+      const coursesData = getCourseRecommendations().map(course => ({
+        title: course.title,
+        price: course.price,
+        duration: course.duration,
+        level: course.level || 'beginner',
+        audience: personalization.audience,
+      }));
+
+      const { data, error } = await supabase.functions.invoke('ai-chat', {
+        body: {
+          messages: [{ role: 'user', content: userMessage }],
+          audience: personalization.audience,
+          coursesData: coursesData,
+        },
+      });
+
+      if (error) throw error;
+
+      // Return the AI response
+      if (data && data.response) {
+        logger.log('AI response generated successfully');
+        return data.response;
+      }
+
+      throw new Error('No response from AI');
     } catch (error) {
       logger.error('Error generating AI response:', error);
 
-      // Fallback to basic static response
+      // Fallback to basic static response only on actual error
       const lowerMessage = userMessage.toLowerCase();
 
       if (lowerMessage.includes('cost') || lowerMessage.includes('price')) {

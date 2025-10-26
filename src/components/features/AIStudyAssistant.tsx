@@ -175,9 +175,28 @@ export function AIStudyAssistant() {
     setIsLoading(true);
 
     try {
-      // Ollama functionality disabled - using fallback responses
-      // TODO: Integrate with ai-chat edge function for production
-      throw new Error('Using fallback responses');
+      // Call the ai-study-assistant edge function
+      const { data, error } = await supabase.functions.invoke('ai-study-assistant', {
+        body: {
+          messages: [{ role: 'user', content: message }],
+          sessionId: sessionId,
+          userId: user?.id,
+        },
+      });
+
+      if (error) throw error;
+
+      // Add AI response to messages
+      const aiMessage: Message = {
+        id: crypto.randomUUID(),
+        content: data?.response || "I'm here to help! What would you like to work on?",
+        role: 'assistant',
+        timestamp: new Date(),
+      };
+
+      setMessages(prev => [...prev, aiMessage]);
+
+      logger.log('AI study assistant response generated successfully');
     } catch (error) {
       logger.error('Error sending message to AI:', error);
 
