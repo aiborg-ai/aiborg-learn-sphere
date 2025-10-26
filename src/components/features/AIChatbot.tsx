@@ -279,13 +279,13 @@ export function AIChatbot() {
         price: course.price,
         duration: course.duration,
         level: course.level || 'beginner',
-        audience: personalization.audience,
+        audience: selectedAudience,
       }));
 
       const { data, error } = await supabase.functions.invoke('ai-chat', {
         body: {
           messages: [{ role: 'user', content: userMessage }],
-          audience: personalization.audience,
+          audience: selectedAudience,
           coursesData: coursesData,
         },
       });
