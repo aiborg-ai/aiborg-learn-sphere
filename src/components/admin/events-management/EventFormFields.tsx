@@ -1,13 +1,16 @@
-import { UseFormRegister, FieldErrors } from 'react-hook-form';
+import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import { RichTextEditor } from '@/components/ui/RichTextEditor';
+import { MediaUploadButton } from '@/components/ui/MediaUploadButton';
 import { Event } from './types';
 
 interface EventFormFieldsProps {
   register: UseFormRegister<Event>;
   errors: FieldErrors<Event>;
+  setValue: UseFormSetValue<Event>;
+  watch: UseFormWatch<Event>;
   watchIsActive: boolean;
   watchIsVisible: boolean;
 }
@@ -15,9 +18,14 @@ interface EventFormFieldsProps {
 export function EventFormFields({
   register,
   errors,
+  setValue,
+  watch,
   watchIsActive,
   watchIsVisible,
 }: EventFormFieldsProps) {
+  const currentDescription = watch('description') || '';
+  const currentImage = watch('image_url') || '';
+
   return (
     <>
       <div className="space-y-2">
@@ -30,15 +38,27 @@ export function EventFormFields({
         {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
       </div>
 
+      {/* Rich Text Editor for Description */}
       <div className="space-y-2">
-        <Label htmlFor="description">Description *</Label>
-        <Textarea
-          id="description"
-          {...register('description', { required: 'Description is required' })}
+        <Label>Description * (supports rich formatting)</Label>
+        <RichTextEditor
+          content={currentDescription}
+          onChange={content => setValue('description', content)}
           placeholder="Join us for an intensive workshop on AI fundamentals..."
-          rows={4}
         />
         {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
+      </div>
+
+      {/* Event Image Upload */}
+      <div className="space-y-2">
+        <Label>Event Cover Image</Label>
+        <MediaUploadButton
+          bucketName="event-photos"
+          onUploadComplete={url => setValue('image_url', url)}
+          currentImage={currentImage}
+          label="Upload Event Cover Image"
+          maxSizeMB={5}
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4">

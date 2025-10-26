@@ -30,13 +30,14 @@ export function EventFormDialog({
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors },
   } = form;
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEditing ? 'Edit Event' : 'Create New Event'}</DialogTitle>
         </DialogHeader>
@@ -44,6 +45,8 @@ export function EventFormDialog({
           <EventFormFields
             register={register}
             errors={errors}
+            setValue={setValue}
+            watch={watch}
             watchIsActive={watch('is_active')}
             watchIsVisible={watch('is_visible')}
           />

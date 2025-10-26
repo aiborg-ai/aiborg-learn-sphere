@@ -2,6 +2,7 @@ export interface Event {
   id?: string;
   title: string;
   description: string;
+  image_url?: string; // Event cover image/banner
   event_date: string;
   event_time?: string;
   location: string;
