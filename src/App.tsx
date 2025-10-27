@@ -29,6 +29,7 @@ const AuthCallback = lazy(() => import('./pages/AuthCallback'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const Profile = lazy(() => import('./pages/Profile'));
 const Admin = lazy(() => import('./pages/AdminRefactored'));
+const Studio = lazy(() => import('./pages/Studio'));
 const CMS = lazy(() => import('./pages/CMS'));
 const BlogCMS = lazy(() => import('./pages/CMS/BlogCMS'));
 const PaymentSuccess = lazy(() => import('./pages/PaymentSuccess'));
@@ -130,6 +131,7 @@ const AppWithShortcuts = () => {
             <Route path="/profile" element={<Profile />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/studio" element={<Studio />} />
             <Route path="/admin/template-import" element={<TemplateImport />} />
             <Route path="/admin/assessment-questions" element={<AssessmentQuestionsManagement />} />
             <Route path="/cms" element={<CMS />} />
