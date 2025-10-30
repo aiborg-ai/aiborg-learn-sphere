@@ -31,7 +31,7 @@ export interface FieldDefinition {
   placeholder?: string;
 
   required: boolean;
-  options?: any[];
+  options?: Array<{ value: string; label: string }>;
   conditional?: {
     field: string;
     value?: string;
@@ -42,7 +42,7 @@ export interface FieldDefinition {
 
   min?: number;
   max?: number;
-  default?: any;
+  default?: string | number | boolean;
 }
 
 export interface WorkflowProgress {
@@ -414,7 +414,9 @@ class ProfileWorkflowService {
   /**
    * Extract proficiency areas from assessment
    */
-  private extractProficiencyAreas(assessment: any): any[] {
+  private extractProficiencyAreas(assessment: {
+    category_scores?: Record<string, number>;
+  }): Array<{ category: string; score: number; level: string }> {
     try {
       if (!assessment.category_scores) return [];
 

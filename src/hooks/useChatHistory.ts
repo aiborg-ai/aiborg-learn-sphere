@@ -47,13 +47,17 @@ export function useChatHistory() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        const parsed = JSON.parse(stored);
+        const parsed = JSON.parse(stored) as Array<{
+          startedAt: string;
+          updatedAt: string;
+          messages: Array<{ timestamp: string }>;
+        }>;
         // Convert date strings back to Date objects
-        return parsed.map((conv: any) => ({
+        return parsed.map(conv => ({
           ...conv,
           startedAt: new Date(conv.startedAt),
           updatedAt: new Date(conv.updatedAt),
-          messages: conv.messages.map((msg: any) => ({
+          messages: conv.messages.map(msg => ({
             ...msg,
             timestamp: new Date(msg.timestamp),
           })),
