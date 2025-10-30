@@ -283,3 +283,30 @@ export type {
   Environment,
   EnvironmentConfig,
 } from './utils';
+
+// Session Types
+export type {
+  // Session
+  SessionStatus,
+  RegistrationStatus,
+  RegistrationSource,
+  WaitlistStatus,
+  MeetingProvider,
+  Currency,
+  DeviceType,
+  FreeSession,
+  SessionRegistration,
+  SessionWaitlist,
+  SessionAttendance,
+  SessionWithCounts,
+  SessionRegistrationWithSession,
+  SessionRegistrationWithWaitlist,
+  WaitlistWithRegistration,
+  CreateSessionInput,
+  UpdateSessionInput,
+  CreateRegistrationInput,
+  UpdateRegistrationInput,
+  SessionListResponse,
+  RegistrationResponse,
+  WaitlistPromotionResponse,
+} from './session';

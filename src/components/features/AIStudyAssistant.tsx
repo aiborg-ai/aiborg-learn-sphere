@@ -178,7 +178,7 @@ export function AIStudyAssistant() {
       // Call the ai-study-assistant edge function
       const { data, error } = await supabase.functions.invoke('ai-study-assistant', {
         body: {
-          messages: [{ role: 'user', content: message }],
+          messages: [{ role: 'user', content: textToSend }],
           sessionId: sessionId,
           userId: user?.id,
         },

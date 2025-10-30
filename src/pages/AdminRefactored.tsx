@@ -15,6 +15,7 @@ import {
   Star,
   Calendar,
   Trophy,
+  Mail,
   FileJson,
   BarChart3,
   UserCog,
@@ -46,6 +47,7 @@ import { ResourcesManagement } from '@/components/admin/ResourcesManagement';
 import { AttendanceTicketManagement } from '@/components/admin/AttendanceTicketManagement';
 import { FamilyPassManagement } from '@/components/admin/FamilyPassManagement';
 import { ModeratorDashboard } from '@/components/admin/ModeratorDashboard';
+import { RegistrantsManagement } from '@/components/admin/RegistrantsManagement';
 
 export default function AdminRefactored() {
   const { user } = useAuth();
@@ -193,6 +195,10 @@ export default function AdminRefactored() {
               <ShieldCheck className="h-4 w-4 mr-2" />
               Moderation
             </TabsTrigger>
+            <TabsTrigger value="registrants" className="text-white data-[state=active]:bg-white/20">
+              <Mail className="h-4 w-4 mr-2" />
+              Registrants
+            </TabsTrigger>
           </TabsList>
 
           {/* Tab Content */}
@@ -271,6 +277,10 @@ export default function AdminRefactored() {
 
           <TabsContent value="moderation">
             <ModeratorDashboard />
+          </TabsContent>
+
+          <TabsContent value="registrants">
+            <RegistrantsManagement />
           </TabsContent>
         </Tabs>
       </div>

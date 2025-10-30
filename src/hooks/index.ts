@@ -34,6 +34,11 @@ export * from './useReviews';
 export * from './useUserReviews';
 export * from './useReviewCounts';
 
+// Sessions & Waitlist
+export * from './useSessionData';
+export * from './useSessionRegistration';
+export * from './useWaitlist';
+
 // Analytics & Tracking
 export * from './useAnalytics';
 export * from './useAuditLogs';

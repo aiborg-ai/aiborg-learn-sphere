@@ -4,6 +4,48 @@ HVOne2025
 stripe password
 -------------------
 
+----------------------------------------------
+supabase project API Keys
+sb_secret_RjBgDxdqc-gmRTaKGDfl8g_-4wzGpKr
+-----------------------------------------------
+
+Once you verify the live chatbot works, here are logical next tasks:
+
+
+
+
+
+  3. Documentation
+
+
+
+  4. Performance Optimization
+
+  - Implement caching for common questions
+  - Consider using GPT-3.5-turbo for simpler queries to reduce costs
+  - Add response time monitoring
+
+  5. User Experience
+
+  - Add loading skeleton while waiting for responses
+  - Show indicator when response is from GPT-4 vs fallback
+  - Add option to rate responses
+  - Implement conversation export feature
+
+---------------------------------------------------------
+
+  - Learning Content: 3 cards (Course, Blog, Workshop)
+  - Events/Sessions: 2 cards (Event, Session)
+  - Assessments: 4 cards (Tool, Results, Score, Exercise)
+  - Gamification: 2 cards (Achievement, Achievement Share)
+  - Forum: 3 cards (Category, Thread, Post)
+  - Analytics: 8 cards (various metrics)
+  - UI Base: 3 cards (Card, HoverCard, SwipeableCard)
+
+
+
+
+-------------------------------------------------
 
   - ✨ New features (e.g., discussion forums, live classrooms, AI tutoring)
   - 🔧 Enhancements (e.g., advanced analytics, mobile app, integrations)
@@ -13,6 +55,87 @@ stripe password
   - 📚 Documentation (API docs, user guides)
 
 
+  ⏳ Next Steps (Phase 0 - Week 1-2)
+
+  Priority: HIGH - Foundation Tasks
+
+  1. Test AI chatbot with real queries (2 hours)
+    - Verify GPT-4 responses work (not fallbacks)
+    - Test with 10 sample queries
+    - Check browser console for errors
+  2. Verify OpenAI API key configured (30 min)
+    - Check Supabase Dashboard → Edge Functions → Secrets
+    - Test edge function manually if needed
+  3. Establish baseline metrics (4 hours)
+    - Measure response relevance (manual scoring)
+    - Track hallucination rate
+    - Record performance (response time, costs)
+    - Document current state before RAG
+  4. Create FAQ table with vector support (1 hour)
+    - Run SQL migration for FAQ table
+    - Add vector(1536) column
+    - Set up RLS policies
+  5. Populate initial FAQ content (3 hours)
+    - Add 25-30 common questions
+    - Categories: enrollment, pricing, technical, learning paths, AI
+  concepts
+    - Seed database
+
+  ---
+  🚀 Future Tasks (Phase 1 - Week 3-4)
+
+  6. Enable pgvector extension (5 min)
+    - Run: CREATE EXTENSION IF NOT EXISTS vector;
+  7. Add vector columns to content tables (30 min)
+    - Alter blog_posts, courses, assessment_questions, learning_paths
+    - Add embedding columns
+  8. Create HNSW indexes (15 min)
+    - Create indexes for fast vector search
+    - Use optimal parameters for your scale
+
+  ---
+  🎯 Immediate Action Items
+
+  Can start now:
+  1. ✅ Test the chatbot (just fixed it, need to verify it works)
+  2. ✅ Check OpenAI API key (critical for edge functions)
+  3. ✅ Create FAQ table (foundation for Phase 2)
+
+  Estimated time this week: 6-8 hours
+
+  By end of Week 2: Baseline established, FAQ table ready, chatbot tested
+
+  ---
+  📊 Progress Tracker
+
+  Week 1-2 (Phase 0 - Foundation):         [████████░░] 40% complete
+    ✅ Fix chatbot components
+    ✅ Research & documentation
+    ⏳ Test & verify
+    ⏳ Baseline metrics
+    ⏳ FAQ table
+
+  Week 3-4 (Phase 1 - pgvector Setup):     [░░░░░░░░░░] 0% complete
+  Week 5   (Phase 2 - Data Indexing):      [░░░░░░░░░░] 0% complete
+  Week 6-7 (Phase 3 - RAG Integration):    [░░░░░░░░░░] 0% complete
+  Week 8+  (Phase 4 - Optimization):       [░░░░░░░░░░] 0% complete
+
+  Overall Progress:                         [██░░░░░░░░] 20% complete
+
+  ---
+  💡 What to Focus On
+
+  This week: Get the foundation solid
+  - ✅ Verify chatbot works
+  - ✅ Establish baseline (know where you're starting from)
+  - ✅ Create FAQ table (needed for Phase 2)
+
+  Next week: Begin pgvector setup
+  - Enable extension
+  - Add vector columns
+  - Create indexes
+
+  Weeks 3-6: Index data, integrate RAG, launch
 
 
 
