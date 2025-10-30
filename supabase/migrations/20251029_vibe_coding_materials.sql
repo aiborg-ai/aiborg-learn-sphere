@@ -46,7 +46,7 @@ BEGIN
     'Session 1: Getting Started with AI Coding Tools - Handbook',
     'Comprehensive guide to setting up and using Claude Code, ChatGPT, and GitHub Copilot. Includes installation instructions, API key setup, IDE configuration, and your first AI-assisted coding session. Perfect for beginners to AI-powered development.',
     'handbook',
-    'https://your-storage-bucket.com/vibe-coding/session-1-handbook.pdf',
+    'https://storage.aiborg.ai/vibe-coding/session-1-handbook.pdf',
     true,
     1
   );
@@ -65,7 +65,7 @@ BEGIN
     'Session 1: Introduction to AI-Powered Development - Slides',
     'Presentation slides covering: What is AI-powered coding? Overview of major tools, How AI assistants work, Benefits and limitations, Demo: Your first AI coding session, Best practices for beginners.',
     'presentation',
-    'https://your-storage-bucket.com/vibe-coding/session-1-slides.pdf',
+    'https://storage.aiborg.ai/vibe-coding/session-1-slides.pdf',
     true,
     2
   );
@@ -85,7 +85,7 @@ BEGIN
     'Session 1: Live Session Recording',
     'Full recording of Session 1 including live coding demonstration, Q&A, and hands-on exercises. Duration: 2 hours.',
     'recording',
-    'https://your-storage-bucket.com/vibe-coding/session-1-recording.mp4',
+    'https://storage.aiborg.ai/vibe-coding/session-1-recording.mp4',
     7200, -- 2 hours in seconds
     false, -- Set to true after recording is available
     3
@@ -105,7 +105,7 @@ BEGIN
     'Session 1: Quick Reference - Keyboard Shortcuts & Commands',
     'One-page cheat sheet with essential keyboard shortcuts, common prompts, and quick commands for Claude Code, ChatGPT, and GitHub Copilot.',
     'other',
-    'https://your-storage-bucket.com/vibe-coding/session-1-quick-ref.pdf',
+    'https://storage.aiborg.ai/vibe-coding/session-1-quick-ref.pdf',
     true,
     4
   );
@@ -128,7 +128,7 @@ BEGIN
     'Session 2: Claude Code Mastery - Complete Handbook',
     'In-depth guide to Claude Code workflows: Advanced prompting techniques, Code generation and refactoring, Debugging strategies, Test-driven development with AI, Multi-file editing, Context management, and Real-world project examples.',
     'handbook',
-    'https://your-storage-bucket.com/vibe-coding/session-2-handbook.pdf',
+    'https://storage.aiborg.ai/vibe-coding/session-2-handbook.pdf',
     true,
     5
   );
@@ -147,7 +147,7 @@ BEGIN
     'Session 2: Claude Code Deep Dive - Slides',
     'Presentation covering: Architecture of Claude Code, Advanced features and capabilities, Prompt engineering for code, Case studies and workflows, Common pitfalls and solutions, Pro tips from experienced users.',
     'presentation',
-    'https://your-storage-bucket.com/vibe-coding/session-2-slides.pdf',
+    'https://storage.aiborg.ai/vibe-coding/session-2-slides.pdf',
     true,
     6
   );
@@ -167,7 +167,7 @@ BEGIN
     'Session 2: Live Session Recording',
     'Full recording of Session 2 with live coding demos, advanced techniques, and Q&A.',
     'recording',
-    'https://your-storage-bucket.com/vibe-coding/session-2-recording.mp4',
+    'https://storage.aiborg.ai/vibe-coding/session-2-recording.mp4',
     7200,
     false,
     7
@@ -187,7 +187,7 @@ BEGIN
     'Session 2: Claude Code Examples & Templates',
     'GitHub repository with 20+ code examples, prompts, and templates demonstrated in Session 2. Includes: API integration patterns, Refactoring workflows, Test generation templates, Documentation automation.',
     'other',
-    'https://github.com/aiborg-ai/vibe-coding-session-2-examples',
+    'https://github.com/aiborg-ai/vibe-coding-examples',
     true,
     8
   );
@@ -210,7 +210,7 @@ BEGIN
     'Session 3: ChatGPT & Copilot Power User Guide',
     'Comprehensive handbook covering: Advanced ChatGPT prompt patterns, GitHub Copilot keyboard mastery, Multi-tool workflows, IDE integration tips, Context-aware coding techniques, Combining tools for maximum productivity.',
     'handbook',
-    'https://your-storage-bucket.com/vibe-coding/session-3-handbook.pdf',
+    'https://storage.aiborg.ai/vibe-coding/session-3-handbook.pdf',
     true,
     9
   );
@@ -229,7 +229,7 @@ BEGIN
     'Session 3: ChatGPT & Copilot Techniques - Slides',
     'Slides covering: ChatGPT for architecture & design, Copilot best practices, Tool comparison matrix, When to use which tool, Multi-tool workflow patterns, Real-world case studies.',
     'presentation',
-    'https://your-storage-bucket.com/vibe-coding/session-3-slides.pdf',
+    'https://storage.aiborg.ai/vibe-coding/session-3-slides.pdf',
     true,
     10
   );
@@ -249,7 +249,7 @@ BEGIN
     'Session 3: Live Session Recording',
     'Full recording of Session 3 including ChatGPT demos, Copilot workflows, and Q&A.',
     'recording',
-    'https://your-storage-bucket.com/vibe-coding/session-3-recording.mp4',
+    'https://storage.aiborg.ai/vibe-coding/session-3-recording.mp4',
     7200,
     false,
     11
@@ -269,7 +269,7 @@ BEGIN
     'Session 3: Ultimate Prompt Library for Developers',
     'Curated collection of 50+ battle-tested prompts for ChatGPT and Copilot. Categories: Code generation, Debugging, Refactoring, Documentation, Testing, Architecture design, Code review.',
     'other',
-    'https://your-storage-bucket.com/vibe-coding/session-3-prompt-library.pdf',
+    'https://storage.aiborg.ai/vibe-coding/session-3-prompt-library.pdf',
     true,
     12
   );
@@ -292,7 +292,7 @@ BEGIN
     'Session 4: Production-Ready AI Coding - Handbook',
     'Final handbook covering: Building complete projects with AI, Code quality and review, Testing strategies, Security considerations, Team collaboration, CI/CD integration, Avoiding AI pitfalls, Career development.',
     'handbook',
-    'https://your-storage-bucket.com/vibe-coding/session-4-handbook.pdf',
+    'https://storage.aiborg.ai/vibe-coding/session-4-handbook.pdf',
     true,
     13
   );
@@ -311,7 +311,7 @@ BEGIN
     'Session 4: Real-World Projects & Best Practices - Slides',
     'Final presentation: Project walkthrough, Quality assurance with AI, Production deployment, Team workflows, Future of AI coding, Career opportunities, Q&A and closing remarks.',
     'presentation',
-    'https://your-storage-bucket.com/vibe-coding/session-4-slides.pdf',
+    'https://storage.aiborg.ai/vibe-coding/session-4-slides.pdf',
     true,
     14
   );
@@ -331,7 +331,7 @@ BEGIN
     'Session 4: Live Session Recording',
     'Final session recording with complete project build, best practices, and extended Q&A.',
     'recording',
-    'https://your-storage-bucket.com/vibe-coding/session-4-recording.mp4',
+    'https://storage.aiborg.ai/vibe-coding/session-4-recording.mp4',
     7200,
     false,
     15
@@ -351,7 +351,7 @@ BEGIN
     'Session 4: Complete Project Repository',
     'Full source code of the project built in Session 4. Includes: Complete codebase, AI prompts used, Commit history showing AI-assisted development, README with workflow explanation, Deployment instructions.',
     'other',
-    'https://github.com/aiborg-ai/vibe-coding-final-project',
+    'https://github.com/aiborg-ai/vibe-coding-project',
     true,
     16
   );
@@ -374,7 +374,7 @@ BEGIN
     'Vibe Coding: Certificate of Completion',
     'Official certificate template for course graduates. Verify your completion of all 4 sessions and showcase your AI-powered development skills.',
     'other',
-    'https://your-storage-bucket.com/vibe-coding/certificate-template.pdf',
+    'https://storage.aiborg.ai/vibe-coding/certificate-template.pdf',
     true,
     17
   );
@@ -393,7 +393,7 @@ BEGIN
     'Additional Resources & Community Links',
     'Curated list of: Official documentation links, Community forums and Discord, YouTube channels and tutorials, Blog posts and articles, Newsletter recommendations, Career resources, Tool comparisons and alternatives.',
     'other',
-    'https://your-storage-bucket.com/vibe-coding/resources.pdf',
+    'https://storage.aiborg.ai/vibe-coding/resources.pdf',
     true,
     18
   );

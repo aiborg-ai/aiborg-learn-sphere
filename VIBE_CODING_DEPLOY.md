@@ -130,14 +130,20 @@ Expected: 18 materials
 
 ## 📝 Next Steps After Deployment
 
-1. **Update Material URLs**: The course materials have placeholder URLs. Update them with actual
-   file locations:
+1. **Update Material URLs**: The course materials use `storage.aiborg.ai` URLs. When you upload the
+   actual files, update them:
 
    ```sql
+   -- Option 1: Run the provided script
+   psql $DATABASE_URL -f update_vibe_coding_urls.sql
+
+   -- Option 2: Update manually in Supabase Dashboard
    UPDATE public.course_materials
-   SET file_url = 'your-actual-url'
-   WHERE title LIKE '%Session 1%Handbook%';
+   SET file_url = 'https://your-actual-storage-url/session-1-handbook.pdf'
+   WHERE course_id = 807 AND title LIKE '%Session 1%Handbook%';
    ```
+
+   **Note**: Use `update_vibe_coding_urls.sql` to update all URLs at once
 
 2. **Enable Recordings**: After sessions are recorded, activate the recording materials:
 
