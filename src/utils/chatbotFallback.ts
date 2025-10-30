@@ -214,7 +214,7 @@ export function classifyQuery(query: string): ClassificationResult {
 export function generateFallbackResponse(
   query: string,
   audience: string,
-  courses?: any[]
+  courses?: Array<{ id: number; title: string }>
 ): FallbackResponse {
   const classification = classifyQuery(query);
 

@@ -345,7 +345,11 @@ export interface SubscriptionActionResult {
   success: boolean;
 
   message: string;
-  subscription?: any;
+  subscription?: {
+    id: string;
+    status: string;
+    current_period_end?: string;
+  };
   portalUrl?: string;
   canceledAt?: Date;
   cancelAtPeriodEnd?: boolean;

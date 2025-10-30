@@ -29,7 +29,11 @@ interface SessionNotificationsProps {
 }
 
 interface RegistrationWithDetails extends SessionRegistration {
-  free_sessions?: any;
+  free_sessions?: {
+    title: string;
+    session_date: string;
+    status: string;
+  };
   session_waitlist?: SessionWaitlist[];
 }
 

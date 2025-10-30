@@ -200,8 +200,8 @@ export interface WizardStep {
   title: string;
   description?: string;
   icon?: string;
-  component: React.ComponentType<StepComponentProps<any>>;
-  validate?: (data: any) => boolean | Promise<boolean>;
+  component: React.ComponentType<StepComponentProps<unknown>>;
+  validate?: (data: unknown) => boolean | Promise<boolean>;
   isOptional?: boolean;
 }
 
@@ -219,7 +219,7 @@ export interface StudioDraft {
   user_id: string;
   asset_type: AssetType;
   asset_id?: string;
-  draft_data: any; // JSON data specific to asset type
+  draft_data: Record<string, unknown>; // JSON data specific to asset type
   current_step: number;
   created_at: string;
   updated_at: string;
@@ -234,7 +234,7 @@ export interface WizardConfig<T> {
   description: string;
   steps: WizardStep[];
   defaultData: T;
-  finalizeData?: (data: T) => any; // Transform data before submission
+  finalizeData?: (data: T) => unknown; // Transform data before submission
 }
 
 // ========== Navigation Actions ==========
@@ -243,7 +243,7 @@ export interface WizardActions {
   goToNextStep: () => void;
   goToPreviousStep: () => void;
   goToStep: (step: number) => void;
-  updateData: (updates: any) => void;
+  updateData: (updates: Record<string, unknown>) => void;
   saveDraft: () => Promise<void>;
   publish: () => Promise<void>;
   reset: () => void;
