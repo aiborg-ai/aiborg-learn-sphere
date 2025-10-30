@@ -61,7 +61,7 @@ export class TeamManagementService {
 
     if (error) throw error;
 
-    return data.map((row) => ({
+    return data.map(row => ({
       ...row.organizations,
       user_role: row.role,
     })) as Organization[];
@@ -98,9 +98,7 @@ export class TeamManagementService {
   /**
    * Get all members of an organization
    */
-  static async getMembers(
-    organizationId: string
-  ): Promise<OrganizationMember[]> {
+  static async getMembers(organizationId: string): Promise<OrganizationMember[]> {
     const { data, error } = await supabase
       .from('organization_members')
       .select(
@@ -163,10 +161,7 @@ export class TeamManagementService {
   /**
    * Remove member from organization
    */
-  static async removeMember(
-    organizationId: string,
-    userId: string
-  ): Promise<void> {
+  static async removeMember(organizationId: string, userId: string): Promise<void> {
     const { error } = await supabase
       .from('organization_members')
       .delete()
@@ -301,9 +296,7 @@ export class TeamManagementService {
   /**
    * Get invitation by token (for acceptance page)
    */
-  static async getInvitationByToken(
-    token: string
-  ): Promise<TeamInvitation | null> {
+  static async getInvitationByToken(token: string): Promise<TeamInvitation | null> {
     const { data, error } = await supabase
       .from('team_invitations')
       .select(
@@ -349,7 +342,7 @@ export class TeamManagementService {
    */
   static async resendInvitation(invitationId: string): Promise<void> {
     // Update invitation to reset expiration
-    const { data, error } = await supabase
+    const { data: _data, error } = await supabase
       .from('team_invitations')
       .update({
         expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
@@ -387,9 +380,7 @@ export class TeamManagementService {
   /**
    * Get invitation history
    */
-  static async getInvitationHistory(
-    invitationId: string
-  ): Promise<TeamInvitationHistory[]> {
+  static async getInvitationHistory(invitationId: string): Promise<TeamInvitationHistory[]> {
     const { data, error } = await supabase
       .from('team_invitation_history')
       .select(
@@ -415,10 +406,7 @@ export class TeamManagementService {
   /**
    * Check if user has permission to manage team
    */
-  static async hasManagePermission(
-    userId: string,
-    organizationId: string
-  ): Promise<boolean> {
+  static async hasManagePermission(userId: string, organizationId: string): Promise<boolean> {
     const { data, error } = await supabase
       .from('organization_members')
       .select('role')
@@ -446,10 +434,7 @@ export class TeamManagementService {
   /**
    * Search members by name or email
    */
-  static async searchMembers(
-    organizationId: string,
-    query: string
-  ): Promise<OrganizationMember[]> {
+  static async searchMembers(organizationId: string, query: string): Promise<OrganizationMember[]> {
     const { data, error } = await supabase
       .from('organization_members')
       .select(
@@ -488,32 +473,30 @@ export class TeamManagementService {
     role?: string;
     department?: string;
   }> {
-    const lines = csvContent.split('\n').filter((line) => line.trim());
+    const lines = csvContent.split('\n').filter(line => line.trim());
     if (lines.length < 2) {
       throw new Error('CSV must have at least a header row and one data row');
     }
 
-    const headers = lines[0].split(',').map((h) => h.trim().toLowerCase());
-    const emailIndex = headers.findIndex((h) =>
-      ['email', 'email address', 'e-mail'].includes(h)
-    );
+    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+    const emailIndex = headers.findIndex(h => ['email', 'email address', 'e-mail'].includes(h));
 
     if (emailIndex === -1) {
       throw new Error('CSV must have an "email" column');
     }
 
-    const firstNameIndex = headers.findIndex((h) =>
+    const firstNameIndex = headers.findIndex(h =>
       ['firstname', 'first_name', 'first name'].includes(h)
     );
-    const lastNameIndex = headers.findIndex((h) =>
+    const lastNameIndex = headers.findIndex(h =>
       ['lastname', 'last_name', 'last name'].includes(h)
     );
-    const roleIndex = headers.findIndex((h) => h === 'role');
-    const departmentIndex = headers.findIndex((h) => h === 'department');
+    const roleIndex = headers.findIndex(h => h === 'role');
+    const departmentIndex = headers.findIndex(h => h === 'department');
 
     const results = [];
     for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(',').map((v) => v.trim());
+      const values = lines[i].split(',').map(v => v.trim());
       const email = values[emailIndex];
 
       if (!email || !this.validateEmail(email)) {
@@ -525,8 +508,7 @@ export class TeamManagementService {
         firstName: firstNameIndex >= 0 ? values[firstNameIndex] : undefined,
         lastName: lastNameIndex >= 0 ? values[lastNameIndex] : undefined,
         role: roleIndex >= 0 ? values[roleIndex] : 'member',
-        department:
-          departmentIndex >= 0 ? values[departmentIndex] : undefined,
+        department: departmentIndex >= 0 ? values[departmentIndex] : undefined,
       });
     }
 

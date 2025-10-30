@@ -88,7 +88,7 @@ export class LearningPathService {
     return courses;
   }
 
-  private static generateMilestones(courses: Recommendation[], timeframe: number): Milestone[] {
+  private static generateMilestones(courses: Recommendation[], _timeframe: number): Milestone[] {
     const milestones: Milestone[] = [];
     let currentWeek = 0;
 

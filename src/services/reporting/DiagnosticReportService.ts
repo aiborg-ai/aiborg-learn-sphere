@@ -209,7 +209,7 @@ export class DiagnosticReportService {
     return recommendations;
   }
 
-  private static calculateEngagementScore(sessions: unknown[], courses: unknown[]): number {
+  private static calculateEngagementScore(sessions: unknown[], _courses: unknown[]): number {
     const sessionCount = sessions.length;
     const avgSessionDuration =
       sessions.reduce(

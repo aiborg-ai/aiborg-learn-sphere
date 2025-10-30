@@ -102,7 +102,7 @@ test.describe('Enrollment Error Messages', () => {
 
   test.skip('should handle race condition in concurrent enrollments', async ({
     page: _page,
-    context,
+    _context,
   }) => {
     // Test concurrent enrollment attempts (e.g., double-click)
     // Verify only one enrollment is created

@@ -13,7 +13,7 @@ export class LeaderboardService {
   static async get(
     leaderboardType: string,
     category?: string,
-    timeframe: string = 'all_time',
+    _timeframe: string = 'all_time',
     limit: number = 100
   ): Promise<LeaderboardEntry[]> {
     const { data: currentUser } = await supabase.auth.getUser();
@@ -40,7 +40,10 @@ export class LeaderboardService {
     // Filter based on privacy settings
     const entries: LeaderboardEntry[] = (data || [])
       .filter((entry: unknown) => {
-        const e = entry as { user_id: string; user?: { user_privacy_settings?: { show_on_leaderboards?: boolean } } };
+        const e = entry as {
+          user_id: string;
+          user?: { user_privacy_settings?: { show_on_leaderboards?: boolean } };
+        };
         // Always show current user
         if (e.user_id === currentUser?.user?.id) return true;
         // Respect privacy settings

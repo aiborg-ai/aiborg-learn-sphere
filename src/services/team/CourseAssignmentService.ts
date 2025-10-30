@@ -27,9 +27,7 @@ export class CourseAssignmentService {
   /**
    * Create a new course assignment
    */
-  static async createAssignment(
-    params: CreateAssignmentParams
-  ): Promise<TeamCourseAssignment> {
+  static async createAssignment(params: CreateAssignmentParams): Promise<TeamCourseAssignment> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -65,7 +63,7 @@ export class CourseAssignmentService {
         .eq('organization_id', params.organizationId);
 
       if (membersError) throw membersError;
-      userIds = members.map((m) => m.user_id);
+      userIds = members.map(m => m.user_id);
     } else if (params.departments && params.departments.length > 0) {
       // Get all members in specified departments
       const { data: members, error: membersError } = await supabase
@@ -75,14 +73,12 @@ export class CourseAssignmentService {
         .in('department', params.departments);
 
       if (membersError) throw membersError;
-      userIds = members.map((m) => m.user_id);
+      userIds = members.map(m => m.user_id);
     } else if (params.userIds && params.userIds.length > 0) {
       // Use specified user IDs
       userIds = params.userIds;
     } else {
-      throw new Error(
-        'Must specify userIds, departments, or includeAllMembers'
-      );
+      throw new Error('Must specify userIds, departments, or includeAllMembers');
     }
 
     // Assign to users
@@ -94,9 +90,7 @@ export class CourseAssignmentService {
   /**
    * Get assignment by ID
    */
-  static async getAssignment(
-    assignmentId: string
-  ): Promise<TeamCourseAssignment> {
+  static async getAssignment(assignmentId: string): Promise<TeamCourseAssignment> {
     const { data, error } = await supabase
       .from('team_course_assignments')
       .select(
@@ -151,7 +145,7 @@ export class CourseAssignmentService {
 
     query = query.order('assigned_at', { ascending: false });
 
-    const { data, error} = await query;
+    const { data, error } = await query;
 
     if (error) throw error;
     return data;
@@ -200,18 +194,13 @@ export class CourseAssignmentService {
   /**
    * Assign course to specific users
    */
-  static async assignUsers(
-    assignmentId: string,
-    userIds: string[]
-  ): Promise<void> {
-    const assignmentUsers = userIds.map((userId) => ({
+  static async assignUsers(assignmentId: string, userIds: string[]): Promise<void> {
+    const assignmentUsers = userIds.map(userId => ({
       assignment_id: assignmentId,
       user_id: userId,
     }));
 
-    const { error } = await supabase
-      .from('team_assignment_users')
-      .insert(assignmentUsers);
+    const { error } = await supabase.from('team_assignment_users').insert(assignmentUsers);
 
     if (error) {
       // Ignore duplicate errors
@@ -224,10 +213,7 @@ export class CourseAssignmentService {
   /**
    * Remove user from assignment
    */
-  static async removeUser(
-    assignmentId: string,
-    userId: string
-  ): Promise<void> {
+  static async removeUser(assignmentId: string, userId: string): Promise<void> {
     const { error } = await supabase
       .from('team_assignment_users')
       .delete()
@@ -240,9 +226,7 @@ export class CourseAssignmentService {
   /**
    * Get assignment users with progress
    */
-  static async getAssignmentUsers(
-    assignmentId: string
-  ): Promise<TeamAssignmentUser[]> {
+  static async getAssignmentUsers(assignmentId: string): Promise<TeamAssignmentUser[]> {
     const { data, error } = await supabase
       .from('team_assignment_users')
       .select(
@@ -335,10 +319,7 @@ export class CourseAssignmentService {
   /**
    * Send reminder to specific user about assignment
    */
-  static async sendReminder(
-    assignmentId: string,
-    userId: string
-  ): Promise<void> {
+  static async sendReminder(assignmentId: string, userId: string): Promise<void> {
     // TODO: Implement via edge function
     // For now, just update reminder_sent_at
     const { error } = await supabase
@@ -354,12 +335,12 @@ export class CourseAssignmentService {
    * Send reminders to all users with pending assignments
    */
   static async sendBulkReminders(assignmentId: string): Promise<number> {
-    const assignment = await this.getAssignment(assignmentId);
+    const _assignment = await this.getAssignment(assignmentId);
     const users = await this.getAssignmentUsers(assignmentId);
 
     // Filter users who need reminders
     const usersNeedingReminders = users.filter(
-      (u) => u.status !== 'completed' && !u.reminder_sent_at
+      u => u.status !== 'completed' && !u.reminder_sent_at
     );
 
     // Send reminders
@@ -373,9 +354,7 @@ export class CourseAssignmentService {
   /**
    * Get assignments due soon (for reminder cron job)
    */
-  static async getAssignmentsDueSoon(
-    daysAhead: number = 3
-  ): Promise<TeamCourseAssignment[]> {
+  static async getAssignmentsDueSoon(daysAhead: number = 3): Promise<TeamCourseAssignment[]> {
     const targetDate = new Date();
     targetDate.setDate(targetDate.getDate() + daysAhead);
 
@@ -431,10 +410,7 @@ export class CourseAssignmentService {
     return {
       total: assignment.total_assigned,
       assigned: assignment.total_assigned - assignment.total_started,
-      started:
-        assignment.total_started -
-        assignment.total_completed -
-        assignment.total_overdue,
+      started: assignment.total_started - assignment.total_completed - assignment.total_overdue,
       completed: assignment.total_completed,
       overdue: assignment.total_overdue,
       completionRate: Math.round(completionRate * 100) / 100,
@@ -445,11 +421,9 @@ export class CourseAssignmentService {
   /**
    * Get average completion time for assignment
    */
-  static async getAverageCompletionTime(
-    assignmentId: string
-  ): Promise<number | null> {
+  static async getAverageCompletionTime(assignmentId: string): Promise<number | null> {
     const users = await this.getAssignmentUsers(assignmentId);
-    const completedUsers = users.filter((u) => u.completed_at && u.started_at);
+    const completedUsers = users.filter(u => u.completed_at && u.started_at);
 
     if (completedUsers.length === 0) return null;
 
@@ -467,9 +441,7 @@ export class CourseAssignmentService {
   /**
    * Get department-wise completion stats
    */
-  static async getDepartmentStats(
-    assignmentId: string
-  ): Promise<
+  static async getDepartmentStats(assignmentId: string): Promise<
     Array<{
       department: string;
       total: number;
@@ -489,16 +461,13 @@ export class CourseAssignmentService {
         .select('user_id, department')
         .in(
           'user_id',
-          users.map((u) => u.user_id)
+          users.map(u => u.user_id)
         );
 
-      const deptMap = new Map<
-        string,
-        { total: number; completed: number }
-      >();
+      const deptMap = new Map<string, { total: number; completed: number }>();
 
-      users.forEach((u) => {
-        const member = members?.find((m) => m.user_id === u.user_id);
+      users.forEach(u => {
+        const member = members?.find(m => m.user_id === u.user_id);
         const dept = member?.department || 'Unassigned';
 
         if (!deptMap.has(dept)) {
@@ -530,10 +499,7 @@ export class CourseAssignmentService {
   /**
    * Check if user has access to assignment
    */
-  static async canAccessAssignment(
-    userId: string,
-    assignmentId: string
-  ): Promise<boolean> {
+  static async canAccessAssignment(userId: string, assignmentId: string): Promise<boolean> {
     const { data, error } = await supabase
       .from('team_assignment_users')
       .select('id')

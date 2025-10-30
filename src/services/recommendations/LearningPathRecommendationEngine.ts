@@ -191,7 +191,7 @@ export class LearningPathRecommendationEngine {
   private static async generateWeaknessFocusedPath(
     profile: UserLearningProfile,
     allCourses: Course[],
-    assessmentResult: AssessmentResult | null
+    _assessmentResult: AssessmentResult | null
   ): Promise<LearningPathRecommendation | null> {
     const weakCategories = profile.weakCategories;
     if (weakCategories.length === 0) return null;
