@@ -162,8 +162,10 @@ export async function sendMembershipPaymentFailedEmail(params: {
     attemptDate: params.attemptDate,
     gracePeriodDays: params.gracePeriodDays,
     suspensionDate: params.suspensionDate,
-    updatePaymentUrl: params.updatePaymentUrl || `${baseUrl}/family-membership?tab=billing&action=update`,
-    retryPaymentUrl: params.retryPaymentUrl || `${baseUrl}/family-membership?tab=billing&action=retry`,
+    updatePaymentUrl:
+      params.updatePaymentUrl || `${baseUrl}/family-membership?tab=billing&action=update`,
+    retryPaymentUrl:
+      params.retryPaymentUrl || `${baseUrl}/family-membership?tab=billing&action=retry`,
     dashboardUrl: params.dashboardUrl || `${baseUrl}/family-membership`,
     billingUrl: params.billingUrl || `${baseUrl}/family-membership?tab=billing`,
     supportUrl: params.supportUrl || `${baseUrl}/contact`,
@@ -259,7 +261,7 @@ export async function sendSubscriptionPausedEmail(params: {
     actionTitle: 'Paused',
     actionSubtitle: 'Your subscription has been temporarily paused',
     message:
-      'We\'ve paused your Family Membership as requested. Your family will retain access to all content until the pause takes effect.',
+      "We've paused your Family Membership as requested. Your family will retain access to all content until the pause takes effect.",
     currentStatus: 'Paused',
     effectiveDate: params.effectiveDate,
     endDate: params.resumeDate,
@@ -311,7 +313,7 @@ export async function sendSubscriptionCancelledEmail(params: {
     actionSubtitle: 'Your subscription has been cancelled',
     message: params.cancelAtPeriodEnd
       ? "We've received your cancellation request. Your subscription will remain active until the end of your current billing period."
-      : "Your Family Membership subscription has been cancelled and will end soon.",
+      : 'Your Family Membership subscription has been cancelled and will end soon.',
     currentStatus: 'Cancelled',
     effectiveDate: params.effectiveDate,
     endDate: params.endDate,

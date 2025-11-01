@@ -10,10 +10,7 @@ export class ProgressForecastService {
   /**
    * Forecast progress to target level
    */
-  static async forecastProgress(
-    userId: string,
-    targetLevel: number
-  ): Promise<ProgressForecast> {
+  static async forecastProgress(userId: string, targetLevel: number): Promise<ProgressForecast> {
     const profile = await this.getUserProfile(userId);
     const historicalProgress = await this.getHistoricalProgress(userId);
 
@@ -103,7 +100,9 @@ export class ProgressForecastService {
     const paceMultiplier = { slow: 1.3, moderate: 1, fast: 0.8 };
     const commitmentFactor = 10 / timeCommitment; // Baseline is 10 hours/week
 
-    return baseWeeks * commitmentFactor * (paceMultiplier[pace as keyof typeof paceMultiplier] || 1);
+    return (
+      baseWeeks * commitmentFactor * (paceMultiplier[pace as keyof typeof paceMultiplier] || 1)
+    );
   }
 
   private static generateProgressMilestones(

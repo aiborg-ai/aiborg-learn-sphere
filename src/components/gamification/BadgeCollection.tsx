@@ -36,7 +36,9 @@ export function BadgeCollection({
   const [filter, setFilter] = useState<'all' | AchievementCategory>('all');
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [selectedAchievement, setSelectedAchievement] = useState<Achievement | null>(null);
-  const [selectedUserAchievement, setSelectedUserAchievement] = useState<UserAchievement | null>(null);
+  const [selectedUserAchievement, setSelectedUserAchievement] = useState<UserAchievement | null>(
+    null
+  );
 
   // Create map of unlocked achievements
   const unlockedMap = new Map(userAchievements.map(ua => [ua.achievement_id, ua]));
@@ -49,9 +51,7 @@ export function BadgeCollection({
 
   // Filter achievements
   const filteredAchievements =
-    filter === 'all'
-      ? achievements
-      : achievements.filter(a => a.category === filter);
+    filter === 'all' ? achievements : achievements.filter(a => a.category === filter);
 
   // Sort: unlocked first, then by tier and points
   const sortedAchievements = [...filteredAchievements].sort((a, b) => {
@@ -69,9 +69,8 @@ export function BadgeCollection({
   // Calculate stats
   const totalAchievements = achievements.length;
   const unlockedCount = userAchievements.length;
-  const percentage = totalAchievements > 0
-    ? Math.round((unlockedCount / totalAchievements) * 100)
-    : 0;
+  const percentage =
+    totalAchievements > 0 ? Math.round((unlockedCount / totalAchievements) * 100) : 0;
 
   const categoryCounts: Record<AchievementCategory, { total: number; unlocked: number }> = {
     completion: { total: 0, unlocked: 0 },
@@ -155,7 +154,11 @@ export function BadgeCollection({
                     isUnlocked={unlockedMap.has(achievement.id)}
                     size="md"
                     showPoints={true}
-                    onShare={unlockedMap.has(achievement.id) ? () => handleShare(achievement, userAch) : undefined}
+                    onShare={
+                      unlockedMap.has(achievement.id)
+                        ? () => handleShare(achievement, userAch)
+                        : undefined
+                    }
                   />
                 );
               })}

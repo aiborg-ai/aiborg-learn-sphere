@@ -35,7 +35,7 @@ export function EditCommentForm({ initialContent, onSubmit, onCancel }: EditComm
     <form onSubmit={handleSubmit} className="space-y-3 my-2">
       <Textarea
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={e => setContent(e.target.value)}
         className="min-h-[80px] resize-none"
         disabled={isSubmitting}
         aria-label="Edit comment"

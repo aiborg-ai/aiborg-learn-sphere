@@ -241,10 +241,7 @@ export default function CoursePage() {
         />
       )}
 
-      <main
-        className="container mx-auto px-4 py-8"
-        aria-label={`${course.title} course content`}
-      >
+      <main className="container mx-auto px-4 py-8" aria-label={`${course.title} course content`}>
         {/* Header */}
         <CourseHeader
           course={course}

@@ -96,7 +96,7 @@ export function sanitizeHTML(dirty: string, config: SanitizeConfig = {}): string
     RETURN_DOM_FRAGMENT: false,
     FORCE_BODY: true,
     SANITIZE_DOM: true,
-    KEEP_CONTENT: !stripDangerous,
+    KEEP_CONTENT: true, // Always keep text content, just strip dangerous tags/attributes
   };
 
   // Handle data URIs
@@ -147,9 +147,12 @@ export function sanitizeText(text: string): string {
  * // Returns: '&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;'
  */
 export function escapeHTML(text: string): string {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
 }
 
 /**
@@ -186,7 +189,7 @@ export function sanitizeJSON(json: string): object | null {
     };
 
     return sanitizeObject(parsed);
-  } catch {
+  } catch (error) {
     logger.error('Invalid JSON input:', error);
     return null;
   }
@@ -266,8 +269,12 @@ export function sanitizeFileName(fileName: string): string {
  * @returns {boolean} True if valid email
  */
 export function isValidEmail(email: string): boolean {
+  // RFC 5321 specifies maximum email length of 254 characters
+  if (email.length > 254) {
+    return false;
+  }
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return emailRegex.test(email) && email.length <= 320;
+  return emailRegex.test(email);
 }
 
 /**
@@ -309,14 +316,20 @@ export function sanitizeSearchQuery(query: string, maxLength: number = 100): str
 
   // Remove SQL injection patterns
   if (hasSQLInjectionPattern(safe)) {
+    // Remove special characters
     safe = safe.replace(/[^\w\s]/g, '');
+    // Remove SQL keywords
+    safe = safe.replace(
+      /\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|CREATE|ALTER|EXEC|EXECUTE|SCRIPT|JAVASCRIPT|TABLE|FROM|WHERE|INTO)\b/gi,
+      ''
+    );
   }
 
   // Limit length
   safe = safe.substring(0, maxLength);
 
-  // Trim whitespace
-  return safe.trim();
+  // Trim whitespace and collapse multiple spaces
+  return safe.replace(/\s+/g, ' ').trim();
 }
 
 /**

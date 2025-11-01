@@ -76,11 +76,12 @@ export function ParticipantsList({ participants }: ParticipantsListProps) {
                 <p className="text-sm font-medium truncate">{displayName}</p>
                 <div className="flex items-center gap-2 mt-1">
                   {getAttendanceIcon(participant.attendance_status)}
-                  {participant.contribution_score !== undefined && participant.contribution_score > 0 && (
-                    <span className="text-xs text-muted-foreground">
-                      Score: {participant.contribution_score}
-                    </span>
-                  )}
+                  {participant.contribution_score !== undefined &&
+                    participant.contribution_score > 0 && (
+                      <span className="text-xs text-muted-foreground">
+                        Score: {participant.contribution_score}
+                      </span>
+                    )}
                 </div>
               </div>
             </div>

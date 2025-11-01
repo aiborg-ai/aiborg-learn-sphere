@@ -87,9 +87,9 @@ export type Mutable<T> = {
 /**
  * Convert union to intersection
  */
-export type UnionToIntersection<U> = (
-  U extends unknown ? (k: U) => void : never
-) extends (k: infer I) => void
+export type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends (
+  k: infer I
+) => void
   ? I
   : never;
 
@@ -270,18 +270,7 @@ export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 /**
  * HTTP status codes
  */
-export type HttpStatus =
-  | 200
-  | 201
-  | 204
-  | 400
-  | 401
-  | 403
-  | 404
-  | 422
-  | 500
-  | 502
-  | 503;
+export type HttpStatus = 200 | 201 | 204 | 400 | 401 | 403 | 404 | 422 | 500 | 502 | 503;
 
 /**
  * Request configuration
@@ -484,14 +473,7 @@ export type PermissionCheck = (permission: Permission) => boolean;
 
 export type ColorScheme = 'light' | 'dark';
 
-export type Color =
-  | 'primary'
-  | 'secondary'
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'info'
-  | 'default';
+export type Color = 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'default';
 
 export interface ColorPalette {
   main: string;

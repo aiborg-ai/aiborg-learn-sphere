@@ -21,7 +21,7 @@ export function AnnouncementTicker() {
   useEffect(() => {
     if (announcements.length > 1) {
       const interval = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % announcements.length);
+        setCurrentIndex(prev => (prev + 1) % announcements.length);
       }, 8000); // Change announcement every 8 seconds
 
       return () => clearInterval(interval);
@@ -61,7 +61,7 @@ export function AnnouncementTicker() {
           </div>
         </div>
       </div>
-      
+
       <style>{`
         @keyframes ticker {
           0% {

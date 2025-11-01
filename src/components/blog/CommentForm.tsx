@@ -9,7 +9,7 @@ interface CommentFormProps {
   placeholder?: string;
 }
 
-export function CommentForm({ onSubmit, placeholder = "Write a comment..." }: CommentFormProps) {
+export function CommentForm({ onSubmit, placeholder = 'Write a comment...' }: CommentFormProps) {
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,7 +33,7 @@ export function CommentForm({ onSubmit, placeholder = "Write a comment..." }: Co
     <form onSubmit={handleSubmit} className="space-y-4">
       <Textarea
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={e => setContent(e.target.value)}
         placeholder={placeholder}
         className="min-h-[100px] resize-none"
         disabled={isSubmitting}

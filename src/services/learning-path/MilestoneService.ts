@@ -19,7 +19,7 @@ export class MilestoneService {
       minimum_completion_percentage: point * 100,
       reward_badge: this.getMilestoneBadge(point),
       reward_points: Math.round(point * 100),
-      reward_message: this.getMilestoneReward(point)
+      reward_message: this.getMilestoneReward(point),
     }));
   }
 
@@ -28,7 +28,7 @@ export class MilestoneService {
       0.25: 'Journey Begins',
       0.5: 'Halfway Hero',
       0.75: 'Nearly There',
-      1.0: 'Goal Achieved!'
+      1.0: 'Goal Achieved!',
     };
     return titles[point] ?? 'Milestone';
   }
@@ -43,7 +43,7 @@ export class MilestoneService {
       0.25: 'beginner',
       0.5: 'intermediate',
       0.75: 'advanced',
-      1.0: 'expert'
+      1.0: 'expert',
     };
     return badges[point] ?? 'achiever';
   }
@@ -51,9 +51,9 @@ export class MilestoneService {
   private getMilestoneReward(point: number): string {
     const messages: Record<number, string> = {
       0.25: 'Great start! Keep the momentum going!',
-      0.5: 'You\'re halfway there! Amazing progress!',
+      0.5: "You're halfway there! Amazing progress!",
       0.75: 'Almost at your goal! One final push!',
-      1.0: 'Congratulations! You\'ve achieved your learning goal!'
+      1.0: "Congratulations! You've achieved your learning goal!",
     };
     return messages[point] ?? 'Well done!';
   }

@@ -183,6 +183,41 @@ export default defineConfig(({ mode }) => ({
               return 'resizable-panels';
             }
 
+            // TipTap Editor (large)
+            if (id.includes('@tiptap')) {
+              return 'tiptap-editor';
+            }
+
+            // DnD Kit
+            if (id.includes('@dnd-kit')) {
+              return 'dnd-kit';
+            }
+
+            // i18n
+            if (id.includes('i18next') || id.includes('react-i18next')) {
+              return 'i18n';
+            }
+
+            // Markdown & React Markdown
+            if (id.includes('react-markdown')) {
+              return 'react-markdown';
+            }
+
+            // Dropzone
+            if (id.includes('react-dropzone')) {
+              return 'react-dropzone';
+            }
+
+            // Web Vitals
+            if (id.includes('web-vitals')) {
+              return 'web-vitals';
+            }
+
+            // Jitsi
+            if (id.includes('@jitsi')) {
+              return 'jitsi';
+            }
+
             // Remaining small vendor libraries
             return 'vendor-misc';
           }

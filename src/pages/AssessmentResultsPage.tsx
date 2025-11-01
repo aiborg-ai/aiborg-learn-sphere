@@ -41,7 +41,7 @@ export default function AssessmentResultsPage() {
   const navigate = useNavigate();
 
   const { data: attempt, isLoading: attemptLoading } = useAssessmentAttempt(attemptId);
-  const [toolId, setToolId] = useState<string | null>(null);
+  const [_toolId, setToolId] = useState<string | null>(null);
 
   // Get tool ID from attempt
   useEffect(() => {

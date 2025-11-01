@@ -43,11 +43,12 @@ export function useWorkshopSessions(workshopId?: string) {
     queryFn: async () => {
       if (!workshopId) return [];
 
-      const { data, error } = await import('@/integrations/supabase/client').then(m => m.supabase
-        .from('workshop_sessions')
-        .select('*')
-        .eq('workshop_id', workshopId)
-        .order('scheduled_start', { ascending: true })
+      const { data, error } = await import('@/integrations/supabase/client').then(m =>
+        m.supabase
+          .from('workshop_sessions')
+          .select('*')
+          .eq('workshop_id', workshopId)
+          .order('scheduled_start', { ascending: true })
       );
 
       if (error) throw error;
@@ -57,20 +58,18 @@ export function useWorkshopSessions(workshopId?: string) {
   });
 
   // Get user's participation status
-  const {
-    data: userParticipation,
-    isLoading: participationLoading,
-  } = useQuery({
+  const { data: userParticipation, isLoading: participationLoading } = useQuery({
     queryKey: ['workshop-participation', workshopId, user?.id],
     queryFn: async () => {
       if (!workshopId || !user) return null;
 
-      const { data, error } = await import('@/integrations/supabase/client').then(m => m.supabase
-        .from('workshop_participants')
-        .select('*, workshop_sessions(*)')
-        .eq('user_id', user.id)
-        .in('session_id', sessions?.map(s => s.id) || [])
-        .maybeSingle()
+      const { data, error } = await import('@/integrations/supabase/client').then(m =>
+        m.supabase
+          .from('workshop_participants')
+          .select('*, workshop_sessions(*)')
+          .eq('user_id', user.id)
+          .in('session_id', sessions?.map(s => s.id) || [])
+          .maybeSingle()
       );
 
       if (error && error.code !== 'PGRST116') throw error;
@@ -82,7 +81,7 @@ export function useWorkshopSessions(workshopId?: string) {
   // Create a new workshop session
   const createSessionMutation = useMutation({
     mutationFn: (input: CreateSessionInput) => WorkshopService.createSession(input),
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ['workshop-sessions', data.workshop_id] });
       toast.success('Workshop session created successfully!');
       logger.info('Workshop session created', { sessionId: data.id });
@@ -96,7 +95,7 @@ export function useWorkshopSessions(workshopId?: string) {
   // Join a workshop session
   const joinSessionMutation = useMutation({
     mutationFn: (input: JoinSessionInput) => WorkshopService.joinSession(input),
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ['workshop-participants', data.session_id] });
       queryClient.invalidateQueries({ queryKey: ['workshop-participation', workshopId, user?.id] });
       toast.success('Successfully joined workshop session!');
@@ -111,7 +110,7 @@ export function useWorkshopSessions(workshopId?: string) {
   // Start a workshop session (facilitator only)
   const startSessionMutation = useMutation({
     mutationFn: (sessionId: string) => WorkshopService.startSession(sessionId),
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ['workshop-session-detail', data.id] });
       toast.success('Workshop session started!');
       logger.info('Workshop session started', { sessionId: data.id });
@@ -125,7 +124,7 @@ export function useWorkshopSessions(workshopId?: string) {
   // Update workshop stage
   const updateStageMutation = useMutation({
     mutationFn: (input: UpdateStageInput) => WorkshopService.updateStage(input),
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ['workshop-session-detail', data.id] });
       toast.success(`Moved to ${data.current_stage} stage`);
       logger.info('Workshop stage updated', { sessionId: data.id, stage: data.current_stage });
@@ -139,7 +138,7 @@ export function useWorkshopSessions(workshopId?: string) {
   // Complete workshop session
   const completeSessionMutation = useMutation({
     mutationFn: (sessionId: string) => WorkshopService.completeSession(sessionId),
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ['workshop-session-detail', data.id] });
       queryClient.invalidateQueries({ queryKey: ['workshop-participants', data.id] });
       toast.success('🎉 Workshop completed! Points have been awarded.', {
@@ -199,11 +198,8 @@ export function useWorkshopSessionDetail(sessionId?: string) {
     queryFn: async () => {
       if (!sessionId) return null;
 
-      const { data, error } = await import('@/integrations/supabase/client').then(m => m.supabase
-        .from('workshop_sessions')
-        .select('*, workshops(*)')
-        .eq('id', sessionId)
-        .single()
+      const { data, error } = await import('@/integrations/supabase/client').then(m =>
+        m.supabase.from('workshop_sessions').select('*, workshops(*)').eq('id', sessionId).single()
       );
 
       if (error) throw error;
@@ -214,41 +210,39 @@ export function useWorkshopSessionDetail(sessionId?: string) {
   });
 
   // Get participants (NO polling - realtime handles updates)
-  const {
-    data: participants,
-    isLoading: participantsLoading,
-  } = useQuery({
+  const { data: participants, isLoading: participantsLoading } = useQuery({
     queryKey: ['workshop-participants', sessionId],
     queryFn: async () => {
       if (!sessionId) return [];
 
-      const { data, error } = await import('@/integrations/supabase/client').then(m => m.supabase
-        .from('workshop_participants')
-        .select('*, profiles(*)')
-        .eq('session_id', sessionId)
+      const { data, error } = await import('@/integrations/supabase/client').then(m =>
+        m.supabase
+          .from('workshop_participants')
+          .select('*, profiles(*)')
+          .eq('session_id', sessionId)
       );
 
       if (error) throw error;
-      return data as (WorkshopParticipant & { profiles: { display_name: string, avatar_url: string | null } })[];
+      return data as (WorkshopParticipant & {
+        profiles: { display_name: string; avatar_url: string | null };
+      })[];
     },
     enabled: !!sessionId,
     staleTime: Infinity, // Data stays fresh via realtime subscriptions
   });
 
   // Get activities (NO polling - realtime handles updates)
-  const {
-    data: activities,
-    isLoading: activitiesLoading,
-  } = useQuery({
+  const { data: activities, isLoading: activitiesLoading } = useQuery({
     queryKey: ['workshop-activities', sessionId],
     queryFn: async () => {
       if (!sessionId) return [];
 
-      const { data, error } = await import('@/integrations/supabase/client').then(m => m.supabase
-        .from('workshop_activities')
-        .select('*, profiles(*)')
-        .eq('session_id', sessionId)
-        .order('created_at', { ascending: true })
+      const { data, error } = await import('@/integrations/supabase/client').then(m =>
+        m.supabase
+          .from('workshop_activities')
+          .select('*, profiles(*)')
+          .eq('session_id', sessionId)
+          .order('created_at', { ascending: true })
       );
 
       if (error) throw error;
@@ -259,19 +253,17 @@ export function useWorkshopSessionDetail(sessionId?: string) {
   });
 
   // Get stage submissions (NO polling - realtime handles updates)
-  const {
-    data: stageSubmissions,
-    isLoading: submissionsLoading,
-  } = useQuery({
+  const { data: stageSubmissions, isLoading: submissionsLoading } = useQuery({
     queryKey: ['workshop-stage-submissions', sessionId],
     queryFn: async () => {
       if (!sessionId) return [];
 
-      const { data, error } = await import('@/integrations/supabase/client').then(m => m.supabase
-        .from('workshop_stage_submissions')
-        .select('*')
-        .eq('session_id', sessionId)
-        .order('created_at', { ascending: true })
+      const { data, error } = await import('@/integrations/supabase/client').then(m =>
+        m.supabase
+          .from('workshop_stage_submissions')
+          .select('*')
+          .eq('session_id', sessionId)
+          .order('created_at', { ascending: true })
       );
 
       if (error) throw error;

@@ -43,7 +43,8 @@ describe('AdminAnalyticsService', () => {
         { payment_amount: 150, payment_status: 'completed' },
       ];
 
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // profiles
           select: vi.fn().mockResolvedValue({
@@ -134,7 +135,8 @@ describe('AdminAnalyticsService', () => {
     });
 
     it('should handle empty data sets', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // profiles
           select: vi.fn().mockResolvedValue({
@@ -270,7 +272,8 @@ describe('AdminAnalyticsService', () => {
         { course_id: 2, rating: 5 },
       ];
 
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // courses
           select: vi.fn().mockResolvedValue({
@@ -377,16 +380,15 @@ describe('AdminAnalyticsService', () => {
 
   describe('getEngagementMetrics', () => {
     it('should return engagement metrics', async () => {
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            gte: vi.fn().mockResolvedValue({
-              count: 10,
-              data: [],
-              error: null,
-            }),
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          gte: vi.fn().mockResolvedValue({
+            count: 10,
+            data: [],
+            error: null,
           }),
-        });
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -77,24 +77,9 @@ export function RegistrantsManagement() {
   const [entities, setEntities] = useState<Array<{ id: string | number; name: string }>>([]);
   const [showBatchMessage, setShowBatchMessage] = useState(false);
 
-  // Fetch entities list (sessions, events, or courses)
-  useEffect(() => {
-    fetchEntities();
-  }, [entityType]);
-
-  // Fetch registrants when entity type changes
-  useEffect(() => {
-    fetchRegistrants();
-  }, [entityType]);
-
-  // Apply filters
-  useEffect(() => {
-    applyFilters();
-  }, [registrants, searchQuery, filterStatus, filterEntity]);
-
-  const fetchEntities = async () => {
+  const fetchEntities = useCallback(async () => {
     try {
-      let data: any[] = [];
+      let data: Record<string, unknown>[] = [];
 
       if (entityType === 'sessions') {
         const { data: sessions, error } = await supabase
@@ -129,9 +114,9 @@ export function RegistrantsManagement() {
     } catch (error) {
       logger.error('Error fetching entities:', error);
     }
-  };
+  }, [entityType]);
 
-  const fetchRegistrants = async () => {
+  const fetchRegistrants = useCallback(async () => {
     try {
       setLoading(true);
       let data: Registrant[] = [];
@@ -156,7 +141,7 @@ export function RegistrantsManagement() {
 
         if (error) throw error;
 
-        data = (registrations || []).map((r: any) => {
+        data = (registrations || []).map((r: Record<string, unknown>) => {
           const birthdate = new Date(r.birthdate);
           const age = Math.floor(
             (Date.now() - birthdate.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
@@ -192,7 +177,7 @@ export function RegistrantsManagement() {
 
         if (error) throw error;
 
-        data = (registrations || []).map((r: any) => ({
+        data = (registrations || []).map((r: Record<string, unknown>) => ({
           id: r.id,
           user_name: r.profiles?.display_name || 'N/A',
           email: r.email,
@@ -219,7 +204,7 @@ export function RegistrantsManagement() {
 
         if (error) throw error;
 
-        data = (enrollments || []).map((e: any) => ({
+        data = (enrollments || []).map((e: Record<string, unknown>) => ({
           id: e.id,
           user_name: e.profiles?.display_name || 'N/A',
           email: e.profiles?.email || 'N/A',
@@ -241,9 +226,9 @@ export function RegistrantsManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [entityType, toast]);
 
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...registrants];
 
     // Search filter
@@ -269,7 +254,22 @@ export function RegistrantsManagement() {
     }
 
     setFilteredRegistrants(filtered);
-  };
+  }, [registrants, searchQuery, filterStatus, filterEntity]);
+
+  // Fetch entities list (sessions, events, or courses)
+  useEffect(() => {
+    fetchEntities();
+  }, [fetchEntities]);
+
+  // Fetch registrants when entity type changes
+  useEffect(() => {
+    fetchRegistrants();
+  }, [fetchRegistrants]);
+
+  // Apply filters
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
 
   const toggleSelectAll = () => {
     if (selectedIds.size === filteredRegistrants.length) {
@@ -329,7 +329,10 @@ export function RegistrantsManagement() {
   };
 
   const getStatusBadge = (status: string) => {
-    const statusConfig: Record<string, { variant: any; label: string }> = {
+    const statusConfig: Record<
+      string,
+      { variant: 'default' | 'secondary' | 'destructive' | 'outline'; label: string }
+    > = {
       confirmed: { variant: 'default', label: 'Confirmed' },
       pending: { variant: 'secondary', label: 'Pending' },
       waitlisted: { variant: 'outline', label: 'Waitlisted' },

@@ -113,7 +113,7 @@ export default function AssessmentQuestionsManagement() {
   };
 
   // Filter questions
-  const filteredQuestions = questions?.filter((q: any) => {
+  const filteredQuestions = questions?.filter((q: Record<string, unknown>) => {
     const matchesSearch = q.question_text.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDifficulty = difficultyFilter === 'all' || q.difficulty_level === difficultyFilter;
     const matchesAudience =
@@ -216,7 +216,7 @@ export default function AssessmentQuestionsManagement() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredQuestions?.map((question: any) => (
+                  {filteredQuestions?.map((question: Record<string, unknown>) => (
                     <TableRow key={question.id}>
                       <TableCell className="max-w-md">
                         <div className="line-clamp-2">{question.question_text}</div>

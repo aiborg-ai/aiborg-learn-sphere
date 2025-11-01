@@ -59,7 +59,7 @@ export const useEvents = () => {
           .from('events')
           .select('*')
           .eq('is_active', true)
-          .order('event_date', { ascending: true});
+          .order('event_date', { ascending: true });
         data = fallback.data;
         error = fallback.error;
       }
@@ -69,8 +69,8 @@ export const useEvents = () => {
       }
 
       // Filter by is_visible client-side if column exists
-      const filteredData = (data || []).filter(event =>
-        event.is_visible === undefined || event.is_visible === true
+      const filteredData = (data || []).filter(
+        event => event.is_visible === undefined || event.is_visible === true
       );
 
       setEvents(filteredData);

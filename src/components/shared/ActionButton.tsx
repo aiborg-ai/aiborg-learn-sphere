@@ -61,28 +61,26 @@ export function ActionButton({
   disabled = false,
 }: ActionButtonProps) {
   // Determine which icon to show
-  const IconComponent = isLoading && config.loadingIcon
-    ? config.loadingIcon
-    : isActive
-    ? config.activeIcon
-    : config.defaultIcon;
+  const IconComponent =
+    isLoading && config.loadingIcon
+      ? config.loadingIcon
+      : isActive
+        ? config.activeIcon
+        : config.defaultIcon;
 
   // Determine label text
-  const label = isLoading && config.loadingLabel
-    ? config.loadingLabel
-    : isActive
-    ? config.activeLabel
-    : config.defaultLabel;
+  const label =
+    isLoading && config.loadingLabel
+      ? config.loadingLabel
+      : isActive
+        ? config.activeLabel
+        : config.defaultLabel;
 
   // Determine title/tooltip
   const title = isActive ? config.activeTitle : config.defaultTitle;
 
   // Build icon classes
-  const iconClasses = cn(
-    'h-4 w-4',
-    showLabel && 'mr-2',
-    isLoading && 'animate-spin'
-  );
+  const iconClasses = cn('h-4 w-4', showLabel && 'mr-2', isLoading && 'animate-spin');
 
   return (
     <Button
@@ -90,11 +88,7 @@ export function ActionButton({
       size={size}
       onClick={onClick}
       disabled={disabled || isLoading}
-      className={cn(
-        'transition-colors',
-        isActive && config.activeColorClass,
-        className
-      )}
+      className={cn('transition-colors', isActive && config.activeColorClass, className)}
       title={title}
     >
       <IconComponent className={iconClasses} />

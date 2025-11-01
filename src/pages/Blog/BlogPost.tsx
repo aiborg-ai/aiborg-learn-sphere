@@ -37,21 +37,25 @@ export default function BlogPostPage() {
   const { slug } = useParams();
   const { post, loading, error } = useBlogPost(slug || '');
   const [parsedContent, setParsedContent] = useState('');
-  const [tableOfContents, setTableOfContents] = useState<{ level: number; text: string; id: string }[]>([]);
+  const [tableOfContents, setTableOfContents] = useState<
+    { level: number; text: string; id: string }[]
+  >([]);
   const [showTOC, setShowTOC] = useState(false);
   const [readingProgress, setReadingProgress] = useState(0);
   const [dynamicCommentCount, setDynamicCommentCount] = useState(0);
 
-  const { isLiked, likeCount, toggleLike, loading: likeLoading } = useBlogLike(
-    post?.id || '',
-    post?.is_liked,
-    post?.like_count || 0
-  );
+  const {
+    isLiked,
+    likeCount,
+    toggleLike,
+    loading: likeLoading,
+  } = useBlogLike(post?.id || '', post?.is_liked, post?.like_count || 0);
 
-  const { isBookmarked, toggleBookmark, loading: bookmarkLoading } = useBlogBookmark(
-    post?.id || '',
-    post?.is_bookmarked
-  );
+  const {
+    isBookmarked,
+    toggleBookmark,
+    loading: bookmarkLoading,
+  } = useBlogBookmark(post?.id || '', post?.is_bookmarked);
 
   const postUrl = window.location.href;
   const { share } = useBlogShare(post?.id || '', post?.title || '', postUrl);
@@ -73,7 +77,8 @@ export default function BlogPostPage() {
   // Track reading progress
   useEffect(() => {
     const handleScroll = () => {
-      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrollHeight =
+        document.documentElement.scrollHeight - document.documentElement.clientHeight;
       const scrollPosition = window.scrollY;
       const progress = (scrollPosition / scrollHeight) * 100;
       setReadingProgress(Math.min(100, Math.max(0, progress)));
@@ -124,16 +129,16 @@ export default function BlogPostPage() {
         <Navbar />
         <div className="flex items-center justify-center min-h-[80vh]">
           <div className="text-center">
-          <h1 className="text-3xl font-bold mb-4">Article not found</h1>
-          <p className="text-muted-foreground mb-8">
-            The article you're looking for doesn't exist or has been removed.
-          </p>
-          <Button asChild>
-            <Link to="/blog">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Blog
-            </Link>
-          </Button>
+            <h1 className="text-3xl font-bold mb-4">Article not found</h1>
+            <p className="text-muted-foreground mb-8">
+              The article you're looking for doesn't exist or has been removed.
+            </p>
+            <Button asChild>
+              <Link to="/blog">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Blog
+              </Link>
+            </Button>
           </div>
         </div>
       </div>
@@ -156,8 +161,10 @@ export default function BlogPostPage() {
         <Breadcrumbs
           items={[
             { label: 'Blog', href: '/blog' },
-            ...(post.category_name ? [{ label: post.category_name, href: `/blog?category=${post.category_slug}` }] : []),
-            { label: post.title }
+            ...(post.category_name
+              ? [{ label: post.category_name, href: `/blog?category=${post.category_slug}` }]
+              : []),
+            { label: post.title },
           ]}
         />
 
@@ -183,7 +190,7 @@ export default function BlogPostPage() {
                 {post.category_name}
               </Badge>
             )}
-            {post.tags?.map((tag) => (
+            {post.tags?.map(tag => (
               <Badge key={tag.id} variant="outline">
                 {tag.name}
               </Badge>
@@ -192,9 +199,7 @@ export default function BlogPostPage() {
 
           <h1 className="text-4xl md:text-5xl font-bold mb-6">{post.title}</h1>
 
-          {post.excerpt && (
-            <p className="text-xl text-muted-foreground mb-6">{post.excerpt}</p>
-          )}
+          {post.excerpt && <p className="text-xl text-muted-foreground mb-6">{post.excerpt}</p>}
 
           {/* Author and metadata */}
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -304,8 +309,8 @@ export default function BlogPostPage() {
                     heading.level === 1
                       ? 'font-semibold'
                       : heading.level === 2
-                      ? 'ml-4'
-                      : 'ml-8 text-sm'
+                        ? 'ml-4'
+                        : 'ml-8 text-sm'
                   }`}
                 >
                   {heading.text}
@@ -404,10 +409,7 @@ export default function BlogPostPage() {
         </div>
 
         {/* Comments Section */}
-        <CommentSection
-          postId={post.id}
-          onCommentCountChange={setDynamicCommentCount}
-        />
+        <CommentSection postId={post.id} onCommentCountChange={setDynamicCommentCount} />
       </article>
       <Footer />
     </div>

@@ -62,12 +62,8 @@ export function AccessDenied({ reason }: AccessDeniedProps) {
       <div className="max-w-md w-full">
         <Alert className="bg-white/95 backdrop-blur border-red-200">
           <AlertCircle className="h-5 w-5 text-red-600" />
-          <AlertTitle className="text-lg font-semibold text-gray-900">
-            {message.title}
-          </AlertTitle>
-          <AlertDescription className="mt-2 text-gray-700">
-            {message.description}
-          </AlertDescription>
+          <AlertTitle className="text-lg font-semibold text-gray-900">{message.title}</AlertTitle>
+          <AlertDescription className="mt-2 text-gray-700">{message.description}</AlertDescription>
           <div className="mt-4 flex gap-2">
             <Link to={message.actionLink} className="flex-1">
               <Button className="w-full" variant="default">
@@ -76,11 +72,7 @@ export function AccessDenied({ reason }: AccessDeniedProps) {
               </Button>
             </Link>
             {reason === 'no_profile' && (
-              <Button
-                variant="outline"
-                onClick={() => window.location.reload()}
-                className="flex-1"
-              >
+              <Button variant="outline" onClick={() => window.location.reload()} className="flex-1">
                 Retry
               </Button>
             )}

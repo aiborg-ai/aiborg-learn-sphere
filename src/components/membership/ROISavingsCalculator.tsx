@@ -24,7 +24,7 @@ const FAMILY_PASS_PRICE = 20; // £20 per month
 export function ROISavingsCalculator() {
   const [numMembers, setNumMembers] = useState(4);
   const [coursesPerMember, setCoursesPerMember] = useState(1);
-  const [months, setMonths] = useState(12);
+  const [months, _setMonths] = useState(12);
 
   // Fetch real savings calculation from backend
   const { data: savings, isLoading: _isLoading } = useCalculateSavings(

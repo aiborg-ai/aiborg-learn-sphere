@@ -108,15 +108,13 @@ export function TransactionHistory({
       <CardContent className="p-0">
         <ScrollArea style={{ maxHeight }}>
           <div className="divide-y divide-gray-200">
-            {transactions.map((transaction) => {
-              const sourceColor = SOURCE_COLORS[transaction.source] || 'text-gray-600 bg-gray-50 border-gray-200';
+            {transactions.map(transaction => {
+              const sourceColor =
+                SOURCE_COLORS[transaction.source] || 'text-gray-600 bg-gray-50 border-gray-200';
               const sourceIcon = SOURCE_ICONS[transaction.source] || <Award className="h-4 w-4" />;
 
               return (
-                <div
-                  key={transaction.id}
-                  className="p-4 hover:bg-gray-50 transition-colors"
-                >
+                <div key={transaction.id} className="p-4 hover:bg-gray-50 transition-colors">
                   <div className="flex items-start gap-3">
                     {/* Icon */}
                     <div className={`p-2 rounded-lg border ${sourceColor} flex-shrink-0`}>
@@ -140,7 +138,8 @@ export function TransactionHistory({
                               transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
                             }`}
                           >
-                            {transaction.amount > 0 ? '+' : ''}{transaction.amount}
+                            {transaction.amount > 0 ? '+' : ''}
+                            {transaction.amount}
                           </span>
                         </div>
                       </div>

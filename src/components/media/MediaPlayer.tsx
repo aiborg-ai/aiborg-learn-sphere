@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Play, Pause, Volume2, AlertCircle } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useState, useRef, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Play, Pause, Volume2, AlertCircle } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 import { logger } from '@/utils/logger';
 interface MediaPlayerProps {
@@ -21,14 +21,14 @@ interface MediaState {
   currentTime: number;
 }
 
-export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerProps) {
+export function MediaPlayer({ bucket, path, type, className = '' }: MediaPlayerProps) {
   const [state, setState] = useState<MediaState>({
     isPlaying: false,
     isLoading: false,
     mediaUrl: null,
     error: null,
     duration: 0,
-    currentTime: 0
+    currentTime: 0,
   });
 
   const mediaRef = useRef<HTMLAudioElement | HTMLVideoElement | null>(null);
@@ -54,9 +54,7 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
     updateState({ isLoading: true, error: null });
 
     try {
-      const { data, error } = await supabase.storage
-        .from(bucket)
-        .createSignedUrl(path, 3600); // 1 hour expiry
+      const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, 3600); // 1 hour expiry
 
       if (error) {
         throw new Error(`Storage error: ${error.message}`);
@@ -69,17 +67,16 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
       logger.log('✅ Media URL loaded successfully');
       updateState({ mediaUrl: data.signedUrl, error: null });
       return data.signedUrl;
-
     } catch (error) {
       const errorMessage = logError('load', error);
       updateState({ error: errorMessage });
-      
+
       toast({
-        title: "Loading Error",
+        title: 'Loading Error',
         description: `Failed to load ${type} file: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        variant: "destructive",
+        variant: 'destructive',
       });
-      
+
       return null;
     } finally {
       updateState({ isLoading: false });
@@ -117,14 +114,14 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
       updateState({ isPlaying: false, currentTime: 0 });
     };
 
-    media.onerror = (event) => {
+    media.onerror = event => {
       const errorMessage = logError('playback', event);
       updateState({ error: errorMessage, isPlaying: false });
-      
+
       toast({
-        title: "Playback Error",
+        title: 'Playback Error',
         description: `Failed to play ${type} file`,
-        variant: "destructive",
+        variant: 'destructive',
       });
     };
 
@@ -134,12 +131,12 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
 
   const togglePlay = async () => {
     logger.log(`🎮 Toggle play - Current state: ${state.isPlaying ? 'playing' : 'paused'}`);
-    
+
     const url = await loadMedia();
     if (!url) return;
 
     initializeMediaElement(url);
-    
+
     if (!mediaRef.current) {
       logger.error('❌ Media element not initialized');
       return;
@@ -156,9 +153,9 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
     } catch (error) {
       logError('toggle', error);
       toast({
-        title: "Playback Error",
+        title: 'Playback Error',
         description: `Failed to ${state.isPlaying ? 'pause' : 'play'} ${type}`,
-        variant: "destructive",
+        variant: 'destructive',
       });
     }
   };
@@ -191,12 +188,7 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
               <div className="text-center">
                 <AlertCircle className="h-8 w-8 text-destructive mx-auto mb-2" />
                 <p className="text-sm text-destructive">Failed to load video</p>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={loadMedia} 
-                  className="mt-2"
-                >
+                <Button variant="outline" size="sm" onClick={loadMedia} className="mt-2">
                   Retry
                 </Button>
               </div>
@@ -209,12 +201,7 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
               controls
               preload="metadata"
             >
-              <track
-                kind="captions"
-                srcLang="en"
-                label="English"
-                src=""
-              />
+              <track kind="captions" srcLang="en" label="English" src="" />
             </video>
           ) : (
             <div className="w-full h-full flex items-center justify-center">
@@ -261,12 +248,16 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
         ) : (
           <Play className="h-4 w-4" />
         )}
-        
-        {state.isLoading ? 'Loading...' : 
-         state.error ? 'Error' :
-         state.isPlaying ? 'Pause' : 'Play'}
+
+        {state.isLoading
+          ? 'Loading...'
+          : state.error
+            ? 'Error'
+            : state.isPlaying
+              ? 'Pause'
+              : 'Play'}
       </Button>
-      
+
       <div className="flex items-center gap-2 text-muted-foreground">
         <Volume2 className="h-4 w-4" />
         <div className="text-xs">
@@ -280,12 +271,7 @@ export function MediaPlayer({ bucket, path, type, className = "" }: MediaPlayerP
       </div>
 
       {state.error && (
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={loadMedia}
-          className="text-xs"
-        >
+        <Button variant="ghost" size="sm" onClick={loadMedia} className="text-xs">
           Retry
         </Button>
       )}

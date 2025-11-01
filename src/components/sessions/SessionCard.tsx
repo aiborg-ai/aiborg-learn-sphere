@@ -153,6 +153,7 @@ export const SessionCard = memo(function SessionCard({
           {/* Meeting Provider */}
           {session.meeting_provider && (
             <div className="flex items-center text-sm text-gray-600">
+              {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
               <Video className="w-4 h-4 mr-2 text-gray-400" />
               <span className="capitalize">{session.meeting_provider.replace('_', ' ')}</span>
             </div>

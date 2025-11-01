@@ -13,15 +13,15 @@ export interface EarlySubmissionConfig {
   /** Custom thresholds for early submission detection (in days before due date) */
   customThresholds?: {
     veryEarly?: number; // Default: 7 days
-    early?: number;     // Default: 3 days
-    onTime?: number;    // Default: 1 day
+    early?: number; // Default: 3 days
+    onTime?: number; // Default: 1 day
   };
   /** Bonus points configuration */
   bonusPoints?: {
     enabled: boolean;
     veryEarly?: number; // Default: 5% bonus
-    early?: number;     // Default: 3% bonus
-    onTime?: number;    // Default: 1% bonus
+    early?: number; // Default: 3% bonus
+    onTime?: number; // Default: 1% bonus
   };
 }
 
@@ -47,15 +47,15 @@ export interface EarlySubmissionResult {
 }
 
 const DEFAULT_THRESHOLDS = {
-  veryEarly: 7,  // 7 days before due date
-  early: 3,      // 3 days before due date
-  onTime: 1,     // 1 day before due date
+  veryEarly: 7, // 7 days before due date
+  early: 3, // 3 days before due date
+  onTime: 1, // 1 day before due date
 };
 
 const DEFAULT_BONUS = {
-  veryEarly: 5,  // 5% bonus
-  early: 3,      // 3% bonus
-  onTime: 1,     // 1% bonus
+  veryEarly: 5, // 5% bonus
+  early: 3, // 3% bonus
+  onTime: 1, // 1% bonus
 };
 
 /**

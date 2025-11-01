@@ -14,7 +14,7 @@ interface UseStudioDraftOptions {
   assetType: AssetType;
   mode: WizardMode;
   assetId?: string;
-  data: any;
+  data: Record<string, unknown>;
   currentStep: number;
   isDirty: boolean;
   autoSaveInterval?: number; // milliseconds
@@ -24,7 +24,7 @@ interface UseStudioDraftOptions {
 export function useStudioDraft({
   userId,
   assetType,
-  mode,
+  mode: _mode,
   assetId,
   data,
   currentStep,
@@ -125,7 +125,7 @@ export function useStudioDraft({
 
   // Load draft from database
   const loadDraft = useCallback(async (): Promise<{
-    data: any;
+    data: Record<string, unknown>;
     currentStep: number;
     draftId: string;
   } | null> => {

@@ -115,6 +115,7 @@ export function LearningPathRoadmap({ steps, className }: LearningPathRoadmapPro
                   <div className="absolute left-5 top-12 bottom-0 w-0.5 bg-gradient-to-b from-muted-foreground/20 to-transparent" />
                 )}
 
+                {/* eslint-disable-next-line jsx-a11y/prefer-tag-over-role */}
                 <div
                   className={cn(
                     'group relative flex gap-4 p-4 rounded-lg border-2 transition-all',
@@ -124,9 +125,20 @@ export function LearningPathRoadmap({ steps, className }: LearningPathRoadmapPro
                       ? 'cursor-pointer hover:shadow-md hover:-translate-y-0.5'
                       : ''
                   )}
+                  role="button"
+                  tabIndex={step.resourceId || step.resourceSlug ? 0 : -1}
                   onClick={() =>
                     step.resourceId || step.resourceSlug ? handleStepClick(step) : undefined
                   }
+                  onKeyDown={e => {
+                    if (
+                      (e.key === 'Enter' || e.key === ' ') &&
+                      (step.resourceId || step.resourceSlug)
+                    ) {
+                      e.preventDefault();
+                      handleStepClick(step);
+                    }
+                  }}
                 >
                   {/* Step Number Circle */}
                   <div className="relative flex-shrink-0">

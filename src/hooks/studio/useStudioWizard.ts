@@ -19,7 +19,7 @@ interface UseStudioWizardOptions<T> {
   onDataChange?: (data: T) => void;
 }
 
-export function useStudioWizard<T = any>({
+export function useStudioWizard<T = Record<string, unknown>>({
   assetType,
   mode = 'create',
   assetId,

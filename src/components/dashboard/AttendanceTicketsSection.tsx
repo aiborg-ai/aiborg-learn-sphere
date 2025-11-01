@@ -166,12 +166,15 @@ export function AttendanceTicketsSection({
             <Input
               placeholder="Search tickets..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               className="pl-10"
             />
           </div>
 
-          <Select value={typeFilter} onValueChange={(value) => setTypeFilter(value as 'all' | 'event' | 'course_session')}>
+          <Select
+            value={typeFilter}
+            onValueChange={value => setTypeFilter(value as 'all' | 'event' | 'course_session')}
+          >
             <SelectTrigger className="w-full sm:w-[180px]">
               <Filter className="h-4 w-4 mr-2" />
               <SelectValue placeholder="Filter by type" />
@@ -215,9 +218,7 @@ export function AttendanceTicketsSection({
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <Ticket className="h-5 w-5" />
-                        <span className="font-mono text-sm font-bold">
-                          {ticket.ticket_number}
-                        </span>
+                        <span className="font-mono text-sm font-bold">{ticket.ticket_number}</span>
                       </div>
                       {ticket.is_verified ? (
                         <Badge variant="default" className="bg-green-500 text-white">

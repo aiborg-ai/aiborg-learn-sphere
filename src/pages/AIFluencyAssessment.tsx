@@ -106,7 +106,7 @@ export default function AIFluencyAssessment() {
   }, [authLoading, user, tool, attemptId, createAttempt, toast, navigate]);
 
   // Handle assessment completion
-  const handleAssessmentComplete = async () => {
+  const _handleAssessmentComplete = async () => {
     if (!engine || !attemptId || !assessmentId) return;
 
     try {

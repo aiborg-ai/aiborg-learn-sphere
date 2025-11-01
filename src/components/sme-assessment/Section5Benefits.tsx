@@ -1,4 +1,3 @@
-
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -41,14 +40,21 @@ export function Section5Benefits({ formData, onUpdate }: Section5BenefitsProps) 
     onUpdate({ benefits: updated });
   };
 
-  const benefitAreas = ['Efficiency', 'Revenue', 'Customer Satisfaction', 'Innovation', 'Cost Reduction', 'Quality'];
+  const benefitAreas = [
+    'Efficiency',
+    'Revenue',
+    'Customer Satisfaction',
+    'Innovation',
+    'Cost Reduction',
+    'Quality',
+  ];
 
   return (
     <div className="space-y-6">
       <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
         <p className="text-sm text-blue-900 dark:text-blue-100 mb-2">
-          <strong>Instructions:</strong> Analyze business-focused benefits from AI adoption.
-          Common areas include: Efficiency, Revenue, Customer Satisfaction, Innovation
+          <strong>Instructions:</strong> Analyze business-focused benefits from AI adoption. Common
+          areas include: Efficiency, Revenue, Customer Satisfaction, Innovation
         </p>
         <p className="text-sm text-blue-900 dark:text-blue-100 italic">
           Example: Process time reduced from 48 hrs to 2 hrs → Impact rating: 5
@@ -77,12 +83,12 @@ export function Section5Benefits({ formData, onUpdate }: Section5BenefitsProps) 
                 <Input
                   id={`benefit-area-${index}`}
                   value={benefit.benefitArea}
-                  onChange={(e) => updateBenefit(index, 'benefitArea', e.target.value)}
+                  onChange={e => updateBenefit(index, 'benefitArea', e.target.value)}
                   placeholder="e.g., Efficiency, Revenue, Customer Satisfaction"
                   list={`benefit-areas-${index}`}
                 />
                 <datalist id={`benefit-areas-${index}`}>
-                  {benefitAreas.map((area) => (
+                  {benefitAreas.map(area => (
                     <option key={area} value={area} />
                   ))}
                 </datalist>
@@ -95,7 +101,7 @@ export function Section5Benefits({ formData, onUpdate }: Section5BenefitsProps) 
                 <Input
                   id={`current-status-${index}`}
                   value={benefit.currentStatus}
-                  onChange={(e) => updateBenefit(index, 'currentStatus', e.target.value)}
+                  onChange={e => updateBenefit(index, 'currentStatus', e.target.value)}
                   placeholder="e.g., Process = 48 hrs, Conversion rate 2%"
                 />
               </div>
@@ -107,7 +113,7 @@ export function Section5Benefits({ formData, onUpdate }: Section5BenefitsProps) 
                 <Input
                   id={`ai-improvement-${index}`}
                   value={benefit.aiImprovement}
-                  onChange={(e) => updateBenefit(index, 'aiImprovement', e.target.value)}
+                  onChange={e => updateBenefit(index, 'aiImprovement', e.target.value)}
                   placeholder="e.g., Reduce to 2 hrs, Increase to 4%"
                 />
               </div>
@@ -118,7 +124,7 @@ export function Section5Benefits({ formData, onUpdate }: Section5BenefitsProps) 
                   <span className="text-sm text-muted-foreground w-20">Low</span>
                   <Slider
                     value={[benefit.impactRating]}
-                    onValueChange={(value) => updateBenefit(index, 'impactRating', value[0])}
+                    onValueChange={value => updateBenefit(index, 'impactRating', value[0])}
                     min={1}
                     max={5}
                     step={1}

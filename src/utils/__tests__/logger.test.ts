@@ -105,7 +105,11 @@ describe('Logger', () => {
     });
 
     it('should handle circular references in context', () => {
-      const circular: any = { name: 'test' };
+      interface CircularRef {
+        name: string;
+        self?: CircularRef;
+      }
+      const circular: CircularRef = { name: 'test' };
       circular.self = circular;
 
       logger.info('Circular reference test', { circular });

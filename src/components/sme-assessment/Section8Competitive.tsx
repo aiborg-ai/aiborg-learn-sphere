@@ -1,4 +1,3 @@
-
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -78,7 +77,9 @@ export function Section8Competitive({ formData, onUpdate }: Section8CompetitiveP
                 {competitor.threatLevel >= 3 && (
                   <div className="flex items-center gap-2">
                     <TrendingUp className={`h-4 w-4 ${getThreatColor(competitor.threatLevel)}`} />
-                    <span className={`text-sm font-semibold ${getThreatColor(competitor.threatLevel)}`}>
+                    <span
+                      className={`text-sm font-semibold ${getThreatColor(competitor.threatLevel)}`}
+                    >
                       Threat: {competitor.threatLevel}/5
                     </span>
                   </div>
@@ -92,7 +93,7 @@ export function Section8Competitive({ formData, onUpdate }: Section8CompetitiveP
                 <Input
                   id={`competitor-name-${index}`}
                   value={competitor.competitorName}
-                  onChange={(e) => updateCompetitor(index, 'competitorName', e.target.value)}
+                  onChange={e => updateCompetitor(index, 'competitorName', e.target.value)}
                   placeholder="e.g., Competitor X"
                 />
               </div>
@@ -104,7 +105,7 @@ export function Section8Competitive({ formData, onUpdate }: Section8CompetitiveP
                 <Textarea
                   id={`ai-use-case-${index}`}
                   value={competitor.aiUseCase}
-                  onChange={(e) => updateCompetitor(index, 'aiUseCase', e.target.value)}
+                  onChange={e => updateCompetitor(index, 'aiUseCase', e.target.value)}
                   placeholder="e.g., AI personalization, Automation, Predictive analytics"
                   rows={2}
                   className="resize-none"
@@ -118,7 +119,7 @@ export function Section8Competitive({ formData, onUpdate }: Section8CompetitiveP
                 <Textarea
                   id={`advantage-${index}`}
                   value={competitor.advantage}
-                  onChange={(e) => updateCompetitor(index, 'advantage', e.target.value)}
+                  onChange={e => updateCompetitor(index, 'advantage', e.target.value)}
                   placeholder="e.g., Higher retention, Cost reduction, Better customer experience"
                   rows={2}
                   className="resize-none"
@@ -131,14 +132,16 @@ export function Section8Competitive({ formData, onUpdate }: Section8CompetitiveP
                   <span className="text-sm text-muted-foreground w-20">Low</span>
                   <Slider
                     value={[competitor.threatLevel]}
-                    onValueChange={(value) => updateCompetitor(index, 'threatLevel', value[0])}
+                    onValueChange={value => updateCompetitor(index, 'threatLevel', value[0])}
                     min={1}
                     max={5}
                     step={1}
                     className="flex-1"
                   />
                   <span className="text-sm text-muted-foreground w-20 text-right">Critical</span>
-                  <span className={`text-lg font-bold w-8 text-center ${getThreatColor(competitor.threatLevel)}`}>
+                  <span
+                    className={`text-lg font-bold w-8 text-center ${getThreatColor(competitor.threatLevel)}`}
+                  >
                     {competitor.threatLevel}
                   </span>
                 </div>

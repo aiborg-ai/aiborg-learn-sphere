@@ -5,12 +5,19 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import {
-  Upload, Save, Send, Loader2, FileIcon, X, AlertCircle
-} from 'lucide-react';
+import { Upload, Save, Send, Loader2, FileIcon, X, AlertCircle } from 'lucide-react';
 import type { Assignment } from './AssignmentDetails';
-import { detectEarlySubmission, calculateBonusPoints, getSubmissionUrgency, formatTimeRemaining } from '@/utils/earlySubmissionDetection';
-import { EarlySubmissionBadge, SubmissionUrgencyIndicator, EarlySubmissionIncentive } from './EarlySubmissionBadge';
+import {
+  detectEarlySubmission,
+  calculateBonusPoints,
+  getSubmissionUrgency,
+  formatTimeRemaining,
+} from '@/utils/earlySubmissionDetection';
+import {
+  EarlySubmissionBadge,
+  SubmissionUrgencyIndicator,
+  EarlySubmissionIncentive,
+} from './EarlySubmissionBadge';
 
 export interface Submission {
   id: string;
@@ -57,7 +64,7 @@ export function SubmissionForm({
   onSubmit,
   onFileSelect,
   onRemoveFile,
-  onRemoveUploadedFile
+  onRemoveUploadedFile,
 }: SubmissionFormProps) {
   const [dragActive, setDragActive] = useState(false);
 
@@ -82,9 +89,7 @@ export function SubmissionForm({
       },
     });
 
-    const bonusPoints = submission.score
-      ? calculateBonusPoints(submission.score, result)
-      : 0;
+    const bonusPoints = submission.score ? calculateBonusPoints(submission.score, result) : 0;
 
     return { result, bonusPoints };
   }, [submission, assignment.due_date]);
@@ -199,7 +204,7 @@ export function SubmissionForm({
             id="submission-text"
             placeholder="Type your answer here..."
             value={submissionText}
-            onChange={(e) => setSubmissionText(e.target.value)}
+            onChange={e => setSubmissionText(e.target.value)}
             className="min-h-[300px]"
             disabled={isSubmitted && !isGraded}
           />
@@ -231,9 +236,7 @@ export function SubmissionForm({
               className={`cursor-pointer ${isSubmitted && !isGraded ? 'pointer-events-none' : ''}`}
             >
               <Upload className="h-12 w-12 mx-auto text-gray-400 mb-2" />
-              <p className="text-sm text-gray-600">
-                Drag and drop files here, or click to select
-              </p>
+              <p className="text-sm text-gray-600">Drag and drop files here, or click to select</p>
               <p className="text-xs text-gray-500 mt-1">
                 Max size: {assignment.max_file_size_mb}MB per file
               </p>
@@ -264,11 +267,7 @@ export function SubmissionForm({
                     </span>
                   </div>
                   {!isSubmitted && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => onRemoveFile(index)}
-                    >
+                    <Button size="sm" variant="ghost" onClick={() => onRemoveFile(index)}>
                       <X className="h-4 w-4" />
                     </Button>
                   )}
@@ -291,11 +290,7 @@ export function SubmissionForm({
                     <span className="text-sm">File {index + 1}</span>
                   </div>
                   {!isSubmitted && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => onRemoveUploadedFile(index)}
-                    >
+                    <Button size="sm" variant="ghost" onClick={() => onRemoveUploadedFile(index)}>
                       <X className="h-4 w-4" />
                     </Button>
                   )}
@@ -307,11 +302,7 @@ export function SubmissionForm({
 
         {!isSubmitted && (
           <div className="flex gap-3">
-            <Button
-              onClick={onSaveDraft}
-              disabled={saving || uploading}
-              variant="outline"
-            >
+            <Button onClick={onSaveDraft} disabled={saving || uploading} variant="outline">
               {saving ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />

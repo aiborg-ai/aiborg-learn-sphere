@@ -97,7 +97,7 @@ export default function FamilyMembershipPage() {
 // SECTION 1: HERO
 // ============================================================================
 
-function HeroSection({ plan }: { plan: any }) {
+function HeroSection({ plan: _plan }: { plan: Record<string, unknown> }) {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-amber-50 via-rose-50 to-orange-50 py-16 sm:py-24">
       {/* Background decorations */}
@@ -281,7 +281,7 @@ function SavingsCalculatorSection() {
 // SECTION 4: WHAT'S INCLUDED
 // ============================================================================
 
-function WhatsIncludedSection({ plan }: { plan: any }) {
+function WhatsIncludedSection({ plan: _plan }: { plan: Record<string, unknown> }) {
   const features = [
     {
       icon: GraduationCap,
@@ -727,7 +727,7 @@ function TrustSection() {
 // SECTION 10: FINAL CTA WITH URGENCY
 // ============================================================================
 
-function FinalCTASection({ plan }: { plan: any }) {
+function FinalCTASection({ plan: _plan }: { plan: Record<string, unknown> }) {
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {

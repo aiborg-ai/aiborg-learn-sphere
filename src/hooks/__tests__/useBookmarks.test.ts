@@ -325,7 +325,7 @@ describe('useBookmarks', () => {
       const mockDeleteQuery = {
         delete: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
-        then: vi.fn((resolve) => resolve({ error: null })),
+        then: vi.fn(resolve => resolve({ error: null })),
       };
 
       (supabase.from as ReturnType<typeof vi.fn>)

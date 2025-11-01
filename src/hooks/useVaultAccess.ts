@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useHasActiveMembership, useActiveSubscription } from './useMembership';
 import { useToast } from './use-toast';
+import type { SubscriptionWithPlan } from '@/services/membership/types';
 
 interface UseVaultAccessReturn {
   /**
@@ -24,8 +25,7 @@ interface UseVaultAccessReturn {
   /**
    * The active subscription (if any)
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Dynamic error object from Supabase
-  subscription: any;
+  subscription: SubscriptionWithPlan | null | undefined;
 
   /**
    * Redirect to membership page if no access

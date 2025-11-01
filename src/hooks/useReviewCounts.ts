@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 import { logger } from '@/utils/logger';
-interface ReviewCount {
-  course_id: number;
-  count: number;
-}
+// interface ReviewCount {
+//   course_id: number;
+//   count: number;
+// }
 
 export const useReviewCounts = () => {
   const [reviewCounts, setReviewCounts] = useState<Record<number, number>>({});

@@ -144,15 +144,15 @@ export function AchievementCard({
                   </div>
                 )}
 
-                {earnedDate && (
-                  <span className="text-xs text-gray-500">Earned {earnedDate}</span>
-                )}
+                {earnedDate && <span className="text-xs text-gray-500">Earned {earnedDate}</span>}
 
-                {!unlocked && achievement.rarity_percentage && achievement.rarity_percentage < 25 && (
-                  <Badge variant="secondary" className="text-xs">
-                    Rare ({achievement.rarity_percentage}%)
-                  </Badge>
-                )}
+                {!unlocked &&
+                  achievement.rarity_percentage &&
+                  achievement.rarity_percentage < 25 && (
+                    <Badge variant="secondary" className="text-xs">
+                      Rare ({achievement.rarity_percentage}%)
+                    </Badge>
+                  )}
               </div>
 
               {unlocked && onShare && (

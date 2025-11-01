@@ -229,7 +229,12 @@ export const InfiniteVirtualList = memo(function InfiniteVirtualList<T>({
   emptyState,
   loadingComponent,
 }: InfiniteVirtualListProps<T>) {
-  const { virtualItems, totalHeight, containerRef, visibleRange } = useVirtualScroll({
+  const {
+    virtualItems,
+    totalHeight,
+    containerRef,
+    visibleRange: _visibleRange,
+  } = useVirtualScroll({
     itemCount: items.length,
     itemHeight,
     containerHeight,

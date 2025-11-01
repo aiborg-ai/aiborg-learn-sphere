@@ -1,4 +1,3 @@
-
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -77,7 +76,7 @@ export function Section4UserImpact({ formData, onUpdate }: Section4UserImpactPro
                 <Input
                   id={`user-group-${index}`}
                   value={impact.userGroup}
-                  onChange={(e) => updateUserImpact(index, 'userGroup', e.target.value)}
+                  onChange={e => updateUserImpact(index, 'userGroup', e.target.value)}
                   placeholder="e.g., End Customers, Internal Sales Team"
                 />
               </div>
@@ -88,9 +87,7 @@ export function Section4UserImpact({ formData, onUpdate }: Section4UserImpactPro
                   <span className="text-sm text-muted-foreground w-20">Poor</span>
                   <Slider
                     value={[impact.satisfactionRating]}
-                    onValueChange={(value) =>
-                      updateUserImpact(index, 'satisfactionRating', value[0])
-                    }
+                    onValueChange={value => updateUserImpact(index, 'satisfactionRating', value[0])}
                     min={1}
                     max={5}
                     step={1}
@@ -110,7 +107,7 @@ export function Section4UserImpact({ formData, onUpdate }: Section4UserImpactPro
                 <Textarea
                   id={`user-pain-${index}`}
                   value={impact.userPainPoints}
-                  onChange={(e) => updateUserImpact(index, 'userPainPoints', e.target.value)}
+                  onChange={e => updateUserImpact(index, 'userPainPoints', e.target.value)}
                   placeholder="e.g., Slow response time"
                   rows={2}
                   className="resize-none"
@@ -124,7 +121,7 @@ export function Section4UserImpact({ formData, onUpdate }: Section4UserImpactPro
                 <Textarea
                   id={`ai-improvements-${index}`}
                   value={impact.aiImprovements}
-                  onChange={(e) => updateUserImpact(index, 'aiImprovements', e.target.value)}
+                  onChange={e => updateUserImpact(index, 'aiImprovements', e.target.value)}
                   placeholder="e.g., AI-powered instant responses"
                   rows={2}
                   className="resize-none"
@@ -137,7 +134,7 @@ export function Section4UserImpact({ formData, onUpdate }: Section4UserImpactPro
                   <span className="text-sm text-muted-foreground w-20">Low</span>
                   <Slider
                     value={[impact.impactRating]}
-                    onValueChange={(value) => updateUserImpact(index, 'impactRating', value[0])}
+                    onValueChange={value => updateUserImpact(index, 'impactRating', value[0])}
                     min={1}
                     max={5}
                     step={1}

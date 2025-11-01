@@ -167,10 +167,7 @@ export const AnswerOptions: React.FC<AnswerOptionsProps> = ({
                   </div>
                 )}
                 {option.tool_recommendations && option.tool_recommendations.length > 0 && (
-                  <ul
-                    className="flex flex-wrap gap-1 mt-2"
-                    aria-label="Recommended tools"
-                  >
+                  <ul className="flex flex-wrap gap-1 mt-2" aria-label="Recommended tools">
                     {option.tool_recommendations.map(tool => (
                       <li key={tool} className="list-none">
                         <Badge variant="outline" className="text-xs">

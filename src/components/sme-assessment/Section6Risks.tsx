@@ -1,4 +1,3 @@
-
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -43,7 +42,13 @@ export function Section6Risks({ formData, onUpdate }: Section6RisksProps) {
     onUpdate({ risks: updated });
   };
 
-  const riskFactors = ['Data Security', 'Compliance', 'User Acceptance', 'Technical Complexity', 'Cost Overrun'];
+  const riskFactors = [
+    'Data Security',
+    'Compliance',
+    'User Acceptance',
+    'Technical Complexity',
+    'Cost Overrun',
+  ];
 
   const getRiskLevel = (likelihood: number, impact: number) => {
     const score = likelihood * impact;
@@ -96,12 +101,12 @@ export function Section6Risks({ formData, onUpdate }: Section6RisksProps) {
                   <Input
                     id={`risk-factor-${index}`}
                     value={risk.riskFactor}
-                    onChange={(e) => updateRisk(index, 'riskFactor', e.target.value)}
+                    onChange={e => updateRisk(index, 'riskFactor', e.target.value)}
                     placeholder="e.g., Data Security, Compliance, User Acceptance"
                     list={`risk-factors-${index}`}
                   />
                   <datalist id={`risk-factors-${index}`}>
-                    {riskFactors.map((factor) => (
+                    {riskFactors.map(factor => (
                       <option key={factor} value={factor} />
                     ))}
                   </datalist>
@@ -114,7 +119,7 @@ export function Section6Risks({ formData, onUpdate }: Section6RisksProps) {
                   <Input
                     id={`specific-risk-${index}`}
                     value={risk.specificRisk}
-                    onChange={(e) => updateRisk(index, 'specificRisk', e.target.value)}
+                    onChange={e => updateRisk(index, 'specificRisk', e.target.value)}
                     placeholder="e.g., Data breaches, Regulatory risk"
                   />
                 </div>
@@ -125,7 +130,7 @@ export function Section6Risks({ formData, onUpdate }: Section6RisksProps) {
                     <div className="flex items-center gap-2">
                       <Slider
                         value={[risk.likelihood]}
-                        onValueChange={(value) => updateRisk(index, 'likelihood', value[0])}
+                        onValueChange={value => updateRisk(index, 'likelihood', value[0])}
                         min={1}
                         max={5}
                         step={1}
@@ -142,7 +147,7 @@ export function Section6Risks({ formData, onUpdate }: Section6RisksProps) {
                     <div className="flex items-center gap-2">
                       <Slider
                         value={[risk.impactRating]}
-                        onValueChange={(value) => updateRisk(index, 'impactRating', value[0])}
+                        onValueChange={value => updateRisk(index, 'impactRating', value[0])}
                         min={1}
                         max={5}
                         step={1}
@@ -162,7 +167,7 @@ export function Section6Risks({ formData, onUpdate }: Section6RisksProps) {
                   <Textarea
                     id={`mitigation-${index}`}
                     value={risk.mitigationStrategy}
-                    onChange={(e) => updateRisk(index, 'mitigationStrategy', e.target.value)}
+                    onChange={e => updateRisk(index, 'mitigationStrategy', e.target.value)}
                     placeholder="e.g., Encryption, regular audits, user training"
                     rows={2}
                     className="resize-none"

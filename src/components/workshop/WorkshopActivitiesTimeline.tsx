@@ -42,7 +42,9 @@ export function WorkshopActivitiesTimeline({ activities }: WorkshopActivitiesTim
     }
   };
 
-  const getActivityDescription = (activity: WorkshopActivity & { profiles?: { display_name: string } }) => {
+  const getActivityDescription = (
+    activity: WorkshopActivity & { profiles?: { display_name: string } }
+  ) => {
     const userName = activity.profiles?.display_name || 'Someone';
 
     switch (activity.activity_type) {
@@ -71,9 +73,7 @@ export function WorkshopActivitiesTimeline({ activities }: WorkshopActivitiesTim
             <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted">
               {getActivityIcon(activity.activity_type)}
             </div>
-            {index < activities.length - 1 && (
-              <div className="w-0.5 h-full bg-muted mt-1" />
-            )}
+            {index < activities.length - 1 && <div className="w-0.5 h-full bg-muted mt-1" />}
           </div>
           <div className="flex-1 pb-4">
             <p className="text-sm font-medium">{getActivityDescription(activity)}</p>

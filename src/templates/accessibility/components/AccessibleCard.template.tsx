@@ -130,15 +130,20 @@ export const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivEleme
 CardHeader.displayName = 'CardHeader';
 
 export const CardTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement> & { as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' }>(
-  ({ className, as: Comp = 'h3', children, ...props }, ref) => (
-    <Comp
-      ref={ref as any}
-      className={cn("text-2xl font-semibold leading-none tracking-tight", className)}
-      {...props}
-    >
-      {children}
-    </Comp>
-  )
+  ({ className, as: Comp = 'h3', children, ...props }, ref) => {
+    // Type assertion needed because ref can be for different heading elements
+    const headingProps = {
+      ref: ref as React.Ref<HTMLHeadingElement & HTMLElement>,
+      className: cn("text-2xl font-semibold leading-none tracking-tight", className),
+      ...props
+    };
+
+    return (
+      <Comp {...headingProps}>
+        {children}
+      </Comp>
+    );
+  }
 );
 CardTitle.displayName = 'CardTitle';
 

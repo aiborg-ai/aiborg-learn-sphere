@@ -39,3 +39,9 @@ secrets/
 *.sln
 *.sw?
 .vercel
+
+# Bundle size monitoring
+bundle-size-report.json
+bundle-size-history.json
+.previous-bundle-report.json
+bundle-output.txt

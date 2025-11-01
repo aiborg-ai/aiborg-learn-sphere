@@ -242,20 +242,20 @@ export default function AIAssessment() {
               const Icon = feature.icon;
               return (
                 <li key={index} className="list-none">
-                <Card className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div
-                      className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4"
-                      aria-hidden="true"
-                    >
-                      <Icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <CardTitle className="text-lg">{feature.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{feature.description}</p>
-                  </CardContent>
-                </Card>
+                  <Card className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <div
+                        className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4"
+                        aria-hidden="true"
+                      >
+                        <Icon className="h-6 w-6 text-primary" />
+                      </div>
+                      <CardTitle className="text-lg">{feature.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-muted-foreground">{feature.description}</p>
+                    </CardContent>
+                  </Card>
                 </li>
               );
             })}

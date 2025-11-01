@@ -166,10 +166,10 @@ export function useSecureApi<T = unknown>(config: SecureApiConfig = {}): SecureA
       }
 
       // Sanitize input data
-      let sanitizedInput = inputData;
+      let _sanitizedInput = inputData;
       if (sanitizeInput && inputData) {
         if (typeof inputData === 'string') {
-          sanitizedInput = sanitizeText(inputData);
+          _sanitizedInput = sanitizeText(inputData);
 
           // Check for SQL injection
           if (checkSQLInjection && hasSQLInjectionPattern(inputData)) {
@@ -188,7 +188,7 @@ export function useSecureApi<T = unknown>(config: SecureApiConfig = {}): SecureA
             return { error: injectionError };
           }
         } else if (typeof inputData === 'object') {
-          sanitizedInput = sanitizeObjectInput(inputData, checkSQLInjection);
+          _sanitizedInput = sanitizeObjectInput(inputData, checkSQLInjection);
         }
       }
 

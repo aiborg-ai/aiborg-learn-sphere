@@ -5,12 +5,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Icon } from '@/utils/iconLoader';
 import type { RealtimeStatus } from '@/hooks/useWorkshopRealtime';
 
@@ -111,12 +106,7 @@ export function RealtimeConnectionStatus({
 
       {/* Reconnect button for error/disconnected states */}
       {(status === 'error' || status === 'disconnected') && onReconnect && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onReconnect}
-          className="h-7"
-        >
+        <Button variant="outline" size="sm" onClick={onReconnect} className="h-7">
           <Icon name="RefreshCw" size={14} className="mr-1" />
           Reconnect
         </Button>

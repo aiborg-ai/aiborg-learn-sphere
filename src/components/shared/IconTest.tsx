@@ -45,15 +45,13 @@ export function IconTest() {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-4 md:grid-cols-8 gap-4">
-          {commonIcons.map((iconName) => (
+          {commonIcons.map(iconName => (
             <div
               key={iconName}
               className="flex flex-col items-center gap-2 p-2 border rounded hover:bg-accent transition-colors"
             >
               <Icon name={iconName} size={24} className="text-primary" />
-              <span className="text-xs text-center break-all">
-                {iconName}
-              </span>
+              <span className="text-xs text-center break-all">{iconName}</span>
             </div>
           ))}
         </div>

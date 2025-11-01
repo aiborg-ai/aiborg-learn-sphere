@@ -1,5 +1,5 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Terms } from "@/components/Terms";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Terms } from '@/components/Terms';
 
 interface TermsModalProps {
   isOpen: boolean;

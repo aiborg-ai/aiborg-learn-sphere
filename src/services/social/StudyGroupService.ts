@@ -10,10 +10,7 @@ export class StudyGroupService {
   /**
    * Find study groups compatible with user's skill level and interests
    */
-  static async findCompatible(
-    skillLevel: number,
-    topics: string[]
-  ): Promise<StudyGroup[]> {
+  static async findCompatible(skillLevel: number, topics: string[]): Promise<StudyGroup[]> {
     const { data, error } = await supabase.rpc('find_compatible_study_groups', {
       user_skill_level: skillLevel,
       user_topics: topics,

@@ -4,6 +4,7 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 import type {
   UserProfile,
   Course,
@@ -42,11 +43,7 @@ export class CourseRecommendationService {
       if (profile.completedCourses.includes(course.id)) continue;
 
       // Calculate recommendation score
-      const score = await this.calculateRecommendationScore(
-        profile,
-        course,
-        userSimilarities
-      );
+      const score = await this.calculateRecommendationScore(profile, course, userSimilarities);
 
       // Generate reasons
       const reasons = this.generateReasons(profile, course, score);
@@ -88,7 +85,9 @@ export class CourseRecommendationService {
       .eq('user_id', userId);
 
     const completedCourses =
-      enrollments?.filter((e: CourseEnrollment) => e.progress === 100).map((e: CourseEnrollment) => e.course_id) || [];
+      enrollments
+        ?.filter((e: CourseEnrollment) => e.progress === 100)
+        .map((e: CourseEnrollment) => e.course_id) || [];
 
     const { data: assessments } = await supabase
       .from('ai_assessment_results')
@@ -135,8 +134,14 @@ export class CourseRecommendationService {
 
   private static async findSimilarUsers(userId: string): Promise<string[]> {
     // Simplified: Find users with similar assessment scores and completed courses
-    const { data } = await supabase.rpc('find_similar_users', { target_user_id: userId });
-    return data?.map((u: SimilarUser) => u.id) || [];
+    try {
+      const response = await supabase.rpc('find_similar_users', { target_user_id: userId });
+      const data = response?.data;
+      return data?.map((u: SimilarUser) => u.id) || [];
+    } catch (error) {
+      logger.error('Error finding similar users', error);
+      return [];
+    }
   }
 
   private static async calculateRecommendationScore(
@@ -147,7 +152,7 @@ export class CourseRecommendationService {
     let score = 0;
 
     // Assessment score alignment
-    const relevantAssessments = course.topics.filter((t) => profile.assessmentScores[t]);
+    const relevantAssessments = course.topics.filter(t => profile.assessmentScores[t]);
     if (relevantAssessments.length > 0) {
       const avgAssessmentScore =
         relevantAssessments.reduce((sum, t) => sum + profile.assessmentScores[t], 0) /
@@ -156,12 +161,15 @@ export class CourseRecommendationService {
     }
 
     // Topic relevance
-    const topicOverlap = course.topics.filter((t) => profile.preferredTopics.includes(t)).length;
+    const topicOverlap = course.topics.filter(t => profile.preferredTopics.includes(t)).length;
     const topicScore = (topicOverlap / Math.max(course.topics.length, 1)) * 100;
     score += topicScore * this.SKILL_WEIGHTS.topicRelevance;
 
     // Difficulty match
-    const difficultyScore = this.calculateDifficultyMatch(profile.currentSkillLevel, course.difficulty);
+    const difficultyScore = this.calculateDifficultyMatch(
+      profile.currentSkillLevel,
+      course.difficulty
+    );
     score += difficultyScore * this.SKILL_WEIGHTS.difficultyMatch;
 
     // Completion rate
@@ -188,7 +196,10 @@ export class CourseRecommendationService {
     return Math.max(0, 100 - (skillLevel - max) * 2);
   }
 
-  private static async getPeerSuccessScore(courseId: string, similarUsers: string[]): Promise<number> {
+  private static async getPeerSuccessScore(
+    courseId: string,
+    similarUsers: string[]
+  ): Promise<number> {
     if (similarUsers.length === 0) return 50;
 
     const { data } = await supabase
@@ -199,8 +210,10 @@ export class CourseRecommendationService {
 
     if (!data || data.length === 0) return 50;
 
-    const avgProgress = data.reduce((sum, e: CourseEnrollment) => sum + (e.progress || 0), 0) / data.length;
-    const avgRating = data.reduce((sum, e: CourseEnrollment) => sum + (e.rating || 0), 0) / data.length;
+    const avgProgress =
+      data.reduce((sum, e: CourseEnrollment) => sum + (e.progress || 0), 0) / data.length;
+    const avgRating =
+      data.reduce((sum, e: CourseEnrollment) => sum + (e.rating || 0), 0) / data.length;
 
     return (avgProgress + avgRating * 20) / 2;
   }
@@ -210,7 +223,7 @@ export class CourseRecommendationService {
 
     if (score > 80) reasons.push('Highly recommended based on your profile');
 
-    const topicMatches = course.topics.filter((t) => profile.preferredTopics.includes(t));
+    const topicMatches = course.topics.filter(t => profile.preferredTopics.includes(t));
     if (topicMatches.length > 0) {
       reasons.push(`Matches your interests: ${topicMatches.join(', ')}`);
     }
@@ -247,7 +260,7 @@ export class CourseRecommendationService {
 
   private static identifySkillGaps(profile: UserProfile, course: Course): string[] {
     const userSkills = Object.keys(profile.assessmentScores);
-    return course.skills.filter((skill) => !userSkills.includes(skill));
+    return course.skills.filter(skill => !userSkills.includes(skill));
   }
 
   private static calculateConfidence(score: number, profile: UserProfile): number {

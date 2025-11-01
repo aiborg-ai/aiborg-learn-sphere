@@ -91,7 +91,7 @@ export const SessionNotifications: React.FC<SessionNotificationsProps> = ({
         const data = await getUserRegistrations(user.email);
         setRegistrations(data as RegistrationWithDetails[]);
       }
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to accept promotion. Please try again.',
@@ -112,7 +112,7 @@ export const SessionNotifications: React.FC<SessionNotificationsProps> = ({
         const data = await getUserRegistrations(user.email);
         setRegistrations(data as RegistrationWithDetails[]);
       }
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to decline promotion. Please try again.',

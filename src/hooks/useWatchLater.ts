@@ -33,7 +33,8 @@ export const useWatchLater = (options: UseWatchLaterOptions = {}) => {
 
       const { data, error: fetchError } = await supabase
         .from('watch_later')
-        .select(`
+        .select(
+          `
           *,
           material:course_materials(
             id,
@@ -44,7 +45,8 @@ export const useWatchLater = (options: UseWatchLaterOptions = {}) => {
             duration
           ),
           course:courses(id, title)
-        `)
+        `
+        )
         .eq('user_id', user.id)
         .order('queue_position', { ascending: true });
 
@@ -152,7 +154,7 @@ export const useWatchLater = (options: UseWatchLaterOptions = {}) => {
 
       try {
         // Update positions for all items
-        const updates = items.map((item) =>
+        const updates = items.map(item =>
           supabase
             .from('watch_later')
             .update({ queue_position: item.position })
@@ -175,10 +177,10 @@ export const useWatchLater = (options: UseWatchLaterOptions = {}) => {
   // Move item up in queue
   const moveUp = useCallback(
     async (id: string) => {
-      const item = queue.find((q) => q.id === id);
+      const item = queue.find(q => q.id === id);
       if (!item || item.queue_position === 1) return;
 
-      const prevItem = queue.find((q) => q.queue_position === item.queue_position - 1);
+      const prevItem = queue.find(q => q.queue_position === item.queue_position - 1);
       if (!prevItem) return;
 
       await reorderQueue([
@@ -192,10 +194,10 @@ export const useWatchLater = (options: UseWatchLaterOptions = {}) => {
   // Move item down in queue
   const moveDown = useCallback(
     async (id: string) => {
-      const item = queue.find((q) => q.id === id);
+      const item = queue.find(q => q.id === id);
       if (!item || item.queue_position === queue.length) return;
 
-      const nextItem = queue.find((q) => q.queue_position === item.queue_position + 1);
+      const nextItem = queue.find(q => q.queue_position === item.queue_position + 1);
       if (!nextItem) return;
 
       await reorderQueue([
@@ -209,12 +211,12 @@ export const useWatchLater = (options: UseWatchLaterOptions = {}) => {
   // Move to top of queue
   const moveToTop = useCallback(
     async (id: string) => {
-      const item = queue.find((q) => q.id === id);
+      const item = queue.find(q => q.id === id);
       if (!item || item.queue_position === 1) return;
 
       const updates = queue
-        .filter((q) => q.queue_position < item.queue_position)
-        .map((q) => ({
+        .filter(q => q.queue_position < item.queue_position)
+        .map(q => ({
           id: q.id,
           position: q.queue_position + 1,
         }))
@@ -250,7 +252,7 @@ export const useWatchLater = (options: UseWatchLaterOptions = {}) => {
   // Check if material is in queue
   const isInQueue = useCallback(
     (materialId: string): boolean => {
-      return queue.some((q) => q.material_id === materialId);
+      return queue.some(q => q.material_id === materialId);
     },
     [queue]
   );
@@ -258,7 +260,7 @@ export const useWatchLater = (options: UseWatchLaterOptions = {}) => {
   // Get queue item for material
   const getQueueItem = useCallback(
     (materialId: string): WatchLaterWithRelations | null => {
-      return queue.find((q) => q.material_id === materialId) || null;
+      return queue.find(q => q.material_id === materialId) || null;
     },
     [queue]
   );

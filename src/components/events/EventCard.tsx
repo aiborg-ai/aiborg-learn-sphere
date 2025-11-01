@@ -33,8 +33,11 @@ export const EventCard = memo(function EventCard({ event, onRegister }: EventCar
   const [checkingMembership, setCheckingMembership] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
   const { user } = useAuth();
-  const { isRegisteredForEvent, registerForEvent, registerWithFamilyPass } =
-    useEventRegistrations();
+  const {
+    isRegisteredForEvent,
+    registerForEvent: _registerForEvent,
+    registerWithFamilyPass,
+  } = useEventRegistrations();
   const { toast } = useToast();
 
   const isRegistered = isRegisteredForEvent(event.id);
@@ -53,7 +56,7 @@ export const EventCard = memo(function EventCard({ event, onRegister }: EventCar
       try {
         const isActive = await MembershipService.hasActiveMembership();
         setHasActiveMembership(isActive);
-      } catch (error) {
+      } catch {
         setHasActiveMembership(false);
       } finally {
         setCheckingMembership(false);

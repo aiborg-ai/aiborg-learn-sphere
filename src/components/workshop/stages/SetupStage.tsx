@@ -22,8 +22,8 @@ export function SetupStage({ session, workshop, participants }: SetupStageProps)
       <Alert>
         <Icon name="Info" size={20} />
         <AlertDescription>
-          Welcome to the workshop! Please take time to review the instructions, materials, and get familiar
-          with your team members.
+          Welcome to the workshop! Please take time to review the instructions, materials, and get
+          familiar with your team members.
         </AlertDescription>
       </Alert>
 
@@ -104,13 +104,14 @@ export function SetupStage({ session, workshop, participants }: SetupStageProps)
           Your Team ({participants.length})
         </h3>
         <p className="text-sm text-muted-foreground mb-4">
-          You'll be working with {participants.length} participant(s) during this workshop. Take a moment to
-          introduce yourselves!
+          You'll be working with {participants.length} participant(s) during this workshop. Take a
+          moment to introduce yourselves!
         </p>
         <div className="bg-primary/5 p-4 rounded-lg">
           <p className="text-sm font-medium">💡 Tip for Success</p>
           <p className="text-sm text-muted-foreground mt-1">
-            Effective collaboration is key! Make sure everyone understands their role and the workshop goals.
+            Effective collaboration is key! Make sure everyone understands their role and the
+            workshop goals.
           </p>
         </div>
       </Card>
@@ -123,7 +124,8 @@ export function SetupStage({ session, workshop, participants }: SetupStageProps)
         </h3>
         <div className="bg-muted p-4 rounded-lg min-h-32">
           <p className="text-sm text-muted-foreground">
-            {session.shared_notes || 'No notes yet. Team members can add notes during the workshop.'}
+            {session.shared_notes ||
+              'No notes yet. Team members can add notes during the workshop.'}
           </p>
         </div>
       </Card>

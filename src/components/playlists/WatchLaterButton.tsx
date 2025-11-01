@@ -29,15 +29,18 @@ export function WatchLaterButton({
   const queueItem = getQueueItem(materialId);
 
   // Define button configuration
-  const config: ActionButtonConfig = useMemo(() => ({
-    defaultIcon: Clock,
-    activeIcon: CheckCircle,
-    defaultLabel: 'Watch Later',
-    activeLabel: 'In Queue',
-    defaultTitle: 'Add to Watch Later',
-    activeTitle: 'Remove from Watch Later',
-    activeColorClass: 'text-blue-600 dark:text-blue-500',
-  }), []);
+  const config: ActionButtonConfig = useMemo(
+    () => ({
+      defaultIcon: Clock,
+      activeIcon: CheckCircle,
+      defaultLabel: 'Watch Later',
+      activeLabel: 'In Queue',
+      defaultTitle: 'Add to Watch Later',
+      activeTitle: 'Remove from Watch Later',
+      activeColorClass: 'text-blue-600 dark:text-blue-500',
+    }),
+    []
+  );
 
   const handleToggle = async () => {
     try {

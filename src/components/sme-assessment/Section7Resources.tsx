@@ -1,4 +1,3 @@
-
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -41,7 +40,14 @@ export function Section7Resources({ formData, onUpdate }: Section7ResourcesProps
     onUpdate({ resources: updated });
   };
 
-  const resourceTypes = ['AI Talent', 'Infrastructure', 'Budget', 'Training', 'Data', 'Tools & Software'];
+  const resourceTypes = [
+    'AI Talent',
+    'Infrastructure',
+    'Budget',
+    'Training',
+    'Data',
+    'Tools & Software',
+  ];
 
   return (
     <div className="space-y-6">
@@ -77,12 +83,12 @@ export function Section7Resources({ formData, onUpdate }: Section7ResourcesProps
                 <Input
                   id={`resource-type-${index}`}
                   value={resource.resourceType}
-                  onChange={(e) => updateResource(index, 'resourceType', e.target.value)}
+                  onChange={e => updateResource(index, 'resourceType', e.target.value)}
                   placeholder="e.g., AI Talent, Infrastructure, Budget, Training"
                   list={`resource-types-${index}`}
                 />
                 <datalist id={`resource-types-${index}`}>
-                  {resourceTypes.map((type) => (
+                  {resourceTypes.map(type => (
                     <option key={type} value={type} />
                   ))}
                 </datalist>
@@ -92,29 +98,29 @@ export function Section7Resources({ formData, onUpdate }: Section7ResourcesProps
                 <Checkbox
                   id={`available-${index}`}
                   checked={resource.isAvailable}
-                  onCheckedChange={(checked) =>
+                  onCheckedChange={checked =>
                     updateResource(index, 'isAvailable', checked === true)
                   }
                 />
-                <Label
-                  htmlFor={`available-${index}`}
-                  className="font-normal cursor-pointer"
-                >
+                <Label htmlFor={`available-${index}`} className="font-normal cursor-pointer">
                   Resource is currently available
                 </Label>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor={`requirements-${index}`}>
-                  Additional Requirements{!resource.isAvailable && <span className="text-red-500">*</span>}
+                  Additional Requirements
+                  {!resource.isAvailable && <span className="text-red-500">*</span>}
                 </Label>
                 <Textarea
                   id={`requirements-${index}`}
                   value={resource.additionalRequirements}
-                  onChange={(e) =>
-                    updateResource(index, 'additionalRequirements', e.target.value)
+                  onChange={e => updateResource(index, 'additionalRequirements', e.target.value)}
+                  placeholder={
+                    resource.isAvailable
+                      ? 'Any upgrades or enhancements needed'
+                      : 'What needs to be acquired or developed'
                   }
-                  placeholder={resource.isAvailable ? "Any upgrades or enhancements needed" : "What needs to be acquired or developed"}
                   rows={2}
                   className="resize-none"
                 />

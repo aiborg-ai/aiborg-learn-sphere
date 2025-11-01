@@ -131,7 +131,7 @@ export class LearningPathRecommendationEngine {
     assessmentId?: string
   ): Promise<UserLearningProfile> {
     // Get user's profile
-    const { data: profile } = await supabase
+    const { data: _profile } = await supabase
       .from('profiles')
       .select('*')
       .eq('user_id', userId)

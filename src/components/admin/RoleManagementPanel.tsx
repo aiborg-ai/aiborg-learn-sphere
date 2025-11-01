@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,14 +32,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuditLogs } from '@/hooks/useAuditLogs';
 import { logger } from '@/utils/logger';
-import {
-  Search,
-  Shield,
-  UserCog,
-  UserCheck,
-  AlertTriangle,
-  Users
-} from 'lucide-react';
+import { Search, Shield, UserCog, UserCheck, AlertTriangle, Users } from 'lucide-react';
 
 export interface UserProfile {
   id: string;
@@ -152,9 +152,7 @@ export function RoleManagementPanel({ users, onRefresh }: RoleManagementPanelPro
             <Shield className="h-5 w-5" />
             User Role Management
           </CardTitle>
-          <CardDescription>
-            Manage user roles and permissions across the platform
-          </CardDescription>
+          <CardDescription>Manage user roles and permissions across the platform</CardDescription>
 
           {/* Role Statistics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
@@ -206,7 +204,7 @@ export function RoleManagementPanel({ users, onRefresh }: RoleManagementPanelPro
               <Input
                 placeholder="Search by name or email..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -246,7 +244,7 @@ export function RoleManagementPanel({ users, onRefresh }: RoleManagementPanelPro
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredUsers.map((user) => {
+                  filteredUsers.map(user => {
                     const RoleIcon = roleIcons[user.role as keyof typeof roleIcons] || UserCheck;
 
                     return (
@@ -259,18 +257,14 @@ export function RoleManagementPanel({ users, onRefresh }: RoleManagementPanelPro
                         </TableCell>
                         <TableCell>{user.email || 'N/A'}</TableCell>
                         <TableCell>
-                          <Badge variant={roleColors[user.role]}>
-                            {user.role}
-                          </Badge>
+                          <Badge variant={roleColors[user.role]}>{user.role}</Badge>
                         </TableCell>
                         <TableCell>
                           <Badge variant={statusColors[user.status || 'active']}>
                             {user.status || 'active'}
                           </Badge>
                         </TableCell>
-                        <TableCell>
-                          {new Date(user.created_at).toLocaleDateString()}
-                        </TableCell>
+                        <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
                         <TableCell className="text-right">
                           <Button
                             size="sm"
@@ -306,7 +300,9 @@ export function RoleManagementPanel({ users, onRefresh }: RoleManagementPanelPro
           </AlertDialogHeader>
 
           <div className="py-4">
-            <label htmlFor="new-role-select" className="text-sm font-medium mb-2 block">Select New Role</label>
+            <label htmlFor="new-role-select" className="text-sm font-medium mb-2 block">
+              Select New Role
+            </label>
             <Select value={newRole} onValueChange={setNewRole}>
               <SelectTrigger id="new-role-select">
                 <SelectValue placeholder="Select role" />
@@ -324,9 +320,15 @@ export function RoleManagementPanel({ users, onRefresh }: RoleManagementPanelPro
                 <div className="text-sm text-yellow-800">
                   <p className="font-medium mb-1">Role Permissions:</p>
                   <ul className="list-disc list-inside space-y-1 text-xs">
-                    <li><strong>Admin:</strong> Full access to all features and settings</li>
-                    <li><strong>Instructor:</strong> Can create and manage courses</li>
-                    <li><strong>Student:</strong> Can enroll and access courses</li>
+                    <li>
+                      <strong>Admin:</strong> Full access to all features and settings
+                    </li>
+                    <li>
+                      <strong>Instructor:</strong> Can create and manage courses
+                    </li>
+                    <li>
+                      <strong>Student:</strong> Can enroll and access courses
+                    </li>
                   </ul>
                 </div>
               </div>

@@ -39,7 +39,7 @@ interface InstructorCourse {
 
 export default function InstructorDashboard() {
   const navigate = useNavigate();
-  const { user, profile } = useAuth();
+  const { user, profile: _profile } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -269,18 +269,10 @@ export default function InstructorDashboard() {
                 {instructorCourses.length > 0 ? (
                   <div className="space-y-3">
                     {instructorCourses.map(course => (
-                      <div
+                      <button
                         key={course.id}
-                        className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
+                        className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer w-full text-left"
                         onClick={() => setSelectedCourse(course)}
-                        onKeyDown={e => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            setSelectedCourse(course);
-                          }
-                        }}
-                        role="button"
-                        tabIndex={0}
                       >
                         <div className="flex-1">
                           <h4 className="font-semibold">{course.title}</h4>
@@ -317,7 +309,7 @@ export default function InstructorDashboard() {
                             View Course
                           </Button>
                         </div>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 ) : (

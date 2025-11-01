@@ -20,7 +20,7 @@ export function PageLoader({ message = 'Loading...' }: { message?: string }) {
  */
 export function InlineLoader({
   size = 'default',
-  className
+  className,
 }: {
   size?: 'sm' | 'default' | 'lg';
   className?: string;
@@ -28,7 +28,7 @@ export function InlineLoader({
   const sizeClasses = {
     sm: 'h-4 w-4',
     default: 'h-6 w-6',
-    lg: 'h-8 w-8'
+    lg: 'h-8 w-8',
   };
 
   return (
@@ -43,7 +43,7 @@ export function InlineLoader({
  */
 export function ButtonLoader({
   children,
-  loading = false
+  loading = false,
 }: {
   children: React.ReactNode;
   loading?: boolean;
@@ -63,7 +63,7 @@ export function ButtonLoader({
  */
 export function CardSkeleton({
   showHeader = true,
-  lines = 3
+  lines = 3,
 }: {
   showHeader?: boolean;
   lines?: number;
@@ -78,13 +78,7 @@ export function CardSkeleton({
       )}
       <CardContent className="space-y-3">
         {Array.from({ length: lines }).map((_, i) => (
-          <Skeleton
-            key={i}
-            className={cn(
-              'h-4',
-              i === lines - 1 ? 'w-1/2' : 'w-full'
-            )}
-          />
+          <Skeleton key={i} className={cn('h-4', i === lines - 1 ? 'w-1/2' : 'w-full')} />
         ))}
       </CardContent>
     </Card>
@@ -94,13 +88,7 @@ export function CardSkeleton({
 /**
  * Table skeleton loader
  */
-export function TableSkeleton({
-  rows = 5,
-  columns = 4
-}: {
-  rows?: number;
-  columns?: number;
-}) {
+export function TableSkeleton({ rows = 5, columns = 4 }: { rows?: number; columns?: number }) {
   return (
     <div className="rounded-md border">
       <div className="border-b bg-muted/50 p-4">
@@ -114,13 +102,7 @@ export function TableSkeleton({
         {Array.from({ length: rows }).map((_, rowIndex) => (
           <div key={rowIndex} className="flex gap-4">
             {Array.from({ length: columns }).map((_, colIndex) => (
-              <Skeleton
-                key={colIndex}
-                className={cn(
-                  'h-4',
-                  colIndex === 0 ? 'w-32' : 'w-24'
-                )}
-              />
+              <Skeleton key={colIndex} className={cn('h-4', colIndex === 0 ? 'w-32' : 'w-24')} />
             ))}
           </div>
         ))}
@@ -168,18 +150,9 @@ export function FormSkeleton({ fields = 3 }: { fields?: number }) {
 /**
  * Grid skeleton loader
  */
-export function GridSkeleton({
-  items = 6,
-  columns = 3
-}: {
-  items?: number;
-  columns?: number;
-}) {
+export function GridSkeleton({ items = 6, columns = 3 }: { items?: number; columns?: number }) {
   return (
-    <div className={cn(
-      'grid gap-4',
-      `grid-cols-1 md:grid-cols-2 lg:grid-cols-${columns}`
-    )}>
+    <div className={cn('grid gap-4', `grid-cols-1 md:grid-cols-2 lg:grid-cols-${columns}`)}>
       {Array.from({ length: items }).map((_, i) => (
         <CardSkeleton key={i} lines={2} />
       ))}
@@ -194,7 +167,7 @@ export function EmptyState({
   icon: Icon,
   title,
   description,
-  action
+  action,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   title: string;
@@ -205,11 +178,7 @@ export function EmptyState({
     <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
       <Icon className="h-12 w-12 text-muted-foreground mb-4" />
       <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      {description && (
-        <p className="text-sm text-muted-foreground mb-4 max-w-md">
-          {description}
-        </p>
-      )}
+      {description && <p className="text-sm text-muted-foreground mb-4 max-w-md">{description}</p>}
       {action}
     </div>
   );

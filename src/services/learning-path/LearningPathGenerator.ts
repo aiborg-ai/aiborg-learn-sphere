@@ -4,12 +4,7 @@
  */
 
 import { logger } from '@/utils/logger';
-import type {
-  AssessmentData,
-  CategoryInsight,
-  LearningGoal,
-  GeneratedPath
-} from './types';
+import type { AssessmentData, CategoryInsight, LearningGoal, GeneratedPath } from './types';
 import { gapAnalysisService } from './GapAnalysisService';
 import { resourceFetchService } from './ResourceFetchService';
 import { contentSequencingService } from './ContentSequencingService';
@@ -36,11 +31,7 @@ export class LearningPathGenerator {
     this.startTime = Date.now();
 
     // Step 1: Perform gap analysis
-    const gapAnalysis = gapAnalysisService.analyzeSkillGaps(
-      assessmentData,
-      categoryInsights,
-      goal
-    );
+    const gapAnalysis = gapAnalysisService.analyzeSkillGaps(assessmentData, categoryInsights, goal);
 
     // Step 2: Fetch available resources
     const resources = await resourceFetchService.fetchAvailableResources(gapAnalysis);
@@ -62,7 +53,11 @@ export class LearningPathGenerator {
 
     const generatedPath: GeneratedPath = {
       path_title: pathMetadataService.generatePathTitle(goal, gapAnalysis),
-      path_description: pathMetadataService.generatePathDescription(goal, gapAnalysis, selectedItems),
+      path_description: pathMetadataService.generatePathDescription(
+        goal,
+        gapAnalysis,
+        selectedItems
+      ),
       difficulty_start: pathMetadataService.mapLevelToDifficulty(assessmentData.augmentation_level),
       difficulty_end: pathMetadataService.mapLevelToDifficulty(goal.target_augmentation_level),
       estimated_completion_weeks: goal.estimated_weeks,
@@ -73,14 +68,14 @@ export class LearningPathGenerator {
         algorithm: 'irt_gap_analysis_v1',
         assessment_used: assessmentData.id,
         gap_analysis: gapAnalysis,
-        computation_time_ms: computationTime
-      }
+        computation_time_ms: computationTime,
+      },
     };
 
     logger.log('Path generation completed:', {
       items: selectedItems.length,
       hours: totalHours,
-      weeks: goal.estimated_weeks
+      weeks: goal.estimated_weeks,
     });
 
     return generatedPath;

@@ -423,19 +423,19 @@ export function ModeratorDashboard() {
                                 </DialogHeader>
                                 <div className="space-y-4">
                                   <div>
-                                    <Label>Report Type</Label>
+                                    <p className="text-sm font-medium mb-1">Report Type</p>
                                     <p className="text-sm text-white/80">
                                       {report.reportable_type} - {report.reason}
                                     </p>
                                   </div>
                                   <div>
-                                    <Label>Content Preview</Label>
+                                    <p className="text-sm font-medium mb-1">Content Preview</p>
                                     <p className="text-sm text-white/80">
                                       {report.content_preview || 'No preview available'}
                                     </p>
                                   </div>
                                   <div>
-                                    <Label>Reporter Notes</Label>
+                                    <p className="text-sm font-medium mb-1">Reporter Notes</p>
                                     <p className="text-sm text-white/80">
                                       {report.description || 'No additional notes'}
                                     </p>
@@ -773,7 +773,7 @@ export function ModeratorDashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {moderators.map((mod: any) => (
+                    {moderators.map((mod: Record<string, unknown>) => (
                       <TableRow key={mod.id} className="border-white/10">
                         <TableCell className="text-white">
                           {mod.user?.full_name || mod.user?.email || 'Unknown'}

@@ -22,7 +22,7 @@ interface WizardState {
   assetType: AssetType;
   mode: WizardMode;
   assetId?: string;
-  initialData?: any;
+  initialData?: Record<string, unknown>;
 }
 
 export default function Studio() {
@@ -84,7 +84,7 @@ export default function Studio() {
   };
 
   // Handle publish/update
-  const handlePublish = async (data: any) => {
+  const handlePublish = async (data: Record<string, unknown>) => {
     if (!wizardState) return;
 
     try {

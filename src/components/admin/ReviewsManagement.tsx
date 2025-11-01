@@ -255,12 +255,7 @@ export function ReviewsManagement() {
                     <p className="text-sm text-muted-foreground mb-2">Voice Review</p>
                     <audio controls className="w-full">
                       <source src={review.voice_review_url} type="audio/mpeg" />
-                      <track
-                        kind="captions"
-                        srcLang="en"
-                        label="English"
-                        src=""
-                      />
+                      <track kind="captions" srcLang="en" label="English" src="" />
                     </audio>
                   </div>
                 )}
@@ -270,12 +265,7 @@ export function ReviewsManagement() {
                     <p className="text-sm text-muted-foreground mb-2">Video Review</p>
                     <video controls className="w-full max-w-md rounded-md">
                       <source src={review.video_review_url} type="video/mp4" />
-                      <track
-                        kind="captions"
-                        srcLang="en"
-                        label="English"
-                        src=""
-                      />
+                      <track kind="captions" srcLang="en" label="English" src="" />
                     </video>
                   </div>
                 )}

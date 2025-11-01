@@ -164,9 +164,7 @@ export function useVariableVirtualScroll({
   overscan = 3,
 }: VariableVirtualScrollOptions) {
   const [scrollTop, setScrollTop] = useState(0);
-  const [measuredHeights, setMeasuredHeights] = useState<Map<number, number>>(
-    new Map()
-  );
+  const [measuredHeights, setMeasuredHeights] = useState<Map<number, number>>(new Map());
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Map<number, HTMLElement>>(new Map());
 
@@ -238,7 +236,7 @@ export function useVariableVirtualScroll({
   // Measure item heights
   const measureItem = useCallback((index: number, element: HTMLElement) => {
     const height = element.getBoundingClientRect().height;
-    setMeasuredHeights((prev) => {
+    setMeasuredHeights(prev => {
       const next = new Map(prev);
       next.set(index, height);
       return next;

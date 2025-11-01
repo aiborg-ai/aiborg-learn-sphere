@@ -3,7 +3,14 @@
  * Displays a single workshop with sessions information
  */
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/utils/iconLoader';
@@ -125,11 +132,7 @@ export function WorkshopCard({
       </CardContent>
 
       <CardFooter className="flex gap-2">
-        <Button
-          asChild
-          variant="outline"
-          className="flex-1"
-        >
+        <Button asChild variant="outline" className="flex-1">
           <Link to={`/workshop/${workshop.id}`}>
             <Icon name="Eye" size={16} className="mr-2" />
             View Details

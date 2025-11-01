@@ -103,59 +103,62 @@ export const useBlogBookmark = (postId: string, initialBookmarked = false) => {
 export const useBlogShare = (postId: string, postTitle: string, postUrl: string) => {
   const { toast } = useToast();
 
-  const share = useCallback(async (platform: string) => {
-    try {
-      // Track the share
-      await BlogService.sharePost(postId, platform);
+  const share = useCallback(
+    async (platform: string) => {
+      try {
+        // Track the share
+        await BlogService.sharePost(postId, platform);
 
-      // Perform the actual share
-      const shareText = `Check out this article: ${postTitle}`;
+        // Perform the actual share
+        const shareText = `Check out this article: ${postTitle}`;
 
-      switch (platform) {
-        case 'twitter':
-          window.open(
-            `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(postUrl)}`,
-            '_blank'
-          );
-          break;
-        case 'facebook':
-          window.open(
-            `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
-            '_blank'
-          );
-          break;
-        case 'linkedin':
-          window.open(
-            `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(postUrl)}`,
-            '_blank'
-          );
-          break;
-        case 'whatsapp':
-          window.open(
-            `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + postUrl)}`,
-            '_blank'
-          );
-          break;
-        case 'email':
-          window.location.href = `mailto:?subject=${encodeURIComponent(postTitle)}&body=${encodeURIComponent(shareText + '\n\n' + postUrl)}`;
-          break;
-        case 'copy_link':
-          await navigator.clipboard.writeText(postUrl);
-          toast({
-            title: 'Link copied!',
-            description: 'The link has been copied to your clipboard',
-          });
-          break;
+        switch (platform) {
+          case 'twitter':
+            window.open(
+              `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(postUrl)}`,
+              '_blank'
+            );
+            break;
+          case 'facebook':
+            window.open(
+              `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
+              '_blank'
+            );
+            break;
+          case 'linkedin':
+            window.open(
+              `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(postUrl)}`,
+              '_blank'
+            );
+            break;
+          case 'whatsapp':
+            window.open(
+              `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + postUrl)}`,
+              '_blank'
+            );
+            break;
+          case 'email':
+            window.location.href = `mailto:?subject=${encodeURIComponent(postTitle)}&body=${encodeURIComponent(shareText + '\n\n' + postUrl)}`;
+            break;
+          case 'copy_link':
+            await navigator.clipboard.writeText(postUrl);
+            toast({
+              title: 'Link copied!',
+              description: 'The link has been copied to your clipboard',
+            });
+            break;
+        }
+      } catch (err) {
+        logger.error('Error sharing:', err);
+        toast({
+          title: 'Error',
+          description: 'Failed to share post',
+          variant: 'destructive',
+        });
       }
-    } catch (err) {
-      logger.error('Error sharing:', err);
-      toast({
-        title: 'Error',
-        description: 'Failed to share post',
-        variant: 'destructive',
-      });
-    }
-  }, [postId, postTitle, postUrl, toast]);
+    },
+    [postId, postTitle, postUrl, toast]
+  );
 
   return { share };
 };

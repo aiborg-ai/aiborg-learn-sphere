@@ -171,49 +171,49 @@ export const eventSteps: WizardConfig<EventWizardData>['steps'] = [
     title: 'Basic Information',
     description: 'Event title, description, and type',
     icon: 'info',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
   {
     id: 'details',
     title: 'Event Details',
     description: 'Format and special requirements',
     icon: 'settings',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
   {
     id: 'scheduling',
     title: 'Scheduling',
     description: 'Date, time, and recurring pattern',
     icon: 'calendar',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
   {
     id: 'location',
     title: 'Location',
     description: 'Venue or online meeting details',
     icon: 'map-pin',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
   {
     id: 'capacity',
     title: 'Capacity',
     description: 'Attendee limits and registration',
     icon: 'users',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
   {
     id: 'tags',
     title: 'Tags',
     description: 'Categorize your event',
     icon: 'tag',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
   {
     id: 'review',
     title: 'Review & Publish',
     description: 'Preview and finalize your event',
     icon: 'check',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
 ];
 
@@ -223,42 +223,42 @@ export const blogSteps: WizardConfig<BlogWizardData>['steps'] = [
     title: 'Basic Information',
     description: 'Title, slug, and excerpt',
     icon: 'info',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
   {
     id: 'content',
     title: 'Content',
     description: 'Write your blog post content',
     icon: 'edit',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
   {
     id: 'seo',
     title: 'SEO',
     description: 'Meta information and keywords',
     icon: 'search',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
   {
     id: 'scheduling',
     title: 'Scheduling',
     description: 'Publish and expiry dates',
     icon: 'calendar',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
   {
     id: 'tags',
     title: 'Tags & Categories',
     description: 'Organize your content',
     icon: 'tag',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
   {
     id: 'review',
     title: 'Review & Publish',
     description: 'Preview and finalize your post',
     icon: 'check',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
 ];
 
@@ -268,34 +268,36 @@ export const announcementSteps: WizardConfig<AnnouncementWizardData>['steps'] = 
     title: 'Basic Information',
     description: 'Announcement title and content',
     icon: 'info',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
   {
     id: 'audience',
     title: 'Audience & Priority',
     description: 'Who should see this announcement',
     icon: 'users',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
   {
     id: 'scheduling',
     title: 'Scheduling',
     description: 'When to display the announcement',
     icon: 'calendar',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
   {
     id: 'review',
     title: 'Review & Publish',
     description: 'Preview and finalize',
     icon: 'check',
-    component: null as any,
+    component: null!, // TODO: Implement component
   },
 ];
 
 // ========== Wizard Configurations Registry ==========
 
-export const wizardConfigs: Record<AssetType, WizardConfig<any>> = {
+type AnyWizardData = CourseWizardData | EventWizardData | BlogWizardData | AnnouncementWizardData;
+
+export const wizardConfigs: Record<AssetType, WizardConfig<AnyWizardData>> = {
   course: {
     assetType: 'course',
     title: 'Create Course',
@@ -397,7 +399,7 @@ export const wizardConfigs: Record<AssetType, WizardConfig<any>> = {
 
 // ========== Helper Functions ==========
 
-export function getWizardConfig(assetType: AssetType): WizardConfig<any> {
+export function getWizardConfig(assetType: AssetType): WizardConfig<AnyWizardData> {
   return wizardConfigs[assetType];
 }
 

@@ -19,9 +19,7 @@ export function Section2Capabilities({ formData, onUpdate }: Section2Capabilitie
         </div>
         <RadioGroup
           value={formData.currentAIAdoptionLevel || 'none'}
-          onValueChange={(value: AIAdoptionLevel) =>
-            onUpdate({ currentAIAdoptionLevel: value })
-          }
+          onValueChange={(value: AIAdoptionLevel) => onUpdate({ currentAIAdoptionLevel: value })}
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="none" id="none" />
@@ -65,7 +63,7 @@ export function Section2Capabilities({ formData, onUpdate }: Section2Capabilitie
             </div>
             <Slider
               value={[formData.internalAIExpertise || 1]}
-              onValueChange={(value) => onUpdate({ internalAIExpertise: value[0] })}
+              onValueChange={value => onUpdate({ internalAIExpertise: value[0] })}
               min={1}
               max={5}
               step={1}
@@ -94,7 +92,7 @@ export function Section2Capabilities({ formData, onUpdate }: Section2Capabilitie
             </div>
             <Slider
               value={[formData.dataAvailabilityRating || 1]}
-              onValueChange={(value) => onUpdate({ dataAvailabilityRating: value[0] })}
+              onValueChange={value => onUpdate({ dataAvailabilityRating: value[0] })}
               min={1}
               max={5}
               step={1}
@@ -112,7 +110,7 @@ export function Section2Capabilities({ formData, onUpdate }: Section2Capabilitie
         <Textarea
           id="additionalCapabilities"
           value={formData.additionalAICapabilities || ''}
-          onChange={(e) => onUpdate({ additionalAICapabilities: e.target.value })}
+          onChange={e => onUpdate({ additionalAICapabilities: e.target.value })}
           placeholder='e.g., "Hire or train data scientists familiar with NLP models."'
           rows={3}
           className="resize-none"

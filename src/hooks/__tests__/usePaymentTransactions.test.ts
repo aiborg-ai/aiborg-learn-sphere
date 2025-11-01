@@ -388,10 +388,7 @@ describe('usePaymentTransactions', () => {
 
       let updatedTransaction;
       await act(async () => {
-        updatedTransaction = await result.current.updateTransactionStatus(
-          'txn-123',
-          'refunded'
-        );
+        updatedTransaction = await result.current.updateTransactionStatus('txn-123', 'refunded');
       });
 
       expect(updatedTransaction).toBeDefined();

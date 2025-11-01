@@ -14,14 +14,14 @@ interface SubmissionHistoryProps {
 export function SubmissionHistory({
   submissions,
   onViewSubmission,
-  onDownloadSubmission
+  onDownloadSubmission,
 }: SubmissionHistoryProps) {
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       draft: { variant: 'secondary' as const, icon: Clock },
       submitted: { variant: 'default' as const, icon: CheckCircle },
       graded: { variant: 'success' as const, icon: CheckCircle },
-      returned: { variant: 'warning' as const, icon: FileText }
+      returned: { variant: 'warning' as const, icon: FileText },
     };
 
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.draft;
@@ -43,9 +43,7 @@ export function SubmissionHistory({
     <Card>
       <CardHeader>
         <CardTitle>Submission History</CardTitle>
-        <CardDescription>
-          View your previous submissions and drafts
-        </CardDescription>
+        <CardDescription>View your previous submissions and drafts</CardDescription>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[300px] pr-4">
@@ -58,9 +56,7 @@ export function SubmissionHistory({
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <p className="font-medium">
-                        Submission #{submissions.length - index}
-                      </p>
+                      <p className="font-medium">Submission #{submissions.length - index}</p>
                       {getStatusBadge(submission.status)}
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -74,9 +70,7 @@ export function SubmissionHistory({
                       </p>
                     )}
                     {submission.score !== null && (
-                      <p className="text-sm font-medium">
-                        Score: {submission.score} points
-                      </p>
+                      <p className="text-sm font-medium">Score: {submission.score} points</p>
                     )}
                     {submission.feedback && (
                       <p className="text-sm text-muted-foreground italic">

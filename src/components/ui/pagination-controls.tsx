@@ -67,7 +67,7 @@ export function Pagination({
   showItemCount = true,
   maxPageButtons = 7,
   className,
-  loading = false
+  loading = false,
 }: PaginationProps) {
   // Calculate which page buttons to show
   const getPageNumbers = (): (number | string)[] => {
@@ -127,14 +127,14 @@ export function Pagination({
             </label>
             <Select
               value={pageSize.toString()}
-              onValueChange={(value) => onPageSizeChange(parseInt(value))}
+              onValueChange={value => onPageSizeChange(parseInt(value))}
               disabled={loading}
             >
               <SelectTrigger id="page-size" className="w-[70px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {pageSizeOptions.map((size) => (
+                {pageSizeOptions.map(size => (
                   <SelectItem key={size} value={size.toString()}>
                     {size}
                   </SelectItem>
@@ -171,7 +171,7 @@ export function Pagination({
 
         {/* Page number buttons */}
         <div className="flex gap-1">
-          {getPageNumbers().map((pageNum, index) => (
+          {getPageNumbers().map((pageNum, index) =>
             pageNum === '...' ? (
               <span key={`ellipsis-${index}`} className="px-2 py-1 text-muted-foreground">
                 ...
@@ -188,7 +188,7 @@ export function Pagination({
                 {pageNum}
               </Button>
             )
-          ))}
+          )}
         </div>
 
         {/* Next page button */}
@@ -248,24 +248,16 @@ export function SimplePagination({
   onNextPage,
   onPreviousPage,
   loading = false,
-  className
+  className,
 }: SimplePaginationProps) {
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      <Button
-        variant="outline"
-        onClick={onPreviousPage}
-        disabled={!hasPreviousPage || loading}
-      >
+      <Button variant="outline" onClick={onPreviousPage} disabled={!hasPreviousPage || loading}>
         <ChevronLeft className="h-4 w-4 mr-2" />
         Previous
       </Button>
 
-      <Button
-        variant="outline"
-        onClick={onNextPage}
-        disabled={!hasNextPage || loading}
-      >
+      <Button variant="outline" onClick={onNextPage} disabled={!hasNextPage || loading}>
         Next
         <ChevronRight className="h-4 w-4 ml-2" />
       </Button>

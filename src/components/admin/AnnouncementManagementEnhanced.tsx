@@ -5,7 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import { Megaphone, Edit, Plus, Trash2, AlertCircle } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
@@ -46,7 +52,7 @@ export function AnnouncementManagementEnhanced({
   announcements,
   setAnnouncements,
   userId,
-  onRefresh
+  onRefresh,
 }: AnnouncementManagementProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -55,7 +61,13 @@ export function AnnouncementManagementEnhanced({
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<{
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm<{
     title: string;
     content: string;
     priority: number;
@@ -68,7 +80,7 @@ export function AnnouncementManagementEnhanced({
       priority: 1,
       audience: 'all',
       is_active: true,
-    }
+    },
   });
 
   const openCreateDialog = () => {
@@ -120,27 +132,25 @@ export function AnnouncementManagementEnhanced({
         if (error) throw error;
 
         toast({
-          title: "Success",
-          description: "Announcement updated successfully",
+          title: 'Success',
+          description: 'Announcement updated successfully',
         });
       } else {
         // Create new announcement
-        const { error } = await supabase
-          .from('announcements')
-          .insert({
-            title: data.title,
-            content: data.content,
-            priority: data.priority,
-            audience: data.audience,
-            is_active: data.is_active,
-            created_by: userId,
-          });
+        const { error } = await supabase.from('announcements').insert({
+          title: data.title,
+          content: data.content,
+          priority: data.priority,
+          audience: data.audience,
+          is_active: data.is_active,
+          created_by: userId,
+        });
 
         if (error) throw error;
 
         toast({
-          title: "Success",
-          description: "Announcement created successfully",
+          title: 'Success',
+          description: 'Announcement created successfully',
         });
       }
 
@@ -150,9 +160,11 @@ export function AnnouncementManagementEnhanced({
     } catch (error) {
       logger.error('Error saving announcement:', error);
       toast({
-        title: "Error",
-        description: editingAnnouncement ? "Failed to update announcement" : "Failed to create announcement",
-        variant: "destructive",
+        title: 'Error',
+        description: editingAnnouncement
+          ? 'Failed to update announcement'
+          : 'Failed to create announcement',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -172,8 +184,8 @@ export function AnnouncementManagementEnhanced({
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Announcement deleted successfully",
+        title: 'Success',
+        description: 'Announcement deleted successfully',
       });
 
       onRefresh();
@@ -182,9 +194,9 @@ export function AnnouncementManagementEnhanced({
     } catch (error) {
       logger.error('Error deleting announcement:', error);
       toast({
-        title: "Error",
-        description: "Failed to delete announcement",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to delete announcement',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -200,20 +212,20 @@ export function AnnouncementManagementEnhanced({
 
       if (error) throw error;
 
-      setAnnouncements(announcements.map(a =>
-        a.id === announcement.id ? { ...a, is_active: !a.is_active } : a
-      ));
+      setAnnouncements(
+        announcements.map(a => (a.id === announcement.id ? { ...a, is_active: !a.is_active } : a))
+      );
 
       toast({
-        title: "Success",
-        description: "Announcement status updated",
+        title: 'Success',
+        description: 'Announcement status updated',
       });
     } catch (error) {
       logger.error('Error toggling announcement status:', error);
       toast({
-        title: "Error",
-        description: "Failed to update announcement status",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update announcement status',
+        variant: 'destructive',
       });
     }
   };
@@ -250,9 +262,7 @@ export function AnnouncementManagementEnhanced({
                 <Megaphone className="h-5 w-5" />
                 Announcements
               </CardTitle>
-              <CardDescription>
-                Create and manage system-wide announcements
-              </CardDescription>
+              <CardDescription>Create and manage system-wide announcements</CardDescription>
             </div>
             <Button onClick={openCreateDialog} className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
@@ -267,7 +277,7 @@ export function AnnouncementManagementEnhanced({
                 No announcements yet. Create your first announcement to notify users.
               </div>
             ) : (
-              sortedAnnouncements.map((announcement) => (
+              sortedAnnouncements.map(announcement => (
                 <div
                   key={announcement.id}
                   className={`border rounded-lg p-4 ${
@@ -280,9 +290,7 @@ export function AnnouncementManagementEnhanced({
                         <h3 className="font-semibold text-lg">{announcement.title}</h3>
                         {getPriorityBadge(announcement.priority)}
                         {getAudienceBadge(announcement.audience)}
-                        {!announcement.is_active && (
-                          <Badge variant="secondary">Inactive</Badge>
-                        )}
+                        {!announcement.is_active && <Badge variant="secondary">Inactive</Badge>}
                       </div>
                       <p className="text-gray-600 whitespace-pre-wrap">{announcement.content}</p>
                       <p className="text-sm text-muted-foreground">
@@ -333,9 +341,7 @@ export function AnnouncementManagementEnhanced({
                 {...register('title', { required: 'Title is required' })}
                 placeholder="Important System Update"
               />
-              {errors.title && (
-                <p className="text-sm text-red-500">{errors.title.message}</p>
-              )}
+              {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -346,9 +352,7 @@ export function AnnouncementManagementEnhanced({
                 placeholder="We'll be performing system maintenance..."
                 rows={6}
               />
-              {errors.content && (
-                <p className="text-sm text-red-500">{errors.content.message}</p>
-              )}
+              {errors.content && <p className="text-sm text-red-500">{errors.content.message}</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -386,9 +390,7 @@ export function AnnouncementManagementEnhanced({
                 {...register('is_active')}
                 defaultChecked={watch('is_active')}
               />
-              <Label htmlFor="is_active">
-                Active (announcement will be visible immediately)
-              </Label>
+              <Label htmlFor="is_active">Active (announcement will be visible immediately)</Label>
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start gap-2">
@@ -396,9 +398,15 @@ export function AnnouncementManagementEnhanced({
               <div className="text-sm text-blue-800">
                 <p className="font-medium">Priority Guidelines:</p>
                 <ul className="mt-1 space-y-1">
-                  <li>• <strong>High:</strong> Critical updates, emergencies</li>
-                  <li>• <strong>Medium:</strong> Important notices, deadlines</li>
-                  <li>• <strong>Low:</strong> General information, tips</li>
+                  <li>
+                    • <strong>High:</strong> Critical updates, emergencies
+                  </li>
+                  <li>
+                    • <strong>Medium:</strong> Important notices, deadlines
+                  </li>
+                  <li>
+                    • <strong>Low:</strong> General information, tips
+                  </li>
                 </ul>
               </div>
             </div>
@@ -413,7 +421,7 @@ export function AnnouncementManagementEnhanced({
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Saving...' : (editingAnnouncement ? 'Update' : 'Create')}
+                {isLoading ? 'Saving...' : editingAnnouncement ? 'Update' : 'Create'}
               </Button>
             </DialogFooter>
           </form>
@@ -426,8 +434,8 @@ export function AnnouncementManagementEnhanced({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Announcement</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{deletingAnnouncement?.title}"?
-              This action cannot be undone.
+              Are you sure you want to delete "{deletingAnnouncement?.title}"? This action cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

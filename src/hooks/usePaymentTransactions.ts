@@ -78,9 +78,7 @@ export const usePaymentTransactions = (options: UsePaymentTransactionsOptions = 
       setLoading(true);
       setError(null);
 
-      let query = supabase
-        .from('payment_transactions')
-        .select(`
+      let query = supabase.from('payment_transactions').select(`
           *,
           user:profiles!user_id(display_name, email),
           course:courses(title)
@@ -122,67 +120,69 @@ export const usePaymentTransactions = (options: UsePaymentTransactionsOptions = 
     }
   }, [user, profile, options.userId, options.status, options.startDate, options.endDate]);
 
-  const createTransaction = useCallback(async (
-    transactionData: Partial<PaymentTransaction>
-  ) => {
-    if (!user || profile?.role !== 'admin') {
-      throw new Error('Only admins can create payment transactions');
-    }
-
-    try {
-      const { data, error } = await supabase
-        .from('payment_transactions')
-        .insert(transactionData)
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      setTransactions(prev => [data, ...prev]);
-      return data;
-    } catch (err) {
-      logger.error('Error creating payment transaction:', err);
-      throw err;
-    }
-  }, [user, profile]);
-
-  const updateTransactionStatus = useCallback(async (
-    transactionId: string,
-    status: PaymentTransaction['payment_status'],
-    metadata?: Record<string, unknown>
-  ) => {
-    if (!user || profile?.role !== 'admin') {
-      throw new Error('Only admins can update payment transactions');
-    }
-
-    try {
-      const updateData: Partial<PaymentTransaction> = {
-        payment_status: status,
-      };
-
-      if (metadata) {
-        updateData.metadata = metadata;
+  const createTransaction = useCallback(
+    async (transactionData: Partial<PaymentTransaction>) => {
+      if (!user || profile?.role !== 'admin') {
+        throw new Error('Only admins can create payment transactions');
       }
 
-      const { data, error } = await supabase
-        .from('payment_transactions')
-        .update(updateData)
-        .eq('id', transactionId)
-        .select()
-        .single();
+      try {
+        const { data, error } = await supabase
+          .from('payment_transactions')
+          .insert(transactionData)
+          .select()
+          .single();
 
-      if (error) throw error;
+        if (error) throw error;
 
-      setTransactions(prev =>
-        prev.map(t => t.id === transactionId ? data : t)
-      );
+        setTransactions(prev => [data, ...prev]);
+        return data;
+      } catch (err) {
+        logger.error('Error creating payment transaction:', err);
+        throw err;
+      }
+    },
+    [user, profile]
+  );
 
-      return data;
-    } catch (err) {
-      logger.error('Error updating payment transaction:', err);
-      throw err;
-    }
-  }, [user, profile]);
+  const updateTransactionStatus = useCallback(
+    async (
+      transactionId: string,
+      status: PaymentTransaction['payment_status'],
+      metadata?: Record<string, unknown>
+    ) => {
+      if (!user || profile?.role !== 'admin') {
+        throw new Error('Only admins can update payment transactions');
+      }
+
+      try {
+        const updateData: Partial<PaymentTransaction> = {
+          payment_status: status,
+        };
+
+        if (metadata) {
+          updateData.metadata = metadata;
+        }
+
+        const { data, error } = await supabase
+          .from('payment_transactions')
+          .update(updateData)
+          .eq('id', transactionId)
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        setTransactions(prev => prev.map(t => (t.id === transactionId ? data : t)));
+
+        return data;
+      } catch (err) {
+        logger.error('Error updating payment transaction:', err);
+        throw err;
+      }
+    },
+    [user, profile]
+  );
 
   useEffect(() => {
     fetchTransactions();
@@ -217,11 +217,13 @@ export const useRefundRequests = (options: UsePaymentTransactionsOptions = {}) =
 
       let query = supabase
         .from('refund_requests')
-        .select(`
+        .select(
+          `
           *,
           user:profiles!user_id(display_name, email),
           payment_transaction:payment_transactions(*)
-        `)
+        `
+        )
         .order('created_at', { ascending: false });
 
       // Apply filters
@@ -257,85 +259,83 @@ export const useRefundRequests = (options: UsePaymentTransactionsOptions = {}) =
     }
   }, [user, profile, options.userId, options.status, options.startDate, options.endDate]);
 
-  const createRefundRequest = useCallback(async (
-    refundData: {
+  const createRefundRequest = useCallback(
+    async (refundData: {
       payment_transaction_id: string;
       enrollment_id: string | null;
       course_id: number | null;
       refund_amount: number;
       refund_reason: string;
-    }
-  ) => {
-    if (!user) {
-      throw new Error('User must be logged in to request refunds');
-    }
-
-    try {
-      const { data, error } = await supabase
-        .from('refund_requests')
-        .insert({
-          ...refundData,
-          user_id: user.id,
-          requested_by: user.id,
-          refund_status: 'pending',
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      setRefundRequests(prev => [data, ...prev]);
-      return data;
-    } catch (err) {
-      logger.error('Error creating refund request:', err);
-      throw err;
-    }
-  }, [user]);
-
-  const updateRefundStatus = useCallback(async (
-    refundId: string,
-    status: RefundRequest['refund_status'],
-    adminNotes?: string
-  ) => {
-    if (!user || profile?.role !== 'admin') {
-      throw new Error('Only admins can update refund requests');
-    }
-
-    try {
-      const updateData: Partial<RefundRequest> = {
-        refund_status: status,
-      };
-
-      if (status === 'approved') {
-        updateData.approved_by = user.id;
-      } else if (status === 'processed') {
-        updateData.processed_by = user.id;
-        updateData.refund_date = new Date().toISOString();
+    }) => {
+      if (!user) {
+        throw new Error('User must be logged in to request refunds');
       }
 
-      if (adminNotes) {
-        updateData.admin_notes = adminNotes;
+      try {
+        const { data, error } = await supabase
+          .from('refund_requests')
+          .insert({
+            ...refundData,
+            user_id: user.id,
+            requested_by: user.id,
+            refund_status: 'pending',
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        setRefundRequests(prev => [data, ...prev]);
+        return data;
+      } catch (err) {
+        logger.error('Error creating refund request:', err);
+        throw err;
+      }
+    },
+    [user]
+  );
+
+  const updateRefundStatus = useCallback(
+    async (refundId: string, status: RefundRequest['refund_status'], adminNotes?: string) => {
+      if (!user || profile?.role !== 'admin') {
+        throw new Error('Only admins can update refund requests');
       }
 
-      const { data, error } = await supabase
-        .from('refund_requests')
-        .update(updateData)
-        .eq('id', refundId)
-        .select()
-        .single();
+      try {
+        const updateData: Partial<RefundRequest> = {
+          refund_status: status,
+        };
 
-      if (error) throw error;
+        if (status === 'approved') {
+          updateData.approved_by = user.id;
+        } else if (status === 'processed') {
+          updateData.processed_by = user.id;
+          updateData.refund_date = new Date().toISOString();
+        }
 
-      setRefundRequests(prev =>
-        prev.map(r => r.id === refundId ? data : r)
-      );
+        if (adminNotes) {
+          updateData.admin_notes = adminNotes;
+        }
 
-      return data;
-    } catch (err) {
-      logger.error('Error updating refund request:', err);
-      throw err;
-    }
-  }, [user, profile]);
+        const { data, error } = await supabase
+          .from('refund_requests')
+          .update(updateData)
+          .eq('id', refundId)
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        setRefundRequests(prev => prev.map(r => (r.id === refundId ? data : r)));
+
+        return data;
+      } catch (err) {
+        logger.error('Error updating refund request:', err);
+        throw err;
+      }
+    },
+    [user, profile]
+  );
 
   useEffect(() => {
     fetchRefundRequests();

@@ -1,218 +1,301 @@
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { usePersonalization } from "@/contexts/PersonalizationContext";
-import { 
-  Users, 
-  Award, 
-  Globe, 
-  TrendingUp, 
-  Brain, 
-  Shield, 
-  Zap, 
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { usePersonalization } from '@/contexts/PersonalizationContext';
+import {
+  Users,
+  Award,
+  Globe,
+  TrendingUp,
+  Brain,
+  Shield,
+  Zap,
   Target,
   CheckCircle,
   ArrowRight,
   Sparkles,
   BookOpen,
-  Heart
-} from "lucide-react";
+  Heart,
+} from 'lucide-react';
 
 const statistics = [
-  { label: "Active Students", value: "5,000+", icon: Users, color: "text-blue-300" },
-  { label: "Courses Completed", value: "15,000+", icon: Award, color: "text-green-300" },
-  { label: "Countries Reached", value: "150+", icon: Globe, color: "text-purple-300" },
-  { label: "Success Rate", value: "94%", icon: TrendingUp, color: "text-orange-300" }
+  { label: 'Active Students', value: '5,000+', icon: Users, color: 'text-blue-300' },
+  { label: 'Courses Completed', value: '15,000+', icon: Award, color: 'text-green-300' },
+  { label: 'Countries Reached', value: '150+', icon: Globe, color: 'text-purple-300' },
+  { label: 'Success Rate', value: '94%', icon: TrendingUp, color: 'text-orange-300' },
 ];
 
 const getCoreValues = (getPersonalizedContent: (content: Record<string, unknown>) => unknown) => [
   {
     title: getPersonalizedContent({
-      primary: "Learning by Doing",
-      secondary: "Hands-on Learning",
-      professional: "Practical Application",
-      business: "Implementation Excellence",
-      default: "Practical Application"
+      primary: 'Learning by Doing',
+      secondary: 'Hands-on Learning',
+      professional: 'Practical Application',
+      business: 'Implementation Excellence',
+      default: 'Practical Application',
     }),
     description: getPersonalizedContent({
-      primary: "Fun activities and cool projects where you get to build awesome AI stuff yourself!",
-      secondary: "Interactive projects and real coding that you can show off to friends and use right away",
-      professional: "Practical application and project-based education that directly enhances your work performance",
-      business: "Strategic implementation of AI solutions that deliver measurable business impact and ROI",
-      default: "Practical application and project-based education that directly enhances your work performance"
+      primary: 'Fun activities and cool projects where you get to build awesome AI stuff yourself!',
+      secondary:
+        'Interactive projects and real coding that you can show off to friends and use right away',
+      professional:
+        'Practical application and project-based education that directly enhances your work performance',
+      business:
+        'Strategic implementation of AI solutions that deliver measurable business impact and ROI',
+      default:
+        'Practical application and project-based education that directly enhances your work performance',
     }),
     icon: Zap,
-    color: "from-yellow-300 to-orange-300",
+    color: 'from-yellow-300 to-orange-300',
     features: getPersonalizedContent({
-      primary: ["Fun AI Projects", "Cool Experiments", "Build & Create", "Show & Tell"],
-      secondary: ["Real Projects", "Code Portfolio", "Creative Apps", "Tech Skills"],
-      professional: ["Real-world Projects", "Career Building", "Skill Enhancement", "Portfolio Development"],
-      business: ["Enterprise Solutions", "Team Training", "Process Optimization", "Performance Metrics"],
-      default: ["Real-world Projects", "Career Building", "Skill Enhancement", "Portfolio Development"]
-    })
+      primary: ['Fun AI Projects', 'Cool Experiments', 'Build & Create', 'Show & Tell'],
+      secondary: ['Real Projects', 'Code Portfolio', 'Creative Apps', 'Tech Skills'],
+      professional: [
+        'Real-world Projects',
+        'Career Building',
+        'Skill Enhancement',
+        'Portfolio Development',
+      ],
+      business: [
+        'Enterprise Solutions',
+        'Team Training',
+        'Process Optimization',
+        'Performance Metrics',
+      ],
+      default: [
+        'Real-world Projects',
+        'Career Building',
+        'Skill Enhancement',
+        'Portfolio Development',
+      ],
+    }),
   },
   {
     title: getPersonalizedContent({
-      primary: "Being Good with AI",
-      secondary: "Responsible AI",
-      professional: "Ethical AI Practices",
-      business: "AI Governance & Compliance",
-      default: "Ethical AI Practices"
+      primary: 'Being Good with AI',
+      secondary: 'Responsible AI',
+      professional: 'Ethical AI Practices',
+      business: 'AI Governance & Compliance',
+      default: 'Ethical AI Practices',
     }),
     description: getPersonalizedContent({
-      primary: "Learning how to use AI in the right way, being fair and kind to everyone",
-      secondary: "Understanding how to use AI responsibly and make sure it helps everyone fairly",
-      professional: "Professional standards for responsible AI development and deployment in workplace environments",
-      business: "Comprehensive AI governance frameworks ensuring regulatory compliance and ethical business practices",
-      default: "Professional standards for responsible AI development and deployment in workplace environments"
+      primary: 'Learning how to use AI in the right way, being fair and kind to everyone',
+      secondary: 'Understanding how to use AI responsibly and make sure it helps everyone fairly',
+      professional:
+        'Professional standards for responsible AI development and deployment in workplace environments',
+      business:
+        'Comprehensive AI governance frameworks ensuring regulatory compliance and ethical business practices',
+      default:
+        'Professional standards for responsible AI development and deployment in workplace environments',
     }),
     icon: Shield,
-    color: "from-green-300 to-emerald-300",
+    color: 'from-green-300 to-emerald-300',
     features: getPersonalizedContent({
-      primary: ["Be Fair & Kind", "Help Everyone", "Stay Safe", "Do the Right Thing"],
-      secondary: ["Fair Use", "Digital Ethics", "Privacy Respect", "Honest Work"],
-      professional: ["Professional Ethics", "Workplace Standards", "Data Privacy", "Responsible Deployment"],
-      business: ["Regulatory Compliance", "Risk Management", "Corporate Governance", "Stakeholder Trust"],
-      default: ["Professional Ethics", "Workplace Standards", "Data Privacy", "Responsible Deployment"]
-    })
+      primary: ['Be Fair & Kind', 'Help Everyone', 'Stay Safe', 'Do the Right Thing'],
+      secondary: ['Fair Use', 'Digital Ethics', 'Privacy Respect', 'Honest Work'],
+      professional: [
+        'Professional Ethics',
+        'Workplace Standards',
+        'Data Privacy',
+        'Responsible Deployment',
+      ],
+      business: [
+        'Regulatory Compliance',
+        'Risk Management',
+        'Corporate Governance',
+        'Stakeholder Trust',
+      ],
+      default: [
+        'Professional Ethics',
+        'Workplace Standards',
+        'Data Privacy',
+        'Responsible Deployment',
+      ],
+    }),
   },
   {
     title: getPersonalizedContent({
-      primary: "Super Cool Future Skills",
-      secondary: "Future-ready Skills",
-      professional: "Industry-Leading Expertise",
-      business: "Strategic AI Capabilities",
-      default: "Industry-Leading Expertise"
+      primary: 'Super Cool Future Skills',
+      secondary: 'Future-ready Skills',
+      professional: 'Industry-Leading Expertise',
+      business: 'Strategic AI Capabilities',
+      default: 'Industry-Leading Expertise',
     }),
     description: getPersonalizedContent({
-      primary: "Learning the most amazing AI tricks that will make you super smart in the future!",
-      secondary: "Master cutting-edge AI technologies that will give you an edge in college and your future career",
-      professional: "Advanced AI competencies aligned with current industry demands and emerging market opportunities",
-      business: "Executive-level AI strategy and implementation capabilities for competitive organizational advantage",
-      default: "Advanced AI competencies aligned with current industry demands and emerging market opportunities"
+      primary: 'Learning the most amazing AI tricks that will make you super smart in the future!',
+      secondary:
+        'Master cutting-edge AI technologies that will give you an edge in college and your future career',
+      professional:
+        'Advanced AI competencies aligned with current industry demands and emerging market opportunities',
+      business:
+        'Executive-level AI strategy and implementation capabilities for competitive organizational advantage',
+      default:
+        'Advanced AI competencies aligned with current industry demands and emerging market opportunities',
     }),
     icon: Brain,
-    color: "from-purple-300 to-indigo-300",
+    color: 'from-purple-300 to-indigo-300',
     features: getPersonalizedContent({
-      primary: ["Amazing AI Tricks", "Future Tech", "Be Super Smart", "Wow Your Friends"],
-      secondary: ["Latest AI Tools", "College Prep", "Career Advantage", "Innovation Skills"],
-      professional: ["Industry Alignment", "Market Relevance", "Career Advancement", "Technical Leadership"],
-      business: ["Strategic Planning", "Market Leadership", "Innovation Management", "Competitive Edge"],
-      default: ["Industry Alignment", "Market Relevance", "Career Advancement", "Technical Leadership"]
-    })
+      primary: ['Amazing AI Tricks', 'Future Tech', 'Be Super Smart', 'Wow Your Friends'],
+      secondary: ['Latest AI Tools', 'College Prep', 'Career Advantage', 'Innovation Skills'],
+      professional: [
+        'Industry Alignment',
+        'Market Relevance',
+        'Career Advancement',
+        'Technical Leadership',
+      ],
+      business: [
+        'Strategic Planning',
+        'Market Leadership',
+        'Innovation Management',
+        'Competitive Edge',
+      ],
+      default: [
+        'Industry Alignment',
+        'Market Relevance',
+        'Career Advancement',
+        'Technical Leadership',
+      ],
+    }),
   },
   {
     title: getPersonalizedContent({
-      primary: "Solving Real Problems",
-      secondary: "Real-world Applications",
-      professional: "Professional Solutions",
-      business: "Enterprise Applications",
-      default: "Professional Solutions"
+      primary: 'Solving Real Problems',
+      secondary: 'Real-world Applications',
+      professional: 'Professional Solutions',
+      business: 'Enterprise Applications',
+      default: 'Professional Solutions',
     }),
     description: getPersonalizedContent({
-      primary: "Using AI to help solve everyday problems and make life easier for everyone around you",
-      secondary: "Apply AI to solve real challenges in school, hobbies, and prepare for future career success",
-      professional: "Develop practical AI solutions that address workplace challenges and improve professional outcomes",
-      business: "Deploy enterprise-grade AI applications that solve complex organizational challenges and drive growth",
-      default: "Develop practical AI solutions that address workplace challenges and improve professional outcomes"
+      primary:
+        'Using AI to help solve everyday problems and make life easier for everyone around you',
+      secondary:
+        'Apply AI to solve real challenges in school, hobbies, and prepare for future career success',
+      professional:
+        'Develop practical AI solutions that address workplace challenges and improve professional outcomes',
+      business:
+        'Deploy enterprise-grade AI applications that solve complex organizational challenges and drive growth',
+      default:
+        'Develop practical AI solutions that address workplace challenges and improve professional outcomes',
     }),
     icon: Target,
-    color: "from-blue-300 to-cyan-300",
+    color: 'from-blue-300 to-cyan-300',
     features: getPersonalizedContent({
-      primary: ["Help Family & Friends", "Make Life Easier", "Solve Fun Puzzles", "Create Cool Stuff"],
-      secondary: ["School Projects", "Problem Solving", "Creative Solutions", "Future Planning"],
-      professional: ["Workplace Solutions", "Process Improvement", "Client Value", "Career Impact"],
-      business: ["Revenue Growth", "Cost Reduction", "Market Expansion", "Operational Excellence"],
-      default: ["Workplace Solutions", "Process Improvement", "Client Value", "Career Impact"]
-    })
-  }
+      primary: [
+        'Help Family & Friends',
+        'Make Life Easier',
+        'Solve Fun Puzzles',
+        'Create Cool Stuff',
+      ],
+      secondary: ['School Projects', 'Problem Solving', 'Creative Solutions', 'Future Planning'],
+      professional: ['Workplace Solutions', 'Process Improvement', 'Client Value', 'Career Impact'],
+      business: ['Revenue Growth', 'Cost Reduction', 'Market Expansion', 'Operational Excellence'],
+      default: ['Workplace Solutions', 'Process Improvement', 'Client Value', 'Career Impact'],
+    }),
+  },
 ];
 
 const achievements = [
-  "Industry-recognized AI education leader",
-  "Partnership with leading tech companies",
-  "Featured in major educational publications",
-  "Award-winning curriculum design",
-  "Global accessibility and inclusion",
-  "Continuous innovation and improvement"
+  'Industry-recognized AI education leader',
+  'Partnership with leading tech companies',
+  'Featured in major educational publications',
+  'Award-winning curriculum design',
+  'Global accessibility and inclusion',
+  'Continuous innovation and improvement',
 ];
 
-const getLearningOutcomes = (getPersonalizedContent: (content: Record<string, unknown>) => unknown) => [
+const getLearningOutcomes = (
+  getPersonalizedContent: (content: Record<string, unknown>) => unknown
+) => [
   {
     title: getPersonalizedContent({
-      primary: "Learn Cool AI Tricks",
-      secondary: "Master AI Fundamentals", 
-      professional: "Master AI Fundamentals",
-      business: "Strategic AI Leadership",
-      default: "Master AI Fundamentals"
+      primary: 'Learn Cool AI Tricks',
+      secondary: 'Master AI Fundamentals',
+      professional: 'Master AI Fundamentals',
+      business: 'Strategic AI Leadership',
+      default: 'Master AI Fundamentals',
     }),
     description: getPersonalizedContent({
-      primary: "Learn about smart computer helpers, how to talk to them, and make them do awesome things!",
-      secondary: "Understanding LLMs, AI agents, and prompt engineering to build cool projects",
-      professional: "Understanding LLMs, AI agents, and prompt engineering for workplace applications",
-      business: "Executive understanding of AI technologies, implementation strategies, and organizational impact",
-      default: "Understanding LLMs, AI agents, and prompt engineering for workplace applications"
+      primary:
+        'Learn about smart computer helpers, how to talk to them, and make them do awesome things!',
+      secondary: 'Understanding LLMs, AI agents, and prompt engineering to build cool projects',
+      professional:
+        'Understanding LLMs, AI agents, and prompt engineering for workplace applications',
+      business:
+        'Executive understanding of AI technologies, implementation strategies, and organizational impact',
+      default: 'Understanding LLMs, AI agents, and prompt engineering for workplace applications',
     }),
-    progress: 95
+    progress: 95,
   },
   {
     title: getPersonalizedContent({
-      primary: "Get Better at School",
-      secondary: "Immediate Academic Impact",
-      professional: "Enhanced Work Performance", 
-      business: "Operational Excellence",
-      default: "Enhanced Work Performance"
+      primary: 'Get Better at School',
+      secondary: 'Immediate Academic Impact',
+      professional: 'Enhanced Work Performance',
+      business: 'Operational Excellence',
+      default: 'Enhanced Work Performance',
     }),
     description: getPersonalizedContent({
-      primary: "Use AI to help with homework, projects, and learning new things faster and better!",
-      secondary: "Apply AI to real homework, essays, research, and exam preparation",
-      professional: "Apply AI to daily work tasks, presentations, analysis, and professional development",
-      business: "Implement AI solutions for strategic planning, decision-making, and organizational efficiency",
-      default: "Apply AI to daily work tasks, presentations, analysis, and professional development"
+      primary: 'Use AI to help with homework, projects, and learning new things faster and better!',
+      secondary: 'Apply AI to real homework, essays, research, and exam preparation',
+      professional:
+        'Apply AI to daily work tasks, presentations, analysis, and professional development',
+      business:
+        'Implement AI solutions for strategic planning, decision-making, and organizational efficiency',
+      default:
+        'Apply AI to daily work tasks, presentations, analysis, and professional development',
     }),
-    progress: 88
+    progress: 88,
   },
   {
     title: getPersonalizedContent({
-      primary: "Do Things Super Fast",
-      secondary: "Boost Productivity",
-      professional: "Boost Productivity",
-      business: "ROI & Performance Metrics",
-      default: "Boost Productivity"
+      primary: 'Do Things Super Fast',
+      secondary: 'Boost Productivity',
+      professional: 'Boost Productivity',
+      business: 'ROI & Performance Metrics',
+      default: 'Boost Productivity',
     }),
     description: getPersonalizedContent({
-      primary: "Learn to use AI tools that help you finish tasks quickly so you have more time to play!",
-      secondary: "Practical hands-on usage of various Generative AI Tools for school and personal projects",
-      professional: "Practical hands-on usage of various Generative AI Tools for enhanced work efficiency",
-      business: "Measurable productivity gains and cost reduction through strategic AI tool implementation",
-      default: "Practical hands-on usage of various Generative AI Tools for enhanced work efficiency"
+      primary:
+        'Learn to use AI tools that help you finish tasks quickly so you have more time to play!',
+      secondary:
+        'Practical hands-on usage of various Generative AI Tools for school and personal projects',
+      professional:
+        'Practical hands-on usage of various Generative AI Tools for enhanced work efficiency',
+      business:
+        'Measurable productivity gains and cost reduction through strategic AI tool implementation',
+      default:
+        'Practical hands-on usage of various Generative AI Tools for enhanced work efficiency',
     }),
-    progress: 92
+    progress: 92,
   },
   {
     title: getPersonalizedContent({
-      primary: "Be Good and Fair",
-      secondary: "Ethical AI Usage",
-      professional: "Ethical AI Usage",
-      business: "Governance & Compliance",
-      default: "Ethical AI Usage"
+      primary: 'Be Good and Fair',
+      secondary: 'Ethical AI Usage',
+      professional: 'Ethical AI Usage',
+      business: 'Governance & Compliance',
+      default: 'Ethical AI Usage',
     }),
     description: getPersonalizedContent({
-      primary: "Learn how to use AI in nice ways that help everyone and don't hurt anyone's feelings!",
-      secondary: "Build responsible AI habits and maintain academic integrity in all projects",
-      professional: "Build responsible AI habits and maintain professional integrity and workplace standards",
-      business: "Establish comprehensive AI governance frameworks ensuring regulatory compliance and risk management",
-      default: "Build responsible AI habits and maintain professional integrity and workplace standards"
+      primary:
+        "Learn how to use AI in nice ways that help everyone and don't hurt anyone's feelings!",
+      secondary: 'Build responsible AI habits and maintain academic integrity in all projects',
+      professional:
+        'Build responsible AI habits and maintain professional integrity and workplace standards',
+      business:
+        'Establish comprehensive AI governance frameworks ensuring regulatory compliance and risk management',
+      default:
+        'Build responsible AI habits and maintain professional integrity and workplace standards',
     }),
-    progress: 96
-  }
+    progress: 96,
+  },
 ];
 
 export function AboutSection() {
   const { getPersonalizedContent } = usePersonalization();
   const coreValues = getCoreValues(getPersonalizedContent);
   const learningOutcomes = getLearningOutcomes(getPersonalizedContent);
-  
+
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
@@ -222,15 +305,15 @@ export function AboutSection() {
             <Sparkles className="h-5 w-5 text-primary" />
             <span className="text-primary font-medium">About Aiborg™</span>
           </div>
-          
+
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
             <span className="gradient-text">Revolutionizing AI Education</span>
           </h2>
-          
+
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-            We're democratizing AI education through innovative, accessible, and practical learning experiences. 
-            Our mission is to create AI-augmented humans who can thrive in the future economy while maintaining 
-            ethical standards and human values.
+            We're democratizing AI education through innovative, accessible, and practical learning
+            experiences. Our mission is to create AI-augmented humans who can thrive in the future
+            economy while maintaining ethical standards and human values.
           </p>
         </div>
 
@@ -239,9 +322,14 @@ export function AboutSection() {
           {statistics.map((stat, index) => {
             const Icon = stat.icon;
             return (
-              <Card key={index} className="p-6 text-center hover:shadow-primary transition-all duration-300 group">
+              <Card
+                key={index}
+                className="p-6 text-center hover:shadow-primary transition-all duration-300 group"
+              >
                 <div className="mb-4">
-                  <Icon className={`h-8 w-8 mx-auto ${stat.color} group-hover:scale-110 transition-transform`} />
+                  <Icon
+                    className={`h-8 w-8 mx-auto ${stat.color} group-hover:scale-110 transition-transform`}
+                  />
                 </div>
                 <div className="text-3xl font-bold text-primary mb-2">{stat.value}</div>
                 <div className="text-sm text-muted-foreground">{stat.label}</div>
@@ -256,22 +344,27 @@ export function AboutSection() {
             <h3 className="font-display text-3xl font-bold mb-6">Our Mission</h3>
             <blockquote className="text-lg md:text-xl text-muted-foreground leading-relaxed italic mb-6">
               {getPersonalizedContent({
-                primary: "To help kids learn super cool AI stuff so they can become amazing problem-solvers and help make the world a better place! We want AI to be your best friend that helps you learn and create awesome things.",
-                secondary: "To help teenagers master AI skills that will give them superpowers for college and their future careers. We want you to be the person everyone comes to when they need help with cool tech stuff!",
-                professional: "To empower working professionals with practical AI knowledge that enhances career performance and opens new opportunities. We believe AI should augment your expertise and accelerate your professional growth.",
-                business: "To enable organizational leaders and SMEs with strategic AI capabilities that drive innovation, efficiency, and competitive advantage. We focus on enterprise-grade solutions that deliver measurable business impact and ROI.",
-                default: "To empower working professionals with practical AI knowledge that enhances career performance and opens new opportunities. We believe AI should augment your expertise and accelerate your professional growth."
+                primary:
+                  'To help kids learn super cool AI stuff so they can become amazing problem-solvers and help make the world a better place! We want AI to be your best friend that helps you learn and create awesome things.',
+                secondary:
+                  'To help teenagers master AI skills that will give them superpowers for college and their future careers. We want you to be the person everyone comes to when they need help with cool tech stuff!',
+                professional:
+                  'To empower working professionals with practical AI knowledge that enhances career performance and opens new opportunities. We believe AI should augment your expertise and accelerate your professional growth.',
+                business:
+                  'To enable organizational leaders and SMEs with strategic AI capabilities that drive innovation, efficiency, and competitive advantage. We focus on enterprise-grade solutions that deliver measurable business impact and ROI.',
+                default:
+                  'To empower working professionals with practical AI knowledge that enhances career performance and opens new opportunities. We believe AI should augment your expertise and accelerate your professional growth.',
               })}
             </blockquote>
             <div className="flex items-center justify-center gap-2 text-primary">
               <Heart className="h-5 w-5" />
               <span className="font-medium">
                 {getPersonalizedContent({
-                  primary: "Built with love for young explorers",
-                  secondary: "Designed for future innovators",
-                  professional: "Founded on career-focused AI principles",
-                  business: "Established on enterprise excellence standards",
-                  default: "Founded on career-focused AI principles"
+                  primary: 'Built with love for young explorers',
+                  secondary: 'Designed for future innovators',
+                  professional: 'Founded on career-focused AI principles',
+                  business: 'Established on enterprise excellence standards',
+                  default: 'Founded on career-focused AI principles',
                 })}
               </span>
             </div>
@@ -285,21 +378,27 @@ export function AboutSection() {
             {coreValues.map((value, index) => {
               const Icon = value.icon;
               return (
-                <Card key={index} className="p-8 hover:shadow-primary transition-all duration-300 group">
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${value.color} p-4 mb-6 group-hover:scale-110 transition-transform`}>
+                <Card
+                  key={index}
+                  className="p-8 hover:shadow-primary transition-all duration-300 group"
+                >
+                  <div
+                    className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${value.color} p-4 mb-6 group-hover:scale-110 transition-transform`}
+                  >
                     <Icon className="h-8 w-8 text-white" />
                   </div>
-                  
+
                   <h4 className="font-display font-bold text-xl mb-3">{value.title}</h4>
                   <p className="text-muted-foreground mb-6 leading-relaxed">{value.description}</p>
-                  
+
                   <div className="grid grid-cols-2 gap-2">
-                    {Array.isArray(value.features) && value.features.map((feature, featureIndex) => (
-                      <div key={featureIndex} className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-300" />
-                        <span className="text-sm text-muted-foreground">{feature}</span>
-                      </div>
-                    ))}
+                    {Array.isArray(value.features) &&
+                      value.features.map((feature, featureIndex) => (
+                        <div key={featureIndex} className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-300" />
+                          <span className="text-sm text-muted-foreground">{feature}</span>
+                        </div>
+                      ))}
                   </div>
                 </Card>
               );
@@ -309,7 +408,9 @@ export function AboutSection() {
 
         {/* Learning Outcomes */}
         <div className="mb-20">
-          <h3 className="font-display text-3xl font-bold text-center mb-12">Proven Learning Outcomes</h3>
+          <h3 className="font-display text-3xl font-bold text-center mb-12">
+            Proven Learning Outcomes
+          </h3>
           <Card className="p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {learningOutcomes.map((outcome, index) => (
@@ -318,14 +419,14 @@ export function AboutSection() {
                     <h4 className="font-semibold">{outcome.title}</h4>
                     <Badge variant="secondary">{outcome.progress}%</Badge>
                   </div>
-                  
+
                   <div className="w-full bg-muted rounded-full h-2">
-                    <div 
+                    <div
                       className="bg-gradient-primary h-2 rounded-full transition-all duration-1000 ease-out"
                       style={{ width: `${outcome.progress}%` }}
                     ></div>
                   </div>
-                  
+
                   <p className="text-sm text-muted-foreground">{outcome.description}</p>
                 </div>
               ))}
@@ -338,7 +439,10 @@ export function AboutSection() {
           <h3 className="font-display text-3xl font-bold text-center mb-12">Our Achievements</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {achievements.map((achievement, index) => (
-              <Card key={index} className="p-6 hover:shadow-primary transition-all duration-300 group">
+              <Card
+                key={index}
+                className="p-6 hover:shadow-primary transition-all duration-300 group"
+              >
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     <Award className="h-4 w-4 text-white" />
@@ -354,29 +458,37 @@ export function AboutSection() {
         <Card className="p-8 md:p-12 bg-gradient-to-r from-secondary/10 to-accent/10 border-secondary/20">
           <div className="text-center mb-8">
             <h3 className="font-display text-3xl font-bold mb-4">Why Choose Aiborg™?</h3>
-            <p className="text-muted-foreground">Advanced features that set us apart in AI education</p>
+            <p className="text-muted-foreground">
+              Advanced features that set us apart in AI education
+            </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <BookOpen className="h-12 w-12 text-primary mx-auto mb-4" />
               <h4 className="font-semibold mb-2">Comprehensive Curriculum</h4>
-              <p className="text-sm text-muted-foreground">From fundamentals to advanced applications, covering all aspects of AI</p>
+              <p className="text-sm text-muted-foreground">
+                From fundamentals to advanced applications, covering all aspects of AI
+              </p>
             </div>
-            
+
             <div className="text-center">
               <Users className="h-12 w-12 text-primary mx-auto mb-4" />
               <h4 className="font-semibold mb-2">Global Community</h4>
-              <p className="text-sm text-muted-foreground">Connect with learners and experts from 150+ countries worldwide</p>
+              <p className="text-sm text-muted-foreground">
+                Connect with learners and experts from 150+ countries worldwide
+              </p>
             </div>
-            
+
             <div className="text-center">
               <Target className="h-12 w-12 text-primary mx-auto mb-4" />
               <h4 className="font-semibold mb-2">Practical Focus</h4>
-              <p className="text-sm text-muted-foreground">Real-world projects and immediate application of skills</p>
+              <p className="text-sm text-muted-foreground">
+                Real-world projects and immediate application of skills
+              </p>
             </div>
           </div>
-          
+
           <div className="text-center mt-8">
             <Button size="lg" className="btn-hero group">
               Start Your AI Journey

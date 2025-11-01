@@ -74,7 +74,9 @@ export function AchievementShareCard({
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles className="h-4 w-4 text-yellow-500" />
-                <span className="text-xs font-bold text-gray-600 uppercase">Achievement Unlocked!</span>
+                <span className="text-xs font-bold text-gray-600 uppercase">
+                  Achievement Unlocked!
+                </span>
               </div>
               <h3 className="font-bold text-lg text-gray-900">{achievement.name}</h3>
             </div>
@@ -101,14 +103,19 @@ export function AchievementShareCard({
     <Card className="overflow-hidden shadow-2xl max-w-md mx-auto">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
-          backgroundSize: '24px 24px'
-        }} />
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
+            backgroundSize: '24px 24px',
+          }}
+        />
       </div>
 
       {/* Header Banner */}
-      <div className={`relative bg-gradient-to-r ${TIER_GRADIENTS[achievement.tier]} py-6 px-6 border-b-4 border-${achievement.tier}-400`}>
+      <div
+        className={`relative bg-gradient-to-r ${TIER_GRADIENTS[achievement.tier]} py-6 px-6 border-b-4 border-${achievement.tier}-400`}
+      >
         <div className="flex items-center justify-center mb-3">
           <div className="relative">
             <div className="absolute inset-0 bg-yellow-400 rounded-full blur-xl opacity-50 animate-pulse" />

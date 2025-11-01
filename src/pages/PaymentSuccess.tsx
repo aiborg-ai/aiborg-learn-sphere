@@ -51,14 +51,14 @@ const PaymentSuccess = () => {
               Your payment has been processed successfully. Your course is now available!
             </p>
             {sessionId && (
-              <p className="text-sm text-muted-foreground">
-                Transaction ID: {sessionId}
-              </p>
+              <p className="text-sm text-muted-foreground">Transaction ID: {sessionId}</p>
             )}
           </div>
 
           <div className="bg-green-50 dark:bg-green-950/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-            <h4 className="font-medium text-green-900 dark:text-green-100 mb-2">🎉 Course Access Granted!</h4>
+            <h4 className="font-medium text-green-900 dark:text-green-100 mb-2">
+              🎉 Course Access Granted!
+            </h4>
             <ul className="text-sm text-green-800 dark:text-green-200 space-y-1 text-left">
               <li>• Your course is now available in your dashboard</li>
               <li>• Access all course materials immediately</li>
@@ -69,34 +69,24 @@ const PaymentSuccess = () => {
 
           <div className="space-y-3">
             {user ? (
-              <Button
-                onClick={() => navigate('/dashboard')}
-                className="w-full"
-                size="lg"
-              >
+              <Button onClick={() => navigate('/dashboard')} className="w-full" size="lg">
                 <BookOpen className="mr-2 h-5 w-5" />
                 Go to My Dashboard
               </Button>
             ) : (
-              <Button
-                onClick={() => navigate('/auth')}
-                className="w-full"
-                size="lg"
-              >
+              <Button onClick={() => navigate('/auth')} className="w-full" size="lg">
                 <BookOpen className="mr-2 h-5 w-5" />
                 Login to Access Course
               </Button>
             )}
-            <Button
-              onClick={() => navigate('/')}
-              variant="outline"
-              className="w-full"
-            >
+            <Button onClick={() => navigate('/')} variant="outline" className="w-full">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Return to Home
             </Button>
             <p className="text-sm text-muted-foreground">
-              {user ? `Redirecting to dashboard in ${countdown} seconds...` : 'Redirecting to home in ' + countdown + ' seconds...'}
+              {user
+                ? `Redirecting to dashboard in ${countdown} seconds...`
+                : 'Redirecting to home in ' + countdown + ' seconds...'}
             </p>
           </div>
         </CardContent>

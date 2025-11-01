@@ -41,9 +41,7 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
           <Trophy className="h-5 w-5" />
           Achievements
         </CardTitle>
-        <CardDescription>
-          Your earned badges and accomplishments
-        </CardDescription>
+        <CardDescription>Your earned badges and accomplishments</CardDescription>
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[600px] pr-4">
@@ -54,12 +52,10 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <Star className="h-4 w-4 text-yellow-500" />
-                    <h3 className="font-semibold text-sm text-muted-foreground">
-                      FEATURED
-                    </h3>
+                    <h3 className="font-semibold text-sm text-muted-foreground">FEATURED</h3>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {featuredAchievements.map((achievement) => (
+                    {featuredAchievements.map(achievement => (
                       <div
                         key={achievement.id}
                         className={`p-4 border-2 rounded-lg ${getRarityColor(achievement.rarity)}`}
@@ -94,7 +90,7 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
                     ALL ACHIEVEMENTS
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {regularAchievements.map((achievement) => (
+                    {regularAchievements.map(achievement => (
                       <div
                         key={achievement.id}
                         className="p-3 border rounded-lg hover:bg-accent/50 transition-colors"
@@ -102,9 +98,7 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
                         <div className="flex items-center gap-2">
                           <span className="text-2xl">{achievement.iconEmoji}</span>
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-sm truncate">
-                              {achievement.name}
-                            </h4>
+                            <h4 className="font-medium text-sm truncate">{achievement.name}</h4>
                             <Badge variant="outline" className="text-xs mt-1">
                               {achievement.rarity}
                             </Badge>

@@ -58,7 +58,7 @@ describe('CourseRecommendationService', () => {
 
   const mockEnrollments = [
     { course_id: 1, progress: 100 }, // Completed
-    { course_id: 2, progress: 50 },  // In progress
+    { course_id: 2, progress: 50 }, // In progress
   ];
 
   const mockAssessments = [
@@ -88,7 +88,8 @@ describe('CourseRecommendationService', () => {
         }),
       };
 
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // user_profiles
           select: vi.fn().mockReturnValue({
@@ -144,17 +145,16 @@ describe('CourseRecommendationService', () => {
     });
 
     it('should exclude completed courses', async () => {
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: mockUserProfile,
-                error: null,
-              }),
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: mockUserProfile,
+              error: null,
             }),
           }),
-        });
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
       (supabase.rpc as ReturnType<typeof vi.fn>).mockResolvedValue({
@@ -197,9 +197,7 @@ describe('CourseRecommendationService', () => {
           }),
         });
 
-      const recommendations = await CourseRecommendationService.generateRecommendations(
-        'user-123'
-      );
+      const recommendations = await CourseRecommendationService.generateRecommendations('user-123');
 
       // Course 1 should be excluded as completed
       const courseIds = recommendations.map(r => r.courseId);
@@ -213,7 +211,8 @@ describe('CourseRecommendationService', () => {
         title: `Course ${i + 1}`,
       }));
 
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           select: vi.fn().mockReturnValue({
             eq: vi.fn().mockReturnValue({
@@ -262,17 +261,16 @@ describe('CourseRecommendationService', () => {
     });
 
     it('should sort recommendations by score', async () => {
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: mockUserProfile,
-                error: null,
-              }),
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: mockUserProfile,
+              error: null,
             }),
           }),
-        });
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
       (supabase.rpc as ReturnType<typeof vi.fn>).mockResolvedValue({
@@ -314,30 +312,25 @@ describe('CourseRecommendationService', () => {
           }),
         });
 
-      const recommendations = await CourseRecommendationService.generateRecommendations(
-        'user-123'
-      );
+      const recommendations = await CourseRecommendationService.generateRecommendations('user-123');
 
       // Verify descending score order
       for (let i = 0; i < recommendations.length - 1; i++) {
-        expect(recommendations[i]!.score).toBeGreaterThanOrEqual(
-          recommendations[i + 1]!.score
-        );
+        expect(recommendations[i]!.score).toBeGreaterThanOrEqual(recommendations[i + 1]!.score);
       }
     });
 
     it('should include recommendation details', async () => {
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: mockUserProfile,
-                error: null,
-              }),
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: mockUserProfile,
+              error: null,
             }),
           }),
-        });
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
       (supabase.rpc as ReturnType<typeof vi.fn>).mockResolvedValue({
@@ -379,9 +372,7 @@ describe('CourseRecommendationService', () => {
           }),
         });
 
-      const recommendations = await CourseRecommendationService.generateRecommendations(
-        'user-123'
-      );
+      const recommendations = await CourseRecommendationService.generateRecommendations('user-123');
 
       expect(recommendations[0]).toHaveProperty('courseId');
       expect(recommendations[0]).toHaveProperty('score');
@@ -394,7 +385,8 @@ describe('CourseRecommendationService', () => {
 
   describe('user profile building', () => {
     it('should build complete user profile', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           select: vi.fn().mockReturnValue({
             eq: vi.fn().mockReturnValue({
@@ -441,17 +433,16 @@ describe('CourseRecommendationService', () => {
     });
 
     it('should handle missing user data gracefully', async () => {
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: null,
-                error: null,
-              }),
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: null,
+              error: null,
             }),
           }),
-        });
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
@@ -476,7 +467,8 @@ describe('CourseRecommendationService', () => {
         }),
       };
 
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // user_profiles
           select: vi.fn().mockReturnValue({
@@ -533,17 +525,16 @@ describe('CourseRecommendationService', () => {
     });
 
     it('should handle no similar users found', async () => {
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: mockUserProfile,
-                error: null,
-              }),
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: mockUserProfile,
+              error: null,
             }),
           }),
-        });
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
       (supabase.rpc as ReturnType<typeof vi.fn>).mockResolvedValue({
@@ -586,9 +577,7 @@ describe('CourseRecommendationService', () => {
         });
 
       // Should still generate recommendations without similar users
-      const recommendations = await CourseRecommendationService.generateRecommendations(
-        'user-123'
-      );
+      const recommendations = await CourseRecommendationService.generateRecommendations('user-123');
 
       expect(recommendations).toBeDefined();
     });
@@ -596,17 +585,16 @@ describe('CourseRecommendationService', () => {
 
   describe('score calculation', () => {
     it('should calculate recommendation scores', async () => {
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: mockUserProfile,
-                error: null,
-              }),
+      const mockFrom = vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: mockUserProfile,
+              error: null,
             }),
           }),
-        });
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
       (supabase.rpc as ReturnType<typeof vi.fn>).mockResolvedValue({
@@ -648,9 +636,7 @@ describe('CourseRecommendationService', () => {
           }),
         });
 
-      const recommendations = await CourseRecommendationService.generateRecommendations(
-        'user-123'
-      );
+      const recommendations = await CourseRecommendationService.generateRecommendations('user-123');
 
       // All recommendations should have numeric scores
       recommendations.forEach(rec => {

@@ -245,7 +245,7 @@ export class PointsService {
       }
 
       // Get user's global rank
-      const { data: rankData, error: rankError } = await supabase
+      const { data: rankData, error: _rankError } = await supabase
         .from('user_progress')
         .select('user_id', { count: 'exact', head: false })
         .gt('total_points', progress.total_points);

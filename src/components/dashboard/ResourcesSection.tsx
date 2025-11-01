@@ -67,8 +67,7 @@ export function ResourcesSection({ resources, loading, onResourceView }: Resourc
 
       const matchesType = typeFilter === 'all' || resource.resource_type === typeFilter;
 
-      const matchesCategory =
-        categoryFilter === 'all' || resource.category === categoryFilter;
+      const matchesCategory = categoryFilter === 'all' || resource.category === categoryFilter;
 
       return matchesSearch && matchesType && matchesCategory;
     });
@@ -87,7 +86,9 @@ export function ResourcesSection({ resources, loading, onResourceView }: Resourc
     }
   };
 
-  const getResourceTypeColor = (type: string): 'default' | 'secondary' | 'destructive' | 'outline' => {
+  const getResourceTypeColor = (
+    type: string
+  ): 'default' | 'secondary' | 'destructive' | 'outline' => {
     switch (type) {
       case 'video_link':
         return 'destructive';
@@ -199,7 +200,7 @@ export function ResourcesSection({ resources, loading, onResourceView }: Resourc
               <Input
                 placeholder="Search resources..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -282,18 +283,13 @@ export function ResourcesSection({ resources, loading, onResourceView }: Resourc
                         <Badge variant={getResourceTypeColor(resource.resource_type)}>
                           {resource.resource_type}
                         </Badge>
-                        {resource.category && (
-                          <Badge variant="outline">{resource.category}</Badge>
-                        )}
+                        {resource.category && <Badge variant="outline">{resource.category}</Badge>}
                       </div>
 
                       {resource.tags && resource.tags.length > 0 && (
                         <div className="flex flex-wrap gap-1 mb-3">
                           {resource.tags.slice(0, 3).map(tag => (
-                            <span
-                              key={tag}
-                              className="text-xs px-2 py-0.5 bg-secondary/50 rounded"
-                            >
+                            <span key={tag} className="text-xs px-2 py-0.5 bg-secondary/50 rounded">
                               #{tag}
                             </span>
                           ))}

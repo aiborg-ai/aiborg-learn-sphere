@@ -12,6 +12,7 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 import type {
   Organization,
   OrganizationMember,
@@ -215,8 +216,8 @@ export class TeamManagementService {
       throw error;
     }
 
-    // TODO: Send invitation email via edge function
-    // await this.sendInvitationEmail(data);
+    // Send invitation email via edge function
+    await this.sendInvitationEmail(data, invitation.organizationId);
 
     return data;
   }
@@ -342,7 +343,7 @@ export class TeamManagementService {
    */
   static async resendInvitation(invitationId: string): Promise<void> {
     // Update invitation to reset expiration
-    const { data: _data, error } = await supabase
+    const { data, error } = await supabase
       .from('team_invitations')
       .update({
         expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
@@ -361,8 +362,10 @@ export class TeamManagementService {
       notes: 'Invitation resent and expiration extended',
     });
 
-    // TODO: Send invitation email via edge function
-    // await this.sendInvitationEmail(data);
+    // Send invitation email via edge function
+    if (data) {
+      await this.sendInvitationEmail(data, data.organization_id);
+    }
   }
 
   /**
@@ -397,6 +400,67 @@ export class TeamManagementService {
 
     if (error) throw error;
     return data;
+  }
+
+  // ============================================================================
+  // Email Notification Methods
+  // ============================================================================
+
+  /**
+   * Send invitation email to new team member
+   */
+  private static async sendInvitationEmail(
+    invitation: TeamInvitation,
+    organizationId: string
+  ): Promise<void> {
+    try {
+      // Get organization details
+      const organization = await this.getOrganization(organizationId);
+
+      // Get inviter details
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const { data: inviterProfile } = await supabase
+        .from('profiles')
+        .select('first_name, last_name')
+        .eq('user_id', user.id)
+        .single();
+
+      const inviterName = inviterProfile
+        ? `${inviterProfile.first_name} ${inviterProfile.last_name}`.trim()
+        : user.email || 'A team member';
+
+      // Build accept URL
+      const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+      const acceptUrl = `${baseUrl}/team/accept-invitation?token=${invitation.token}`;
+
+      // Call the Edge Function
+      const { error } = await supabase.functions.invoke('send-team-invitation', {
+        body: {
+          invitationId: invitation.id,
+          inviteeEmail: invitation.email,
+          inviteeFirstName: invitation.first_name,
+          inviteeLastName: invitation.last_name,
+          organizationName: organization.name,
+          inviterName,
+          role: invitation.role,
+          department: invitation.department,
+          expiresAt: invitation.expires_at,
+          acceptUrl,
+        },
+      });
+
+      if (error) {
+        logger.error('Failed to send invitation email', error);
+        // Don't throw - we don't want to fail the invitation creation if email fails
+      }
+    } catch (error) {
+      logger.error('Error in sendInvitationEmail', error);
+      // Don't throw - email failure shouldn't break invitation flow
+    }
   }
 
   // ============================================================================

@@ -92,7 +92,7 @@ function BlogMediaLibrary() {
         const filePath = `blog-media/${fileName}`;
 
         // Upload to Supabase Storage
-        const { error: uploadError, data: uploadData } = await supabase.storage
+        const { error: uploadError, data: _uploadData } = await supabase.storage
           .from('blog-images')
           .upload(filePath, file);
 

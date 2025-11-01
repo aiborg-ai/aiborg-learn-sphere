@@ -1,15 +1,17 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { usePersonalization } from '@/contexts/PersonalizationContext';
 import { useCourses } from '@/hooks/useCourses';
 import { useChatHistory } from '@/hooks/useChatHistory';
 import { generateFallbackResponse } from '@/utils/chatbotFallback';
 import { logger } from '@/utils/logger';
-import { MessageCircle, Send, X, Bot, User, Phone, History, Download, Trash2 } from 'lucide-react';
+import { MessageCircle, Send, X, Bot, User, Phone, History, Download, Trash2, ThumbsUp, ThumbsDown, Zap, Brain, Database } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface ConversationContext {
@@ -21,6 +23,20 @@ interface ConversationContext {
   recommendedCourses?: string[];
   lastTopic?: string;
   followUpQuestions: string[];
+}
+
+interface MessageMetadata {
+  model?: string;
+  cost?: { usd: number };
+  cache_hit?: boolean;
+  cache_source?: 'memory' | 'database-exact' | 'database-fuzzy';
+  response_time_ms?: number;
+}
+
+interface MessageRating {
+  messageId: string;
+  rating: 'positive' | 'negative';
+  feedback?: string;
 }
 
 // Course data for accurate recommendations
@@ -101,15 +117,20 @@ export function AIChatbot() {
   const [_conversationContext, setConversationContext] = useState<ConversationContext>(
     initialConversationContext
   );
+  const [messageMetadata, setMessageMetadata] = useState<Record<string, MessageMetadata>>({});
+  const [messageRatings, setMessageRatings] = useState<Record<string, MessageRating>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Get messages from current conversation
-  const messages = currentConversation?.messages || [];
+  const messages = useMemo(
+    () => currentConversation?.messages || [],
+    [currentConversation?.messages]
+  );
 
   // Initialize conversation when chatbot opens
   useEffect(() => {
     if (isOpen && !currentConversation) {
-      startNewConversation(selectedAudience).then(conversation => {
+      startNewConversation(selectedAudience).then(_conversation => {
         // Add welcome message
         const welcomeContent = getPersonalizedContent({
           primary:
@@ -172,7 +193,7 @@ export function AIChatbot() {
       .slice(0, 4); // Limit to 4 recommendations
   };
 
-  const getPriceRange = (): string => {
+  const _getPriceRange = (): string => {
     switch (selectedAudience) {
       case 'business':
         return '£199 to £499';
@@ -283,9 +304,12 @@ export function AIChatbot() {
     return "That's helpful to know! What specific aspects of AI interest you most?";
   };
 
-  const generateAIResponse = async (userMessage: string): Promise<string> => {
+  const generateAIResponse = async (userMessage: string): Promise<{ response: string; metadata: MessageMetadata; messageId: string }> => {
+    const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const startTime = Date.now();
+
     try {
-      // Call the ai-chat-with-analytics edge function with conversation tracking
+      // Call the ai-chat-with-analytics-cached edge function with conversation tracking
       const coursesData = getCourseRecommendations().map(course => ({
         title: course.title,
         price: course.price,
@@ -294,7 +318,7 @@ export function AIChatbot() {
         audience: selectedAudience,
       }));
 
-      const { data, error } = await supabase.functions.invoke('ai-chat-with-analytics', {
+      const { data, error } = await supabase.functions.invoke('ai-chat-with-analytics-cached', {
         body: {
           messages: [{ role: 'user', content: userMessage }],
           audience: selectedAudience,
@@ -306,13 +330,33 @@ export function AIChatbot() {
 
       if (error) throw error;
 
-      // Return the AI response
+      const responseTime = Date.now() - startTime;
+
+      // Return the AI response with metadata
       if (data && data.response) {
+        const metadata: MessageMetadata = {
+          model: data.model || (data.cache_hit ? 'cached' : 'gpt-4-turbo-preview'),
+          cost: data.cost || { usd: 0 },
+          cache_hit: data.cache_hit || false,
+          cache_source: data.cache_source,
+          response_time_ms: responseTime,
+        };
+
+        // Store metadata for this message
+        setMessageMetadata(prev => ({
+          ...prev,
+          [messageId]: metadata,
+        }));
+
         logger.log('AI response generated successfully', {
           tokens: data.usage?.total_tokens,
-          cost: data.cost?.usd,
+          cost: metadata.cost.usd,
+          cache_hit: metadata.cache_hit,
+          cache_source: metadata.cache_source,
+          response_time: responseTime,
         });
-        return data.response;
+
+        return { response: data.response, metadata, messageId };
       }
 
       throw new Error('No response from AI');
@@ -331,7 +375,20 @@ export function AIChatbot() {
         setShowWhatsApp(true);
       }
 
-      return fallback.message;
+      const responseTime = Date.now() - startTime;
+      const metadata: MessageMetadata = {
+        model: 'fallback',
+        cost: { usd: 0 },
+        cache_hit: false,
+        response_time_ms: responseTime,
+      };
+
+      setMessageMetadata(prev => ({
+        ...prev,
+        [messageId]: metadata,
+      }));
+
+      return { response: fallback.message, metadata, messageId };
     }
   };
 
@@ -356,21 +413,24 @@ export function AIChatbot() {
     setIsTyping(true);
 
     try {
-      // Get AI response
-      const aiResponse = await generateAIResponse(content);
+      // Get AI response with metadata
+      const { response: aiResponse, metadata, messageId } = await generateAIResponse(content);
 
-      // Simulate typing delay
+      // Simulate realistic typing delay based on response length
+      const typingDelay = Math.min(1000 + (aiResponse.length / 10), 3000);
+
       setTimeout(
         () => {
           addMessage({
             content: aiResponse,
             sender: 'ai',
             type: 'text',
+            metadata: { messageId, ...metadata }, // Store messageId with message for ratings
           });
           setIsTyping(false);
         },
-        1000 + Math.random() * 1000
-      ); // Random delay between 1-2 seconds
+        typingDelay
+      );
     } catch (error) {
       logger.error('Error sending message:', error);
       setIsTyping(false);
@@ -396,6 +456,130 @@ export function AIChatbot() {
 
   const handleQuickSuggestion = (suggestion: string) => {
     sendMessage(suggestion);
+  };
+
+  // Handle message rating
+  const handleRating = async (messageId: string, rating: 'positive' | 'negative') => {
+    // Update local state immediately for UI feedback
+    setMessageRatings(prev => ({
+      ...prev,
+      [messageId]: { messageId, rating },
+    }));
+
+    // Get metadata and message for this rating
+    const metadata = messageMetadata[messageId];
+    const message = messages.find(m => m.metadata?.messageId === messageId || m.id === messageId);
+    const userMessage = messages[messages.indexOf(message!) - 1]; // Get the user's question
+
+    // Log rating for analytics
+    logger.log('Message rated', {
+      messageId,
+      rating,
+      model: metadata?.model,
+      cache_hit: metadata?.cache_hit,
+      response_time: metadata?.response_time_ms,
+    });
+
+    // Persist rating to database
+    try {
+      // Get current user ID (if authenticated)
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const { error } = await supabase.from('chatbot_ratings').insert({
+        conversation_id: currentConversation?.id,
+        message_id: messageId,
+        user_id: user?.id || null,
+        session_id: currentConversation?.sessionId,
+        rating,
+        model: metadata?.model,
+        cache_hit: metadata?.cache_hit || false,
+        cache_source: metadata?.cache_source,
+        response_time_ms: metadata?.response_time_ms,
+        cost_usd: metadata?.cost?.usd,
+        query_type: undefined, // TODO: Extract from message metadata if available
+        audience: selectedAudience,
+        user_query: userMessage?.content,
+        ai_response_length: message?.content.length,
+      });
+
+      if (error) {
+        logger.error('Failed to save rating to database:', error);
+      } else {
+        logger.log('Rating saved to database successfully');
+      }
+    } catch (error) {
+      logger.error('Error saving rating:', error);
+      // Don't show error to user - rating was saved locally
+    }
+  };
+
+  // Render model indicator badge
+  const renderModelBadge = (metadata?: MessageMetadata) => {
+    if (!metadata) return null;
+
+    if (metadata.cache_hit) {
+      const cacheIcon = metadata.cache_source === 'memory' ? <Zap className="h-3 w-3" /> : <Database className="h-3 w-3" />;
+      const cacheLabel = metadata.cache_source === 'memory' ? 'Cache (Memory)' :
+                        metadata.cache_source === 'database-exact' ? 'Cache (Exact)' :
+                        metadata.cache_source === 'database-fuzzy' ? 'Cache (Similar)' : 'Cached';
+
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Badge variant="secondary" className="text-xs gap-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                {cacheIcon}
+                {cacheLabel}
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Instant response from cache - $0 cost!</p>
+              <p className="text-xs opacity-70">{metadata.response_time_ms}ms</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
+    if (metadata.model === 'gpt-4-turbo-preview') {
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Badge variant="secondary" className="text-xs gap-1 bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+                <Brain className="h-3 w-3" />
+                GPT-4
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Advanced AI for complex questions</p>
+              <p className="text-xs opacity-70">Cost: ${metadata.cost?.usd.toFixed(4)} • {metadata.response_time_ms}ms</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
+    if (metadata.model === 'gpt-3.5-turbo') {
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Badge variant="secondary" className="text-xs gap-1 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                <Zap className="h-3 w-3" />
+                GPT-3.5
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Fast AI for standard questions</p>
+              <p className="text-xs opacity-70">Cost: ${metadata.cost?.usd.toFixed(4)} • {metadata.response_time_ms}ms</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
+    return null;
   };
 
   // Get personalized quick suggestions
@@ -524,11 +708,21 @@ export function AIChatbot() {
                       key={conv.id}
                       className="flex items-center justify-between p-2 rounded hover:bg-muted cursor-pointer group"
                     >
+                      {/* eslint-disable-next-line jsx-a11y/prefer-tag-over-role */}
                       <div
                         className="flex-1"
+                        role="button"
+                        tabIndex={0}
                         onClick={() => {
                           loadConversation(conv.id);
                           setShowHistory(false);
+                        }}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            loadConversation(conv.id);
+                            setShowHistory(false);
+                          }
                         }}
                       >
                         <p className="text-xs font-medium">
@@ -559,62 +753,108 @@ export function AIChatbot() {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map(message => (
-            <div
-              key={message.id}
-              className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className="flex items-end gap-2 max-w-[80%]">
-                {message.sender === 'ai' && (
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-gradient-ai text-white">
-                      <Bot className="h-4 w-4" />
-                    </AvatarFallback>
-                  </Avatar>
-                )}
+          {messages.map(message => {
+            const messageId = message.metadata?.messageId || message.id;
+            const metadata = messageMetadata[messageId];
+            const rating = messageRatings[messageId];
 
-                <div
-                  className={`rounded-2xl px-4 py-2 ${
-                    message.sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-ai'
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed">{message.content}</p>
-                  <p
-                    className={`text-xs mt-1 opacity-70 ${
-                      message.sender === 'user' ? 'text-white' : 'text-primary'
-                    }`}
-                  >
-                    {message.timestamp.toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </p>
+            return (
+              <div
+                key={message.id}
+                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div className="flex items-end gap-2 max-w-[80%]">
+                  {message.sender === 'ai' && (
+                    <Avatar className="h-8 w-8 flex-shrink-0">
+                      <AvatarFallback className="bg-gradient-ai text-white">
+                        <Bot className="h-4 w-4" />
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
+
+                  <div className="flex flex-col gap-1">
+                    <div
+                      className={`rounded-2xl px-4 py-2 ${
+                        message.sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-ai'
+                      }`}
+                    >
+                      <p className="text-sm leading-relaxed">{message.content}</p>
+                      <div className="flex items-center justify-between gap-2 mt-1">
+                        <p
+                          className={`text-xs opacity-70 ${
+                            message.sender === 'user' ? 'text-white' : 'text-primary'
+                          }`}
+                        >
+                          {message.timestamp.toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </p>
+                        {message.sender === 'ai' && renderModelBadge(metadata)}
+                      </div>
+                    </div>
+
+                    {/* Rating buttons for AI messages */}
+                    {message.sender === 'ai' && (
+                      <div className="flex items-center gap-1 px-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={`h-6 w-6 p-0 ${rating?.rating === 'positive' ? 'text-green-600' : 'text-muted-foreground hover:text-green-600'}`}
+                          onClick={() => handleRating(messageId, 'positive')}
+                          title="Good response"
+                        >
+                          <ThumbsUp className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={`h-6 w-6 p-0 ${rating?.rating === 'negative' ? 'text-red-600' : 'text-muted-foreground hover:text-red-600'}`}
+                          onClick={() => handleRating(messageId, 'negative')}
+                          title="Bad response"
+                        >
+                          <ThumbsDown className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+
+                  {message.sender === 'user' && (
+                    <Avatar className="h-8 w-8 flex-shrink-0">
+                      <AvatarFallback className="bg-gradient-secondary">
+                        <User className="h-4 w-4" />
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
                 </div>
-
-                {message.sender === 'user' && (
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-gradient-secondary">
-                      <User className="h-4 w-4" />
-                    </AvatarFallback>
-                  </Avatar>
-                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
 
+          {/* Enhanced loading skeleton */}
           {isTyping && (
             <div className="flex justify-start">
               <div className="flex items-end gap-2">
-                <Avatar className="h-8 w-8">
+                <Avatar className="h-8 w-8 flex-shrink-0">
                   <AvatarFallback className="bg-gradient-ai text-white">
                     <Bot className="h-4 w-4" />
                   </AvatarFallback>
                 </Avatar>
-                <div className="chat-bubble-ai">
-                  <div className="flex space-x-1">
+                <div className="chat-bubble-ai relative overflow-hidden">
+                  {/* Shimmer effect */}
+                  <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+
+                  {/* Content placeholder */}
+                  <div className="space-y-2">
+                    <div className="h-3 bg-primary/20 rounded w-32 animate-pulse"></div>
+                    <div className="h-3 bg-primary/20 rounded w-24 animate-pulse delay-75"></div>
+                  </div>
+
+                  {/* Typing dots */}
+                  <div className="flex space-x-1 mt-2">
                     <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-100"></div>
-                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-200"></div>
+                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   </div>
                 </div>
               </div>

@@ -79,8 +79,8 @@ export interface MembershipSubscription {
   resume_at: string | null;
   payment_method_last4: string | null;
   payment_method_brand: string | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Stripe metadata is dynamic
-  metadata: Record<string, any>;
+  /** Stripe metadata - dynamic key-value pairs from Stripe */
+  metadata: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }

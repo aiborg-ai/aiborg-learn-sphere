@@ -11,7 +11,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from 'recharts';
 import { Users, TrendingUp, BookOpen, Download, Loader2 } from 'lucide-react';
 
@@ -35,7 +35,10 @@ export function EnrollmentAnalytics({ dateRange }: EnrollmentAnalyticsProps) {
 
     const csvContent = [
       ['Enrollment Analytics Report'],
-      ['Date Range', `${dateRange.startDate.toLocaleDateString()} - ${dateRange.endDate.toLocaleDateString()}`],
+      [
+        'Date Range',
+        `${dateRange.startDate.toLocaleDateString()} - ${dateRange.endDate.toLocaleDateString()}`,
+      ],
       [],
       ['Metric', 'Value'],
       ['Total Enrollments', data.totalEnrollments.toString()],
@@ -50,9 +53,11 @@ export function EnrollmentAnalytics({ dateRange }: EnrollmentAnalyticsProps) {
       ...data.enrollmentsByCourse.map(item => [
         item.courseTitle,
         item.count.toString(),
-        item.revenue.toString()
+        item.revenue.toString(),
       ]),
-    ].map(row => row.join(',')).join('\n');
+    ]
+      .map(row => row.join(','))
+      .join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -79,9 +84,10 @@ export function EnrollmentAnalytics({ dateRange }: EnrollmentAnalyticsProps) {
     );
   }
 
-  const avgEnrollmentsPerDay = data.enrollmentsByDay.length > 0
-    ? (data.totalEnrollments / data.enrollmentsByDay.length).toFixed(1)
-    : '0';
+  const avgEnrollmentsPerDay =
+    data.enrollmentsByDay.length > 0
+      ? (data.totalEnrollments / data.enrollmentsByDay.length).toFixed(1)
+      : '0';
 
   return (
     <div className="space-y-6">
@@ -109,12 +115,8 @@ export function EnrollmentAnalytics({ dateRange }: EnrollmentAnalyticsProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-900">
-              {data.totalEnrollments}
-            </div>
-            <p className="text-xs text-blue-700 mt-1">
-              {avgEnrollmentsPerDay} per day average
-            </p>
+            <div className="text-2xl font-bold text-blue-900">{data.totalEnrollments}</div>
+            <p className="text-xs text-blue-700 mt-1">{avgEnrollmentsPerDay} per day average</p>
           </CardContent>
         </Card>
 
@@ -126,9 +128,7 @@ export function EnrollmentAnalytics({ dateRange }: EnrollmentAnalyticsProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-900">
-              {data.uniqueStudents}
-            </div>
+            <div className="text-2xl font-bold text-purple-900">{data.uniqueStudents}</div>
             <p className="text-xs text-purple-700 mt-1">Active learners</p>
           </CardContent>
         </Card>
@@ -197,12 +197,7 @@ export function EnrollmentAnalytics({ dateRange }: EnrollmentAnalyticsProps) {
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis type="number" />
-              <YAxis
-                dataKey="courseTitle"
-                type="category"
-                tick={{ fontSize: 11 }}
-                width={110}
-              />
+              <YAxis dataKey="courseTitle" type="category" tick={{ fontSize: 11 }} width={110} />
               <Tooltip
                 formatter={(value: number, name: string) => {
                   if (name === 'Revenue') return formatCurrency(value);
@@ -226,7 +221,10 @@ export function EnrollmentAnalytics({ dateRange }: EnrollmentAnalyticsProps) {
         <CardContent>
           <div className="space-y-4">
             {data.enrollmentsByCourse.slice(0, 5).map((course, index) => (
-              <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div
+                key={index}
+                className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+              >
                 <div className="flex items-center gap-4">
                   <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-600 font-bold">
                     #{index + 1}
@@ -239,9 +237,7 @@ export function EnrollmentAnalytics({ dateRange }: EnrollmentAnalyticsProps) {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-green-600">
-                    {formatCurrency(course.revenue)}
-                  </p>
+                  <p className="font-bold text-green-600">{formatCurrency(course.revenue)}</p>
                   <p className="text-sm text-gray-600">Revenue</p>
                 </div>
               </div>

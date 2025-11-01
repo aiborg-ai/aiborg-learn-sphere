@@ -1,8 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type {
-  CourseTemplate,
-  EventTemplate
-} from '@/lib/schemas';
+import type { CourseTemplate, EventTemplate } from '@/lib/schemas';
 import {
   validateCourseTemplate,
   validateEventTemplate,
@@ -11,7 +8,7 @@ import {
   checkCourseDuplicates,
   checkEventDuplicates,
   checkEventConflicts,
-  getTemplateExample
+  getTemplateExample,
 } from '@/lib/schemas';
 
 describe('Course Template Schema', () => {
@@ -37,7 +34,7 @@ describe('Course Template Schema', () => {
         start_date: '2025-03-01',
         features: ['Feature 1'],
         keywords: ['test'],
-        category: 'Technology'
+        category: 'Technology',
       };
 
       const result = validateCourseTemplate(minimalCourse);
@@ -47,7 +44,7 @@ describe('Course Template Schema', () => {
     it('should accept flexible start dates', () => {
       const course = {
         ...getTemplateExample('course'),
-        start_date: 'Flexible'
+        start_date: 'Flexible',
       };
 
       const result = validateCourseTemplate(course);
@@ -65,14 +62,14 @@ describe('Course Template Schema', () => {
             description: 'Welcome to the course',
             duration: '10 minutes',
             order_index: 1,
-            is_preview: true
-          }
+            is_preview: true,
+          },
         ],
         instructor_info: {
           name: 'John Doe',
           email: 'john@example.com',
-          bio: 'Expert in AI'
-        }
+          bio: 'Expert in AI',
+        },
       };
 
       const result = validateCourseTemplate(course);
@@ -84,7 +81,7 @@ describe('Course Template Schema', () => {
     it('should reject course with missing title', () => {
       const invalidCourse = {
         ...getTemplateExample('course'),
-        title: ''
+        title: '',
       };
 
       const result = validateCourseTemplate(invalidCourse);
@@ -96,7 +93,7 @@ describe('Course Template Schema', () => {
     it('should reject course with invalid audience', () => {
       const invalidCourse = {
         ...getTemplateExample('course'),
-        audiences: ['InvalidAudience']
+        audiences: ['InvalidAudience'],
       };
 
       const result = validateCourseTemplate(invalidCourse);
@@ -107,7 +104,7 @@ describe('Course Template Schema', () => {
     it('should reject course with invalid date format', () => {
       const invalidCourse = {
         ...getTemplateExample('course'),
-        start_date: '01/02/2025' // Wrong format
+        start_date: '01/02/2025', // Wrong format
       };
 
       const result = validateCourseTemplate(invalidCourse);
@@ -118,7 +115,7 @@ describe('Course Template Schema', () => {
     it('should reject course with too many features', () => {
       const invalidCourse = {
         ...getTemplateExample('course'),
-        features: Array(21).fill('Feature') // 21 features, max is 20
+        features: Array(21).fill('Feature'), // 21 features, max is 20
       };
 
       const result = validateCourseTemplate(invalidCourse);
@@ -131,8 +128,8 @@ describe('Course Template Schema', () => {
         instructor_info: {
           name: 'John Doe',
           email: 'invalid-email',
-          bio: 'Expert'
-        }
+          bio: 'Expert',
+        },
       };
 
       const result = validateCourseTemplate(invalidCourse);
@@ -143,12 +140,14 @@ describe('Course Template Schema', () => {
       const invalidCourse = {
         ...getTemplateExample('course'),
         min_students: 30,
-        max_students: 20
+        max_students: 20,
       };
 
       const result = validateCourseTemplate(invalidCourse);
       expect(result.success).toBe(false);
-      expect(result.errors![0].message).toContain('Minimum students must be less than or equal to maximum');
+      expect(result.errors![0].message).toContain(
+        'Minimum students must be less than or equal to maximum'
+      );
     });
   });
 
@@ -157,8 +156,8 @@ describe('Course Template Schema', () => {
       const batch = {
         courses: [
           getTemplateExample('course'),
-          { ...getTemplateExample('course'), title: 'Another Course' }
-        ]
+          { ...getTemplateExample('course'), title: 'Another Course' },
+        ],
       };
 
       const result = validateCourseBatch(batch);
@@ -172,8 +171,8 @@ describe('Course Template Schema', () => {
       const batch = {
         courses: [
           getTemplateExample('course'),
-          { ...getTemplateExample('course'), title: '' } // Invalid
-        ]
+          { ...getTemplateExample('course'), title: '' }, // Invalid
+        ],
       };
 
       const result = validateCourseBatch(batch);
@@ -186,7 +185,7 @@ describe('Course Template Schema', () => {
     it('should detect duplicate course titles', () => {
       const courses: CourseTemplate[] = [
         getTemplateExample('course'),
-        getTemplateExample('course') // Same title
+        getTemplateExample('course'), // Same title
       ];
 
       const result = checkCourseDuplicates(courses);
@@ -197,7 +196,7 @@ describe('Course Template Schema', () => {
     it('should not flag courses with different titles as duplicates', () => {
       const courses: CourseTemplate[] = [
         getTemplateExample('course'),
-        { ...getTemplateExample('course'), title: 'Different Course' }
+        { ...getTemplateExample('course'), title: 'Different Course' },
       ];
 
       const result = checkCourseDuplicates(courses);
@@ -222,20 +221,20 @@ describe('Event Template Schema', () => {
         ...getTemplateExample('event'),
         venue_details: {
           platform: 'Zoom',
-          meeting_link: 'https://zoom.us/j/123456'
+          meeting_link: 'https://zoom.us/j/123456',
         },
         speaker_info: {
           name: 'Jane Doe',
           designation: 'AI Expert',
-          company: 'Tech Corp'
+          company: 'Tech Corp',
         },
         agenda: [
           {
             time: '6:00 PM - 6:15 PM',
             topic: 'Introduction',
-            description: 'Welcome and overview'
-          }
-        ]
+            description: 'Welcome and overview',
+          },
+        ],
       };
 
       const result = validateEventTemplate(event);
@@ -247,7 +246,7 @@ describe('Event Template Schema', () => {
     it('should reject event with invalid event type', () => {
       const invalidEvent = {
         ...getTemplateExample('event'),
-        event_type: 'invalid-type'
+        event_type: 'invalid-type',
       };
 
       const result = validateEventTemplate(invalidEvent);
@@ -258,7 +257,7 @@ describe('Event Template Schema', () => {
       const invalidEvent = {
         ...getTemplateExample('event'),
         date: '2025-02-15',
-        registration_deadline: '2025-02-16' // After event
+        registration_deadline: '2025-02-16', // After event
       };
 
       const result = validateEventTemplate(invalidEvent);
@@ -269,7 +268,7 @@ describe('Event Template Schema', () => {
     it('should reject event with invalid time format', () => {
       const invalidEvent = {
         ...getTemplateExample('event'),
-        time: '18:00' // Missing timezone
+        time: '18:00', // Missing timezone
       };
 
       const result = validateEventTemplate(invalidEvent);
@@ -282,8 +281,8 @@ describe('Event Template Schema', () => {
       const batch = {
         events: [
           getTemplateExample('event'),
-          { ...getTemplateExample('event'), title: 'Another Event' }
-        ]
+          { ...getTemplateExample('event'), title: 'Another Event' },
+        ],
       };
 
       const result = validateEventBatch(batch);
@@ -297,7 +296,7 @@ describe('Event Template Schema', () => {
     it('should detect duplicate events with same title, date, and time', () => {
       const events: EventTemplate[] = [
         getTemplateExample('event'),
-        getTemplateExample('event') // Same everything
+        getTemplateExample('event'), // Same everything
       ];
 
       const result = checkEventDuplicates(events);
@@ -308,7 +307,7 @@ describe('Event Template Schema', () => {
     it('should detect venue conflicts', () => {
       const events: EventTemplate[] = [
         { ...getTemplateExample('event'), location: 'Conference Room A' },
-        { ...getTemplateExample('event'), title: 'Different Event', location: 'Conference Room A' }
+        { ...getTemplateExample('event'), title: 'Different Event', location: 'Conference Room A' },
       ];
 
       const result = checkEventDuplicates(events);
@@ -321,7 +320,7 @@ describe('Event Template Schema', () => {
     it('should detect speaker conflicts', () => {
       const speaker = {
         name: 'John Speaker',
-        designation: 'Expert'
+        designation: 'Expert',
       };
 
       const events: EventTemplate[] = [
@@ -329,8 +328,8 @@ describe('Event Template Schema', () => {
         {
           ...getTemplateExample('event'),
           title: 'Another Event',
-          speaker_info: speaker
-        }
+          speaker_info: speaker,
+        },
       ];
 
       const result = checkEventConflicts(events);
@@ -387,7 +386,14 @@ describe('Common Validators', () => {
 
   describe('Duration Validation', () => {
     it('should accept valid duration formats', () => {
-      const validDurations = ['2 hours', '4 weeks', '3 months', 'Half day', 'Full day', '30 minutes'];
+      const validDurations = [
+        '2 hours',
+        '4 weeks',
+        '3 months',
+        'Half day',
+        'Full day',
+        '30 minutes',
+      ];
       const course = getTemplateExample('course');
 
       validDurations.forEach(duration => {

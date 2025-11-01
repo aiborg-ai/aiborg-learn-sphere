@@ -44,17 +44,20 @@ export function DownloadButton({
   const alreadyDownloaded = isDownloaded(materialId);
 
   // Define button configuration
-  const config: ActionButtonConfig = useMemo(() => ({
-    defaultIcon: Download,
-    activeIcon: CheckCircle,
-    loadingIcon: Loader2,
-    defaultLabel: 'Download',
-    activeLabel: 'Downloaded',
-    loadingLabel: 'Downloading...',
-    defaultTitle: 'Download',
-    activeTitle: 'Downloaded before',
-    activeColorClass: 'text-green-600 dark:text-green-500',
-  }), []);
+  const config: ActionButtonConfig = useMemo(
+    () => ({
+      defaultIcon: Download,
+      activeIcon: CheckCircle,
+      loadingIcon: Loader2,
+      defaultLabel: 'Download',
+      activeLabel: 'Downloaded',
+      loadingLabel: 'Downloading...',
+      defaultTitle: 'Download',
+      activeTitle: 'Downloaded before',
+      activeColorClass: 'text-green-600 dark:text-green-500',
+    }),
+    []
+  );
 
   const handleDownload = async () => {
     try {

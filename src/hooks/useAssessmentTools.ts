@@ -88,7 +88,7 @@ async function fetchAssessmentTools(
             if (result.error) {
               logger.error('Error fetching latest attempt:', result.error);
             }
-          } catch (rpcError) {
+          } catch {
             // Function doesn't exist, use direct query
             const { data } = await supabase
               .from('assessment_tool_attempts')
@@ -217,7 +217,7 @@ export function useAssessmentTool(slug: string) {
             p_tool_id: tool.id,
           });
           latestAttempt = result.data;
-        } catch (rpcError) {
+        } catch {
           // Function doesn't exist, use direct query
           const { data } = await supabase
             .from('assessment_tool_attempts')

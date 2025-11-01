@@ -37,7 +37,8 @@ import {
 
 export default function WatchLaterPage() {
   const navigate = useNavigate();
-  const { queue, loading, removeFromQueue, moveUp, moveDown, moveToTop, clearQueue, updateNote } = useWatchLater();
+  const { queue, loading, removeFromQueue, moveUp, moveDown, moveToTop, clearQueue, updateNote } =
+    useWatchLater();
 
   const [clearDialog, setClearDialog] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -131,9 +132,7 @@ export default function WatchLaterPage() {
                 <Clock className="inline h-8 w-8 mr-2" />
                 Watch Later Queue
               </h1>
-              <p className="text-white/80">
-                Your queue of materials to watch in order
-              </p>
+              <p className="text-white/80">Your queue of materials to watch in order</p>
             </div>
 
             {queue.length > 0 && (
@@ -146,11 +145,7 @@ export default function WatchLaterPage() {
                   <Play className="h-5 w-5 mr-2" />
                   Play Next
                 </Button>
-                <Button
-                  variant="destructive"
-                  size="lg"
-                  onClick={() => setClearDialog(true)}
-                >
+                <Button variant="destructive" size="lg" onClick={() => setClearDialog(true)}>
                   <Trash2 className="h-4 w-4 mr-2" />
                   Clear Queue
                 </Button>
@@ -202,12 +197,8 @@ export default function WatchLaterPage() {
             {queue.length === 0 ? (
               <div className="text-center py-12">
                 <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground mb-4">
-                  Your watch later queue is empty
-                </p>
-                <Button onClick={() => navigate('/dashboard')}>
-                  Browse Materials
-                </Button>
+                <p className="text-muted-foreground mb-4">Your watch later queue is empty</p>
+                <Button onClick={() => navigate('/dashboard')}>Browse Materials</Button>
               </div>
             ) : (
               <ScrollArea className="h-[600px]">
@@ -223,7 +214,10 @@ export default function WatchLaterPage() {
                       <div className="flex items-start gap-4">
                         {/* Position */}
                         <div className="flex flex-col items-center gap-1">
-                          <Badge variant={index === 0 ? 'default' : 'secondary'} className="w-8 h-8 flex items-center justify-center">
+                          <Badge
+                            variant={index === 0 ? 'default' : 'secondary'}
+                            className="w-8 h-8 flex items-center justify-center"
+                          >
                             {index + 1}
                           </Badge>
                           <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -304,7 +298,7 @@ export default function WatchLaterPage() {
                             <div className="space-y-2 mt-3">
                               <Textarea
                                 value={editNote}
-                                onChange={(e) => setEditNote(e.target.value)}
+                                onChange={e => setEditNote(e.target.value)}
                                 placeholder="Add a note..."
                                 rows={2}
                                 className="text-sm"
@@ -339,11 +333,7 @@ export default function WatchLaterPage() {
                               <Edit className="h-4 w-4" />
                             </Button>
                           )}
-                          <Button
-                            variant="default"
-                            size="sm"
-                            onClick={() => handlePlayItem(item)}
-                          >
+                          <Button variant="default" size="sm" onClick={() => handlePlayItem(item)}>
                             <Play className="h-4 w-4 mr-1" />
                             Play
                           </Button>
@@ -393,7 +383,8 @@ export default function WatchLaterPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Clear Entire Queue?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove all items from your watch later queue. This action cannot be undone.
+              This will permanently remove all items from your watch later queue. This action cannot
+              be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

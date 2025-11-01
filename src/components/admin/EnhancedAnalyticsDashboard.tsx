@@ -11,6 +11,9 @@ import {
   BookOpen,
   DollarSign,
   Target,
+  MessageSquare,
+  UsersIcon,
+  TrendingUp,
 } from 'lucide-react';
 import {
   PlatformMetricsCards,
@@ -28,9 +31,29 @@ import {
   AssessmentMetricsCard,
   useAnalyticsData,
 } from './analytics';
+import { DateRangeProvider, useDateRange } from '@/contexts/DateRangeContext';
+import { DateRangeFilter } from './DateRangeFilter';
+import { AutoRefreshControl } from './AutoRefreshControl';
+import { CustomViewSelector } from './CustomViewSelector';
+import { ChatbotAnalyticsTab } from './analytics/ChatbotAnalyticsTab';
+import { TeamAnalyticsTab } from './analytics/TeamAnalyticsTab';
+import { PredictiveAnalyticsSection } from './analytics/PredictiveAnalyticsSection';
+import type { ViewConfig } from '@/services/analytics/CustomViewsService';
 
-export function EnhancedAnalyticsDashboard() {
+/**
+ * Inner dashboard component that uses DateRangeContext
+ */
+function DashboardContent() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [forecastDays, setForecastDays] = useState<30 | 60 | 90>(30);
+  const { startDate, endDate } = useDateRange();
+
+  // Construct date range for analytics
+  const dateRange = {
+    start: startDate?.toISOString().split('T')[0] || '',
+    end: endDate?.toISOString().split('T')[0] || '',
+  };
+
   const {
     platformMetrics,
     userGrowth,
@@ -38,10 +61,31 @@ export function EnhancedAnalyticsDashboard() {
     revenueMetrics,
     engagementMetrics,
     assessmentAnalytics,
+    chatbotMetrics,
+    teamMetrics,
     loading,
     refreshing,
     handleRefresh,
-  } = useAnalyticsData();
+    fetchAllAnalytics,
+  } = useAnalyticsData({ dateRange, forecastDays });
+
+  // View configuration state
+  const [currentViewConfig, setCurrentViewConfig] = useState<ViewConfig>({
+    visibleSections: ['overview', 'users', 'courses', 'revenue', 'assessments', 'chatbot', 'teams', 'predictive'],
+    defaultTab: 'overview',
+    refreshInterval: 300000, // 5 minutes
+  });
+
+  const handleViewLoad = (config: ViewConfig) => {
+    setCurrentViewConfig(config);
+    if (config.defaultTab) {
+      setActiveTab(config.defaultTab);
+    }
+  };
+
+  const handleAutoRefresh = async () => {
+    await fetchAllAnalytics(dateRange, forecastDays);
+  };
 
   if (loading) {
     return (
@@ -63,15 +107,24 @@ export function EnhancedAnalyticsDashboard() {
           <p className="text-muted-foreground mt-1">Platform performance and insights</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleRefresh} disabled={refreshing}>
+          <Button variant="outline" onClick={() => handleRefresh(dateRange, forecastDays)} disabled={refreshing}>
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
-          <Button variant="outline">
-            <Download className="h-4 w-4 mr-2" />
-            Export Report
-          </Button>
         </div>
+      </div>
+
+      {/* Controls Row */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <DateRangeFilter />
+        <AutoRefreshControl
+          onRefresh={handleAutoRefresh}
+          defaultInterval={currentViewConfig.refreshInterval}
+        />
+        <CustomViewSelector
+          currentConfig={currentViewConfig}
+          onViewLoad={handleViewLoad}
+        />
       </div>
 
       {/* Platform Overview Metrics */}
@@ -79,27 +132,55 @@ export function EnhancedAnalyticsDashboard() {
 
       {/* Detailed Analytics Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="overview">
-            <PieChartIcon className="h-4 w-4 mr-2" />
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="users">
-            <Users className="h-4 w-4 mr-2" />
-            Users
-          </TabsTrigger>
-          <TabsTrigger value="courses">
-            <BookOpen className="h-4 w-4 mr-2" />
-            Courses
-          </TabsTrigger>
-          <TabsTrigger value="revenue">
-            <DollarSign className="h-4 w-4 mr-2" />
-            Revenue
-          </TabsTrigger>
-          <TabsTrigger value="assessments">
-            <Target className="h-4 w-4 mr-2" />
-            Assessments
-          </TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
+          {currentViewConfig.visibleSections.includes('overview') && (
+            <TabsTrigger value="overview">
+              <PieChartIcon className="h-4 w-4 mr-2" />
+              Overview
+            </TabsTrigger>
+          )}
+          {currentViewConfig.visibleSections.includes('users') && (
+            <TabsTrigger value="users">
+              <Users className="h-4 w-4 mr-2" />
+              Users
+            </TabsTrigger>
+          )}
+          {currentViewConfig.visibleSections.includes('courses') && (
+            <TabsTrigger value="courses">
+              <BookOpen className="h-4 w-4 mr-2" />
+              Courses
+            </TabsTrigger>
+          )}
+          {currentViewConfig.visibleSections.includes('revenue') && (
+            <TabsTrigger value="revenue">
+              <DollarSign className="h-4 w-4 mr-2" />
+              Revenue
+            </TabsTrigger>
+          )}
+          {currentViewConfig.visibleSections.includes('assessments') && (
+            <TabsTrigger value="assessments">
+              <Target className="h-4 w-4 mr-2" />
+              Assessments
+            </TabsTrigger>
+          )}
+          {currentViewConfig.visibleSections.includes('chatbot') && (
+            <TabsTrigger value="chatbot">
+              <MessageSquare className="h-4 w-4 mr-2" />
+              Chatbot
+            </TabsTrigger>
+          )}
+          {currentViewConfig.visibleSections.includes('teams') && (
+            <TabsTrigger value="teams">
+              <UsersIcon className="h-4 w-4 mr-2" />
+              Teams
+            </TabsTrigger>
+          )}
+          {currentViewConfig.visibleSections.includes('predictive') && (
+            <TabsTrigger value="predictive">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              Predictive
+            </TabsTrigger>
+          )}
         </TabsList>
 
         {/* Overview Tab */}
@@ -141,7 +222,39 @@ export function EnhancedAnalyticsDashboard() {
           </div>
           <AssessmentMetricsCard data={assessmentAnalytics} />
         </TabsContent>
+
+        {/* Chatbot Analytics Tab */}
+        {currentViewConfig.visibleSections.includes('chatbot') && (
+          <TabsContent value="chatbot" className="space-y-6">
+            <ChatbotAnalyticsTab />
+          </TabsContent>
+        )}
+
+        {/* Team Analytics Tab */}
+        {currentViewConfig.visibleSections.includes('teams') && (
+          <TabsContent value="teams" className="space-y-6">
+            <TeamAnalyticsTab />
+          </TabsContent>
+        )}
+
+        {/* Predictive Analytics Tab */}
+        {currentViewConfig.visibleSections.includes('predictive') && (
+          <TabsContent value="predictive" className="space-y-6">
+            <PredictiveAnalyticsSection />
+          </TabsContent>
+        )}
       </Tabs>
     </div>
+  );
+}
+
+/**
+ * Main dashboard component wrapped with DateRangeProvider
+ */
+export function EnhancedAnalyticsDashboard() {
+  return (
+    <DateRangeProvider>
+      <DashboardContent />
+    </DateRangeProvider>
   );
 }

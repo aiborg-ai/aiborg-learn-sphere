@@ -32,9 +32,7 @@ export class TeamAnalyticsService {
   /**
    * Get high-level progress summary for organization
    */
-  static async getProgressSummary(
-    organizationId: string
-  ): Promise<TeamProgressSummary> {
+  static async getProgressSummary(organizationId: string): Promise<TeamProgressSummary> {
     const { data, error } = await supabase
       .from('team_progress_summary')
       .select('*')
@@ -48,9 +46,7 @@ export class TeamAnalyticsService {
   /**
    * Get cached dashboard data (faster, updated hourly)
    */
-  static async getCachedDashboard(
-    organizationId: string
-  ): Promise<TeamProgressSummary> {
+  static async getCachedDashboard(organizationId: string): Promise<TeamProgressSummary> {
     const { data, error } = await supabase
       .from('team_dashboard_cache')
       .select('*')
@@ -243,9 +239,7 @@ export class TeamAnalyticsService {
   /**
    * Compare performance across departments
    */
-  static async getDepartmentComparison(
-    organizationId: string
-  ): Promise<DepartmentComparison[]> {
+  static async getDepartmentComparison(organizationId: string): Promise<DepartmentComparison[]> {
     const { data, error } = await supabase.rpc('get_department_comparison', {
       p_organization_id: organizationId,
     });
@@ -269,7 +263,7 @@ export class TeamAnalyticsService {
 
     // Group by department
     const deptMap = new Map<string, number>();
-    data.forEach((member) => {
+    data.forEach(member => {
       const dept = member.department || 'Unassigned';
       deptMap.set(dept, (deptMap.get(dept) || 0) + 1);
     });
@@ -302,9 +296,7 @@ export class TeamAnalyticsService {
   /**
    * Get course completion rates for organization
    */
-  static async getCourseCompletionRates(
-    organizationId: string
-  ): Promise<
+  static async getCourseCompletionRates(organizationId: string): Promise<
     Array<{
       courseId: string;
       courseTitle: string;
@@ -320,7 +312,7 @@ export class TeamAnalyticsService {
     if (error) {
       // Fallback query if function doesn't exist
       const popularCourses = await this.getPopularCourses(organizationId, 100);
-      return popularCourses.map((course) => ({
+      return popularCourses.map(course => ({
         courseId: course.course_id,
         courseTitle: course.course_title,
         enrollments: course.enrollment_count,
@@ -351,19 +343,13 @@ export class TeamAnalyticsService {
       .from('organization_members')
       .select('*', { count: 'exact', head: true })
       .eq('organization_id', organizationId)
-      .gte(
-        'profiles.last_login',
-        new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-      );
+      .gte('profiles.last_login', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
 
     const { count: last90Days } = await supabase
       .from('organization_members')
       .select('*', { count: 'exact', head: true })
       .eq('organization_id', organizationId)
-      .gte(
-        'profiles.last_login',
-        new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString()
-      );
+      .gte('profiles.last_login', new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString());
 
     return {
       today: todayCount || 0,
@@ -381,9 +367,7 @@ export class TeamAnalyticsService {
 
     if (summary.total_members === 0) return 0;
 
-    return Math.round(
-      (summary.active_members_30d / summary.total_members) * 100 * 100
-    ) / 100;
+    return Math.round((summary.active_members_30d / summary.total_members) * 100 * 100) / 100;
   }
 
   // ============================================================================
@@ -398,15 +382,13 @@ export class TeamAnalyticsService {
   ): Promise<Array<Record<string, string | number>>> {
     const members = await this.getMemberActivities(organizationId);
 
-    return members.map((member) => ({
+    return members.map(member => ({
       Name: member.full_name || 'N/A',
       Email: member.email,
       Department: member.department || 'Unassigned',
       Role: member.org_role,
       'Member Since': new Date(member.member_since).toLocaleDateString(),
-      'Last Login': member.last_login
-        ? new Date(member.last_login).toLocaleDateString()
-        : 'Never',
+      'Last Login': member.last_login ? new Date(member.last_login).toLocaleDateString() : 'Never',
       'Courses Enrolled': member.courses_enrolled,
       'Courses Completed': member.courses_completed,
       'Courses In Progress': member.courses_in_progress,
@@ -427,7 +409,7 @@ export class TeamAnalyticsService {
   ): Promise<Array<Record<string, string | number>>> {
     const assignments = await this.getAssignmentSummaries(organizationId);
 
-    return assignments.map((assignment) => ({
+    return assignments.map(assignment => ({
       'Assignment Title': assignment.assignment_title,
       'Course Title': assignment.course_title,
       Mandatory: assignment.is_mandatory ? 'Yes' : 'No',
@@ -442,8 +424,7 @@ export class TeamAnalyticsService {
       'Completion Rate (%)': assignment.completion_rate_percentage,
       'Engagement Rate (%)': assignment.engagement_rate_percentage,
       Status:
-        assignment.status.charAt(0).toUpperCase() +
-        assignment.status.slice(1).replace('_', ' '),
+        assignment.status.charAt(0).toUpperCase() + assignment.status.slice(1).replace('_', ' '),
     }));
   }
 

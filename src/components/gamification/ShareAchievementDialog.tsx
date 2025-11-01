@@ -14,15 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { AchievementShareCard } from './AchievementShareCard';
-import {
-  Share2,
-  Twitter,
-  Linkedin,
-  Facebook,
-  Link2,
-  Check,
-  Download,
-} from 'lucide-react';
+import { Share2, Twitter, Linkedin, Facebook, Link2, Check, Download } from 'lucide-react';
 import type { Achievement, UserAchievement } from '@/services/gamification';
 import {
   generateAchievementShareText,
@@ -119,9 +111,7 @@ export function ShareAchievementDialog({
             <Share2 className="h-5 w-5" />
             Share Your Achievement
           </DialogTitle>
-          <DialogDescription>
-            Show off your accomplishment to your network!
-          </DialogDescription>
+          <DialogDescription>Show off your accomplishment to your network!</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -191,11 +181,7 @@ export function ShareAchievementDialog({
 
             {/* Native Share (Mobile) */}
             {canUseWebShare() && (
-              <Button
-                variant="default"
-                className="w-full gap-2"
-                onClick={handleNativeShare}
-              >
+              <Button variant="default" className="w-full gap-2" onClick={handleNativeShare}>
                 <Share2 className="h-4 w-4" />
                 Share...
               </Button>
@@ -222,9 +208,7 @@ export function ShareAchievementDialog({
               {shareData.text}
             </p>
             {shareData.hashtags && (
-              <p className="text-sm text-blue-600 mt-2">
-                #{shareData.hashtags.join(' #')}
-              </p>
+              <p className="text-sm text-blue-600 mt-2">#{shareData.hashtags.join(' #')}</p>
             )}
           </div>
         </div>

@@ -38,12 +38,14 @@ export const useBookmarks = (options: UseBookmarksOptions = {}) => {
 
       let query = supabase
         .from('bookmarks')
-        .select(`
+        .select(
+          `
           *,
           course:courses(id, title, thumbnail),
           material:course_materials(id, title, material_type, file_url),
           assignment:homework_assignments(id, title, due_date)
-        `)
+        `
+        )
         .eq('user_id', user.id);
 
       // Apply filters
@@ -105,7 +107,7 @@ export const useBookmarks = (options: UseBookmarksOptions = {}) => {
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-      data.forEach((bookmark) => {
+      data.forEach(bookmark => {
         // Count by type
         by_type[bookmark.bookmark_type] = (by_type[bookmark.bookmark_type] || 0) + 1;
 
@@ -229,7 +231,7 @@ export const useBookmarks = (options: UseBookmarksOptions = {}) => {
   // Check if content is bookmarked
   const isBookmarked = useCallback(
     (contentId: string, type: Bookmark['bookmark_type']): boolean => {
-      return bookmarks.some((b) => {
+      return bookmarks.some(b => {
         if (b.bookmark_type !== type) return false;
 
         switch (type) {
@@ -253,7 +255,7 @@ export const useBookmarks = (options: UseBookmarksOptions = {}) => {
   const getBookmark = useCallback(
     (contentId: string, type: Bookmark['bookmark_type']): BookmarkWithRelations | null => {
       return (
-        bookmarks.find((b) => {
+        bookmarks.find(b => {
           if (b.bookmark_type !== type) return false;
 
           switch (type) {
@@ -277,14 +279,14 @@ export const useBookmarks = (options: UseBookmarksOptions = {}) => {
   // Get all folders
   const getFolders = useCallback((): string[] => {
     const folders = new Set<string>();
-    bookmarks.forEach((b) => folders.add(b.folder || 'default'));
+    bookmarks.forEach(b => folders.add(b.folder || 'default'));
     return Array.from(folders).sort();
   }, [bookmarks]);
 
   // Get all unique tags
   const getTags = useCallback((): string[] => {
     const tags = new Set<string>();
-    bookmarks.forEach((b) => b.tags.forEach((tag) => tags.add(tag)));
+    bookmarks.forEach(b => b.tags.forEach(tag => tags.add(tag)));
     return Array.from(tags).sort();
   }, [bookmarks]);
 

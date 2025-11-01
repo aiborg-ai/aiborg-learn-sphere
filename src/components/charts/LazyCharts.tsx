@@ -52,21 +52,73 @@ export const LazyRadarChart = createLazyChart(() =>
   import('recharts').then(mod => ({ default: mod.RadarChart }))
 );
 
-// Re-export chart primitives (these are lighter)
-export {
-  Line,
-  Bar,
-  Area,
-  Pie,
-  Cell,
-  Radar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-} from 'recharts';
+// Lazy-load chart primitives as well to avoid loading recharts eagerly
+export const LazyLine = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.Line }))
+);
+
+export const LazyBar = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.Bar }))
+);
+
+export const LazyArea = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.Area }))
+);
+
+export const LazyPie = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.Pie }))
+);
+
+export const LazyCell = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.Cell }))
+);
+
+export const LazyRadar = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.Radar }))
+);
+
+export const LazyXAxis = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.XAxis }))
+);
+
+export const LazyYAxis = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.YAxis }))
+);
+
+export const LazyCartesianGrid = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.CartesianGrid }))
+);
+
+export const LazyTooltip = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.Tooltip }))
+);
+
+export const LazyLegend = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.Legend }))
+);
+
+export const LazyResponsiveContainer = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.ResponsiveContainer }))
+);
+
+export const LazyPolarGrid = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.PolarGrid }))
+);
+
+export const LazyPolarAngleAxis = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.PolarAngleAxis }))
+);
+
+export const LazyPolarRadiusAxis = createLazyChart(() =>
+  import('recharts').then(mod => ({ default: mod.PolarRadiusAxis }))
+);
+
+/**
+ * Note: For better performance when using multiple chart components together,
+ * consider importing recharts directly in that specific component file:
+ *
+ * import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+ *
+ * This avoids multiple lazy loading delays when multiple chart elements are needed.
+ * Use the Lazy exports above only when charts appear conditionally or in separate routes.
+ */

@@ -16,7 +16,7 @@ import {
   Volume2,
   VolumeX,
   Info,
-  Lightbulb
+  Lightbulb,
 } from 'lucide-react';
 
 export interface ScenarioQuestionProps {
@@ -84,7 +84,7 @@ export const ScenarioQuestion: React.FC<ScenarioQuestionProps> = ({
                 src={question.media_url}
                 alt={question.media_caption || 'Scenario image'}
                 className="object-cover w-full h-full"
-                onError={(e) => {
+                onError={e => {
                   e.currentTarget.src = '/placeholder-image.png';
                 }}
               />
@@ -110,12 +110,7 @@ export const ScenarioQuestion: React.FC<ScenarioQuestionProps> = ({
                 onPause={() => setIsPlaying(false)}
                 muted={isMuted}
               >
-                <track
-                  kind="captions"
-                  srcLang="en"
-                  label="English"
-                  src=""
-                />
+                <track kind="captions" srcLang="en" label="English" src="" />
                 Your browser does not support the video tag.
               </video>
             </AspectRatio>
@@ -159,19 +154,10 @@ export const ScenarioQuestion: React.FC<ScenarioQuestionProps> = ({
                   muted={isMuted}
                   className="flex-1"
                 >
-                  <track
-                    kind="captions"
-                    srcLang="en"
-                    label="English"
-                    src=""
-                  />
+                  <track kind="captions" srcLang="en" label="English" src="" />
                   Your browser does not support the audio tag.
                 </audio>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsMuted(!isMuted)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => setIsMuted(!isMuted)}>
                   {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                 </Button>
               </div>
@@ -222,11 +208,7 @@ export const ScenarioQuestion: React.FC<ScenarioQuestionProps> = ({
                 <Info className="h-4 w-4" />
                 Scenario
               </CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowContext(!showContext)}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setShowContext(!showContext)}>
                 {showContext ? 'Hide' : 'Show'} Context
               </Button>
             </div>
@@ -265,7 +247,7 @@ export const ScenarioQuestion: React.FC<ScenarioQuestionProps> = ({
             >
               {question.options
                 .sort((a, b) => a.order_index - b.order_index)
-                .map((option) => (
+                .map(option => (
                   <div
                     key={option.id}
                     className={`flex items-start space-x-3 p-4 rounded-lg border-2 transition-colors ${
@@ -291,7 +273,7 @@ export const ScenarioQuestion: React.FC<ScenarioQuestionProps> = ({
             <div className="space-y-3">
               {question.options
                 .sort((a, b) => a.order_index - b.order_index)
-                .map((option) => (
+                .map(option => (
                   <div
                     key={option.id}
                     className={`flex items-start space-x-3 p-4 rounded-lg border-2 transition-colors ${

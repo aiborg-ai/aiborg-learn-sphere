@@ -35,7 +35,7 @@ export class PathMetadataService {
       beginner: 'foundational',
       intermediate: 'applied',
       advanced: 'advanced',
-      expert: 'strategic'
+      expert: 'strategic',
     };
     return mapping[level] ?? 'foundational';
   }

@@ -35,7 +35,7 @@ export interface Column<T> {
   /** Is this column sortable? */
   sortable?: boolean;
   /** Custom cell renderer */
-  render?: (value: any, row: T, index: number) => ReactNode;
+  render?: (value: unknown, row: T, index: number) => ReactNode;
   /** Column alignment */
   align?: 'left' | 'center' | 'right';
   /** Column width */
@@ -71,7 +71,7 @@ export interface AccessibleTableProps<T> {
  * ACCESSIBLE TABLE COMPONENT
  * ============================================================================ */
 
-export function AccessibleTable<T extends Record<string, any>>({
+export function AccessibleTable<T extends Record<string, unknown>>({
   caption,
   srOnlyCaption = false,
   columns,

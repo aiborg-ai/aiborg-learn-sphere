@@ -13,14 +13,14 @@ export class CompetencyService {
    */
   static async getCompetencyMatrix(userId: string): Promise<CompetencySnapshot | null> {
     try {
-      const { data: matrix, error: matrixError } = await supabase.rpc('get_competency_matrix', {
+      const { data: _matrix, error: matrixError } = await supabase.rpc('get_competency_matrix', {
         p_user_id: userId,
       });
 
       if (matrixError) throw matrixError;
 
       // Create snapshot
-      const { data: snapshotId, error: snapshotError } = await supabase.rpc(
+      const { data: _snapshotId, error: snapshotError } = await supabase.rpc(
         'create_competency_snapshot',
         { p_user_id: userId }
       );

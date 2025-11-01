@@ -68,7 +68,11 @@ export default function DashboardRefactored() {
   const { enrollments } = useEnrollments();
   const { courses } = useCourses();
   const { resources, loading: resourcesLoading, trackResourceView } = useUserResources(user?.id);
-  const { tickets, statistics: ticketStats, loading: ticketsLoading } = useAttendanceTickets(user?.id);
+  const {
+    tickets,
+    statistics: ticketStats,
+    loading: ticketsLoading,
+  } = useAttendanceTickets(user?.id);
   const navigate = useNavigate();
 
   const fetchDashboardData = useCallback(async () => {

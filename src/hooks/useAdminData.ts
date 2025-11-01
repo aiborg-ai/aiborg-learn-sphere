@@ -68,10 +68,9 @@ export function useAdminData(): UseAdminDataReturn {
 
       if (coursesError) throw coursesError;
 
-      const coursesWithAudiences = (coursesData || []).map((course) => ({
+      const coursesWithAudiences = (coursesData || []).map(course => ({
         ...course,
-        audiences:
-          course.course_audiences?.map((ca: { audience: string }) => ca.audience) || [],
+        audiences: course.course_audiences?.map((ca: { audience: string }) => ca.audience) || [],
       }));
 
       // Fetch announcements

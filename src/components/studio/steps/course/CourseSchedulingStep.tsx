@@ -54,7 +54,7 @@ export function CourseSchedulingStep({ data, onUpdate }: StepComponentProps<Cour
 
       {/* Advanced Scheduling */}
       <div className="space-y-2">
-        <Label className="text-base">Advanced Scheduling (Optional)</Label>
+        <div className="text-base font-medium">Advanced Scheduling (Optional)</div>
         <p className="text-sm text-muted-foreground">
           Set up visibility windows, recurring sessions, or time-based access control
         </p>

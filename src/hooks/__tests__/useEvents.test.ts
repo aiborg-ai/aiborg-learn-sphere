@@ -418,13 +418,7 @@ describe('useEvents', () => {
     it('should handle events with multiple activities', async () => {
       const eventWithActivities: Event = {
         ...mockEvent,
-        activities: [
-          'Keynote Speech',
-          'Panel Discussion',
-          'Networking',
-          'Workshop',
-          'Demo',
-        ],
+        activities: ['Keynote Speech', 'Panel Discussion', 'Networking', 'Workshop', 'Demo'],
       };
 
       const mockFrom = vi.fn().mockReturnValue({

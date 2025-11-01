@@ -10,7 +10,7 @@ import type {
   AssessmentData,
   Course,
   Exercise,
-  PriorityCategory
+  PriorityCategory,
 } from './types';
 
 export class ContentSelectionService {
@@ -41,7 +41,7 @@ export class ContentSelectionService {
           skill_tags: [category.name],
           reason_for_inclusion: `Builds foundation in ${category.name} (current score: ${Math.round(category.score)}%)`,
           addresses_weaknesses: [category.name],
-          confidence_score: 0.9
+          confidence_score: 0.9,
         });
       });
     });
@@ -76,7 +76,7 @@ export class ContentSelectionService {
           skill_tags: [category.name],
           reason_for_inclusion: `Core learning for ${category.name}`,
           addresses_weaknesses: [category.name],
-          confidence_score: 0.85
+          confidence_score: 0.85,
         });
 
         const exercises = this.findRelatedExercises(resources.exercises, course.id);
@@ -93,7 +93,7 @@ export class ContentSelectionService {
             skill_tags: [category.name],
             reason_for_inclusion: 'Reinforce learning with hands-on practice',
             addresses_weaknesses: [category.name],
-            confidence_score: 0.8
+            confidence_score: 0.8,
           });
         });
       });
@@ -113,7 +113,7 @@ export class ContentSelectionService {
     const items: PathItem[] = [];
     const workshops = resources.workshops.slice(0, 2);
 
-    workshops.forEach((workshop) => {
+    workshops.forEach(workshop => {
       items.push({
         item_type: 'workshop',
         item_id: workshop.id.toString(),
@@ -124,7 +124,7 @@ export class ContentSelectionService {
         estimated_hours: 4,
         is_required: false,
         reason_for_inclusion: 'Apply learning in practical, hands-on workshop',
-        confidence_score: 0.75
+        confidence_score: 0.75,
       });
     });
 
@@ -137,8 +137,10 @@ export class ContentSelectionService {
         const title = (c.title ?? '').toLowerCase();
         const desc = (c.description ?? '').toLowerCase();
         const categoryName = category.name.toLowerCase();
-        return (title.includes(categoryName) || desc.includes(categoryName)) &&
-               (c.difficulty_level === 'beginner' || c.difficulty_level === 'foundational');
+        return (
+          (title.includes(categoryName) || desc.includes(categoryName)) &&
+          (c.difficulty_level === 'beginner' || c.difficulty_level === 'foundational')
+        );
       })
       .slice(0, 1);
   }
@@ -155,9 +157,7 @@ export class ContentSelectionService {
   }
 
   private findRelatedExercises(exercises: Exercise[], courseId: string | number): Exercise[] {
-    return exercises
-      .filter((e: Exercise) => e.course_id === courseId)
-      .slice(0, 1);
+    return exercises.filter((e: Exercise) => e.course_id === courseId).slice(0, 1);
   }
 }
 

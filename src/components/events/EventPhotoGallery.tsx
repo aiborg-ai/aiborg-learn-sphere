@@ -1,12 +1,7 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Image as ImageIcon, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { EventPhoto } from '@/hooks/useEvents';
@@ -99,10 +94,7 @@ export function EventPhotoGallery({ photos, eventTitle }: EventPhotoGalleryProps
 
         {photos.length > 6 && (
           <div className="text-center mt-6">
-            <Button
-              variant="outline"
-              onClick={() => setShowAllPhotos(!showAllPhotos)}
-            >
+            <Button variant="outline" onClick={() => setShowAllPhotos(!showAllPhotos)}>
               {showAllPhotos ? 'Show Less' : `View All ${photos.length} Photos`}
             </Button>
           </div>
@@ -112,21 +104,13 @@ export function EventPhotoGallery({ photos, eventTitle }: EventPhotoGalleryProps
       {/* Lightbox Dialog */}
       {selectedPhotoIndex !== null && (
         <Dialog open={true} onOpenChange={closeLightbox}>
-          <DialogContent
-            className="max-w-5xl max-h-[90vh] p-0"
-            onKeyDown={handleKeyDown}
-          >
+          <DialogContent className="max-w-5xl max-h-[90vh] p-0" onKeyDown={handleKeyDown}>
             <DialogHeader className="p-4 pb-2">
               <DialogTitle className="flex items-center justify-between">
                 <span>
                   {eventTitle} - Photo {selectedPhotoIndex + 1} of {photos.length}
                 </span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={closeLightbox}
-                  className="h-8 w-8"
-                >
+                <Button variant="ghost" size="icon" onClick={closeLightbox} className="h-8 w-8">
                   <X className="h-4 w-4" />
                 </Button>
               </DialogTitle>

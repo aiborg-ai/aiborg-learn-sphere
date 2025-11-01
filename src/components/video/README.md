@@ -5,9 +5,11 @@ This directory contains the refactored EnhancedVideoPlayer component and its sub
 ## Structure
 
 ### Main Component
+
 - **EnhancedVideoPlayer.tsx** - Main orchestrator component that combines all sub-components
 
 ### Sub-Components
+
 - **VideoControls.tsx** - Video playback controls (play, pause, volume, speed, fullscreen)
 - **VideoChapters.tsx** - Chapter navigation interface
 - **VideoNotes.tsx** - Note-taking functionality with timestamps
@@ -16,6 +18,7 @@ This directory contains the refactored EnhancedVideoPlayer component and its sub
 - **VideoSidebar.tsx** - Sidebar that contains chapters, notes, and transcript tabs
 
 ### Custom Hooks
+
 - **useVideoPlayer.ts** - Video player state and controls (play, pause, seek, volume, etc.)
 - **useVideoProgress.ts** - Progress tracking and persistence to Supabase
 - **useVideoNotes.ts** - Note management (create, update, delete notes)
@@ -23,6 +26,7 @@ This directory contains the refactored EnhancedVideoPlayer component and its sub
 - **useVideoChapters.ts** - Chapter navigation and tracking
 
 ### Utilities
+
 - **types.ts** - TypeScript type definitions
 - **utils.ts** - Utility functions (e.g., formatTime)
 - **index.ts** - Barrel export for clean imports
@@ -39,7 +43,7 @@ import { EnhancedVideoPlayer } from '@/components/video';
   title="My Video"
   chapters={[
     { id: '1', title: 'Intro', startTime: 0, endTime: 60 },
-    { id: '2', title: 'Main Content', startTime: 60, endTime: 300 }
+    { id: '2', title: 'Main Content', startTime: 60, endTime: 300 },
   ]}
   transcript="Video transcript text..."
   quizzes={[
@@ -48,11 +52,11 @@ import { EnhancedVideoPlayer } from '@/components/video';
       timestamp: 120,
       question: 'What is 2+2?',
       options: ['3', '4', '5', '6'],
-      correctAnswer: 1
-    }
+      correctAnswer: 1,
+    },
   ]}
-  onProgressUpdate={(progress) => console.log('Progress:', progress)}
-/>
+  onProgressUpdate={progress => console.log('Progress:', progress)}
+/>;
 ```
 
 ## Features
@@ -68,4 +72,5 @@ import { EnhancedVideoPlayer } from '@/components/video';
 
 ## Backward Compatibility
 
-The original `/components/EnhancedVideoPlayer.tsx` re-exports from this directory, maintaining backward compatibility with existing imports.
+The original `/components/EnhancedVideoPlayer.tsx` re-exports from this directory, maintaining
+backward compatibility with existing imports.

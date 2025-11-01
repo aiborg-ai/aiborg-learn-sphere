@@ -29,7 +29,7 @@ export type {
   Course,
   Workshop,
   Exercise,
-  DifficultyMapping
+  DifficultyMapping,
 } from './types';
 
 export { DIFFICULTY_MAP, LEVEL_TO_DIFFICULTY } from './types';

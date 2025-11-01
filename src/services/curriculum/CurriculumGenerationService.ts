@@ -23,6 +23,9 @@ export interface LearnerProfile {
   latest_assessment_id?: string;
   irt_ability_score?: number;
   proficiency_areas?: ProficiencyArea[];
+  is_primary?: boolean;
+  is_active?: boolean;
+  created_at?: string;
 }
 
 export interface LearningGoal {
@@ -66,8 +69,7 @@ export interface GeneratedCurriculum {
   total_courses: number;
   generation_metadata: {
     algorithm_version: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- OpenAI API response structure
-    profile_snapshot: any;
+    profile_snapshot: Record<string, unknown>;
     generation_timestamp: string;
     courses_analyzed: number;
     courses_selected: number;
@@ -207,7 +209,7 @@ class CurriculumGenerationService {
     profile: LearnerProfile,
 
     courses: Course[],
-    assessment: any | null
+    assessment: Record<string, unknown> | null
   ): Promise<GeneratedCurriculum> {
     logger.info(`Starting curriculum generation for profile: ${profile.profile_name}`);
 
@@ -287,7 +289,7 @@ class CurriculumGenerationService {
   private scoreCourse(
     course: Course,
     profile: LearnerProfile,
-    assessment: any | null
+    assessment: Record<string, unknown> | null
   ): ScoredCourse {
     const skillGapScore = this.calculateSkillGapCoverage(course, profile, assessment);
     const goalScore = this.calculateGoalAlignment(course, profile);
@@ -329,7 +331,7 @@ class CurriculumGenerationService {
   private calculateSkillGapCoverage(
     course: Course,
     profile: LearnerProfile,
-    assessment: any | null
+    _assessment: Record<string, unknown> | null
   ): number {
     if (!assessment || !profile.proficiency_areas) return 0.5; // Default moderate score
 
@@ -375,7 +377,7 @@ class CurriculumGenerationService {
   private calculateDifficultyFit(
     course: Course,
     profile: LearnerProfile,
-    assessment: any | null
+    _assessment: Record<string, unknown> | null
   ): number {
     const courseLevel = course.level?.toLowerCase() || 'intermediate';
     const profileLevel = profile.experience_level;
@@ -468,7 +470,7 @@ class CurriculumGenerationService {
   private identifySkillGapsAddressed(
     course: Course,
     profile: LearnerProfile,
-    assessment: any | null
+    _assessment: Record<string, unknown> | null
   ): string[] {
     if (!profile.proficiency_areas) return [];
 
@@ -669,7 +671,7 @@ class CurriculumGenerationService {
   /**
    * Helper: Fetch assessment data
    */
-  private async fetchAssessment(assessmentId: string): Promise<any> {
+  private async fetchAssessment(assessmentId: string): Promise<Record<string, unknown>> {
     const { data, error } = await supabase
       .from('user_ai_assessments')
       .select('*')

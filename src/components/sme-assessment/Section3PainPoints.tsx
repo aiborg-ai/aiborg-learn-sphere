@@ -72,7 +72,7 @@ export function Section3PainPoints({ formData, onUpdate }: Section3PainPointsPro
                 <Input
                   id={`pain-point-${index}`}
                   value={painPoint.painPoint}
-                  onChange={(e) => updatePainPoint(index, 'painPoint', e.target.value)}
+                  onChange={e => updatePainPoint(index, 'painPoint', e.target.value)}
                   placeholder="e.g., Slow onboarding"
                 />
               </div>
@@ -83,7 +83,7 @@ export function Section3PainPoints({ formData, onUpdate }: Section3PainPointsPro
                   <span className="text-sm text-muted-foreground w-20">Low</span>
                   <Slider
                     value={[painPoint.currentImpact]}
-                    onValueChange={(value) => updatePainPoint(index, 'currentImpact', value[0])}
+                    onValueChange={value => updatePainPoint(index, 'currentImpact', value[0])}
                     min={1}
                     max={5}
                     step={1}
@@ -103,7 +103,7 @@ export function Section3PainPoints({ formData, onUpdate }: Section3PainPointsPro
                 <Textarea
                   id={`ai-capability-${index}`}
                   value={painPoint.aiCapabilityToAddress}
-                  onChange={(e) => updatePainPoint(index, 'aiCapabilityToAddress', e.target.value)}
+                  onChange={e => updatePainPoint(index, 'aiCapabilityToAddress', e.target.value)}
                   placeholder="e.g., Chatbots/Automation"
                   rows={2}
                   className="resize-none"
@@ -116,7 +116,7 @@ export function Section3PainPoints({ formData, onUpdate }: Section3PainPointsPro
                   <span className="text-sm text-muted-foreground w-20">Low</span>
                   <Slider
                     value={[painPoint.impactAfterAI]}
-                    onValueChange={(value) => updatePainPoint(index, 'impactAfterAI', value[0])}
+                    onValueChange={value => updatePainPoint(index, 'impactAfterAI', value[0])}
                     min={1}
                     max={5}
                     step={1}

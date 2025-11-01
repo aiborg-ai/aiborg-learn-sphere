@@ -40,7 +40,7 @@ export function EventFormFields({
 
       {/* Rich Text Editor for Description */}
       <div className="space-y-2">
-        <Label>Description * (supports rich formatting)</Label>
+        <div className="text-sm font-medium">Description * (supports rich formatting)</div>
         <RichTextEditor
           content={currentDescription}
           onChange={content => setValue('description', content)}
@@ -51,7 +51,7 @@ export function EventFormFields({
 
       {/* Event Image Upload */}
       <div className="space-y-2">
-        <Label>Event Cover Image</Label>
+        <div className="text-sm font-medium">Event Cover Image</div>
         <MediaUploadButton
           bucketName="event-photos"
           onUploadComplete={url => setValue('image_url', url)}

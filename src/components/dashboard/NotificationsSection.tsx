@@ -24,7 +24,7 @@ interface NotificationsSectionProps {
 export function NotificationsSection({
   notifications,
   onMarkAsRead,
-  onMarkAllAsRead
+  onMarkAllAsRead,
 }: NotificationsSectionProps) {
   const navigate = useNavigate();
 
@@ -67,16 +67,10 @@ export function NotificationsSection({
               <Bell className="h-5 w-5" />
               Notifications
             </CardTitle>
-            <CardDescription>
-              Stay updated with important announcements and updates
-            </CardDescription>
+            <CardDescription>Stay updated with important announcements and updates</CardDescription>
           </div>
           {unreadNotifications.length > 0 && onMarkAllAsRead && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onMarkAllAsRead}
-            >
+            <Button variant="outline" size="sm" onClick={onMarkAllAsRead}>
               <Check className="h-3 w-3 mr-1" />
               Mark all as read
             </Button>
@@ -89,19 +83,15 @@ export function NotificationsSection({
             {/* Unread Notifications */}
             {unreadNotifications.length > 0 && (
               <div>
-                <h3 className="font-semibold text-sm text-muted-foreground mb-3">
-                  NEW
-                </h3>
+                <h3 className="font-semibold text-sm text-muted-foreground mb-3">NEW</h3>
                 <div className="space-y-2">
-                  {unreadNotifications.map((notification) => (
+                  {unreadNotifications.map(notification => (
                     <div
                       key={notification.id}
                       className="p-4 border-2 border-primary/20 bg-primary/5 rounded-lg hover:bg-primary/10 transition-colors"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="mt-1">
-                          {getNotificationIcon(notification.type)}
-                        </div>
+                        <div className="mt-1">{getNotificationIcon(notification.type)}</div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between">
                             <h4 className="font-semibold">{notification.title}</h4>
@@ -150,19 +140,15 @@ export function NotificationsSection({
             {/* Read Notifications */}
             {readNotifications.length > 0 && (
               <div>
-                <h3 className="font-semibold text-sm text-muted-foreground mb-3">
-                  EARLIER
-                </h3>
+                <h3 className="font-semibold text-sm text-muted-foreground mb-3">EARLIER</h3>
                 <div className="space-y-2">
-                  {readNotifications.map((notification) => (
+                  {readNotifications.map(notification => (
                     <div
                       key={notification.id}
                       className="p-4 border rounded-lg opacity-75 hover:opacity-100 transition-opacity"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="mt-1">
-                          {getNotificationIcon(notification.type)}
-                        </div>
+                        <div className="mt-1">{getNotificationIcon(notification.type)}</div>
                         <div className="flex-1 min-w-0">
                           <h4 className="font-medium">{notification.title}</h4>
                           <p className="text-sm text-muted-foreground mt-1">

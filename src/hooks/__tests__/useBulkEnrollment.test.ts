@@ -69,7 +69,8 @@ describe('useBulkEnrollment', () => {
 
   describe('processEnrollments', () => {
     it('should successfully process single enrollment', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // getUserByEmail
           select: vi.fn().mockReturnValue({
@@ -166,7 +167,8 @@ describe('useBulkEnrollment', () => {
     });
 
     it('should handle existing enrollment error', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // getUserByEmail
           select: vi.fn().mockReturnValue({
@@ -303,11 +305,24 @@ describe('useBulkEnrollment', () => {
 
     it('should handle mixed success and failure results', async () => {
       const enrollments: BulkEnrollmentRow[] = [
-        { email: 'valid@example.com', course_id: 1, payment_status: 'completed', payment_amount: 1000, payment_method: 'stripe' },
-        { email: 'invalid@example.com', course_id: 1, payment_status: 'completed', payment_amount: 1000, payment_method: 'stripe' },
+        {
+          email: 'valid@example.com',
+          course_id: 1,
+          payment_status: 'completed',
+          payment_amount: 1000,
+          payment_method: 'stripe',
+        },
+        {
+          email: 'invalid@example.com',
+          course_id: 1,
+          payment_status: 'completed',
+          payment_amount: 1000,
+          payment_method: 'stripe',
+        },
       ];
 
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // First enrollment - success
           select: vi.fn().mockReturnValue({
@@ -407,9 +422,27 @@ describe('useBulkEnrollment', () => {
 
     it('should continue processing after individual failures', async () => {
       const enrollments: BulkEnrollmentRow[] = [
-        { email: 'valid@example.com', course_id: 1, payment_status: 'completed', payment_amount: 1000, payment_method: 'stripe' },
-        { email: 'invalid@example.com', course_id: 1, payment_status: 'completed', payment_amount: 1000, payment_method: 'stripe' },
-        { email: 'another@example.com', course_id: 1, payment_status: 'completed', payment_amount: 1000, payment_method: 'stripe' },
+        {
+          email: 'valid@example.com',
+          course_id: 1,
+          payment_status: 'completed',
+          payment_amount: 1000,
+          payment_method: 'stripe',
+        },
+        {
+          email: 'invalid@example.com',
+          course_id: 1,
+          payment_status: 'completed',
+          payment_amount: 1000,
+          payment_method: 'stripe',
+        },
+        {
+          email: 'another@example.com',
+          course_id: 1,
+          payment_status: 'completed',
+          payment_amount: 1000,
+          payment_method: 'stripe',
+        },
       ];
 
       const mockFrom = vi.fn().mockImplementation(() => ({

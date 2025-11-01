@@ -17,7 +17,7 @@ import type { ThreadCardProps } from '@/types/forum';
 export function ThreadCard({
   thread,
   onVote,
-  onBookmark,
+  onBookmark: _onBookmark,
   showCategory = true,
   compact = false,
 }: ThreadCardProps) {

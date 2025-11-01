@@ -135,7 +135,7 @@ export const useSession = (sessionId: string | null) => {
 
 // Hook to check if a user is already registered for a session
 export const useUserSessionRegistration = (sessionId: string | null, userEmail: string | null) => {
-  const [registration, setRegistration] = useState<any | null>(null);
+  const [registration, setRegistration] = useState<Record<string, unknown> | null>(null);
   const [isRegistered, setIsRegistered] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

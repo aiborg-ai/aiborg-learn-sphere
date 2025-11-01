@@ -34,7 +34,7 @@ export const useCourseMaterials = (courseId: number) => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const { data, error } = await supabase
         .from('course_materials')
         .select('*')
@@ -55,19 +55,22 @@ export const useCourseMaterials = (courseId: number) => {
     }
   }, [user, courseId]);
 
-  const isUserEnrolled = useCallback(async (courseId: number) => {
-    if (!user) return false;
-    
-    const { data } = await supabase
-      .from('enrollments')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('course_id', courseId)
-      .eq('payment_status', 'completed')
-      .single();
-    
-    return !!data;
-  }, [user]);
+  const isUserEnrolled = useCallback(
+    async (courseId: number) => {
+      if (!user) return false;
+
+      const { data } = await supabase
+        .from('enrollments')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('course_id', courseId)
+        .eq('payment_status', 'completed')
+        .single();
+
+      return !!data;
+    },
+    [user]
+  );
 
   useEffect(() => {
     fetchMaterials();
@@ -78,6 +81,6 @@ export const useCourseMaterials = (courseId: number) => {
     loading,
     error,
     refetch: fetchMaterials,
-    isUserEnrolled
+    isUserEnrolled,
   };
 };

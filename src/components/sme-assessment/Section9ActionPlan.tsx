@@ -1,4 +1,3 @@
-
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -66,7 +65,7 @@ export function Section9ActionPlan({ formData, onUpdate }: Section9ActionPlanPro
         <Textarea
           id="benefit-summary"
           value={formData.aiAdoptionBenefitSummary || ''}
-          onChange={(e) => onUpdate({ aiAdoptionBenefitSummary: e.target.value })}
+          onChange={e => onUpdate({ aiAdoptionBenefitSummary: e.target.value })}
           placeholder='e.g., "AI adoption strongly aligns with mission, enhances efficiency, and increases user satisfaction."'
           rows={3}
           className="resize-none"
@@ -91,7 +90,7 @@ export function Section9ActionPlan({ formData, onUpdate }: Section9ActionPlanPro
             </div>
             <Slider
               value={[formData.overallOpportunityRating || 3]}
-              onValueChange={(value) => onUpdate({ overallOpportunityRating: value[0] })}
+              onValueChange={value => onUpdate({ overallOpportunityRating: value[0] })}
               min={1}
               max={5}
               step={0.1}
@@ -106,7 +105,9 @@ export function Section9ActionPlan({ formData, onUpdate }: Section9ActionPlanPro
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <div className="text-sm font-medium">Recommended Next Steps <span className="text-red-500">*</span></div>
+          <div className="text-sm font-medium">
+            Recommended Next Steps <span className="text-red-500">*</span>
+          </div>
           <span className="text-xs text-muted-foreground">Add 3-5 actionable steps</span>
         </div>
 
@@ -118,7 +119,7 @@ export function Section9ActionPlan({ formData, onUpdate }: Section9ActionPlanPro
                 <Input
                   id={`next-step-${index}`}
                   value={step}
-                  onChange={(e) => updateNextStep(index, e.target.value)}
+                  onChange={e => updateNextStep(index, e.target.value)}
                   placeholder={`Step ${index + 1}: e.g., ${suggestedSteps[index % suggestedSteps.length]}`}
                   className="flex-1"
                 />
@@ -156,11 +157,13 @@ export function Section9ActionPlan({ formData, onUpdate }: Section9ActionPlanPro
         <Input
           id="completed-by"
           value={formData.completedBy || ''}
-          onChange={(e) => onUpdate({ completedBy: e.target.value })}
+          onChange={e => onUpdate({ completedBy: e.target.value })}
           placeholder="Your name or role"
           className="max-w-md"
         />
-        <p className="text-xs text-muted-foreground">Name of the person completing this assessment</p>
+        <p className="text-xs text-muted-foreground">
+          Name of the person completing this assessment
+        </p>
       </div>
 
       <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">

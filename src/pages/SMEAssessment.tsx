@@ -146,7 +146,7 @@ export default function SMEAssessment() {
     user,
     formData,
     companyId: companyProfileId,
-    onSuccess: assessmentId => {
+    onSuccess: _assessmentId => {
       toast({
         title: 'Assessment Completed',
         description: 'Your AI Opportunity Assessment has been submitted successfully.',

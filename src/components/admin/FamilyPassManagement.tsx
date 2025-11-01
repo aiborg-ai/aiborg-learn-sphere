@@ -120,13 +120,13 @@ export function FamilyPassManagement() {
     isLoading,
     grantFamilyPass,
     revokeFamilyPass,
-    bulkGrant,
+    bulkGrant: _bulkGrant,
     bulkRevoke,
     updateDates,
     extendGrant,
     isGranting,
-    isRevoking,
-    isBulkGranting,
+    isRevoking: _isRevoking,
+    isBulkGranting: _isBulkGranting,
     isBulkRevoking,
     isUpdatingDates,
   } = useAdminFamilyPass();
@@ -222,7 +222,7 @@ export function FamilyPassManagement() {
         notes: grantNotes || undefined,
       });
       setIsGrantModalOpen(false);
-    } catch (error) {
+    } catch {
       // Error handled by hook
     }
   };
@@ -246,7 +246,7 @@ export function FamilyPassManagement() {
         endDate: new Date(editEndDate),
       });
       setIsEditModalOpen(false);
-    } catch (error) {
+    } catch {
       // Error handled by hook
     }
   };
@@ -258,7 +258,7 @@ export function FamilyPassManagement() {
 
     try {
       await revokeFamilyPass({ grantId });
-    } catch (error) {
+    } catch {
       // Error handled by hook
     }
   };
@@ -266,7 +266,7 @@ export function FamilyPassManagement() {
   const handleExtend = async (grantId: string) => {
     try {
       await extendGrant(grantId, 1); // Extend by 1 month
-    } catch (error) {
+    } catch {
       // Error handled by hook
     }
   };
@@ -285,7 +285,7 @@ export function FamilyPassManagement() {
     try {
       await bulkRevoke(selectedGrantIds);
       setSelectedGrantIds([]);
-    } catch (error) {
+    } catch {
       // Error handled by hook
     }
   };
@@ -339,7 +339,10 @@ export function FamilyPassManagement() {
           </div>
 
           {/* Status Filter */}
-          <Select value={statusFilter} onValueChange={(v: any) => setStatusFilter(v)}>
+          <Select
+            value={statusFilter}
+            onValueChange={(v: string) => setStatusFilter(v as 'all' | 'active' | 'inactive')}
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>

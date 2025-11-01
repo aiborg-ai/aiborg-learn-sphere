@@ -20,7 +20,7 @@ export function Section1Mission({ formData, onUpdate }: Section1MissionProps) {
         <Input
           id="companyName"
           value={formData.companyName || ''}
-          onChange={(e) => onUpdate({ companyName: e.target.value })}
+          onChange={e => onUpdate({ companyName: e.target.value })}
           placeholder="Enter your company name"
           className="max-w-md"
         />
@@ -33,7 +33,7 @@ export function Section1Mission({ formData, onUpdate }: Section1MissionProps) {
         <Textarea
           id="companyMission"
           value={formData.companyMission || ''}
-          onChange={(e) => onUpdate({ companyMission: e.target.value })}
+          onChange={e => onUpdate({ companyMission: e.target.value })}
           placeholder='e.g., "Empower small businesses through affordable digital solutions."'
           rows={3}
           className="resize-none"
@@ -50,7 +50,7 @@ export function Section1Mission({ formData, onUpdate }: Section1MissionProps) {
         <Textarea
           id="aiEnhancement"
           value={formData.aiEnhancementDescription || ''}
-          onChange={(e) => onUpdate({ aiEnhancementDescription: e.target.value })}
+          onChange={e => onUpdate({ aiEnhancementDescription: e.target.value })}
           placeholder='e.g., "Automate repetitive tasks, enabling businesses to reduce operational costs."'
           rows={3}
           className="resize-none"
@@ -76,7 +76,7 @@ export function Section1Mission({ formData, onUpdate }: Section1MissionProps) {
             </div>
             <Slider
               value={[formData.strategicAlignmentRating || 3]}
-              onValueChange={(value) => onUpdate({ strategicAlignmentRating: value[0] })}
+              onValueChange={value => onUpdate({ strategicAlignmentRating: value[0] })}
               min={1}
               max={5}
               step={1}

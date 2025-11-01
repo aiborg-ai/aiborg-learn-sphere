@@ -239,11 +239,11 @@ export function useAudienceBreakdown(days: number = 30) {
           acc[aud].avg_response_time += msg.response_time_ms || 0;
           return acc;
         },
-        {} as Record<string, any>
+        {} as Record<string, Record<string, number | string>>
       );
 
       // Calculate averages
-      Object.values(breakdown || {}).forEach((aud: any) => {
+      Object.values(breakdown || {}).forEach((aud: Record<string, number>) => {
         aud.avg_response_time = Math.round(aud.avg_response_time / aud.total_messages);
       });
 
@@ -282,10 +282,10 @@ export function useErrorStats(days: number = 7) {
           if (msg.is_fallback) acc[day].fallbacks += 1;
           return acc;
         },
-        {} as Record<string, any>
+        {} as Record<string, Record<string, number | string>>
       );
 
-      return Object.values(dailyErrors || {}).sort((a: any, b: any) =>
+      return Object.values(dailyErrors || {}).sort((a: { date: string }, b: { date: string }) =>
         b.date.localeCompare(a.date)
       );
     },

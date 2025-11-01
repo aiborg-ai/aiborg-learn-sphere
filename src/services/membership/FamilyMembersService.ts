@@ -23,9 +23,7 @@ export class FamilyMembersService {
   /**
    * Add family member to subscription
    */
-  static async addFamilyMember(
-    params: AddFamilyMemberParams
-  ): Promise<FamilyMember> {
+  static async addFamilyMember(params: AddFamilyMemberParams): Promise<FamilyMember> {
     const { data: memberId, error } = await supabase.rpc('add_family_member', {
       p_subscription_id: params.subscription_id,
       p_member_name: params.member_name,
@@ -103,15 +101,10 @@ export class FamilyMembersService {
   /**
    * Get family members for a subscription
    */
-  static async getSubscriptionFamilyMembers(
-    subscriptionId: string
-  ): Promise<FamilyMember[]> {
-    const { data, error } = await supabase.rpc(
-      'get_subscription_family_members',
-      {
-        p_subscription_id: subscriptionId,
-      }
-    );
+  static async getSubscriptionFamilyMembers(subscriptionId: string): Promise<FamilyMember[]> {
+    const { data, error } = await supabase.rpc('get_subscription_family_members', {
+      p_subscription_id: subscriptionId,
+    });
 
     if (error) throw error;
 
@@ -177,12 +170,9 @@ export class FamilyMembersService {
    * Accept family invitation
    */
   static async acceptInvitation(invitationToken: string): Promise<string> {
-    const { data: memberId, error } = await supabase.rpc(
-      'accept_family_invitation',
-      {
-        p_invitation_token: invitationToken,
-      }
-    );
+    const { data: memberId, error } = await supabase.rpc('accept_family_invitation', {
+      p_invitation_token: invitationToken,
+    });
 
     if (error) throw error;
 
@@ -284,9 +274,7 @@ export class FamilyMembersService {
   /**
    * Get invitation by token
    */
-  static async getInvitationByToken(
-    token: string
-  ): Promise<FamilyMember | null> {
+  static async getInvitationByToken(token: string): Promise<FamilyMember | null> {
     const { data, error } = await supabase
       .from('family_members')
       .select('*')
@@ -300,10 +288,7 @@ export class FamilyMembersService {
     }
 
     // Check if invitation has expired
-    if (
-      data.invitation_expires_at &&
-      new Date(data.invitation_expires_at) < new Date()
-    ) {
+    if (data.invitation_expires_at && new Date(data.invitation_expires_at) < new Date()) {
       return null;
     }
 
@@ -332,27 +317,15 @@ export class FamilyMembersService {
     const members = await this.getSubscriptionFamilyMembers(subscriptionId);
 
     const totalMembers = members.length;
-    const activeMembers = members.filter((m) => m.status === 'active').length;
-    const pendingInvitations = members.filter((m) =>
+    const activeMembers = members.filter(m => m.status === 'active').length;
+    const pendingInvitations = members.filter(m =>
       ['pending_invitation', 'invitation_sent'].includes(m.status)
     ).length;
 
-    const totalCoursesEnrolled = members.reduce(
-      (sum, m) => sum + m.courses_enrolled_count,
-      0
-    );
-    const totalCoursesCompleted = members.reduce(
-      (sum, m) => sum + m.courses_completed_count,
-      0
-    );
-    const totalVaultItemsViewed = members.reduce(
-      (sum, m) => sum + m.vault_items_viewed,
-      0
-    );
-    const totalEventsAttended = members.reduce(
-      (sum, m) => sum + m.events_attended,
-      0
-    );
+    const totalCoursesEnrolled = members.reduce((sum, m) => sum + m.courses_enrolled_count, 0);
+    const totalCoursesCompleted = members.reduce((sum, m) => sum + m.courses_completed_count, 0);
+    const totalVaultItemsViewed = members.reduce((sum, m) => sum + m.vault_items_viewed, 0);
+    const totalEventsAttended = members.reduce((sum, m) => sum + m.events_attended, 0);
 
     return {
       totalMembers,
@@ -362,32 +335,25 @@ export class FamilyMembersService {
       totalCoursesCompleted,
       totalVaultItemsViewed,
       totalEventsAttended,
-      averageCoursesPerMember:
-        activeMembers > 0 ? totalCoursesEnrolled / activeMembers : 0,
+      averageCoursesPerMember: activeMembers > 0 ? totalCoursesEnrolled / activeMembers : 0,
       completionRate:
-        totalCoursesEnrolled > 0
-          ? (totalCoursesCompleted / totalCoursesEnrolled) * 100
-          : 0,
+        totalCoursesEnrolled > 0 ? (totalCoursesCompleted / totalCoursesEnrolled) * 100 : 0,
     };
   }
 
   /**
    * Get most active family member
    */
-  static async getMostActiveMember(
-    subscriptionId: string
-  ): Promise<FamilyMember | null> {
+  static async getMostActiveMember(subscriptionId: string): Promise<FamilyMember | null> {
     const members = await this.getSubscriptionFamilyMembers(subscriptionId);
 
     if (members.length === 0) return null;
 
     // Calculate activity score: courses completed + vault items viewed + events attended
-    const membersWithScore = members.map((member) => ({
+    const membersWithScore = members.map(member => ({
       ...member,
       activityScore:
-        member.courses_completed_count +
-        member.vault_items_viewed +
-        member.events_attended,
+        member.courses_completed_count + member.vault_items_viewed + member.events_attended,
     }));
 
     // Sort by activity score

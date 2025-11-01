@@ -14,9 +14,7 @@ export const validationPatterns = {
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
       'Password must contain uppercase, lowercase, and number'
     ),
-  phone: z
-    .string()
-    .regex(/^\+?[1-9]\d{9,14}$/, 'Invalid phone number'),
+  phone: z.string().regex(/^\+?[1-9]\d{9,14}$/, 'Invalid phone number'),
   url: z.string().url('Invalid URL'),
   username: z
     .string()
@@ -29,9 +27,7 @@ export const validationPatterns = {
     .max(50, 'Name must be less than 50 characters'),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)'),
   time: z.string().regex(/^\d{2}:\d{2}$/, 'Invalid time format (HH:MM)'),
-  currency: z
-    .string()
-    .regex(/^\d+(\.\d{1,2})?$/, 'Invalid currency format'),
+  currency: z.string().regex(/^\d+(\.\d{1,2})?$/, 'Invalid currency format'),
 };
 
 /**
@@ -45,27 +41,31 @@ export const authSchemas = {
     password: z.string().min(1, 'Password is required'),
   }),
 
-  signUp: z.object({
-    email: validationPatterns.email,
-    password: validationPatterns.password,
-    confirmPassword: z.string(),
-    displayName: validationPatterns.displayName.optional(),
-  }).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  }),
+  signUp: z
+    .object({
+      email: validationPatterns.email,
+      password: validationPatterns.password,
+      confirmPassword: z.string(),
+      displayName: validationPatterns.displayName.optional(),
+    })
+    .refine(data => data.password === data.confirmPassword, {
+      message: "Passwords don't match",
+      path: ['confirmPassword'],
+    }),
 
   forgotPassword: z.object({
     email: validationPatterns.email,
   }),
 
-  resetPassword: z.object({
-    password: validationPatterns.password,
-    confirmPassword: z.string(),
-  }).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  }),
+  resetPassword: z
+    .object({
+      password: validationPatterns.password,
+      confirmPassword: z.string(),
+    })
+    .refine(data => data.password === data.confirmPassword, {
+      message: "Passwords don't match",
+      path: ['confirmPassword'],
+    }),
 };
 
 /**
@@ -131,7 +131,10 @@ export const assignmentSchemas = {
     dueDate: validationPatterns.date,
     maxScore: z.number().positive('Max score must be positive'),
     allowedFileTypes: z.array(z.string()).min(1, 'At least one file type is required'),
-    maxFileSizeMb: z.number().positive('File size must be positive').max(100, 'Max file size is 100MB'),
+    maxFileSizeMb: z
+      .number()
+      .positive('File size must be positive')
+      .max(100, 'Max file size is 100MB'),
     allowLateSubmission: z.boolean(),
   }),
 
@@ -156,7 +159,9 @@ export const blogSchemas = {
     title: z.string().min(3, 'Title must be at least 3 characters'),
     content: z.string().min(100, 'Content must be at least 100 characters'),
     excerpt: z.string().max(200, 'Excerpt must be less than 200 characters').optional(),
-    slug: z.string().regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens'),
+    slug: z
+      .string()
+      .regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens'),
     categoryId: z.string().uuid('Invalid category'),
     tags: z.array(z.string()).optional(),
     published: z.boolean(),
@@ -204,7 +209,10 @@ export const reviewSchemas = {
   create: z.object({
     courseId: z.number().positive('Invalid course ID'),
     rating: z.number().min(1, 'Rating must be at least 1').max(5, 'Rating cannot exceed 5'),
-    comment: z.string().min(10, 'Review must be at least 10 characters').max(500, 'Review is too long'),
+    comment: z
+      .string()
+      .min(10, 'Review must be at least 10 characters')
+      .max(500, 'Review is too long'),
   }),
 };
 
@@ -218,7 +226,10 @@ export const contactSchemas = {
     name: validationPatterns.displayName,
     email: validationPatterns.email,
     subject: z.string().min(3, 'Subject must be at least 3 characters'),
-    message: z.string().min(10, 'Message must be at least 10 characters').max(1000, 'Message is too long'),
+    message: z
+      .string()
+      .min(10, 'Message must be at least 10 characters')
+      .max(1000, 'Message is too long'),
     phone: validationPatterns.phone.optional(),
   }),
 };
@@ -238,11 +249,14 @@ export const contactSchemas = {
  * }
  */
 export function getValidationErrors(error: z.ZodError) {
-  return error.errors.reduce((acc, curr) => {
-    const path = curr.path.join('.');
-    acc[path] = curr.message;
-    return acc;
-  }, {} as Record<string, string>);
+  return error.errors.reduce(
+    (acc, curr) => {
+      const path = curr.path.join('.');
+      acc[path] = curr.message;
+      return acc;
+    },
+    {} as Record<string, string>
+  );
 }
 
 /**

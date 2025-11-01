@@ -24,11 +24,7 @@ export function RecommendationsTab({ insights, toolRecommendations }: Recommenda
     <div className="space-y-6">
       {/* Learning Path Recommendations - New! */}
       {user && (
-        <LearningPathRecommendations
-          userId={user.id}
-          assessmentId={assessmentId}
-          limit={3}
-        />
+        <LearningPathRecommendations userId={user.id} assessmentId={assessmentId} limit={3} />
       )}
 
       <Card>

@@ -17,8 +17,14 @@ interface BadgeDisplayProps {
   showLocked?: boolean;
 }
 
-export function BadgeDisplay({ variant = 'grid', className, limit, showLocked = true }: BadgeDisplayProps) {
-  const { earnedAchievements, allAchievements, isLoading, toggleFeatured, isTogglingFeatured } = useBadges();
+export function BadgeDisplay({
+  variant = 'grid',
+  className,
+  limit,
+  showLocked = true,
+}: BadgeDisplayProps) {
+  const { earnedAchievements, allAchievements, isLoading, toggleFeatured, isTogglingFeatured } =
+    useBadges();
 
   if (isLoading) {
     return (
@@ -38,7 +44,9 @@ export function BadgeDisplay({ variant = 'grid', className, limit, showLocked = 
   }
 
   const earnedIds = new Set(earnedAchievements?.map(ua => ua.achievement_id) || []);
-  const displayAchievements = showLocked ? allAchievements : allAchievements?.filter(a => earnedIds.has(a.id));
+  const displayAchievements = showLocked
+    ? allAchievements
+    : allAchievements?.filter(a => earnedIds.has(a.id));
   const limitedAchievements = limit ? displayAchievements?.slice(0, limit) : displayAchievements;
 
   const isShowcase = variant === 'showcase';
@@ -58,22 +66,31 @@ export function BadgeDisplay({ variant = 'grid', className, limit, showLocked = 
             </CardDescription>
           </div>
           <Badge variant="outline" className="font-mono">
-            {Math.round(((earnedAchievements?.length || 0) / (allAchievements?.length || 1)) * 100)}%
+            {Math.round(((earnedAchievements?.length || 0) / (allAchievements?.length || 1)) * 100)}
+            %
           </Badge>
         </div>
       </CardHeader>
 
       <CardContent>
-        <ScrollArea className={cn(isShowcase ? 'h-[400px]' : isCompact ? 'h-[200px]' : 'max-h-[600px]')}>
+        <ScrollArea
+          className={cn(isShowcase ? 'h-[400px]' : isCompact ? 'h-[200px]' : 'max-h-[600px]')}
+        >
           <div
             className={cn(
               'grid gap-4',
-              isShowcase ? 'grid-cols-3' : isCompact ? 'grid-cols-4' : 'grid-cols-3 md:grid-cols-4 lg:grid-cols-6'
+              isShowcase
+                ? 'grid-cols-3'
+                : isCompact
+                  ? 'grid-cols-4'
+                  : 'grid-cols-3 md:grid-cols-4 lg:grid-cols-6'
             )}
           >
-            {limitedAchievements?.map((achievement) => {
+            {limitedAchievements?.map(achievement => {
               const isEarned = earnedIds.has(achievement.id);
-              const userAchievement = earnedAchievements?.find(ua => ua.achievement_id === achievement.id);
+              const userAchievement = earnedAchievements?.find(
+                ua => ua.achievement_id === achievement.id
+              );
               const rarityStyle = getRarityStyle(achievement.rarity);
 
               return (
@@ -104,7 +121,9 @@ export function BadgeDisplay({ variant = 'grid', className, limit, showLocked = 
 
                         {/* Badge icon */}
                         <div className="text-center">
-                          <div className={cn('text-4xl mb-2', isEarned ? 'grayscale-0' : 'grayscale')}>
+                          <div
+                            className={cn('text-4xl mb-2', isEarned ? 'grayscale-0' : 'grayscale')}
+                          >
                             {achievement.icon_emoji}
                           </div>
                           <div className="text-xs font-semibold line-clamp-2 min-h-[2rem]">
@@ -128,7 +147,7 @@ export function BadgeDisplay({ variant = 'grid', className, limit, showLocked = 
                               size="sm"
                               variant={userAchievement?.is_featured ? 'default' : 'outline'}
                               disabled={isTogglingFeatured}
-                              onClick={(e) => {
+                              onClick={e => {
                                 e.stopPropagation();
                                 if (userAchievement) {
                                   toggleFeatured({

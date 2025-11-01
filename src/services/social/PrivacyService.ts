@@ -36,10 +36,7 @@ export class PrivacyService {
   /**
    * Update privacy settings
    */
-  static async update(
-    userId: string,
-    settings: Partial<PrivacySettings>
-  ): Promise<void> {
+  static async update(userId: string, settings: Partial<PrivacySettings>): Promise<void> {
     const { error } = await supabase
       .from('user_privacy_settings')
       .upsert({

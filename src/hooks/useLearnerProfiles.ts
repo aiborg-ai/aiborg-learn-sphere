@@ -35,11 +35,11 @@ export const useLearnerProfiles = () => {
 
       if (fetchError) throw fetchError;
 
-      setProfiles((data || []) as LearnerProfile[]);
+      const profiles = (data || []) as LearnerProfile[];
+      setProfiles(profiles);
 
       // Set primary profile
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase returns dynamic data structure
-      const primary = (data || []).find((p: any) => p.is_primary);
+      const primary = profiles.find((p) => 'is_primary' in p && p.is_primary);
       setPrimaryProfile(primary || null);
     } catch (err) {
       logger.error('Error fetching learner profiles:', err);

@@ -95,21 +95,22 @@ export function ImportProgress({ importResponse, isImporting }: ImportProgressPr
 
   const renderResults = (results: ImportResult[]) => {
     // Group results by status for better organization
-    const groupedResults = results.reduce((acc, result) => {
-      if (!acc[result.status]) {
-        acc[result.status] = [];
-      }
-      acc[result.status].push(result);
-      return acc;
-    }, {} as Record<string, ImportResult[]>);
+    const groupedResults = results.reduce(
+      (acc, result) => {
+        if (!acc[result.status]) {
+          acc[result.status] = [];
+        }
+        acc[result.status].push(result);
+        return acc;
+      },
+      {} as Record<string, ImportResult[]>
+    );
 
     return (
       <Card>
         <CardHeader>
           <CardTitle>Import Results</CardTitle>
-          <CardDescription>
-            Detailed status of each imported item
-          </CardDescription>
+          <CardDescription>Detailed status of each imported item</CardDescription>
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-[400px]">
@@ -164,9 +165,7 @@ export function ImportProgress({ importResponse, isImporting }: ImportProgressPr
       <Card className="border-red-200">
         <CardHeader>
           <CardTitle className="text-red-700">Import Errors</CardTitle>
-          <CardDescription>
-            Issues encountered during the import process
-          </CardDescription>
+          <CardDescription>Issues encountered during the import process</CardDescription>
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-[200px]">
@@ -206,9 +205,7 @@ export function ImportProgress({ importResponse, isImporting }: ImportProgressPr
           </CardHeader>
           <CardContent>
             <Progress value={calculateProgress()} className="w-full" />
-            <p className="text-sm text-muted-foreground mt-2">
-              Processing items...
-            </p>
+            <p className="text-sm text-muted-foreground mt-2">Processing items...</p>
           </CardContent>
         </Card>
       )}
@@ -220,16 +217,14 @@ export function ImportProgress({ importResponse, isImporting }: ImportProgressPr
       {importResponse?.import_id && (
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span>Import ID:</span>
-          <code className="bg-gray-100 px-2 py-1 rounded">
-            {importResponse.import_id}
-          </code>
+          <code className="bg-gray-100 px-2 py-1 rounded">{importResponse.import_id}</code>
         </div>
       )}
 
       {/* Results */}
-      {importResponse?.results && importResponse.results.length > 0 && (
-        renderResults(importResponse.results)
-      )}
+      {importResponse?.results &&
+        importResponse.results.length > 0 &&
+        renderResults(importResponse.results)}
 
       {/* Errors */}
       {renderErrors()}

@@ -182,7 +182,7 @@ export function AdvancedScheduler({
       {/* Date Range */}
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <Label>Start Date</Label>
+          <div className="text-sm font-medium">Start Date</div>
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-full justify-start text-left font-normal">
@@ -202,7 +202,7 @@ export function AdvancedScheduler({
         </div>
 
         <div className="space-y-2">
-          <Label>End Date (Optional)</Label>
+          <div className="text-sm font-medium">End Date (Optional)</div>
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-full justify-start text-left font-normal">
@@ -258,7 +258,7 @@ export function AdvancedScheduler({
 
       {/* Timezone */}
       <div className="space-y-2">
-        <Label>Timezone</Label>
+        <div className="text-sm font-medium">Timezone</div>
         <Select value={value.timezone} onValueChange={handleTimezoneChange}>
           <SelectTrigger>
             <SelectValue />
@@ -290,7 +290,7 @@ export function AdvancedScheduler({
             <CardContent className="space-y-4">
               {/* Recurrence Type */}
               <div className="space-y-2">
-                <Label>Repeat</Label>
+                <div className="text-sm font-medium">Repeat</div>
                 <Select
                   value={value.recurring?.type || 'weekly'}
                   onValueChange={(type: RecurringPattern['type']) =>
@@ -310,7 +310,7 @@ export function AdvancedScheduler({
 
               {/* Interval */}
               <div className="space-y-2">
-                <Label>Every</Label>
+                <div className="text-sm font-medium">Every</div>
                 <div className="flex items-center gap-2">
                   <Input
                     type="number"
@@ -333,7 +333,7 @@ export function AdvancedScheduler({
               {/* Days of Week (for weekly) */}
               {value.recurring?.type === 'weekly' && (
                 <div className="space-y-2">
-                  <Label>On Days</Label>
+                  <div className="text-sm font-medium">On Days</div>
                   <div className="flex flex-wrap gap-2">
                     {DAYS_OF_WEEK.map(day => {
                       const isSelected = value.recurring?.daysOfWeek?.includes(day.value);

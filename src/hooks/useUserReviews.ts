@@ -16,53 +16,56 @@ export const useUserReviews = () => {
     userReviews: [],
     loading: true,
     error: null,
-    lastFetched: null
+    lastFetched: null,
   });
-  
+
   const { user } = useAuth();
 
   const updateState = useCallback((updates: Partial<UseUserReviewsState>) => {
     setState(prev => ({ ...prev, ...updates }));
   }, []);
 
-  const fetchUserReviews = useCallback(async (force = false) => {
-    if (!user) {
-      logger.log('👤 No user logged in, clearing user reviews');
-      updateState({ userReviews: [], loading: false, error: null });
-      return;
-    }
+  const fetchUserReviews = useCallback(
+    async (force = false) => {
+      if (!user) {
+        logger.log('👤 No user logged in, clearing user reviews');
+        updateState({ userReviews: [], loading: false, error: null });
+        return;
+      }
 
-    const now = Date.now();
-    const timeSinceLastFetch = state.lastFetched ? now - state.lastFetched : Infinity;
-    const shouldRefresh = force || timeSinceLastFetch > 15000; // 15 seconds throttle for user data
+      const now = Date.now();
+      const timeSinceLastFetch = state.lastFetched ? now - state.lastFetched : Infinity;
+      const shouldRefresh = force || timeSinceLastFetch > 15000; // 15 seconds throttle for user data
 
-    if (!shouldRefresh && state.userReviews.length > 0) {
-      logger.log('⏭️ Skipping user reviews fetch - too recent');
-      return;
-    }
+      if (!shouldRefresh && state.userReviews.length > 0) {
+        logger.log('⏭️ Skipping user reviews fetch - too recent');
+        return;
+      }
 
-    logger.log('🔄 Fetching user reviews...', { userId: user.id, force });
-    updateState({ loading: true, error: null });
+      logger.log('🔄 Fetching user reviews...', { userId: user.id, force });
+      updateState({ loading: true, error: null });
 
-    try {
-      const reviews = await DataService.getUserReviews(user.id);
-      logger.log(`✅ Fetched ${reviews.length} user reviews`);
-      
-      updateState({ 
-        userReviews: reviews as Review[], 
-        loading: false, 
-        error: null,
-        lastFetched: now
-      });
-    } catch (err) {
-      logger.error('❌ Error fetching user reviews:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch user reviews';
-      updateState({ 
-        loading: false, 
-        error: errorMessage 
-      });
-    }
-  }, [user, state.lastFetched, state.userReviews.length, updateState]);
+      try {
+        const reviews = await DataService.getUserReviews(user.id);
+        logger.log(`✅ Fetched ${reviews.length} user reviews`);
+
+        updateState({
+          userReviews: reviews as Review[],
+          loading: false,
+          error: null,
+          lastFetched: now,
+        });
+      } catch (err) {
+        logger.error('❌ Error fetching user reviews:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch user reviews';
+        updateState({
+          loading: false,
+          error: errorMessage,
+        });
+      }
+    },
+    [user, state.lastFetched, state.userReviews.length, updateState]
+  );
 
   useEffect(() => {
     fetchUserReviews();
@@ -73,11 +76,11 @@ export const useUserReviews = () => {
     return fetchUserReviews(true);
   }, [fetchUserReviews]);
 
-  return { 
-    userReviews: state.userReviews, 
-    loading: state.loading, 
-    error: state.error, 
+  return {
+    userReviews: state.userReviews,
+    loading: state.loading,
+    error: state.error,
     refetch,
-    lastFetched: state.lastFetched
+    lastFetched: state.lastFetched,
   };
 };

@@ -69,9 +69,13 @@ export function extractHeadings(markdown: string) {
     while ((match = headingRegex.exec(markdown)) !== null) {
       const level = match[1].length;
       const text = match[2].trim();
-      const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+      const id = text
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-');
 
-      if (level <= 3) { // Only include h1, h2, h3
+      if (level <= 3) {
+        // Only include h1, h2, h3
         headings.push({ level, text, id });
       }
     }

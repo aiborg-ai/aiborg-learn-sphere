@@ -32,18 +32,14 @@ export function ReplyForm({ onSubmit, onCancel }: ReplyFormProps) {
     <form onSubmit={handleSubmit} className="space-y-3">
       <Textarea
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={e => setContent(e.target.value)}
         placeholder="Write a reply..."
         className="min-h-[80px] resize-none"
         disabled={isSubmitting}
         aria-label="Write a reply"
       />
       <div className="flex gap-2">
-        <Button
-          type="submit"
-          size="sm"
-          disabled={!content.trim() || isSubmitting}
-        >
+        <Button type="submit" size="sm" disabled={!content.trim() || isSubmitting}>
           {isSubmitting ? 'Posting...' : 'Reply'}
         </Button>
         <Button

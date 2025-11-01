@@ -74,11 +74,7 @@ export class APIKeyService {
   /**
    * Log API usage
    */
-  private static async logUsage(
-    apiKeyId: string,
-    endpoint: string,
-    method: string
-  ): Promise<void> {
+  private static async logUsage(apiKeyId: string, endpoint: string, method: string): Promise<void> {
     await supabase.from('api_usage_logs').insert({
       api_key_id: apiKeyId,
       endpoint,

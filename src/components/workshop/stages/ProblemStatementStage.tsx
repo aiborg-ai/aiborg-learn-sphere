@@ -21,8 +21,8 @@ export function ProblemStatementStage({ workshop }: ProblemStatementStageProps) 
       <Alert>
         <Icon name="AlertCircle" size={20} />
         <AlertDescription>
-          Now it's time to understand the problem. Carefully review the problem statement and discuss with your
-          team to ensure everyone has a clear understanding.
+          Now it's time to understand the problem. Carefully review the problem statement and
+          discuss with your team to ensure everyone has a clear understanding.
         </AlertDescription>
       </Alert>
 
@@ -99,7 +99,8 @@ export function ProblemStatementStage({ workshop }: ProblemStatementStageProps) 
           Capture Your Understanding
         </h3>
         <p className="text-sm text-muted-foreground mb-4">
-          Document your team's understanding of the problem. This will guide your solution in the next stage.
+          Document your team's understanding of the problem. This will guide your solution in the
+          next stage.
         </p>
         <div className="bg-muted p-4 rounded-lg min-h-32">
           <p className="text-sm text-muted-foreground italic">

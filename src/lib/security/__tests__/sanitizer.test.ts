@@ -73,7 +73,7 @@ describe('sanitizer', () => {
     it('should escape special characters', () => {
       const text = '<script>alert("XSS")</script>';
       const escaped = escapeHTML(text);
-      expect(escaped).toBe('&lt;script&gt;alert("XSS")&lt;/script&gt;');
+      expect(escaped).toBe('&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;');
     });
 
     it('should escape quotes', () => {

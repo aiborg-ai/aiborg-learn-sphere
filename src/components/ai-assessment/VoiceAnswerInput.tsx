@@ -26,48 +26,44 @@ export const VoiceAnswerInput: React.FC<VoiceAnswerInputProps> = ({
   return (
     <section aria-label="Voice answer input">
       <Card className="border-primary/30 bg-primary/5">
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <Mic className="h-5 w-5 text-primary" aria-hidden="true" />
-          <CardTitle className="text-base">Voice Answer</CardTitle>
-        </div>
-        <CardDescription>
-          Record your answer using your voice. It will be transcribed automatically.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <Alert aria-live="polite">
-          <Info className="h-4 w-4" aria-hidden="true" />
-          <AlertDescription>
-            Speak clearly and explain your answer to the question. Your response will be analyzed
-            along with your selected options for a comprehensive assessment.
-          </AlertDescription>
-        </Alert>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Mic className="h-5 w-5 text-primary" aria-hidden="true" />
+            <CardTitle className="text-base">Voice Answer</CardTitle>
+          </div>
+          <CardDescription>
+            Record your answer using your voice. It will be transcribed automatically.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Alert aria-live="polite">
+            <Info className="h-4 w-4" aria-hidden="true" />
+            <AlertDescription>
+              Speak clearly and explain your answer to the question. Your response will be analyzed
+              along with your selected options for a comprehensive assessment.
+            </AlertDescription>
+          </Alert>
 
-        <VoiceRecorder onTranscription={handleTranscription} disabled={disabled} />
+          <VoiceRecorder onTranscription={handleTranscription} disabled={disabled} />
 
-        {transcribedText && (
-          <section
-            className="space-y-2"
-            aria-label="Transcribed answer"
-            aria-live="polite"
-          >
-            <div className="flex items-center gap-2">
-              <Type className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-              <span className="text-sm font-medium">Transcribed Answer:</span>
-            </div>
-            <Card className="bg-muted/50">
-              <CardContent className="p-4">
-                <p className="text-sm whitespace-pre-wrap">{transcribedText}</p>
-              </CardContent>
-            </Card>
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-              Answer recorded successfully
-            </Badge>
-          </section>
-        )}
-      </CardContent>
-    </Card>
+          {transcribedText && (
+            <section className="space-y-2" aria-label="Transcribed answer" aria-live="polite">
+              <div className="flex items-center gap-2">
+                <Type className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                <span className="text-sm font-medium">Transcribed Answer:</span>
+              </div>
+              <Card className="bg-muted/50">
+                <CardContent className="p-4">
+                  <p className="text-sm whitespace-pre-wrap">{transcribedText}</p>
+                </CardContent>
+              </Card>
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                Answer recorded successfully
+              </Badge>
+            </section>
+          )}
+        </CardContent>
+      </Card>
     </section>
   );
 };

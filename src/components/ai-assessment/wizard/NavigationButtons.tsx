@@ -22,50 +22,48 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
 }) => {
   return (
     <nav aria-label="Assessment navigation">
-    <CardFooter
-      className="flex justify-between"
-    >
-      <Button
-        variant="outline"
-        onClick={onPrevious}
-        disabled={!canGoPrevious}
-        aria-label={`Go to previous question (question ${currentIndex})`}
-        aria-disabled={!canGoPrevious}
-      >
-        <ChevronLeft className="h-4 w-4 mr-2" aria-hidden="true" />
-        Previous
-      </Button>
+      <CardFooter className="flex justify-between">
+        <Button
+          variant="outline"
+          onClick={onPrevious}
+          disabled={!canGoPrevious}
+          aria-label={`Go to previous question (question ${currentIndex})`}
+          aria-disabled={!canGoPrevious}
+        >
+          <ChevronLeft className="h-4 w-4 mr-2" aria-hidden="true" />
+          Previous
+        </Button>
 
-      <Button
-        onClick={onNext}
-        disabled={submitting}
-        aria-label={
-          submitting
-            ? 'Submitting assessment...'
-            : currentIndex === totalQuestions - 1
-              ? 'Complete and submit assessment'
-              : `Go to next question (question ${currentIndex + 2} of ${totalQuestions})`
-        }
-        aria-busy={submitting}
-      >
-        {submitting ? (
-          <>
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" aria-hidden="true" />
-            Submitting...
-          </>
-        ) : currentIndex === totalQuestions - 1 ? (
-          <>
-            Complete Assessment
-            <CheckCircle className="h-4 w-4 ml-2" aria-hidden="true" />
-          </>
-        ) : (
-          <>
-            Next
-            <ChevronRight className="h-4 w-4 ml-2" aria-hidden="true" />
-          </>
-        )}
-      </Button>
-    </CardFooter>
+        <Button
+          onClick={onNext}
+          disabled={submitting}
+          aria-label={
+            submitting
+              ? 'Submitting assessment...'
+              : currentIndex === totalQuestions - 1
+                ? 'Complete and submit assessment'
+                : `Go to next question (question ${currentIndex + 2} of ${totalQuestions})`
+          }
+          aria-busy={submitting}
+        >
+          {submitting ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" aria-hidden="true" />
+              Submitting...
+            </>
+          ) : currentIndex === totalQuestions - 1 ? (
+            <>
+              Complete Assessment
+              <CheckCircle className="h-4 w-4 ml-2" aria-hidden="true" />
+            </>
+          ) : (
+            <>
+              Next
+              <ChevronRight className="h-4 w-4 ml-2" aria-hidden="true" />
+            </>
+          )}
+        </Button>
+      </CardFooter>
     </nav>
   );
 };

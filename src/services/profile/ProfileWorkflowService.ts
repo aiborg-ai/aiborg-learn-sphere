@@ -15,8 +15,7 @@ export interface WorkflowStep {
   description: string;
   step_type: 'form' | 'assessment' | 'selection' | 'review';
   fields_to_collect: FieldDefinition[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Dynamic profile data
-  validation_rules: Record<string, any>;
+  validation_rules: Record<string, unknown>;
   is_required: boolean;
   is_skippable: boolean;
   estimated_minutes: number;
@@ -52,7 +51,7 @@ export interface WorkflowProgress {
   profile_id?: string;
   current_step_order: number;
   completed_steps: number[];
-  step_data: Record<string, any>;
+  step_data: Record<string, unknown>;
   status: 'not_started' | 'in_progress' | 'completed' | 'abandoned';
   started_at: string;
   completed_at?: string;
@@ -182,7 +181,7 @@ class ProfileWorkflowService {
   async updateStepData(
     progressId: string,
     stepOrder: number,
-    stepData: Record<string, any>
+    stepData: Record<string, unknown>
   ): Promise<void> {
     try {
       const progress = await this.getProgress(progressId);
@@ -466,7 +465,7 @@ class ProfileWorkflowService {
    */
   validateStepData(
     step: WorkflowStep,
-    data: Record<string, any>
+    data: Record<string, unknown>
   ): {
     isValid: boolean;
     errors: Record<string, string>;

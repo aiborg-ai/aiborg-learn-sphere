@@ -49,7 +49,7 @@ export const TrainingPrograms = () => {
   const { getEnrollmentStatus, enrollWithFamilyPass } = useEnrollments();
   const { getReviewCount, loading: _reviewCountsLoading } = useReviewCounts();
   const { user } = useAuth();
-  const { data: hasActiveMembership, isLoading: checkingMembership } = useHasActiveMembership();
+  const { data: _hasActiveMembership, isLoading: checkingMembership } = useHasActiveMembership();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');

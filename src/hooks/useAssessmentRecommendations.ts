@@ -13,7 +13,7 @@ import type { AssessmentResults } from '@/types/assessmentTools';
 interface AssessmentRecommendations {
   courses: Course[];
   blogPosts: BlogPost[];
-  quizzes: any[]; // Add proper type when quiz feature is implemented
+  quizzes: unknown[]; // Add proper type when quiz feature is implemented
   learningPath: LearningPathStep[];
 }
 
@@ -33,7 +33,7 @@ interface LearningPathStep {
  */
 async function fetchRecommendations(
   results: AssessmentResults,
-  toolSlug: string
+  _toolSlug: string
 ): Promise<AssessmentRecommendations> {
   try {
     // Identify weak areas (categories with < 70% score)
@@ -113,7 +113,7 @@ async function fetchRecommendedCourses(
     if (error) throw error;
 
     // Process courses to match the expected type
-    const courses = (data || []).map((course: any) => ({
+    const courses = (data || []).map((course: Record<string, unknown>) => ({
       ...course,
       audiences: course.audiences || (course.audience ? [course.audience] : []),
     }));
@@ -155,7 +155,7 @@ async function fetchRecommendedCourses(
 async function fetchRecommendedBlogPosts(weakCategories: string[]): Promise<BlogPost[]> {
   try {
     // Build search query from weak categories
-    const searchTerms = weakCategories.join(' OR ');
+    const _searchTerms = weakCategories.join(' OR ');
 
     // Fetch blog posts matching categories or tags
     const { data, error } = await supabase
@@ -175,7 +175,7 @@ async function fetchRecommendedBlogPosts(weakCategories: string[]): Promise<Blog
     if (!data || data.length === 0) return [];
 
     // Score posts based on relevance to weak categories
-    const scoredPosts = data.map((post: any) => {
+    const scoredPosts = data.map((post: Record<string, unknown>) => {
       const titleMatch = weakCategories.some(cat => post.title.toLowerCase().includes(cat));
       const excerptMatch = weakCategories.some(cat => post.excerpt?.toLowerCase().includes(cat));
       const categoryMatch = weakCategories.some(
@@ -214,7 +214,7 @@ async function fetchRecommendedBlogPosts(weakCategories: string[]): Promise<Blog
 /**
  * Fetch recommended quizzes (placeholder for future implementation)
  */
-async function fetchRecommendedQuizzes(_weakCategories: string[]): Promise<any[]> {
+async function fetchRecommendedQuizzes(_weakCategories: string[]): Promise<unknown[]> {
   // Placeholder: Will be implemented when quiz feature is added
   return [];
 }
@@ -227,7 +227,7 @@ function generateLearningPath(
   courses: Course[],
   blogPosts: BlogPost[],
   weakCategories: string[],
-  strongCategories: string[]
+  _strongCategories: string[]
 ): LearningPathStep[] {
   const path: LearningPathStep[] = [];
   let stepId = 1;

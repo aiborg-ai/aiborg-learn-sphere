@@ -11,6 +11,7 @@ import { useGlobalShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { CommandPalette } from '@/components/features';
 import { KeyboardShortcutsHelp, OfflineBanner } from '@/components/shared';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { RouteWrapper } from '@/components/RouteWrapper';
 import { PerformanceMonitoring } from '@/components/monitoring/PerformanceMonitoring';
 
 // Create a loading component
@@ -72,6 +73,9 @@ const GamificationPage = lazy(() => import('./pages/GamificationPage'));
 const IconTest = lazy(() =>
   import('@/components/shared/IconTest').then(m => ({ default: m.IconTest }))
 );
+const ErrorHandlingExample = lazy(() =>
+  import('./examples/ErrorHandlingExample').then(m => ({ default: m.ErrorHandlingExample }))
+);
 
 // Quiz pages
 const QuizTaker = lazy(() => import('./components/quiz').then(m => ({ default: m.QuizTaker })));
@@ -131,22 +135,106 @@ const AppWithShortcuts = () => {
             <Route path="/auth" element={<Auth />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/auth/reset-password" element={<ResetPassword />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/admin/studio" element={<Studio />} />
-            <Route path="/admin/template-import" element={<TemplateImport />} />
-            <Route path="/admin/assessment-questions" element={<AssessmentQuestionsManagement />} />
-            <Route path="/cms" element={<CMS />} />
-            <Route path="/cms/blog" element={<BlogCMS />} />
+            <Route
+              path="/profile"
+              element={
+                <RouteWrapper routeName="Profile">
+                  <Profile />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <RouteWrapper routeName="Dashboard">
+                  <Dashboard />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <RouteWrapper routeName="Admin">
+                  <Admin />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/admin/studio"
+              element={
+                <RouteWrapper routeName="Studio">
+                  <Studio />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/admin/template-import"
+              element={
+                <RouteWrapper routeName="Template Import">
+                  <TemplateImport />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/admin/assessment-questions"
+              element={
+                <RouteWrapper routeName="Assessment Questions">
+                  <AssessmentQuestionsManagement />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/cms"
+              element={
+                <RouteWrapper routeName="CMS">
+                  <CMS />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/cms/blog"
+              element={
+                <RouteWrapper routeName="Blog CMS">
+                  <BlogCMS />
+                </RouteWrapper>
+              }
+            />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
-            <Route path="/assignment/:assignmentId" element={<HomeworkSubmission />} />
+            <Route
+              path="/assignment/:assignmentId"
+              element={
+                <RouteWrapper routeName="Assignment">
+                  <HomeworkSubmission />
+                </RouteWrapper>
+              }
+            />
             <Route path="/user/:userId" element={<PublicProfile />} />
-            <Route path="/course/:courseId" element={<CoursePage />} />
-            <Route path="/instructor" element={<InstructorDashboard />} />
-            <Route path="/instructor/classroom/:courseId" element={<ClassroomPage />} />
+            <Route
+              path="/course/:courseId"
+              element={
+                <RouteWrapper routeName="Course">
+                  <CoursePage />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/instructor"
+              element={
+                <RouteWrapper routeName="Instructor Dashboard">
+                  <InstructorDashboard />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/instructor/classroom/:courseId"
+              element={
+                <RouteWrapper routeName="Classroom">
+                  <ClassroomPage />
+                </RouteWrapper>
+              }
+            />
             <Route path="/ai-assessment" element={<AIAssessment />} />
             <Route path="/ai-assessment/results/:assessmentId" element={<AIAssessmentResults />} />
             <Route path="/sme-assessment" element={<SMEAssessment />} />
@@ -171,9 +259,24 @@ const AppWithShortcuts = () => {
             <Route path="/learning-paths" element={<LearningPathsPage />} />
             <Route path="/learning-path/generate" element={<LearningPathWizard />} />
             <Route path="/learning-path/ai/:pathId" element={<AILearningPathDetail />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route path="/gamification" element={<GamificationPage />} />
+            <Route
+              path="/analytics"
+              element={
+                <RouteWrapper routeName="Analytics">
+                  <AnalyticsPage />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/gamification"
+              element={
+                <RouteWrapper routeName="Gamification">
+                  <GamificationPage />
+                </RouteWrapper>
+              }
+            />
             <Route path="/test-icons" element={<IconTest />} />
+            <Route path="/examples/error-handling" element={<ErrorHandlingExample />} />
 
             {/* Quiz routes */}
             <Route path="/quiz/:quizId" element={<QuizTaker />} />

@@ -4,14 +4,21 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function ResetPassword() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [_searchParams] = useSearchParams();
   const { toast } = useToast();
 
   const [password, setPassword] = useState('');
@@ -51,7 +58,7 @@ export default function ResetPassword() {
 
     try {
       const { error } = await supabase.auth.updateUser({
-        password: password
+        password: password,
       });
 
       if (error) throw error;
@@ -86,9 +93,7 @@ export default function ResetPassword() {
             Back to Login
           </Button>
           <CardTitle className="text-2xl text-center">Reset Password</CardTitle>
-          <CardDescription className="text-center">
-            Enter your new password below
-          </CardDescription>
+          <CardDescription className="text-center">Enter your new password below</CardDescription>
         </CardHeader>
         <CardContent>
           {!isValidToken ? (
@@ -104,7 +109,7 @@ export default function ResetPassword() {
                   type="password"
                   placeholder="Enter your new password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
                   required
                   disabled={isLoading}
                 />
@@ -117,7 +122,7 @@ export default function ResetPassword() {
                   type="password"
                   placeholder="Confirm your new password"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={e => setConfirmPassword(e.target.value)}
                   required
                   disabled={isLoading}
                 />
@@ -129,11 +134,7 @@ export default function ResetPassword() {
                 </Alert>
               )}
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isLoading}
-              >
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -149,11 +150,7 @@ export default function ResetPassword() {
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
             Remember your password?{' '}
-            <Button
-              variant="link"
-              className="p-0"
-              onClick={() => navigate('/auth')}
-            >
+            <Button variant="link" className="p-0" onClick={() => navigate('/auth')}>
               Sign in
             </Button>
           </p>

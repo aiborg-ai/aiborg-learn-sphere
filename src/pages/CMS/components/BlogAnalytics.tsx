@@ -58,8 +58,8 @@ function BlogAnalytics() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            Advanced analytics features are coming soon. This will include detailed metrics,
-            traffic sources, user behavior, and content performance tracking.
+            Advanced analytics features are coming soon. This will include detailed metrics, traffic
+            sources, user behavior, and content performance tracking.
           </p>
         </CardContent>
       </Card>

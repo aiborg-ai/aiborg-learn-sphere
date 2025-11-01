@@ -6,7 +6,6 @@
 import React, { useState } from 'react';
 import { Tag, Plus, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { DragDropTagManager } from '@/components/studio/shared/DragDropTagManager';
@@ -69,7 +68,7 @@ export function CourseTagsStep({ data, onUpdate }: StepComponentProps<CourseWiza
 
       {/* Drag-Drop Tag Manager */}
       <div className="space-y-2">
-        <Label className="text-base">Course Tags</Label>
+        <div className="text-base font-medium">Course Tags</div>
         <p className="text-sm text-muted-foreground">
           Select and organize tags that best describe your course. Drag to reorder.
         </p>
@@ -86,7 +85,7 @@ export function CourseTagsStep({ data, onUpdate }: StepComponentProps<CourseWiza
       {/* SEO Keywords */}
       <div className="space-y-4">
         <div>
-          <Label className="text-base">SEO Keywords (Optional)</Label>
+          <div className="text-base font-medium">SEO Keywords (Optional)</div>
           <p className="text-sm text-muted-foreground">
             Add keywords to help search engines find your course
           </p>

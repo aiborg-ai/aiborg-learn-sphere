@@ -144,12 +144,12 @@ export const DIFFICULTY_MAP: Record<string, DifficultyMapping> = {
   beginner: { irt: -1.0, level: 'foundational', next: 'intermediate' },
   intermediate: { irt: 0.0, level: 'applied', next: 'advanced' },
   advanced: { irt: 1.0, level: 'advanced', next: 'expert' },
-  expert: { irt: 2.0, level: 'strategic', next: 'expert' }
+  expert: { irt: 2.0, level: 'strategic', next: 'expert' },
 };
 
 export const LEVEL_TO_DIFFICULTY: Record<string, number> = {
   foundational: -1.0,
   applied: 0.0,
   advanced: 1.0,
-  strategic: 2.0
+  strategic: 2.0,
 };

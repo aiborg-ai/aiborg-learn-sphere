@@ -22,9 +22,9 @@ interface StudioWizardProps {
   assetType: AssetType;
   mode: WizardMode;
   assetId?: string;
-  initialData?: any;
+  initialData?: Record<string, unknown>;
   onExit: () => void;
-  onPublish?: (data: any) => Promise<void>;
+  onPublish?: (data: Record<string, unknown>) => Promise<void>;
   className?: string;
 }
 
@@ -50,7 +50,7 @@ export function StudioWizard({
     state,
     config,
     currentStepConfig,
-    progressPercentage,
+    progressPercentage: _progressPercentage,
     canGoNext,
     canGoPrevious,
     isOnReviewStep,

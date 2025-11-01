@@ -21,43 +21,43 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
       value: stats.enrolledCourses,
       icon: BookOpen,
       color: 'text-blue-500',
-      bgColor: 'bg-blue-50'
+      bgColor: 'bg-blue-50',
     },
     {
       title: 'Achievements',
       value: stats.totalAchievements,
       icon: Trophy,
       color: 'text-yellow-500',
-      bgColor: 'bg-yellow-50'
+      bgColor: 'bg-yellow-50',
     },
     {
       title: 'Certificates',
       value: stats.certificatesEarned,
       icon: Award,
       color: 'text-green-500',
-      bgColor: 'bg-green-50'
+      bgColor: 'bg-green-50',
     },
     {
       title: 'Current Streak',
       value: `${stats.currentStreak} days`,
       icon: Flame,
       color: 'text-orange-500',
-      bgColor: 'bg-orange-50'
+      bgColor: 'bg-orange-50',
     },
     {
       title: 'Pending Tasks',
       value: stats.pendingAssignments,
       icon: FileText,
       color: 'text-purple-500',
-      bgColor: 'bg-purple-50'
+      bgColor: 'bg-purple-50',
     },
     {
       title: 'Notifications',
       value: stats.unreadNotifications,
       icon: Bell,
       color: 'text-red-500',
-      bgColor: 'bg-red-50'
-    }
+      bgColor: 'bg-red-50',
+    },
   ];
 
   return (

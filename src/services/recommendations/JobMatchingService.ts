@@ -19,7 +19,7 @@ export class JobMatchingService {
 
     for (const job of jobListings) {
       const matchScore = this.calculateJobMatchScore(userSkills, job.requiredSkills);
-      const skillGaps = job.requiredSkills.filter((skill) => !userSkills.includes(skill));
+      const skillGaps = job.requiredSkills.filter(skill => !userSkills.includes(skill));
       const estimatedTime = this.estimateTimeToAcquireSkills(skillGaps, profile);
 
       matches.push({
@@ -56,10 +56,7 @@ export class JobMatchingService {
   }
 
   private static async getUserSkills(userId: string): Promise<string[]> {
-    const { data } = await supabase
-      .from('user_skills')
-      .select('skill_name')
-      .eq('user_id', userId);
+    const { data } = await supabase.from('user_skills').select('skill_name').eq('user_id', userId);
 
     return data?.map((s: UserSkill) => s.skill_name) || [];
   }
@@ -70,7 +67,7 @@ export class JobMatchingService {
   }
 
   private static calculateJobMatchScore(userSkills: string[], requiredSkills: string[]): number {
-    const matchedSkills = requiredSkills.filter((skill) => userSkills.includes(skill));
+    const matchedSkills = requiredSkills.filter(skill => userSkills.includes(skill));
     return Math.round((matchedSkills.length / requiredSkills.length) * 100);
   }
 

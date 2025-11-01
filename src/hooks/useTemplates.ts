@@ -11,7 +11,7 @@ export function useValidateTemplates() {
 
   return useMutation({
     mutationFn: (request: ValidationRequest) => templateService.validateTemplates(request),
-    onSuccess: (data) => {
+    onSuccess: data => {
       if (data.success) {
         toast({
           title: 'Validation Successful',
@@ -44,7 +44,7 @@ export function useImportTemplates() {
 
   return useMutation({
     mutationFn: (request: ImportRequest) => templateService.importTemplates(request),
-    onSuccess: (data) => {
+    onSuccess: data => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: ['import-history'] });
       queryClient.invalidateQueries({ queryKey: ['import-statistics'] });
@@ -100,7 +100,7 @@ export function useImportHistory(params?: {
 export function useImportDetails(importId?: string) {
   return useQuery({
     queryKey: ['import-details', importId],
-    queryFn: () => importId ? templateService.getImportDetails(importId) : null,
+    queryFn: () => (importId ? templateService.getImportDetails(importId) : null),
     enabled: !!importId,
     staleTime: 60000, // 1 minute
   });

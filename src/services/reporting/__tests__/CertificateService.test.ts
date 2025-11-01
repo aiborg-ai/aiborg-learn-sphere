@@ -60,7 +60,8 @@ describe('CertificateService', () => {
 
   describe('generate', () => {
     it('should generate certificate with QR code', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // Insert certificate
           insert: vi.fn().mockReturnValue({

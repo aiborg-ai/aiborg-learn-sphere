@@ -50,7 +50,7 @@ export class CertificateService {
     });
 
     // Upload QR code to storage
-    const qrCodeBlob = await fetch(qrCodeDataUrl).then((r) => r.blob());
+    const qrCodeBlob = await fetch(qrCodeDataUrl).then(r => r.blob());
     const qrPath = `certificates/${certificate.id}/qr-code.png`;
 
     const { error: uploadError } = await supabase.storage

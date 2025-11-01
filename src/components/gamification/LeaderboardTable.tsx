@@ -78,7 +78,8 @@ export function LeaderboardTable({
             {entries.map((entry, index) => {
               const isCurrentUser = currentUserId === entry.user_id;
               const topThree = entry.rank <= 3;
-              const medalInfo = showMedals && topThree ? RANK_MEDALS[entry.rank as 1 | 2 | 3] : null;
+              const medalInfo =
+                showMedals && topThree ? RANK_MEDALS[entry.rank as 1 | 2 | 3] : null;
 
               return (
                 <div

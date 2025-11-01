@@ -48,7 +48,7 @@ export function CourseBasicFields({ register, errors, setValue, watch }: CourseB
 
       {/* Rich Text Editor for Description */}
       <div className="space-y-2">
-        <Label>Description * (supports rich formatting)</Label>
+        <div className="text-sm font-medium">Description * (supports rich formatting)</div>
         <RichTextEditor
           content={currentDescription}
           onChange={content => setValue('description', content)}
@@ -59,7 +59,7 @@ export function CourseBasicFields({ register, errors, setValue, watch }: CourseB
 
       {/* Course Image Upload */}
       <div className="space-y-2">
-        <Label>Course Image/Thumbnail</Label>
+        <div className="text-sm font-medium">Course Image/Thumbnail</div>
         <MediaUploadButton
           bucketName="course-images"
           onUploadComplete={url => setValue('image_url', url)}

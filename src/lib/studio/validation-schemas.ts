@@ -217,7 +217,7 @@ export const announcementSchemas = {
 export function validateStep(
   assetType: string,
   stepId: string,
-  data: any
+  data: Record<string, unknown>
 ): { success: boolean; errors?: Record<string, string> } {
   let schema: z.ZodSchema | undefined;
 
@@ -260,7 +260,7 @@ export function validateStep(
 
 export function validateFullAsset(
   assetType: string,
-  data: any
+  data: Record<string, unknown>
 ): { success: boolean; errors?: Record<string, string> } {
   const allSchemas =
     assetType === 'course'
@@ -274,7 +274,7 @@ export function validateFullAsset(
   const allErrors: Record<string, string> = {};
   let hasErrors = false;
 
-  allSchemas.forEach((schema, index) => {
+  allSchemas.forEach((schema, _index) => {
     try {
       schema.parse(data);
     } catch (error) {

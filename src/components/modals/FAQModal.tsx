@@ -1,5 +1,5 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { FAQ } from "@/components/FAQ";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { FAQ } from '@/components/FAQ';
 
 interface FAQModalProps {
   isOpen: boolean;

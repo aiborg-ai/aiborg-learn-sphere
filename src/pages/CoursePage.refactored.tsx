@@ -220,10 +220,7 @@ export default function CoursePage() {
   // Main content
   return (
     <div className="min-h-screen bg-gradient-hero">
-      <main
-        className="container mx-auto px-4 py-8"
-        aria-label={`${course.title} course content`}
-      >
+      <main className="container mx-auto px-4 py-8" aria-label={`${course.title} course content`}>
         {/* Header */}
         <CourseHeader
           course={course}

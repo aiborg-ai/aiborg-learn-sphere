@@ -8,7 +8,10 @@ interface RequireAuthProps {
   fallbackMessage?: string;
 }
 
-export function RequireAuth({ children, fallbackMessage = "Sign in to continue" }: RequireAuthProps) {
+export function RequireAuth({
+  children,
+  fallbackMessage = 'Sign in to continue',
+}: RequireAuthProps) {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,9 +34,7 @@ export function RequireAuth({ children, fallbackMessage = "Sign in to continue" 
       <div className="bg-secondary/10 rounded-lg p-8 text-center">
         <LogIn className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
         <p className="text-lg mb-4">{fallbackMessage}</p>
-        <Button onClick={handleSignIn}>
-          Sign In to Comment
-        </Button>
+        <Button onClick={handleSignIn}>Sign In to Comment</Button>
       </div>
     );
   }

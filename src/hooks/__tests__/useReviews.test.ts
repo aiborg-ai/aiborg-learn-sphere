@@ -69,9 +69,7 @@ describe('useReviews', () => {
     (subscribeToReviewChanges as ReturnType<typeof vi.fn>).mockReturnValue(() => {});
 
     // Mock DataService.getApprovedReviews
-    (DataService.getApprovedReviews as ReturnType<typeof vi.fn>).mockResolvedValue([
-      mockReview,
-    ]);
+    (DataService.getApprovedReviews as ReturnType<typeof vi.fn>).mockResolvedValue([mockReview]);
   });
 
   afterEach(() => {
@@ -182,28 +180,30 @@ describe('useReviews', () => {
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
       // Mock profile fetch
-      mockFrom.mockReturnValueOnce({
-        insert: vi.fn().mockReturnValue({
+      mockFrom
+        .mockReturnValueOnce({
+          insert: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: {
+                  ...mockReview,
+                  id: 'new-review-123',
+                },
+                error: null,
+              }),
+            }),
+          }),
+        })
+        .mockReturnValueOnce({
           select: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({
-              data: {
-                ...mockReview,
-                id: 'new-review-123',
-              },
-              error: null,
+            eq: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: mockProfile,
+                error: null,
+              }),
             }),
           }),
-        }),
-      }).mockReturnValueOnce({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({
-              data: mockProfile,
-              error: null,
-            }),
-          }),
-        }),
-      });
+        });
 
       (supabase.functions.invoke as ReturnType<typeof vi.fn>).mockResolvedValue({
         data: {},
@@ -257,28 +257,30 @@ describe('useReviews', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      mockFrom.mockReturnValueOnce({
-        insert: vi.fn().mockReturnValue({
+      mockFrom
+        .mockReturnValueOnce({
+          insert: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: {
+                  ...mockReview,
+                  review_type: 'voice',
+                },
+                error: null,
+              }),
+            }),
+          }),
+        })
+        .mockReturnValueOnce({
           select: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({
-              data: {
-                ...mockReview,
-                review_type: 'voice',
-              },
-              error: null,
+            eq: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: mockProfile,
+                error: null,
+              }),
             }),
           }),
-        }),
-      }).mockReturnValueOnce({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({
-              data: mockProfile,
-              error: null,
-            }),
-          }),
-        }),
-      });
+        });
 
       (supabase.functions.invoke as ReturnType<typeof vi.fn>).mockResolvedValue({
         data: {},
@@ -319,7 +321,8 @@ describe('useReviews', () => {
     });
 
     it('should send notification email after submission', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           insert: vi.fn().mockReturnValue({
             select: vi.fn().mockReturnValue({
@@ -422,7 +425,8 @@ describe('useReviews', () => {
     });
 
     it('should not fail submission if notification fails', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           insert: vi.fn().mockReturnValue({
             select: vi.fn().mockReturnValue({
@@ -487,9 +491,7 @@ describe('useReviews', () => {
 
     it('should clean up subscriptions on unmount', () => {
       const unsubscribeMock = vi.fn();
-      (subscribeToReviewChanges as ReturnType<typeof vi.fn>).mockReturnValue(
-        unsubscribeMock
-      );
+      (subscribeToReviewChanges as ReturnType<typeof vi.fn>).mockReturnValue(unsubscribeMock);
 
       const { unmount } = renderHook(() => useReviews());
 
@@ -500,12 +502,10 @@ describe('useReviews', () => {
 
     it('should refetch when review changes are detected', async () => {
       let changeCallback: () => void = () => {};
-      (subscribeToReviewChanges as ReturnType<typeof vi.fn>).mockImplementation(
-        (callback) => {
-          changeCallback = callback;
-          return () => {};
-        }
-      );
+      (subscribeToReviewChanges as ReturnType<typeof vi.fn>).mockImplementation(callback => {
+        changeCallback = callback;
+        return () => {};
+      });
 
       renderHook(() => useReviews());
 
@@ -526,7 +526,8 @@ describe('useReviews', () => {
 
   describe('cache management', () => {
     it('should invalidate cache after submitting review', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           insert: vi.fn().mockReturnValue({
             select: vi.fn().mockReturnValue({
@@ -583,7 +584,8 @@ describe('useReviews', () => {
 
   describe('different review types', () => {
     it('should handle anonymous reviews', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           insert: vi.fn().mockReturnValue({
             select: vi.fn().mockReturnValue({
@@ -641,11 +643,7 @@ describe('useReviews', () => {
     });
 
     it('should handle different course modes', async () => {
-      const modes: Array<'online' | 'in-person' | 'hybrid'> = [
-        'online',
-        'in-person',
-        'hybrid',
-      ];
+      const modes: Array<'online' | 'in-person' | 'hybrid'> = ['online', 'in-person', 'hybrid'];
 
       for (const mode of modes) {
         (DataService.getApprovedReviews as ReturnType<typeof vi.fn>).mockResolvedValue([

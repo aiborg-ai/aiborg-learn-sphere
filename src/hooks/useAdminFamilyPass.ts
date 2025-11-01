@@ -114,25 +114,27 @@ export const useAdminFamilyPass = () => {
       }
 
       // Transform data to flatten joined fields
-      const transformedData: FamilyPassGrant[] = (data || []).map((grant: any) => ({
-        id: grant.id,
-        user_id: grant.user_id,
-        granted_by: grant.granted_by,
-        revoked_by: grant.revoked_by,
-        status: grant.status,
-        start_date: grant.start_date,
-        end_date: grant.end_date,
-        granted_at: grant.granted_at,
-        revoked_at: grant.revoked_at,
-        notes: grant.notes,
-        auto_renew: grant.auto_renew,
-        created_at: grant.created_at,
-        updated_at: grant.updated_at,
-        user_email: grant.user?.email || 'Unknown',
-        user_display_name: grant.user_profile?.display_name || 'Unknown User',
-        granted_by_email: grant.granted_by_user?.email || 'System',
-        granted_by_name: grant.granted_by_profile?.display_name || 'System',
-      }));
+      const transformedData: FamilyPassGrant[] = (data || []).map(
+        (grant: Record<string, unknown>) => ({
+          id: grant.id,
+          user_id: grant.user_id,
+          granted_by: grant.granted_by,
+          revoked_by: grant.revoked_by,
+          status: grant.status,
+          start_date: grant.start_date,
+          end_date: grant.end_date,
+          granted_at: grant.granted_at,
+          revoked_at: grant.revoked_at,
+          notes: grant.notes,
+          auto_renew: grant.auto_renew,
+          created_at: grant.created_at,
+          updated_at: grant.updated_at,
+          user_email: grant.user?.email || 'Unknown',
+          user_display_name: grant.user_profile?.display_name || 'Unknown User',
+          granted_by_email: grant.granted_by_user?.email || 'System',
+          granted_by_name: grant.granted_by_profile?.display_name || 'System',
+        })
+      );
 
       return transformedData;
     },
@@ -167,7 +169,7 @@ export const useAdminFamilyPass = () => {
         description: 'Family Pass granted successfully',
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: 'Error',
         description: error.message || 'Failed to grant Family Pass',
@@ -199,7 +201,7 @@ export const useAdminFamilyPass = () => {
         description: 'Family Pass revoked successfully',
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: 'Error',
         description: error.message || 'Failed to revoke Family Pass',
@@ -241,7 +243,7 @@ export const useAdminFamilyPass = () => {
         description: `Family Pass granted to ${params.userIds.length} user(s)`,
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: 'Partial Failure',
         description: error.message || 'Some grants failed',
@@ -280,7 +282,7 @@ export const useAdminFamilyPass = () => {
         description: `Family Pass revoked for ${grantIds.length} user(s)`,
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: 'Partial Failure',
         description: error.message || 'Some revocations failed',
@@ -313,7 +315,7 @@ export const useAdminFamilyPass = () => {
         description: 'Family Pass dates updated successfully',
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: 'Error',
         description: error.message || 'Failed to update dates',

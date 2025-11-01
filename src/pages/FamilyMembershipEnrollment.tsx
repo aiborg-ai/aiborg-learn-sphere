@@ -89,7 +89,7 @@ interface EnrollmentData {
 }
 
 export default function FamilyMembershipEnrollment() {
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
   const { toast } = useToast();
   const { data: familyPlan, isLoading: planLoading } = usePlanBySlug('family-pass');
   const createSubscription = useCreateSubscription();
@@ -214,7 +214,7 @@ export default function FamilyMembershipEnrollment() {
               onStartTrial={() => {
                 setEnrollmentData({ ...enrollmentData, startTrial: true });
               }}
-              onSubscribe={startTrial => {
+              onSubscribe={_startTrial => {
                 if (!enrollmentData.accountInfo) {
                   toast({
                     title: 'Missing Information',
@@ -277,8 +277,13 @@ export default function FamilyMembershipEnrollment() {
 // STEP 1: PLAN CONFIRMATION
 // ============================================================================
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any -- Stripe plan data structure */
-function Step1PlanConfirmation({ plan, onNext }: { plan: any; onNext: () => void }) {
+function Step1PlanConfirmation({
+  plan,
+  onNext,
+}: {
+  plan: Record<string, unknown>;
+  onNext: () => void;
+}) {
   if (!plan) return null;
 
   return (
@@ -962,7 +967,7 @@ function Step5Payment({
   onBack,
   isLoading,
 }: {
-  plan: any;
+  plan: Record<string, unknown>;
   accountInfo: AccountInfo;
   familyMembers: FamilyMemberInput[];
   startTrial: boolean;

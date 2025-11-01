@@ -80,11 +80,13 @@ export const useAttendanceTickets = (userId?: string) => {
       // Fetch tickets with related data
       const { data: tickets, error: ticketsError } = await supabase
         .from('attendance_tickets')
-        .select(`
+        .select(
+          `
           *,
           events(title, event_date),
           courses(title)
-        `)
+        `
+        )
         .eq('user_id', userId)
         .order('session_date', { ascending: false });
 
@@ -103,7 +105,8 @@ export const useAttendanceTickets = (userId?: string) => {
       const statistics: TicketStatistics = stats || {
         total_tickets: tickets?.length || 0,
         event_tickets: tickets?.filter(t => t.ticket_type === 'event').length || 0,
-        course_session_tickets: tickets?.filter(t => t.ticket_type === 'course_session').length || 0,
+        course_session_tickets:
+          tickets?.filter(t => t.ticket_type === 'course_session').length || 0,
         verified_tickets: tickets?.filter(t => t.is_verified).length || 0,
       };
 

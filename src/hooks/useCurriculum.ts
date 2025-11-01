@@ -2,8 +2,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { logger } from '@/utils/logger';
-import { curriculumGenerationService, CurriculumGenerationJob } from '@/services/curriculum/CurriculumGenerationService';
-import { curriculumApprovalService, Curriculum, CurriculumWithCourses } from '@/services/curriculum/CurriculumApprovalService';
+import {
+  curriculumGenerationService,
+  CurriculumGenerationJob,
+} from '@/services/curriculum/CurriculumGenerationService';
+import {
+  curriculumApprovalService,
+  Curriculum,
+  CurriculumWithCourses,
+} from '@/services/curriculum/CurriculumApprovalService';
 
 /**
  * Custom hook for managing user curricula

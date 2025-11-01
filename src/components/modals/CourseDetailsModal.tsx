@@ -1,5 +1,11 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Clock, Users, Globe, CheckCircle, User } from 'lucide-react';
@@ -30,9 +36,9 @@ export const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({
   isOpen,
   onClose,
   onEnroll,
-  course
+  course,
 }) => {
-  logger.log("CourseDetailsModal rendered with isOpen:", isOpen, "course:", course?.title);
+  logger.log('CourseDetailsModal rendered with isOpen:', isOpen, 'course:', course?.title);
   const handleEnrollClick = () => {
     onClose();
     onEnroll();
@@ -45,9 +51,7 @@ export const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">{course.title}</DialogTitle>
-          <DialogDescription className="text-lg">
-            {course.description}
-          </DialogDescription>
+          <DialogDescription className="text-lg">{course.description}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -59,41 +63,43 @@ export const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({
                 <span className="font-medium">Category:</span>
                 <Badge variant="secondary">{course.category}</Badge>
               </div>
-              
+
               <div className="flex items-start gap-2">
                 <Users className="h-4 w-4 text-primary mt-0.5" />
                 <span className="font-medium">Audience:</span>
                 <div className="flex flex-wrap gap-1">
                   {(course.audiences || [course.audience]).filter(Boolean).map((aud, index) => (
-                    <Badge key={index} variant="outline">{aud}</Badge>
+                    <Badge key={index} variant="outline">
+                      {aud}
+                    </Badge>
                   ))}
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4 text-primary" />
                 <span className="font-medium">Level:</span>
                 <Badge variant="outline">{course.level}</Badge>
               </div>
             </div>
-            
+
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-primary" />
                 <span className="font-medium">Duration:</span>
                 <span>{course.duration}</span>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <Globe className="h-4 w-4 text-primary" />
                 <span className="font-medium">Mode:</span>
                 <Badge variant="outline">{course.mode}</Badge>
               </div>
-              
-               <div className="flex items-center gap-2">
-                 <span className="font-medium">Start Date:</span>
-                 <span>{course.startDate || course.start_date}</span>
-               </div>
+
+              <div className="flex items-center gap-2">
+                <span className="font-medium">Start Date:</span>
+                <span>{course.startDate || course.start_date}</span>
+              </div>
             </div>
           </div>
 
@@ -138,7 +144,9 @@ export const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({
             <div className="flex justify-between items-center mb-4">
               <div>
                 <h3 className="text-xl font-bold">Ready to Get Started?</h3>
-                <p className="text-muted-foreground">Join this course and accelerate your learning journey.</p>
+                <p className="text-muted-foreground">
+                  Join this course and accelerate your learning journey.
+                </p>
               </div>
               {course.price && (
                 <div className="text-right">
@@ -147,7 +155,7 @@ export const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({
                 </div>
               )}
             </div>
-            
+
             <div className="flex gap-3">
               <Button variant="outline" onClick={onClose} className="flex-1">
                 Close
@@ -162,4 +170,3 @@ export const CourseDetailsModal: React.FC<CourseDetailsModalProps> = ({
     </Dialog>
   );
 };
-

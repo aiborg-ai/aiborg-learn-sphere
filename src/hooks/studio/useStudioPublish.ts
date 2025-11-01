@@ -29,7 +29,7 @@ export function useStudioPublish({
 
   // Publish course
   const publishCourse = useCallback(
-    async (data: any) => {
+    async (data: Record<string, unknown>) => {
       const config = getWizardConfig('course');
       const finalData = config.finalizeData ? config.finalizeData(data) : data;
 
@@ -95,7 +95,7 @@ export function useStudioPublish({
 
   // Publish event
   const publishEvent = useCallback(
-    async (data: any) => {
+    async (data: Record<string, unknown>) => {
       const config = getWizardConfig('event');
       const finalData = config.finalizeData ? config.finalizeData(data) : data;
 
@@ -127,7 +127,7 @@ export function useStudioPublish({
 
   // Publish blog post
   const publishBlog = useCallback(
-    async (data: any) => {
+    async (data: Record<string, unknown>) => {
       const config = getWizardConfig('blog');
       const finalData = config.finalizeData ? config.finalizeData(data) : data;
 
@@ -159,7 +159,7 @@ export function useStudioPublish({
 
   // Publish announcement
   const publishAnnouncement = useCallback(
-    async (data: any) => {
+    async (data: Record<string, unknown>) => {
       const config = getWizardConfig('announcement');
       const finalData = config.finalizeData ? config.finalizeData(data) : data;
 
@@ -191,7 +191,7 @@ export function useStudioPublish({
 
   // Main publish function
   const publish = useCallback(
-    async (data: any): Promise<string> => {
+    async (data: Record<string, unknown>): Promise<string> => {
       try {
         let result;
 

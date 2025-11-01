@@ -140,10 +140,10 @@ export function CourseContentStep({ data, onUpdate }: StepComponentProps<CourseW
 
       {/* Course Level */}
       <div className="space-y-2">
-        <Label>
+        <div className="text-sm font-medium">
           Course Level
           <span className="text-destructive ml-1">*</span>
-        </Label>
+        </div>
         <RadioGroup
           value={data.level}
           onValueChange={(level: CourseWizardData['level']) => onUpdate({ level })}
@@ -190,10 +190,10 @@ export function CourseContentStep({ data, onUpdate }: StepComponentProps<CourseW
 
       {/* Delivery Mode */}
       <div className="space-y-2">
-        <Label>
+        <div className="text-sm font-medium">
           Delivery Mode
           <span className="text-destructive ml-1">*</span>
-        </Label>
+        </div>
         <Select
           value={data.mode}
           onValueChange={(mode: CourseWizardData['mode']) => onUpdate({ mode })}

@@ -12,6 +12,7 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 import type {
   TeamCourseAssignment,
   TeamAssignmentUser,
@@ -320,8 +321,73 @@ export class CourseAssignmentService {
    * Send reminder to specific user about assignment
    */
   static async sendReminder(assignmentId: string, userId: string): Promise<void> {
-    // TODO: Implement via edge function
-    // For now, just update reminder_sent_at
+    // Get assignment details
+    const assignment = await this.getAssignment(assignmentId);
+
+    // Get user details
+    const { data: userProfile, error: profileError } = await supabase
+      .from('profiles')
+      .select('email, first_name, last_name')
+      .eq('user_id', userId)
+      .single();
+
+    if (profileError || !userProfile) {
+      throw new Error('User profile not found');
+    }
+
+    // Get course details
+    const { data: course, error: courseError } = await supabase
+      .from('courses')
+      .select('title')
+      .eq('id', assignment.course_id)
+      .single();
+
+    if (courseError) throw courseError;
+
+    // Get organization details (if exists)
+    let organizationName: string | undefined;
+    if (assignment.organization_id) {
+      const { data: org } = await supabase
+        .from('organizations')
+        .select('name')
+        .eq('id', assignment.organization_id)
+        .single();
+      organizationName = org?.name;
+    }
+
+    const userName = userProfile.first_name
+      ? `${userProfile.first_name} ${userProfile.last_name || ''}`.trim()
+      : userProfile.email;
+
+    // Build URLs
+    const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+    const courseUrl = `${baseUrl}/courses/${assignment.course_id}`;
+    const assignmentUrl = `${baseUrl}/assignments/${assignmentId}`;
+
+    // Call Edge Function to send email
+    try {
+      await supabase.functions.invoke('send-assignment-reminder', {
+        body: {
+          assignmentId,
+          userId,
+          userEmail: userProfile.email,
+          userName,
+          courseName: course?.title || 'Course',
+          assignmentTitle: assignment.title,
+          dueDate: assignment.due_date,
+          assignmentDescription: assignment.description,
+          courseUrl,
+          assignmentUrl,
+          organizationName,
+          priority: assignment.priority,
+        },
+      });
+    } catch (error) {
+      logger.error('Failed to send assignment reminder email', error);
+      // Don't throw - we still want to update reminder_sent_at even if email fails
+    }
+
+    // Update reminder_sent_at regardless of email success
     const { error } = await supabase
       .from('team_assignment_users')
       .update({ reminder_sent_at: new Date().toISOString() })

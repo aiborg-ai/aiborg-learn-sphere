@@ -12,13 +12,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Users,
-  Sparkles,
-  ArrowRight,
-  Clock,
-  CheckCircle2,
-} from 'lucide-react';
+import { Users, Sparkles, ArrowRight, Clock, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -43,7 +37,7 @@ export function FamilyPassBanner({ compact = false }: FamilyPassBannerProps) {
   // In production, this would be real-time from database
   useEffect(() => {
     const interval = setInterval(() => {
-      setSpotsRemaining((prev) => {
+      setSpotsRemaining(prev => {
         // Randomly decrease by 1-2 spots every 5-15 minutes
         const shouldDecrease = Math.random() > 0.95;
         if (shouldDecrease && prev > 30) {
@@ -95,12 +89,11 @@ export function FamilyPassBanner({ compact = false }: FamilyPassBannerProps) {
                 </span>
               </h2>
 
-              <p className="text-xl sm:text-2xl font-semibold text-gray-700">
-                Just £20/Month
-              </p>
+              <p className="text-xl sm:text-2xl font-semibold text-gray-700">Just £20/Month</p>
 
               <p className="text-base sm:text-lg text-gray-600">
-                Access 50+ AI courses, exclusive vault content, and priority event invitations for up to 6 family members.
+                Access 50+ AI courses, exclusive vault content, and priority event invitations for
+                up to 6 family members.
               </p>
 
               {/* Feature List */}
@@ -157,9 +150,7 @@ export function FamilyPassBanner({ compact = false }: FamilyPassBannerProps) {
                   size="lg"
                   className="border-2 border-amber-500 text-amber-700 hover:bg-amber-50"
                 >
-                  <Link to="/family-membership">
-                    Learn More
-                  </Link>
+                  <Link to="/family-membership">Learn More</Link>
                 </Button>
               </div>
 
@@ -240,16 +231,12 @@ export function FamilyPassBanner({ compact = false }: FamilyPassBannerProps) {
 
               {/* Value Comparison */}
               <Card className="p-5 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
-                <p className="text-sm font-semibold text-gray-700 mb-2">
-                  Savings Calculator
-                </p>
+                <p className="text-sm font-semibold text-gray-700 mb-2">Savings Calculator</p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-bold text-green-600">Save £2,400</span>
                   <span className="text-gray-600">per year</span>
                 </div>
-                <p className="text-xs text-gray-600 mt-1">
-                  vs. £49/course × 4 members × 12 months
-                </p>
+                <p className="text-xs text-gray-600 mt-1">vs. £49/course × 4 members × 12 months</p>
               </Card>
             </div>
           </div>
@@ -268,9 +255,7 @@ function CompactBanner({ spotsRemaining }: { spotsRemaining: number }) {
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-white">
         <div className="flex items-center gap-3">
           <Badge className="bg-white text-amber-600 font-semibold">NEW</Badge>
-          <p className="font-semibold">
-            Family Pass: Unlimited Learning for £20/Month
-          </p>
+          <p className="font-semibold">Family Pass: Unlimited Learning for £20/Month</p>
           <span className="hidden md:inline text-sm opacity-90">
             • Only {spotsRemaining} spots left at this price
           </span>

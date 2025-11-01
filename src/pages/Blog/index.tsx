@@ -96,7 +96,7 @@ export default function BlogPage() {
                 type="search"
                 placeholder="Search articles..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -118,21 +118,16 @@ export default function BlogPage() {
               >
                 All Categories
               </Badge>
-              {categories.map((category) => (
+              {categories.map(category => (
                 <Badge
                   key={category.id}
                   variant={filters.category === category.slug ? 'default' : 'outline'}
                   className="cursor-pointer"
                   style={{
                     backgroundColor:
-                      filters.category === category.slug
-                        ? category.color
-                        : 'transparent',
+                      filters.category === category.slug ? category.color : 'transparent',
                     borderColor: category.color,
-                    color:
-                      filters.category === category.slug
-                        ? 'white'
-                        : category.color,
+                    color: filters.category === category.slug ? 'white' : category.color,
                   }}
                   onClick={() => handleCategoryFilter(category.slug)}
                 >
@@ -142,10 +137,7 @@ export default function BlogPage() {
             </div>
 
             {/* Sort */}
-            <Select
-              value={filters.sortBy || 'latest'}
-              onValueChange={handleSortChange}
-            >
+            <Select value={filters.sortBy || 'latest'} onValueChange={handleSortChange}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
@@ -210,10 +202,12 @@ export default function BlogPage() {
             <p className="text-xl text-muted-foreground mb-4">
               No articles found matching your criteria
             </p>
-            <Button onClick={() => {
-              setSearchParams(new URLSearchParams());
-              updateFilters({});
-            }}>
+            <Button
+              onClick={() => {
+                setSearchParams(new URLSearchParams());
+                updateFilters({});
+              }}
+            >
               Clear Filters
             </Button>
           </div>
@@ -232,7 +226,7 @@ export default function BlogPage() {
 
             {/* Regular Posts */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {regularPosts.map((post) => (
+              {regularPosts.map(post => (
                 <BlogPostCard key={post.id} post={post} />
               ))}
             </div>
@@ -248,28 +242,21 @@ export default function BlogPage() {
                   Previous
                 </Button>
                 <div className="flex items-center gap-2">
-                  {[...Array(Math.ceil(totalCount / (filters.limit || 12)))].map(
-                    (_, i) => (
-                      <Button
-                        key={i + 1}
-                        variant={
-                          (filters.page || 1) === i + 1 ? 'default' : 'outline'
-                        }
-                        size="icon"
-                        onClick={() => handlePageChange(i + 1)}
-                      >
-                        {i + 1}
-                      </Button>
-                    )
-                  )}
+                  {[...Array(Math.ceil(totalCount / (filters.limit || 12)))].map((_, i) => (
+                    <Button
+                      key={i + 1}
+                      variant={(filters.page || 1) === i + 1 ? 'default' : 'outline'}
+                      size="icon"
+                      onClick={() => handlePageChange(i + 1)}
+                    >
+                      {i + 1}
+                    </Button>
+                  ))}
                 </div>
                 <Button
                   variant="outline"
                   onClick={() => handlePageChange((filters.page || 1) + 1)}
-                  disabled={
-                    (filters.page || 1) >=
-                    Math.ceil(totalCount / (filters.limit || 12))
-                  }
+                  disabled={(filters.page || 1) >= Math.ceil(totalCount / (filters.limit || 12))}
                 >
                   Next
                 </Button>

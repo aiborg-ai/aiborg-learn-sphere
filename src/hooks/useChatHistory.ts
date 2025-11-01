@@ -14,6 +14,7 @@ export interface ChatMessage {
   sender: 'user' | 'ai';
   timestamp: Date;
   type?: 'text' | 'suggestion' | 'course_recommendation';
+  metadata?: Record<string, unknown>; // For storing model, cost, cache info, ratings, etc.
 }
 
 export interface Conversation {

@@ -221,7 +221,7 @@ export default function ChatbotAnalytics() {
             <CardContent>
               {audienceBreakdown && audienceBreakdown.length > 0 ? (
                 <div className="space-y-4">
-                  {audienceBreakdown.map((aud: any) => (
+                  {audienceBreakdown.map((aud: Record<string, number | string>) => (
                     <div key={aud.audience} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -239,7 +239,7 @@ export default function ChatbotAnalytics() {
                         <div
                           className="h-full bg-blue-500"
                           style={{
-                            width: `${(aud.total_cost / Math.max(...audienceBreakdown.map((a: any) => a.total_cost))) * 100}%`,
+                            width: `${(aud.total_cost / Math.max(...audienceBreakdown.map((a: Record<string, number>) => a.total_cost as number))) * 100}%`,
                           }}
                         />
                       </div>
@@ -266,7 +266,7 @@ export default function ChatbotAnalytics() {
             <CardContent>
               {errorStats && errorStats.length > 0 ? (
                 <div className="space-y-4">
-                  {errorStats.map((stat: any) => (
+                  {errorStats.map((stat: Record<string, string | number>) => (
                     <div key={stat.date} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground">{stat.date}</span>

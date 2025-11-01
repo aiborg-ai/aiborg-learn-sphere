@@ -18,7 +18,7 @@ import {
   CheckCircle2,
   Loader2,
   TrendingUp,
-  FileText
+  FileText,
 } from 'lucide-react';
 
 interface StudentProgressViewerProps {
@@ -32,7 +32,7 @@ export function StudentProgressViewer({
   userId,
   courseId,
   open,
-  onOpenChange
+  onOpenChange,
 }: StudentProgressViewerProps) {
   const { progressDetails, loading } = useStudentProgressDetails(userId, courseId);
 
@@ -127,7 +127,9 @@ export function StudentProgressViewer({
                 </p>
                 <ul className="list-disc list-inside space-y-1">
                   {progressDetails.riskFactors.map((factor, index) => (
-                    <li key={index} className="text-sm text-red-700">{factor}</li>
+                    <li key={index} className="text-sm text-red-700">
+                      {factor}
+                    </li>
                   ))}
                 </ul>
               </CardContent>
@@ -176,7 +178,9 @@ export function StudentProgressViewer({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className={`text-2xl font-bold ${getGradeColor(progressDetails.averageGrade)}`}>
+                <div
+                  className={`text-2xl font-bold ${getGradeColor(progressDetails.averageGrade)}`}
+                >
                   {progressDetails.averageGrade !== null
                     ? `${progressDetails.averageGrade.toFixed(1)}%`
                     : 'N/A'}
@@ -225,14 +229,20 @@ export function StudentProgressViewer({
                       <span>Progress</span>
                       <span>
                         {progressDetails.materialsTotal > 0
-                          ? ((progressDetails.materialsCompleted / progressDetails.materialsTotal) * 100).toFixed(1)
-                          : 0}%
+                          ? (
+                              (progressDetails.materialsCompleted /
+                                progressDetails.materialsTotal) *
+                              100
+                            ).toFixed(1)
+                          : 0}
+                        %
                       </span>
                     </div>
                     <Progress
                       value={
                         progressDetails.materialsTotal > 0
-                          ? (progressDetails.materialsCompleted / progressDetails.materialsTotal) * 100
+                          ? (progressDetails.materialsCompleted / progressDetails.materialsTotal) *
+                            100
                           : 0
                       }
                     />
@@ -240,11 +250,13 @@ export function StudentProgressViewer({
 
                   <div className="flex items-start gap-2 pt-2">
                     {progressDetails.materialsCompleted === progressDetails.materialsTotal &&
-                     progressDetails.materialsTotal > 0 ? (
+                    progressDetails.materialsTotal > 0 ? (
                       <>
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
                         <div>
-                          <p className="text-sm font-medium text-green-600">All materials completed!</p>
+                          <p className="text-sm font-medium text-green-600">
+                            All materials completed!
+                          </p>
                           <p className="text-xs text-gray-600">Great progress</p>
                         </div>
                       </>
@@ -253,7 +265,8 @@ export function StudentProgressViewer({
                         <BookOpen className="h-5 w-5 text-blue-600 mt-0.5" />
                         <div>
                           <p className="text-sm font-medium">
-                            {progressDetails.materialsTotal - progressDetails.materialsCompleted} materials remaining
+                            {progressDetails.materialsTotal - progressDetails.materialsCompleted}{' '}
+                            materials remaining
                           </p>
                           <p className="text-xs text-gray-600">Keep going!</p>
                         </div>
@@ -286,29 +299,40 @@ export function StudentProgressViewer({
                       <span>Completion Rate</span>
                       <span>
                         {progressDetails.assignmentsTotal > 0
-                          ? ((progressDetails.assignmentsCompleted / progressDetails.assignmentsTotal) * 100).toFixed(1)
-                          : 0}%
+                          ? (
+                              (progressDetails.assignmentsCompleted /
+                                progressDetails.assignmentsTotal) *
+                              100
+                            ).toFixed(1)
+                          : 0}
+                        %
                       </span>
                     </div>
                     <Progress
                       value={
                         progressDetails.assignmentsTotal > 0
-                          ? (progressDetails.assignmentsCompleted / progressDetails.assignmentsTotal) * 100
+                          ? (progressDetails.assignmentsCompleted /
+                              progressDetails.assignmentsTotal) *
+                            100
                           : 0
                       }
                     />
                   </div>
 
                   <div className="flex items-start gap-2 pt-2">
-                    <Award className={`h-5 w-5 mt-0.5 ${getGradeColor(progressDetails.averageGrade)}`} />
+                    <Award
+                      className={`h-5 w-5 mt-0.5 ${getGradeColor(progressDetails.averageGrade)}`}
+                    />
                     <div>
                       <p className="text-sm font-medium">
-                        Average Grade: {progressDetails.averageGrade !== null
+                        Average Grade:{' '}
+                        {progressDetails.averageGrade !== null
                           ? `${progressDetails.averageGrade.toFixed(1)}%`
                           : 'Not graded yet'}
                       </p>
                       <p className="text-xs text-gray-600">
-                        {progressDetails.assignmentsTotal - progressDetails.assignmentsCompleted} pending
+                        {progressDetails.assignmentsTotal - progressDetails.assignmentsCompleted}{' '}
+                        pending
                       </p>
                     </div>
                   </div>
@@ -357,9 +381,15 @@ export function StudentProgressViewer({
                   <p className="font-semibold">
                     {!progressDetails.lastAccessed ? (
                       <span className="text-gray-600">Never Active</span>
-                    ) : Math.floor((Date.now() - new Date(progressDetails.lastAccessed).getTime()) / (1000 * 60 * 60 * 24)) <= 1 ? (
+                    ) : Math.floor(
+                        (Date.now() - new Date(progressDetails.lastAccessed).getTime()) /
+                          (1000 * 60 * 60 * 24)
+                      ) <= 1 ? (
                       <span className="text-green-600">Recently Active</span>
-                    ) : Math.floor((Date.now() - new Date(progressDetails.lastAccessed).getTime()) / (1000 * 60 * 60 * 24)) <= 7 ? (
+                    ) : Math.floor(
+                        (Date.now() - new Date(progressDetails.lastAccessed).getTime()) /
+                          (1000 * 60 * 60 * 24)
+                      ) <= 7 ? (
                       <span className="text-blue-600">Moderately Active</span>
                     ) : (
                       <span className="text-red-600">Inactive</span>

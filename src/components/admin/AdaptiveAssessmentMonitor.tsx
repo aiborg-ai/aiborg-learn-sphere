@@ -48,7 +48,9 @@ export function AdaptiveAssessmentMonitor() {
   const [metrics, setMetrics] = useState<AdaptiveEngagementMetrics | null>(null);
   const [userData, setUserData] = useState<UserEngagementData[]>([]);
   const [timeSeries, setTimeSeries] = useState<EngagementTimeSeries[]>([]);
-  const [alerts, setAlerts] = useState<Array<{ type: string; message: string; metric: string; value: number }>>([]);
+  const [alerts, setAlerts] = useState<
+    Array<{ type: string; message: string; metric: string; value: number }>
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -134,7 +136,11 @@ export function AdaptiveAssessmentMonitor() {
           <CardContent>
             <div className="text-2xl font-bold">{metrics.engagementScore}</div>
             <p className="text-xs text-muted-foreground">
-              {metrics.engagementScore >= 70 ? 'Excellent' : metrics.engagementScore >= 50 ? 'Good' : 'Needs Attention'}
+              {metrics.engagementScore >= 70
+                ? 'Excellent'
+                : metrics.engagementScore >= 50
+                  ? 'Good'
+                  : 'Needs Attention'}
             </p>
           </CardContent>
         </Card>
@@ -159,9 +165,7 @@ export function AdaptiveAssessmentMonitor() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{(metrics.quickExitRate * 100).toFixed(1)}%</div>
-            <p className="text-xs text-muted-foreground">
-              Users leaving in first 2 questions
-            </p>
+            <p className="text-xs text-muted-foreground">Users leaving in first 2 questions</p>
           </CardContent>
         </Card>
       </div>
@@ -192,7 +196,7 @@ export function AdaptiveAssessmentMonitor() {
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={(entry) => `${entry.name}: ${entry.value}`}
+                      label={entry => `${entry.name}: ${entry.value}`}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
@@ -374,7 +378,11 @@ export function AdaptiveAssessmentMonitor() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {alerts.length === 0 ? 'Healthy' : alerts.some(a => a.type === 'critical') ? 'Critical' : 'Warning'}
+                  {alerts.length === 0
+                    ? 'Healthy'
+                    : alerts.some(a => a.type === 'critical')
+                      ? 'Critical'
+                      : 'Warning'}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {alerts.length} active alert{alerts.length !== 1 ? 's' : ''}

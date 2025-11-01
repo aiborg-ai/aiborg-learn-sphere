@@ -8,7 +8,7 @@ import type {
   GapAnalysis,
   LearningGoal,
   AssessmentData,
-  PathItem
+  PathItem,
 } from './types';
 import { contentSelectionService } from './ContentSelectionService';
 
@@ -122,14 +122,14 @@ export class ContentSequencingService {
       is_required: true,
       reason_for_inclusion: 'Validate learning progress and measure skill improvement',
       confidence_score: 1.0,
-      week_number: weekNumber
+      week_number: weekNumber,
     };
   }
 
   private setPrerequisites(items: PathItem[]): PathItem[] {
     return items.map((item, index) => ({
       ...item,
-      prerequisites: index > 0 ? [items[index - 1].item_id] : []
+      prerequisites: index > 0 ? [items[index - 1].item_id] : [],
     }));
   }
 }

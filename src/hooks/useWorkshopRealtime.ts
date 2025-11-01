@@ -39,11 +39,14 @@ export function useWorkshopRealtime({
   const maxReconnectAttempts = 5;
 
   // Update status and notify callback
-  const updateStatus = useCallback((newStatus: RealtimeStatus) => {
-    setStatus(newStatus);
-    onStatusChange?.(newStatus);
-    logger.info('[Realtime] Status changed', { sessionId, status: newStatus });
-  }, [sessionId, onStatusChange]);
+  const updateStatus = useCallback(
+    (newStatus: RealtimeStatus) => {
+      setStatus(newStatus);
+      onStatusChange?.(newStatus);
+      logger.info('[Realtime] Status changed', { sessionId, status: newStatus });
+    },
+    [sessionId, onStatusChange]
+  );
 
   // Handle reconnection with exponential backoff
   const scheduleReconnect = useCallback(() => {
@@ -178,10 +181,10 @@ export function useWorkshopRealtime({
         }
       )
       // Handle channel status
-      .on('system', {}, (payload) => {
+      .on('system', {}, payload => {
         logger.info('[Realtime] System event', { payload });
       })
-      .subscribe((status) => {
+      .subscribe(status => {
         logger.info('[Realtime] Subscription status', { status, sessionId });
 
         if (status === 'SUBSCRIBED') {
@@ -249,7 +252,7 @@ export function useWorkshopPresence(sessionId: string, userId?: string, userName
       .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
         logger.info('[Presence] User left', { key, leftPresences });
       })
-      .subscribe(async (status) => {
+      .subscribe(async status => {
         if (status === 'SUBSCRIBED') {
           // Track this user's presence
           await channel.track({
@@ -290,7 +293,7 @@ export function useWorkshopBroadcast(sessionId: string) {
     channelRef.current = channel;
 
     channel
-      .on('broadcast', { event: '*' }, (payload) => {
+      .on('broadcast', { event: '*' }, payload => {
         logger.info('[Broadcast] Message received', { payload });
         setLastMessage({ event: payload.event, payload: payload.payload });
       })

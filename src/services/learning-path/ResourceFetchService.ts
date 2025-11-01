@@ -17,14 +17,14 @@ export class ResourceFetchService {
     const [coursesResult, workshopsResult, exercisesResult] = await Promise.all([
       this.fetchCourses(),
       this.fetchWorkshops(),
-      this.fetchExercises()
+      this.fetchExercises(),
     ]);
 
     return {
       courses: coursesResult.data ?? [],
       workshops: workshopsResult.data ?? [],
       exercises: exercisesResult.data ?? [],
-      quizzes: []
+      quizzes: [],
     };
   }
 
@@ -45,10 +45,7 @@ export class ResourceFetchService {
   }
 
   private async fetchExercises() {
-    return await supabase
-      .from('homework_assignments')
-      .select('*')
-      .eq('is_published', true);
+    return await supabase.from('homework_assignments').select('*').eq('is_published', true);
   }
 }
 

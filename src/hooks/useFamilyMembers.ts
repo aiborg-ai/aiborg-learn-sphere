@@ -129,7 +129,7 @@ export function useRemoveFamilyMember() {
   return useMutation({
     mutationFn: (memberId: string) => FamilyMembersService.removeFamilyMember(memberId),
 
-    onSuccess: (_, memberId) => {
+    onSuccess: (_, _memberId) => {
       // Invalidate all subscription queries as we don't know which subscription this member belongs to
       queryClient.invalidateQueries({ queryKey: familyMembersKeys.all });
 

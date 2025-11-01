@@ -55,7 +55,8 @@ describe('CompetencyMatrixService', () => {
 
   describe('create', () => {
     it('should create competency matrix with skills', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // Insert matrix
           insert: vi.fn().mockReturnValue({
@@ -120,16 +121,12 @@ describe('CompetencyMatrixService', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      await expect(
-        CompetencyMatrixService.create(
-          { name: 'Test Matrix' },
-          []
-        )
-      ).rejects.toThrow();
+      await expect(CompetencyMatrixService.create({ name: 'Test Matrix' }, [])).rejects.toThrow();
     });
 
     it('should handle skills insertion error', async () => {
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           insert: vi.fn().mockReturnValue({
             select: vi.fn().mockReturnValue({
@@ -150,10 +147,9 @@ describe('CompetencyMatrixService', () => {
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
       await expect(
-        CompetencyMatrixService.create(
-          { name: 'Test Matrix' },
-          [{ skill_name: 'Test Skill', skill_category: 'Test', required_level: 3 }]
-        )
+        CompetencyMatrixService.create({ name: 'Test Matrix' }, [
+          { skill_name: 'Test Skill', skill_category: 'Test', required_level: 3 },
+        ])
       ).rejects.toThrow();
     });
 
@@ -163,7 +159,8 @@ describe('CompetencyMatrixService', () => {
         error: null,
       });
 
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           insert: vi.fn().mockReturnValue({
             select: vi.fn().mockReturnValue({
@@ -180,15 +177,12 @@ describe('CompetencyMatrixService', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      await CompetencyMatrixService.create(
-        { name: 'Test Matrix' },
-        [{ skill_name: 'Test', skill_category: 'Test', required_level: 3 }]
-      );
+      await CompetencyMatrixService.create({ name: 'Test Matrix' }, [
+        { skill_name: 'Test', skill_category: 'Test', required_level: 3 },
+      ]);
 
       expect(insertMock).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          expect.objectContaining({ importance: 'required' })
-        ])
+        expect.arrayContaining([expect.objectContaining({ importance: 'required' })])
       );
     });
   });
@@ -203,7 +197,8 @@ describe('CompetencyMatrixService', () => {
         overall_match_score: null,
       };
 
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           // Insert assessment
           insert: vi.fn().mockReturnValue({
@@ -238,14 +233,10 @@ describe('CompetencyMatrixService', () => {
         error: null,
       });
 
-      const result = await CompetencyMatrixService.assessUser(
-        'user-123',
-        'matrix-123',
-        [
-          { skill_id: 'skill-1', current_level: 4, evidence: 'Portfolio projects' },
-          { skill_id: 'skill-2', current_level: 3 },
-        ]
-      );
+      const result = await CompetencyMatrixService.assessUser('user-123', 'matrix-123', [
+        { skill_id: 'skill-1', current_level: 4, evidence: 'Portfolio projects' },
+        { skill_id: 'skill-2', current_level: 3 },
+      ]);
 
       expect(result).toBeDefined();
       expect(result.id).toBe('assessment-123');
@@ -280,23 +271,22 @@ describe('CompetencyMatrixService', () => {
         status: 'draft',
       };
 
-      const mockFrom = vi.fn()
-        .mockReturnValue({
-          insert: vi.fn().mockReturnValue({
-            select: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: mockAssessment,
-                error: null,
-              }),
-            }),
-          }),
-          update: vi.fn().mockReturnValue({
-            eq: vi.fn().mockResolvedValue({
-              data: {},
+      const mockFrom = vi.fn().mockReturnValue({
+        insert: vi.fn().mockReturnValue({
+          select: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: mockAssessment,
               error: null,
             }),
           }),
-        });
+        }),
+        update: vi.fn().mockReturnValue({
+          eq: vi.fn().mockResolvedValue({
+            data: {},
+            error: null,
+          }),
+        }),
+      });
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
       (supabase.rpc as ReturnType<typeof vi.fn>).mockResolvedValue({
@@ -321,7 +311,8 @@ describe('CompetencyMatrixService', () => {
         }),
       });
 
-      const mockFrom = vi.fn()
+      const mockFrom = vi
+        .fn()
         .mockReturnValueOnce({
           insert: vi.fn().mockReturnValue({
             select: vi.fn().mockReturnValue({
@@ -352,9 +343,7 @@ describe('CompetencyMatrixService', () => {
         { skill_id: 'skill-1', current_level: 3 },
       ]);
 
-      expect(updateMock).toHaveBeenCalledWith(
-        expect.objectContaining({ status: 'completed' })
-      );
+      expect(updateMock).toHaveBeenCalledWith(expect.objectContaining({ status: 'completed' }));
     });
   });
 
@@ -405,10 +394,7 @@ describe('CompetencyMatrixService', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const result = await CompetencyMatrixService.getGapAnalysis(
-        'user-123',
-        'matrix-123'
-      );
+      const result = await CompetencyMatrixService.getGapAnalysis('user-123', 'matrix-123');
 
       expect(result).toHaveLength(2);
       expect(result[0]).toEqual({
@@ -476,10 +462,7 @@ describe('CompetencyMatrixService', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const result = await CompetencyMatrixService.getGapAnalysis(
-        'user-123',
-        'matrix-123'
-      );
+      const result = await CompetencyMatrixService.getGapAnalysis('user-123', 'matrix-123');
 
       expect(result).toEqual([]);
     });
@@ -542,10 +525,7 @@ describe('CompetencyMatrixService', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const result = await CompetencyMatrixService.getGapAnalysis(
-        'user-123',
-        'matrix-123'
-      );
+      const result = await CompetencyMatrixService.getGapAnalysis('user-123', 'matrix-123');
 
       expect(result[0]?.gap).toBe(3); // 5 - 2 = 3 (skill gap)
     });
@@ -581,10 +561,7 @@ describe('CompetencyMatrixService', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const result = await CompetencyMatrixService.getGapAnalysis(
-        'user-123',
-        'matrix-123'
-      );
+      const result = await CompetencyMatrixService.getGapAnalysis('user-123', 'matrix-123');
 
       expect(result[0]?.gap).toBe(-2); // 3 - 5 = -2 (exceeds requirement)
     });

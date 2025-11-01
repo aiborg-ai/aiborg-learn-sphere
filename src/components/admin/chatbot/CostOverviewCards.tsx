@@ -15,7 +15,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export function CostOverviewCards() {
   const { data: realtimeCost, isLoading: loadingRealtime } = useRealTimeCost();
-  const { data: todayStats, isLoading: loadingToday } = useTodayStats();
+  const { data: _todayStats, isLoading: loadingToday } = useTodayStats();
   const projectedCost = useProjectedMonthlyCost();
 
   if (loadingRealtime || loadingToday) {

@@ -117,7 +117,7 @@ export class ExerciseSubmissionService {
           : 'submitted';
 
       // Update submission
-      const { data: updated, error: updateError } = await supabase
+      const { data: _updated, error: updateError } = await supabase
         .from('exercise_submissions')
         .update({
           status,

@@ -23,12 +23,14 @@ export const useAttendanceTicketManagement = () => {
 
       const { data, error } = await supabase
         .from('attendance_tickets')
-        .select(`
+        .select(
+          `
           *,
           events(title, event_date),
           courses(title),
           profiles:user_id(display_name, email)
-        `)
+        `
+        )
         .order('session_date', { ascending: false });
 
       if (error) throw error;
@@ -77,12 +79,14 @@ export const useAttendanceTicketManagement = () => {
             badge_color: ticketData.badge_color || 'silver',
             is_verified: false,
           })
-          .select(`
+          .select(
+            `
             *,
             events(title, event_date),
             courses(title),
             profiles:user_id(display_name, email)
-          `)
+          `
+          )
           .single();
 
         if (error) throw error;
@@ -130,10 +134,7 @@ export const useAttendanceTicketManagement = () => {
           is_verified: false,
         }));
 
-        const { data, error } = await supabase
-          .from('attendance_tickets')
-          .insert(tickets)
-          .select();
+        const { data, error } = await supabase.from('attendance_tickets').insert(tickets).select();
 
         if (error) throw error;
 
@@ -151,60 +152,54 @@ export const useAttendanceTicketManagement = () => {
     [fetchAllTickets]
   );
 
-  const verifyTicket = useCallback(
-    async (ticketId: string) => {
-      try {
-        logger.log('✓ Verifying ticket...', { ticketId });
+  const verifyTicket = useCallback(async (ticketId: string) => {
+    try {
+      logger.log('✓ Verifying ticket...', { ticketId });
 
-        const { data, error } = await supabase
-          .from('attendance_tickets')
-          .update({ is_verified: true })
-          .eq('id', ticketId)
-          .select()
-          .single();
+      const { data, error } = await supabase
+        .from('attendance_tickets')
+        .update({ is_verified: true })
+        .eq('id', ticketId)
+        .select()
+        .single();
 
-        if (error) throw error;
+      if (error) throw error;
 
-        logger.log('✅ Ticket verified');
+      logger.log('✅ Ticket verified');
 
-        // Update local state
-        setState(prev => ({
-          ...prev,
-          tickets: prev.tickets.map(t => (t.id === ticketId ? { ...t, is_verified: true } : t)),
-        }));
+      // Update local state
+      setState(prev => ({
+        ...prev,
+        tickets: prev.tickets.map(t => (t.id === ticketId ? { ...t, is_verified: true } : t)),
+      }));
 
-        return data;
-      } catch (err) {
-        logger.error('❌ Error verifying ticket:', err);
-        throw err;
-      }
-    },
-    []
-  );
+      return data;
+    } catch (err) {
+      logger.error('❌ Error verifying ticket:', err);
+      throw err;
+    }
+  }, []);
 
-  const revokeTicket = useCallback(
-    async (ticketId: string) => {
-      try {
-        logger.log('🗑️ Revoking ticket...', { ticketId });
+  const revokeTicket = useCallback(async (ticketId: string) => {
+    try {
+      logger.log('🗑️ Revoking ticket...', { ticketId });
 
-        const { error } = await supabase.from('attendance_tickets').delete().eq('id', ticketId);
+      const { error } = await supabase.from('attendance_tickets').delete().eq('id', ticketId);
 
-        if (error) throw error;
+      if (error) throw error;
 
-        logger.log('✅ Ticket revoked');
+      logger.log('✅ Ticket revoked');
 
-        // Update local state
-        setState(prev => ({
-          ...prev,
-          tickets: prev.tickets.filter(t => t.id !== ticketId),
-        }));
-      } catch (err) {
-        logger.error('❌ Error revoking ticket:', err);
-        throw err;
-      }
-    },
-    []
-  );
+      // Update local state
+      setState(prev => ({
+        ...prev,
+        tickets: prev.tickets.filter(t => t.id !== ticketId),
+      }));
+    } catch (err) {
+      logger.error('❌ Error revoking ticket:', err);
+      throw err;
+    }
+  }, []);
 
   const updateTicket = useCallback(
     async (
@@ -226,12 +221,14 @@ export const useAttendanceTicketManagement = () => {
           .from('attendance_tickets')
           .update(updates)
           .eq('id', ticketId)
-          .select(`
+          .select(
+            `
             *,
             events(title, event_date),
             courses(title),
             profiles:user_id(display_name, email)
-          `)
+          `
+          )
           .single();
 
         if (error) throw error;

@@ -32,7 +32,8 @@ export function LanguageSwitcher({
   const { i18n } = useTranslation();
   const [isChanging, setIsChanging] = useState(false);
 
-  const currentLanguage = SUPPORTED_LANGUAGES.find(lang => lang.code === i18n.language) || SUPPORTED_LANGUAGES[0];
+  const currentLanguage =
+    SUPPORTED_LANGUAGES.find(lang => lang.code === i18n.language) || SUPPORTED_LANGUAGES[0];
 
   const changeLanguage = async (languageCode: string) => {
     if (languageCode === i18n.language) return;
@@ -93,9 +94,7 @@ export function LanguageSwitcher({
                 <span>{language.name}</span>
               </span>
 
-              {isActive && (
-                <Check className="h-4 w-4 text-primary" aria-label="Current language" />
-              )}
+              {isActive && <Check className="h-4 w-4 text-primary" aria-label="Current language" />}
             </DropdownMenuItem>
           );
         })}
@@ -119,7 +118,8 @@ export function CompactLanguageSwitcher() {
     i18n.changeLanguage(nextLanguage.code);
   };
 
-  const currentLanguage = SUPPORTED_LANGUAGES.find(lang => lang.code === i18n.language) || SUPPORTED_LANGUAGES[0];
+  const currentLanguage =
+    SUPPORTED_LANGUAGES.find(lang => lang.code === i18n.language) || SUPPORTED_LANGUAGES[0];
 
   return (
     <Button

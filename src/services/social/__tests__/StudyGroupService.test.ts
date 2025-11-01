@@ -103,9 +103,16 @@ describe('StudyGroupService', () => {
 
   describe('leave', () => {
     it('should remove user from study group', async () => {
+      const mockChain = {
+        eq: vi.fn(),
+      };
+
+      // First eq() returns itself, second eq() resolves with result
+      mockChain.eq.mockReturnValueOnce(mockChain);  // First .eq() returns the chain
+      mockChain.eq.mockResolvedValueOnce({ error: null });  // Second .eq() returns promise
+
       vi.mocked(supabase.from).mockReturnValue({
-        delete: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis().mockResolvedValue({ error: null }),
+        delete: vi.fn().mockReturnValue(mockChain),
       } as unknown as MockQueryBuilder);
 
       await expect(StudyGroupService.leave('group-123', 'user-456')).resolves.not.toThrow();

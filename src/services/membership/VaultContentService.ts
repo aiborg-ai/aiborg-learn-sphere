@@ -25,13 +25,8 @@ export class VaultContentService {
   /**
    * Get all published vault content with optional filters
    */
-  static async getVaultContent(
-    filters?: VaultContentFilters
-  ): Promise<VaultContent[]> {
-    let query = supabase
-      .from('vault_content')
-      .select('*')
-      .eq('is_published', true);
+  static async getVaultContent(filters?: VaultContentFilters): Promise<VaultContent[]> {
+    let query = supabase.from('vault_content').select('*').eq('is_published', true);
 
     // Apply filters
     if (filters?.content_type) {
@@ -51,9 +46,7 @@ export class VaultContentService {
     }
 
     if (filters?.search) {
-      query = query.or(
-        `title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`
-      );
+      query = query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
     }
 
     if (filters?.featured_only) {
@@ -137,7 +130,7 @@ export class VaultContentService {
     if (error) throw error;
 
     // Get unique categories
-    const categories = Array.from(new Set(data?.map((item) => item.category) || []));
+    const categories = Array.from(new Set(data?.map(item => item.category) || []));
     return categories.sort();
   }
 
@@ -153,7 +146,7 @@ export class VaultContentService {
     if (error) throw error;
 
     // Flatten and get unique tags
-    const allTags = data?.flatMap((item) => item.tags || []) || [];
+    const allTags = data?.flatMap(item => item.tags || []) || [];
     const uniqueTags = Array.from(new Set(allTags));
     return uniqueTags.sort();
   }
@@ -165,10 +158,7 @@ export class VaultContentService {
   /**
    * Log content view
    */
-  static async logView(
-    contentId: string,
-    watchPercentage?: number
-  ): Promise<void> {
+  static async logView(contentId: string, watchPercentage?: number): Promise<void> {
     const { error } = await supabase.rpc('log_vault_content_access', {
       p_content_id: contentId,
       p_action_type: 'view',
@@ -209,10 +199,7 @@ export class VaultContentService {
   /**
    * Add content to bookmarks
    */
-  static async addBookmark(
-    contentId: string,
-    notes?: string
-  ): Promise<UserVaultBookmark> {
+  static async addBookmark(contentId: string, notes?: string): Promise<UserVaultBookmark> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -259,10 +246,7 @@ export class VaultContentService {
   /**
    * Update bookmark notes
    */
-  static async updateBookmarkNotes(
-    contentId: string,
-    notes: string
-  ): Promise<void> {
+  static async updateBookmarkNotes(contentId: string, notes: string): Promise<void> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -353,13 +337,15 @@ export class VaultContentService {
 
     if (error) throw error;
 
-    return data[0] || {
-      total_views: 0,
-      total_downloads: 0,
-      total_bookmarks: 0,
-      unique_content_viewed: 0,
-      hours_watched: 0,
-    };
+    return (
+      data[0] || {
+        total_views: 0,
+        total_downloads: 0,
+        total_bookmarks: 0,
+        unique_content_viewed: 0,
+        hours_watched: 0,
+      }
+    );
   }
 
   /**
@@ -383,17 +369,12 @@ export class VaultContentService {
 
     if (logError) throw logError;
 
-    const contentIds = Array.from(
-      new Set(accessLog?.map((log) => log.content_id) || [])
-    );
+    const contentIds = Array.from(new Set(accessLog?.map(log => log.content_id) || []));
 
     if (contentIds.length === 0) return [];
 
     // Get content details
-    const { data, error } = await supabase
-      .from('vault_content')
-      .select('*')
-      .in('id', contentIds);
+    const { data, error } = await supabase.from('vault_content').select('*').in('id', contentIds);
 
     if (error) throw error;
 
@@ -407,14 +388,8 @@ export class VaultContentService {
   /**
    * Create vault content (admin only)
    */
-  static async createVaultContent(
-    params: CreateVaultContentParams
-  ): Promise<VaultContent> {
-    const { data, error } = await supabase
-      .from('vault_content')
-      .insert(params)
-      .select()
-      .single();
+  static async createVaultContent(params: CreateVaultContentParams): Promise<VaultContent> {
+    const { data, error } = await supabase.from('vault_content').insert(params).select().single();
 
     if (error) throw error;
 

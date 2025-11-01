@@ -96,10 +96,7 @@ export function useCourseAccess(
   course?: Course | null
 ): UseCourseAccessReturn {
   // Check if user has active membership
-  const {
-    data: hasMembershipAccess,
-    isLoading: membershipLoading,
-  } = useHasActiveMembership();
+  const { data: hasMembershipAccess, isLoading: membershipLoading } = useHasActiveMembership();
 
   const result = useMemo(() => {
     // If no course ID, no access
@@ -116,12 +113,11 @@ export function useCourseAccess(
     }
 
     // Check if course is free
-    const isFree =
-      course?.price?.toLowerCase() === 'free' || course?.price === '£0';
+    const isFree = course?.price?.toLowerCase() === 'free' || course?.price === '£0';
 
     // Check for direct enrollment
     const numericCourseId = parseInt(courseId, 10);
-    const enrollment = enrollments?.find((e) => e.course_id === numericCourseId);
+    const enrollment = enrollments?.find(e => e.course_id === numericCourseId);
     const isEnrolled = !!enrollment;
 
     // Determine access source and access status
@@ -182,11 +178,7 @@ export function useShouldEnroll(
   enrollments: Enrollment[] | undefined,
   course?: Course | null
 ): boolean {
-  const { hasAccess, isFree, isLoading } = useCourseAccess(
-    courseId,
-    enrollments,
-    course
-  );
+  const { hasAccess, isFree, isLoading } = useCourseAccess(courseId, enrollments, course);
 
   if (isLoading) return false;
 

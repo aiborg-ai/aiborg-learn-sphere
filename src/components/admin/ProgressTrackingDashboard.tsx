@@ -8,24 +8,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useProgressTracking } from '@/hooks/useProgressTracking';
 import { StudentProgressViewer } from './StudentProgressViewer';
-import {
-  TrendingUp,
-  Clock,
-  Users,
-  Award,
-  AlertTriangle,
-  Loader2,
-  Eye
-} from 'lucide-react';
+import { TrendingUp, Clock, Users, Award, AlertTriangle, Loader2, Eye } from 'lucide-react';
 
 export function ProgressTrackingDashboard() {
   const [selectedCourseId, setSelectedCourseId] = useState<number | undefined>();
-  const [selectedStudent, setSelectedStudent] = useState<{ userId: string; courseId: number } | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState<{
+    userId: string;
+    courseId: number;
+  } | null>(null);
 
   const { courseProgress, loading } = useProgressTracking({ courseId: selectedCourseId });
 
@@ -42,7 +44,8 @@ export function ProgressTrackingDashboard() {
     }
 
     const totalStudents = courseProgress.length;
-    const averageCompletion = courseProgress.reduce((sum, p) => sum + (p.completion_percentage || 0), 0) / totalStudents;
+    const averageCompletion =
+      courseProgress.reduce((sum, p) => sum + (p.completion_percentage || 0), 0) / totalStudents;
     const atRiskCount = courseProgress.filter(p => (p.completion_percentage || 0) < 30).length;
     const highPerformers = courseProgress.filter(p => (p.completion_percentage || 0) >= 80).length;
     const totalTimeSpent = courseProgress.reduce((sum, p) => sum + (p.total_time_spent || 0), 0);
@@ -76,7 +79,9 @@ export function ProgressTrackingDashboard() {
   const getLastAccessedStatus = (lastAccessed: string | null) => {
     if (!lastAccessed) return { text: 'Never', color: 'text-gray-500' };
 
-    const days = Math.floor((Date.now() - new Date(lastAccessed).getTime()) / (1000 * 60 * 60 * 24));
+    const days = Math.floor(
+      (Date.now() - new Date(lastAccessed).getTime()) / (1000 * 60 * 60 * 24)
+    );
 
     if (days === 0) return { text: 'Today', color: 'text-green-600' };
     if (days === 1) return { text: '1 day ago', color: 'text-green-600' };
@@ -121,7 +126,9 @@ export function ProgressTrackingDashboard() {
               <TrendingUp className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-900">{stats.averageCompletion.toFixed(1)}%</div>
+              <div className="text-2xl font-bold text-green-900">
+                {stats.averageCompletion.toFixed(1)}%
+              </div>
               <p className="text-xs text-green-700 mt-1">Average progress</p>
             </CardContent>
           </Card>
@@ -154,7 +161,9 @@ export function ProgressTrackingDashboard() {
               <Clock className="h-4 w-4 text-orange-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-900">{formatTime(stats.totalTimeSpent)}</div>
+              <div className="text-2xl font-bold text-orange-900">
+                {formatTime(stats.totalTimeSpent)}
+              </div>
               <p className="text-xs text-orange-700 mt-1">Combined learning time</p>
             </CardContent>
           </Card>
@@ -170,7 +179,9 @@ export function ProgressTrackingDashboard() {
               </div>
               <Select
                 value={selectedCourseId?.toString() || 'all'}
-                onValueChange={(value) => setSelectedCourseId(value === 'all' ? undefined : parseInt(value))}
+                onValueChange={value =>
+                  setSelectedCourseId(value === 'all' ? undefined : parseInt(value))
+                }
               >
                 <SelectTrigger className="w-[200px]">
                   <SelectValue placeholder="All Courses" />
@@ -205,7 +216,7 @@ export function ProgressTrackingDashboard() {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    courseProgress.map((progress) => {
+                    courseProgress.map(progress => {
                       const lastAccessStatus = getLastAccessedStatus(progress.last_accessed);
                       const isAtRisk = (progress.completion_percentage || 0) < 30;
 
@@ -220,7 +231,10 @@ export function ProgressTrackingDashboard() {
                           <TableCell>{progress.course?.title || 'N/A'}</TableCell>
                           <TableCell>
                             <div className="space-y-1">
-                              <Progress value={progress.completion_percentage || 0} className="w-24" />
+                              <Progress
+                                value={progress.completion_percentage || 0}
+                                className="w-24"
+                              />
                               <span className="text-xs text-gray-600">
                                 {(progress.completion_percentage || 0).toFixed(1)}%
                               </span>
@@ -228,9 +242,7 @@ export function ProgressTrackingDashboard() {
                           </TableCell>
                           <TableCell>{formatTime(progress.total_time_spent || 0)}</TableCell>
                           <TableCell>
-                            <span className={lastAccessStatus.color}>
-                              {lastAccessStatus.text}
-                            </span>
+                            <span className={lastAccessStatus.color}>{lastAccessStatus.text}</span>
                           </TableCell>
                           <TableCell>
                             {getCompletionBadge(progress.completion_percentage || 0)}
@@ -239,10 +251,12 @@ export function ProgressTrackingDashboard() {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => setSelectedStudent({
-                                userId: progress.user_id,
-                                courseId: progress.course_id
-                              })}
+                              onClick={() =>
+                                setSelectedStudent({
+                                  userId: progress.user_id,
+                                  courseId: progress.course_id,
+                                })
+                              }
                             >
                               <Eye className="h-4 w-4 mr-1" />
                               View Details
@@ -267,7 +281,8 @@ export function ProgressTrackingDashboard() {
                 At-Risk Students Alert
               </CardTitle>
               <CardDescription className="text-red-700">
-                {stats.atRiskCount} student(s) with less than 30% completion - intervention may be needed
+                {stats.atRiskCount} student(s) with less than 30% completion - intervention may be
+                needed
               </CardDescription>
             </CardHeader>
           </Card>
@@ -280,7 +295,7 @@ export function ProgressTrackingDashboard() {
           userId={selectedStudent.userId}
           courseId={selectedStudent.courseId}
           open={!!selectedStudent}
-          onOpenChange={(open) => !open && setSelectedStudent(null)}
+          onOpenChange={open => !open && setSelectedStudent(null)}
         />
       )}
     </>

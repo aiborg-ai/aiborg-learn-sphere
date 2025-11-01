@@ -180,7 +180,7 @@ export class ForumModerationService {
    */
   static async purgeUserContent(
     userId: string,
-    reason: string
+    _reason: string
   ): Promise<{
     threads_deleted: number;
     posts_deleted: number;

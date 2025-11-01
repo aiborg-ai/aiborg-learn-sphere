@@ -401,7 +401,7 @@ class CurriculumApprovalService {
    */
 
   private groupCoursesByModule(
-    courses: any[]
+    courses: Record<string, unknown>[]
   ): Array<{ module_name: string; course_count: number }> {
     const moduleMap = new Map<string, number>();
 

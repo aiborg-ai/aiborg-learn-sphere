@@ -61,7 +61,8 @@ export class ErrorBoundary extends Component<Props, State> {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
-                We encountered an unexpected error. The issue has been logged and our team will look into it.
+                We encountered an unexpected error. The issue has been logged and our team will look
+                into it.
               </p>
 
               {process.env.NODE_ENV === 'development' && this.state.error && (
@@ -82,18 +83,11 @@ export class ErrorBoundary extends Component<Props, State> {
               )}
 
               <div className="flex gap-3">
-                <Button
-                  onClick={this.handleReset}
-                  className="flex-1"
-                >
+                <Button onClick={this.handleReset} className="flex-1">
                   <RefreshCw className="mr-2 h-4 w-4" />
                   Reload Page
                 </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => window.history.back()}
-                  className="flex-1"
-                >
+                <Button variant="outline" onClick={() => window.history.back()} className="flex-1">
                   Go Back
                 </Button>
               </div>

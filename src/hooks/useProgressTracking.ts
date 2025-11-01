@@ -99,11 +99,13 @@ export const useProgressTracking = (options: UseProgressTrackingOptions = {}) =>
 
       let query = supabase
         .from('course_progress')
-        .select(`
+        .select(
+          `
           *,
           user:profiles!user_id(display_name, email),
           course:courses(title)
-        `)
+        `
+        )
         .order('updated_at', { ascending: false });
 
       if (options.courseId) {
@@ -158,11 +160,13 @@ export const useAssignmentTracking = (courseId?: number) => {
 
       let query = supabase
         .from('assignment_submissions')
-        .select(`
+        .select(
+          `
           *,
           assignment:assignments(id, title, course_id, due_date, max_grade),
           user:profiles!user_id(display_name, email)
-        `)
+        `
+        )
         .order('submitted_at', { ascending: false });
 
       if (courseId) {
@@ -191,40 +195,37 @@ export const useAssignmentTracking = (courseId?: number) => {
     }
   }, [user, profile, courseId]);
 
-  const gradeSubmission = useCallback(async (
-    submissionId: string,
-    grade: number,
-    feedback?: string
-  ) => {
-    if (!user || (profile?.role !== 'admin' && profile?.role !== 'instructor')) {
-      throw new Error('Only admins and instructors can grade submissions');
-    }
+  const gradeSubmission = useCallback(
+    async (submissionId: string, grade: number, feedback?: string) => {
+      if (!user || (profile?.role !== 'admin' && profile?.role !== 'instructor')) {
+        throw new Error('Only admins and instructors can grade submissions');
+      }
 
-    try {
-      const { data, error } = await supabase
-        .from('assignment_submissions')
-        .update({
-          grade,
-          feedback,
-          status: 'graded',
-          graded_at: new Date().toISOString(),
-        })
-        .eq('id', submissionId)
-        .select()
-        .single();
+      try {
+        const { data, error } = await supabase
+          .from('assignment_submissions')
+          .update({
+            grade,
+            feedback,
+            status: 'graded',
+            graded_at: new Date().toISOString(),
+          })
+          .eq('id', submissionId)
+          .select()
+          .single();
 
-      if (error) throw error;
+        if (error) throw error;
 
-      setSubmissions(prev =>
-        prev.map(s => s.id === submissionId ? data : s)
-      );
+        setSubmissions(prev => prev.map(s => (s.id === submissionId ? data : s)));
 
-      return data;
-    } catch (err) {
-      logger.error('Error grading submission:', err);
-      throw err;
-    }
-  }, [user, profile]);
+        return data;
+      } catch (err) {
+        logger.error('Error grading submission:', err);
+        throw err;
+      }
+    },
+    [user, profile]
+  );
 
   useEffect(() => {
     fetchSubmissions();
@@ -258,11 +259,13 @@ export const useStudentProgressDetails = (userId: string, courseId: number) => {
       // Fetch course progress
       const { data: courseProgressData, error: cpError } = await supabase
         .from('course_progress')
-        .select(`
+        .select(
+          `
           *,
           user:profiles!user_id(display_name, email),
           course:courses(title)
-        `)
+        `
+        )
         .eq('user_id', userId)
         .eq('course_id', courseId)
         .single();
@@ -304,9 +307,10 @@ export const useStudentProgressDetails = (userId: string, courseId: number) => {
 
       // Calculate average grade
       const gradedSubmissions = submittedAssignments?.filter(s => s.grade !== null) || [];
-      const averageGrade = gradedSubmissions.length > 0
-        ? gradedSubmissions.reduce((sum, s) => sum + (s.grade || 0), 0) / gradedSubmissions.length
-        : null;
+      const averageGrade =
+        gradedSubmissions.length > 0
+          ? gradedSubmissions.reduce((sum, s) => sum + (s.grade || 0), 0) / gradedSubmissions.length
+          : null;
 
       // Identify at-risk factors
       const riskFactors: string[] = [];
@@ -322,12 +326,15 @@ export const useStudentProgressDetails = (userId: string, courseId: number) => {
         riskFactors.push('Low average grade');
       }
 
-      if (assignmentsTotal > 0 && (assignmentsCompleted / assignmentsTotal) < 0.5) {
+      if (assignmentsTotal > 0 && assignmentsCompleted / assignmentsTotal < 0.5) {
         riskFactors.push('Missing assignments');
       }
 
       const daysSinceAccess = courseProgressData.last_accessed
-        ? Math.floor((Date.now() - new Date(courseProgressData.last_accessed).getTime()) / (1000 * 60 * 60 * 24))
+        ? Math.floor(
+            (Date.now() - new Date(courseProgressData.last_accessed).getTime()) /
+              (1000 * 60 * 60 * 24)
+          )
         : 999;
 
       if (daysSinceAccess > 7) {

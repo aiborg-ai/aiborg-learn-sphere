@@ -15,7 +15,9 @@ export function TestComponent() {
         </div>
       </CardHeader>
       <CardContent>
-        <p>If you can see the "Test Add New Button" above, the issue is with the enhanced components.</p>
+        <p>
+          If you can see the "Test Add New Button" above, the issue is with the enhanced components.
+        </p>
         <p>If you cannot see it, there's a broader rendering issue.</p>
       </CardContent>
     </Card>

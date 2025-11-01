@@ -29,7 +29,7 @@ export class CompetencyMatrixService {
     if (matrixError) throw matrixError;
 
     // Add skills
-    const skillsData = skills.map((skill) => ({
+    const skillsData = skills.map(skill => ({
       matrix_id: createdMatrix.id,
       skill_name: skill.skill_name,
       skill_category: skill.skill_category,
@@ -68,7 +68,7 @@ export class CompetencyMatrixService {
     if (assessmentError) throw assessmentError;
 
     // Add skill ratings
-    const ratingsData = skillRatings.map((rating) => ({
+    const ratingsData = skillRatings.map(rating => ({
       assessment_id: assessment.id,
       skill_id: rating.skill_id,
       current_level: rating.current_level,
@@ -90,16 +90,17 @@ export class CompetencyMatrixService {
       .update({ overall_match_score: matchScore, status: 'completed' })
       .eq('id', assessment.id);
 
-    return { ...assessment, overall_match_score: matchScore, skill_ratings: ratingsData as SkillRating[] };
+    return {
+      ...assessment,
+      overall_match_score: matchScore,
+      skill_ratings: ratingsData as SkillRating[],
+    };
   }
 
   /**
    * Get competency gap analysis
    */
-  static async getGapAnalysis(
-    userId: string,
-    matrixId: string
-  ): Promise<SkillRating[]> {
+  static async getGapAnalysis(userId: string, matrixId: string): Promise<SkillRating[]> {
     const { data: assessment, error } = await supabase
       .from('user_competency_assessments')
       .select(
@@ -120,24 +121,26 @@ export class CompetencyMatrixService {
     if (error) throw error;
 
     return (
-      assessment?.skill_ratings.map((rating: {
-        skill_id: string;
-        current_level: number;
-        evidence?: string;
-        verified: boolean;
-        skill: {
-          skill_name: string;
-          required_level: number;
-        };
-      }) => ({
-        skill_id: rating.skill_id,
-        skill_name: rating.skill.skill_name,
-        required_level: rating.skill.required_level,
-        current_level: rating.current_level,
-        gap: rating.skill.required_level - rating.current_level,
-        evidence: rating.evidence,
-        verified: rating.verified,
-      })) || []
+      assessment?.skill_ratings.map(
+        (rating: {
+          skill_id: string;
+          current_level: number;
+          evidence?: string;
+          verified: boolean;
+          skill: {
+            skill_name: string;
+            required_level: number;
+          };
+        }) => ({
+          skill_id: rating.skill_id,
+          skill_name: rating.skill.skill_name,
+          required_level: rating.skill.required_level,
+          current_level: rating.current_level,
+          gap: rating.skill.required_level - rating.current_level,
+          evidence: rating.evidence,
+          verified: rating.verified,
+        })
+      ) || []
     );
   }
 }

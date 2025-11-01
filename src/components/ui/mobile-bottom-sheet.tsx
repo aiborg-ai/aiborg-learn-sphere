@@ -24,7 +24,7 @@ export function MobileBottomSheet({
   defaultSnap = 0,
   className,
 }: MobileBottomSheetProps) {
-  const [currentSnap, setCurrentSnap] = useState(defaultSnap);
+  const [currentSnap, _setCurrentSnap] = useState(defaultSnap);
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [currentY, setCurrentY] = useState(0);
