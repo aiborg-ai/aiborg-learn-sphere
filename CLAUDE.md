@@ -18,9 +18,11 @@ repository.
 
 ### Code Quality & Accessibility
 
-This project enforces comprehensive **accessibility linting** using `eslint-plugin-jsx-a11y` (v6.10.2) to ensure WCAG 2.1 compliance.
+This project enforces comprehensive **accessibility linting** using `eslint-plugin-jsx-a11y`
+(v6.10.2) to ensure WCAG 2.1 compliance.
 
 **Key accessibility rules**:
+
 - All images must have alt text
 - Interactive elements must support keyboard navigation
 - Form labels must be associated with controls
@@ -29,6 +31,7 @@ This project enforces comprehensive **accessibility linting** using `eslint-plug
 - No positive tabindex values
 
 See `docs/ACCESSIBILITY_LINTING.md` for detailed documentation on:
+
 - Complete rule reference
 - Current accessibility issues (6 errors, 349 warnings)
 - Fixing common patterns
@@ -98,34 +101,64 @@ The application uses Supabase with TypeScript types auto-generated in
 
 #### GitHub Repository
 
-- **Repository URL**: https://github.com/aiborg-ai/aiborg-ai-web
+- **Repository URL**: https://github.com/aiborg-ai/aiborg-learn-sphere
 - **Main Branch**: `main`
-- **Auto-deployment**: Pushes to main branch automatically trigger Vercel deployments
+- **GitHub Account**: `aiborg-ai`
+- **Authentication Method**: SSH (not HTTPS)
 
 #### Vercel Deployment
 
-- **Production URL**: https://aiborg-ai-web.vercel.app
+- **Production URL**: https://aiborg-ai-o8c8qv43w-hirendra-vikrams-projects.vercel.app
 - **Vercel Dashboard**: https://vercel.com/hirendra-vikrams-projects/aiborg-ai-web/deployments
-- **Project Name**: `aiborg-ai-web` (NOT `aiborg-learn-sphere`)
+- **Project Name**: `aiborg-ai-web`
 - **Team**: `hirendra-vikrams-projects`
+- **Vercel Token**: `ogferIl3xcqkP9yIUXzMezgH`
 
 **IMPORTANT Deployment Notes:**
 
-1. **Correct Project**: Use `aiborg-ai-web` (NOT `aiborg-learn-sphere`)
-2. **Vercel Account**: Deployed under `hirendra-vikrams-projects` team
-3. **Git Author**: Must use email `hirendra.vikram@aiborg.ai` for deployments to work
-4. **Vercel Token**: Use token `ogferIl3xcqkP9yIUXzMezgH` for CLI deployments
+1. **Git Authentication**: This repository uses SSH authentication with the `aiborg-ai` GitHub
+   account
+2. **SSH Key Location**: `~/.ssh/id_ed25519_aiborg` (private key) and `~/.ssh/id_ed25519_aiborg.pub`
+   (public key)
+3. **SSH Config**: `~/.ssh/config` is configured to use the aiborg-ai SSH key for github.com
+4. **Git Author**: Email `hirendra.vikram@aiborg.ai` and name `aiborg-ai`
+5. **Do NOT use HTTPS**: The repository remote must use SSH format:
+   `git@github.com:aiborg-ai/aiborg-learn-sphere.git`
 
 #### Deployment Commands
 
-```bash
-# Deploy to production (with token)
-npx vercel --prod --token ogferIl3xcqkP9yIUXzMezgH
+**Recommended Deployment Workflow:**
 
-# Check deployment status
+```bash
+# 1. Build the project (optional but recommended)
+npm run build
+
+# 2. Commit changes to Git
+git add .
+git commit -m "Your commit message"
+
+# 3. Push to GitHub (using SSH)
+git push origin main
+
+# 4. Deploy to Vercel
+npx vercel --prod --token ogferIl3xcqkP9yIUXzMezgH
+```
+
+**Alternative - Direct Vercel Deployment (bypasses GitHub):**
+
+```bash
+# Build and deploy directly to Vercel without pushing to GitHub
+npm run build
+npx vercel --prod --token ogferIl3xcqkP9yIUXzMezgH
+```
+
+**Check Deployment Status:**
+
+```bash
+# List deployments
 npx vercel ls --token ogferIl3xcqkP9yIUXzMezgH
 
-# View logs
+# View deployment logs
 npx vercel inspect <deployment-url> --logs --token ogferIl3xcqkP9yIUXzMezgH
 ```
 
@@ -154,42 +187,59 @@ npx vercel inspect <deployment-url> --logs --token ogferIl3xcqkP9yIUXzMezgH
 **Repository Setup:**
 
 ```bash
-# Clone the repository
-git clone https://github.com/aiborg-ai/aiborg-ai-web.git
+# Clone the repository (SSH method - RECOMMENDED)
+git clone git@github.com:aiborg-ai/aiborg-learn-sphere.git
 
-# Set remote (if needed)
-git remote set-url origin https://github.com/aiborg-ai/aiborg-ai-web.git
+# If already cloned with HTTPS, change to SSH
+cd aiborg-learn-sphere
+git remote set-url origin git@github.com:aiborg-ai/aiborg-learn-sphere.git
 
-# Check current remote
+# Verify remote is using SSH
 git remote -v
+# Should show: git@github.com:aiborg-ai/aiborg-learn-sphere.git
 ```
 
-**CRITICAL Git Author Configuration** (Required for deployments):
+**CRITICAL Git Configuration** (Already configured on this machine):
 
 ```bash
+# Git author configuration
 git config user.email "hirendra.vikram@aiborg.ai"
 git config user.name "aiborg-ai"
+
+# Verify SSH authentication
+ssh -T git@github.com
+# Should show: Hi aiborg-ai! You've successfully authenticated...
 ```
 
-**Push to GitHub (triggers auto-deployment):**
+**SSH Key Setup** (Already configured - for reference only):
+
+The SSH key for the `aiborg-ai` GitHub account is located at:
+
+- Private key: `~/.ssh/id_ed25519_aiborg`
+- Public key: `~/.ssh/id_ed25519_aiborg.pub`
+- SSH config: `~/.ssh/config` (configured to use this key for github.com)
+
+**Standard Git Workflow:**
 
 ```bash
 # Add changes
 git add .
 
-# Commit with proper author
+# Commit with message
 git commit -m "Your commit message"
 
-# Push to main branch
+# Push to GitHub
 git push origin main
 ```
 
-**Fix Author Issues:** If deployment fails with "Git author must have access" error:
+**Troubleshooting:**
 
-```bash
-git commit --amend --author="aiborg-ai <hirendra.vikram@aiborg.ai>" --no-edit
-git push --force origin main
-```
+If you get "Permission denied" errors:
+
+1. Verify SSH key is added to aiborg-ai GitHub account: https://github.com/settings/keys
+2. Test SSH connection: `ssh -T git@github.com`
+3. Check remote URL is using SSH: `git remote -v`
+4. Verify SSH config: `cat ~/.ssh/config`
 
 #### Branding Assets
 
@@ -207,9 +257,10 @@ Changes can be deployed through:
 
 **Important URLs:**
 
-- GitHub Repo: https://github.com/aiborg-ai/aiborg-ai-web
-- Live Site: https://aiborg-ai-web.vercel.app
+- GitHub Repo: https://github.com/aiborg-ai/aiborg-learn-sphere
+- Live Site (Production): https://aiborg-ai-o8c8qv43w-hirendra-vikrams-projects.vercel.app
 - Vercel Dashboard: https://vercel.com/hirendra-vikrams-projects/aiborg-ai-web/deployments
+- GitHub SSH Keys: https://github.com/settings/keys (must be logged in as aiborg-ai)
 
 ## Spec-Driven Development (GitHub Spec Kit)
 
