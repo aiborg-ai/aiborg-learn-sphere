@@ -55,18 +55,12 @@ export default defineConfig(({ mode }) => ({
         manualChunks: id => {
           // Vendor chunks - Further optimize splitting
           if (id.includes('node_modules')) {
-            // Core React - smallest possible
-            if (id.includes('react/') && !id.includes('react-dom') && !id.includes('react-router')) {
+            // Core React - keep together to avoid duplicate instances
+            if (id.includes('react') || id.includes('react-dom')) {
+              if (id.includes('react-router')) {
+                return 'react-router';
+              }
               return 'react-core';
-            }
-            if (id.includes('react-dom/') && !id.includes('client')) {
-              return 'react-dom';
-            }
-            if (id.includes('react-dom/client')) {
-              return 'react-dom-client';
-            }
-            if (id.includes('react-router-dom') || id.includes('react-router/')) {
-              return 'react-router';
             }
 
             // UI libraries - Split Radix into smaller chunks
