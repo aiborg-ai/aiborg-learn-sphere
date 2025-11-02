@@ -5,6 +5,7 @@
  * Handles content retrieval, bookmarks, and access logging
  */
 
+import React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { VaultContentService } from '@/services/membership/VaultContentService';
@@ -387,6 +388,3 @@ export function useBookmarkManager(contentId: string | undefined) {
     isLoading: toggleBookmark.isPending,
   };
 }
-
-// Add React import for useEffect
-import React from 'react';
