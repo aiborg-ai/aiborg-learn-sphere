@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 import { componentTagger } from 'lovable-tagger';
+import { prioritizeReactPlugin } from './vite-plugins/prioritize-react';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -9,7 +10,11 @@ export default defineConfig(({ mode }) => ({
     host: '::',
     port: 8080,
   },
-  plugins: [react(), mode === 'development' && componentTagger()].filter(Boolean),
+  plugins: [
+    react(),
+    mode === 'development' && componentTagger(),
+    prioritizeReactPlugin(),
+  ].filter(Boolean),
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -59,12 +64,13 @@ export default defineConfig(({ mode }) => ({
     },
     rollupOptions: {
       output: {
-        // Manual chunks for better code splitting
+        // Ensure React chunks load first by using prioritized naming
+        // Vite sorts chunks alphabetically in modulepreload
         manualChunks: id => {
           // Vendor chunks - Further optimize splitting
           if (id.includes('node_modules')) {
-            // CRITICAL: React must load FIRST - most aggressive matching
-            // Include any package that depends on React
+            // CRITICAL: React must load FIRST
+            // Use 'aaa-' prefix to ensure alphabetical priority (comes before all other chunks)
             if (
               id.includes('/react/') ||
               id.includes('react-dom') ||
@@ -74,7 +80,7 @@ export default defineConfig(({ mode }) => ({
               id.includes('react-router') ||
               id.includes('scheduler')
             ) {
-              return 'react-vendor';
+              return 'aaa-react-core';
             }
 
             // UI libraries - Split Radix into smaller chunks
