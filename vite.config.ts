@@ -38,15 +38,23 @@ export default defineConfig(({ mode }) => ({
     // Disable modulepreload for better lazy loading
     modulePreload: {
       polyfill: false,
-      resolveDependencies: (filename, deps) => {
-        // Don't preload heavy chunks
-        return deps.filter(
+      resolveDependencies: (filename, deps, depsInfo) => {
+        // CRITICAL FIX: Ensure react-vendor loads before everything else
+        // Filter out heavy chunks and ensure proper order
+        const filteredDeps = deps.filter(
           dep =>
             !dep.includes('charts-chunk') &&
             !dep.includes('pdf-chunk') &&
             !dep.includes('pdf-export-chunk') &&
             !dep.includes('admin-components')
         );
+
+        // Sort to ensure react-vendor comes first
+        return filteredDeps.sort((a, b) => {
+          if (a.includes('react-vendor')) return -1;
+          if (b.includes('react-vendor')) return 1;
+          return 0;
+        });
       },
     },
     rollupOptions: {
@@ -55,20 +63,25 @@ export default defineConfig(({ mode }) => ({
         manualChunks: id => {
           // Vendor chunks - Further optimize splitting
           if (id.includes('node_modules')) {
-            // Core React - keep together to avoid loading order issues
-            if (id.includes('react-dom') || id.includes('/react/')) {
-              return 'react-vendor';
-            }
-            if (id.includes('react')) {
-              if (id.includes('react-router')) {
-                return 'react-router';
-              }
-              // Group ALL react packages together to ensure proper loading
+            // CRITICAL: React must load FIRST - most aggressive matching
+            // Include any package that depends on React
+            if (
+              id.includes('/react/') ||
+              id.includes('react-dom') ||
+              id.includes('react-') ||
+              id.includes('@tanstack/react') ||
+              id.includes('react-hook-form') ||
+              id.includes('react-router') ||
+              id.includes('scheduler')
+            ) {
               return 'react-vendor';
             }
 
             // UI libraries - Split Radix into smaller chunks
-            if (id.includes('@radix-ui/react-dialog') || id.includes('@radix-ui/react-alert-dialog')) {
+            if (
+              id.includes('@radix-ui/react-dialog') ||
+              id.includes('@radix-ui/react-alert-dialog')
+            ) {
               return 'ui-dialog';
             }
             if (id.includes('@radix-ui/react-dropdown') || id.includes('@radix-ui/react-select')) {
@@ -78,17 +91,17 @@ export default defineConfig(({ mode }) => ({
               return 'ui-vendor';
             }
 
-            // Icons - separate chunk
+            // Icons - separate chunk (doesn't depend on React hooks)
             if (id.includes('lucide-react')) {
               return 'icons';
             }
 
-            // Data & State
-            if (id.includes('@tanstack/react-query')) {
-              return 'tanstack-query';
-            }
+            // Data & State (non-React parts)
             if (id.includes('@tanstack')) {
-              return 'tanstack';
+              // @tanstack/react-* already handled in react-vendor
+              if (!id.includes('@tanstack/react')) {
+                return 'tanstack';
+              }
             }
             if (id.includes('@supabase/supabase-js')) {
               return 'supabase-client';
@@ -97,10 +110,8 @@ export default defineConfig(({ mode }) => ({
               return 'supabase';
             }
 
-            // Forms - split into smaller chunks
-            if (id.includes('react-hook-form')) {
-              return 'react-hook-form';
-            }
+            // Forms - zod doesn't depend on React
+            // react-hook-form already handled in react-vendor
             if (id.includes('zod')) {
               return 'zod';
             }
