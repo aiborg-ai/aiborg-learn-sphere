@@ -55,12 +55,16 @@ export default defineConfig(({ mode }) => ({
         manualChunks: id => {
           // Vendor chunks - Further optimize splitting
           if (id.includes('node_modules')) {
-            // Core React - keep together to avoid duplicate instances
-            if (id.includes('react') || id.includes('react-dom')) {
+            // Core React - keep together to avoid loading order issues
+            if (id.includes('react-dom') || id.includes('/react/')) {
+              return 'react-vendor';
+            }
+            if (id.includes('react')) {
               if (id.includes('react-router')) {
                 return 'react-router';
               }
-              return 'react-core';
+              // Group ALL react packages together to ensure proper loading
+              return 'react-vendor';
             }
 
             // UI libraries - Split Radix into smaller chunks
@@ -286,9 +290,12 @@ export default defineConfig(({ mode }) => ({
   },
   // Optimize dependencies
   optimizeDeps: {
+    // Force React to be processed first
     include: [
       'react',
       'react-dom',
+      'react/jsx-runtime',
+      'react/jsx-dev-runtime',
       'react-router-dom',
       '@supabase/supabase-js',
       '@tanstack/react-query',
@@ -297,6 +304,8 @@ export default defineConfig(({ mode }) => ({
       '@radix-ui/react-dropdown-menu',
       '@radix-ui/react-select',
     ],
+    // Ensure React is available as an external in dev
+    entries: ['src/main.tsx'],
     exclude: [
       '@supabase/supabase-js/dist/module/lib/types',
       // Exclude heavy libraries to enable lazy loading
