@@ -7,7 +7,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-import { FamilyMembersService } from '@/services/membership';
+import { FamilyMembersService } from '@/services/membership/FamilyMembersService';
 import type { FamilyMember, AddFamilyMemberParams } from '@/services/membership/types';
 
 // ============================================================================

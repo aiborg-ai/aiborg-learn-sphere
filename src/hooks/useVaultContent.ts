@@ -7,7 +7,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-import { VaultContentService } from '@/services/membership';
+import { VaultContentService } from '@/services/membership/VaultContentService';
 import type { VaultContentFilters } from '@/services/membership/types';
 
 // ============================================================================

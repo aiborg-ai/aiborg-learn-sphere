@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -28,26 +28,85 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 
-// Components
+// Only import AccessDenied eagerly (used before tabs render)
 import { AccessDenied } from '@/components/admin/AccessDenied';
-import { UserManagement } from '@/components/admin/UserManagement';
-import { CourseManagementEnhanced } from '@/components/admin/CourseManagementEnhanced';
-import { AnnouncementManagementEnhanced } from '@/components/admin/AnnouncementManagementEnhanced';
-import { ReviewsManagement } from '@/components/admin/ReviewsManagement';
-import { EventsManagementEnhanced } from '@/components/admin/EventsManagementEnhanced';
-import { AchievementManager } from '@/components/admin/AchievementManager';
-import BlogManager from './Admin/BlogManager';
-import { RoleManagementPanel } from '@/components/admin/RoleManagementPanel';
-import { EnhancedAnalyticsDashboard } from '@/components/admin/EnhancedAnalyticsDashboard';
-import { EnrollmentManagementEnhanced } from '@/components/admin/EnrollmentManagementEnhanced';
-import { RefundProcessor } from '@/components/admin/RefundProcessor';
-import { ProgressTrackingDashboard } from '@/components/admin/ProgressTrackingDashboard';
-import { AssignmentTracker } from '@/components/admin/AssignmentTracker';
-import { ResourcesManagement } from '@/components/admin/ResourcesManagement';
-import { AttendanceTicketManagement } from '@/components/admin/AttendanceTicketManagement';
-import { FamilyPassManagement } from '@/components/admin/FamilyPassManagement';
-import { ModeratorDashboard } from '@/components/admin/ModeratorDashboard';
-import { RegistrantsManagement } from '@/components/admin/RegistrantsManagement';
+
+// Lazy load all admin tab components for better code splitting
+const UserManagement = lazy(() =>
+  import('@/components/admin/UserManagement').then(m => ({ default: m.UserManagement }))
+);
+const CourseManagementEnhanced = lazy(() =>
+  import('@/components/admin/CourseManagementEnhanced').then(m => ({
+    default: m.CourseManagementEnhanced,
+  }))
+);
+const AnnouncementManagementEnhanced = lazy(() =>
+  import('@/components/admin/AnnouncementManagementEnhanced').then(m => ({
+    default: m.AnnouncementManagementEnhanced,
+  }))
+);
+const ReviewsManagement = lazy(() =>
+  import('@/components/admin/ReviewsManagement').then(m => ({ default: m.ReviewsManagement }))
+);
+const EventsManagementEnhanced = lazy(() =>
+  import('@/components/admin/EventsManagementEnhanced').then(m => ({
+    default: m.EventsManagementEnhanced,
+  }))
+);
+const AchievementManager = lazy(() =>
+  import('@/components/admin/AchievementManager').then(m => ({ default: m.AchievementManager }))
+);
+const BlogManager = lazy(() => import('./Admin/BlogManager'));
+const RoleManagementPanel = lazy(() =>
+  import('@/components/admin/RoleManagementPanel').then(m => ({ default: m.RoleManagementPanel }))
+);
+const EnhancedAnalyticsDashboard = lazy(() =>
+  import('@/components/admin/EnhancedAnalyticsDashboard').then(m => ({
+    default: m.EnhancedAnalyticsDashboard,
+  }))
+);
+const EnrollmentManagementEnhanced = lazy(() =>
+  import('@/components/admin/EnrollmentManagementEnhanced').then(m => ({
+    default: m.EnrollmentManagementEnhanced,
+  }))
+);
+const RefundProcessor = lazy(() =>
+  import('@/components/admin/RefundProcessor').then(m => ({ default: m.RefundProcessor }))
+);
+const ProgressTrackingDashboard = lazy(() =>
+  import('@/components/admin/ProgressTrackingDashboard').then(m => ({
+    default: m.ProgressTrackingDashboard,
+  }))
+);
+const AssignmentTracker = lazy(() =>
+  import('@/components/admin/AssignmentTracker').then(m => ({ default: m.AssignmentTracker }))
+);
+const ResourcesManagement = lazy(() =>
+  import('@/components/admin/ResourcesManagement').then(m => ({ default: m.ResourcesManagement }))
+);
+const AttendanceTicketManagement = lazy(() =>
+  import('@/components/admin/AttendanceTicketManagement').then(m => ({
+    default: m.AttendanceTicketManagement,
+  }))
+);
+const FamilyPassManagement = lazy(() =>
+  import('@/components/admin/FamilyPassManagement').then(m => ({ default: m.FamilyPassManagement }))
+);
+const ModeratorDashboard = lazy(() =>
+  import('@/components/admin/ModeratorDashboard').then(m => ({ default: m.ModeratorDashboard }))
+);
+const RegistrantsManagement = lazy(() =>
+  import('@/components/admin/RegistrantsManagement').then(m => ({
+    default: m.RegistrantsManagement,
+  }))
+);
+
+// Loading component for tab content
+const TabLoader = () => (
+  <div className="flex items-center justify-center py-12">
+    <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+  </div>
+);
 
 export default function AdminRefactored() {
   const { user } = useAuth();
@@ -201,86 +260,122 @@ export default function AdminRefactored() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Tab Content */}
+          {/* Tab Content - Each wrapped in Suspense for code splitting */}
           <TabsContent value="analytics">
-            <EnhancedAnalyticsDashboard />
+            <Suspense fallback={<TabLoader />}>
+              <EnhancedAnalyticsDashboard />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="role-management">
-            <RoleManagementPanel users={users} onRefresh={refetch} />
+            <Suspense fallback={<TabLoader />}>
+              <RoleManagementPanel users={users} onRefresh={refetch} />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="users">
-            <UserManagement users={users} setUsers={() => refetch()} onRefresh={refetch} />
+            <Suspense fallback={<TabLoader />}>
+              <UserManagement users={users} setUsers={() => refetch()} onRefresh={refetch} />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="courses">
-            <CourseManagementEnhanced
-              courses={courses}
-              setCourses={() => refetch()}
-              onRefresh={refetch}
-            />
+            <Suspense fallback={<TabLoader />}>
+              <CourseManagementEnhanced
+                courses={courses}
+                setCourses={() => refetch()}
+                onRefresh={refetch}
+              />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="enrollments">
-            <EnrollmentManagementEnhanced enrollments={enrollments} onRefresh={refetch} />
+            <Suspense fallback={<TabLoader />}>
+              <EnrollmentManagementEnhanced enrollments={enrollments} onRefresh={refetch} />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="family-pass">
-            <FamilyPassManagement />
+            <Suspense fallback={<TabLoader />}>
+              <FamilyPassManagement />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="announcements">
-            <AnnouncementManagementEnhanced
-              announcements={announcements}
-              setAnnouncements={() => refetch()}
-              userId={user?.id || ''}
-              onRefresh={refetch}
-            />
+            <Suspense fallback={<TabLoader />}>
+              <AnnouncementManagementEnhanced
+                announcements={announcements}
+                setAnnouncements={() => refetch()}
+                userId={user?.id || ''}
+                onRefresh={refetch}
+              />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="reviews">
-            <ReviewsManagement />
+            <Suspense fallback={<TabLoader />}>
+              <ReviewsManagement />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="events">
-            <EventsManagementEnhanced />
+            <Suspense fallback={<TabLoader />}>
+              <EventsManagementEnhanced />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="blog">
-            <BlogManager />
+            <Suspense fallback={<TabLoader />}>
+              <BlogManager />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="achievements">
-            <AchievementManager />
+            <Suspense fallback={<TabLoader />}>
+              <AchievementManager />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="refunds">
-            <RefundProcessor />
+            <Suspense fallback={<TabLoader />}>
+              <RefundProcessor />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="progress">
-            <ProgressTrackingDashboard />
+            <Suspense fallback={<TabLoader />}>
+              <ProgressTrackingDashboard />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="assignments">
-            <AssignmentTracker />
+            <Suspense fallback={<TabLoader />}>
+              <AssignmentTracker />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="resources">
-            <ResourcesManagement />
+            <Suspense fallback={<TabLoader />}>
+              <ResourcesManagement />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="attendance">
-            <AttendanceTicketManagement />
+            <Suspense fallback={<TabLoader />}>
+              <AttendanceTicketManagement />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="moderation">
-            <ModeratorDashboard />
+            <Suspense fallback={<TabLoader />}>
+              <ModeratorDashboard />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="registrants">
-            <RegistrantsManagement />
+            <Suspense fallback={<TabLoader />}>
+              <RegistrantsManagement />
+            </Suspense>
           </TabsContent>
         </Tabs>
       </div>
