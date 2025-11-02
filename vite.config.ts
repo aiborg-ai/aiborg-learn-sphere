@@ -64,177 +64,26 @@ export default defineConfig(({ mode }) => ({
     },
     rollupOptions: {
       output: {
-        // Ensure React chunks load first by using prioritized naming
-        // Vite sorts chunks alphabetically in modulepreload
+        // SIMPLIFIED CHUNKING STRATEGY TO AVOID CIRCULAR DEPENDENCIES
+        // Put all non-lazy dependencies together, separate only lazy-loaded libraries
         manualChunks: id => {
-          // Vendor chunks - Further optimize splitting
           if (id.includes('node_modules')) {
-            // CRITICAL: React must load FIRST
-            // Use 'aaa-' prefix to ensure alphabetical priority (comes before all other chunks)
+            // PDF & Document handling - lazy loaded, keep separate
             if (
-              id.includes('/react/') ||
-              id.includes('react-dom') ||
-              id.includes('react-') ||
-              id.includes('@tanstack/react') ||
-              id.includes('react-hook-form') ||
-              id.includes('react-router') ||
-              id.includes('scheduler')
+              id.includes('pdfjs-dist') ||
+              id.includes('jspdf') ||
+              id.includes('html2canvas')
             ) {
-              return 'aaa-react-core';
+              return 'pdf-libs';
             }
 
-            // UI libraries - Split Radix into smaller chunks
-            if (
-              id.includes('@radix-ui/react-dialog') ||
-              id.includes('@radix-ui/react-alert-dialog')
-            ) {
-              return 'ui-dialog';
-            }
-            if (id.includes('@radix-ui/react-dropdown') || id.includes('@radix-ui/react-select')) {
-              return 'ui-dropdowns';
-            }
-            if (id.includes('@radix-ui')) {
-              return 'ui-vendor';
+            // Charts - lazy loaded, keep separate
+            if (id.includes('recharts') || id.includes('d3-')) {
+              return 'charts-libs';
             }
 
-            // Icons - separate chunk (doesn't depend on React hooks)
-            if (id.includes('lucide-react')) {
-              return 'icons';
-            }
-
-            // Data & State (non-React parts)
-            if (id.includes('@tanstack')) {
-              // @tanstack/react-* already handled in react-vendor
-              if (!id.includes('@tanstack/react')) {
-                return 'tanstack';
-              }
-            }
-            if (id.includes('@supabase/supabase-js')) {
-              return 'supabase-client';
-            }
-            if (id.includes('@supabase')) {
-              return 'supabase';
-            }
-
-            // Forms - zod doesn't depend on React
-            // react-hook-form already handled in react-vendor
-            if (id.includes('zod')) {
-              return 'zod';
-            }
-            if (id.includes('@hookform')) {
-              return 'hookform-resolvers';
-            }
-
-            // Charts & Visualization - keep separate (lazy loaded)
-            if (id.includes('recharts')) {
-              return 'charts';
-            }
-            if (id.includes('d3-')) {
-              return 'charts-d3';
-            }
-
-            // PDF & Document handling - keep separate (lazy loaded)
-            if (id.includes('pdfjs-dist')) {
-              return 'pdf';
-            }
-            if (id.includes('react-pdf')) {
-              return 'react-pdf';
-            }
-            if (id.includes('jspdf')) {
-              return 'jspdf';
-            }
-            if (id.includes('html2canvas')) {
-              return 'html2canvas';
-            }
-
-            // Markdown & Editors
-            if (id.includes('marked')) {
-              return 'marked';
-            }
-            if (id.includes('dompurify') || id.includes('isomorphic-dompurify')) {
-              return 'dompurify';
-            }
-            if (id.includes('react-syntax-highlighter')) {
-              return 'syntax-highlighter';
-            }
-
-            // Utility libraries
-            if (id.includes('date-fns')) {
-              return 'date-fns';
-            }
-            if (id.includes('class-variance-authority')) {
-              return 'cva';
-            }
-            if (id.includes('clsx') || id.includes('tailwind-merge')) {
-              return 'style-utils';
-            }
-            if (id.includes('qrcode')) {
-              return 'qrcode';
-            }
-
-            // UI Components & Features
-            if (id.includes('cmdk')) {
-              return 'cmdk';
-            }
-            if (id.includes('vaul')) {
-              return 'vaul';
-            }
-            if (id.includes('sonner')) {
-              return 'sonner';
-            }
-            if (id.includes('embla-carousel')) {
-              return 'carousel';
-            }
-            if (id.includes('next-themes')) {
-              return 'themes';
-            }
-            if (id.includes('react-day-picker')) {
-              return 'day-picker';
-            }
-            if (id.includes('input-otp')) {
-              return 'input-otp';
-            }
-            if (id.includes('react-resizable-panels')) {
-              return 'resizable-panels';
-            }
-
-            // TipTap Editor (large)
-            if (id.includes('@tiptap')) {
-              return 'tiptap-editor';
-            }
-
-            // DnD Kit
-            if (id.includes('@dnd-kit')) {
-              return 'dnd-kit';
-            }
-
-            // i18n
-            if (id.includes('i18next') || id.includes('react-i18next')) {
-              return 'i18n';
-            }
-
-            // Markdown & React Markdown
-            if (id.includes('react-markdown')) {
-              return 'react-markdown';
-            }
-
-            // Dropzone
-            if (id.includes('react-dropzone')) {
-              return 'react-dropzone';
-            }
-
-            // Web Vitals
-            if (id.includes('web-vitals')) {
-              return 'web-vitals';
-            }
-
-            // Jitsi
-            if (id.includes('@jitsi')) {
-              return 'jitsi';
-            }
-
-            // Remaining small vendor libraries
-            return 'vendor-misc';
+            // Put EVERYTHING else in ONE vendor bundle to avoid circular deps
+            return 'vendor';
           }
 
           // Application code - split by feature

@@ -13,12 +13,12 @@ export function prioritizeReactPlugin(): Plugin {
       const modulePreloadRegex = /<link rel="modulepreload"[^>]*>/g;
       const preloads = html.match(modulePreloadRegex) || [];
 
-      // Separate React preloads from others
-      const reactPreloads = preloads.filter(link => link.includes('react'));
-      const otherPreloads = preloads.filter(link => !link.includes('react'));
+      // Separate vendor/React preloads from others (must load first to avoid circular deps)
+      const vendorPreloads = preloads.filter(link => link.includes('vendor-chunk') || link.includes('react'));
+      const otherPreloads = preloads.filter(link => !link.includes('vendor-chunk') && !link.includes('react'));
 
-      // Reorder: React first, then everything else
-      const orderedPreloads = [...reactPreloads, ...otherPreloads];
+      // Reorder: Vendor/React first, then everything else
+      const orderedPreloads = [...vendorPreloads, ...otherPreloads];
 
       // Remove all existing modulepreload links
       let newHtml = html.replace(modulePreloadRegex, '');
