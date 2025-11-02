@@ -1,4 +1,4 @@
-import { useEffect, lazy, Suspense } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -31,82 +31,27 @@ import {
 // Only import AccessDenied eagerly (used before tabs render)
 import { AccessDenied } from '@/components/admin/AccessDenied';
 
-// Lazy load all admin tab components for better code splitting
-const UserManagement = lazy(() =>
-  import('@/components/admin/UserManagement').then(m => ({ default: m.UserManagement }))
-);
-const CourseManagementEnhanced = lazy(() =>
-  import('@/components/admin/CourseManagementEnhanced').then(m => ({
-    default: m.CourseManagementEnhanced,
-  }))
-);
-const AnnouncementManagementEnhanced = lazy(() =>
-  import('@/components/admin/AnnouncementManagementEnhanced').then(m => ({
-    default: m.AnnouncementManagementEnhanced,
-  }))
-);
-const ReviewsManagement = lazy(() =>
-  import('@/components/admin/ReviewsManagement').then(m => ({ default: m.ReviewsManagement }))
-);
-const EventsManagementEnhanced = lazy(() =>
-  import('@/components/admin/EventsManagementEnhanced').then(m => ({
-    default: m.EventsManagementEnhanced,
-  }))
-);
-const AchievementManager = lazy(() =>
-  import('@/components/admin/AchievementManager').then(m => ({ default: m.AchievementManager }))
-);
-const BlogManager = lazy(() => import('./Admin/BlogManager'));
-const RoleManagementPanel = lazy(() =>
-  import('@/components/admin/RoleManagementPanel').then(m => ({ default: m.RoleManagementPanel }))
-);
-const EnhancedAnalyticsDashboard = lazy(() =>
-  import('@/components/admin/EnhancedAnalyticsDashboard').then(m => ({
-    default: m.EnhancedAnalyticsDashboard,
-  }))
-);
-const EnrollmentManagementEnhanced = lazy(() =>
-  import('@/components/admin/EnrollmentManagementEnhanced').then(m => ({
-    default: m.EnrollmentManagementEnhanced,
-  }))
-);
-const RefundProcessor = lazy(() =>
-  import('@/components/admin/RefundProcessor').then(m => ({ default: m.RefundProcessor }))
-);
-const ProgressTrackingDashboard = lazy(() =>
-  import('@/components/admin/ProgressTrackingDashboard').then(m => ({
-    default: m.ProgressTrackingDashboard,
-  }))
-);
-const AssignmentTracker = lazy(() =>
-  import('@/components/admin/AssignmentTracker').then(m => ({ default: m.AssignmentTracker }))
-);
-const ResourcesManagement = lazy(() =>
-  import('@/components/admin/ResourcesManagement').then(m => ({ default: m.ResourcesManagement }))
-);
-const AttendanceTicketManagement = lazy(() =>
-  import('@/components/admin/AttendanceTicketManagement').then(m => ({
-    default: m.AttendanceTicketManagement,
-  }))
-);
-const FamilyPassManagement = lazy(() =>
-  import('@/components/admin/FamilyPassManagement').then(m => ({ default: m.FamilyPassManagement }))
-);
-const ModeratorDashboard = lazy(() =>
-  import('@/components/admin/ModeratorDashboard').then(m => ({ default: m.ModeratorDashboard }))
-);
-const RegistrantsManagement = lazy(() =>
-  import('@/components/admin/RegistrantsManagement').then(m => ({
-    default: m.RegistrantsManagement,
-  }))
-);
+// Import admin components directly (not lazy) to avoid React hook issues
+// These are only loaded when /admin route is accessed, so still code-split at route level
+import { UserManagement } from '@/components/admin/UserManagement';
+import { CourseManagementEnhanced } from '@/components/admin/CourseManagementEnhanced';
+import { AnnouncementManagementEnhanced } from '@/components/admin/AnnouncementManagementEnhanced';
+import { ReviewsManagement } from '@/components/admin/ReviewsManagement';
+import { EventsManagementEnhanced } from '@/components/admin/EventsManagementEnhanced';
+import { AchievementManager } from '@/components/admin/AchievementManager';
+import BlogManager from './Admin/BlogManager';
+import { RoleManagementPanel } from '@/components/admin/RoleManagementPanel';
+import { EnhancedAnalyticsDashboard } from '@/components/admin/EnhancedAnalyticsDashboard';
+import { EnrollmentManagementEnhanced } from '@/components/admin/EnrollmentManagementEnhanced';
+import { RefundProcessor } from '@/components/admin/RefundProcessor';
+import { ProgressTrackingDashboard } from '@/components/admin/ProgressTrackingDashboard';
+import { AssignmentTracker } from '@/components/admin/AssignmentTracker';
+import { ResourcesManagement } from '@/components/admin/ResourcesManagement';
+import { AttendanceTicketManagement } from '@/components/admin/AttendanceTicketManagement';
+import { FamilyPassManagement } from '@/components/admin/FamilyPassManagement';
+import { ModeratorDashboard } from '@/components/admin/ModeratorDashboard';
+import { RegistrantsManagement } from '@/components/admin/RegistrantsManagement';
 
-// Loading component for tab content
-const TabLoader = () => (
-  <div className="flex items-center justify-center py-12">
-    <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-  </div>
-);
 
 export default function AdminRefactored() {
   const { user } = useAuth();
@@ -260,122 +205,86 @@ export default function AdminRefactored() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Tab Content - Each wrapped in Suspense for code splitting */}
+          {/* Tab Content */}
           <TabsContent value="analytics">
-            <Suspense fallback={<TabLoader />}>
-              <EnhancedAnalyticsDashboard />
-            </Suspense>
+            <EnhancedAnalyticsDashboard />
           </TabsContent>
 
           <TabsContent value="role-management">
-            <Suspense fallback={<TabLoader />}>
-              <RoleManagementPanel users={users} onRefresh={refetch} />
-            </Suspense>
+            <RoleManagementPanel users={users} onRefresh={refetch} />
           </TabsContent>
 
           <TabsContent value="users">
-            <Suspense fallback={<TabLoader />}>
-              <UserManagement users={users} setUsers={() => refetch()} onRefresh={refetch} />
-            </Suspense>
+            <UserManagement users={users} setUsers={() => refetch()} onRefresh={refetch} />
           </TabsContent>
 
           <TabsContent value="courses">
-            <Suspense fallback={<TabLoader />}>
-              <CourseManagementEnhanced
-                courses={courses}
-                setCourses={() => refetch()}
-                onRefresh={refetch}
-              />
-            </Suspense>
+            <CourseManagementEnhanced
+              courses={courses}
+              setCourses={() => refetch()}
+              onRefresh={refetch}
+            />
           </TabsContent>
 
           <TabsContent value="enrollments">
-            <Suspense fallback={<TabLoader />}>
-              <EnrollmentManagementEnhanced enrollments={enrollments} onRefresh={refetch} />
-            </Suspense>
+            <EnrollmentManagementEnhanced enrollments={enrollments} onRefresh={refetch} />
           </TabsContent>
 
           <TabsContent value="family-pass">
-            <Suspense fallback={<TabLoader />}>
-              <FamilyPassManagement />
-            </Suspense>
+            <FamilyPassManagement />
           </TabsContent>
 
           <TabsContent value="announcements">
-            <Suspense fallback={<TabLoader />}>
-              <AnnouncementManagementEnhanced
-                announcements={announcements}
-                setAnnouncements={() => refetch()}
-                userId={user?.id || ''}
-                onRefresh={refetch}
-              />
-            </Suspense>
+            <AnnouncementManagementEnhanced
+              announcements={announcements}
+              setAnnouncements={() => refetch()}
+              userId={user?.id || ''}
+              onRefresh={refetch}
+            />
           </TabsContent>
 
           <TabsContent value="reviews">
-            <Suspense fallback={<TabLoader />}>
-              <ReviewsManagement />
-            </Suspense>
+            <ReviewsManagement />
           </TabsContent>
 
           <TabsContent value="events">
-            <Suspense fallback={<TabLoader />}>
-              <EventsManagementEnhanced />
-            </Suspense>
+            <EventsManagementEnhanced />
           </TabsContent>
 
           <TabsContent value="blog">
-            <Suspense fallback={<TabLoader />}>
-              <BlogManager />
-            </Suspense>
+            <BlogManager />
           </TabsContent>
 
           <TabsContent value="achievements">
-            <Suspense fallback={<TabLoader />}>
-              <AchievementManager />
-            </Suspense>
+            <AchievementManager />
           </TabsContent>
 
           <TabsContent value="refunds">
-            <Suspense fallback={<TabLoader />}>
-              <RefundProcessor />
-            </Suspense>
+            <RefundProcessor />
           </TabsContent>
 
           <TabsContent value="progress">
-            <Suspense fallback={<TabLoader />}>
-              <ProgressTrackingDashboard />
-            </Suspense>
+            <ProgressTrackingDashboard />
           </TabsContent>
 
           <TabsContent value="assignments">
-            <Suspense fallback={<TabLoader />}>
-              <AssignmentTracker />
-            </Suspense>
+            <AssignmentTracker />
           </TabsContent>
 
           <TabsContent value="resources">
-            <Suspense fallback={<TabLoader />}>
-              <ResourcesManagement />
-            </Suspense>
+            <ResourcesManagement />
           </TabsContent>
 
           <TabsContent value="attendance">
-            <Suspense fallback={<TabLoader />}>
-              <AttendanceTicketManagement />
-            </Suspense>
+            <AttendanceTicketManagement />
           </TabsContent>
 
           <TabsContent value="moderation">
-            <Suspense fallback={<TabLoader />}>
-              <ModeratorDashboard />
-            </Suspense>
+            <ModeratorDashboard />
           </TabsContent>
 
           <TabsContent value="registrants">
-            <Suspense fallback={<TabLoader />}>
-              <RegistrantsManagement />
-            </Suspense>
+            <RegistrantsManagement />
           </TabsContent>
         </Tabs>
       </div>
