@@ -1,0 +1,66 @@
+================================================================================
+IMPORTANT: Which Files to Run in Supabase SQL Editor
+================================================================================
+
+DO NOT run these files (they are documentation):
+❌ COURSES_EVENTS_NOT_LOADING_FIX.md     (Markdown - just instructions)
+❌ VIBE_CODING_UPDATE_INSTRUCTIONS.md    (Markdown - just instructions)
+❌ Any file ending in .md or .txt
+
+DO run these files in Supabase SQL Editor:
+✅ DIAGNOSE_DATA_LOADING_ISSUE.sql       (Run this FIRST)
+✅ FIX_COURSES_EVENTS_RLS.sql            (Run this SECOND)
+
+================================================================================
+STEP-BY-STEP INSTRUCTIONS
+================================================================================
+
+STEP 1: Diagnose the Problem
+----------------------------
+1. Open this file: DIAGNOSE_DATA_LOADING_ISSUE.sql
+2. Copy ALL the contents (Ctrl+A, Ctrl+C)
+3. Go to: https://supabase.com/dashboard
+4. Select your project
+5. Click "SQL Editor" in left sidebar
+6. Click "New Query"
+7. Paste the SQL (Ctrl+V)
+8. Click "Run" or press Ctrl+Enter
+9. Review the results
+
+STEP 2: Apply the Fix
+---------------------
+1. Open this file: FIX_COURSES_EVENTS_RLS.sql
+2. Copy ALL the contents (Ctrl+A, Ctrl+C)
+3. In Supabase → SQL Editor
+4. Click "New Query"
+5. Paste the SQL (Ctrl+V)
+6. Click "Run" or press Ctrl+Enter
+7. Wait for "Success" message
+
+STEP 3: Test
+-----------
+1. Log out of www.aiborg.ai
+2. Clear browser cache (Ctrl+Shift+Delete)
+3. Log back in with hirendra@gmail.com
+4. Check if courses and events now load
+
+================================================================================
+ERROR YOU GOT: "syntax error at or near #"
+================================================================================
+
+This means you accidentally ran a .md (markdown) file instead of a .sql file.
+Markdown files contain "#" for headings, which SQL doesn't understand.
+
+✅ SOLUTION: Open the .sql file instead, not the .md file
+
+================================================================================
+QUICK REFERENCE
+================================================================================
+
+File Type | Purpose                  | Action
+----------|--------------------------|------------------------
+.sql      | SQL code to run          | Copy & paste to SQL Editor
+.md       | Documentation to read    | Open in text editor, DON'T run
+.txt      | Instructions to read     | Open in text editor, DON'T run
+
+================================================================================
