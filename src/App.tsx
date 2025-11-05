@@ -35,6 +35,7 @@ const Studio = lazy(() => import('./pages/Studio'));
 const CMS = lazy(() => import('./pages/CMS'));
 const BlogCMS = lazy(() => import('./pages/CMS/BlogCMS'));
 const PaymentSuccess = lazy(() => import('./pages/PaymentSuccess'));
+const ClaimFreePass = lazy(() => import('./pages/ClaimFreePass'));
 const BlogPage = lazy(() => import('./pages/Blog'));
 const BlogPostPage = lazy(() => import('./pages/Blog/BlogPost'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -203,6 +204,7 @@ const AppWithShortcuts = () => {
               }
             />
             <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/claim-free-pass" element={<ClaimFreePass />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route

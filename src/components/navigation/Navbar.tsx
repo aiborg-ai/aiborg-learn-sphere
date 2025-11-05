@@ -28,10 +28,15 @@ export function Navbar() {
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      const { error } = await signOut();
+
+      if (error) {
+        logger.error('Sign out error:', error);
+      }
+
       navigate('/');
     } catch (error) {
-      logger.error('Sign out error:', error);
+      logger.error('Sign out exception:', error);
       // Still navigate to home even if sign out fails
       navigate('/');
     }

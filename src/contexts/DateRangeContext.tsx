@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import type { ReactNode } from 'react';
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { logger } from '@/utils/logger';
 
 /**
  * Date range preset options
@@ -88,7 +89,7 @@ const loadFromStorage = (): DateRangeState => {
       };
     }
   } catch (error) {
-    console.error('Error loading date range from storage:', error);
+    logger.error('Error loading date range from storage:', error);
   }
 
   // Default: last 30 days
@@ -108,13 +109,16 @@ const loadFromStorage = (): DateRangeState => {
  */
 const saveToStorage = (state: DateRangeState): void => {
   try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
-      startDate: state.startDate?.toISOString() || null,
-      endDate: state.endDate?.toISOString() || null,
-      preset: state.preset,
-    }));
+    sessionStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        startDate: state.startDate?.toISOString() || null,
+        endDate: state.endDate?.toISOString() || null,
+        preset: state.preset,
+      })
+    );
   } catch (error) {
-    console.error('Error saving date range to storage:', error);
+    logger.error('Error saving date range to storage:', error);
   }
 };
 
@@ -338,7 +342,11 @@ export const getPresetLabel = (preset: PresetOption | null): string => {
 /**
  * Get all available presets as options
  */
-export const getPresetOptions = (): Array<{ value: PresetOption; label: string; description: string }> => {
+export const getPresetOptions = (): Array<{
+  value: PresetOption;
+  label: string;
+  description: string;
+}> => {
   return Object.entries(PRESET_CONFIG).map(([value, config]) => ({
     value: value as PresetOption,
     label: config.label,

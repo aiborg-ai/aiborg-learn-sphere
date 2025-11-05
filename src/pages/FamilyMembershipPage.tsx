@@ -20,6 +20,7 @@ import {
   Lock,
   Calendar,
   Star,
+  Gift,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -107,6 +108,32 @@ function HeroSection({ plan: _plan }: { plan: Record<string, unknown> }) {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* FHOAI Vault Subscriber Banner */}
+        <div className="mb-8 max-w-4xl mx-auto">
+          <div className="bg-gradient-to-r from-purple-500 to-violet-600 rounded-2xl p-6 text-white shadow-2xl border-2 border-purple-300">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <Gift className="w-8 h-8" />
+              <h3 className="text-2xl font-bold">FHOAI Vault Subscribers: Get FREE Family Pass!</h3>
+            </div>
+            <p className="text-center text-lg mb-4 opacity-90">
+              Already a vault subscriber? Claim your complimentary Family Pass (worth £240/year) at
+              no additional cost.
+            </p>
+            <div className="flex justify-center">
+              <Button
+                asChild
+                size="lg"
+                className="bg-white text-purple-600 hover:bg-gray-100 font-bold px-8 py-6 text-lg shadow-xl"
+              >
+                <Link to="/claim-free-pass">
+                  <Gift className="mr-2 w-5 h-5" />
+                  Claim FREE Pass Now
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+
         <div className="text-center mb-12">
           <Badge className="mb-6 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-2 text-base font-semibold">
             🎉 Limited Time: Lock in £20/month forever
@@ -146,6 +173,17 @@ function HeroSection({ plan: _plan }: { plan: Record<string, unknown> }) {
               <Link to="/family-membership/enroll">
                 Start 30-Day Free Trial
                 <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </Button>
+
+            <Button
+              asChild
+              size="lg"
+              className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white text-lg px-8 py-6 shadow-xl hover:shadow-2xl transition-all duration-300"
+            >
+              <Link to="/claim-free-pass">
+                <Gift className="mr-2 h-5 w-5" />
+                Claim FREE Pass
               </Link>
             </Button>
 

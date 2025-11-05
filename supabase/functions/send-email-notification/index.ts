@@ -30,7 +30,11 @@ interface EmailNotification {
     | 'family_pass_granted'
     | 'family_pass_revoked'
     | 'family_pass_expiring'
-    | 'family_pass_extended';
+    | 'family_pass_extended'
+    | 'vault_claim_submitted'
+    | 'vault_claim_admin_notification'
+    | 'vault_claim_approved'
+    | 'vault_claim_rejected';
   data: Record<string, any>;
 }
 
@@ -1398,6 +1402,496 @@ const emailTemplates = {
               <p style="margin-top: 15px;">
                 <a href="${data.dashboardUrl}" style="color: #10b981;">Dashboard</a> |
                 <a href="${data.coursesUrl}" style="color: #10b981;">Browse Courses</a>
+              </p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+  }),
+
+  vault_claim_submitted: (data: any) => ({
+    subject: `✅ Your FREE Family Pass Claim Has Been Submitted`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head><style>
+          body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #1f2937; background: #f9fafb; }
+          .container { max-width: 600px; margin: 0 auto; background: white; }
+          .header { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: white; padding: 40px 30px; text-align: center; }
+          .icon { font-size: 64px; margin: 10px 0; }
+          .content { padding: 40px 30px; }
+          .status-card { background: #f5f3ff; border: 3px solid #8b5cf6; padding: 25px; border-radius: 12px; margin: 20px 0; text-align: center; }
+          .info-box { background: #eff6ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6; }
+          .footer { background: #f9fafb; padding: 30px; text-align: center; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb; }
+          h1 { margin: 0; font-size: 32px; }
+          h2 { color: #374151; font-size: 20px; margin: 20px 0 10px 0; }
+          p { margin: 0 0 15px 0; }
+          .timeline { margin: 20px 0; }
+          .timeline-item { padding: 15px 20px; border-left: 3px solid #d1d5db; margin-left: 10px; position: relative; }
+          .timeline-item.active { border-left-color: #8b5cf6; background: #faf5ff; }
+          .timeline-dot { position: absolute; left: -8px; top: 20px; width: 12px; height: 12px; border-radius: 50%; background: #d1d5db; }
+          .timeline-item.active .timeline-dot { background: #8b5cf6; }
+        </style></head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="icon">🎯</div>
+              <h1 style="color: white;">Claim Submitted Successfully!</h1>
+              <p style="margin: 10px 0 0 0; opacity: 0.9;">We're Processing Your Request</p>
+            </div>
+            <div class="content">
+              <p>Hi ${data.userName},</p>
+              <p>Thank you for claiming your FREE Family Pass as an FHOAI Vault subscriber! Your request has been successfully submitted and is now under review by our admin team.</p>
+
+              <div class="status-card">
+                <h2 style="margin: 0 0 10px 0; color: #6d28d9;">⏳ Status: Pending Review</h2>
+                <p style="margin: 0; color: #4c1d95; font-size: 14px;">
+                  Claim ID: <strong>${data.claimId}</strong>
+                </p>
+              </div>
+
+              <div class="info-box">
+                <h2 style="margin: 0 0 15px 0; color: #1e3a8a;">📋 Your Claim Details:</h2>
+                <p style="margin: 5px 0;"><strong>Name:</strong> ${data.userName}</p>
+                <p style="margin: 5px 0;"><strong>Email:</strong> ${data.userEmail}</p>
+                <p style="margin: 5px 0;"><strong>Vault Email:</strong> ${data.vaultEmail}</p>
+                <p style="margin: 5px 0;"><strong>Subscription Valid Until:</strong> ${data.subscriptionEndDate}</p>
+                ${data.familyMembersCount > 0 ? `<p style="margin: 5px 0;"><strong>Family Members:</strong> ${data.familyMembersCount}</p>` : ''}
+              </div>
+
+              <h2>⏱️ What Happens Next?</h2>
+              <div class="timeline">
+                <div class="timeline-item active">
+                  <div class="timeline-dot"></div>
+                  <strong>✅ Claim Submitted</strong>
+                  <p style="margin: 5px 0 0 0; font-size: 14px; color: #6b7280;">Your request is in our system</p>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <strong>🔍 Admin Review (1-2 business days)</strong>
+                  <p style="margin: 5px 0 0 0; font-size: 14px; color: #6b7280;">Our team will verify your vault subscription</p>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <strong>📧 Approval Notification</strong>
+                  <p style="margin: 5px 0 0 0; font-size: 14px; color: #6b7280;">You'll receive an email once approved</p>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <strong>🎉 Family Pass Activated</strong>
+                  <p style="margin: 5px 0 0 0; font-size: 14px; color: #6b7280;">Instant access to all courses and premium content</p>
+                </div>
+              </div>
+
+              <div style="background: #fef3c7; padding: 20px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 20px 0;">
+                <p style="margin: 0;"><strong>⏰ Expected Response Time:</strong> 1-2 business days</p>
+                <p style="margin: 10px 0 0 0; font-size: 14px; color: #78350f;">
+                  If you don't hear from us within 48 hours, please check your spam folder or contact support.
+                </p>
+              </div>
+
+              <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280;">
+                Questions? Contact us at support@aiborg.ai or reply to this email.
+              </p>
+            </div>
+            <div class="footer">
+              <p><strong>Aiborg™ Learning Platform</strong></p>
+              <p>Empowering FHOAI Vault subscribers with premium learning</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+  }),
+
+  vault_claim_admin_notification: (data: any) => ({
+    subject: `🔔 New Vault Claim Request: ${data.userName}`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head><style>
+          body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #1f2937; background: #f9fafb; }
+          .container { max-width: 600px; margin: 0 auto; background: white; }
+          .header { background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; padding: 40px 30px; text-align: center; }
+          .urgent-badge { background: #fef2f2; color: #dc2626; padding: 5px 15px; border-radius: 20px; font-weight: 700; display: inline-block; margin-bottom: 10px; }
+          .content { padding: 40px 30px; }
+          .claim-card { background: #f9fafb; border: 2px solid #e5e7eb; padding: 25px; border-radius: 12px; margin: 20px 0; }
+          .detail-row { display: grid; grid-template-columns: 150px 1fr; gap: 10px; padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
+          .detail-label { font-weight: 600; color: #6b7280; }
+          .detail-value { color: #374151; }
+          .action-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 30px 0; }
+          .btn-approve { display: block; padding: 16px; background: #10b981; color: white !important; text-decoration: none; border-radius: 8px; font-weight: 700; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+          .btn-reject { display: block; padding: 16px; background: #ef4444; color: white !important; text-decoration: none; border-radius: 8px; font-weight: 700; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+          .btn-review { display: block; padding: 16px; background: #3b82f6; color: white !important; text-decoration: none; border-radius: 8px; font-weight: 700; text-align: center; margin: 20px 0; }
+          .footer { background: #f9fafb; padding: 30px; text-align: center; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb; }
+          h1 { margin: 0; font-size: 28px; }
+          h2 { color: #374151; font-size: 20px; margin: 20px 0 10px 0; }
+          p { margin: 0 0 15px 0; }
+        </style></head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="urgent-badge">⚠️ ACTION REQUIRED</div>
+              <h1 style="color: white;">New Vault Claim Request</h1>
+              <p style="margin: 10px 0 0 0; opacity: 0.9;">Review and Approve/Reject</p>
+            </div>
+            <div class="content">
+              <p><strong>Admin Team,</strong></p>
+              <p>A new FREE Family Pass claim has been submitted by an FHOAI Vault subscriber. Please review the details below and take appropriate action.</p>
+
+              <div class="claim-card">
+                <h2 style="margin: 0 0 20px 0;">👤 Claimant Information</h2>
+                <div class="detail-row">
+                  <span class="detail-label">Name:</span>
+                  <span class="detail-value"><strong>${data.userName}</strong></span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Email:</span>
+                  <span class="detail-value">${data.userEmail}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Vault Email:</span>
+                  <span class="detail-value">${data.vaultEmail}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Subscription End:</span>
+                  <span class="detail-value">${data.subscriptionEndDate}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Family Members:</span>
+                  <span class="detail-value">${data.familyMembersCount} ${data.familyMembersCount === 1 ? 'member' : 'members'}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Claim ID:</span>
+                  <span class="detail-value"><code>${data.claimId}</code></span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Submitted:</span>
+                  <span class="detail-value">${data.submittedAt}</span>
+                </div>
+                <div class="detail-row" style="border: none;">
+                  <span class="detail-label">Declaration:</span>
+                  <span class="detail-value">✅ Accepted FHOAI Vault subscriber terms</span>
+                </div>
+              </div>
+
+              ${
+                data.familyMembers && data.familyMembers.length > 0
+                  ? `
+              <div style="background: #eff6ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+                <h2 style="margin: 0 0 15px 0; color: #1e3a8a;">👨‍👩‍👧‍👦 Family Members to be Added:</h2>
+                ${data.familyMembers
+                  .map(
+                    (member: any) => `
+                  <p style="margin: 5px 0; font-size: 14px;">
+                    <strong>${member.name}</strong> (${member.email}) - ${member.relationship}
+                  </p>
+                `
+                  )
+                  .join('')}
+              </div>
+              `
+                  : ''
+              }
+
+              <div style="background: #fef3c7; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+                <h2 style="margin: 0 0 10px 0; color: #78350f;">✅ Verification Checklist:</h2>
+                <ul style="margin: 5px 0; padding-left: 20px; color: #78350f;">
+                  <li>Verify FHOAI Vault subscription status</li>
+                  <li>Check subscription end date validity</li>
+                  <li>Confirm no duplicate active claims</li>
+                  <li>Review family member count (max 6)</li>
+                </ul>
+              </div>
+
+              <h2 style="text-align: center; margin: 30px 0 20px 0;">🎯 Take Action</h2>
+              <div class="action-buttons">
+                <a href="${data.approveUrl}" class="btn-approve">
+                  ✅ APPROVE CLAIM
+                </a>
+                <a href="${data.rejectUrl}" class="btn-reject">
+                  ❌ REJECT CLAIM
+                </a>
+              </div>
+
+              <center>
+                <a href="${data.adminDashboardUrl}" class="btn-review">
+                  📊 View in Admin Dashboard
+                </a>
+              </center>
+
+              <p style="margin-top: 30px; padding: 20px; background: #f3f4f6; border-radius: 8px; font-size: 14px; color: #4b5563;">
+                <strong>Note:</strong> Approving this claim will automatically grant the user Family Pass access matching their vault subscription duration. Family members (if any) will be invited to join.
+              </p>
+
+              <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px;">
+                This is an automated notification. Do not reply to this email. Manage claims in the admin dashboard.
+              </p>
+            </div>
+            <div class="footer">
+              <p><strong>Aiborg™ Admin System</strong></p>
+              <p style="margin-top: 10px; font-size: 12px;">
+                <a href="${data.adminDashboardUrl}" style="color: #dc2626;">Admin Dashboard</a>
+              </p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+  }),
+
+  vault_claim_approved: (data: any) => ({
+    subject: `🎉 Congratulations! Your FREE Family Pass Has Been Approved`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head><style>
+          body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #1f2937; background: #f9fafb; }
+          .container { max-width: 600px; margin: 0 auto; background: white; }
+          .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 40px 30px; text-align: center; }
+          .icon { font-size: 80px; margin: 10px 0; }
+          .content { padding: 40px 30px; }
+          .success-card { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 3px solid #10b981; padding: 30px; border-radius: 12px; margin: 20px 0; text-align: center; }
+          .benefit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+          .benefit-item { background: #f0fdf4; padding: 20px; border-radius: 8px; border-left: 4px solid #10b981; }
+          .benefit-icon { font-size: 32px; margin-bottom: 10px; }
+          .cta-button { display: inline-block; padding: 18px 36px; background: #10b981; color: white !important; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 18px; margin: 20px 0; box-shadow: 0 6px 12px rgba(16,185,129,0.3); }
+          .info-box { background: #eff6ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6; }
+          .footer { background: #f9fafb; padding: 30px; text-align: center; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb; }
+          h1 { margin: 0; font-size: 36px; }
+          h2 { color: #374151; font-size: 22px; margin: 20px 0 10px 0; }
+          p { margin: 0 0 15px 0; }
+          ul { color: #4b5563; margin: 10px 0; padding-left: 25px; }
+          li { margin: 8px 0; }
+        </style></head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="icon">🎊</div>
+              <h1 style="color: white;">Welcome to the Family!</h1>
+              <p style="margin: 10px 0 0 0; font-size: 20px; opacity: 0.95;">Your FREE Family Pass is Now Active</p>
+            </div>
+            <div class="content">
+              <p style="font-size: 18px;"><strong>Hi ${data.userName},</strong></p>
+              <p style="font-size: 16px;">Great news! 🎉 Your FREE Family Pass claim has been <strong style="color: #059669;">approved</strong>! As an FHOAI Vault subscriber, you now have unlimited access to all our premium courses and content.</p>
+
+              <div class="success-card">
+                <h2 style="margin: 0 0 15px 0; color: #065f46; font-size: 28px;">✅ Family Pass Activated!</h2>
+                <p style="margin: 10px 0; font-size: 18px; color: #047857;">
+                  <strong>Valid Until: ${data.accessEndDate}</strong>
+                </p>
+                <p style="margin: 0; font-size: 14px; color: #059669;">
+                  (Automatically synced with your vault subscription)
+                </p>
+              </div>
+
+              <h2 style="text-align: center; margin: 30px 0 20px 0;">🌟 What's Included in Your Family Pass</h2>
+              <div class="benefit-grid">
+                <div class="benefit-item">
+                  <div class="benefit-icon">📚</div>
+                  <strong>50+ AI Courses</strong>
+                  <p style="margin: 5px 0 0 0; font-size: 14px; color: #065f46;">Worth £2,500+</p>
+                </div>
+                <div class="benefit-item">
+                  <div class="benefit-icon">💎</div>
+                  <strong>Vault Content</strong>
+                  <p style="margin: 5px 0 0 0; font-size: 14px; color: #065f46;">200+ resources</p>
+                </div>
+                <div class="benefit-item">
+                  <div class="benefit-icon">👨‍👩‍👧‍👦</div>
+                  <strong>6 Family Members</strong>
+                  <p style="margin: 5px 0 0 0; font-size: 14px; color: #065f46;">Full access each</p>
+                </div>
+                <div class="benefit-item">
+                  <div class="benefit-icon">🎟️</div>
+                  <strong>Priority Events</strong>
+                  <p style="margin: 5px 0 0 0; font-size: 14px; color: #065f46;">Early registration</p>
+                </div>
+              </div>
+
+              <center>
+                <a href="${data.dashboardUrl}" class="cta-button">
+                  🚀 Start Learning Now →
+                </a>
+              </center>
+
+              <div class="info-box">
+                <h2 style="margin: 0 0 15px 0; color: #1e40af;">🎯 Quick Start Guide:</h2>
+                <ul style="margin: 0; padding-left: 20px;">
+                  <li><strong>Browse Courses:</strong> Explore 50+ AI and technology courses</li>
+                  <li><strong>Invite Family:</strong> Add up to 6 family members (Dashboard → Family)</li>
+                  <li><strong>Access Vault:</strong> Unlock 200+ premium resources and templates</li>
+                  <li><strong>Join Events:</strong> Register for workshops and webinars</li>
+                  <li><strong>Track Progress:</strong> Earn certificates and achievements</li>
+                </ul>
+              </div>
+
+              ${
+                data.familyMembersAdded > 0
+                  ? `
+              <div style="background: #fef3c7; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+                <p style="margin: 0;"><strong>👨‍👩‍👧‍👦 Family Members:</strong> ${data.familyMembersAdded} ${data.familyMembersAdded === 1 ? 'member' : 'members'} will receive invitation emails shortly.</p>
+                <p style="margin: 10px 0 0 0; font-size: 14px; color: #78350f;">
+                  They'll need to create accounts using the invited email addresses to activate their access.
+                </p>
+              </div>
+              `
+                  : ''
+              }
+
+              ${
+                data.adminNotes
+                  ? `
+              <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <p style="margin: 0;"><strong>📝 Note from Admin:</strong></p>
+                <p style="margin: 10px 0 0 0; font-style: italic; color: #4b5563;">"${data.adminNotes}"</p>
+              </div>
+              `
+                  : ''
+              }
+
+              <div style="background: #fffbeb; padding: 20px; border-radius: 8px; margin: 30px 0; border-left: 4px solid #fbbf24;">
+                <h2 style="margin: 0 0 10px 0; color: #78350f;">💰 You're Saving £240/Year!</h2>
+                <p style="margin: 0; color: #92400e; font-size: 14px;">
+                  As an FHOAI Vault subscriber, you get this Family Pass absolutely FREE (normally £20/month or £240/year). That's amazing value on top of your vault subscription!
+                </p>
+              </div>
+
+              <center>
+                <a href="${data.coursesUrl}" style="display: inline-block; padding: 14px 28px; background: white; color: #10b981 !important; text-decoration: none; border: 2px solid #10b981; border-radius: 8px; font-weight: 600; margin: 10px;">
+                  📚 Browse All Courses
+                </a>
+                <a href="${data.vaultUrl}" style="display: inline-block; padding: 14px 28px; background: white; color: #10b981 !important; text-decoration: none; border: 2px solid #10b981; border-radius: 8px; font-weight: 600; margin: 10px;">
+                  💎 Explore Vault
+                </a>
+              </center>
+
+              <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280;">
+                Questions or need assistance? Contact us at support@aiborg.ai or visit our help center.
+              </p>
+            </div>
+            <div class="footer">
+              <p><strong>Aiborg™ Learning Platform</strong></p>
+              <p>Thank you for being part of our learning community!</p>
+              <p style="margin-top: 15px;">
+                <a href="${data.dashboardUrl}" style="color: #10b981;">Dashboard</a> |
+                <a href="${data.coursesUrl}" style="color: #10b981;">Courses</a> |
+                <a href="${data.supportUrl}" style="color: #10b981;">Support</a>
+              </p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+  }),
+
+  vault_claim_rejected: (data: any) => ({
+    subject: `⚠️ Update on Your Family Pass Claim`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head><style>
+          body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #1f2937; background: #f9fafb; }
+          .container { max-width: 600px; margin: 0 auto; background: white; }
+          .header { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 40px 30px; text-align: center; }
+          .icon { font-size: 64px; margin: 10px 0; }
+          .content { padding: 40px 30px; }
+          .status-card { background: #fef3c7; border: 3px solid #f59e0b; padding: 25px; border-radius: 12px; margin: 20px 0; }
+          .reason-box { background: #fee2e2; border: 2px solid #fca5a5; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ef4444; }
+          .next-steps { background: #eff6ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6; }
+          .button { display: inline-block; padding: 16px 32px; background: #3b82f6; color: white !important; text-decoration: none; border-radius: 8px; font-weight: 700; margin: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+          .footer { background: #f9fafb; padding: 30px; text-align: center; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb; }
+          h1 { margin: 0; font-size: 32px; }
+          h2 { color: #374151; font-size: 20px; margin: 20px 0 10px 0; }
+          p { margin: 0 0 15px 0; }
+          ul { color: #4b5563; margin: 10px 0; padding-left: 25px; }
+          li { margin: 8px 0; }
+        </style></head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="icon">📋</div>
+              <h1 style="color: white;">Claim Status Update</h1>
+              <p style="margin: 10px 0 0 0; opacity: 0.9;">Your Family Pass Request</p>
+            </div>
+            <div class="content">
+              <p>Hi ${data.userName},</p>
+              <p>Thank you for your interest in claiming a FREE Family Pass. We've reviewed your submission, and unfortunately, we're unable to approve your claim at this time.</p>
+
+              <div class="status-card">
+                <h2 style="margin: 0 0 10px 0; color: #78350f; text-align: center;">⚠️ Claim Status: Not Approved</h2>
+                <p style="margin: 0; color: #92400e; font-size: 14px; text-align: center;">
+                  Claim ID: <strong>${data.claimId}</strong>
+                </p>
+              </div>
+
+              <div class="reason-box">
+                <h2 style="margin: 0 0 15px 0; color: #991b1b;">📌 Reason:</h2>
+                <p style="margin: 0; color: #7f1d1d; font-size: 16px; font-weight: 500;">
+                  ${data.rejectionReason}
+                </p>
+                ${
+                  data.adminNotes
+                    ? `
+                <p style="margin: 15px 0 0 0; padding-top: 15px; border-top: 1px solid #fca5a5; color: #991b1b; font-size: 14px;">
+                  <strong>Additional Details:</strong><br>${data.adminNotes}
+                </p>
+                `
+                    : ''
+                }
+              </div>
+
+              <div class="next-steps">
+                <h2 style="margin: 0 0 15px 0; color: #1e40af;">🔍 What You Can Do:</h2>
+                <ul style="margin: 0; padding-left: 20px;">
+                  <li><strong>Verify Your Vault Subscription:</strong> Ensure your FHOAI Vault subscription is active and up to date</li>
+                  <li><strong>Check Your Details:</strong> Make sure all information submitted was accurate</li>
+                  <li><strong>Resubmit:</strong> If the issue is resolved, you can submit a new claim request</li>
+                  <li><strong>Contact Support:</strong> Reach out if you believe this was an error or need assistance</li>
+                </ul>
+              </div>
+
+              <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #10b981;">
+                <h2 style="margin: 0 0 10px 0; color: #065f46;">💡 Still Want Family Pass Access?</h2>
+                <p style="margin: 0 0 10px 0; color: #047857; font-size: 14px;">
+                  You can still get full Family Pass benefits by subscribing through our regular enrollment:
+                </p>
+                <ul style="margin: 10px 0; padding-left: 20px; color: #065f46; font-size: 14px;">
+                  <li>Only £20/month (save £10 with early bird pricing)</li>
+                  <li>50+ AI courses + vault access</li>
+                  <li>Up to 6 family members</li>
+                  <li>Cancel anytime</li>
+                </ul>
+              </div>
+
+              <center>
+                <a href="${data.resubmitUrl}" class="button">
+                  🔄 Submit New Claim
+                </a>
+                <a href="${data.enrollUrl}" class="button" style="background: #10b981;">
+                  💳 View Membership Plans
+                </a>
+              </center>
+
+              <p style="margin-top: 30px; padding: 20px; background: #fffbeb; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                <strong style="color: #78350f;">Need Help?</strong><br>
+                <span style="color: #92400e; font-size: 14px;">
+                  If you have questions about this decision or need assistance with your vault subscription verification, please contact our support team at <a href="mailto:support@aiborg.ai" style="color: #d97706;">support@aiborg.ai</a>. We're here to help!
+                </span>
+              </p>
+
+              <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280;">
+                Thank you for your understanding. We appreciate your interest in Aiborg Learning Platform.
+              </p>
+            </div>
+            <div class="footer">
+              <p><strong>Aiborg™ Learning Platform</strong></p>
+              <p>Empowering education through AI</p>
+              <p style="margin-top: 15px;">
+                <a href="${data.supportUrl}" style="color: #f59e0b;">Contact Support</a> |
+                <a href="${data.faqUrl}" style="color: #f59e0b;">FAQ</a> |
+                <a href="${data.dashboardUrl}" style="color: #f59e0b;">Dashboard</a>
               </p>
             </div>
           </div>

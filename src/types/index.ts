@@ -87,6 +87,16 @@ export type {
   Payment,
   Invoice,
   InvoiceItem,
+
+  // Vault Claim
+  FamilyMemberInput,
+  VaultClaim,
+  VaultClaimWithReviewer,
+  ClaimFormData,
+  VaultSubscriber,
+  VaultSubscriptionStatus,
+  ProcessClaimRequest,
+  ClaimStats,
 } from './api';
 
 // Hook Types

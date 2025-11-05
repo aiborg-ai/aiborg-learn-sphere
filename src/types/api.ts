@@ -608,3 +608,85 @@ export interface InvoiceItem {
   unit_price: number;
   total: number;
 }
+
+// ============================================================================
+// Vault Subscription Claim Types
+// ============================================================================
+
+export interface FamilyMemberInput {
+  name: string;
+  email: string;
+  relationship: string;
+}
+
+export interface VaultClaim {
+  id: string;
+  user_id: string | null;
+  user_email: string;
+  user_name: string;
+  vault_email: string;
+  vault_subscription_end_date: string;
+  declaration_accepted: boolean;
+  family_members: FamilyMemberInput[] | null;
+  status: 'pending' | 'approved' | 'rejected' | 'expired';
+  admin_notes: string | null;
+  rejection_reason: string | null;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  family_pass_grant_id: string | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface VaultClaimWithReviewer extends VaultClaim {
+  reviewer?: {
+    id: string;
+    email: string;
+    full_name: string;
+  };
+}
+
+export interface ClaimFormData {
+  userName: string;
+  userEmail: string;
+  vaultEmail: string;
+  vaultSubscriptionEndDate: Date;
+  familyMembers: FamilyMemberInput[];
+  declarationAccepted: boolean;
+  termsAccepted: boolean;
+}
+
+export interface VaultSubscriber {
+  id: string;
+  email: string;
+  subscription_end_date: string | null;
+  last_verified_at: string;
+  is_active: boolean;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface VaultSubscriptionStatus {
+  is_active: boolean;
+  subscription_end_date: string | null;
+  has_pending_claim: boolean;
+  has_approved_claim: boolean;
+}
+
+export interface ProcessClaimRequest {
+  claimId: string;
+  action: 'approve' | 'reject';
+  rejectionReason?: string;
+  adminNotes?: string;
+  grantEndDate?: string;
+}
+
+export interface ClaimStats {
+  total: number;
+  pending: number;
+  approved: number;
+  rejected: number;
+  expired: number;
+}

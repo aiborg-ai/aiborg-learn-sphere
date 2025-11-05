@@ -26,6 +26,7 @@ import {
   Ticket,
   Crown,
   ShieldCheck,
+  Gift,
 } from 'lucide-react';
 
 // Only import AccessDenied eagerly (used before tabs render)
@@ -51,7 +52,7 @@ import { AttendanceTicketManagement } from '@/components/admin/AttendanceTicketM
 import { FamilyPassManagement } from '@/components/admin/FamilyPassManagement';
 import { ModeratorDashboard } from '@/components/admin/ModeratorDashboard';
 import { RegistrantsManagement } from '@/components/admin/RegistrantsManagement';
-
+import { VaultClaimsManagement } from '@/components/admin/VaultClaimsManagement';
 
 export default function AdminRefactored() {
   const { user } = useAuth();
@@ -150,6 +151,13 @@ export default function AdminRefactored() {
               Family Pass
             </TabsTrigger>
             <TabsTrigger
+              value="vault-claims"
+              className="text-white data-[state=active]:bg-white/20"
+            >
+              <Gift className="h-4 w-4 mr-2" />
+              Vault Claims
+            </TabsTrigger>
+            <TabsTrigger
               value="announcements"
               className="text-white data-[state=active]:bg-white/20"
             >
@@ -232,6 +240,10 @@ export default function AdminRefactored() {
 
           <TabsContent value="family-pass">
             <FamilyPassManagement />
+          </TabsContent>
+
+          <TabsContent value="vault-claims">
+            <VaultClaimsManagement />
           </TabsContent>
 
           <TabsContent value="announcements">

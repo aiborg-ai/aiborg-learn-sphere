@@ -4,6 +4,8 @@
  * Handles special characters, quotes, and UTF-8 encoding
  */
 
+import { logger } from '@/utils/logger';
+
 /**
  * Escape special characters in CSV cell
  * @param value Cell value
@@ -40,10 +42,7 @@ function escapeCsvCell(value: any): string {
  * @param headers Optional custom headers (uses object keys if not provided)
  * @returns CSV string
  */
-export function arrayToCsv(
-  data: Array<Record<string, any>>,
-  headers?: string[]
-): string {
+export function arrayToCsv(data: Array<Record<string, any>>, headers?: string[]): string {
   if (data.length === 0) {
     return '';
   }
@@ -59,7 +58,7 @@ export function arrayToCsv(
 
   // Add data rows
   for (const row of data) {
-    const cells = csvHeaders.map((header) => escapeCsvCell(row[header]));
+    const cells = csvHeaders.map(header => escapeCsvCell(row[header]));
     rows.push(cells.join(','));
   }
 
@@ -78,7 +77,7 @@ export function exportToCSV(
   headers?: string[]
 ): void {
   if (data.length === 0) {
-    console.warn('No data to export');
+    logger.warn('No data to export');
     return;
   }
 
@@ -160,7 +159,7 @@ export function sanitizeForCsv(
   dateFields: string[] = [],
   numberFields: string[] = []
 ): Array<Record<string, any>> {
-  return data.map((row) => {
+  return data.map(row => {
     const sanitized: Record<string, any> = {};
 
     for (const [key, value] of Object.entries(row)) {
@@ -192,7 +191,7 @@ export function exportWithMetadata(
   headers?: string[]
 ): void {
   if (data.length === 0) {
-    console.warn('No data to export');
+    logger.warn('No data to export');
     return;
   }
 

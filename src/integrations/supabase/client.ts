@@ -48,7 +48,7 @@ supabase.auth.onAuthStateChange((event, session) => {
       supabase.realtime.setAuth(session.access_token);
     }
   } else if (event === 'SIGNED_OUT') {
-    realtimeAccessToken = null;
+    _realtimeAccessToken = null;
     supabase.realtime.setAuth(null);
   }
 });
@@ -59,7 +59,7 @@ supabase.auth.onAuthStateChange((event, session) => {
     data: { session },
   } = await supabase.auth.getSession();
   if (session?.access_token) {
-    realtimeAccessToken = session.access_token;
+    _realtimeAccessToken = session.access_token;
     supabase.realtime.setAuth(session.access_token);
   }
 })();
