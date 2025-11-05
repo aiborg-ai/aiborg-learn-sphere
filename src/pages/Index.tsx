@@ -42,9 +42,7 @@ const Index = () => {
       <DeepawaliBanner />
       <Navbar />
       <HeroSection />
-      <div className="container mx-auto px-4 py-4">
-        <NovemberVaultCampaignBanner />
-      </div>
+      <NovemberVaultCampaignBanner />
       <FamilyPassBanner />
       <div id="about">
         <AboutSection />
