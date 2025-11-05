@@ -12,7 +12,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Sparkles, ArrowRight, Clock, CheckCircle2 } from 'lucide-react';
+import { Users, Sparkles, ArrowRight, Clock, CheckCircle2, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -60,7 +60,10 @@ export function FamilyPassBanner({ compact = false }: FamilyPassBannerProps) {
   }
 
   return (
-    <div id="family-pass-banner" className="relative w-full bg-gradient-to-br from-amber-50 via-rose-50 to-orange-50 py-8 sm:py-12">
+    <div
+      id="family-pass-banner"
+      className="relative w-full bg-gradient-to-br from-amber-50 via-rose-50 to-orange-50 py-8 sm:py-12"
+    >
       {/* Decorative background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 -left-4 w-72 h-72 bg-amber-200/30 rounded-full mix-blend-multiply filter blur-xl animate-pulse" />
@@ -70,6 +73,33 @@ export function FamilyPassBanner({ compact = false }: FamilyPassBannerProps) {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="p-6 sm:p-8 md:p-10 bg-white/95 backdrop-blur-sm shadow-2xl border-2 border-amber-200/50">
+          {/* Vault Subscriber Special Offer */}
+          <div className="mb-4 p-4 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 rounded-lg">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-white">
+              <div className="flex items-center gap-3">
+                <Gift className="w-6 h-6 text-amber-300 animate-bounce" />
+                <div className="text-center sm:text-left">
+                  <p className="font-bold text-lg">
+                    FHOAI Vault Subscribers: Claim This FREE for November!
+                  </p>
+                  <p className="text-sm text-blue-100">
+                    Exclusive offer for our valued vault members
+                  </p>
+                </div>
+              </div>
+              <Button
+                asChild
+                size="sm"
+                className="bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-black font-bold whitespace-nowrap shadow-lg hover:shadow-xl transition-all"
+              >
+                <Link to="/claim-free-pass">
+                  Claim Now
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+
           {/* NEW Badge */}
           <div className="flex items-center justify-center mb-4">
             <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-1.5 text-sm font-semibold animate-pulse">
