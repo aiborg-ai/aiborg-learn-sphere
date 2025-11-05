@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-
 import { logger } from '@/utils/logger';
+
 export interface EventPhoto {
   id: string;
   event_id: number;
@@ -34,62 +34,53 @@ export interface Event {
   photos?: EventPhoto[];
 }
 
+const fetchEvents = async (): Promise<Event[]> => {
+  // Try with is_visible filter first
+  let { data, error } = await supabase
+    .from('events')
+    .select('*')
+    .eq('is_active', true)
+    .eq('is_visible', true)
+    .order('event_date', { ascending: true });
+
+  // Fallback if is_visible column doesn't exist yet
+  if (error && error.message?.includes('column')) {
+    logger.warn('is_visible column not found, falling back to is_active only');
+    const fallback = await supabase
+      .from('events')
+      .select('*')
+      .eq('is_active', true)
+      .order('event_date', { ascending: true });
+    data = fallback.data;
+    error = fallback.error;
+  }
+
+  if (error) {
+    throw error;
+  }
+
+  // Filter by is_visible client-side if column exists
+  return (data || []).filter(event => event.is_visible === undefined || event.is_visible === true);
+};
+
 export const useEvents = () => {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchEvents = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      // Try with is_visible filter first
-      let { data, error } = await supabase
-        .from('events')
-        .select('*')
-        .eq('is_active', true)
-        .eq('is_visible', true)
-        .order('event_date', { ascending: true });
-
-      // Fallback if is_visible column doesn't exist yet
-      if (error && error.message?.includes('column')) {
-        logger.warn('is_visible column not found, falling back to is_active only');
-        const fallback = await supabase
-          .from('events')
-          .select('*')
-          .eq('is_active', true)
-          .order('event_date', { ascending: true });
-        data = fallback.data;
-        error = fallback.error;
-      }
-
-      if (error) {
-        throw error;
-      }
-
-      // Filter by is_visible client-side if column exists
-      const filteredData = (data || []).filter(
-        event => event.is_visible === undefined || event.is_visible === true
-      );
-
-      setEvents(filteredData);
-    } catch (err) {
-      logger.error('Error fetching events:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch events');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
+  const {
+    data: events = [],
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents,
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+    retry: 2,
+  });
 
   return {
     events,
     loading,
-    error,
-    refetch: fetchEvents,
+    error: error instanceof Error ? error.message : error ? 'Failed to fetch events' : null,
+    refetch,
   };
 };

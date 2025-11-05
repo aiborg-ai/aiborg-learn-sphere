@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +7,7 @@ import { EventPhotoGallery } from './EventPhotoGallery';
 import { useEvents } from '@/hooks/useEvents';
 import { useEventRegistrations } from '@/hooks/useEventRegistrations';
 import { useAuth } from '@/hooks/useAuth';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Calendar, Users, MapPin, Filter } from 'lucide-react';
 
@@ -16,67 +17,69 @@ const filterOptions = [
   { id: 'registered', label: 'My Registrations', count: 0 },
 ];
 
+// Fetch past events with photos using React Query for caching
+const fetchPastEventsWithPhotos = async () => {
+  // Try with is_visible filter
+  let { data: pastEvents, error: eventsError } = await supabase
+    .from('events')
+    .select('*')
+    .eq('is_past', true)
+    .eq('is_visible', true)
+    .order('event_date', { ascending: false });
+
+  // Fallback if is_visible column doesn't exist yet
+  if (eventsError && eventsError.message?.includes('column')) {
+    const fallback = await supabase
+      .from('events')
+      .select('*')
+      .eq('is_past', true)
+      .order('event_date', { ascending: false });
+    pastEvents = fallback.data;
+    eventsError = fallback.error;
+  }
+
+  if (eventsError) throw eventsError;
+
+  if (!pastEvents || pastEvents.length === 0) {
+    return [];
+  }
+
+  // Fetch photos for each past event
+  const eventsWithPhotos = await Promise.all(
+    pastEvents.map(async event => {
+      const { data: photos, error: photosError } = await supabase
+        .from('event_photos')
+        .select('*')
+        .eq('event_id', event.id)
+        .order('display_order', { ascending: true });
+
+      if (photosError) {
+        return { ...event, photos: [] };
+      }
+
+      return { ...event, photos: photos || [] };
+    })
+  );
+
+  return eventsWithPhotos;
+};
+
 export function EventsSection() {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [showAllEvents, setShowAllEvents] = useState(false);
   const [showAllPastEvents, setShowAllPastEvents] = useState(false);
-  const [pastEventsWithPhotos, setPastEventsWithPhotos] = useState<Event[]>([]);
   const { events, loading, error } = useEvents();
   const { registrations } = useEventRegistrations();
   const { user } = useAuth();
 
-  // Fetch past events with photos
-  useEffect(() => {
-    const fetchPastEvents = async () => {
-      try {
-        // Try with is_visible filter
-        let { data: pastEvents, error: eventsError } = await supabase
-          .from('events')
-          .select('*')
-          .eq('is_past', true)
-          .eq('is_visible', true)
-          .order('event_date', { ascending: false });
-
-        // Fallback if is_visible column doesn't exist yet
-        if (eventsError && eventsError.message?.includes('column')) {
-          const fallback = await supabase
-            .from('events')
-            .select('*')
-            .eq('is_past', true)
-            .order('event_date', { ascending: false });
-          pastEvents = fallback.data;
-          eventsError = fallback.error;
-        }
-
-        if (eventsError) throw eventsError;
-
-        if (pastEvents && pastEvents.length > 0) {
-          // Fetch photos for each past event
-          const eventsWithPhotos = await Promise.all(
-            pastEvents.map(async event => {
-              const { data: photos, error: photosError } = await supabase
-                .from('event_photos')
-                .select('*')
-                .eq('event_id', event.id)
-                .order('display_order', { ascending: true });
-
-              if (photosError) {
-                return { ...event, photos: [] };
-              }
-
-              return { ...event, photos: photos || [] };
-            })
-          );
-
-          setPastEventsWithPhotos(eventsWithPhotos);
-        }
-      } catch {
-        // Error fetching past events
-      }
-    };
-
-    fetchPastEvents();
-  }, []);
+  // Use React Query for past events with caching
+  const { data: pastEventsWithPhotos = [] } = useQuery({
+    queryKey: ['past-events-with-photos'],
+    queryFn: fetchPastEventsWithPhotos,
+    staleTime: 10 * 60 * 1000, // Consider data fresh for 10 minutes
+    gcTime: 15 * 60 * 1000, // Keep in cache for 15 minutes
+    retry: 1,
+  });
 
   // Filter events based on selected filter (exclude past events)
   const filteredEvents = events.filter(event => {
