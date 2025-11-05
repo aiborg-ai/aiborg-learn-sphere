@@ -8,6 +8,7 @@ import { ReviewsSection } from '@/components/ReviewsSection';
 import { AIChatbot, AIComputerAssemblyBanner, DeepawaliBanner } from '@/components/features';
 import { FamilyPassBanner } from '@/components/membership';
 import { AssessmentToolsSection } from '@/components/assessment-tools';
+import { NovemberVaultCampaignBanner } from '@/components/campaigns';
 
 const Index = () => {
   const location = useLocation();
@@ -41,6 +42,9 @@ const Index = () => {
       <DeepawaliBanner />
       <Navbar />
       <HeroSection />
+      <div className="container mx-auto px-4 py-4">
+        <NovemberVaultCampaignBanner />
+      </div>
       <FamilyPassBanner />
       <div id="about">
         <AboutSection />

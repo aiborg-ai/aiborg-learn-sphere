@@ -60,7 +60,7 @@ export function FamilyPassBanner({ compact = false }: FamilyPassBannerProps) {
   }
 
   return (
-    <div className="relative w-full bg-gradient-to-br from-amber-50 via-rose-50 to-orange-50 py-8 sm:py-12">
+    <div id="family-pass-banner" className="relative w-full bg-gradient-to-br from-amber-50 via-rose-50 to-orange-50 py-8 sm:py-12">
       {/* Decorative background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 -left-4 w-72 h-72 bg-amber-200/30 rounded-full mix-blend-multiply filter blur-xl animate-pulse" />
