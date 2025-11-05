@@ -70,14 +70,14 @@ export function NovemberVaultCampaignBanner() {
   };
 
   // Only show if:
-  // 1. Campaign is active (November 2025)
-  // 2. User has vault access (FHOAI Vault subscriber)
+  // 1. Campaign is active (November 2025) - DISABLED FOR NOW
+  // 2. User has vault access (FHOAI Vault subscriber) - DISABLED FOR NOW
   // 3. User hasn't dismissed it (this session)
   // 4. User hasn't claimed it yet
   // 5. Not loading
   const shouldShowBanner =
-    isCampaignActive() &&
-    hasVaultAccess &&
+    // isCampaignActive() &&  // Temporarily disabled - show to everyone
+    // hasVaultAccess &&      // Temporarily disabled - show to everyone
     !isDismissed &&
     !hasClaimedOffer() &&
     !isLoading;
