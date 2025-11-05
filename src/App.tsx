@@ -43,6 +43,7 @@ const Dashboard = lazy(() => import('./pages/DashboardRefactored'));
 const HomeworkSubmission = lazy(() => import('./pages/HomeworkSubmissionRefactored'));
 const PublicProfile = lazy(() => import('./pages/PublicProfile'));
 const TemplateImport = lazy(() => import('./pages/admin/TemplateImport'));
+const AIBlogWorkflow = lazy(() => import('./pages/Admin/AIBlogWorkflow'));
 const AIAssessment = lazy(() => import('./pages/AIAssessment'));
 const AIAssessmentResults = lazy(() => import('./pages/AIAssessmentResults'));
 const SMEAssessment = lazy(() => import('./pages/SMEAssessment'));
@@ -176,6 +177,14 @@ const AppWithShortcuts = () => {
               element={
                 <RouteWrapper routeName="Template Import">
                   <TemplateImport />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/admin/ai-blog-workflow"
+              element={
+                <RouteWrapper routeName="AI Blog Generator">
+                  <AIBlogWorkflow />
                 </RouteWrapper>
               }
             />
