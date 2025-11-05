@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import type { ReactNode } from 'react';
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 
 /**
  * Target audience types for content personalization
@@ -113,31 +113,40 @@ export const PersonalizationProvider: React.FC<PersonalizationProviderProps> = (
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const getPersonalizedContent = <T = unknown,>(content: PersonalizedContent<T>): T => {
-    if (!selectedAudience || selectedAudience === 'All' || !content[selectedAudience]) {
-      return (content.default || content) as T;
-    }
-    return content[selectedAudience] as T;
-  };
+  // Memoize callback functions to prevent unnecessary re-renders
+  const getPersonalizedContent = useCallback(
+    <T = unknown,>(content: PersonalizedContent<T>): T => {
+      if (!selectedAudience || selectedAudience === 'All' || !content[selectedAudience]) {
+        return (content.default || content) as T;
+      }
+      return content[selectedAudience] as T;
+    },
+    [selectedAudience]
+  );
 
-  const getPersonalizedStyles = (styles: PersonalizedStyles) => {
-    if (!selectedAudience || selectedAudience === 'All' || !styles[selectedAudience]) {
-      return styles.default || '';
-    }
-    return styles[selectedAudience];
-  };
+  const getPersonalizedStyles = useCallback(
+    (styles: PersonalizedStyles) => {
+      if (!selectedAudience || selectedAudience === 'All' || !styles[selectedAudience]) {
+        return styles.default || '';
+      }
+      return styles[selectedAudience];
+    },
+    [selectedAudience]
+  );
+
+  // Memoize context value to prevent unnecessary re-renders
+  const value = useMemo(
+    () => ({
+      selectedAudience,
+      setSelectedAudience,
+      getPersonalizedContent,
+      getPersonalizedStyles,
+    }),
+    [selectedAudience, getPersonalizedContent, getPersonalizedStyles]
+  );
 
   return (
-    <PersonalizationContext.Provider
-      value={{
-        selectedAudience,
-        setSelectedAudience,
-        getPersonalizedContent,
-        getPersonalizedStyles,
-      }}
-    >
-      {children}
-    </PersonalizationContext.Provider>
+    <PersonalizationContext.Provider value={value}>{children}</PersonalizationContext.Provider>
   );
 };
 

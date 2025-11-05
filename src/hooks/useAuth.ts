@@ -99,10 +99,14 @@ export const useAuth = () => {
   };
 
   useEffect(() => {
-    // Set up auth state listener
+    let mounted = true;
+
+    // Set up auth state listener for future changes only
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
+
       logger.log('[useAuth] Auth state changed:', {
         event,
         userId: session?.user?.id,
@@ -113,19 +117,18 @@ export const useAuth = () => {
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        // Fetch user profile and wait for it to complete before setting loading to false
         await fetchUserProfile(session.user.id);
       } else {
         logger.log('[useAuth] No session, clearing profile');
         setProfile(null);
       }
-      setLoading(false);
-      logger.log('[useAuth] Loading complete, auth state updated');
     });
 
-    // Check for existing session
+    // Check for existing session ONCE on mount (not duplicated)
     logger.log('[useAuth] Checking for existing session...');
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!mounted) return;
+
       logger.log('[useAuth] Existing session check:', {
         hasSession: !!session,
         userId: session?.user?.id,
@@ -136,14 +139,16 @@ export const useAuth = () => {
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        // Wait for profile to load before setting loading to false
         await fetchUserProfile(session.user.id);
       }
       setLoading(false);
       logger.log('[useAuth] Initial load complete');
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (
