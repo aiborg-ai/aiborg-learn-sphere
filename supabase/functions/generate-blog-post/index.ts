@@ -12,6 +12,7 @@ interface BlogGenerationRequest {
   tone: 'professional' | 'casual' | 'technical' | 'friendly';
   length: 'short' | 'medium' | 'long';
   keywords?: string;
+  aiProvider?: 'ollama' | 'openai'; // Default to ollama
 }
 
 serve(async req => {
@@ -28,7 +29,14 @@ serve(async req => {
     );
 
     // Get request body
-    const { topic, audience, tone, length, keywords }: BlogGenerationRequest = await req.json();
+    const {
+      topic,
+      audience,
+      tone,
+      length,
+      keywords,
+      aiProvider = 'ollama',
+    }: BlogGenerationRequest = await req.json();
 
     // Validate input
     if (!topic || topic.length < 10) {
@@ -101,44 +109,93 @@ Structure your response as follows:
 
     const userPrompt = `Write a blog post about: ${topic}`;
 
-    // Call OpenAI API
-    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openaiApiKey) {
-      throw new Error('OpenAI API key not configured');
-    }
-
     const startTime = Date.now();
+    let aiResponse: any;
+    let generatedContent: string;
+    let model: string;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${openaiApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4-turbo-preview',
-        messages: [
-          {
-            role: 'system',
-            content: systemPrompt,
-          },
-          {
-            role: 'user',
-            content: userPrompt,
-          },
-        ],
-        max_tokens: 3000,
-        temperature: 0.7,
-      }),
-    });
+    // Generate content based on selected AI provider
+    if (aiProvider === 'ollama') {
+      // Use local Ollama (free, runs on your machine)
+      const ollamaUrl = Deno.env.get('OLLAMA_URL') || 'http://host.docker.internal:11434';
+      const ollamaModel = Deno.env.get('OLLAMA_MODEL') || 'llama3.1:8b'; // or 'mistral', 'deepseek-coder', etc.
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`OpenAI API error: ${error.error?.message || response.statusText}`);
+      model = ollamaModel;
+
+      const response = await fetch(`${ollamaUrl}/api/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: ollamaModel,
+          prompt: `${systemPrompt}\n\nUser request: ${userPrompt}`,
+          stream: false,
+          options: {
+            temperature: 0.7,
+            num_predict: 3000,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Ollama API error: ${response.statusText}`);
+      }
+
+      const ollamaResponse = await response.json();
+      generatedContent = ollamaResponse.response;
+
+      // Ollama doesn't provide token counts, estimate them
+      aiResponse = {
+        usage: {
+          prompt_tokens: Math.ceil((systemPrompt.length + userPrompt.length) / 4),
+          completion_tokens: Math.ceil(generatedContent.length / 4),
+          total_tokens: Math.ceil(
+            (systemPrompt.length + userPrompt.length + generatedContent.length) / 4
+          ),
+        },
+      };
+    } else {
+      // Use OpenAI (paid, cloud-based)
+      const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
+      if (!openaiApiKey) {
+        throw new Error('OpenAI API key not configured. Set OPENAI_API_KEY or use Ollama instead.');
+      }
+
+      model = 'gpt-4-turbo-preview';
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            {
+              role: 'system',
+              content: systemPrompt,
+            },
+            {
+              role: 'user',
+              content: userPrompt,
+            },
+          ],
+          max_tokens: 3000,
+          temperature: 0.7,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(`OpenAI API error: ${error.error?.message || response.statusText}`);
+      }
+
+      aiResponse = await response.json();
+      generatedContent = aiResponse.choices[0].message.content;
     }
 
-    const aiResponse = await response.json();
-    const generatedContent = aiResponse.choices[0].message.content;
     const elapsedTime = Date.now() - startTime;
 
     // Parse the AI response
@@ -165,15 +222,18 @@ Structure your response as follows:
     const completionTokens = aiResponse.usage?.completion_tokens || 0;
     const totalTokens = aiResponse.usage?.total_tokens || 0;
 
-    // GPT-4 Turbo pricing: $0.01 per 1K prompt tokens, $0.03 per 1K completion tokens
-    const cost = (promptTokens / 1000) * 0.01 + (completionTokens / 1000) * 0.03;
+    // Calculate cost (only for OpenAI, Ollama is free)
+    const cost =
+      aiProvider === 'openai'
+        ? (promptTokens / 1000) * 0.01 + (completionTokens / 1000) * 0.03 // GPT-4 Turbo pricing
+        : 0; // Ollama is free
 
     await supabaseClient.from('ai_generation_logs').insert({
       user_id: user.id,
       generation_type: 'blog_post',
-      input_data: { topic, audience, tone, length, keywords },
+      input_data: { topic, audience, tone, length, keywords, aiProvider },
       output_data: parsed,
-      model: 'gpt-4-turbo-preview',
+      model,
       prompt_tokens: promptTokens,
       completion_tokens: completionTokens,
       total_tokens: totalTokens,
