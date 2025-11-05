@@ -117,7 +117,8 @@ Structure your response as follows:
     // Generate content based on selected AI provider
     if (aiProvider === 'ollama') {
       // Use local Ollama (free, runs on your machine)
-      const ollamaUrl = Deno.env.get('OLLAMA_URL') || 'http://host.docker.internal:11434';
+      // Note: Use 172.17.0.1 (Docker bridge IP) on Linux, host.docker.internal on Mac/Windows
+      const ollamaUrl = Deno.env.get('OLLAMA_URL') || 'http://172.17.0.1:11434';
       const ollamaModel = Deno.env.get('OLLAMA_MODEL') || 'llama3.1:8b'; // or 'mistral', 'deepseek-coder', etc.
 
       model = ollamaModel;
@@ -126,6 +127,8 @@ Structure your response as follows:
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+          'User-Agent': 'Supabase-Edge-Function',
         },
         body: JSON.stringify({
           model: ollamaModel,

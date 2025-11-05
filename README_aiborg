@@ -1,6 +1,21 @@
 hirendra@gmail.com
 HVOne2025
 
+
+Admin Dashboard URL:
+
+  - https://www.aiborg.ai/admin
+
+
+  Admin Account with Dashboard Access
+
+  Email: hirendra@gmail.com
+
+  Alternative/Official Email: hirendra.vikram@aiborg.ai
+
+
+
+
 stripe password
 -------------------
 
@@ -8,6 +23,71 @@ stripe password
 supabase project API Keys
 sb_secret_RjBgDxdqc-gmRTaKGDfl8g_-4wzGpKr
 -----------------------------------------------
+NGROK
+353rz79n257rqKWcQo4PZZo3IeN_4FFE8guRdYFVURphCXpMY
+--------------------------------------------------
+  Steps to Set Up ngrok:
+
+  1. Sign up for a free ngrok account:
+  - Go to https://dashboard.ngrok.com/signup
+  - Create a free account (it's really free, no credit card required)
+
+  2. Get your auth token:
+  - After signing up, go to
+  https://dashboard.ngrok.com/get-started/your-authtoken
+  - Copy your auth token
+
+  3. Configure ngrok with your auth token:
+
+  Once you have your auth token, run this command (replace YOUR_AUTH_TOKEN
+  with your actual token):
+
+  ~/.local/bin/ngrok config add-authtoken YOUR_AUTH_TOKEN
+
+  4. Start the tunnel:
+
+  After authentication, I'll start the tunnel with:
+  ~/.local/bin/ngrok http 11434
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Option 1: Expose Ollama via a Public URL (Recommended for Development)
+
+  Make your local Ollama accessible from the internet using a tunnel
+  service:
+
+  Using ngrok (free tier available):
+  # Install ngrok (if not already installed)
+  # Download from https://ngrok.com/download
+
+  # Start ngrok tunnel to your Ollama instance
+  ngrok http 11434
+
+  This will give you a public URL like https://abc123.ngrok.io that you can
+  use in your Supabase environment variables.
+
+  Using Cloudflare Tunnel (free):
+  # Install cloudflared
+  # Follow: https://developers.cloudflare.com/cloudflare-one/connections/con
+  nect-networks/downloads/
+
+  # Create tunnel
+  cloudflared tunnel --url http://localhost:11434
+
+-----------------------------------------------------------------
+
+
 
 Once you verify the live chatbot works, here are logical next tasks:
 

@@ -77,6 +77,10 @@ const GamificationPage = lazy(() => import('./pages/GamificationPage'));
 const IconTest = lazy(() =>
   import('@/components/shared/IconTest').then(m => ({ default: m.IconTest }))
 );
+
+// Session Tickets
+const MyTicketsPage = lazy(() => import('./pages/MyTicketsPage'));
+const InstructorSessionsPage = lazy(() => import('./pages/InstructorSessionsPage'));
 const ErrorHandlingExample = lazy(() =>
   import('./examples/ErrorHandlingExample').then(m => ({ default: m.ErrorHandlingExample }))
 );
@@ -271,6 +275,8 @@ const AppWithShortcuts = () => {
             <Route path="/review/submit" element={<ReviewSubmissionPage />} />
             <Route path="/achievements" element={<AchievementsPage />} />
             <Route path="/my-courses" element={<MyCoursesPage />} />
+            <Route path="/my-tickets" element={<MyTicketsPage />} />
+            <Route path="/instructor/sessions" element={<InstructorSessionsPage />} />
             <Route path="/learning-paths" element={<LearningPathsPage />} />
             <Route path="/learning-path/generate" element={<LearningPathWizard />} />
             <Route path="/learning-path/ai/:pathId" element={<AILearningPathDetail />} />

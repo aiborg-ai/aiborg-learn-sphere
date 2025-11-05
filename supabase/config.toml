@@ -11,3 +11,15 @@ verify_jwt = false
 
 [functions.ai-chat]
 verify_jwt = false
+
+[functions.check-in-session]
+verify_jwt = true
+
+[functions.manage-session-tickets]
+verify_jwt = true
+
+[functions.generate-qr-code]
+verify_jwt = true
+
+[functions.bulk-create-sessions]
+verify_jwt = true
