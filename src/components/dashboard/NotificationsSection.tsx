@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bell, Check, ChevronRight, Info, AlertCircle, CheckCircle } from 'lucide-react';
+import { Bell, Check, ChevronRight, Info, AlertCircle, CheckCircle, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export interface Notification {
@@ -30,6 +30,8 @@ export function NotificationsSection({
 
   const getNotificationIcon = (type: string) => {
     switch (type.toLowerCase()) {
+      case 'review_request':
+        return <Star className="h-4 w-4 text-yellow-500" />;
       case 'info':
         return <Info className="h-4 w-4 text-blue-500" />;
       case 'warning':
@@ -117,7 +119,16 @@ export function NotificationsSection({
                                   Mark as read
                                 </Button>
                               )}
-                              {notification.actionUrl && (
+                              {notification.type === 'review_request' && notification.actionUrl ? (
+                                <Button
+                                  variant="default"
+                                  size="sm"
+                                  onClick={() => navigate(notification.actionUrl!)}
+                                >
+                                  <Star className="h-3 w-3 mr-1" />
+                                  Submit Review
+                                </Button>
+                              ) : notification.actionUrl ? (
                                 <Button
                                   variant="outline"
                                   size="sm"
@@ -126,7 +137,7 @@ export function NotificationsSection({
                                   View
                                   <ChevronRight className="h-3 w-3 ml-1" />
                                 </Button>
-                              )}
+                              ) : null}
                             </div>
                           </div>
                         </div>

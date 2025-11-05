@@ -20,8 +20,11 @@ import { useToast } from '@/hooks/use-toast';
 import { Star, MessageSquare, Mic, Video, Send, User, UserX, AlertCircle } from 'lucide-react';
 import { VoiceRecorder, VideoRecorder } from '@/components/media';
 import { supabase } from '@/integrations/supabase/client';
+import { useMarkRequestCompleted } from '@/hooks/useReviewRequests';
+import type { SessionType } from '@/types/reviewRequest';
 
 import { logger } from '@/utils/logger';
+
 interface ReviewFormData {
   courseId: string;
   displayNameOption: 'full_name' | 'anonymous';
@@ -32,12 +35,20 @@ interface ReviewFormData {
   rating: number;
 }
 
-export function ReviewForm() {
+interface ReviewFormProps {
+  requestId?: string;
+  sessionId?: string;
+  sessionType?: SessionType;
+  onSuccess?: () => void;
+}
+
+export function ReviewForm({ requestId, sessionId, sessionType, onSuccess }: ReviewFormProps = {}) {
   const { user } = useAuth();
   const { courses } = useCourses();
   const { submitReview } = useReviews();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { markRequestCompleted } = useMarkRequestCompleted();
 
   const [formData, setFormData] = useState<ReviewFormData>({
     courseId: '',
@@ -145,7 +156,7 @@ export function ReviewForm() {
         videoReviewUrl = fileName;
       }
 
-      await submitReview({
+      const reviewData = await submitReview({
         user_id: user.id,
         course_id: parseInt(formData.courseId),
         display_name_option: formData.displayNameOption,
@@ -158,11 +169,26 @@ export function ReviewForm() {
         rating: formData.rating,
       });
 
+      // If this review was submitted from a review request, mark it as completed
+      if (requestId && reviewData?.id) {
+        try {
+          await markRequestCompleted({ requestId, reviewId: reviewData.id });
+        } catch (error) {
+          logger.error('Failed to mark review request as completed:', error);
+          // Don't fail the whole submission if this fails
+        }
+      }
+
       toast({
         title: 'Review Submitted Successfully!',
         description:
           "Your review has been sent to our admin team for approval. You'll see it published on the website once approved. Thank you for your feedback!",
       });
+
+      // Call onSuccess callback if provided
+      if (onSuccess) {
+        onSuccess();
+      }
 
       // Reset form
       setFormData({

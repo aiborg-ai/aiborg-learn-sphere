@@ -13,6 +13,7 @@ import { KeyboardShortcutsHelp, OfflineBanner } from '@/components/shared';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { RouteWrapper } from '@/components/RouteWrapper';
 import { PerformanceMonitoring } from '@/components/monitoring/PerformanceMonitoring';
+import { LoginNotificationChecker } from '@/components/notifications/LoginNotificationChecker';
 
 // Create a loading component
 const PageLoader = () => (
@@ -63,6 +64,7 @@ const DownloadsPage = lazy(() => import('./pages/DownloadsPage'));
 const WatchLaterPage = lazy(() => import('./pages/WatchLaterPage'));
 const PlaylistsPage = lazy(() => import('./pages/PlaylistsPage'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
+const ReviewSubmissionPage = lazy(() => import('./pages/ReviewSubmissionPage'));
 const AchievementsPage = lazy(() => import('./pages/AchievementsPage'));
 const MyCoursesPage = lazy(() => import('./pages/MyCoursesPage'));
 const LearningPathsPage = lazy(() => import('./pages/LearningPathsPage'));
@@ -121,6 +123,7 @@ const AppWithShortcuts = () => {
     <>
       <OfflineBanner />
       <PerformanceMonitoring />
+      <LoginNotificationChecker />
       <CommandPalette />
       <KeyboardShortcutsHelp shortcuts={shortcuts} />
       <Toaster />
@@ -254,6 +257,7 @@ const AppWithShortcuts = () => {
             <Route path="/watch-later" element={<WatchLaterPage />} />
             <Route path="/playlists" element={<PlaylistsPage />} />
             <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/review/submit" element={<ReviewSubmissionPage />} />
             <Route path="/achievements" element={<AchievementsPage />} />
             <Route path="/my-courses" element={<MyCoursesPage />} />
             <Route path="/learning-paths" element={<LearningPathsPage />} />
