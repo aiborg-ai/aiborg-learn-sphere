@@ -58,7 +58,7 @@ export const TrainingPrograms = () => {
   const [enrollmentFormOpen, setEnrollmentFormOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [currentlyEnrolling, setCurrentlyEnrolling] = useState(false);
+  const [currentlyEnrolling, setCurrentlyEnrolling] = useState(true);
   const [showEnrolledOnly, setShowEnrolledOnly] = useState(!!user); // Default to enrolled filter for logged in users
   const [recordingsModalOpen, setRecordingsModalOpen] = useState(false);
   const [showAllPrograms, setShowAllPrograms] = useState(false);
