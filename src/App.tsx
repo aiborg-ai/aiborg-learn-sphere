@@ -81,6 +81,9 @@ const IconTest = lazy(() =>
 // Session Tickets
 const MyTicketsPage = lazy(() => import('./pages/MyTicketsPage'));
 const InstructorSessionsPage = lazy(() => import('./pages/InstructorSessionsPage'));
+
+// Event Session Tickets
+const MyEventTicketsPage = lazy(() => import('./pages/MyEventTicketsPage'));
 const ErrorHandlingExample = lazy(() =>
   import('./examples/ErrorHandlingExample').then(m => ({ default: m.ErrorHandlingExample }))
 );
@@ -276,6 +279,7 @@ const AppWithShortcuts = () => {
             <Route path="/achievements" element={<AchievementsPage />} />
             <Route path="/my-courses" element={<MyCoursesPage />} />
             <Route path="/my-tickets" element={<MyTicketsPage />} />
+            <Route path="/my-event-tickets" element={<MyEventTicketsPage />} />
             <Route path="/instructor/sessions" element={<InstructorSessionsPage />} />
             <Route path="/learning-paths" element={<LearningPathsPage />} />
             <Route path="/learning-path/generate" element={<LearningPathWizard />} />
