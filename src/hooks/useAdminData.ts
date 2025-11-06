@@ -86,7 +86,20 @@ export function useAdminData(): UseAdminDataReturn {
       try {
         const { data, error: enrollmentsError } = await supabase
           .from('enrollments')
-          .select('*')
+          .select(
+            `
+            *,
+            profiles:user_id (
+              display_name,
+              email
+            ),
+            courses:course_id (
+              title,
+              start_date,
+              price
+            )
+          `
+          )
           .order('enrolled_at', { ascending: false });
 
         if (enrollmentsError) throw enrollmentsError;
