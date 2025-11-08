@@ -281,3 +281,189 @@ export interface LearningVelocity {
   members_active: number;
   velocity: number; // Courses per active member
 }
+
+// ============================================================================
+// Enhanced Team Analytics Types (8 New Metrics)
+// ============================================================================
+
+// METRIC 1: Skills Gap Analysis
+export interface SkillsGap {
+  skill_name: string;
+  skill_level: 'beginner' | 'intermediate' | 'advanced';
+  skill_category?: string;
+  total_members: number;
+  members_with_skill: number;
+  members_without_skill: number;
+  gap_percentage: number;
+  related_courses: Array<{
+    course_id: number;
+    course_title: string;
+    course_level?: string;
+  }>;
+}
+
+// METRIC 2: Team Momentum Score
+export interface TeamMomentum {
+  week_start: string; // Date
+  current_completions: number;
+  prev_week_completions: number;
+  week_over_week_change: number; // Percentage
+  four_week_avg: number;
+  trend: 'accelerating' | 'stable' | 'decelerating';
+}
+
+export interface MomentumSummary {
+  current_momentum: TeamMomentum;
+  historical_trends: TeamMomentum[];
+  overall_trend: 'accelerating' | 'stable' | 'decelerating';
+  momentum_score: number; // 0-100
+}
+
+// METRIC 3: Collaboration Metrics
+export interface CollaborationMetrics {
+  course_id: number;
+  course_title: string;
+  teams_enrolled: number;
+  total_learners: number;
+  team_breakdown: Array<{
+    team_id: string;
+    team_name: string;
+    member_count: number;
+  }>;
+}
+
+export interface CollaborationSummary {
+  total_cross_team_courses: number;
+  avg_teams_per_course: number;
+  most_collaborative_course: CollaborationMetrics;
+  collaboration_score: number; // 0-100
+}
+
+// METRIC 4: Learning Path Effectiveness
+export interface LearningPathEffectiveness {
+  learning_path_id: string;
+  path_title: string;
+  difficulty_level: string;
+  total_enrolled: number;
+  total_completed: number;
+  completion_rate: number;
+  avg_days_to_complete: number;
+  common_dropout_index?: number; // Course index where most dropouts occur
+  total_courses_in_path?: number;
+}
+
+// METRIC 5: Time-to-Competency
+export interface TimeToCompetency {
+  course_id: number;
+  course_title: string;
+  course_level?: string;
+  total_completions: number;
+  avg_days: number;
+  median_days: number;
+  p90_days: number; // 90th percentile
+  fastest_days: number;
+}
+
+export interface CompetencyFilters {
+  department?: string;
+  course_level?: string;
+}
+
+// METRIC 6: Team Health Score
+export interface TeamHealthScore {
+  engagement_score: number; // 0-100
+  completion_rate: number; // 0-100
+  activity_consistency: number; // 0-100
+  on_time_rate: number; // 0-100
+  velocity_score: number; // 0-100
+  health_score: number; // 0-100 (weighted composite)
+  health_status: 'excellent' | 'good' | 'fair' | 'poor';
+}
+
+export interface HealthScoreBreakdown extends TeamHealthScore {
+  recommendations: string[];
+  areas_of_concern: string[];
+  strengths: string[];
+}
+
+// METRIC 7: Manager Dashboard Metrics
+export interface ManagerMetrics {
+  organization_id: string;
+  organization_name: string;
+  manager_department: string;
+  direct_reports_count: number;
+  avg_team_progress: number;
+  team_completion_rate: number;
+  active_members_week: number;
+  members_with_overdue: number;
+  team_members_detail: Array<{
+    user_id: string;
+    name: string;
+    enrollments: number;
+    completions: number;
+    last_active?: string;
+  }>;
+}
+
+export interface ManagerDashboardSummary extends ManagerMetrics {
+  at_risk_members: Array<{
+    user_id: string;
+    name: string;
+    risk_factors: string[];
+  }>;
+  top_performers: Array<{
+    user_id: string;
+    name: string;
+    performance_score: number;
+  }>;
+}
+
+// METRIC 8: ROI Metrics
+export interface ROIMetrics {
+  total_enrollments: number;
+  total_completions: number;
+  total_investment: number; // USD
+  overall_completion_rate: number; // Percentage
+  cost_per_enrollment: number; // USD
+  cost_per_completion: number; // USD
+  roi_ratio: number; // Completion rate as ratio
+  course_breakdown: Array<{
+    course: string;
+    enrollments: number;
+    completions: number;
+    total_spent: number;
+    cost_per_completion: number;
+    completion_rate: number;
+  }>;
+}
+
+export interface ROISummary extends ROIMetrics {
+  best_value_courses: Array<{
+    course: string;
+    roi_score: number;
+    completion_rate: number;
+  }>;
+  worst_value_courses: Array<{
+    course: string;
+    roi_score: number;
+    completion_rate: number;
+  }>;
+  projected_annual_spend: number;
+}
+
+// ============================================================================
+// Combined Enhanced Analytics Response
+// ============================================================================
+export interface EnhancedTeamAnalytics {
+  organization_id: string;
+  organization_name: string;
+  generated_at: string;
+  skills_gap?: SkillsGap[];
+  momentum?: MomentumSummary;
+  collaboration?: CollaborationSummary;
+  learning_paths?: LearningPathEffectiveness[];
+  time_to_competency?: TimeToCompetency[];
+  health_score?: HealthScoreBreakdown;
+  manager_metrics?: ManagerDashboardSummary;
+  roi?: ROISummary;
+}
