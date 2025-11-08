@@ -27,6 +27,19 @@ export const analyticsKeys = {
     [...analyticsKeys.all, 'velocity', orgId, months] as const,
   engagement: (orgId: string) => [...analyticsKeys.all, 'engagement', orgId] as const,
   comprehensive: (orgId: string) => [...analyticsKeys.all, 'comprehensive', orgId] as const,
+  // Enhanced analytics keys
+  skillsGap: (orgId: string, dept?: string) =>
+    [...analyticsKeys.all, 'skillsGap', orgId, dept] as const,
+  momentum: (orgId: string, weeks?: number) =>
+    [...analyticsKeys.all, 'momentum', orgId, weeks] as const,
+  collaboration: (orgId: string) => [...analyticsKeys.all, 'collaboration', orgId] as const,
+  learningPaths: (orgId: string) => [...analyticsKeys.all, 'learningPaths', orgId] as const,
+  timeToCompetency: (orgId: string, filters?: unknown) =>
+    [...analyticsKeys.all, 'timeToCompetency', orgId, filters] as const,
+  healthScore: (orgId: string) => [...analyticsKeys.all, 'healthScore', orgId] as const,
+  managerDashboard: (managerId: string) =>
+    [...analyticsKeys.all, 'managerDashboard', managerId] as const,
+  roi: (orgId: string) => [...analyticsKeys.all, 'roi', orgId] as const,
 };
 
 // ============================================================================
@@ -350,4 +363,158 @@ export function downloadCSV(filename: string, csvContent: string): void {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+// ============================================================================
+// Enhanced Team Analytics Hooks (8 New Metrics)
+// ============================================================================
+
+/**
+ * METRIC 1: Skills Gap Analysis
+ * Get skills not yet acquired by team members
+ */
+export function useSkillsGap(organizationId: string, department?: string) {
+  return useQuery({
+    queryKey: analyticsKeys.skillsGap(organizationId, department),
+    queryFn: () => TeamAnalyticsService.getSkillsGap(organizationId, department),
+    enabled: !!organizationId,
+    staleTime: 15 * 60 * 1000, // 15 minutes
+  });
+}
+
+/**
+ * METRIC 2: Team Momentum Score
+ * Track learning acceleration/deceleration
+ */
+export function useTeamMomentum(organizationId: string, weeks: number = 4) {
+  return useQuery({
+    queryKey: analyticsKeys.momentum(organizationId, weeks),
+    queryFn: () => TeamAnalyticsService.getTeamMomentum(organizationId, weeks),
+    enabled: !!organizationId,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
+}
+
+/**
+ * METRIC 3: Collaboration Metrics
+ * Analyze cross-team enrollment patterns
+ */
+export function useCollaborationMetrics(organizationId: string) {
+  return useQuery({
+    queryKey: analyticsKeys.collaboration(organizationId),
+    queryFn: () => TeamAnalyticsService.getCollaborationMetrics(organizationId),
+    enabled: !!organizationId,
+    staleTime: 15 * 60 * 1000, // 15 minutes
+  });
+}
+
+/**
+ * METRIC 4: Learning Path Effectiveness
+ * Success rates and completion patterns for learning paths
+ */
+export function useLearningPathEffectiveness(organizationId: string) {
+  return useQuery({
+    queryKey: analyticsKeys.learningPaths(organizationId),
+    queryFn: () => TeamAnalyticsService.getLearningPathEffectiveness(organizationId),
+    enabled: !!organizationId,
+    staleTime: 20 * 60 * 1000, // 20 minutes
+  });
+}
+
+/**
+ * METRIC 5: Time-to-Competency
+ * Time from enrollment to completion metrics
+ */
+export function useTimeToCompetency(
+  organizationId: string,
+  filters?: { department?: string; course_level?: string }
+) {
+  return useQuery({
+    queryKey: analyticsKeys.timeToCompetency(organizationId, filters),
+    queryFn: () => TeamAnalyticsService.getTimeToCompetency(organizationId, filters),
+    enabled: !!organizationId,
+    staleTime: 15 * 60 * 1000, // 15 minutes
+  });
+}
+
+/**
+ * METRIC 6: Team Health Score
+ * Composite health metric with recommendations
+ */
+export function useTeamHealthScore(organizationId: string) {
+  return useQuery({
+    queryKey: analyticsKeys.healthScore(organizationId),
+    queryFn: () => TeamAnalyticsService.getTeamHealthScore(organizationId),
+    enabled: !!organizationId,
+    staleTime: 5 * 60 * 1000, // 5 minutes (fresher data for health monitoring)
+  });
+}
+
+/**
+ * METRIC 7: Manager Dashboard
+ * Team metrics for managers (role='manager')
+ */
+export function useManagerDashboard(managerId: string) {
+  return useQuery({
+    queryKey: analyticsKeys.managerDashboard(managerId),
+    queryFn: () => TeamAnalyticsService.getManagerDashboard(managerId),
+    enabled: !!managerId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchInterval: 5 * 60 * 1000, // Auto-refresh every 5 minutes
+  });
+}
+
+/**
+ * METRIC 8: ROI Metrics
+ * Financial return on learning investments
+ */
+export function useROIMetrics(organizationId: string) {
+  return useQuery({
+    queryKey: analyticsKeys.roi(organizationId),
+    queryFn: () => TeamAnalyticsService.getROIMetrics(organizationId),
+    enabled: !!organizationId,
+    staleTime: 30 * 60 * 1000, // 30 minutes (financial data changes less frequently)
+  });
+}
+
+/**
+ * Combined hook for all enhanced metrics
+ * Use this for comprehensive analytics dashboard
+ */
+export function useEnhancedTeamAnalytics(organizationId: string, managerId?: string) {
+  const skillsGap = useSkillsGap(organizationId);
+  const momentum = useTeamMomentum(organizationId);
+  const collaboration = useCollaborationMetrics(organizationId);
+  const learningPaths = useLearningPathEffectiveness(organizationId);
+  const timeToCompetency = useTimeToCompetency(organizationId);
+  const healthScore = useTeamHealthScore(organizationId);
+  const managerDashboard = useManagerDashboard(managerId || '');
+  const roi = useROIMetrics(organizationId);
+
+  return {
+    skillsGap,
+    momentum,
+    collaboration,
+    learningPaths,
+    timeToCompetency,
+    healthScore,
+    managerDashboard,
+    roi,
+    isLoading:
+      skillsGap.isLoading ||
+      momentum.isLoading ||
+      collaboration.isLoading ||
+      learningPaths.isLoading ||
+      timeToCompetency.isLoading ||
+      healthScore.isLoading ||
+      roi.isLoading,
+    isError:
+      skillsGap.isError ||
+      momentum.isError ||
+      collaboration.isError ||
+      learningPaths.isError ||
+      timeToCompetency.isError ||
+      healthScore.isError ||
+      roi.isError,
+  };
 }
