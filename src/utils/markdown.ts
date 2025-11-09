@@ -1,4 +1,5 @@
 import { marked } from 'marked';
+import DOMPurify from 'isomorphic-dompurify';
 
 import { logger } from '@/utils/logger';
 // Configure marked options for better formatting
@@ -92,8 +93,9 @@ marked.use({ renderer });
 
 /**
  * Convert markdown content to HTML with custom styling
+ * SECURITY: All output is sanitized with DOMPurify to prevent XSS attacks
  * @param markdown - The markdown content to convert
- * @returns HTML string with Tailwind classes
+ * @returns Sanitized HTML string with Tailwind classes
  */
 export function parseMarkdown(markdown: string): string {
   if (!markdown) return '';
@@ -114,8 +116,61 @@ export function parseMarkdown(markdown: string): string {
       html = marked.parse(markdown, { async: false }) as string;
     }
 
+    // SECURITY: Sanitize HTML to prevent XSS attacks
+    const sanitized = DOMPurify.sanitize(html, {
+      ALLOWED_TAGS: [
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'p',
+        'br',
+        'strong',
+        'em',
+        'u',
+        's',
+        'del',
+        'ul',
+        'ol',
+        'li',
+        'blockquote',
+        'code',
+        'pre',
+        'a',
+        'img',
+        'table',
+        'thead',
+        'tbody',
+        'tr',
+        'th',
+        'td',
+        'div',
+        'span',
+        'hr',
+      ],
+      ALLOWED_ATTR: [
+        'href',
+        'title',
+        'target',
+        'rel', // links
+        'src',
+        'alt',
+        'width',
+        'height', // images
+        'class',
+        'id', // styling and anchors
+      ],
+      ALLOW_DATA_ATTR: false, // Prevent data-* XSS vectors
+      FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'form', 'input'],
+      FORBID_ATTR: ['onerror', 'onclick', 'onload', 'onmouseover', 'onfocus', 'onblur'],
+      // Force all links to use HTTPS and open in new tab
+      ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel):)/i,
+    });
+
     // Wrap the content in a container with proper styling
-    return `<div class="prose-container">${html}</div>`;
+    return `<div class="prose-container">${sanitized}</div>`;
   } catch (error) {
     logger.error('Error parsing markdown:', error);
     // Fallback: return escaped markdown in pre tags

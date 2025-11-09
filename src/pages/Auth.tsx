@@ -38,6 +38,7 @@ import {
   checkOAuthLimit,
   resetAuthLimit,
 } from '@/utils/rateLimiter';
+import { MagicLinkAuth } from '@/components/auth/MagicLinkAuth';
 
 export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
@@ -335,9 +336,15 @@ export default function Auth() {
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-2 bg-white/10">
+              <TabsList className="grid w-full grid-cols-3 bg-white/10">
                 <TabsTrigger value="signin" className="text-white data-[state=active]:bg-white/20">
                   Sign In
+                </TabsTrigger>
+                <TabsTrigger
+                  value="magiclink"
+                  className="text-white data-[state=active]:bg-white/20"
+                >
+                  Magic Link
                 </TabsTrigger>
                 <TabsTrigger value="signup" className="text-white data-[state=active]:bg-white/20">
                   Sign Up
@@ -444,6 +451,18 @@ export default function Auth() {
                     Sign In
                   </Button>
                 </form>
+              </TabsContent>
+
+              <TabsContent value="magiclink" className="space-y-4">
+                <MagicLinkAuth
+                  onSuccess={() => {
+                    toast({
+                      title: 'Magic Link Sent!',
+                      description: 'Check your email for a sign-in link.',
+                    });
+                  }}
+                  redirectTo={window.location.origin}
+                />
               </TabsContent>
 
               <TabsContent value="signup" className="space-y-4">

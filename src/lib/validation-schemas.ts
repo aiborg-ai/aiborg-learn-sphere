@@ -9,10 +9,19 @@ export const validationPatterns = {
   email: z.string().email('Invalid email address'),
   password: z
     .string()
-    .min(8, 'Password must be at least 8 characters')
+    .min(12, 'Password must be at least 12 characters')
+    .max(128, 'Password must be less than 128 characters')
     .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      'Password must contain uppercase, lowercase, and number'
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~])/,
+      'Password must contain uppercase, lowercase, number, and special character'
+    )
+    .refine(pwd => !/(.)\1{2,}/.test(pwd), 'Password cannot contain repeated characters')
+    .refine(
+      pwd =>
+        !/(?:abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz|012|123|234|345|456|567|678|789)/i.test(
+          pwd
+        ),
+      'Password cannot contain sequential characters'
     ),
   phone: z.string().regex(/^\+?[1-9]\d{9,14}$/, 'Invalid phone number'),
   url: z.string().url('Invalid URL'),
@@ -288,4 +297,251 @@ export async function validateData<T>(
     }
     throw error;
   }
+}
+
+/**
+ * Security-focused validation schemas
+ * @const securitySchemas
+ * @description Enhanced validation for security-critical operations
+ */
+export const securitySchemas = {
+  // URL validation with protocol and hostname restrictions
+  safeUrl: z
+    .string()
+    .url('Invalid URL format')
+    .refine(url => url.startsWith('https://'), {
+      message: 'URL must use HTTPS protocol',
+    })
+    .refine(
+      url => {
+        try {
+          const parsed = new URL(url);
+          // Block private/local networks
+          const blockedPatterns = [
+            /^localhost$/i,
+            /^127\.\d+\.\d+\.\d+$/,
+            /^0\.0\.0\.0$/,
+            /^10\.\d+\.\d+\.\d+$/,
+            /^172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+$/,
+            /^192\.168\.\d+\.\d+$/,
+            /^169\.254\.\d+\.\d+$/,
+            /\.local$/i,
+          ];
+          return !blockedPatterns.some(pattern => pattern.test(parsed.hostname));
+        } catch {
+          return false;
+        }
+      },
+      {
+        message: 'Access to private/local networks is prohibited',
+      }
+    ),
+
+  // File upload validation
+  fileUpload: z.object({
+    file: z
+      .instanceof(File)
+      .refine(file => file.size <= 10 * 1024 * 1024, {
+        message: 'File size must be less than 10MB',
+      })
+      .refine(
+        file => {
+          const allowedTypes = [
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'image/webp',
+            'image/gif',
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          ];
+          return allowedTypes.includes(file.type);
+        },
+        {
+          message: 'Invalid file type. Allowed: images, PDF, Word documents',
+        }
+      )
+      .refine(
+        file => {
+          // Check for null bytes (security risk)
+          return !file.name.includes('\0');
+        },
+        {
+          message: 'Invalid filename',
+        }
+      ),
+  }),
+
+  // Sanitized text input (prevents XSS)
+  sanitizedText: z
+    .string()
+    .max(5000, 'Text is too long')
+    .refine(
+      text => {
+        // Block common XSS patterns
+        const xssPatterns = [
+          /<script/i,
+          /javascript:/i,
+          /on\w+\s*=/i, // Event handlers like onclick=
+          /<iframe/i,
+          /<object/i,
+          /<embed/i,
+          /vbscript:/i,
+          /data:text\/html/i,
+        ];
+        return !xssPatterns.some(pattern => pattern.test(text));
+      },
+      {
+        message: 'Text contains potentially dangerous content',
+      }
+    ),
+
+  // SQL injection prevention for search queries
+  searchQuery: z
+    .string()
+    .min(1, 'Search query is required')
+    .max(200, 'Search query is too long')
+    .refine(
+      query => {
+        // Block SQL injection patterns
+        const sqlPatterns = [
+          /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE)\b)/i,
+          /(--|#|\/\*|\*\/)/,
+          /('|";|";--)/,
+          /(\bOR\b.*=.*)/i,
+          /(\bAND\b.*=.*)/i,
+          /(UNION.*SELECT)/i,
+        ];
+        return !sqlPatterns.some(pattern => pattern.test(query));
+      },
+      {
+        message: 'Invalid search query',
+      }
+    ),
+
+  // API key validation
+  apiKey: z
+    .string()
+    .length(32, 'API key must be exactly 32 characters')
+    .regex(/^[a-zA-Z0-9]+$/, 'API key contains invalid characters'),
+
+  // UUID validation
+  uuid: z.string().uuid('Invalid UUID format'),
+
+  // Pagination parameters
+  pagination: z.object({
+    page: z.number().int().min(1, 'Page must be at least 1').max(1000, 'Page too large'),
+    limit: z.number().int().min(1, 'Limit must be at least 1').max(100, 'Limit cannot exceed 100'),
+  }),
+
+  // Rate limit token
+  rateLimitToken: z.object({
+    identifier: z.string().min(1).max(100),
+    timestamp: z.number().int().positive(),
+  }),
+};
+
+/**
+ * Input sanitization utilities
+ * @const sanitizers
+ * @description Functions to sanitize various types of user input
+ */
+export const sanitizers = {
+  /**
+   * Remove potentially dangerous HTML tags and attributes
+   */
+  stripHtml: (input: string): string => {
+    return input
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+      .replace(/<[^>]+>/g, '')
+      .trim();
+  },
+
+  /**
+   * Sanitize filename to prevent directory traversal
+   */
+  sanitizeFilename: (filename: string): string => {
+    return filename
+      .replace(/[^a-zA-Z0-9._-]/g, '_')
+      .replace(/\.{2,}/g, '.')
+      .replace(/^\.+/, '')
+      .substring(0, 255);
+  },
+
+  /**
+   * Sanitize SQL LIKE pattern
+   */
+  sanitizeLikePattern: (pattern: string): string => {
+    return pattern.replace(/[%_\\]/g, '\\$&').substring(0, 100);
+  },
+
+  /**
+   * Sanitize user-provided regular expression
+   */
+  sanitizeRegex: (pattern: string): string | null => {
+    try {
+      // Test if it's a valid regex
+      new RegExp(pattern);
+      // Limit length to prevent ReDoS
+      if (pattern.length > 100) return null;
+      return pattern;
+    } catch {
+      return null;
+    }
+  },
+
+  /**
+   * Normalize and validate email address
+   */
+  normalizeEmail: (email: string): string => {
+    return email.toLowerCase().trim();
+  },
+};
+
+/**
+ * Common blocked patterns for security
+ * @const blockedPatterns
+ */
+export const blockedPatterns = {
+  disposableEmailDomains: [
+    'tempmail.com',
+    'guerrillamail.com',
+    'mailinator.com',
+    '10minutemail.com',
+    'throwaway.email',
+    'trashmail.com',
+  ],
+
+  suspiciousUsernames: ['admin', 'administrator', 'root', 'system', 'test', 'user', 'default'],
+
+  commonPasswords: [
+    'password',
+    'password123',
+    '123456',
+    '12345678',
+    'qwerty',
+    'abc123',
+    'letmein',
+    'welcome',
+  ],
+};
+
+/**
+ * Validate email against disposable domains
+ */
+export function isDisposableEmail(email: string): boolean {
+  const domain = email.split('@')[1]?.toLowerCase();
+  return blockedPatterns.disposableEmailDomains.some(blocked => domain?.includes(blocked));
+}
+
+/**
+ * Validate username against suspicious patterns
+ */
+export function isSuspiciousUsername(username: string): boolean {
+  const lower = username.toLowerCase();
+  return blockedPatterns.suspiciousUsernames.some(
+    blocked => lower === blocked || lower.startsWith(blocked)
+  );
 }
