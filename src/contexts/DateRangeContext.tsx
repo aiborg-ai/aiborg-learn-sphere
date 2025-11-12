@@ -1,7 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
 import type { ReactNode } from 'react';
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { logger } from '@/utils/logger';
+import { supabase } from '@/integrations/supabase/client';
 
 /**
  * Date range preset options
@@ -30,6 +32,7 @@ export interface DateRangeState {
  * Date range context interface
  */
 interface DateRangeContextType {
+  // Current date range
   startDate: Date | null;
   endDate: Date | null;
   preset: PresetOption | null;
@@ -38,6 +41,19 @@ interface DateRangeContextType {
   clearDateRange: () => void;
   getDateRangeString: () => string;
   isDateRangeValid: () => boolean;
+
+  // Comparison mode
+  comparisonEnabled: boolean;
+  comparisonStartDate: Date | null;
+  comparisonEndDate: Date | null;
+  toggleComparison: (enabled?: boolean) => void;
+  getComparisonDateRangeString: () => string;
+
+  // Preferences
+  saveToPreferences: () => Promise<void>;
+  loadFromPreferences: () => Promise<void>;
+  isSavingPreferences: boolean;
+  isLoadingPreferences: boolean;
 }
 
 const DateRangeContext = createContext<DateRangeContextType | undefined>(undefined);
@@ -123,6 +139,81 @@ const saveToStorage = (state: DateRangeState): void => {
 };
 
 /**
+ * Calculate comparison period dates (previous period of equal length)
+ */
+export const getComparisonPeriodDates = (
+  startDate: Date,
+  endDate: Date
+): { start: Date; end: Date } => {
+  const durationMs = endDate.getTime() - startDate.getTime();
+  const comparisonEnd = new Date(startDate.getTime() - 1); // Day before current start
+  const comparisonStart = new Date(comparisonEnd.getTime() - durationMs);
+
+  // Set proper time boundaries
+  comparisonStart.setHours(0, 0, 0, 0);
+  comparisonEnd.setHours(23, 59, 59, 999);
+
+  return { start: comparisonStart, end: comparisonEnd };
+};
+
+/**
+ * Serialize date range to URL-friendly format
+ */
+export const serializeDateRangeToURL = (
+  startDate: Date | null,
+  endDate: Date | null,
+  preset: PresetOption | null
+): URLSearchParams => {
+  const params = new URLSearchParams();
+
+  if (startDate) {
+    params.set('startDate', startDate.toISOString().split('T')[0]);
+  }
+  if (endDate) {
+    params.set('endDate', endDate.toISOString().split('T')[0]);
+  }
+  if (preset && preset !== 'custom') {
+    params.set('preset', preset);
+  }
+
+  return params;
+};
+
+/**
+ * Deserialize date range from URL parameters
+ */
+export const deserializeDateRangeFromURL = (
+  searchParams: URLSearchParams
+): DateRangeState | null => {
+  const startDateStr = searchParams.get('startDate');
+  const endDateStr = searchParams.get('endDate');
+  const presetStr = searchParams.get('preset') as PresetOption | null;
+
+  if (!startDateStr || !endDateStr) {
+    return null;
+  }
+
+  try {
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+
+    // Validate dates
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return null;
+    }
+
+    return {
+      startDate,
+      endDate,
+      preset: presetStr || 'custom',
+    };
+  } catch (error) {
+    logger.error('Error deserializing date range from URL:', error);
+    return null;
+  }
+};
+
+/**
  * Calculate dates for preset options
  */
 export const getPresetDates = (preset: PresetOption): { start: Date; end: Date } => {
@@ -178,12 +269,61 @@ interface DateRangeProviderProps {
 }
 
 export const DateRangeProvider: React.FC<DateRangeProviderProps> = ({ children }) => {
-  const [dateRange, setDateRangeState] = useState<DateRangeState>(() => loadFromStorage());
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [dateRange, setDateRangeState] = useState<DateRangeState>(() => {
+    // Priority: URL params > sessionStorage > default
+    const urlState = deserializeDateRangeFromURL(searchParams);
+    if (urlState) {
+      return urlState;
+    }
+    return loadFromStorage();
+  });
 
-  // Persist to sessionStorage whenever date range changes
+  const [comparisonEnabled, setComparisonEnabled] = useState<boolean>(false);
+  const [comparisonStartDate, setComparisonStartDate] = useState<Date | null>(null);
+  const [comparisonEndDate, setComparisonEndDate] = useState<Date | null>(null);
+  const [isSavingPreferences, setIsSavingPreferences] = useState(false);
+  const [isLoadingPreferences, setIsLoadingPreferences] = useState(false);
+
+  // Auto-calculate comparison dates when date range or comparison mode changes
   useEffect(() => {
+    if (comparisonEnabled && dateRange.startDate && dateRange.endDate) {
+      const { start, end } = getComparisonPeriodDates(dateRange.startDate, dateRange.endDate);
+      setComparisonStartDate(start);
+      setComparisonEndDate(end);
+    } else {
+      setComparisonStartDate(null);
+      setComparisonEndDate(null);
+    }
+  }, [comparisonEnabled, dateRange.startDate, dateRange.endDate]);
+
+  // Sync to URL and sessionStorage whenever date range changes
+  useEffect(() => {
+    // Save to sessionStorage
     saveToStorage(dateRange);
-  }, [dateRange]);
+
+    // Update URL parameters immediately
+    if (dateRange.startDate && dateRange.endDate) {
+      const params = serializeDateRangeToURL(
+        dateRange.startDate,
+        dateRange.endDate,
+        dateRange.preset
+      );
+
+      // Preserve existing non-date params
+      const currentParams = new URLSearchParams(searchParams);
+      const keysToKeep = Array.from(currentParams.keys()).filter(
+        key => !['startDate', 'endDate', 'preset'].includes(key)
+      );
+
+      keysToKeep.forEach(key => {
+        const value = currentParams.get(key);
+        if (value) params.set(key, value);
+      });
+
+      setSearchParams(params, { replace: true });
+    }
+  }, [dateRange, setSearchParams, searchParams]);
 
   /**
    * Set custom date range
@@ -271,9 +411,126 @@ export const DateRangeProvider: React.FC<DateRangeProviderProps> = ({ children }
     return true;
   };
 
+  /**
+   * Toggle comparison mode
+   */
+  const toggleComparison = useCallback((enabled?: boolean) => {
+    setComparisonEnabled(prev => (enabled !== undefined ? enabled : !prev));
+  }, []);
+
+  /**
+   * Get formatted comparison date range string
+   */
+  const getComparisonDateRangeString = useCallback((): string => {
+    if (!comparisonStartDate || !comparisonEndDate) {
+      return 'No comparison period';
+    }
+
+    const formatDate = (date: Date): string => {
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+    };
+
+    return `${formatDate(comparisonStartDate)} - ${formatDate(comparisonEndDate)}`;
+  }, [comparisonStartDate, comparisonEndDate]);
+
+  /**
+   * Save current date range to user preferences
+   */
+  const saveToPreferences = useCallback(async () => {
+    if (!dateRange.startDate || !dateRange.endDate || !dateRange.preset) {
+      logger.warn('Cannot save incomplete date range to preferences');
+      return;
+    }
+
+    setIsSavingPreferences(true);
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        logger.warn('No user logged in, cannot save preferences');
+        return;
+      }
+
+      const { error } = await supabase.rpc('save_last_used_date_range', {
+        target_user_id: user.id,
+        preset_value: dateRange.preset,
+        start_date: dateRange.startDate.toISOString().split('T')[0],
+        end_date: dateRange.endDate.toISOString().split('T')[0],
+      });
+
+      if (error) {
+        logger.error('Error saving date range preferences:', error);
+        throw error;
+      }
+
+      logger.info('Date range preferences saved successfully');
+    } catch (error) {
+      logger.error('Failed to save date range preferences:', error);
+    } finally {
+      setIsSavingPreferences(false);
+    }
+  }, [dateRange]);
+
+  /**
+   * Load last used date range from user preferences
+   */
+  const loadFromPreferences = useCallback(async () => {
+    setIsLoadingPreferences(true);
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        logger.warn('No user logged in, cannot load preferences');
+        return;
+      }
+
+      const { data, error } = await supabase.rpc('get_last_used_date_range', {
+        target_user_id: user.id,
+      });
+
+      if (error) {
+        logger.error('Error loading date range preferences:', error);
+        throw error;
+      }
+
+      if (data && data.preset && data.startDate && data.endDate) {
+        const startDate = new Date(data.startDate);
+        const endDate = new Date(data.endDate);
+
+        setDateRangeState({
+          startDate,
+          endDate,
+          preset: data.preset as PresetOption,
+        });
+
+        logger.info('Date range preferences loaded successfully');
+      }
+    } catch (error) {
+      logger.error('Failed to load date range preferences:', error);
+    } finally {
+      setIsLoadingPreferences(false);
+    }
+  }, []);
+
+  // Auto-load preferences on mount (if no URL params)
+  useEffect(() => {
+    const urlState = deserializeDateRangeFromURL(searchParams);
+    if (!urlState) {
+      loadFromPreferences();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run once on mount
+
   return (
     <DateRangeContext.Provider
       value={{
+        // Current date range
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
         preset: dateRange.preset,
@@ -282,6 +539,19 @@ export const DateRangeProvider: React.FC<DateRangeProviderProps> = ({ children }
         clearDateRange,
         getDateRangeString,
         isDateRangeValid,
+
+        // Comparison mode
+        comparisonEnabled,
+        comparisonStartDate,
+        comparisonEndDate,
+        toggleComparison,
+        getComparisonDateRangeString,
+
+        // Preferences
+        saveToPreferences,
+        loadFromPreferences,
+        isSavingPreferences,
+        isLoadingPreferences,
       }}
     >
       {children}

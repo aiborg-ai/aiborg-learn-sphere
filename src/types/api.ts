@@ -690,3 +690,341 @@ export interface ClaimStats {
   rejected: number;
   expired: number;
 }
+
+// ============================================================================
+// Chatbot Analytics Types
+// ============================================================================
+
+export interface ChatbotSession {
+  id: string;
+  user_id: string;
+  session_start: string;
+  session_end: string | null;
+  duration_seconds: number | null;
+  message_count: number;
+  total_tokens: number;
+  total_cost: number;
+  user_agent: string | null;
+  device_type: 'mobile' | 'tablet' | 'desktop' | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ChatbotTopic {
+  id: string;
+  name: string;
+  description: string | null;
+  keywords: string[];
+  parent_topic_id: string | null;
+  color: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ChatbotFeedback {
+  id: string;
+  message_id: string | null;
+  session_id: string | null;
+  user_id: string;
+  rating: number; // 1-5
+  feedback_type: 'helpful' | 'not_helpful' | 'incorrect' | 'incomplete' | 'perfect';
+  comment: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ChatbotAnalyticsRecord {
+  id: string;
+  user_id: string;
+  session_id: string | null;
+  topic_id: string | null;
+  message: string;
+  response: string | null;
+  sentiment_score: number | null; // -1.0 to 1.0
+  response_time_ms: number | null;
+  tokens_used: number | null;
+  cost: number | null;
+  error: string | null;
+  created_at: string;
+}
+
+// Analytics View Types
+export interface ChatbotSessionAnalytics {
+  date: string;
+  total_sessions: number;
+  unique_users: number;
+  avg_duration_seconds: number;
+  avg_messages_per_session: number;
+  total_messages: number;
+  total_tokens: number;
+  total_cost: number;
+  mobile_sessions: number;
+  desktop_sessions: number;
+  tablet_sessions: number;
+}
+
+export interface ChatbotTopicAnalytics {
+  topic_id: string;
+  topic_name: string;
+  color: string;
+  message_count: number;
+  unique_users: number;
+  avg_sentiment: number;
+  avg_response_time_ms: number;
+  feedback_count: number;
+  avg_rating: number;
+}
+
+export interface ChatbotSentimentAnalytics {
+  date: string;
+  total_messages: number;
+  positive_messages: number;
+  neutral_messages: number;
+  negative_messages: number;
+  avg_sentiment: number;
+  min_sentiment: number;
+  max_sentiment: number;
+}
+
+export interface ChatbotFeedbackSummary {
+  date: string;
+  total_feedback: number;
+  positive_feedback: number; // rating >= 4
+  neutral_feedback: number; // rating = 3
+  negative_feedback: number; // rating <= 2
+  avg_rating: number;
+  helpful_count: number;
+  not_helpful_count: number;
+  incorrect_count: number;
+  incomplete_count: number;
+  perfect_count: number;
+}
+
+// ============================================================================
+// Individual Learner Analytics Types
+// ============================================================================
+
+export interface IndividualLearnerSummary {
+  profile_id: string;
+  user_id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  role: string;
+  organization_id: string | null;
+  department: string | null;
+  total_enrollments: number;
+  completed_courses: number;
+  in_progress_courses: number;
+  avg_progress_percentage: number;
+  total_time_spent_minutes: number;
+  total_submissions: number;
+  submitted_assignments: number;
+  avg_assignment_score: number;
+  highest_score: number;
+  lowest_score: number;
+  last_active_date: string | null;
+  active_days_count: number;
+  total_achievements: number;
+  first_enrollment_date: string | null;
+  latest_enrollment_date: string | null;
+  learner_status: 'active' | 'inactive' | 'dormant';
+}
+
+export interface IndividualCoursePerformance {
+  user_id: string;
+  course_id: number;
+  course_title: string;
+  category: string | null;
+  difficulty_level: string | null;
+  learner_name: string | null;
+  progress_percentage: number;
+  time_spent_minutes: number;
+  last_accessed: string;
+  completed_at: string | null;
+  enrolled_at: string;
+  enrollment_status: string;
+  assignment_count: number;
+  submitted_count: number;
+  avg_assignment_score: number;
+  days_to_complete: number | null;
+  days_since_last_access: number;
+  engagement_score: number;
+}
+
+export interface LearningVelocity {
+  user_id: string;
+  week_start: string;
+  active_courses: number;
+  weekly_time_spent: number;
+  avg_progress: number;
+  active_days_in_week: number;
+}
+
+export interface AssessmentPattern {
+  user_id: string;
+  learner_name: string | null;
+  total_assignments: number;
+  submitted_count: number;
+  overdue_count: number;
+  on_time_count: number;
+  late_count: number;
+  avg_score: number;
+  score_stddev: number;
+  avg_hours_to_submit: number;
+  improvement_trend: number | null;
+  recent_avg_score: number | null;
+}
+
+export interface EngagementTimeline {
+  user_id: string;
+  activity_date: string;
+  event_type: string;
+  event_count: number;
+  first_event_time: string;
+  last_event_time: string;
+  session_duration_minutes: number;
+}
+
+export interface AtRiskLearner {
+  user_id: string;
+  full_name: string | null;
+  organization_id: string | null;
+  department: string | null;
+  learner_status: 'active' | 'inactive' | 'dormant';
+  avg_progress_percentage: number;
+  total_time_spent_minutes: number;
+  days_inactive: number;
+  risk_score: number;
+  recommended_action: string;
+  in_progress_courses: number;
+  completed_courses: number;
+}
+
+export interface LearningPathProgressDetailed {
+  user_id: string;
+  learning_path_id: string;
+  path_title: string;
+  path_description: string | null;
+  learner_name: string | null;
+  current_step: number;
+  progress_percentage: number;
+  completed_at: string | null;
+  started_at: string;
+  total_steps: number;
+  completed_steps: number;
+  days_in_progress: number;
+  days_to_complete: number | null;
+  estimated_days_to_complete: number | null;
+}
+
+export interface SkillsProgress {
+  user_id: string;
+  learner_name: string | null;
+  skill_name: string;
+  skill_category: string | null;
+  courses_with_skill: number;
+  completed_courses_with_skill: number;
+  avg_progress_in_skill: number;
+  proficiency_level: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+}
+
+export interface ManagerDirectReport {
+  manager_id: string;
+  manager_name: string | null;
+  report_user_id: string;
+  report_name: string | null;
+  department: string | null;
+  learner_status: 'active' | 'inactive' | 'dormant';
+  total_enrollments: number;
+  completed_courses: number;
+  in_progress_courses: number;
+  avg_progress_percentage: number;
+  avg_assignment_score: number;
+  total_time_spent_minutes: number;
+  last_active_date: string | null;
+  risk_score: number | null;
+  recommended_action: string | null;
+}
+
+export interface LearnerInsight {
+  metric_name: string;
+  metric_value: string;
+  metric_category: string;
+  trend: string;
+}
+
+// ============================================================================
+// Analytics Preferences Types
+// ============================================================================
+
+export interface AnalyticsPreferences {
+  id: string;
+  user_id: string;
+  real_time_enabled: boolean;
+  auto_refresh_interval: number; // milliseconds: 120000, 180000, 300000
+  chatbot_analytics_refresh: boolean;
+  learner_analytics_refresh: boolean;
+  manager_dashboard_refresh: boolean;
+  show_refresh_indicator: boolean;
+  show_real_time_notifications: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AnalyticsPreferencesUpdate {
+  real_time_enabled?: boolean;
+  auto_refresh_interval?: number;
+  chatbot_analytics_refresh?: boolean;
+  learner_analytics_refresh?: boolean;
+  manager_dashboard_refresh?: boolean;
+  show_refresh_indicator?: boolean;
+  show_real_time_notifications?: boolean;
+}
+
+export interface RefreshState {
+  isRefreshing: boolean;
+  lastRefreshed: Date | null;
+  nextRefreshIn: number | null; // seconds
+  autoRefreshEnabled: boolean;
+  realTimeConnected: boolean;
+}
+
+// ============================================================================
+// Date Range & Comparison Types
+// ============================================================================
+
+/**
+ * Date range for filtering analytics data
+ */
+export interface DateRange {
+  start: string; // ISO date format: YYYY-MM-DD
+  end: string; // ISO date format: YYYY-MM-DD
+}
+
+/**
+ * Comparison date ranges (current + comparison period)
+ */
+export interface ComparisonDateRange {
+  current: DateRange;
+  comparison: DateRange;
+}
+
+/**
+ * Analytics data with comparison support
+ */
+export interface AnalyticsDataWithComparison<T> {
+  current: T;
+  comparison: T | null;
+  delta?: number; // Absolute difference
+  percentageChange?: number; // Percentage change from comparison to current
+}
+
+/**
+ * Date range preference stored in database
+ */
+export interface DateRangePreference {
+  preset: string; // Preset option name
+  startDate: string; // ISO date format
+  endDate: string; // ISO date format
+  lastUpdated: string; // ISO timestamp
+}

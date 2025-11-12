@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import {
   Loader2,
   RefreshCw,
-  Download,
   BarChart3,
   PieChart as PieChartIcon,
   Users,
@@ -32,7 +31,7 @@ import {
   useAnalyticsData,
 } from './analytics';
 import { DateRangeProvider, useDateRange } from '@/contexts/DateRangeContext';
-import { DateRangeFilter } from './DateRangeFilter';
+import { DateRangeSelector } from '@/components/analytics/DateRangeSelector';
 import { AutoRefreshControl } from './AutoRefreshControl';
 import { CustomViewSelector } from './CustomViewSelector';
 import { ChatbotAnalyticsTab } from './analytics/ChatbotAnalyticsTab';
@@ -71,7 +70,16 @@ function DashboardContent() {
 
   // View configuration state
   const [currentViewConfig, setCurrentViewConfig] = useState<ViewConfig>({
-    visibleSections: ['overview', 'users', 'courses', 'revenue', 'assessments', 'chatbot', 'teams', 'predictive'],
+    visibleSections: [
+      'overview',
+      'users',
+      'courses',
+      'revenue',
+      'assessments',
+      'chatbot',
+      'teams',
+      'predictive',
+    ],
     defaultTab: 'overview',
     refreshInterval: 300000, // 5 minutes
   });
@@ -107,7 +115,11 @@ function DashboardContent() {
           <p className="text-muted-foreground mt-1">Platform performance and insights</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => handleRefresh(dateRange, forecastDays)} disabled={refreshing}>
+          <Button
+            variant="outline"
+            onClick={() => handleRefresh(dateRange, forecastDays)}
+            disabled={refreshing}
+          >
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
@@ -115,16 +127,19 @@ function DashboardContent() {
       </div>
 
       {/* Controls Row */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <DateRangeFilter />
-        <AutoRefreshControl
-          onRefresh={handleAutoRefresh}
-          defaultInterval={currentViewConfig.refreshInterval}
+      <div className="grid gap-4 md:grid-cols-2">
+        <DateRangeSelector
+          onApply={() => handleRefresh(dateRange, forecastDays)}
+          showComparison={true}
+          enablePreferences={true}
         />
-        <CustomViewSelector
-          currentConfig={currentViewConfig}
-          onViewLoad={handleViewLoad}
-        />
+        <div className="grid gap-4 md:grid-cols-2">
+          <AutoRefreshControl
+            onRefresh={handleAutoRefresh}
+            defaultInterval={currentViewConfig.refreshInterval}
+          />
+          <CustomViewSelector currentConfig={currentViewConfig} onViewLoad={handleViewLoad} />
+        </div>
       </div>
 
       {/* Platform Overview Metrics */}

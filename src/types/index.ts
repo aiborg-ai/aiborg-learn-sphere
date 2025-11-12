@@ -75,6 +75,39 @@ export type {
   UserAnalytics,
   CourseAnalytics,
 
+  // Chatbot Analytics
+  ChatbotSession,
+  ChatbotTopic,
+  ChatbotFeedback,
+  ChatbotAnalyticsRecord,
+  ChatbotSessionAnalytics,
+  ChatbotTopicAnalytics,
+  ChatbotSentimentAnalytics,
+  ChatbotFeedbackSummary,
+
+  // Individual Learner Analytics
+  IndividualLearnerSummary,
+  IndividualCoursePerformance,
+  LearningVelocity,
+  AssessmentPattern,
+  EngagementTimeline,
+  AtRiskLearner,
+  LearningPathProgressDetailed,
+  SkillsProgress,
+  ManagerDirectReport,
+  LearnerInsight,
+
+  // Analytics Preferences
+  AnalyticsPreferences,
+  AnalyticsPreferencesUpdate,
+  RefreshState,
+
+  // Date Range & Comparison
+  DateRange,
+  ComparisonDateRange,
+  AnalyticsDataWithComparison,
+  DateRangePreference,
+
   // File Upload
   FileUploadProgress,
   StorageFile,
