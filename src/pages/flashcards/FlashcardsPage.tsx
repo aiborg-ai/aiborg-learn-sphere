@@ -18,6 +18,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { DeckList } from '@/components/flashcards/DeckList';
+import { FlashcardHelp } from '@/components/flashcards/FlashcardHelp';
 import { useFlashcardDecks, useCreateDeck, useDeleteDeck } from '@/hooks/useFlashcards';
 import { useReviewStreak } from '@/hooks/useSpacedRepetition';
 import { Plus, Flame, Trophy, BookOpen } from 'lucide-react';
@@ -69,10 +70,13 @@ export default function FlashcardsPage() {
             Study with spaced repetition for better retention
           </p>
         </div>
-        <Button onClick={() => setIsCreateDialogOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          New Deck
-        </Button>
+        <div className="flex gap-2">
+          <FlashcardHelp />
+          <Button onClick={() => setIsCreateDialogOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            New Deck
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
