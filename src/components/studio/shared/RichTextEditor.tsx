@@ -6,6 +6,7 @@
 
 import React, { useState } from 'react';
 import { Bold, Italic, List, ListOrdered, Link as LinkIcon, Image, Eye, Code } from 'lucide-react';
+import DOMPurify from 'isomorphic-dompurify';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -102,54 +103,62 @@ export function RichTextEditor({
     },
   ];
 
-  // Simple markdown-to-HTML converter (basic)
+  // Simple markdown-to-HTML converter (basic) with XSS protection
   const renderMarkdown = (text: string) => {
     if (!text) return '<p class="text-muted-foreground">No content to preview</p>';
 
-    return text
+    const html = text
       .split('\n\n')
       .map(paragraph => {
-        let html = paragraph;
+        let converted = paragraph;
 
         // Headers
-        html = html.replace(/^### (.+)$/gm, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>');
-        html = html.replace(/^## (.+)$/gm, '<h2 class="text-xl font-semibold mt-4 mb-2">$1</h2>');
-        html = html.replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>');
+        converted = converted.replace(/^### (.+)$/gm, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>');
+        converted = converted.replace(/^## (.+)$/gm, '<h2 class="text-xl font-semibold mt-4 mb-2">$1</h2>');
+        converted = converted.replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>');
 
         // Bold and italic
-        html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-        html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+        converted = converted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        converted = converted.replace(/\*(.+?)\*/g, '<em>$1</em>');
 
         // Links
-        html = html.replace(
+        converted = converted.replace(
           /\[(.+?)\]\((.+?)\)/g,
           '<a href="$2" class="text-primary underline">$1</a>'
         );
 
         // Code
-        html = html.replace(
+        converted = converted.replace(
           /`(.+?)`/g,
           '<code class="bg-muted px-1 py-0.5 rounded text-sm">$1</code>'
         );
 
         // Lists
-        if (html.startsWith('- ')) {
-          html =
+        if (converted.startsWith('- ')) {
+          converted =
             '<ul class="list-disc list-inside">' +
-            html.replace(/^- (.+)$/gm, '<li>$1</li>') +
+            converted.replace(/^- (.+)$/gm, '<li>$1</li>') +
             '</ul>';
-        } else if (html.match(/^\d+\. /)) {
-          html =
+        } else if (converted.match(/^\d+\. /)) {
+          converted =
             '<ol class="list-decimal list-inside">' +
-            html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>') +
+            converted.replace(/^\d+\. (.+)$/gm, '<li>$1</li>') +
             '</ol>';
         } else {
-          html = `<p>${html}</p>`;
+          converted = `<p>${converted}</p>`;
         }
 
-        return html;
+        return converted;
       })
       .join('');
+
+    // Sanitize HTML to prevent XSS attacks
+    return DOMPurify.sanitize(html, {
+      ALLOWED_TAGS: ['h1', 'h2', 'h3', 'p', 'strong', 'em', 'a', 'code', 'ul', 'ol', 'li'],
+      ALLOWED_ATTR: ['href', 'class'],
+      ALLOW_DATA_ATTR: false,
+      ALLOWED_URI_REGEXP: /^(?:https?:)/i, // Only allow http/https protocols
+    });
   };
 
   const editorContent = (

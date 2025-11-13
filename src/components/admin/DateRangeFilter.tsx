@@ -116,7 +116,7 @@ export function DateRangeFilter({ onApply, className }: DateRangeFilterProps) {
         <div className="space-y-4">
           {/* Preset Buttons */}
           <div>
-            <label className="text-sm font-medium mb-2 block">Quick Select</label>
+            <div className="text-sm font-medium mb-2 block">Quick Select</div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
               {(Object.keys(PRESET_CONFIG) as PresetOption[])
                 .filter(key => key !== 'custom')
@@ -141,7 +141,7 @@ export function DateRangeFilter({ onApply, className }: DateRangeFilterProps) {
 
           {/* Custom Date Range */}
           <div>
-            <label className="text-sm font-medium mb-2 block">Custom Range</label>
+            <div className="text-sm font-medium mb-2 block">Custom Range</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {/* Start Date Picker */}
               <Popover open={showStartPicker} onOpenChange={setShowStartPicker}>

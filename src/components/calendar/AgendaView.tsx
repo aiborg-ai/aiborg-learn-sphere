@@ -49,7 +49,7 @@ export function AgendaView({
   showEmptyState = true,
   maxHeight = '600px',
 }: AgendaViewProps) {
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+  const [_expandedGroups, _setExpandedGroups] = useState<Set<string>>(new Set());
 
   // Group events by date
   const eventGroups = useMemo((): EventGroup[] => {
@@ -76,18 +76,6 @@ export function AgendaView({
       })
       .sort((a, b) => a.date.getTime() - b.date.getTime());
   }, [events]);
-
-  const toggleGroupExpanded = (dateKey: string) => {
-    setExpandedGroups(prev => {
-      const next = new Set(prev);
-      if (next.has(dateKey)) {
-        next.delete(dateKey);
-      } else {
-        next.add(dateKey);
-      }
-      return next;
-    });
-  };
 
   const getStatusIcon = (event: CalendarEvent) => {
     switch (event.status) {
@@ -141,7 +129,7 @@ export function AgendaView({
       <div className="space-y-8">
         {eventGroups.map(group => {
           const dateKey = format(group.date, 'yyyy-MM-dd');
-          const isExpanded = expandedGroups.has(dateKey);
+          const _isExpanded = _expandedGroups.has(dateKey);
 
           return (
             <div key={dateKey} className="relative">
@@ -178,7 +166,7 @@ export function AgendaView({
 
               {/* Events Timeline */}
               <div className="space-y-3 relative pl-6 border-l-2 border-muted ml-3">
-                {group.events.map((event, index) => {
+                {group.events.map((event, _index) => {
                   const typeConfig = EVENT_TYPE_COLORS[event.type];
 
                   return (

@@ -117,6 +117,11 @@ const SessionsPage = lazy(() => import('./pages/SessionsPage'));
 // Search page
 const SearchPage = lazy(() => import('./pages/SearchPage'));
 
+// Flashcard pages
+const FlashcardsPage = lazy(() => import('./pages/flashcards/FlashcardsPage'));
+const DeckPage = lazy(() => import('./pages/flashcards/DeckPage'));
+const ReviewSessionPage = lazy(() => import('./pages/flashcards/ReviewSessionPage'));
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -229,6 +234,32 @@ const AppWithShortcuts = () => {
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/search" element={<SearchPage />} />
+
+            {/* Flashcard routes */}
+            <Route
+              path="/flashcards"
+              element={
+                <RouteWrapper routeName="Flashcards">
+                  <FlashcardsPage />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/flashcards/:deckId"
+              element={
+                <RouteWrapper routeName="Deck">
+                  <DeckPage />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/flashcards/:deckId/review"
+              element={
+                <RouteWrapper routeName="Review Session">
+                  <ReviewSessionPage />
+                </RouteWrapper>
+              }
+            />
             <Route
               path="/assignment/:assignmentId"
               element={

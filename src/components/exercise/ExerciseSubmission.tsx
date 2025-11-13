@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import DOMPurify from 'isomorphic-dompurify';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -233,7 +234,22 @@ export const ExerciseSubmission: React.FC<ExerciseSubmissionProps> = ({ exercise
           </CardHeader>
           <CardContent>
             <div className="prose prose-sm max-w-none">
-              <div dangerouslySetInnerHTML={{ __html: exercise.instructions }} />
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(exercise.instructions, {
+                    ALLOWED_TAGS: [
+                      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                      'p', 'br', 'strong', 'em', 'u',
+                      'ul', 'ol', 'li',
+                      'a', 'code', 'pre', 'blockquote',
+                      'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
+                    ],
+                    ALLOWED_ATTR: ['href', 'title', 'src', 'alt', 'class'],
+                    ALLOW_DATA_ATTR: false,
+                    ALLOWED_URI_REGEXP: /^(?:https?:)/i,
+                  })
+                }}
+              />
             </div>
           </CardContent>
         </Card>

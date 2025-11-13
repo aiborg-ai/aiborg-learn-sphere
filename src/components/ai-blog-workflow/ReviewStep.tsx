@@ -53,7 +53,7 @@ export function ReviewStep({ editData, onBack, onEdit, onPublish }: ReviewStepPr
   });
 
   const publishOption = watch('publishOption');
-  const scheduledFor = watch('scheduledFor');
+  const _scheduledFor = watch('scheduledFor');
   const isFeatured = watch('isFeatured');
   const allowComments = watch('allowComments');
 
@@ -86,7 +86,7 @@ export function ReviewStep({ editData, onBack, onEdit, onPublish }: ReviewStepPr
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <FileText className="h-4 w-4 text-muted-foreground" />
-                <Label>Title</Label>
+                <div className="text-sm font-medium">Title</div>
               </div>
               <p className="text-lg font-semibold">{editData.title}</p>
             </div>
@@ -95,7 +95,7 @@ export function ReviewStep({ editData, onBack, onEdit, onPublish }: ReviewStepPr
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <Eye className="h-4 w-4 text-muted-foreground" />
-                <Label>Excerpt</Label>
+                <div className="text-sm font-medium">Excerpt</div>
               </div>
               <p className="text-muted-foreground">{editData.excerpt}</p>
             </div>
@@ -126,7 +126,7 @@ export function ReviewStep({ editData, onBack, onEdit, onPublish }: ReviewStepPr
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <TagIcon className="h-4 w-4 text-muted-foreground" />
-                <Label>Tags</Label>
+                <div className="text-sm font-medium">Tags</div>
               </div>
               <div className="flex flex-wrap gap-2">
                 {editData.tags.map(tag => (
@@ -141,7 +141,7 @@ export function ReviewStep({ editData, onBack, onEdit, onPublish }: ReviewStepPr
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <ImageIcon className="h-4 w-4 text-muted-foreground" />
-                <Label>Featured Image</Label>
+                <div className="text-sm font-medium">Featured Image</div>
               </div>
               <img
                 src={editData.featuredImage}
@@ -183,7 +183,7 @@ export function ReviewStep({ editData, onBack, onEdit, onPublish }: ReviewStepPr
           <CardContent className="space-y-6">
             {/* Publish Option */}
             <div>
-              <Label className="mb-3 block">How would you like to publish?</Label>
+              <div className="text-sm font-medium mb-3 block">How would you like to publish?</div>
               <RadioGroup
                 value={publishOption}
                 onValueChange={value => setValue('publishOption', value as any)}

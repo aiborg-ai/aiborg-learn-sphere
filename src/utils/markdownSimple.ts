@@ -1,4 +1,5 @@
 import { marked } from 'marked';
+import DOMPurify from 'isomorphic-dompurify';
 
 import { logger } from '@/utils/logger';
 // Configure marked for synchronous operation
@@ -10,8 +11,12 @@ marked.use({
 
 /**
  * Simple markdown to HTML conversion without custom renderers
+ *
+ * @deprecated Use parseMarkdown() from '@/utils/markdown' instead for better styling and security
+ * This function is kept for backward compatibility but may be removed in the future
+ *
  * @param markdown - The markdown content to convert
- * @returns HTML string
+ * @returns HTML string with DOMPurify sanitization
  */
 export function parseMarkdownSimple(markdown: string): string {
   if (!markdown) return '';
@@ -19,6 +24,25 @@ export function parseMarkdownSimple(markdown: string): string {
   try {
     // Use marked without custom renderers first
     const html = marked.parse(markdown) as string;
+
+    // Sanitize HTML to prevent XSS attacks
+    const sanitized = DOMPurify.sanitize(html, {
+      ALLOWED_TAGS: [
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'p', 'br', 'strong', 'em', 'u', 's', 'del', 'ins',
+        'ul', 'ol', 'li',
+        'a', 'code', 'pre', 'blockquote',
+        'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
+        'hr', 'div', 'span'
+      ],
+      ALLOWED_ATTR: [
+        'href', 'title', 'target', 'rel',
+        'src', 'alt', 'width', 'height',
+        'class', 'id'
+      ],
+      ALLOW_DATA_ATTR: false,
+      ALLOWED_URI_REGEXP: /^(?:https?:)/i, // Only allow http/https protocols
+    });
 
     // Add wrapper div with Tailwind typography classes
     return `
@@ -36,7 +60,7 @@ export function parseMarkdownSimple(markdown: string): string {
         prose-ul:list-disc prose-ul:list-inside prose-ul:my-6
         prose-ol:list-decimal prose-ol:list-inside prose-ol:my-6
         prose-li:my-2">
-        ${html}
+        ${sanitized}
       </div>
     `;
   } catch (error) {

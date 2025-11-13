@@ -139,7 +139,7 @@ export function prepareChatbotDataForExport(
       uniqueUsers: metrics?.uniqueUsers || 0,
       avgSatisfaction: metrics?.avgSatisfaction.toFixed(2) || '0.00',
       resolutionRate: `${(metrics?.resolutionRate || 0).toFixed(1)}%`,
-      avgDuration: `${metrics?.avgDurationMinutes.toFixed(1)} min` || '0.0 min',
+      avgDuration: metrics?.avgDurationMinutes ? `${metrics.avgDurationMinutes.toFixed(1)} min` : '0.0 min',
     },
     trends: trends || [],
     topQueries: topQueries || [],

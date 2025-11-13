@@ -338,7 +338,7 @@ export function useSendReminder() {
  * Combined hook with all review request operations
  */
 export function useReviewRequests(options: UseReviewRequestsOptions = {}) {
-  const { sessionId, sessionType, userId, filters, enableRealtime = true } = options;
+  const { sessionId, sessionType, userId, filters, _enableRealtime = true } = options;
 
   // Fetch data based on options
   const sessionRequests = useSessionReviewRequests(sessionId || '', sessionType || 'free_session');

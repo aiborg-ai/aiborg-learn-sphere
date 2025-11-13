@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Ticket, TrendingUp } from 'lucide-react';
 import { useCourses } from '@/hooks/useCourses';
+import { Label } from '@/components/ui/label';
 
 export default function MyTicketsPage() {
   const { courses } = useCourses();
@@ -50,8 +51,9 @@ export default function MyTicketsPage() {
       {/* Course Selector */}
       {courses.length > 1 && (
         <div className="mb-6">
-          <label className="mb-2 block text-sm font-medium">Select Course</label>
+          <Label htmlFor="course-select">Select Course</Label>
           <select
+            id="course-select"
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             value={courseId}
             onChange={e => setSelectedCourse(Number(e.target.value))}

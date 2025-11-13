@@ -30,7 +30,7 @@ export function linearRegression(data: DataPoint[]): RegressionResult {
   let sumY = 0;
   let sumXY = 0;
   let sumX2 = 0;
-  let sumY2 = 0;
+  let _sumY2 = 0;
 
   // Calculate sums
   for (const point of data) {
@@ -38,7 +38,7 @@ export function linearRegression(data: DataPoint[]): RegressionResult {
     sumY += point.y;
     sumXY += point.x * point.y;
     sumX2 += point.x * point.x;
-    sumY2 += point.y * point.y;
+    _sumY2 += point.y * point.y;
   }
 
   // Calculate slope (m) and intercept (b) for y = mx + b

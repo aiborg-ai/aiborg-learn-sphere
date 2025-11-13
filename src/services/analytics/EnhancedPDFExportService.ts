@@ -266,7 +266,7 @@ export class EnhancedPDFExportService {
     brandColor: { r: number; g: number; b: number },
     pageWidth: number,
     pageHeight: number,
-    margin: number
+    _margin: number
   ): void {
     const centerX = pageWidth / 2;
     const centerY = pageHeight / 2;

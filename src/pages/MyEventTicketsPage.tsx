@@ -13,7 +13,7 @@ import { isBefore, parseISO } from 'date-fns';
 export default function MyEventTicketsPage() {
   const { user } = useAuth();
   const { data: allTickets, isLoading: loadingAll } = useEventSessionTickets();
-  const { data: upcomingTickets, isLoading: loadingUpcoming } = useUpcomingEventTickets();
+  const { data: _upcomingTickets, isLoading: loadingUpcoming } = useUpcomingEventTickets();
 
   // Group tickets by event series
   const ticketsByEvent = useMemo(() => {

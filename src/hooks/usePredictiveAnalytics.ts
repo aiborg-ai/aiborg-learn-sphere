@@ -3,7 +3,7 @@
  * Manages predictive analytics and forecasting
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { ForecastingService, type ForecastResult, type RevenueData, type UserData, type EnrollmentData } from '@/services/analytics/ForecastingService';
 import { logger } from '@/utils/logger';
 

@@ -87,7 +87,7 @@ export default function AIBlogWorkflow() {
   const handlePublish = async (reviewData: ReviewStepData) => {
     try {
       const editData = workflowData.edit!;
-      const generationData = workflowData.generation!;
+      const _generationData = workflowData.generation!;
 
       // Generate slug if not provided
       const slug =

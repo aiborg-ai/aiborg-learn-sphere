@@ -44,7 +44,7 @@ import type { ViewConfig } from '@/services/analytics/CustomViewsService';
  */
 function DashboardContent() {
   const [activeTab, setActiveTab] = useState('overview');
-  const [forecastDays, setForecastDays] = useState<30 | 60 | 90>(30);
+  const [forecastDays, _setForecastDays] = useState<30 | 60 | 90>(30);
   const { startDate, endDate } = useDateRange();
 
   // Construct date range for analytics
@@ -60,8 +60,6 @@ function DashboardContent() {
     revenueMetrics,
     engagementMetrics,
     assessmentAnalytics,
-    chatbotMetrics,
-    teamMetrics,
     loading,
     refreshing,
     handleRefresh,

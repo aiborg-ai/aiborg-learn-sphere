@@ -68,7 +68,7 @@ export function sanitizeHTML(dirty: string, config: SanitizeConfig = {}): string
     allowedAttributes = DEFAULT_ALLOWED_ATTRIBUTES,
     allowDataUri = false,
     allowExternalLinks = false,
-    stripDangerous = true,
+    _stripDangerous = true,
   } = config;
 
   // Configure DOMPurify

@@ -33,7 +33,7 @@ export async function searchImages(query: string, count: number = 5): Promise<St
 
     // Fallback: Return placeholder images if no API key
     return getFallbackImages(query, count);
-  } catch (error) {
+  } catch {
     // Fallback to placeholder images on error
     return getFallbackImages(query, count);
   }

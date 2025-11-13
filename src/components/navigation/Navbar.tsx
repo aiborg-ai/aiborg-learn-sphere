@@ -14,7 +14,7 @@ import { FAQModal, TermsModal } from '@/components/modals';
 import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/shared';
-import { GlobalSearch } from '@/components/search/GlobalSearch';
+import { GlobalSearchEnhanced } from '@/components/search/GlobalSearchEnhanced';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { logger } from '@/utils/logger';
 
@@ -146,8 +146,8 @@ export function Navbar() {
               Terms
             </button>
 
-            {/* Global Search */}
-            {user && <GlobalSearch />}
+            {/* Global Search - AI-Powered */}
+            {user && <GlobalSearchEnhanced />}
 
             {/* Keyboard Shortcuts Help */}
             <Tooltip>

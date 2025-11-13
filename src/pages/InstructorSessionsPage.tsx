@@ -6,6 +6,7 @@ import { useCourses } from '@/hooks/useCourses';
 import { useCourseSessions } from '@/hooks/useCourseSessions';
 import { useSessionAttendance } from '@/hooks/useSessionAttendance';
 import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
 import {
   Table,
   TableBody,
@@ -59,8 +60,9 @@ export default function InstructorSessionsPage() {
       {/* Course Selector */}
       {instructorCourses.length > 1 && (
         <div className="mb-6">
-          <label className="mb-2 block text-sm font-medium">Select Course</label>
+          <Label htmlFor="course-select">Select Course</Label>
           <select
+            id="course-select"
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             value={courseId}
             onChange={e => setSelectedCourseId(Number(e.target.value))}

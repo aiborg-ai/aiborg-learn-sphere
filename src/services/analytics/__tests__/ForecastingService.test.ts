@@ -19,13 +19,13 @@ vi.mock('@/utils/logger', () => ({
 
 // Mock forecasting utilities
 vi.mock('@/utils/forecasting/linearRegression', () => ({
-  linearRegression: vi.fn((dataPoints) => ({
+  linearRegression: vi.fn((_dataPoints) => ({
     slope: 10,
     intercept: 100,
     r2: 0.85,
   })),
   predict: vi.fn((regression, futureX) => futureX.map((x: number) => regression.slope * x + regression.intercept)),
-  confidenceInterval: vi.fn((regression, futureX, dataPoints, confidenceLevel) => {
+  confidenceInterval: vi.fn((regression, futureX, _dataPoints, _confidenceLevel) => {
     return futureX.map((x: number) => {
       const predicted = regression.slope * x + regression.intercept;
       return {

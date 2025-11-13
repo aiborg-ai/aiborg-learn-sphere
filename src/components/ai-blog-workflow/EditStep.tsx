@@ -268,7 +268,7 @@ export function EditStep({
 
             {/* Tags */}
             <div>
-              <Label>Tags * (Select 1-10)</Label>
+              <div className="text-sm font-medium mb-2">Tags * (Select 1-10)</div>
               <div className="flex flex-wrap gap-2 mt-2">
                 {allTags.map(tag => (
                   <Badge

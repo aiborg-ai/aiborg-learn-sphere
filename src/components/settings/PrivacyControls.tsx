@@ -93,7 +93,7 @@ export const PrivacyControls = () => {
       } else {
         setConsents(data as UserConsent[]);
       }
-    } catch (_error) {
+    } catch {
       // Failed to load consents - will use defaults
     }
   };

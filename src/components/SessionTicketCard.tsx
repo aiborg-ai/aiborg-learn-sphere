@@ -62,7 +62,7 @@ export function SessionTicketCard({ ticket, courseId }: SessionTicketCardProps) 
       const dataUrl = await getTicketQRCode(ticket.id);
       setQrCodeDataUrl(dataUrl);
       setShowQRCode(true);
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to generate QR code',

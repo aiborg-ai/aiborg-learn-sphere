@@ -490,8 +490,9 @@ export function InstructorAttendanceDashboard({ courseId }: InstructorAttendance
 
           <div className="space-y-4 py-4">
             <div>
-              <label className="mb-2 block text-sm font-medium">Participation Score (0-100)</label>
+              <Label htmlFor="participation-score">Participation Score (0-100)</Label>
               <Input
+                id="participation-score"
                 type="number"
                 min="0"
                 max="100"
@@ -502,8 +503,9 @@ export function InstructorAttendanceDashboard({ courseId }: InstructorAttendance
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium">Instructor Notes</label>
+              <Label htmlFor="instructor-notes">Instructor Notes</Label>
               <Textarea
+                id="instructor-notes"
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 placeholder="Add notes about student's participation..."

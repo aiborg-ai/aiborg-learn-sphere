@@ -97,7 +97,7 @@ export function EventSessionTicketCard({ ticket }: EventSessionTicketCardProps) 
       });
       setQrCodeDataUrl(dataUrl);
       setShowQRCode(true);
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to generate QR code',
@@ -121,7 +121,7 @@ export function EventSessionTicketCard({ ticket }: EventSessionTicketCardProps) 
           ? 'Meeting link is now available below'
           : 'You are checked in for this session',
       });
-    } catch (error: any) {
+    } catch {
       // Error handled by mutation
     }
   };
@@ -132,7 +132,7 @@ export function EventSessionTicketCard({ ticket }: EventSessionTicketCardProps) 
         action: 'cancel',
         ticketId: ticket.id,
       });
-    } catch (error: any) {
+    } catch {
       // Error handled by mutation
     }
   };
@@ -143,7 +143,7 @@ export function EventSessionTicketCard({ ticket }: EventSessionTicketCardProps) 
         action: 'reactivate',
         ticketId: ticket.id,
       });
-    } catch (error: any) {
+    } catch {
       // Error handled by mutation
     }
   };

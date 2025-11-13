@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import { parseMarkdownSimple, extractHeadings } from '@/utils/markdownSimple';
+import { parseMarkdown } from '@/utils/markdown';
+import { extractHeadings } from '@/utils/markdownSimple';
 import { CommentSection } from '@/components/blog/CommentSection';
 import {
   ArrowLeft,
@@ -63,7 +64,8 @@ export default function BlogPostPage() {
   // Parse markdown content when post loads
   useEffect(() => {
     if (post?.content) {
-      const htmlContent = parseMarkdownSimple(post.content);
+      // Use the secure parseMarkdown with custom renderers and DOMPurify sanitization
+      const htmlContent = parseMarkdown(post.content);
       setParsedContent(htmlContent);
 
       const toc = extractHeadings(post.content);

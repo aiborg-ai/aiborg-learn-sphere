@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 import { useCustomViews, getDefaultViewConfig } from '@/hooks/useCustomViews';
 import { useAuth } from '@/hooks/useAuth';
 import type { ViewConfig } from '@/services/analytics/CustomViewsService';
-import { Save, Trash2, Edit2, Eye, Plus } from 'lucide-react';
+import { Save, Trash2, Edit2, Eye } from 'lucide-react';
 
 export interface CustomViewSelectorProps {
   currentConfig: ViewConfig;
@@ -217,7 +217,7 @@ export function CustomViewSelector({
           {/* Saved Views Management */}
           {views.length > 0 && (
             <div className="space-y-2">
-              <Label className="text-sm">Manage Views</Label>
+              <div className="text-sm font-medium">Manage Views</div>
               <div className="space-y-1 max-h-48 overflow-y-auto">
                 {views.map((view) => (
                   <div

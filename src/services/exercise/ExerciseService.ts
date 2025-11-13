@@ -4,6 +4,7 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
+import DOMPurify from 'isomorphic-dompurify';
 import { logger } from '@/utils/logger';
 import type {
   Exercise,
@@ -20,10 +21,27 @@ export class ExerciseService {
    */
   static async createExercise(input: CreateExerciseInput, userId: string): Promise<Exercise> {
     try {
+      // Sanitize instructions HTML to prevent XSS
+      const sanitizedInstructions = input.instructions
+        ? DOMPurify.sanitize(input.instructions, {
+            ALLOWED_TAGS: [
+              'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+              'p', 'br', 'strong', 'em', 'u',
+              'ul', 'ol', 'li',
+              'a', 'code', 'pre', 'blockquote',
+              'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
+            ],
+            ALLOWED_ATTR: ['href', 'title', 'src', 'alt', 'class'],
+            ALLOW_DATA_ATTR: false,
+            ALLOWED_URI_REGEXP: /^(?:https?:)/i,
+          })
+        : input.instructions;
+
       const { data, error } = await supabase
         .from('exercises')
         .insert({
           ...input,
+          instructions: sanitizedInstructions,
           created_by: userId,
           difficulty_level: input.difficulty_level || 'intermediate',
           exercise_type: input.exercise_type || 'writing',
@@ -52,9 +70,28 @@ export class ExerciseService {
     try {
       const { id, ...updates } = input;
 
+      // Sanitize instructions HTML if provided to prevent XSS
+      const sanitizedUpdates = {
+        ...updates,
+        ...(updates.instructions && {
+          instructions: DOMPurify.sanitize(updates.instructions, {
+            ALLOWED_TAGS: [
+              'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+              'p', 'br', 'strong', 'em', 'u',
+              'ul', 'ol', 'li',
+              'a', 'code', 'pre', 'blockquote',
+              'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
+            ],
+            ALLOWED_ATTR: ['href', 'title', 'src', 'alt', 'class'],
+            ALLOW_DATA_ATTR: false,
+            ALLOWED_URI_REGEXP: /^(?:https?:)/i,
+          }),
+        }),
+      };
+
       const { data, error } = await supabase
         .from('exercises')
-        .update(updates)
+        .update(sanitizedUpdates)
         .eq('id', id)
         .select()
         .single();

@@ -230,7 +230,7 @@ export default function ExportModal({
         <div className="space-y-6 py-4">
           {/* Export Format Selection */}
           <div className="space-y-2">
-            <Label>Export Format</Label>
+            <div className="text-sm font-medium">Export Format</div>
             <RadioGroup
               value={exportFormat}
               onValueChange={v => setExportFormat(v as 'pdf' | 'csv')}
@@ -305,7 +305,7 @@ export default function ExportModal({
               {sections.length > 0 && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <Label>Sections to Include</Label>
+                    <div className="text-sm font-medium">Sections to Include</div>
                     <div className="flex gap-2">
                       <Button type="button" variant="ghost" size="sm" onClick={selectAllSections}>
                         Select All

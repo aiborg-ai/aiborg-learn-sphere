@@ -171,7 +171,7 @@ export default function AnalyticsSettingsDialog({
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <RefreshCw className="h-4 w-4" />
-                <Label className="text-base font-medium">Auto-Refresh Interval</Label>
+                <div className="text-base font-medium">Auto-Refresh Interval</div>
               </div>
               <p className="text-sm text-muted-foreground">
                 How often should analytics data automatically refresh?
@@ -211,7 +211,7 @@ export default function AnalyticsSettingsDialog({
             {/* Per-Page Settings */}
             <div className="space-y-4">
               <div>
-                <Label className="text-base font-medium">Page-Specific Settings</Label>
+                <div className="text-base font-medium">Page-Specific Settings</div>
                 <p className="text-sm text-muted-foreground mt-1">
                   Enable or disable auto-refresh for individual analytics pages
                 </p>
@@ -279,7 +279,7 @@ export default function AnalyticsSettingsDialog({
             {/* Display Settings */}
             <div className="space-y-4">
               <div>
-                <Label className="text-base font-medium">Display Settings</Label>
+                <div className="text-base font-medium">Display Settings</div>
               </div>
 
               <div className="flex items-center justify-between p-3 border rounded-md">

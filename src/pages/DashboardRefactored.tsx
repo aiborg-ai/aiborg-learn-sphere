@@ -46,6 +46,8 @@ import { ResourcesSection } from '@/components/dashboard/ResourcesSection';
 import { useUserResources } from '@/hooks/useUserResources';
 import { AttendanceTicketsSection } from '@/components/dashboard/AttendanceTicketsSection';
 import { useAttendanceTickets } from '@/hooks/useAttendanceTickets';
+import { PersonalizedSection } from '@/components/recommendations/PersonalizedSection';
+import { usePersonalizedRecommendations, useRecommendationFeedback, useRecommendationInteraction } from '@/hooks/useRecommendations';
 
 export default function DashboardRefactored() {
   const [dataLoading, setDataLoading] = useState(true);
@@ -74,6 +76,15 @@ export default function DashboardRefactored() {
     loading: ticketsLoading,
   } = useAttendanceTickets(user?.id);
   const navigate = useNavigate();
+
+  // AI Recommendations hooks
+  const { data: courseRecommendations, isLoading: recommendationsLoading, refetch: refetchRecommendations } = usePersonalizedRecommendations('course', {
+    limit: 6,
+    excludeEnrolled: true,
+    excludeDismissed: true,
+  });
+  const { mutate: submitFeedback } = useRecommendationFeedback();
+  const { trackClick, trackEnrollment, dismiss } = useRecommendationInteraction();
 
   const fetchDashboardData = useCallback(async () => {
     if (!user) return;
@@ -274,6 +285,25 @@ export default function DashboardRefactored() {
     }
   };
 
+  // Recommendation handlers
+  const handleRecommendationEnroll = (recommendationId: string, courseId: string) => {
+    trackEnrollment(recommendationId);
+    navigate(`/courses/${courseId}`);
+  };
+
+  const handleRecommendationClick = (recommendationId: string, courseId: string) => {
+    trackClick(recommendationId);
+    navigate(`/courses/${courseId}`);
+  };
+
+  const handleRecommendationFeedback = (recommendationId: string, isHelpful: boolean) => {
+    submitFeedback({ recommendationId, isHelpful });
+  };
+
+  const handleRecommendationDismiss = (recommendationId: string) => {
+    dismiss(recommendationId);
+  };
+
   if (authLoading || dataLoading) {
     return (
       <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
@@ -446,6 +476,22 @@ export default function DashboardRefactored() {
               <StudyRecommendations />
               {user && <CompactLearningPathRecommendations userId={user.id} />}
             </div>
+
+            {/* AI-Powered Personalized Recommendations */}
+            <PersonalizedSection
+              title="Recommended For You"
+              description="AI-powered course recommendations based on your learning history and goals"
+              recommendations={courseRecommendations}
+              isLoading={recommendationsLoading}
+              onEnroll={handleRecommendationEnroll}
+              onFeedback={handleRecommendationFeedback}
+              onDismiss={handleRecommendationDismiss}
+              onClick={handleRecommendationClick}
+              onRefresh={() => refetchRecommendations()}
+              showExplanations={true}
+              layout="grid"
+              maxItems={6}
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">

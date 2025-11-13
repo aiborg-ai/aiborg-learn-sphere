@@ -42,7 +42,7 @@ interface ReviewFormProps {
   onSuccess?: () => void;
 }
 
-export function ReviewForm({ requestId, sessionId, sessionType, onSuccess }: ReviewFormProps = {}) {
+export function ReviewForm({ requestId, _sessionId, _sessionType, onSuccess }: ReviewFormProps = {}) {
   const { user } = useAuth();
   const { courses } = useCourses();
   const { submitReview } = useReviews();

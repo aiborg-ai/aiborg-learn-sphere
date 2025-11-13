@@ -128,7 +128,7 @@ export default function IndividualLearnerAnalytics() {
   const { summary, courses, velocity, assessments, timeline, atRisk, learningPaths, skills } =
     dashboard;
 
-  const getStatusColor = (status: string) => {
+  const _getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
         return 'bg-green-500';

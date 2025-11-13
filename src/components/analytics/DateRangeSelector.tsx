@@ -92,7 +92,7 @@ export function DateRangeSelector({
     try {
       await saveToPreferences();
       toast.success('Date range saved as default');
-    } catch (error) {
+    } catch {
       toast.error('Failed to save preferences');
     }
   };

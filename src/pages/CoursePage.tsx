@@ -37,6 +37,7 @@ import { ActiveStudentsBar } from '@/components/classroom/ActiveStudentsBar';
 import { LiveQuestionPanel } from '@/components/classroom/LiveQuestionPanel';
 import { useClassroomPresence } from '@/hooks/useClassroomPresence';
 import { MessageCircle } from 'lucide-react';
+import { SimilarCoursesSection } from '@/components/recommendations/SimilarCoursesSection';
 
 /**
  * CoursePage Component - Refactored Version with Real-Time Collaboration
@@ -381,6 +382,17 @@ export default function CoursePage() {
             </TabsContent>
           )}
         </Tabs>
+
+        {/* Similar Courses Section */}
+        {courseId && (
+          <div className="mt-8">
+            <SimilarCoursesSection
+              courseId={courseId}
+              limit={6}
+              onCourseClick={(id) => navigate(`/courses/${id}`)}
+            />
+          </div>
+        )}
       </main>
 
       {/* Material Viewer Dialog */}

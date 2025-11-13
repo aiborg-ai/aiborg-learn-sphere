@@ -288,7 +288,7 @@ export class EnhancedChatbotAnalyticsService {
   /**
    * Get topic analytics
    */
-  static async getTopicAnalytics(params: DateRangeParams = {}): Promise<ChatbotTopicAnalytics[]> {
+  static async getTopicAnalytics(_params: DateRangeParams = {}): Promise<ChatbotTopicAnalytics[]> {
     const { data, error } = await supabase
       .from('chatbot_topic_analytics')
       .select('*')
