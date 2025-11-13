@@ -14,6 +14,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { RouteWrapper } from '@/components/RouteWrapper';
 import { PerformanceMonitoring } from '@/components/monitoring/PerformanceMonitoring';
 import { LoginNotificationChecker } from '@/components/notifications/LoginNotificationChecker';
+import { InstallPWAPrompt } from '@/components/pwa/InstallPWAPrompt';
 
 // Create a loading component
 const PageLoader = () => (
@@ -113,6 +114,9 @@ const ForumThreadPage = lazy(() => import('./pages/ForumThreadPage'));
 // Session pages
 const SessionsPage = lazy(() => import('./pages/SessionsPage'));
 
+// Search page
+const SearchPage = lazy(() => import('./pages/SearchPage'));
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -131,6 +135,7 @@ const AppWithShortcuts = () => {
   return (
     <>
       <OfflineBanner />
+      <InstallPWAPrompt />
       <PerformanceMonitoring />
       <LoginNotificationChecker />
       <CommandPalette />
@@ -223,6 +228,7 @@ const AppWithShortcuts = () => {
             <Route path="/claim-free-pass" element={<ClaimFreePass />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
+            <Route path="/search" element={<SearchPage />} />
             <Route
               path="/assignment/:assignmentId"
               element={
