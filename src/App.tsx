@@ -122,6 +122,9 @@ const FlashcardsPage = lazy(() => import('./pages/flashcards/FlashcardsPage'));
 const DeckPage = lazy(() => import('./pages/flashcards/DeckPage'));
 const ReviewSessionPage = lazy(() => import('./pages/flashcards/ReviewSessionPage'));
 
+// RAG Management (Admin)
+const RAGManagement = lazy(() => import('./pages/admin/RAGManagement'));
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -210,6 +213,14 @@ const AppWithShortcuts = () => {
               element={
                 <RouteWrapper routeName="Assessment Questions">
                   <AssessmentQuestionsManagement />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/admin/rag-management"
+              element={
+                <RouteWrapper routeName="RAG System">
+                  <RAGManagement />
                 </RouteWrapper>
               }
             />
