@@ -32,8 +32,7 @@ NGROK
 
   Would you like me to:
   1.?
-  2. Focus on a specific security area (e.g., authentication, XSS
-  prevention)?
+  2. ?
   3. Create additional documentation (incident response plan, security
   policy)?
   4. Set up automated security scanning in GitHub Actions?
