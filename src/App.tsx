@@ -125,6 +125,9 @@ const ReviewSessionPage = lazy(() => import('./pages/flashcards/ReviewSessionPag
 // RAG Management (Admin)
 const RAGManagement = lazy(() => import('./pages/admin/RAGManagement'));
 
+// Dashboard Builder
+const DashboardBuilderPage = lazy(() => import('./pages/DashboardBuilderPage'));
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -173,6 +176,14 @@ const AppWithShortcuts = () => {
               element={
                 <RouteWrapper routeName="Dashboard">
                   <Dashboard />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/dashboard-builder"
+              element={
+                <RouteWrapper routeName="Dashboard Builder">
+                  <DashboardBuilderPage />
                 </RouteWrapper>
               }
             />

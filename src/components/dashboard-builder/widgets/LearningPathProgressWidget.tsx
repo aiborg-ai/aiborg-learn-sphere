@@ -6,7 +6,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Route, Target, TrendingUp } from 'lucide-react';
-import { Skeleton } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import type { WidgetComponentProps, ProgressWidgetConfig } from '@/types/dashboard';

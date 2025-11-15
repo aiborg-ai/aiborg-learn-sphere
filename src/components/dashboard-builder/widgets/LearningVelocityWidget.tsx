@@ -6,7 +6,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Zap } from 'lucide-react';
-import { Skeleton } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import type { WidgetComponentProps, ChartWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';

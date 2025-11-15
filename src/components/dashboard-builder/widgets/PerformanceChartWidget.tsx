@@ -6,7 +6,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { LineChart, TrendingUp } from 'lucide-react';
-import { Skeleton } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   LineChart as RechartsLine,
   BarChart,

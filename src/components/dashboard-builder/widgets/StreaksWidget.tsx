@@ -6,7 +6,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Flame, Calendar as CalendarIcon } from 'lucide-react';
-import { Skeleton } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import type { WidgetComponentProps, BaseWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';

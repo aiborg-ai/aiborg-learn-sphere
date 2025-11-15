@@ -4,9 +4,9 @@
  * Timeline of recent learning activities
  */
 
-import { useQuery } from '@tantml:react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Activity, BookOpen, Trophy, FileCheck, MessageSquare } from 'lucide-react';
-import { Skeleton } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import type { WidgetComponentProps, ActivityWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';

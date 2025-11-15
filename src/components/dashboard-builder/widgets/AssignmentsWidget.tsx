@@ -6,7 +6,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { FileText, Clock, AlertCircle } from 'lucide-react';
-import { Skeleton } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import type { WidgetComponentProps, ActivityWidgetConfig } from '@/types/dashboard';

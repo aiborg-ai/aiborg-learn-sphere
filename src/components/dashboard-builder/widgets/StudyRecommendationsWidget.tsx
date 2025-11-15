@@ -6,7 +6,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Lightbulb, BookOpen, ArrowRight } from 'lucide-react';
-import { Skeleton } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { WidgetComponentProps, BaseWidgetConfig } from '@/types/dashboard';

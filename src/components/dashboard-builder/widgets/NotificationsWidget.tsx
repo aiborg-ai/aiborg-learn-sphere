@@ -6,7 +6,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Bell, Check } from 'lucide-react';
-import { Skeleton } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';

@@ -6,7 +6,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { GraduationCap, BookOpen, CheckCircle, Clock } from 'lucide-react';
-import { Skeleton } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
 import type { WidgetComponentProps, BaseWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';

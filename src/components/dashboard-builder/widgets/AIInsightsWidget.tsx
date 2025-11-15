@@ -6,7 +6,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Sparkles, TrendingUp, Target, Lightbulb } from 'lucide-react';
-import { Skeleton } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import type { WidgetComponentProps, BaseWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';

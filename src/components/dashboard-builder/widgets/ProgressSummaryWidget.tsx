@@ -4,9 +4,9 @@
  * Overall progress summary with key milestones
  */
 
-import { useQuery } from '@tanstack:react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Target, Award, BookOpen, TrendingUp } from 'lucide-react';
-import { Skeleton } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import type { WidgetComponentProps, BaseWidgetConfig } from '@/types/dashboard';

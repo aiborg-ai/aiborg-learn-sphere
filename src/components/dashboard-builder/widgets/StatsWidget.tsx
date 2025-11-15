@@ -6,7 +6,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { BookOpen, Trophy, Award, Flame } from 'lucide-react';
-import { Skeleton } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import type { WidgetComponentProps, StatsWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';
