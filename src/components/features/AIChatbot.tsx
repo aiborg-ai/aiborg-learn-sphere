@@ -11,7 +11,7 @@ import { useCourses } from '@/hooks/useCourses';
 import { useChatHistory } from '@/hooks/useChatHistory';
 import { generateFallbackResponse } from '@/utils/chatbotFallback';
 import { logger } from '@/utils/logger';
-import { MessageCircle, Send, X, Bot, User, Phone, History, Download, Trash2, ThumbsUp, ThumbsDown, Zap, Brain, Database } from 'lucide-react';
+import { MessageCircle, Send, X, Bot, User, Phone, History, Download, Trash2, ThumbsUp, ThumbsDown, Zap, Brain, Database, Maximize, Minimize } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface ConversationContext {
@@ -114,6 +114,7 @@ export function AIChatbot() {
   const [isTyping, setIsTyping] = useState(false);
   const [showWhatsApp, setShowWhatsApp] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [_conversationContext, setConversationContext] = useState<ConversationContext>(
     initialConversationContext
   );
@@ -160,6 +161,20 @@ export function AIChatbot() {
     addMessage,
     getPersonalizedContent,
   ]);
+
+  // ESC key handler to exit fullscreen
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+
+    if (isOpen && isFullscreen) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [isOpen, isFullscreen]);
 
   const updateConversationContext = (updates: Partial<ConversationContext>) => {
     setConversationContext(prev => ({ ...prev, ...updates }));
@@ -630,8 +645,12 @@ export function AIChatbot() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-2rem)]">
-      <Card className="h-[600px] flex flex-col shadow-2xl border-primary/20">
+    <div className={`fixed z-50 transition-all duration-300 ${
+      isFullscreen
+        ? 'inset-0 w-screen h-screen'
+        : 'bottom-6 right-6 w-96 max-w-[calc(100vw-2rem)]'
+    }`}>
+      <Card className={`${isFullscreen ? 'h-screen rounded-none' : 'h-[600px]'} flex flex-col shadow-2xl border-primary/20`}>
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b bg-gradient-primary rounded-t-lg">
           <div className="flex items-center gap-3">
@@ -658,6 +677,16 @@ export function AIChatbot() {
               title="Conversation History"
             >
               <History className="h-4 w-4" />
+            </Button>
+            {/* Fullscreen Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              className="text-white hover:bg-white/10"
+              title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+            >
+              {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
             </Button>
             <Button
               variant="ghost"
