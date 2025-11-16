@@ -26,6 +26,7 @@ import { DashboardCanvas } from './DashboardCanvas';
 import { WidgetPalette } from './WidgetPalette';
 import { WidgetEditor } from './WidgetEditor';
 import { ViewManager } from './ViewManager';
+import { ShareDialog } from './ShareDialog';
 import { useDashboardBuilder } from '@/hooks/useDashboardBuilder';
 import { WidgetRegistry } from '@/services/dashboard/WidgetRegistry';
 import { supabase } from '@/integrations/supabase/client';
@@ -44,6 +45,7 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
   const [showViewManager, setShowViewManager] = useState(false);
   const [selectedWidget, setSelectedWidget] = useState<DashboardWidget | null>(null);
   const [showWidgetEditor, setShowWidgetEditor] = useState(false);
+  const [showShareDialog, setShowShareDialog] = useState(false);
 
   // Initialize dashboard builder hook
   const {
@@ -84,6 +86,23 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
       return data;
     },
     enabled: !currentViewId,
+  });
+
+  // Fetch current view data for sharing
+  const { data: currentView } = useQuery({
+    queryKey: ['dashboard-view', currentViewId],
+    queryFn: async () => {
+      if (!currentViewId) return null;
+
+      const { data } = await supabase
+        .from('custom_dashboard_views')
+        .select('*')
+        .eq('id', currentViewId)
+        .single();
+
+      return data;
+    },
+    enabled: !!currentViewId,
   });
 
   // Set default view when loaded
@@ -310,6 +329,16 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
             <Upload className="h-4 w-4" />
           </Button>
 
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setShowShareDialog(true)}
+            disabled={!currentViewId}
+            title="Share dashboard"
+          >
+            <Share2 className="h-4 w-4" />
+          </Button>
+
           {mode === 'edit' && (
             <>
               <div className="h-6 w-px bg-border" />
@@ -381,6 +410,12 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
           setSelectedWidget(null);
         }}
         onSave={updateWidget}
+      />
+
+      <ShareDialog
+        view={currentView || null}
+        isOpen={showShareDialog}
+        onClose={() => setShowShareDialog(false)}
       />
     </div>
   );

@@ -127,6 +127,7 @@ const RAGManagement = lazy(() => import('./pages/admin/RAGManagement'));
 
 // Dashboard Builder
 const DashboardBuilderPage = lazy(() => import('./pages/DashboardBuilderPage'));
+const TemplateGalleryPage = lazy(() => import('./pages/TemplateGalleryPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -184,6 +185,14 @@ const AppWithShortcuts = () => {
               element={
                 <RouteWrapper routeName="Dashboard Builder">
                   <DashboardBuilderPage />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/template-gallery"
+              element={
+                <RouteWrapper routeName="Template Gallery">
+                  <TemplateGalleryPage />
                 </RouteWrapper>
               }
             />
