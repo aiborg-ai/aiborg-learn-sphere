@@ -182,22 +182,148 @@ export default defineConfig(({ mode }) => ({
     },
     rollupOptions: {
       output: {
-        // SIMPLIFIED CHUNKING STRATEGY TO AVOID CIRCULAR DEPENDENCIES
-        // Put all non-lazy dependencies together, separate only lazy-loaded libraries
+        // OPTIMIZED CHUNKING STRATEGY - Split vendor bundle into smaller chunks
         manualChunks: id => {
           if (id.includes('node_modules')) {
             // PDF & Document handling - lazy loaded, keep separate
             if (id.includes('pdfjs-dist') || id.includes('jspdf') || id.includes('html2canvas')) {
-              return 'pdf-libs';
+              return 'pdf-libs-chunk';
             }
 
             // Charts - lazy loaded, keep separate
             if (id.includes('recharts') || id.includes('d3-')) {
-              return 'charts-libs';
+              return 'charts-libs-chunk';
             }
 
-            // Put EVERYTHING else in ONE vendor bundle to avoid circular deps
-            return 'vendor';
+            // React core - most critical, load first
+            if (id.includes('react/') || id.includes('react-dom/') || id.includes('scheduler')) {
+              return 'react-core-chunk';
+            }
+
+            // React Router - navigation
+            if (id.includes('react-router') || id.includes('@remix-run')) {
+              return 'react-router-chunk';
+            }
+
+            // Radix UI - split into smaller groups
+            if (id.includes('@radix-ui')) {
+              // Heavy components
+              if (
+                id.includes('react-select') ||
+                id.includes('react-dropdown-menu') ||
+                id.includes('react-navigation-menu') ||
+                id.includes('react-menubar')
+              ) {
+                return 'radix-menu-chunk';
+              }
+              // Dialog-related
+              if (
+                id.includes('react-dialog') ||
+                id.includes('react-alert-dialog') ||
+                id.includes('react-popover') ||
+                id.includes('react-hover-card')
+              ) {
+                return 'radix-dialog-chunk';
+              }
+              // Form controls
+              if (
+                id.includes('react-checkbox') ||
+                id.includes('react-radio') ||
+                id.includes('react-switch') ||
+                id.includes('react-slider') ||
+                id.includes('react-toggle')
+              ) {
+                return 'radix-form-chunk';
+              }
+              // Everything else from Radix
+              return 'radix-ui-chunk';
+            }
+
+            // Supabase
+            if (id.includes('@supabase')) {
+              return 'supabase-chunk';
+            }
+
+            // TanStack Query
+            if (id.includes('@tanstack/react-query')) {
+              return 'tanstack-query-chunk';
+            }
+
+            // TipTap editor (can be large)
+            if (id.includes('@tiptap') || id.includes('prosemirror')) {
+              return 'editor-libs-chunk';
+            }
+
+            // Form libraries
+            if (id.includes('react-hook-form') || id.includes('@hookform') || id.includes('zod')) {
+              return 'form-libs-chunk';
+            }
+
+            // DnD Kit (dashboard builder)
+            if (id.includes('@dnd-kit')) {
+              return 'dnd-kit-chunk';
+            }
+
+            // Date libraries
+            if (id.includes('date-fns')) {
+              return 'date-libs-chunk';
+            }
+
+            // Icons - lucide-react is HUGE, must be separate
+            if (id.includes('lucide-react')) {
+              return 'icons-chunk';
+            }
+
+            // Jitsi (video conferencing) - can be large
+            if (id.includes('@jitsi')) {
+              return 'video-conference-chunk';
+            }
+
+            // Markdown & syntax highlighting
+            if (
+              id.includes('react-markdown') ||
+              id.includes('react-syntax-highlighter') ||
+              id.includes('marked')
+            ) {
+              return 'markdown-chunk';
+            }
+
+            // PDF viewing (react-pdf)
+            if (id.includes('react-pdf')) {
+              return 'pdf-libs-chunk'; // Merge with other PDF libraries
+            }
+
+            // Motion/Animation
+            if (id.includes('framer-motion')) {
+              return 'animation-chunk';
+            }
+
+            // i18n (internationalization)
+            if (id.includes('i18next') || id.includes('react-i18next')) {
+              return 'i18n-chunk';
+            }
+
+            // UI utilities
+            if (id.includes('cmdk') || id.includes('vaul') || id.includes('sonner')) {
+              return 'ui-utils-chunk';
+            }
+
+            // File processing
+            if (id.includes('jszip') || id.includes('dompurify')) {
+              return 'file-processing-chunk';
+            }
+
+            // Utilities (smaller libraries)
+            if (
+              id.includes('clsx') ||
+              id.includes('class-variance-authority') ||
+              id.includes('tailwind-merge')
+            ) {
+              return 'utils-chunk';
+            }
+
+            // Everything else - should be much smaller now
+            return 'vendor-misc-chunk';
           }
 
           // Application code - split by feature
@@ -243,6 +369,10 @@ export default defineConfig(({ mode }) => ({
         },
         // Optimize chunk naming
         chunkFileNames: chunkInfo => {
+          // Use cleaner names for manual chunks
+          if (chunkInfo.name && chunkInfo.name.endsWith('-chunk')) {
+            return `js/[name]-[hash].js`;
+          }
           const facadeModuleId = chunkInfo.facadeModuleId
             ? chunkInfo.facadeModuleId.split('/').pop()
             : 'chunk';
