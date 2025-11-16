@@ -44,6 +44,7 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { ShareLinkService } from '@/services/dashboard/ShareLinkService';
 import { TemplateGalleryService } from '@/services/dashboard/TemplateGalleryService';
+import { SECURITY_CONFIG } from '@/config/security';
 import type { DashboardView } from '@/types/dashboard';
 
 interface ShareDialogProps {
@@ -230,15 +231,26 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="maxUses">Max Uses</Label>
+                      <Label htmlFor="maxUses">
+                        Max Uses (max {SECURITY_CONFIG.SHARE_LINK_MAX_USES})
+                      </Label>
                       <Input
                         id="maxUses"
                         type="number"
                         min="0"
+                        max={SECURITY_CONFIG.SHARE_LINK_MAX_USES}
                         value={maxUses}
-                        onChange={(e) => setMaxUses(parseInt(e.target.value) || 0)}
+                        onChange={(e) => {
+                          const value = parseInt(e.target.value) || 0;
+                          setMaxUses(Math.min(value, SECURITY_CONFIG.SHARE_LINK_MAX_USES));
+                        }}
                         placeholder="Unlimited"
                       />
+                      {maxUses > SECURITY_CONFIG.SHARE_LINK_MAX_USES && (
+                        <p className="text-xs text-amber-600">
+                          Maximum {SECURITY_CONFIG.SHARE_LINK_MAX_USES} uses allowed
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -368,23 +380,45 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
           <TabsContent value="publish" className="space-y-4">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="templateName">Template Name *</Label>
+                <Label htmlFor="templateName">
+                  Template Name * ({templateName.length}/{SECURITY_CONFIG.MAX_TEMPLATE_NAME_LENGTH})
+                </Label>
                 <Input
                   id="templateName"
                   value={templateName}
-                  onChange={(e) => setTemplateName(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value.slice(0, SECURITY_CONFIG.MAX_TEMPLATE_NAME_LENGTH);
+                    setTemplateName(value);
+                  }}
                   placeholder="e.g., Student Progress Dashboard"
+                  maxLength={SECURITY_CONFIG.MAX_TEMPLATE_NAME_LENGTH}
                 />
+                {templateName.length >= SECURITY_CONFIG.MAX_TEMPLATE_NAME_LENGTH && (
+                  <p className="text-xs text-amber-600">
+                    Maximum length reached
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="templateDescription">Description</Label>
+                <Label htmlFor="templateDescription">
+                  Description ({templateDescription.length}/{SECURITY_CONFIG.MAX_TEMPLATE_DESC_LENGTH})
+                </Label>
                 <Input
                   id="templateDescription"
                   value={templateDescription}
-                  onChange={(e) => setTemplateDescription(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value.slice(0, SECURITY_CONFIG.MAX_TEMPLATE_DESC_LENGTH);
+                    setTemplateDescription(value);
+                  }}
                   placeholder="Describe what this dashboard is for..."
+                  maxLength={SECURITY_CONFIG.MAX_TEMPLATE_DESC_LENGTH}
                 />
+                {templateDescription.length >= SECURITY_CONFIG.MAX_TEMPLATE_DESC_LENGTH && (
+                  <p className="text-xs text-amber-600">
+                    Maximum length reached
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -404,13 +438,20 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="templateTags">Tags (comma-separated)</Label>
+                <Label htmlFor="templateTags">
+                  Tags (comma-separated, max {SECURITY_CONFIG.MAX_TEMPLATE_TAGS})
+                </Label>
                 <Input
                   id="templateTags"
                   value={templateTags}
                   onChange={(e) => setTemplateTags(e.target.value)}
                   placeholder="e.g., progress, analytics, overview"
                 />
+                {templateTags.split(',').filter(t => t.trim()).length > SECURITY_CONFIG.MAX_TEMPLATE_TAGS && (
+                  <p className="text-xs text-amber-600">
+                    Maximum {SECURITY_CONFIG.MAX_TEMPLATE_TAGS} tags allowed
+                  </p>
+                )}
               </div>
 
               <div className="p-4 border rounded-lg bg-blue-500/10 border-blue-500/20">
