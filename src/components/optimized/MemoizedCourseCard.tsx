@@ -2,6 +2,8 @@ import { memo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { OfflineBadge } from '@/components/offline/OfflineBadge';
+import { useOfflineContent } from '@/hooks/useOfflineContent';
 import type { Course } from '@/types';
 
 interface CourseCardProps {
@@ -23,13 +25,18 @@ interface CourseCardProps {
  */
 export const MemoizedCourseCard = memo<CourseCardProps>(
   function CourseCard({ course, onEnroll, onViewDetails }) {
+    const { isDownloaded } = useOfflineContent(course.id.toString(), 'course');
+
     return (
       <article aria-label={`Course: ${course.title}`}>
         <Card className="h-full hover:shadow-lg transition-shadow">
           <CardHeader>
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <CardTitle className="text-xl line-clamp-2">{course.title}</CardTitle>
+                <div className="flex items-center gap-2 mb-1">
+                  <CardTitle className="text-xl line-clamp-2">{course.title}</CardTitle>
+                  <OfflineBadge isOffline={isDownloaded} variant="secondary" showIcon={true} />
+                </div>
                 <CardDescription
                   className="mt-2"
                   aria-label={`Course details: ${course.level} level, ${course.duration} duration`}

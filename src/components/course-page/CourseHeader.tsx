@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { BookmarkButton } from '@/components/bookmarks/BookmarkButton';
+import { DownloadButton } from '@/components/offline/DownloadButton';
+import { OfflineBadge } from '@/components/offline/OfflineBadge';
+import { useOfflineContent } from '@/hooks/useOfflineContent';
 import { ArrowLeft, Clock, Users, Calendar, CheckCircle } from 'lucide-react';
 import type { Course } from './types';
 
@@ -16,6 +19,8 @@ interface CourseHeaderProps {
 }
 
 export function CourseHeader({ course, progressPercentage, courseId }: CourseHeaderProps) {
+  const { isDownloaded } = useOfflineContent(courseId, 'course');
+
   return (
     <div className="mb-6">
       <Link to="/dashboard">
@@ -29,6 +34,7 @@ export function CourseHeader({ course, progressPercentage, courseId }: CourseHea
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-3xl font-display font-bold text-white">{course.title}</h1>
+            <OfflineBadge isOffline={isDownloaded} variant="secondary" className="bg-white/20 text-white" />
             <BookmarkButton
               type="course"
               contentId={courseId}
@@ -37,6 +43,14 @@ export function CourseHeader({ course, progressPercentage, courseId }: CourseHea
               size="default"
               className="text-white hover:bg-white/10"
               showLabel
+            />
+            <DownloadButton
+              contentId={courseId}
+              contentType="course"
+              contentName={course.title}
+              variant="outline"
+              size="default"
+              showProgress={true}
             />
           </div>
           <p className="text-white/80 mb-4 max-w-3xl">{course.description}</p>
