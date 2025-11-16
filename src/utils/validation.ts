@@ -33,6 +33,9 @@ export function sanitizeHTML(input: string, maxLength = 5000): string {
   return cleaned.substring(0, maxLength);
 }
 
+// Alias for consistency
+export const sanitizeHtml = sanitizeHTML;
+
 // Validate widget configuration
 export const widgetConfigSchema = z.object({
   title: z.string().max(200).optional(),

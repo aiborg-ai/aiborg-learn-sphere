@@ -12,6 +12,11 @@ import type {
   DashboardConfig,
 } from '@/types/dashboard';
 import { DashboardConfigService } from './DashboardConfigService';
+import { validateUUID } from '@/utils/validation';
+import { verifyDashboardOwnership, checkRateLimit } from '@/utils/authorization';
+import { AppError, ERROR_CODES, withErrorHandling } from '@/utils/errorHandling';
+import { audit } from '@/utils/auditLog';
+import { SECURITY_CONFIG } from '@/config/security';
 
 export class ShareLinkService {
   /**
@@ -34,47 +39,110 @@ export class ShareLinkService {
     userId: string,
     options?: ShareLinkOptions
   ): Promise<DashboardShareLink> {
-    // Verify view exists and belongs to user
-    const view = await DashboardConfigService.getView(viewId);
-    if (!view || view.user_id !== userId) {
-      throw new Error('Dashboard view not found or access denied');
-    }
+    return withErrorHandling(async () => {
+      // Validate inputs
+      if (!validateUUID(viewId) || !validateUUID(userId)) {
+        throw new AppError(
+          'Invalid ID format',
+          ERROR_CODES.INVALID_INPUT.code,
+          ERROR_CODES.INVALID_INPUT.statusCode
+        );
+      }
 
-    // Deactivate existing active links for this view
-    await this.deactivateAllLinks(viewId);
+      // Check rate limit (stricter for share link creation)
+      if (!checkRateLimit(userId, 'createShareLink', 10)) {
+        throw new AppError(
+          'Too many share links created. Please try again later.',
+          ERROR_CODES.RATE_LIMIT_EXCEEDED.code,
+          ERROR_CODES.RATE_LIMIT_EXCEEDED.statusCode
+        );
+      }
 
-    // Calculate expiration date
-    let expiresAt: string | null = null;
-    if (options?.expiresIn) {
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + options.expiresIn);
-      expiresAt = expiryDate.toISOString();
-    }
+      // Verify ownership
+      const ownsView = await verifyDashboardOwnership(viewId, userId);
+      if (!ownsView) {
+        throw new AppError(
+          'You do not have permission to share this dashboard',
+          ERROR_CODES.FORBIDDEN.code,
+          ERROR_CODES.FORBIDDEN.statusCode
+        );
+      }
 
-    // Generate unique token
-    const shareToken = this.generateToken();
+      // Verify view exists
+      const view = await DashboardConfigService.getView(viewId, userId);
+      if (!view) {
+        throw new AppError(
+          'Dashboard view not found',
+          ERROR_CODES.NOT_FOUND.code,
+          ERROR_CODES.NOT_FOUND.statusCode
+        );
+      }
 
-    // Create share link
-    const { data, error } = await supabase
-      .from('dashboard_share_links')
-      .insert({
-        dashboard_view_id: viewId,
-        creator_id: userId,
-        share_token: shareToken,
-        expires_at: expiresAt,
-        max_uses: options?.maxUses || null,
-        allow_editing: options?.allowEditing || false,
-        is_active: true,
-      })
-      .select()
-      .single();
+      // Validate expiration (max 1 year)
+      let expiresAt: string | null = null;
+      if (options?.expiresIn) {
+        const maxExpiry = SECURITY_CONFIG.SHARE_LINK_MAX_EXPIRY_DAYS;
+        if (options.expiresIn > maxExpiry) {
+          throw new AppError(
+            `Expiration cannot exceed ${maxExpiry} days`,
+            ERROR_CODES.INVALID_INPUT.code,
+            ERROR_CODES.INVALID_INPUT.statusCode
+          );
+        }
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + options.expiresIn);
+        expiresAt = expiryDate.toISOString();
+      }
 
-    if (error) {
-      console.error('Error creating share link:', error);
-      throw new Error(`Failed to create share link: ${error.message}`);
-    }
+      // Validate max uses
+      const maxUses = options?.maxUses || null;
+      if (maxUses && maxUses > SECURITY_CONFIG.SHARE_LINK_MAX_USES) {
+        throw new AppError(
+          `Max uses cannot exceed ${SECURITY_CONFIG.SHARE_LINK_MAX_USES}`,
+          ERROR_CODES.INVALID_INPUT.code,
+          ERROR_CODES.INVALID_INPUT.statusCode
+        );
+      }
 
-    return data;
+      // Deactivate existing active links for this view
+      await this.deactivateAllLinks(viewId);
+
+      // Generate unique token
+      const shareToken = this.generateToken();
+
+      // Create share link
+      const { data, error } = await supabase
+        .from('dashboard_share_links')
+        .insert({
+          dashboard_view_id: viewId,
+          creator_id: userId,
+          share_token: shareToken,
+          expires_at: expiresAt,
+          max_uses: maxUses,
+          allow_editing: options?.allowEditing || false,
+          is_active: true,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating share link:', error);
+        throw new AppError(
+          'Failed to create share link',
+          ERROR_CODES.DATABASE_ERROR.code,
+          ERROR_CODES.DATABASE_ERROR.statusCode
+        );
+      }
+
+      // Audit log
+      await audit.shareLinkCreated(userId, data.id, {
+        expiresAt,
+        maxUses,
+        allowEditing: options?.allowEditing || false,
+      });
+
+      return data;
+    });
   }
 
   /**
@@ -193,16 +261,66 @@ export class ShareLinkService {
   /**
    * Deactivate a share link
    */
-  static async deactivateLink(linkId: string): Promise<void> {
-    const { error } = await supabase
-      .from('dashboard_share_links')
-      .update({ is_active: false })
-      .eq('id', linkId);
+  static async deactivateLink(linkId: string, userId: string): Promise<void> {
+    return withErrorHandling(async () => {
+      // Validate inputs
+      if (!validateUUID(linkId) || !validateUUID(userId)) {
+        throw new AppError(
+          'Invalid ID format',
+          ERROR_CODES.INVALID_INPUT.code,
+          ERROR_CODES.INVALID_INPUT.statusCode
+        );
+      }
 
-    if (error) {
-      console.error('Error deactivating share link:', error);
-      throw new Error(`Failed to deactivate share link: ${error.message}`);
-    }
+      // Check rate limit
+      if (!checkRateLimit(userId, 'deactivateLink')) {
+        throw new AppError(
+          'Rate limit exceeded',
+          ERROR_CODES.RATE_LIMIT_EXCEEDED.code,
+          ERROR_CODES.RATE_LIMIT_EXCEEDED.statusCode
+        );
+      }
+
+      // Verify link exists and user owns it
+      const { data: link } = await supabase
+        .from('dashboard_share_links')
+        .select('creator_id')
+        .eq('id', linkId)
+        .single();
+
+      if (!link) {
+        throw new AppError(
+          'Share link not found',
+          ERROR_CODES.NOT_FOUND.code,
+          ERROR_CODES.NOT_FOUND.statusCode
+        );
+      }
+
+      if (link.creator_id !== userId) {
+        throw new AppError(
+          'You do not have permission to deactivate this link',
+          ERROR_CODES.FORBIDDEN.code,
+          ERROR_CODES.FORBIDDEN.statusCode
+        );
+      }
+
+      const { error } = await supabase
+        .from('dashboard_share_links')
+        .update({ is_active: false })
+        .eq('id', linkId);
+
+      if (error) {
+        console.error('Error deactivating share link:', error);
+        throw new AppError(
+          'Failed to deactivate share link',
+          ERROR_CODES.DATABASE_ERROR.code,
+          ERROR_CODES.DATABASE_ERROR.statusCode
+        );
+      }
+
+      // Audit log
+      await audit.shareLinkRevoked(userId, linkId);
+    });
   }
 
   /**
@@ -224,13 +342,63 @@ export class ShareLinkService {
   /**
    * Delete a share link
    */
-  static async deleteLink(linkId: string): Promise<void> {
-    const { error } = await supabase.from('dashboard_share_links').delete().eq('id', linkId);
+  static async deleteLink(linkId: string, userId: string): Promise<void> {
+    return withErrorHandling(async () => {
+      // Validate inputs
+      if (!validateUUID(linkId) || !validateUUID(userId)) {
+        throw new AppError(
+          'Invalid ID format',
+          ERROR_CODES.INVALID_INPUT.code,
+          ERROR_CODES.INVALID_INPUT.statusCode
+        );
+      }
 
-    if (error) {
-      console.error('Error deleting share link:', error);
-      throw new Error(`Failed to delete share link: ${error.message}`);
-    }
+      // Check rate limit
+      if (!checkRateLimit(userId, 'deleteLink')) {
+        throw new AppError(
+          'Rate limit exceeded',
+          ERROR_CODES.RATE_LIMIT_EXCEEDED.code,
+          ERROR_CODES.RATE_LIMIT_EXCEEDED.statusCode
+        );
+      }
+
+      // Verify link exists and user owns it
+      const { data: link } = await supabase
+        .from('dashboard_share_links')
+        .select('creator_id')
+        .eq('id', linkId)
+        .single();
+
+      if (!link) {
+        throw new AppError(
+          'Share link not found',
+          ERROR_CODES.NOT_FOUND.code,
+          ERROR_CODES.NOT_FOUND.statusCode
+        );
+      }
+
+      if (link.creator_id !== userId) {
+        throw new AppError(
+          'You do not have permission to delete this link',
+          ERROR_CODES.FORBIDDEN.code,
+          ERROR_CODES.FORBIDDEN.statusCode
+        );
+      }
+
+      const { error } = await supabase.from('dashboard_share_links').delete().eq('id', linkId);
+
+      if (error) {
+        console.error('Error deleting share link:', error);
+        throw new AppError(
+          'Failed to delete share link',
+          ERROR_CODES.DATABASE_ERROR.code,
+          ERROR_CODES.DATABASE_ERROR.statusCode
+        );
+      }
+
+      // Audit log
+      await audit.shareLinkRevoked(userId, linkId);
+    });
   }
 
   /**

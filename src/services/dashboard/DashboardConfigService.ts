@@ -13,46 +13,100 @@ import type {
   LayoutType,
   ThemeConfig,
 } from '@/types/dashboard';
+import { sanitizeString, validateUUID } from '@/utils/validation';
+import { validateDashboardConfig } from './validation';
+import { verifyDashboardOwnership, checkRateLimit } from '@/utils/authorization';
+import { AppError, ERROR_CODES, withErrorHandling } from '@/utils/errorHandling';
+import { audit } from '@/utils/auditLog';
+import { SECURITY_CONFIG } from '@/config/security';
 
 export class DashboardConfigService {
   /**
    * Get all dashboard views for a user
    */
   static async getUserViews(userId: string): Promise<DashboardView[]> {
-    const { data, error } = await supabase
-      .from('custom_dashboard_views')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false });
+    return withErrorHandling(async () => {
+      // Validate UUID
+      if (!validateUUID(userId)) {
+        throw new AppError(
+          'Invalid user ID format',
+          ERROR_CODES.INVALID_INPUT.code,
+          ERROR_CODES.INVALID_INPUT.statusCode
+        );
+      }
 
-    if (error) {
-      console.error('Error fetching dashboard views:', error);
-      throw new Error(`Failed to fetch dashboard views: ${error.message}`);
-    }
+      // Check rate limit
+      if (!checkRateLimit(userId, 'getUserViews')) {
+        throw new AppError(
+          'Rate limit exceeded',
+          ERROR_CODES.RATE_LIMIT_EXCEEDED.code,
+          ERROR_CODES.RATE_LIMIT_EXCEEDED.statusCode
+        );
+      }
 
-    return data || [];
+      const { data, error } = await supabase
+        .from('custom_dashboard_views')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching dashboard views:', error);
+        throw new AppError(
+          'Failed to fetch dashboard views',
+          ERROR_CODES.DATABASE_ERROR.code,
+          ERROR_CODES.DATABASE_ERROR.statusCode
+        );
+      }
+
+      return data || [];
+    });
   }
 
   /**
    * Get a specific dashboard view by ID
    */
-  static async getView(viewId: string): Promise<DashboardView | null> {
-    const { data, error } = await supabase
-      .from('custom_dashboard_views')
-      .select('*')
-      .eq('id', viewId)
-      .single();
-
-    if (error) {
-      if (error.code === 'PGRST116') {
-        // Not found
-        return null;
+  static async getView(viewId: string, userId?: string): Promise<DashboardView | null> {
+    return withErrorHandling(async () => {
+      // Validate UUID
+      if (!validateUUID(viewId)) {
+        throw new AppError(
+          'Invalid view ID format',
+          ERROR_CODES.INVALID_INPUT.code,
+          ERROR_CODES.INVALID_INPUT.statusCode
+        );
       }
-      console.error('Error fetching dashboard view:', error);
-      throw new Error(`Failed to fetch dashboard view: ${error.message}`);
-    }
 
-    return data;
+      const { data, error } = await supabase
+        .from('custom_dashboard_views')
+        .select('*')
+        .eq('id', viewId)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // Not found
+          return null;
+        }
+        console.error('Error fetching dashboard view:', error);
+        throw new AppError(
+          'Failed to fetch dashboard view',
+          ERROR_CODES.DATABASE_ERROR.code,
+          ERROR_CODES.DATABASE_ERROR.statusCode
+        );
+      }
+
+      // Verify ownership if userId provided
+      if (userId && data.user_id !== userId) {
+        throw new AppError(
+          'You do not have permission to access this dashboard',
+          ERROR_CODES.FORBIDDEN.code,
+          ERROR_CODES.FORBIDDEN.statusCode
+        );
+      }
+
+      return data;
+    });
   }
 
   /**
@@ -92,39 +146,88 @@ export class DashboardConfigService {
       themeConfig?: ThemeConfig;
     }
   ): Promise<DashboardView> {
-    // Validate max views (10 per user)
-    const existingViews = await this.getUserViews(userId);
-    if (existingViews.length >= 10) {
-      throw new Error(
-        'Maximum number of dashboard views (10) reached. Please delete a view first.'
-      );
-    }
+    return withErrorHandling(async () => {
+      // Validate inputs
+      if (!validateUUID(userId)) {
+        throw new AppError(
+          'Invalid user ID format',
+          ERROR_CODES.INVALID_INPUT.code,
+          ERROR_CODES.INVALID_INPUT.statusCode
+        );
+      }
 
-    // If setting as default, unset other defaults first
-    if (options?.isDefault) {
-      await this.unsetAllDefaults(userId);
-    }
+      // Check rate limit
+      if (!checkRateLimit(userId, 'createView')) {
+        throw new AppError(
+          'Rate limit exceeded',
+          ERROR_CODES.RATE_LIMIT_EXCEEDED.code,
+          ERROR_CODES.RATE_LIMIT_EXCEEDED.statusCode
+        );
+      }
 
-    const { data, error } = await supabase
-      .from('custom_dashboard_views')
-      .insert({
-        user_id: userId,
-        name,
-        config,
-        is_default: options?.isDefault || false,
-        is_public: options?.isPublic || false,
-        layout_type: options?.layoutType || 'grid',
-        theme_config: options?.themeConfig || {},
-      })
-      .select()
-      .single();
+      // Sanitize name
+      const sanitizedName = sanitizeString(name, SECURITY_CONFIG.MAX_TEMPLATE_NAME_LENGTH);
+      if (!sanitizedName) {
+        throw new AppError(
+          'Dashboard name is required',
+          ERROR_CODES.INVALID_INPUT.code,
+          ERROR_CODES.INVALID_INPUT.statusCode
+        );
+      }
 
-    if (error) {
-      console.error('Error creating dashboard view:', error);
-      throw new Error(`Failed to create dashboard view: ${error.message}`);
-    }
+      // Validate dashboard config
+      const validation = validateDashboardConfig(config);
+      if (!validation.isValid) {
+        throw new AppError(
+          `Invalid dashboard configuration: ${validation.errors.join(', ')}`,
+          ERROR_CODES.INVALID_INPUT.code,
+          ERROR_CODES.INVALID_INPUT.statusCode
+        );
+      }
 
-    return data;
+      // Validate max views per user
+      const existingViews = await this.getUserViews(userId);
+      if (existingViews.length >= SECURITY_CONFIG.MAX_DASHBOARD_VIEWS_PER_USER) {
+        throw new AppError(
+          `Maximum number of dashboard views (${SECURITY_CONFIG.MAX_DASHBOARD_VIEWS_PER_USER}) reached`,
+          ERROR_CODES.FORBIDDEN.code,
+          ERROR_CODES.FORBIDDEN.statusCode
+        );
+      }
+
+      // If setting as default, unset other defaults first
+      if (options?.isDefault) {
+        await this.unsetAllDefaults(userId);
+      }
+
+      const { data, error } = await supabase
+        .from('custom_dashboard_views')
+        .insert({
+          user_id: userId,
+          name: sanitizedName,
+          config: validation.sanitizedConfig || config,
+          is_default: options?.isDefault || false,
+          is_public: options?.isPublic || false,
+          layout_type: options?.layoutType || 'grid',
+          theme_config: options?.themeConfig || {},
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating dashboard view:', error);
+        throw new AppError(
+          'Failed to create dashboard view',
+          ERROR_CODES.DATABASE_ERROR.code,
+          ERROR_CODES.DATABASE_ERROR.statusCode
+        );
+      }
+
+      // Audit log
+      await audit.dashboardCreated(userId, data.id);
+
+      return data;
+    });
   }
 
   /**
@@ -132,6 +235,7 @@ export class DashboardConfigService {
    */
   static async updateView(
     viewId: string,
+    userId: string,
     updates: {
       name?: string;
       config?: DashboardConfig;
@@ -141,47 +245,146 @@ export class DashboardConfigService {
       themeConfig?: ThemeConfig;
     }
   ): Promise<DashboardView> {
-    // If setting as default, get user_id and unset other defaults
-    if (updates.isDefault) {
-      const view = await this.getView(viewId);
-      if (view) {
-        await this.unsetAllDefaults(view.user_id);
+    return withErrorHandling(async () => {
+      // Validate inputs
+      if (!validateUUID(viewId) || !validateUUID(userId)) {
+        throw new AppError(
+          'Invalid ID format',
+          ERROR_CODES.INVALID_INPUT.code,
+          ERROR_CODES.INVALID_INPUT.statusCode
+        );
       }
-    }
 
-    const updateData: any = {};
-    if (updates.name !== undefined) updateData.name = updates.name;
-    if (updates.config !== undefined) updateData.config = updates.config;
-    if (updates.isDefault !== undefined) updateData.is_default = updates.isDefault;
-    if (updates.isPublic !== undefined) updateData.is_public = updates.isPublic;
-    if (updates.layoutType !== undefined) updateData.layout_type = updates.layoutType;
-    if (updates.themeConfig !== undefined) updateData.theme_config = updates.themeConfig;
+      // Check rate limit
+      if (!checkRateLimit(userId, 'updateView')) {
+        throw new AppError(
+          'Rate limit exceeded',
+          ERROR_CODES.RATE_LIMIT_EXCEEDED.code,
+          ERROR_CODES.RATE_LIMIT_EXCEEDED.statusCode
+        );
+      }
 
-    const { data, error } = await supabase
-      .from('custom_dashboard_views')
-      .update(updateData)
-      .eq('id', viewId)
-      .select()
-      .single();
+      // Verify ownership
+      const ownsView = await verifyDashboardOwnership(viewId, userId);
+      if (!ownsView) {
+        throw new AppError(
+          'You do not have permission to update this dashboard',
+          ERROR_CODES.FORBIDDEN.code,
+          ERROR_CODES.FORBIDDEN.statusCode
+        );
+      }
 
-    if (error) {
-      console.error('Error updating dashboard view:', error);
-      throw new Error(`Failed to update dashboard view: ${error.message}`);
-    }
+      const updateData: any = {};
 
-    return data;
+      // Sanitize name if provided
+      if (updates.name !== undefined) {
+        const sanitizedName = sanitizeString(
+          updates.name,
+          SECURITY_CONFIG.MAX_TEMPLATE_NAME_LENGTH
+        );
+        if (!sanitizedName) {
+          throw new AppError(
+            'Dashboard name cannot be empty',
+            ERROR_CODES.INVALID_INPUT.code,
+            ERROR_CODES.INVALID_INPUT.statusCode
+          );
+        }
+        updateData.name = sanitizedName;
+      }
+
+      // Validate config if provided
+      if (updates.config !== undefined) {
+        const validation = validateDashboardConfig(updates.config);
+        if (!validation.isValid) {
+          throw new AppError(
+            `Invalid dashboard configuration: ${validation.errors.join(', ')}`,
+            ERROR_CODES.INVALID_INPUT.code,
+            ERROR_CODES.INVALID_INPUT.statusCode
+          );
+        }
+        updateData.config = validation.sanitizedConfig || updates.config;
+      }
+
+      // If setting as default, unset other defaults first
+      if (updates.isDefault) {
+        await this.unsetAllDefaults(userId);
+        updateData.is_default = true;
+      }
+
+      if (updates.isPublic !== undefined) updateData.is_public = updates.isPublic;
+      if (updates.layoutType !== undefined) updateData.layout_type = updates.layoutType;
+      if (updates.themeConfig !== undefined) updateData.theme_config = updates.themeConfig;
+
+      const { data, error } = await supabase
+        .from('custom_dashboard_views')
+        .update(updateData)
+        .eq('id', viewId)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error updating dashboard view:', error);
+        throw new AppError(
+          'Failed to update dashboard view',
+          ERROR_CODES.DATABASE_ERROR.code,
+          ERROR_CODES.DATABASE_ERROR.statusCode
+        );
+      }
+
+      // Audit log
+      await audit.dashboardUpdated(userId, viewId, updateData);
+
+      return data;
+    });
   }
 
   /**
    * Delete a dashboard view
    */
-  static async deleteView(viewId: string): Promise<void> {
-    const { error } = await supabase.from('custom_dashboard_views').delete().eq('id', viewId);
+  static async deleteView(viewId: string, userId: string): Promise<void> {
+    return withErrorHandling(async () => {
+      // Validate inputs
+      if (!validateUUID(viewId) || !validateUUID(userId)) {
+        throw new AppError(
+          'Invalid ID format',
+          ERROR_CODES.INVALID_INPUT.code,
+          ERROR_CODES.INVALID_INPUT.statusCode
+        );
+      }
 
-    if (error) {
-      console.error('Error deleting dashboard view:', error);
-      throw new Error(`Failed to delete dashboard view: ${error.message}`);
-    }
+      // Check rate limit
+      if (!checkRateLimit(userId, 'deleteView')) {
+        throw new AppError(
+          'Rate limit exceeded',
+          ERROR_CODES.RATE_LIMIT_EXCEEDED.code,
+          ERROR_CODES.RATE_LIMIT_EXCEEDED.statusCode
+        );
+      }
+
+      // Verify ownership
+      const ownsView = await verifyDashboardOwnership(viewId, userId);
+      if (!ownsView) {
+        throw new AppError(
+          'You do not have permission to delete this dashboard',
+          ERROR_CODES.FORBIDDEN.code,
+          ERROR_CODES.FORBIDDEN.statusCode
+        );
+      }
+
+      const { error } = await supabase.from('custom_dashboard_views').delete().eq('id', viewId);
+
+      if (error) {
+        console.error('Error deleting dashboard view:', error);
+        throw new AppError(
+          'Failed to delete dashboard view',
+          ERROR_CODES.DATABASE_ERROR.code,
+          ERROR_CODES.DATABASE_ERROR.statusCode
+        );
+      }
+
+      // Audit log
+      await audit.dashboardDeleted(userId, viewId);
+    });
   }
 
   /**
