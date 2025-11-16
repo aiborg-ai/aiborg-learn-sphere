@@ -6,6 +6,7 @@
 
 import { useState, useRef, useCallback, Suspense } from 'react';
 import { useDraggable } from '@dnd-kit/core';
+import { motion } from 'framer-motion';
 import { GripVertical, Settings, X, Lock, Unlock, Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -145,7 +146,16 @@ export function DraggableWidget({
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="group">
+    <motion.div
+      ref={setNodeRef}
+      style={style}
+      className="group"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ duration: 0.2 }}
+      whileHover={!widget.locked && isEditing ? { scale: 1.02 } : {}}
+    >
       <Card
         ref={containerRef}
         className={cn(
@@ -247,7 +257,7 @@ export function DraggableWidget({
           </>
         )}
       </Card>
-    </div>
+    </motion.div>
   );
 }
 

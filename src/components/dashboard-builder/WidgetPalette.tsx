@@ -5,6 +5,7 @@
  */
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Plus, Search, ChevronDown, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -151,11 +152,16 @@ export function WidgetPalette({ onAddWidget, className }: WidgetPaletteProps) {
                 </CollapsibleTrigger>
 
                 <CollapsibleContent className="mt-2 space-y-2">
-                  {categoryWidgets.map(widget => (
-                    <div
+                  {categoryWidgets.map((widget, index) => (
+                    <motion.div
                       key={widget.type}
                       className="group relative p-3 rounded-lg border bg-card hover:border-primary/50 hover:shadow-sm transition-all cursor-pointer"
                       onClick={() => onAddWidget(widget.type)}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      whileHover={{ scale: 1.02, borderColor: 'hsl(var(--primary))' }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       <div className="flex items-start gap-3">
                         <div className="p-2 rounded-md bg-primary/10 shrink-0">
@@ -201,7 +207,7 @@ export function WidgetPalette({ onAddWidget, className }: WidgetPaletteProps) {
 
                       {/* Hover effect */}
                       <div className="absolute inset-0 rounded-lg border-2 border-primary opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                    </div>
+                    </motion.div>
                   ))}
                 </CollapsibleContent>
               </Collapsible>

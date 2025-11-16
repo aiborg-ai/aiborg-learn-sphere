@@ -27,6 +27,7 @@ import { WidgetPalette } from './WidgetPalette';
 import { WidgetEditor } from './WidgetEditor';
 import { ViewManager } from './ViewManager';
 import { ShareDialog } from './ShareDialog';
+import { OnboardingTour } from './OnboardingTour';
 import { useDashboardBuilder } from '@/hooks/useDashboardBuilder';
 import { WidgetRegistry } from '@/services/dashboard/WidgetRegistry';
 import { supabase } from '@/integrations/supabase/client';
@@ -46,6 +47,15 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
   const [selectedWidget, setSelectedWidget] = useState<DashboardWidget | null>(null);
   const [showWidgetEditor, setShowWidgetEditor] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  // Check if user has seen onboarding
+  useEffect(() => {
+    const hasSeenOnboarding = localStorage.getItem('dashboard-builder-onboarding-complete');
+    if (!hasSeenOnboarding && currentViewId) {
+      setShowOnboarding(true);
+    }
+  }, [currentViewId]);
 
   // Initialize dashboard builder hook
   const {
@@ -335,6 +345,7 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
             onClick={() => setShowShareDialog(true)}
             disabled={!currentViewId}
             title="Share dashboard"
+            className="share-button"
           >
             <Share2 className="h-4 w-4" />
           </Button>
@@ -356,7 +367,7 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
       <div className="flex flex-1 overflow-hidden">
         {/* Widget palette - only in edit mode */}
         {mode === 'edit' && (
-          <aside className="w-80 border-r bg-card">
+          <aside className="w-80 border-r bg-card widget-palette">
             <WidgetPalette onAddWidget={handleAddWidget} />
           </aside>
         )}
@@ -387,7 +398,7 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
               onWidgetResize={resizeWidget}
               onWidgetRemove={removeWidget}
               onWidgetUpdate={updateWidget}
-              className="max-w-7xl mx-auto"
+              className="max-w-7xl mx-auto dashboard-canvas"
             />
           )}
         </main>
@@ -416,6 +427,19 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
         view={currentView || null}
         isOpen={showShareDialog}
         onClose={() => setShowShareDialog(false)}
+      />
+
+      <OnboardingTour
+        isOpen={showOnboarding}
+        onComplete={() => {
+          setShowOnboarding(false);
+          localStorage.setItem('dashboard-builder-onboarding-complete', 'true');
+          toast.success('Welcome! Start building your custom dashboard.');
+        }}
+        onSkip={() => {
+          setShowOnboarding(false);
+          localStorage.setItem('dashboard-builder-onboarding-complete', 'true');
+        }}
       />
     </div>
   );
