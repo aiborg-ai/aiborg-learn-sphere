@@ -13,7 +13,6 @@ import {
   Undo2,
   Redo2,
   LayoutGrid,
-  Settings,
   Share2,
   Download,
   Upload,

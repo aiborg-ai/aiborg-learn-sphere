@@ -5,7 +5,7 @@
  */
 
 import { dashboardConfigSchema, sanitizeString, validateUUID } from '@/utils/validation';
-import { AppError, ERROR_CODES, withErrorHandling } from '@/utils/errorHandling';
+import { AppError, ERROR_CODES } from '@/utils/errorHandling';
 import { verifyDashboardOwnership, checkRateLimit } from '@/utils/authorization';
 import { SECURITY_CONFIG } from '@/config/security';
 import { WidgetRegistry } from './WidgetRegistry';

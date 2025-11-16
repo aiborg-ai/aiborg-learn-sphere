@@ -3,7 +3,7 @@
  * Main page showing all flashcard decks
  */
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,9 +21,8 @@ import { DeckList } from '@/components/flashcards/DeckList';
 import { FlashcardHelp } from '@/components/flashcards/FlashcardHelp';
 import { useFlashcardDecks, useCreateDeck, useDeleteDeck } from '@/hooks/useFlashcards';
 import { useReviewStreak } from '@/hooks/useSpacedRepetition';
-import { Plus, Flame, Trophy, BookOpen } from 'lucide-react';
+import { Plus, Flame, Trophy } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 export default function FlashcardsPage() {
   const navigate = useNavigate();
@@ -31,7 +30,16 @@ export default function FlashcardsPage() {
   const [newDeckTitle, setNewDeckTitle] = useState('');
   const [newDeckDescription, setNewDeckDescription] = useState('');
 
+  const titleInputRef = useRef<HTMLInputElement>(null);
+
   const { data: decks, isLoading } = useFlashcardDecks();
+
+  // Focus title input when dialog opens
+  useEffect(() => {
+    if (isCreateDialogOpen && titleInputRef.current) {
+      titleInputRef.current.focus();
+    }
+  }, [isCreateDialogOpen]);
   const { data: streak } = useReviewStreak();
   const createDeck = useCreateDeck();
   const deleteDeck = useDeleteDeck();
@@ -134,11 +142,11 @@ export default function FlashcardsPage() {
                 Deck Title <span className="text-destructive">*</span>
               </Label>
               <Input
+                ref={titleInputRef}
                 id="title"
                 placeholder="e.g., Spanish Vocabulary"
                 value={newDeckTitle}
                 onChange={e => setNewDeckTitle(e.target.value)}
-                autoFocus
               />
             </div>
 

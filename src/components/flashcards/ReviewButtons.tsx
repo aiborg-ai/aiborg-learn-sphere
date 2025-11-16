@@ -5,7 +5,6 @@
 
 import { Button } from '@/components/ui/button';
 import { XCircle, AlertCircle, CheckCircle, Sparkles } from 'lucide-react';
-import { SM2AlgorithmService } from '@/services/spaced-repetition/SM2AlgorithmService';
 
 interface ReviewButtonsProps {
   onReview: (quality: 'again' | 'hard' | 'good' | 'easy') => void;

@@ -322,7 +322,7 @@ export class FlashcardService {
     if (!user) throw new Error('Not authenticated');
 
     // Try to get existing review state
-    let { data, error } = await supabase
+    const { data: existingData, error } = await supabase
       .from('flashcard_reviews')
       .select('*')
       .eq('user_id', user.id)
@@ -336,7 +336,7 @@ export class FlashcardService {
     }
 
     // Create new review state if doesn't exist
-    if (!data) {
+    if (!existingData) {
       const initialState = SM2AlgorithmService.initializeState();
       const { data: newReview, error: insertError } = await supabase
         .from('flashcard_reviews')
@@ -356,10 +356,10 @@ export class FlashcardService {
         throw insertError;
       }
 
-      data = newReview;
+      return newReview;
     }
 
-    return data;
+    return existingData;
   }
 
   /**

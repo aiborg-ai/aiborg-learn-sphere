@@ -4,7 +4,7 @@
  * Dialog for managing dashboard views (create, rename, delete, switch)
  */
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   LayoutGrid,
@@ -19,7 +19,6 @@ import {
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Dialog,
@@ -66,7 +65,24 @@ export function ViewManager({
   const [editingName, setEditingName] = useState('');
   const [deletingViewId, setDeletingViewId] = useState<string | null>(null);
 
+  const createInputRef = useRef<HTMLInputElement>(null);
+  const editInputRef = useRef<HTMLInputElement>(null);
+
   const queryClient = useQueryClient();
+
+  // Handle focus for create input
+  useEffect(() => {
+    if (isCreating && createInputRef.current) {
+      createInputRef.current.focus();
+    }
+  }, [isCreating]);
+
+  // Handle focus for edit input
+  useEffect(() => {
+    if (editingViewId && editInputRef.current) {
+      editInputRef.current.focus();
+    }
+  }, [editingViewId]);
 
   // Fetch all views for current user
   const { data: views, isLoading } = useQuery({
@@ -265,6 +281,7 @@ export function ViewManager({
               {isCreating ? (
                 <>
                   <Input
+                    ref={createInputRef}
                     placeholder="Enter view name..."
                     value={newViewName}
                     onChange={(e) => setNewViewName(e.target.value)}
@@ -275,7 +292,6 @@ export function ViewManager({
                         setNewViewName('');
                       }
                     }}
-                    autoFocus
                   />
                   <Button size="icon" onClick={handleCreateView}>
                     <Check className="h-4 w-4" />
@@ -330,6 +346,7 @@ export function ViewManager({
                       {editingViewId === view.id ? (
                         <>
                           <Input
+                            ref={editInputRef}
                             value={editingName}
                             onChange={(e) => setEditingName(e.target.value)}
                             onKeyDown={(e) => {
@@ -337,7 +354,6 @@ export function ViewManager({
                               if (e.key === 'Escape') cancelEditing();
                             }}
                             className="flex-1"
-                            autoFocus
                           />
                           <Button
                             size="icon"

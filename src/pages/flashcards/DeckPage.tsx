@@ -16,7 +16,7 @@ import {
   useDeleteFlashcard,
   useDueCards,
 } from '@/hooks/useFlashcards';
-import { ArrowLeft, Plus, Play, Edit2, Trash2, Loader2 } from 'lucide-react';
+import { ArrowLeft, Plus, Play, Trash2, Loader2 } from 'lucide-react';
 
 export default function DeckPage() {
   const { deckId } = useParams<{ deckId: string }>();

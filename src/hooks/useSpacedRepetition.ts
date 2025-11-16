@@ -5,7 +5,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
-import { FlashcardService, type FlashcardReview, type ReviewStreak } from '@/services/spaced-repetition/FlashcardService';
+import { FlashcardService } from '@/services/spaced-repetition/FlashcardService';
 import { SM2AlgorithmService } from '@/services/spaced-repetition/SM2AlgorithmService';
 import { logger } from '@/utils/logger';
 import { toast } from 'sonner';

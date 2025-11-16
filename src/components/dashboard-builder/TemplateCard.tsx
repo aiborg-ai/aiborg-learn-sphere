@@ -12,7 +12,6 @@ import {
   Eye,
   Heart,
   User,
-  Calendar,
   LayoutGrid,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';

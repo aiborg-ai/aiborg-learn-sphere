@@ -8,7 +8,6 @@ import { useQuery } from '@tanstack/react-query';
 import { Trophy, Award, Star, Medal } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 import type { WidgetComponentProps, BaseWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';
 
