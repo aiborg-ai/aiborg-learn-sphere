@@ -129,6 +129,9 @@ const RAGManagement = lazy(() => import('./pages/admin/RAGManagement'));
 const DashboardBuilderPage = lazy(() => import('./pages/DashboardBuilderPage'));
 const TemplateGalleryPage = lazy(() => import('./pages/TemplateGalleryPage'));
 
+// Offline Content
+const OfflineContentPage = lazy(() => import('./pages/OfflineContent'));
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -340,6 +343,14 @@ const AppWithShortcuts = () => {
             <Route path="/assessment/:toolSlug/history" element={<AssessmentHistoryPanel />} />
             <Route path="/bookmarks" element={<BookmarksPage />} />
             <Route path="/downloads" element={<DownloadsPage />} />
+            <Route
+              path="/offline-content"
+              element={
+                <RouteWrapper routeName="Offline Content">
+                  <OfflineContentPage />
+                </RouteWrapper>
+              }
+            />
             <Route path="/watch-later" element={<WatchLaterPage />} />
             <Route path="/playlists" element={<PlaylistsPage />} />
             <Route path="/calendar" element={<CalendarPage />} />
