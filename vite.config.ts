@@ -55,8 +55,8 @@ export default defineConfig(({ mode }) => ({
         ],
       },
       workbox: {
-        // Aggressive caching strategy
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        // Temporarily exclude JS to fix chunk caching issues
+        globPatterns: ['**/*.{css,html,ico,png,svg,woff,woff2}'],
         runtimeCaching: [
           {
             // Cache-First for static assets
