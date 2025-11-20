@@ -195,8 +195,17 @@ export default defineConfig(({ mode }) => ({
               return 'charts-libs-chunk';
             }
 
-            // React core - most critical, load first
-            if (id.includes('react/') || id.includes('react-dom/') || id.includes('scheduler')) {
+            // React core and ALL React-dependent libraries - must load together
+            // This prevents "createContext is undefined" errors
+            if (
+              id.includes('react/') ||
+              id.includes('react-dom/') ||
+              id.includes('scheduler') ||
+              // Include any library that uses React internals
+              id.includes('use-sync-external-store') ||
+              id.includes('use-isomorphic-layout-effect') ||
+              id.includes('react-is')
+            ) {
               return 'react-core-chunk';
             }
 
@@ -249,7 +258,10 @@ export default defineConfig(({ mode }) => ({
               id.includes('@floating-ui') ||
               id.includes('aria-hidden') ||
               id.includes('react-focus-lock') ||
-              id.includes('focus-lock')
+              id.includes('focus-lock') ||
+              id.includes('embla-carousel') ||
+              id.includes('detect-node-es') ||
+              id.includes('get-nonce')
             ) {
               return 'radix-ui-chunk';
             }
