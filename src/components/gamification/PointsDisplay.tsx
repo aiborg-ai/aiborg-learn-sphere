@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Award, TrendingUp, Zap } from 'lucide-react';
+import { Award, TrendingUp, Zap } from '@/components/ui/icons';
 import { PointsService } from '@/services/gamification';
 import type { UserProgress } from '@/services/gamification';
 

@@ -10,7 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Filter, X } from 'lucide-react';
+import { Filter, X } from '@/components/ui/icons';
 import type { ContentType } from '@/services/search/SearchService';
 
 const CONTENT_TYPE_LABELS: Record<ContentType, string> = {
@@ -42,7 +42,7 @@ export function SearchFilters({
     if (contentTypes.includes(type)) {
       // Don't allow removing all types
       if (contentTypes.length === 1) return;
-      onContentTypesChange(contentTypes.filter((t) => t !== type));
+      onContentTypesChange(contentTypes.filter(t => t !== type));
     } else {
       onContentTypesChange([...contentTypes, type]);
     }
@@ -65,12 +65,7 @@ export function SearchFilters({
             <CardTitle className="text-lg">Filters</CardTitle>
           </div>
           {hasFilters && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onReset}
-              className="h-8 px-2 text-xs"
-            >
+            <Button variant="ghost" size="sm" onClick={onReset} className="h-8 px-2 text-xs">
               <X className="h-3 w-3 mr-1" />
               Reset
             </Button>
@@ -84,7 +79,7 @@ export function SearchFilters({
         <div className="space-y-3">
           <div className="text-sm font-medium">Content Types</div>
           <div className="space-y-2">
-            {allContentTypes.map((type) => (
+            {allContentTypes.map(type => (
               <div key={type} className="flex items-center space-x-2">
                 <Checkbox
                   id={`filter-${type}`}
@@ -92,10 +87,7 @@ export function SearchFilters({
                   onCheckedChange={() => handleToggleContentType(type)}
                   disabled={contentTypes.length === 1 && contentTypes.includes(type)}
                 />
-                <Label
-                  htmlFor={`filter-${type}`}
-                  className="text-sm font-normal cursor-pointer"
-                >
+                <Label htmlFor={`filter-${type}`} className="text-sm font-normal cursor-pointer">
                   {CONTENT_TYPE_LABELS[type]}
                 </Label>
               </div>
@@ -111,7 +103,7 @@ export function SearchFilters({
           </div>
           <Slider
             value={[minRelevance * 100]}
-            onValueChange={(value) => onMinRelevanceChange(value[0] / 100)}
+            onValueChange={value => onMinRelevanceChange(value[0] / 100)}
             min={0}
             max={100}
             step={5}

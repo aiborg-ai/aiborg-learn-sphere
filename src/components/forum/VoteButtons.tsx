@@ -3,7 +3,7 @@
  * Reddit-style upvote/downvote buttons
  */
 
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUp, ArrowDown } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { VoteButtonsProps } from '@/types/forum';

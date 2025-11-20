@@ -10,8 +10,8 @@ import { Card } from '@/components/ui/card';
 import { FlashcardReview } from '@/components/flashcards/FlashcardReview';
 import { useFlashcardDeck, useDueCards } from '@/hooks/useFlashcards';
 import { useReviewStreak } from '@/hooks/useSpacedRepetition';
-import { ArrowLeft, CheckCircle2, Trophy, Sparkles } from 'lucide-react';
-import { Loader2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Trophy, Sparkles } from '@/components/ui/icons';
+import { Loader2 } from '@/components/ui/icons';
 
 export default function ReviewSessionPage() {
   const { deckId } = useParams<{ deckId: string }>();
@@ -84,9 +84,7 @@ export default function ReviewSessionPage() {
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Deck
             </Button>
-            <Button onClick={handleBackToDecks}>
-              All Decks
-            </Button>
+            <Button onClick={handleBackToDecks}>All Decks</Button>
           </div>
         </Card>
       </div>
@@ -119,9 +117,7 @@ export default function ReviewSessionPage() {
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Deck
             </Button>
-            <Button onClick={handleBackToDecks}>
-              All Decks
-            </Button>
+            <Button onClick={handleBackToDecks}>All Decks</Button>
           </div>
         </Card>
       </div>

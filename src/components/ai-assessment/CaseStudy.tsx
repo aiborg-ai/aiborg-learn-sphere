@@ -16,7 +16,7 @@ import {
   BarChart3,
   ChevronDown,
   ChevronUp,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 interface CaseStudyData {
   company_name?: string;

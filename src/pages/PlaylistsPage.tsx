@@ -27,7 +27,7 @@ import {
   Lock,
   Loader2,
   PlayCircle,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { PlaylistWithRelations } from '@/types/content-access';
 import {
   AlertDialog,

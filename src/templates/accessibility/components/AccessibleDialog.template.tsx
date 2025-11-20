@@ -20,7 +20,7 @@
  */
 
 import { forwardRef, ReactNode, useEffect, useRef, KeyboardEvent, MouseEvent } from 'react';
-import { X } from 'lucide-react';
+import { X } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
 /* ============================================================================

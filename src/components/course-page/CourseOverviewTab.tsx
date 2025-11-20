@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle, Target, Award, AlertCircle } from 'lucide-react';
+import { CheckCircle, Target, Award, AlertCircle } from '@/components/ui/icons';
 import type { Course, CourseMaterial, Assignment } from './types';
 
 interface CourseOverviewTabProps {

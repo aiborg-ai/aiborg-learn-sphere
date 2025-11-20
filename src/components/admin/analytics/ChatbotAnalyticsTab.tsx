@@ -18,7 +18,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
-import { MessageSquare, Star, CheckCircle, Clock } from 'lucide-react';
+import { MessageSquare, Star, CheckCircle, Clock } from '@/components/ui/icons';
 import { useDateRange } from '@/contexts/DateRangeContext';
 import { useAllChatbotAnalytics } from '@/hooks/admin/useAdminChatbotAnalytics';
 import { ExportButton } from '@/components/admin/ExportButton';
@@ -96,9 +96,7 @@ export function ChatbotAnalyticsTab() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Chatbot Analytics</h2>
-          <p className="text-muted-foreground">
-            AI chatbot performance and user interactions
-          </p>
+          <p className="text-muted-foreground">AI chatbot performance and user interactions</p>
         </div>
         {!isLoading && metrics && (
           <ExportButton
@@ -179,9 +177,7 @@ export function ChatbotAnalyticsTab() {
                 <div className="text-2xl font-bold">
                   {metrics?.resolutionRate.toFixed(1) || '0.0'}%
                 </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  Successfully resolved queries
-                </p>
+                <p className="text-xs text-muted-foreground mt-2">Successfully resolved queries</p>
               </>
             )}
           </CardContent>
@@ -265,12 +261,7 @@ export function ChatbotAnalyticsTab() {
               <BarChart data={topQueries} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" />
-                <YAxis
-                  type="category"
-                  dataKey="query"
-                  width={200}
-                  tick={{ fontSize: 12 }}
-                />
+                <YAxis type="category" dataKey="query" width={200} tick={{ fontSize: 12 }} />
                 <Tooltip />
                 <Bar dataKey="count" fill="#3b82f6" />
               </BarChart>

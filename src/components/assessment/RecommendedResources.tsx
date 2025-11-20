@@ -14,7 +14,7 @@ import {
   ArrowRight,
   Sparkles,
   TrendingUp,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useNavigate } from 'react-router-dom';
 import type { Course } from '@/hooks/useCourses';
 import type { BlogPost } from '@/types/blog';

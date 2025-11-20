@@ -4,7 +4,7 @@ import { SessionTicketCard } from '@/components/SessionTicketCard';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Ticket, TrendingUp } from 'lucide-react';
+import { Ticket, TrendingUp } from '@/components/ui/icons';
 import { useCourses } from '@/hooks/useCourses';
 import { Label } from '@/components/ui/label';
 

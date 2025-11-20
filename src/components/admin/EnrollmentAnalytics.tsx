@@ -13,7 +13,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { Users, TrendingUp, BookOpen, Download, Loader2 } from 'lucide-react';
+import { Users, TrendingUp, BookOpen, Download, Loader2 } from '@/components/ui/icons';
 
 interface EnrollmentAnalyticsProps {
   dateRange: { startDate: Date; endDate: Date };

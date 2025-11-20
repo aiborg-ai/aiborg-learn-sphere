@@ -23,7 +23,7 @@ import {
   Globe,
   CheckCircle2,
   Loader2,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useState } from 'react';
 
 interface ReviewStepProps {

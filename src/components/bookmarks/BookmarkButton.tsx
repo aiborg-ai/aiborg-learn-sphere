@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Bookmark, BookmarkCheck } from 'lucide-react';
+import { Bookmark, BookmarkCheck } from '@/components/ui/icons';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { useToast } from '@/hooks/use-toast';
 import type { BookmarkType, CreateBookmarkInput } from '@/types/content-access';

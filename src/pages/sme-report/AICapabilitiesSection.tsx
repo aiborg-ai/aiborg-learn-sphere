@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp } from '@/components/ui/icons';
 import type { ReportSectionProps } from './types';
 
 export function AICapabilitiesSection({ assessment }: ReportSectionProps) {

@@ -3,7 +3,7 @@
  * Shown when user is offline and tries to access uncached content
  */
 
-import { WifiOff, RefreshCw } from 'lucide-react';
+import { WifiOff, RefreshCw } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 

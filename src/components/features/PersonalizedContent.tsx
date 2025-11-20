@@ -15,7 +15,7 @@ import {
   BarChart,
   Settings,
   TrendingUp,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 interface PersonalizedContentProps {
   section: 'hero' | 'programs' | 'about' | 'contact';

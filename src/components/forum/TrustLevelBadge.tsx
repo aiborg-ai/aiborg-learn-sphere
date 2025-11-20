@@ -4,7 +4,7 @@
  */
 
 import { Badge } from '@/components/ui/badge';
-import { Shield } from 'lucide-react';
+import { Shield } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import type { TrustLevelBadgeProps } from '@/types/forum';
 import { TRUST_LEVEL_NAMES, TRUST_LEVEL_COLORS } from '@/types/forum';

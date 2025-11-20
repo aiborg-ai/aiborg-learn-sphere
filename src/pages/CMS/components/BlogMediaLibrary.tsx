@@ -13,13 +13,13 @@ import {
   Trash2,
   Copy,
   Search,
-  Grid,
+  LayoutGrid,
   List,
   Download,
   Edit,
   X,
   Check,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface MediaItem {
@@ -260,7 +260,11 @@ function BlogMediaLibrary() {
             size="sm"
             onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
           >
-            {viewMode === 'grid' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
+            {viewMode === 'grid' ? (
+              <List className="h-4 w-4" />
+            ) : (
+              <LayoutGrid className="h-4 w-4" />
+            )}
           </Button>
           <Button className="btn-hero" disabled={uploading}>
             <label htmlFor="file-upload" className="flex items-center gap-2 cursor-pointer">

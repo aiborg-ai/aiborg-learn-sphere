@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Search, TrendingUp, Clock, Users, Filter } from 'lucide-react';
+import { Search, TrendingUp, Clock, Users, Filter } from '@/components/ui/icons';
 
 export default function BlogPage() {
   const [searchParams, setSearchParams] = useSearchParams();

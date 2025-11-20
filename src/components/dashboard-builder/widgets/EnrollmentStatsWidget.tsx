@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { GraduationCap, BookOpen, CheckCircle, Clock } from 'lucide-react';
+import { GraduationCap, BookOpen, CheckCircle, Clock } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
 import type { WidgetComponentProps, BaseWidgetConfig } from '@/types/dashboard';
@@ -49,12 +49,11 @@ export function EnrollmentStatsWidget({ widget, isEditing }: WidgetComponentProp
 
       const total = enrollments?.length || 0;
       const completed = enrollments?.filter(e => e.completed_at).length || 0;
-      const inProgress = enrollments?.filter(e => !e.completed_at && (e.progress || 0) > 0).length || 0;
+      const inProgress =
+        enrollments?.filter(e => !e.completed_at && (e.progress || 0) > 0).length || 0;
       const notStarted = enrollments?.filter(e => !e.progress || e.progress === 0).length || 0;
       const avgProgress =
-        total > 0
-          ? enrollments.reduce((sum, e) => sum + (e.progress || 0), 0) / total
-          : 0;
+        total > 0 ? enrollments.reduce((sum, e) => sum + (e.progress || 0), 0) / total : 0;
 
       // Category breakdown
       const categoryCount: Record<string, number> = {};

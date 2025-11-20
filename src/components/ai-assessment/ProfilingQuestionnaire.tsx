@@ -26,7 +26,7 @@ import {
   Target,
   Sparkles,
   Info,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 interface ProfilingData {
   audience_type: string;

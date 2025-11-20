@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Trophy, Star, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Trophy, Star, CheckCircle, Clock, AlertTriangle } from '@/components/ui/icons';
 import type { EarlySubmissionResult } from '@/utils/earlySubmissionDetection';
 
 interface EarlySubmissionBadgeProps {

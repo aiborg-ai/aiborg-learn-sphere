@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { CreditCard, User, Mail, CheckCircle } from 'lucide-react';
+import { CreditCard, User, Mail, CheckCircle } from '@/components/ui/icons';
 import { format } from 'date-fns';
 import { SimpleDatePicker } from '@/components/ui/simple-date-picker';
 import { useToast } from '@/hooks/use-toast';

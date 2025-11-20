@@ -12,7 +12,7 @@ import {
   VolumeX,
   Maximize,
   Minimize,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { Chapter } from './types';
 
 interface VideoControlsProps {

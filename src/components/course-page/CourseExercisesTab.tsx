@@ -9,7 +9,7 @@ import { useExercisesWithSubmissions } from '@/hooks/useExercise';
 import { useAuth } from '@/hooks/useAuth';
 import { ExerciseList } from '@/components/exercise';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Brain } from 'lucide-react';
+import { Brain } from '@/components/ui/icons';
 import type { ExerciseWithSubmission } from '@/services/exercise/types';
 
 interface CourseExercisesTabProps {

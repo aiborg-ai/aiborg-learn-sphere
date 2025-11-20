@@ -20,7 +20,7 @@ import {
   Search,
   Filter,
   Award,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { AttendanceTicket, TicketStatistics } from '@/hooks/useAttendanceTickets';
 
 interface AttendanceTicketsSectionProps {

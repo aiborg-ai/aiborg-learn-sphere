@@ -16,7 +16,7 @@ import {
   Loader2,
   Check,
   Star,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import {
   LearningPathRecommendationEngine,
   type LearningPathRecommendation,

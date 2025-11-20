@@ -4,7 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Navbar, Footer } from '@/components/navigation';
-import { ArrowLeft, ArrowRight, Save, CheckCircle2, FileText, Building2 } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Save,
+  CheckCircle2,
+  FileText,
+  Building2,
+} from '@/components/ui/icons';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useSMEAssessmentSubmit } from '@/hooks/useSMEAssessmentSubmit';

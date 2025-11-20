@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { RefreshCw, Wifi, WifiOff, Clock, Zap } from 'lucide-react';
+import { RefreshCw, Wifi, WifiOff, Clock, Zap } from '@/components/ui/icons';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
 

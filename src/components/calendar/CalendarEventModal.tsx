@@ -31,7 +31,7 @@ import {
   PlayCircle,
   ExternalLink,
   Star,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { CalendarEvent } from '@/types/calendar';
 import { EVENT_TYPE_COLORS, getEventTypeLabel } from '@/services/calendar/CalendarEventService';
 import { format, formatDistanceToNow, isFuture } from 'date-fns';

@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Sparkles, BookOpen, TrendingUp, ArrowRight, Info } from 'lucide-react';
+import { Sparkles, BookOpen, TrendingUp, ArrowRight, Info } from '@/components/ui/icons';
 import { useSimilarContent } from '@/hooks/useRecommendations';
 import type { Recommendation } from '@/services/ai/RecommendationEngineService';
 import { cn } from '@/lib/utils';
@@ -87,9 +87,7 @@ function SimilarCourseCard({
 
         {/* Action */}
         <div className="flex items-center justify-between pt-2 border-t">
-          <span className="text-xs text-muted-foreground">
-            {recommendation.reason.primary}
-          </span>
+          <span className="text-xs text-muted-foreground">{recommendation.reason.primary}</span>
           <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
         </div>
       </CardContent>
@@ -126,7 +124,9 @@ export function SimilarCoursesSection({
             <div>
               <CardTitle className="flex items-center gap-2">
                 Similar Courses
-                {isLoading && <TrendingUp className="h-4 w-4 animate-pulse text-muted-foreground" />}
+                {isLoading && (
+                  <TrendingUp className="h-4 w-4 animate-pulse text-muted-foreground" />
+                )}
               </CardTitle>
               <CardDescription className="mt-1">
                 AI-powered recommendations based on course content similarity
@@ -187,7 +187,7 @@ export function SimilarCoursesSection({
       {!isLoading && similarCourses && similarCourses.length > 0 && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {similarCourses.map((recommendation) => (
+            {similarCourses.map(recommendation => (
               <SimilarCourseCard
                 key={recommendation.id}
                 recommendation={recommendation}

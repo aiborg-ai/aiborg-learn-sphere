@@ -4,7 +4,15 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Play, FileText, Presentation, Download, Lock, Clock, Calendar } from 'lucide-react';
+import {
+  Play,
+  FileText,
+  Presentation,
+  Download,
+  Lock,
+  Clock,
+  Calendar,
+} from '@/components/ui/icons';
 import { useCourseMaterials } from '@/hooks/useCourseMaterials';
 import { useEnrollments } from '@/hooks/useEnrollments';
 import { useAuth } from '@/hooks/useAuth';

@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
-import { Heart, MessageCircle, Edit2, Trash2 } from 'lucide-react';
+import { Heart, MessageCircle, Edit2, Trash2 } from '@/components/ui/icons';
 import type { BlogComment } from '@/types/blog';
 import { ReplyForm } from './ReplyForm';
 import { EditCommentForm } from './EditCommentForm';

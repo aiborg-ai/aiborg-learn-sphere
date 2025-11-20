@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { Sparkles, TrendingUp, Target, Lightbulb } from 'lucide-react';
+import { Sparkles, TrendingUp, Target, Lightbulb } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import type { WidgetComponentProps, BaseWidgetConfig } from '@/types/dashboard';
@@ -24,10 +24,7 @@ export function AIInsightsWidget({ widget, isEditing }: WidgetComponentProps) {
 
       // Fetch user data to generate insights
       const [enrollments, assessments, streaks] = await Promise.all([
-        supabase
-          .from('course_enrollments')
-          .select('progress, completed_at')
-          .eq('user_id', user.id),
+        supabase.from('course_enrollments').select('progress, completed_at').eq('user_id', user.id),
         supabase
           .from('assessment_results')
           .select('score, completed_at')
@@ -211,10 +208,7 @@ export function AIInsightsWidget({ widget, isEditing }: WidgetComponentProps) {
             <div className="flex-1">
               <div className="flex items-start justify-between gap-2 mb-1">
                 <h4 className="font-semibold text-sm">{insight.title}</h4>
-                <Badge
-                  variant="secondary"
-                  className={`text-xs ${getTypeBadgeColor(insight.type)}`}
-                >
+                <Badge variant="secondary" className={`text-xs ${getTypeBadgeColor(insight.type)}`}>
                   {insight.type}
                 </Badge>
               </div>

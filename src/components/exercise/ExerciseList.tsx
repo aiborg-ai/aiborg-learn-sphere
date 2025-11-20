@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search } from 'lucide-react';
+import { Search } from '@/components/ui/icons';
 import type {
   ExerciseWithSubmission,
   ExerciseType,

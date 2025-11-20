@@ -37,7 +37,7 @@ import {
   Clock,
   AlertCircle,
   RefreshCw,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { RefundRequest } from '@/hooks/usePaymentTransactions';
 
 export function RefundProcessor() {

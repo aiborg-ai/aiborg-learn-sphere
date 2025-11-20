@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Lightbulb } from 'lucide-react';
+import { Lightbulb } from '@/components/ui/icons';
 import type { ResourcesSectionProps } from './types';
 
 export function ResourcesSection({ resources }: ResourcesSectionProps) {

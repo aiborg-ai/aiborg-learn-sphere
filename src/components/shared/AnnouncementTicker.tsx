@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Megaphone } from 'lucide-react';
+import { Megaphone } from '@/components/ui/icons';
 
 import { logger } from '@/utils/logger';
 interface Announcement {

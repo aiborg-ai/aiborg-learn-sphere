@@ -12,7 +12,7 @@ import {
   ChevronDown,
   ChevronUp,
   Ticket,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { ShareButton } from '@/components/shared';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';

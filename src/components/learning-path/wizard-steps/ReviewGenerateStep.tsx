@@ -7,7 +7,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Zap, ArrowLeft, Loader2, Sparkles, CheckCircle, Clock, TrendingUp } from 'lucide-react';
+import {
+  Zap,
+  ArrowLeft,
+  Loader2,
+  Sparkles,
+  CheckCircle,
+  Clock,
+  TrendingUp,
+} from '@/components/ui/icons';
 import { LEVEL_CONFIG, type Category, type WizardFormData } from './types';
 
 interface ReviewGenerateStepProps {

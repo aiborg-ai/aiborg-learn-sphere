@@ -31,7 +31,7 @@ import {
   Filter,
   Loader2,
   AlertCircle,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { logger } from '@/utils/logger';

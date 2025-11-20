@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { Target, Award, BookOpen, TrendingUp } from 'lucide-react';
+import { Target, Award, BookOpen, TrendingUp } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
@@ -30,18 +30,9 @@ export function ProgressSummaryWidget({ widget, isEditing }: WidgetComponentProp
 
       // Fetch all progress data
       const [enrollments, achievements, certificates] = await Promise.all([
-        supabase
-          .from('course_enrollments')
-          .select('progress, completed_at')
-          .eq('user_id', user.id),
-        supabase
-          .from('user_achievements')
-          .select('id', { count: 'exact' })
-          .eq('user_id', user.id),
-        supabase
-          .from('certificates')
-          .select('id', { count: 'exact' })
-          .eq('user_id', user.id),
+        supabase.from('course_enrollments').select('progress, completed_at').eq('user_id', user.id),
+        supabase.from('user_achievements').select('id', { count: 'exact' }).eq('user_id', user.id),
+        supabase.from('certificates').select('id', { count: 'exact' }).eq('user_id', user.id),
       ]);
 
       const totalCourses = enrollments.data?.length || 0;
@@ -107,9 +98,8 @@ export function ProgressSummaryWidget({ widget, isEditing }: WidgetComponentProp
     return null;
   }
 
-  const completionRate = summary.totalCourses > 0
-    ? (summary.completedCourses / summary.totalCourses) * 100
-    : 0;
+  const completionRate =
+    summary.totalCourses > 0 ? (summary.completedCourses / summary.totalCourses) * 100 : 0;
 
   return (
     <div className="space-y-4">

@@ -4,7 +4,7 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { useAiborgPoints } from '@/hooks/useAiborgPoints';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Trophy, TrendingUp, Zap, Award } from 'lucide-react';
+import { Trophy, TrendingUp, Zap, Award } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
 interface PointsProgressProps {

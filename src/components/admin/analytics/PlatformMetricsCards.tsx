@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, DollarSign, Activity, BookOpen, ArrowUp } from 'lucide-react';
+import { Users, DollarSign, Activity, BookOpen, ArrowUp } from '@/components/ui/icons';
 import { formatCurrency, formatNumber } from './utils';
 import type { PlatformMetrics, RevenueMetrics } from './types';
 

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, FileText, Award } from 'lucide-react';
+import { Calendar, Clock, FileText, Award } from '@/components/ui/icons';
 import { formatTimeRemaining, getDaysUntilDue } from '@/utils/earlySubmissionDetection';
 
 export interface Assignment {

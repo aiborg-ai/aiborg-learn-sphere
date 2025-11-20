@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { Filter, TrendingUp, Clock, Star, Flame, Search } from 'lucide-react';
+import { Filter, TrendingUp, Clock, Star, Flame, Search } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {

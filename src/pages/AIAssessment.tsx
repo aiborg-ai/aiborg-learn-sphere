@@ -24,7 +24,7 @@ import {
   CheckCircle,
   Star,
   Play,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 const FEATURES = [
   {

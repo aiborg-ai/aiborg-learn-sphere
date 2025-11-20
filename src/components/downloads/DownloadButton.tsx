@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { logger } from '@/utils/logger';
-import { Download, CheckCircle, Loader2 } from 'lucide-react';
+import { Download, CheckCircle, Loader2 } from '@/components/ui/icons';
 import { useDownloads, getDeviceInfo } from '@/hooks/useDownloads';
 import { useToast } from '@/hooks/use-toast';
 import { ActionButton, ActionButtonConfig } from '@/components/shared/ActionButton';

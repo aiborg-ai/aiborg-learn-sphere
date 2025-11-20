@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart3, TrendingUp, Eye, Users } from 'lucide-react';
+import { BarChart3, TrendingUp, Eye, Users } from '@/components/ui/icons';
 
 function BlogAnalytics() {
   return (

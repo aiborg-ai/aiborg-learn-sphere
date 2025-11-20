@@ -23,7 +23,15 @@ import {
 import { Label } from '@/components/ui/label';
 import { useAssignmentTracking } from '@/hooks/useProgressTracking';
 import { useToast } from '@/components/ui/use-toast';
-import { FileText, Clock, CheckCircle2, AlertCircle, Loader2, Eye, Award } from 'lucide-react';
+import {
+  FileText,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+  Eye,
+  Award,
+} from '@/components/ui/icons';
 
 export function AssignmentTracker() {
   const [selectedSubmission, setSelectedSubmission] = useState<string | null>(null);

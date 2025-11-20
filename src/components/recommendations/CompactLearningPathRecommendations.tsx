@@ -10,7 +10,7 @@ import {
   ChevronRight,
   Loader2,
   ArrowRight,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import {
   LearningPathRecommendationEngine,
   type LearningPathRecommendation,

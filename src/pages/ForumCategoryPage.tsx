@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChevronRight, Plus } from 'lucide-react';
+import { ChevronRight, Plus } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { ThreadCard, ThreadFilters } from '@/components/forum';
 import { useForumCategory, useForumThreads } from '@/hooks/forum';

@@ -1,6 +1,14 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { CheckCircle2, XCircle, Clock, Shield, Users, Eye, AlertCircle } from 'lucide-react';
+import {
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Shield,
+  Users,
+  Eye,
+  AlertCircle,
+} from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';

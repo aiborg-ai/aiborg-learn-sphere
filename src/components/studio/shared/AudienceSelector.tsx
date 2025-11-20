@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Users, Check } from 'lucide-react';
+import { Users, Check } from '@/components/ui/icons';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';

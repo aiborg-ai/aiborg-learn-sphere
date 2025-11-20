@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Image as ImageIcon, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Image as ImageIcon, X, ChevronLeft, ChevronRight } from '@/components/ui/icons';
 import type { EventPhoto } from '@/hooks/useEvents';
 
 interface EventPhotoGalleryProps {

@@ -17,7 +17,7 @@ import {
   Star,
   ArrowUp,
   ArrowDown,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { PointTransaction } from '@/services/gamification';
 
 interface TransactionHistoryProps {

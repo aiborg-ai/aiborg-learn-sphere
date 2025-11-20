@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { Trophy, Award, Star, Medal } from 'lucide-react';
+import { Trophy, Award, Star, Medal } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import type { WidgetComponentProps, BaseWidgetConfig } from '@/types/dashboard';

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import React, { Component } from 'react';
-import { AlertCircle, RefreshCw } from 'lucide-react';
+import { AlertCircle, RefreshCw } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { logger } from '@/utils/logger';

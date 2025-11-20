@@ -21,7 +21,7 @@ import {
   ExternalLink,
   Clock,
   Heart,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 

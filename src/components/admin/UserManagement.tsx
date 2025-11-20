@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Trash2, Shield, UserCheck, Search, Copy, Check } from 'lucide-react';
+import { Trash2, Shield, UserCheck, Search, Copy, Check } from '@/components/ui/icons';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';

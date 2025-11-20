@@ -17,7 +17,7 @@ import {
   XCircle,
   Loader2,
   Sparkles,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useToast } from '@/hooks/use-toast';
 
 interface StudyRecommendation {

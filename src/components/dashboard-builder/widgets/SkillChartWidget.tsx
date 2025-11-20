@@ -5,9 +5,16 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
+import {
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar,
+  ResponsiveContainer,
+} from 'recharts';
 import type { WidgetComponentProps, ChartWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';
 

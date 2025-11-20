@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MonitorPlay, Users, MessageCircle, TrendingUp, Circle } from 'lucide-react';
+import { MonitorPlay, Users, MessageCircle, TrendingUp, Circle } from '@/components/ui/icons';
 import { ActiveStudentsBar } from '@/components/classroom/ActiveStudentsBar';
 import { QuestionQueue } from '@/components/instructor/QuestionQueue';
 import { CohortProgressMap } from '@/components/instructor/CohortProgressMap';

@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { DollarSign } from 'lucide-react';
+import { DollarSign } from '@/components/ui/icons';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { PricingInput } from '@/components/studio/shared/PricingInput';

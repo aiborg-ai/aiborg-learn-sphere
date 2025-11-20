@@ -28,7 +28,7 @@ import {
   Eye,
   Loader2,
   Filter,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { FileType, DownloadWithRelations } from '@/types/content-access';
 import {
   AlertDialog,

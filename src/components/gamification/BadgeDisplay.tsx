@@ -7,7 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useBadges } from '@/hooks/useBadges';
 import { getRarityStyle } from '@/config/gamification';
-import { Star, Lock, Trophy, Sparkles } from 'lucide-react';
+import { Star, Lock, Trophy, Sparkles } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
 interface BadgeDisplayProps {

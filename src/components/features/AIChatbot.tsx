@@ -11,7 +11,24 @@ import { useCourses } from '@/hooks/useCourses';
 import { useChatHistory } from '@/hooks/useChatHistory';
 import { generateFallbackResponse } from '@/utils/chatbotFallback';
 import { logger } from '@/utils/logger';
-import { MessageCircle, Send, X, Bot, User, Phone, History, Download, Trash2, ThumbsUp, ThumbsDown, Zap, Brain, Database, Maximize, Minimize } from 'lucide-react';
+import {
+  MessageCircle,
+  Send,
+  X,
+  Bot,
+  User,
+  Phone,
+  History,
+  Download,
+  Trash2,
+  ThumbsUp,
+  ThumbsDown,
+  Zap,
+  Brain,
+  Database,
+  Maximize,
+  Minimize,
+} from '@/components/ui/icons';
 import { supabase } from '@/integrations/supabase/client';
 
 interface ConversationContext {
@@ -319,7 +336,9 @@ export function AIChatbot() {
     return "That's helpful to know! What specific aspects of AI interest you most?";
   };
 
-  const generateAIResponse = async (userMessage: string): Promise<{ response: string; metadata: MessageMetadata; messageId: string }> => {
+  const generateAIResponse = async (
+    userMessage: string
+  ): Promise<{ response: string; metadata: MessageMetadata; messageId: string }> => {
     const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const startTime = Date.now();
 
@@ -432,20 +451,17 @@ export function AIChatbot() {
       const { response: aiResponse, metadata, messageId } = await generateAIResponse(content);
 
       // Simulate realistic typing delay based on response length
-      const typingDelay = Math.min(1000 + (aiResponse.length / 10), 3000);
+      const typingDelay = Math.min(1000 + aiResponse.length / 10, 3000);
 
-      setTimeout(
-        () => {
-          addMessage({
-            content: aiResponse,
-            sender: 'ai',
-            type: 'text',
-            metadata: { messageId, ...metadata }, // Store messageId with message for ratings
-          });
-          setIsTyping(false);
-        },
-        typingDelay
-      );
+      setTimeout(() => {
+        addMessage({
+          content: aiResponse,
+          sender: 'ai',
+          type: 'text',
+          metadata: { messageId, ...metadata }, // Store messageId with message for ratings
+        });
+        setIsTyping(false);
+      }, typingDelay);
     } catch (error) {
       logger.error('Error sending message:', error);
       setIsTyping(false);
@@ -498,7 +514,9 @@ export function AIChatbot() {
     // Persist rating to database
     try {
       // Get current user ID (if authenticated)
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       const { error } = await supabase.from('chatbot_ratings').insert({
         conversation_id: currentConversation?.id,
@@ -533,16 +551,29 @@ export function AIChatbot() {
     if (!metadata) return null;
 
     if (metadata.cache_hit) {
-      const cacheIcon = metadata.cache_source === 'memory' ? <Zap className="h-3 w-3" /> : <Database className="h-3 w-3" />;
-      const cacheLabel = metadata.cache_source === 'memory' ? 'Cache (Memory)' :
-                        metadata.cache_source === 'database-exact' ? 'Cache (Exact)' :
-                        metadata.cache_source === 'database-fuzzy' ? 'Cache (Similar)' : 'Cached';
+      const cacheIcon =
+        metadata.cache_source === 'memory' ? (
+          <Zap className="h-3 w-3" />
+        ) : (
+          <Database className="h-3 w-3" />
+        );
+      const cacheLabel =
+        metadata.cache_source === 'memory'
+          ? 'Cache (Memory)'
+          : metadata.cache_source === 'database-exact'
+            ? 'Cache (Exact)'
+            : metadata.cache_source === 'database-fuzzy'
+              ? 'Cache (Similar)'
+              : 'Cached';
 
       return (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Badge variant="secondary" className="text-xs gap-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+              <Badge
+                variant="secondary"
+                className="text-xs gap-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+              >
                 {cacheIcon}
                 {cacheLabel}
               </Badge>
@@ -561,14 +592,19 @@ export function AIChatbot() {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Badge variant="secondary" className="text-xs gap-1 bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+              <Badge
+                variant="secondary"
+                className="text-xs gap-1 bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
+              >
                 <Brain className="h-3 w-3" />
                 GPT-4
               </Badge>
             </TooltipTrigger>
             <TooltipContent>
               <p>Advanced AI for complex questions</p>
-              <p className="text-xs opacity-70">Cost: ${metadata.cost?.usd.toFixed(4)} • {metadata.response_time_ms}ms</p>
+              <p className="text-xs opacity-70">
+                Cost: ${metadata.cost?.usd.toFixed(4)} • {metadata.response_time_ms}ms
+              </p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -580,14 +616,19 @@ export function AIChatbot() {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Badge variant="secondary" className="text-xs gap-1 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+              <Badge
+                variant="secondary"
+                className="text-xs gap-1 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+              >
                 <Zap className="h-3 w-3" />
                 GPT-3.5
               </Badge>
             </TooltipTrigger>
             <TooltipContent>
               <p>Fast AI for standard questions</p>
-              <p className="text-xs opacity-70">Cost: ${metadata.cost?.usd.toFixed(4)} • {metadata.response_time_ms}ms</p>
+              <p className="text-xs opacity-70">
+                Cost: ${metadata.cost?.usd.toFixed(4)} • {metadata.response_time_ms}ms
+              </p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -645,12 +686,16 @@ export function AIChatbot() {
   }
 
   return (
-    <div className={`fixed z-50 transition-all duration-300 ${
-      isFullscreen
-        ? 'inset-0 w-screen h-screen'
-        : 'bottom-6 right-6 w-96 max-w-[calc(100vw-2rem)]'
-    }`}>
-      <Card className={`${isFullscreen ? 'h-screen rounded-none' : 'h-[600px]'} flex flex-col shadow-2xl border-primary/20`}>
+    <div
+      className={`fixed z-50 transition-all duration-300 ${
+        isFullscreen
+          ? 'inset-0 w-screen h-screen'
+          : 'bottom-6 right-6 w-96 max-w-[calc(100vw-2rem)]'
+      }`}
+    >
+      <Card
+        className={`${isFullscreen ? 'h-screen rounded-none' : 'h-[600px]'} flex flex-col shadow-2xl border-primary/20`}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b bg-gradient-primary rounded-t-lg">
           <div className="flex items-center gap-3">
@@ -684,7 +729,7 @@ export function AIChatbot() {
               size="sm"
               onClick={() => setIsFullscreen(!isFullscreen)}
               className="text-white hover:bg-white/10"
-              title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+              title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
             >
               {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
             </Button>
@@ -882,8 +927,14 @@ export function AIChatbot() {
                   {/* Typing dots */}
                   <div className="flex space-x-1 mt-2">
                     <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div
+                      className="w-2 h-2 bg-primary rounded-full animate-bounce"
+                      style={{ animationDelay: '0.1s' }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 bg-primary rounded-full animate-bounce"
+                      style={{ animationDelay: '0.2s' }}
+                    ></div>
                   </div>
                 </div>
               </div>

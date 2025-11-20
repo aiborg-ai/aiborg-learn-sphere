@@ -22,7 +22,7 @@ import {
   PenTool,
   UsersRound,
   RefreshCw,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { CourseMaterial } from '@/components/course-page/types';
 import { CourseHeader } from '@/components/course-page/CourseHeader';
 import { CourseOverviewTab } from '@/components/course-page/CourseOverviewTab';

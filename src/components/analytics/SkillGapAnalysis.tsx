@@ -18,7 +18,7 @@ import {
   Loader2,
   BarChart3,
   ArrowRight,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 export const SkillGapAnalysis: React.FC = () => {
   const { user } = useAuth();

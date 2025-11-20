@@ -15,7 +15,7 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import { useExport, generateExportFilename } from '@/hooks/useExport';
-import { Download, FileText, Table } from 'lucide-react';
+import { Download, FileText, Table } from '@/components/ui/icons';
 import type { AnalyticsSection, DateRange } from '@/utils/pdfExport';
 
 export interface ExportButtonProps {
@@ -72,10 +72,7 @@ export function ExportButton({
       return;
     }
 
-    const filename = generateExportFilename(
-      section.toLowerCase().replace(/\s+/g, '-'),
-      'pdf'
-    );
+    const filename = generateExportFilename(section.toLowerCase().replace(/\s+/g, '-'), 'pdf');
 
     await exportPDF(sections, filename, dateRange);
     setIsOpen(false);
@@ -89,10 +86,7 @@ export function ExportButton({
       return;
     }
 
-    const filename = generateExportFilename(
-      section.toLowerCase().replace(/\s+/g, '-'),
-      'csv'
-    );
+    const filename = generateExportFilename(section.toLowerCase().replace(/\s+/g, '-'), 'csv');
 
     await exportCSV(data, filename, headers, metadata);
     setIsOpen(false);
@@ -199,10 +193,7 @@ export function CompactExportButton({
   const { exportPDF, exportCSV, state } = useExport();
 
   const handleExport = async () => {
-    const filename = generateExportFilename(
-      section.toLowerCase().replace(/\s+/g, '-'),
-      format
-    );
+    const filename = generateExportFilename(section.toLowerCase().replace(/\s+/g, '-'), format);
 
     if (format === 'pdf' && sections && sections.length > 0) {
       await exportPDF(sections, filename, dateRange);

@@ -16,7 +16,7 @@ import {
   Share2,
   Download,
   Upload,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -215,7 +215,7 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'application/json';
-    input.onchange = async (e) => {
+    input.onchange = async e => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
 
@@ -287,23 +287,11 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
             <>
               <div className="h-6 w-px bg-border" />
 
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={undo}
-                disabled={!canUndo}
-                title="Undo"
-              >
+              <Button size="sm" variant="ghost" onClick={undo} disabled={!canUndo} title="Undo">
                 <Undo2 className="h-4 w-4" />
               </Button>
 
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={redo}
-                disabled={!canRedo}
-                title="Redo"
-              >
+              <Button size="sm" variant="ghost" onClick={redo} disabled={!canRedo} title="Redo">
                 <Redo2 className="h-4 w-4" />
               </Button>
 
@@ -320,21 +308,11 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
             <LayoutGrid className="h-4 w-4" />
           </Button>
 
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={handleExport}
-            title="Export configuration"
-          >
+          <Button size="sm" variant="ghost" onClick={handleExport} title="Export configuration">
             <Download className="h-4 w-4" />
           </Button>
 
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={handleImport}
-            title="Import configuration"
-          >
+          <Button size="sm" variant="ghost" onClick={handleImport} title="Import configuration">
             <Upload className="h-4 w-4" />
           </Button>
 

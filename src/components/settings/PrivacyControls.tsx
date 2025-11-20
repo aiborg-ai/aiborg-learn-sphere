@@ -12,7 +12,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Download, Trash2, Shield, Eye, EyeOff, Lock, AlertTriangle } from 'lucide-react';
+import { Download, Trash2, Shield, Eye, EyeOff, Lock, AlertTriangle } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';

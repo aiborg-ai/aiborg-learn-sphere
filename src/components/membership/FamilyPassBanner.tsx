@@ -12,7 +12,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Sparkles, ArrowRight, Clock, CheckCircle2, Gift } from 'lucide-react';
+import { Users, Sparkles, ArrowRight, Clock, CheckCircle2, Gift } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';

@@ -3,7 +3,7 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Play, Clock, CheckCircle, BookOpen, TrendingUp } from 'lucide-react';
+import { Play, Clock, CheckCircle, BookOpen, TrendingUp } from '@/components/ui/icons';
 import { useNavigate } from 'react-router-dom';
 
 export interface UserProgress {

@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Clock, AlertTriangle } from 'lucide-react';
+import { Clock, AlertTriangle } from '@/components/ui/icons';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 

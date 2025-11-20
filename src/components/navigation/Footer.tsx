@@ -11,7 +11,7 @@ import {
   Phone,
   MapPin,
   ArrowRight,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();

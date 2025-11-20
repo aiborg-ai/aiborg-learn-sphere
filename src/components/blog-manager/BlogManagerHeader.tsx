@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Plus, Sparkles } from 'lucide-react';
+import { Plus, Sparkles } from '@/components/ui/icons';
 import { Link } from 'react-router-dom';
 
 interface BlogManagerHeaderProps {

@@ -16,7 +16,7 @@ import {
   Target,
   PenTool,
   RotateCcw,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 

@@ -5,7 +5,7 @@ import type { BlogComment } from '@/types/blog';
 import { RequireAuth } from './RequireAuth';
 import { CommentForm } from './CommentForm';
 import { CommentItem } from './CommentItem';
-import { MessageCircle, RefreshCw } from 'lucide-react';
+import { MessageCircle, RefreshCw } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';

@@ -9,7 +9,7 @@ import {
   ArrowRight,
   Sparkles,
   BarChart3,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { usePersonalization } from '@/contexts/PersonalizationContext';
 import { Link } from 'react-router-dom';
 

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import React, { Component } from 'react';
-import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
+import { AlertTriangle, Home, RefreshCw } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { logger } from '@/utils/logger';

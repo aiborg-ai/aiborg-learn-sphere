@@ -6,7 +6,7 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles } from 'lucide-react';
+import { Sparkles } from '@/components/ui/icons';
 import { Course } from './types';
 
 interface CourseTemplate {

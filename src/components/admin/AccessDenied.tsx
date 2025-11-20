@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, Home } from 'lucide-react';
+import { AlertCircle, Home } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 import type { DenialReason } from '@/hooks/useAdminAccess';
 

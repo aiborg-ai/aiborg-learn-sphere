@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from '@/components/ui/icons';
 
 // Lazy load the PDF viewer to reduce initial bundle size
 const PDFViewer = lazy(() => import('./PDFViewer'));

@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { Clock } from 'lucide-react';
+import { Clock } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import type { WidgetComponentProps, ChartWidgetConfig } from '@/types/dashboard';
@@ -79,7 +79,7 @@ export function TimeTrackingWidget({ widget, isEditing }: WidgetComponentProps) 
           <YAxis tick={{ fontSize: 12 }} />
           <Tooltip
             formatter={(value: number) => `${Math.floor(value / 60)}h ${value % 60}m`}
-            labelFormatter={(label) => label}
+            labelFormatter={label => label}
           />
           <Bar dataKey="minutes" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
         </BarChart>

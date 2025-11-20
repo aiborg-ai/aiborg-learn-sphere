@@ -4,9 +4,9 @@
  */
 
 import { Link } from 'react-router-dom';
-import { MessageCircle, FileText, ChevronRight } from 'lucide-react';
+import { MessageCircle, FileText, ChevronRight } from '@/components/ui/icons';
 import { Card, CardContent } from '@/components/ui/card';
-import * as Icons from 'lucide-react';
+import * as Icons from '@/components/ui/icons';
 import { formatDistanceToNow } from 'date-fns';
 import type { ForumCategoryWithStats } from '@/types/forum';
 

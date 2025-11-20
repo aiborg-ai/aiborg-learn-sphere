@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Mic, Square, Play, Pause, Trash2 } from 'lucide-react';
+import { Mic, Square, Play, Pause, Trash2 } from '@/components/ui/icons';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 

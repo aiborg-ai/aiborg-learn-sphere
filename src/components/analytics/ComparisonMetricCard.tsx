@@ -7,7 +7,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ComparisonBadge } from './ComparisonBadge';
 import { cn } from '@/lib/utils';
-import type { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from '@/components/ui/icons';
 
 export interface ComparisonMetricCardProps {
   title: string;

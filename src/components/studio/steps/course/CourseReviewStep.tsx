@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { CheckCircle, Eye, AlertTriangle } from 'lucide-react';
+import { CheckCircle, Eye, AlertTriangle } from '@/components/ui/icons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';

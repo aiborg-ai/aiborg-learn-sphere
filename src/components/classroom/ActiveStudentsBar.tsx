@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Users, Circle } from 'lucide-react';
+import { Users, Circle } from '@/components/ui/icons';
 import { useClassroomPresence } from '@/hooks/useClassroomPresence';
 import { logger } from '@/utils/logger';
 

@@ -9,7 +9,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, Copy } from 'lucide-react';
+import { Edit, Trash2, Copy } from '@/components/ui/icons';
 import { Course } from './types';
 
 interface CourseTableProps {

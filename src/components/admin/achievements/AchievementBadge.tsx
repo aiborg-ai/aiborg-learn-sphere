@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Edit, Trash, Award } from 'lucide-react';
+import { Edit, Trash, Award } from '@/components/ui/icons';
 import type { Achievement } from './types';
 import { getRarityColor, getCategoryIcon } from './utils';
 

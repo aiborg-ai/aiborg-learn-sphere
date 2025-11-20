@@ -15,7 +15,7 @@ import {
   MousePointer2,
   Settings,
   Share2,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -32,35 +32,40 @@ const TOUR_STEPS: TourStep[] = [
   {
     target: 'welcome',
     title: 'Welcome to Dashboard Builder!',
-    description: 'Create custom dashboards tailored to your learning journey. Let\'s take a quick tour to get you started.',
+    description:
+      "Create custom dashboards tailored to your learning journey. Let's take a quick tour to get you started.",
     icon: Sparkles,
     position: 'center',
   },
   {
     target: '.widget-palette',
     title: 'Widget Library',
-    description: 'Browse 17 different widget types organized by category. Click any widget to add it to your dashboard.',
+    description:
+      'Browse 17 different widget types organized by category. Click any widget to add it to your dashboard.',
     icon: LayoutGrid,
     position: 'right',
   },
   {
     target: '.dashboard-canvas',
     title: 'Canvas Area',
-    description: 'Drag widgets to rearrange them and resize by dragging the edges. Your layout is automatically saved.',
+    description:
+      'Drag widgets to rearrange them and resize by dragging the edges. Your layout is automatically saved.',
     icon: MousePointer2,
     position: 'center',
   },
   {
     target: '.widget-controls',
     title: 'Widget Controls',
-    description: 'Each widget has controls to configure, lock, hide, or remove it. Click the settings icon to customize.',
+    description:
+      'Each widget has controls to configure, lock, hide, or remove it. Click the settings icon to customize.',
     icon: Settings,
     position: 'bottom',
   },
   {
     target: '.share-button',
     title: 'Share Your Dashboard',
-    description: 'Create private share links or publish your dashboard as a template for others to discover and clone.',
+    description:
+      'Create private share links or publish your dashboard as a template for others to discover and clone.',
     icon: Share2,
     position: 'bottom',
   },
@@ -217,12 +222,7 @@ export function OnboardingTour({ isOpen, onComplete, onSkip }: OnboardingTourPro
                     </div>
                   </div>
 
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="h-8 w-8"
-                    onClick={handleSkip}
-                  >
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={handleSkip}>
                     <X className="h-4 w-4" />
                   </Button>
                 </div>

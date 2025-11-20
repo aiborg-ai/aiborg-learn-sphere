@@ -18,7 +18,7 @@
  */
 
 import { ReactNode } from 'react';
-import { ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
+import { ArrowUp, ArrowDown, ArrowUpDown } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
 /* ============================================================================

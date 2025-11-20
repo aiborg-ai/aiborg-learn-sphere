@@ -7,7 +7,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Crown, Medal, Trophy, TrendingUp } from 'lucide-react';
+import { Crown, Medal, Trophy, TrendingUp } from '@/components/ui/icons';
 import type { LeaderboardEntry, Leaderboard } from '@/services/gamification';
 
 interface LeaderboardTableProps {

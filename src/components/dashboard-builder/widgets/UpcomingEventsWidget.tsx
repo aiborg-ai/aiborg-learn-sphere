@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { Calendar, MapPin, Users } from 'lucide-react';
+import { Calendar, MapPin, Users } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import type { WidgetComponentProps, ActivityWidgetConfig } from '@/types/dashboard';
@@ -62,7 +62,10 @@ export function UpcomingEventsWidget({ widget, isEditing }: WidgetComponentProps
         const isToday = eventDate.toDateString() === new Date().toDateString();
 
         return (
-          <div key={event.id} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+          <div
+            key={event.id}
+            className="flex items-start gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+          >
             <div className="p-2 rounded-lg bg-primary/10">
               <Calendar className="h-4 w-4 text-primary" />
             </div>

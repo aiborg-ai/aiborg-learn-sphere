@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AssessmentToolCard } from './AssessmentToolCard';
 import { useAssessmentTools } from '@/hooks/useAssessmentTools';
 import { usePersonalization } from '@/contexts/PersonalizationContext';
-import { Brain, AlertCircle, ChevronRight, Loader2 } from 'lucide-react';
+import { Brain, AlertCircle, ChevronRight, Loader2 } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
 interface AssessmentToolsSectionProps {

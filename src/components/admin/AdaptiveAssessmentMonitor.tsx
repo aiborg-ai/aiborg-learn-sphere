@@ -20,7 +20,7 @@ import {
   BarChart3,
   AlertTriangle,
   Info,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import {
   AdaptiveAssessmentEngagementService,
   type AdaptiveEngagementMetrics,

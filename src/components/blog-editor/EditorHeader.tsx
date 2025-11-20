@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Save, Eye } from 'lucide-react';
+import { ArrowLeft, Save, Eye } from '@/components/ui/icons';
 
 interface EditorHeaderProps {
   isEditMode: boolean;

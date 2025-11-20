@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Tag, Plus, X } from 'lucide-react';
+import { Tag, Plus, X } from '@/components/ui/icons';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';

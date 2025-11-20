@@ -13,7 +13,7 @@ import {
   Users,
   ChevronDown,
   ChevronUp,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { format, formatDistanceToNow, isAfter, isBefore, addHours } from 'date-fns';
 import { useAuth } from '@/hooks/useAuth';
 import { useSessionRegistration } from '@/hooks/useSessionRegistration';

@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Award, Trophy, Zap, Users, Star } from 'lucide-react';
+import { Award, Trophy, Zap, Users, Star } from '@/components/ui/icons';
 import { AchievementCard } from './AchievementCard';
 import { ShareAchievementDialog } from './ShareAchievementDialog';
 import type { Achievement, UserAchievement, AchievementCategory } from '@/services/gamification';

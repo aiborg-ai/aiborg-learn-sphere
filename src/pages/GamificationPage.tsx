@@ -23,7 +23,7 @@ import {
   Loader2,
   CheckCircle,
   Lock,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { logger } from '@/utils/logger';
 import { useToast } from '@/hooks/use-toast';
 

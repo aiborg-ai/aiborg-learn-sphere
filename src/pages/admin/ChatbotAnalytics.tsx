@@ -40,7 +40,7 @@ import {
   Laptop,
   Smartphone,
   Tablet,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import ExportModal from '@/components/analytics/ExportModal';
@@ -50,7 +50,7 @@ import type { ChartSection } from '@/services/analytics/EnhancedPDFExportService
 import { useAuth } from '@/hooks/useAuth';
 import { useAnalyticsPreferences, useShouldRefreshPage } from '@/hooks/useAnalyticsPreferences';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
-import { Settings } from 'lucide-react';
+import { Settings } from '@/components/ui/icons';
 
 export default function ChatbotAnalytics() {
   const { user } = useAuth();

@@ -32,7 +32,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuditLogs } from '@/hooks/useAuditLogs';
 import { logger } from '@/utils/logger';
-import { Search, Shield, UserCog, UserCheck, AlertTriangle, Users } from 'lucide-react';
+import { Search, Shield, UserCog, UserCheck, AlertTriangle, Users } from '@/components/ui/icons';
 
 export interface UserProfile {
   id: string;

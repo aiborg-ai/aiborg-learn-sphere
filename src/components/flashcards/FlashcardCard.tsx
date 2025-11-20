@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { RotateCw } from 'lucide-react';
+import { RotateCw } from '@/components/ui/icons';
 import type { Flashcard } from '@/services/spaced-repetition/FlashcardService';
 
 interface FlashcardCardProps {

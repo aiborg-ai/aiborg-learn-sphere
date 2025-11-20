@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Save, ChevronDown } from 'lucide-react';
+import { Save, ChevronDown } from '@/components/ui/icons';
 import { Course } from './types';
 import { CourseBasicFields } from './CourseBasicFields';
 import { CourseDetailsFields } from './CourseDetailsFields';

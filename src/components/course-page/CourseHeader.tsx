@@ -8,7 +8,7 @@ import { BookmarkButton } from '@/components/bookmarks/BookmarkButton';
 import { DownloadButton } from '@/components/offline/DownloadButton';
 import { OfflineBadge } from '@/components/offline/OfflineBadge';
 import { useOfflineContent } from '@/hooks/useOfflineContent';
-import { ArrowLeft, Clock, Users, Calendar, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Clock, Users, Calendar, CheckCircle } from '@/components/ui/icons';
 import type { Course } from './types';
 
 interface CourseHeaderProps {
@@ -34,7 +34,11 @@ export function CourseHeader({ course, progressPercentage, courseId }: CourseHea
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-3xl font-display font-bold text-white">{course.title}</h1>
-            <OfflineBadge isOffline={isDownloaded} variant="secondary" className="bg-white/20 text-white" />
+            <OfflineBadge
+              isOffline={isDownloaded}
+              variant="secondary"
+              className="bg-white/20 text-white"
+            />
             <BookmarkButton
               type="course"
               contentId={courseId}

@@ -23,7 +23,7 @@ import {
   Heading3,
   Undo,
   Redo,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useCallback } from 'react';
 
 interface RichTextEditorProps {

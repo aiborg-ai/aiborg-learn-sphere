@@ -5,9 +5,18 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { ClipboardCheck } from 'lucide-react';
+import { ClipboardCheck } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+} from 'recharts';
 import type { WidgetComponentProps, ChartWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';
 

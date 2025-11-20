@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp } from '@/components/ui/icons';
 
 interface GrowthRoadmapTabProps {
   scorePercentage: number;

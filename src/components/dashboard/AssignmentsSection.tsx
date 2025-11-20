@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { FileText, Calendar, ChevronRight, AlertCircle } from 'lucide-react';
+import { FileText, Calendar, ChevronRight, AlertCircle } from '@/components/ui/icons';
 import { useNavigate } from 'react-router-dom';
 
 export interface Assignment {

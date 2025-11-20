@@ -1,4 +1,4 @@
-import { CheckCircle, Star, Users, Trophy, Shield, Award } from 'lucide-react';
+import { CheckCircle, Star, Users, Trophy, Shield, Award } from '@/components/ui/icons';
 
 export const getRarityColor = (rarity: string): string => {
   switch (rarity) {

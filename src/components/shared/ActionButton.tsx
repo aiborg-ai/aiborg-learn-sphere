@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
 export interface ActionButtonState {

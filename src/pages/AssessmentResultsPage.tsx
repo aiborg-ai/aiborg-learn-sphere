@@ -31,7 +31,7 @@ import {
   Lightbulb,
   Loader2,
   AlertCircle,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useEffect, useState } from 'react';
 import type { AssessmentResults } from '@/types/assessmentTools';
 import { logger } from '@/utils/logger';

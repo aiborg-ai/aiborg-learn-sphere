@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Target, ArrowRight } from 'lucide-react';
+import { Target, ArrowRight } from '@/components/ui/icons';
 import { LEVEL_CONFIG, type WizardFormData } from './types';
 
 interface GoalSettingStepProps {

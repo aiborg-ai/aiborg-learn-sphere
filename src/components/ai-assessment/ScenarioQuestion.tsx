@@ -17,7 +17,7 @@ import {
   VolumeX,
   Info,
   Lightbulb,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 export interface ScenarioQuestionProps {
   question: {

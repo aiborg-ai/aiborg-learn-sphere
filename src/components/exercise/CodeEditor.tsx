@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Play, Copy, RotateCcw } from 'lucide-react';
+import { Play, Copy, RotateCcw } from '@/components/ui/icons';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 

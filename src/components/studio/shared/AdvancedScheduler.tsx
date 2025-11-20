@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Calendar, Clock, Globe } from 'lucide-react';
+import { Calendar, Clock, Globe } from '@/components/ui/icons';
 import { format } from 'date-fns';
 import { Calendar as CalendarUI } from '@/components/ui/calendar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

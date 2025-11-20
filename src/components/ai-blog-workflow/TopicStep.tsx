@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight } from '@/components/ui/icons';
 
 interface TopicStepProps {
   initialData?: Partial<TopicStepData>;

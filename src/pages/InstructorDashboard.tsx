@@ -18,7 +18,7 @@ import {
   Loader2,
   CheckCircle,
   MonitorPlay,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { logger } from '@/utils/logger';
 
 // Import instructor components

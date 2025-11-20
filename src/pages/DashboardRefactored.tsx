@@ -25,7 +25,7 @@ import {
   Brain,
   Folder,
   Ticket,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { Link } from 'react-router-dom';
 
 // Import dashboard components
@@ -47,7 +47,11 @@ import { useUserResources } from '@/hooks/useUserResources';
 import { AttendanceTicketsSection } from '@/components/dashboard/AttendanceTicketsSection';
 import { useAttendanceTickets } from '@/hooks/useAttendanceTickets';
 import { PersonalizedSection } from '@/components/recommendations/PersonalizedSection';
-import { usePersonalizedRecommendations, useRecommendationFeedback, useRecommendationInteraction } from '@/hooks/useRecommendations';
+import {
+  usePersonalizedRecommendations,
+  useRecommendationFeedback,
+  useRecommendationInteraction,
+} from '@/hooks/useRecommendations';
 
 export default function DashboardRefactored() {
   const [dataLoading, setDataLoading] = useState(true);
@@ -78,7 +82,11 @@ export default function DashboardRefactored() {
   const navigate = useNavigate();
 
   // AI Recommendations hooks
-  const { data: courseRecommendations, isLoading: recommendationsLoading, refetch: refetchRecommendations } = usePersonalizedRecommendations('course', {
+  const {
+    data: courseRecommendations,
+    isLoading: recommendationsLoading,
+    refetch: refetchRecommendations,
+  } = usePersonalizedRecommendations('course', {
     limit: 6,
     excludeEnrolled: true,
     excludeDismissed: true,

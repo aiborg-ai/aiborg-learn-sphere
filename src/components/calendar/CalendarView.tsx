@@ -23,7 +23,7 @@ import {
   ChevronRight,
   Home,
   Loader2,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 import { useCalendarEvents } from '@/hooks/useCalendarEvents';
 import { useCalendarFilters } from '@/hooks/useCalendarFilters';

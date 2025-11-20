@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Brain, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Brain, ArrowRight, ArrowLeft, AlertCircle } from '@/components/ui/icons';
 import type { Category, WizardFormData } from './types';
 
 interface FocusAreasStepProps {

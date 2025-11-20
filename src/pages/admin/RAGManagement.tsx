@@ -20,7 +20,7 @@ import {
   Clock,
   Target,
   BarChart3,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 

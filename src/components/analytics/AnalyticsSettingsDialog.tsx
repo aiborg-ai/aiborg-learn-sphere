@@ -18,7 +18,7 @@ import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Settings, Zap, RefreshCw, Bell, RotateCcw, Save, Loader2 } from 'lucide-react';
+import { Settings, Zap, RefreshCw, Bell, RotateCcw, Save, Loader2 } from '@/components/ui/icons';
 import {
   useAnalyticsPreferences,
   useUpdateAnalyticsPreferences,

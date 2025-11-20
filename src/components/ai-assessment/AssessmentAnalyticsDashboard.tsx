@@ -37,7 +37,7 @@ import {
   Sparkles,
   BarChart3,
   PieChart,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import type { ProfilingData, AssessmentResponse } from '@/types/assessment';

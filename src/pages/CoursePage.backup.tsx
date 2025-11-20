@@ -21,7 +21,7 @@ import {
   HelpCircle,
   PenTool,
   UsersRound,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { logger } from '@/utils/logger';
 import type {
   Course,

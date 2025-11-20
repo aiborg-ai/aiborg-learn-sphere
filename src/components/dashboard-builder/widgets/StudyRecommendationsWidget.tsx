@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { Lightbulb, BookOpen, ArrowRight } from 'lucide-react';
+import { Lightbulb, BookOpen, ArrowRight } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -30,11 +30,7 @@ export function StudyRecommendationsWidget({ widget, isEditing }: WidgetComponen
 
       // Fetch user preferences and enrollment data
       const [preferences, enrollments, allCourses] = await Promise.all([
-        supabase
-          .from('user_preferences_ai')
-          .select('*')
-          .eq('user_id', user.id)
-          .single(),
+        supabase.from('user_preferences_ai').select('*').eq('user_id', user.id).single(),
         supabase
           .from('course_enrollments')
           .select('course:courses(keywords, category)')
@@ -47,9 +43,7 @@ export function StudyRecommendationsWidget({ widget, isEditing }: WidgetComponen
       ]);
 
       const userPrefs = preferences.data;
-      const enrolledCourseIds = new Set(
-        enrollments.data?.map((e: any) => e.course?.id) || []
-      );
+      const enrolledCourseIds = new Set(enrollments.data?.map((e: any) => e.course?.id) || []);
 
       // Extract user's interests from enrolled courses
       const userKeywords = new Set<string>();
@@ -92,11 +86,12 @@ export function StudyRecommendationsWidget({ widget, isEditing }: WidgetComponen
           return {
             ...course,
             score,
-            reason: matchingKeywords > 0
-              ? `Matches your interest in ${course.keywords?.[0] || 'this topic'}`
-              : course.category && userCategories.has(course.category)
-                ? `Related to your ${course.category} courses`
-                : 'Recommended for you',
+            reason:
+              matchingKeywords > 0
+                ? `Matches your interest in ${course.keywords?.[0] || 'this topic'}`
+                : course.category && userCategories.has(course.category)
+                  ? `Related to your ${course.category} courses`
+                  : 'Recommended for you',
           };
         })
         .filter(c => c.score > 0)

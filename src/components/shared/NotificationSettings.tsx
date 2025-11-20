@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { Bell, BellOff, Mail, Save } from 'lucide-react';
+import { Bell, BellOff, Mail, Save } from '@/components/ui/icons';
 import { Separator } from '@/components/ui/separator';
 
 interface NotificationPreferences {

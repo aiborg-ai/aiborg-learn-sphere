@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, Mic, Type } from 'lucide-react';
+import { AlertCircle, Mic, Type } from '@/components/ui/icons';
 import { VoiceAnswerInput } from '../VoiceAnswerInput';
 import type { AssessmentQuestion } from './types';
 

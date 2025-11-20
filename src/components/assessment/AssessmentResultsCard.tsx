@@ -14,7 +14,7 @@ import {
   ChevronRight,
   Zap,
   Trophy,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useNavigate } from 'react-router-dom';
 
 interface AssessmentResult {

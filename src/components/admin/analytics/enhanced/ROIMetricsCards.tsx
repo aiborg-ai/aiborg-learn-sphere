@@ -7,7 +7,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { DollarSign, TrendingUp, Award, AlertCircle } from 'lucide-react';
+import { DollarSign, TrendingUp, Award, AlertCircle } from '@/components/ui/icons';
 import type { ROISummary } from '@/services/team/types';
 
 interface ROIMetricsCardsProps {

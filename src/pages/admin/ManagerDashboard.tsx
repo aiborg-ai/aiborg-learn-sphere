@@ -17,13 +17,21 @@ import {
   useTopPerformingReports,
 } from '@/hooks/admin/useIndividualLearnerAnalytics';
 import { useAuth } from '@/hooks/useAuth';
-import { Users, AlertTriangle, Search, ChevronRight, Activity, Award, Clock } from 'lucide-react';
+import {
+  Users,
+  AlertTriangle,
+  Search,
+  ChevronRight,
+  Activity,
+  Award,
+  Clock,
+} from '@/components/ui/icons';
 import { formatDistanceToNow } from 'date-fns';
 import RefreshIndicator from '@/components/analytics/RefreshIndicator';
 import AnalyticsSettingsDialog from '@/components/analytics/AnalyticsSettingsDialog';
 import { useAnalyticsPreferences, useShouldRefreshPage } from '@/hooks/useAnalyticsPreferences';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
-import { Settings } from 'lucide-react';
+import { Settings } from '@/components/ui/icons';
 
 export default function ManagerDashboard() {
   const navigate = useNavigate();

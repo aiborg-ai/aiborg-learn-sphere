@@ -16,7 +16,7 @@ import {
   Sparkles,
   ChevronRight,
   Loader2,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useToast } from '@/hooks/use-toast';
 
 interface LearningInsight {

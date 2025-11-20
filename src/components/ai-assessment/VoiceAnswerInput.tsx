@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { VoiceRecorder } from '@/components/media';
-import { Mic, Type, Info } from 'lucide-react';
+import { Mic, Type, Info } from '@/components/ui/icons';
 
 interface VoiceAnswerInputProps {
   onVoiceTranscription: (text: string) => void;

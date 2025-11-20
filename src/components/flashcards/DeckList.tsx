@@ -6,7 +6,7 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen, Play, Edit, Trash2, Globe, Lock } from 'lucide-react';
+import { BookOpen, Play, Edit, Trash2, Globe, Lock } from '@/components/ui/icons';
 import type { FlashcardDeck } from '@/services/spaced-repetition/FlashcardService';
 
 interface DeckListProps {
@@ -94,29 +94,17 @@ export function DeckList({
 
             {/* Actions */}
             <div className="flex gap-2">
-              <Button
-                size="sm"
-                onClick={() => onSelectDeck(deck.id)}
-                className="flex-1"
-              >
+              <Button size="sm" onClick={() => onSelectDeck(deck.id)} className="flex-1">
                 <Play className="h-4 w-4 mr-2" />
                 Study
               </Button>
               {onEditDeck && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => onEditDeck(deck.id)}
-                >
+                <Button size="sm" variant="outline" onClick={() => onEditDeck(deck.id)}>
                   <Edit className="h-4 w-4" />
                 </Button>
               )}
               {onDeleteDeck && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => onDeleteDeck(deck.id)}
-                >
+                <Button size="sm" variant="ghost" onClick={() => onDeleteDeck(deck.id)}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
               )}

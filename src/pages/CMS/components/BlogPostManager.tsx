@@ -41,7 +41,7 @@ import {
   FileText,
   Copy,
   ExternalLink,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import BlogPostEditor from './BlogPostEditor';
 import { format } from 'date-fns';
 

@@ -16,7 +16,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { DollarSign, TrendingUp, CreditCard, Loader2, Download } from 'lucide-react';
+import { DollarSign, TrendingUp, CreditCard, Loader2, Download } from '@/components/ui/icons';
 
 interface RevenueAnalyticsProps {
   dateRange: { startDate: Date; endDate: Date };

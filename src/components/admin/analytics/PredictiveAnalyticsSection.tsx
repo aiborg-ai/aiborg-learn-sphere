@@ -20,7 +20,7 @@ import {
   Legend,
   Area,
 } from 'recharts';
-import { TrendingUp, Users, BookOpen, AlertTriangle, Info } from 'lucide-react';
+import { TrendingUp, Users, BookOpen, AlertTriangle, Info } from '@/components/ui/icons';
 import {
   usePredictiveAnalytics,
   getForecastQualityColor,
@@ -29,7 +29,11 @@ import {
 import { formatNumber } from './utils';
 
 // Mock historical data generator (replace with real data fetch)
-const generateMockHistoricalData = (days: number, baseValue: number, metric: 'revenue' | 'users' | 'enrollments') => {
+const generateMockHistoricalData = (
+  days: number,
+  baseValue: number,
+  metric: 'revenue' | 'users' | 'enrollments'
+) => {
   const data = [];
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
@@ -153,7 +157,10 @@ export function PredictiveAnalyticsSection() {
       </div>
 
       {/* Forecast Period Selector */}
-      <Tabs value={forecastDays.toString()} onValueChange={(value) => setForecastDays(Number(value) as ForecastPeriod)}>
+      <Tabs
+        value={forecastDays.toString()}
+        onValueChange={value => setForecastDays(Number(value) as ForecastPeriod)}
+      >
         <TabsList>
           <TabsTrigger value="30">30 Days</TabsTrigger>
           <TabsTrigger value="60">60 Days</TabsTrigger>
@@ -162,12 +169,15 @@ export function PredictiveAnalyticsSection() {
       </Tabs>
 
       {/* Insufficient Data Warning */}
-      {(hasInsufficientData('revenue') || hasInsufficientData('userGrowth') || hasInsufficientData('enrollments')) && (
+      {(hasInsufficientData('revenue') ||
+        hasInsufficientData('userGrowth') ||
+        hasInsufficientData('enrollments')) && (
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>Insufficient Historical Data</AlertTitle>
           <AlertDescription>
-            At least 60 days of historical data is required for accurate forecasting. Current forecasts may be less reliable.
+            At least 60 days of historical data is required for accurate forecasting. Current
+            forecasts may be less reliable.
           </AlertDescription>
         </Alert>
       )}
@@ -209,7 +219,7 @@ export function PredictiveAnalyticsSection() {
                 <ComposedChart data={prepareChartData('revenue')}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" angle={-45} textAnchor="end" height={80} />
-                  <YAxis tickFormatter={(value) => `$${formatNumber(value)}`} />
+                  <YAxis tickFormatter={value => `$${formatNumber(value)}`} />
                   <Tooltip
                     formatter={(value: number) => [`$${formatNumber(value)}`, '']}
                     labelStyle={{ color: '#000' }}
@@ -275,7 +285,9 @@ export function PredictiveAnalyticsSection() {
                 <Users className="h-5 w-5" />
                 User Growth Forecast
               </CardTitle>
-              <CardDescription>Predicted user growth for the next {forecastDays} days</CardDescription>
+              <CardDescription>
+                Predicted user growth for the next {forecastDays} days
+              </CardDescription>
             </div>
             {state.userGrowth.data && (
               <div className="text-right">
@@ -307,8 +319,20 @@ export function PredictiveAnalyticsSection() {
                   <Tooltip formatter={(value: number) => [formatNumber(value), '']} />
                   <Legend />
 
-                  <Area type="monotone" dataKey="upper" stroke="none" fill="#8b5cf6" fillOpacity={0.1} />
-                  <Area type="monotone" dataKey="lower" stroke="none" fill="#8b5cf6" fillOpacity={0.1} />
+                  <Area
+                    type="monotone"
+                    dataKey="upper"
+                    stroke="none"
+                    fill="#8b5cf6"
+                    fillOpacity={0.1}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="lower"
+                    stroke="none"
+                    fill="#8b5cf6"
+                    fillOpacity={0.1}
+                  />
 
                   <Line
                     type="monotone"
@@ -349,7 +373,9 @@ export function PredictiveAnalyticsSection() {
                 <BookOpen className="h-5 w-5" />
                 Enrollment Forecast
               </CardTitle>
-              <CardDescription>Predicted enrollments for the next {forecastDays} days</CardDescription>
+              <CardDescription>
+                Predicted enrollments for the next {forecastDays} days
+              </CardDescription>
             </div>
             {state.enrollments.data && (
               <div className="text-right">
@@ -381,8 +407,20 @@ export function PredictiveAnalyticsSection() {
                   <Tooltip formatter={(value: number) => [formatNumber(value), '']} />
                   <Legend />
 
-                  <Area type="monotone" dataKey="upper" stroke="none" fill="#f97316" fillOpacity={0.1} />
-                  <Area type="monotone" dataKey="lower" stroke="none" fill="#f97316" fillOpacity={0.1} />
+                  <Area
+                    type="monotone"
+                    dataKey="upper"
+                    stroke="none"
+                    fill="#f97316"
+                    fillOpacity={0.1}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="lower"
+                    stroke="none"
+                    fill="#f97316"
+                    fillOpacity={0.1}
+                  />
 
                   <Line
                     type="monotone"

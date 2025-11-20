@@ -20,7 +20,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
-import { Filter, X, Search, RotateCcw, ChevronDown, ChevronUp } from 'lucide-react';
+import { Filter, X, Search, RotateCcw, ChevronDown, ChevronUp } from '@/components/ui/icons';
 import type { CalendarEventType, EventStatus } from '@/types/calendar';
 import { EVENT_TYPE_COLORS, getEventTypeLabel } from '@/services/calendar/CalendarEventService';
 import { cn } from '@/lib/utils';

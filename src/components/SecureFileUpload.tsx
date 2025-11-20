@@ -11,7 +11,16 @@ import { rateLimiter, RateLimitPresets } from '@/lib/security/rate-limiter';
 import type { Action, Resource } from '@/lib/security/rbac';
 import { rbac } from '@/lib/security/rbac';
 import { logger } from '@/utils/logger';
-import { Upload, X, CheckCircle, AlertCircle, FileText, Image, Film, File } from 'lucide-react';
+import {
+  Upload,
+  X,
+  CheckCircle,
+  AlertCircle,
+  FileText,
+  Image,
+  Film,
+  File,
+} from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
 /**

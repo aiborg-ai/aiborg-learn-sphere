@@ -5,7 +5,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Download, Check, X, Loader2, Trash2 } from 'lucide-react';
+import { Download, Check, X, Loader2, Trash2 } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';

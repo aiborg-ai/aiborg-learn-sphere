@@ -6,7 +6,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Star, Award, Sparkles } from 'lucide-react';
+import { Trophy, Star, Award, Sparkles } from '@/components/ui/icons';
 import type { Achievement, UserAchievement } from '@/services/gamification';
 
 interface AchievementShareCardProps {

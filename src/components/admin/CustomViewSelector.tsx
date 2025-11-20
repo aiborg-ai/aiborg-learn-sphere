@@ -6,16 +6,38 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
 import { useCustomViews, getDefaultViewConfig } from '@/hooks/useCustomViews';
 import { useAuth } from '@/hooks/useAuth';
 import type { ViewConfig } from '@/services/analytics/CustomViewsService';
-import { Save, Trash2, Edit2, Eye } from 'lucide-react';
+import { Save, Trash2, Edit2, Eye } from '@/components/ui/icons';
 
 export interface CustomViewSelectorProps {
   currentConfig: ViewConfig;
@@ -167,9 +189,7 @@ export function CustomViewSelector({
                 Save and load custom dashboard configurations
               </CardDescription>
             </div>
-            <span className="text-xs text-muted-foreground">
-              {viewCount} / 10 views
-            </span>
+            <span className="text-xs text-muted-foreground">{viewCount} / 10 views</span>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -193,7 +213,7 @@ export function CustomViewSelector({
                     Default View
                   </div>
                 </SelectItem>
-                {views.map((view) => (
+                {views.map(view => (
                   <SelectItem key={view.id} value={view.id}>
                     {view.name}
                   </SelectItem>
@@ -219,7 +239,7 @@ export function CustomViewSelector({
             <div className="space-y-2">
               <div className="text-sm font-medium">Manage Views</div>
               <div className="space-y-1 max-h-48 overflow-y-auto">
-                {views.map((view) => (
+                {views.map(view => (
                   <div
                     key={view.id}
                     className="flex items-center justify-between p-2 rounded-md hover:bg-muted transition-colors"
@@ -262,9 +282,7 @@ export function CustomViewSelector({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Save Current View</DialogTitle>
-            <DialogDescription>
-              Give your custom dashboard configuration a name
-            </DialogDescription>
+            <DialogDescription>Give your custom dashboard configuration a name</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
@@ -273,17 +291,15 @@ export function CustomViewSelector({
                 id="view-name"
                 placeholder="e.g., Q1 Revenue Focus"
                 value={viewName}
-                onChange={(e) => setViewName(e.target.value)}
-                onKeyDown={(e) => {
+                onChange={e => setViewName(e.target.value)}
+                onKeyDown={e => {
                   if (e.key === 'Enter' && viewName.trim()) {
                     handleSaveView();
                   }
                 }}
                 maxLength={100}
               />
-              <p className="text-xs text-muted-foreground">
-                {viewName.length} / 100 characters
-              </p>
+              <p className="text-xs text-muted-foreground">{viewName.length} / 100 characters</p>
             </div>
           </div>
           <DialogFooter>
@@ -310,8 +326,8 @@ export function CustomViewSelector({
               <Input
                 id="rename-view"
                 value={viewName}
-                onChange={(e) => setViewName(e.target.value)}
-                onKeyDown={(e) => {
+                onChange={e => setViewName(e.target.value)}
+                onKeyDown={e => {
                   if (e.key === 'Enter' && viewName.trim()) {
                     handleRenameView();
                   }
@@ -342,7 +358,10 @@ export function CustomViewSelector({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteView} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction
+              onClick={handleDeleteView}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>

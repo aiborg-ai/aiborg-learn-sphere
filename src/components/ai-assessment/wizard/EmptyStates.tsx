@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Loader2, AlertCircle } from '@/components/ui/icons';
 import type { User } from '@supabase/supabase-js';
 
 interface EmptyStatesProps {

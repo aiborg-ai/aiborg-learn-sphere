@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trophy, Plus, Loader2 } from 'lucide-react';
+import { Trophy, Plus, Loader2 } from '@/components/ui/icons';
 import { useAchievements } from './useAchievements';
 import { AchievementList } from './AchievementList';
 import { AchievementStats } from './AchievementStats';

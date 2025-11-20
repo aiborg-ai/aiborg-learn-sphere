@@ -1,4 +1,4 @@
-import { Shield, CheckCircle2, Gift } from 'lucide-react';
+import { Shield, CheckCircle2, Gift } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';

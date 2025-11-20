@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { AchievementShareCard } from './AchievementShareCard';
-import { Share2, Twitter, Linkedin, Facebook, Link2, Check, Download } from 'lucide-react';
+import { Share2, Twitter, Linkedin, Facebook, Link2, Check, Download } from '@/components/ui/icons';
 import type { Achievement, UserAchievement } from '@/services/gamification';
 import {
   generateAchievementShareText,

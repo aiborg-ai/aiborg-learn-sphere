@@ -25,7 +25,7 @@ import {
   ListVideo,
   TrendingUp,
   Sparkles,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 interface Command {
   id: string;

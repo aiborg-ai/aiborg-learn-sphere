@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { CheckCircle, Plus, Eye, LayoutDashboard } from 'lucide-react';
+import { CheckCircle, Plus, Eye, LayoutDashboard } from '@/components/ui/icons';
 import {
   Dialog,
   DialogContent,

@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, ExternalLink, Plus, ArrowLeft } from 'lucide-react';
+import { CheckCircle2, ExternalLink, Plus, ArrowLeft } from '@/components/ui/icons';
 import { Link } from 'react-router-dom';
 
 interface PublishSuccessModalProps {

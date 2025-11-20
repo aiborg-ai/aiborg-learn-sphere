@@ -15,14 +15,14 @@ import {
   BookOpen,
   CheckCircle,
   Clock,
-  Grid,
+  LayoutGrid,
   List,
   Search,
   TrendingUp,
   Loader2,
   Calendar,
   Play,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { logger } from '@/utils/logger';
 
 interface Course {
@@ -393,7 +393,7 @@ export default function MyCoursesPage() {
               size="icon"
               onClick={() => setViewMode('grid')}
             >
-              <Grid className="h-4 w-4" />
+              <LayoutGrid className="h-4 w-4" />
             </Button>
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}

@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { BookOpen, Calendar, FileText, Megaphone, Plus, Edit } from 'lucide-react';
+import { BookOpen, Calendar, FileText, Megaphone, Plus, Edit } from '@/components/ui/icons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

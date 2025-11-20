@@ -21,7 +21,7 @@ import { DeckList } from '@/components/flashcards/DeckList';
 import { FlashcardHelp } from '@/components/flashcards/FlashcardHelp';
 import { useFlashcardDecks, useCreateDeck, useDeleteDeck } from '@/hooks/useFlashcards';
 import { useReviewStreak } from '@/hooks/useSpacedRepetition';
-import { Plus, Flame, Trophy } from 'lucide-react';
+import { Plus, Flame, Trophy } from '@/components/ui/icons';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function FlashcardsPage() {
@@ -163,10 +163,7 @@ export default function FlashcardsPage() {
           </div>
 
           <DialogFooter>
-            <Button
-              variant="ghost"
-              onClick={() => setIsCreateDialogOpen(false)}
-            >
+            <Button variant="ghost" onClick={() => setIsCreateDialogOpen(false)}>
               Cancel
             </Button>
             <Button

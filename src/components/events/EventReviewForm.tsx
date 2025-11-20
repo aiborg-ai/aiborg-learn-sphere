@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Star, MessageSquare, Mic, Video, Users } from 'lucide-react';
+import { Star, MessageSquare, Mic, Video, Users } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';

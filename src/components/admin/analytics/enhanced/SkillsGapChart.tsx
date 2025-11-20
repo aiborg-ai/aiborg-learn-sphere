@@ -17,7 +17,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts';
-import { AlertCircle, TrendingDown } from 'lucide-react';
+import { AlertCircle, TrendingDown } from '@/components/ui/icons';
 import type { SkillsGap } from '@/services/team/types';
 
 interface SkillsGapChartProps {

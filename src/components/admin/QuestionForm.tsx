@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Trash2, Save, X } from 'lucide-react';
+import { Plus, Trash2, Save, X } from '@/components/ui/icons';
 import { useAssessmentCategories, type CreateQuestionInput } from '@/hooks/useAssessmentQuestions';
 
 const questionSchema = z.object({

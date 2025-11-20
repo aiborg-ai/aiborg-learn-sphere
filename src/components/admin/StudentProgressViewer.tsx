@@ -19,7 +19,7 @@ import {
   Loader2,
   TrendingUp,
   FileText,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 interface StudentProgressViewerProps {
   userId: string;

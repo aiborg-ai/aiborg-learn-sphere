@@ -7,7 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useExercise } from '@/hooks/useExercise';
 import { ExerciseSubmission } from '@/components/exercise';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2 } from '@/components/ui/icons';
 
 export default function ExerciseSubmissionPage() {
   const { exerciseId } = useParams<{ exerciseId: string }>();

@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, RefreshCw, Trophy, Award } from 'lucide-react';
+import { Loader2, RefreshCw, Trophy, Award } from '@/components/ui/icons';
 import {
   LevelProgressBar,
   PointsDisplay,

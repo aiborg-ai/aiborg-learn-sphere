@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { Activity, BookOpen, Trophy, FileCheck, MessageSquare } from 'lucide-react';
+import { Activity, BookOpen, Trophy, FileCheck, MessageSquare } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import type { WidgetComponentProps, ActivityWidgetConfig } from '@/types/dashboard';
@@ -79,7 +79,8 @@ export function RecentActivityWidget({ widget, isEditing }: WidgetComponentProps
           description: `Commented on "${(c.post as any)?.title}"`,
           icon: MessageSquare,
         })),
-      ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      ]
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
         .slice(0, limit);
 
       return allActivities;

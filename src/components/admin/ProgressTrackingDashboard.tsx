@@ -20,7 +20,15 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useProgressTracking } from '@/hooks/useProgressTracking';
 import { StudentProgressViewer } from './StudentProgressViewer';
-import { TrendingUp, Clock, Users, Award, AlertTriangle, Loader2, Eye } from 'lucide-react';
+import {
+  TrendingUp,
+  Clock,
+  Users,
+  Award,
+  AlertTriangle,
+  Loader2,
+  Eye,
+} from '@/components/ui/icons';
 
 export function ProgressTrackingDashboard() {
   const [selectedCourseId, setSelectedCourseId] = useState<number | undefined>();

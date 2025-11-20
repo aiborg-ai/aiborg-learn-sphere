@@ -20,7 +20,7 @@ import {
   Users,
   Loader2,
   X,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import {
   parseCSV,
   generateBulkEnrollmentTemplate,

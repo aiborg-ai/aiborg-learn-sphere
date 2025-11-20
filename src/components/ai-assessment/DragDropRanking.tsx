@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { GripVertical, ArrowUp, ArrowDown, RotateCcw, Info } from 'lucide-react';
+import { GripVertical, ArrowUp, ArrowDown, RotateCcw, Info } from '@/components/ui/icons';
 
 export interface DragDropRankingProps {
   question: {

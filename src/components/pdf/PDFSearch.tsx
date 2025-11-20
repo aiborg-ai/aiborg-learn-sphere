@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Search, ChevronDown, ChevronUp, X } from 'lucide-react';
+import { Search, ChevronDown, ChevronUp, X } from '@/components/ui/icons';
 import { Badge } from '@/components/ui/badge';
 import { getDocument } from 'pdfjs-dist';
 import { logger } from '@/utils/logger';

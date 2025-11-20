@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, ArrowLeft } from 'lucide-react';
+import { Loader2, ArrowLeft } from '@/components/ui/icons';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function ResetPassword() {

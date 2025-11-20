@@ -14,7 +14,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import { Globe, Check } from 'lucide-react';
+import { Globe, Check } from '@/components/ui/icons';
 import { SUPPORTED_LANGUAGES } from '@/i18n/config';
 import { logger } from '@/utils/logger';
 

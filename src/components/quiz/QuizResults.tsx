@@ -19,7 +19,7 @@ import {
   RotateCcw,
   Eye,
   Loader2,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useQuizAttempt, useQuiz } from '@/hooks/useQuiz';
 import type { CompleteQuizResult } from '@/services/quiz/types';
 

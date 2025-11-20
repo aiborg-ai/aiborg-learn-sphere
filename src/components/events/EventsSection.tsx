@@ -9,7 +9,7 @@ import { useEventRegistrations } from '@/hooks/useEventRegistrations';
 import { useAuth } from '@/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Calendar, Users, MapPin, Filter } from 'lucide-react';
+import { Calendar, Users, MapPin, Filter } from '@/components/ui/icons';
 
 const filterOptions = [
   { id: 'all', label: 'All Events', count: 0 },

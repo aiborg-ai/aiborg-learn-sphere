@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Edit, Trash2, FolderOpen, Save, X } from 'lucide-react';
+import { Plus, Edit, Trash2, FolderOpen, Save, X } from '@/components/ui/icons';
 import { Badge } from '@/components/ui/badge';
 
 interface BlogCategory {

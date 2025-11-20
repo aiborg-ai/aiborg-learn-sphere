@@ -20,7 +20,7 @@ import {
   Loader2,
   Award,
   Route as RouteIcon,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { logger } from '@/utils/logger';
 import { useToast } from '@/hooks/use-toast';
 

@@ -16,7 +16,7 @@ import {
   Sparkles,
   BookOpen,
   Heart,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 const statistics = [
   { label: 'Active Students', value: '5,000+', icon: Users, color: 'text-blue-300' },

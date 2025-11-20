@@ -17,7 +17,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
-import { Search, Calendar, UserCheck, Loader2 } from 'lucide-react';
+import { Search, Calendar, UserCheck, Loader2 } from '@/components/ui/icons';
 import { type AdminResource } from '@/hooks/useResourcesManagement';
 
 interface UserProfile {

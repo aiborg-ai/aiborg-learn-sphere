@@ -18,7 +18,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
-import { Users, UserPlus, TrendingUp, Activity } from 'lucide-react';
+import { Users, UserPlus, TrendingUp, Activity } from '@/components/ui/icons';
 import { useDateRange } from '@/contexts/DateRangeContext';
 import { useAllTeamAnalytics } from '@/hooks/admin/useAdminTeamAnalytics';
 import { ExportButton } from '@/components/admin/ExportButton';
@@ -146,7 +146,8 @@ export function TeamAnalyticsTab() {
               <>
                 <div className="text-2xl font-bold">{formatNumber(metrics?.totalMembers || 0)}</div>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Avg {metrics ? (metrics.totalMembers / (metrics.totalTeams || 1)).toFixed(1) : '0'}{' '}
+                  Avg{' '}
+                  {metrics ? (metrics.totalMembers / (metrics.totalTeams || 1)).toFixed(1) : '0'}{' '}
                   members per team
                 </p>
               </>
@@ -243,7 +244,10 @@ export function TeamAnalyticsTab() {
                 }))}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="index" label={{ value: 'Teams', position: 'insideBottom', offset: -5 }} />
+                <XAxis
+                  dataKey="index"
+                  label={{ value: 'Teams', position: 'insideBottom', offset: -5 }}
+                />
                 <YAxis />
                 <Tooltip />
                 <Legend />

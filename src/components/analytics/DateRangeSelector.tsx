@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useDateRange } from '@/contexts/DateRangeContext';
 import { DateRangeFilter } from '@/components/admin/DateRangeFilter';
-import { Calendar, TrendingUp, Save, Loader2 } from 'lucide-react';
+import { Calendar, TrendingUp, Save, Loader2 } from '@/components/ui/icons';
 import { toast } from 'sonner';
 import { logger } from '@/utils/logger';
 

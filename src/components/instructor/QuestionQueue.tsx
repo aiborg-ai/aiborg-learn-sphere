@@ -14,7 +14,7 @@ import {
   Clock,
   AlertCircle,
   X,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useClassroomQuestions } from '@/hooks/useClassroomQuestions';
 import { formatDistanceToNow } from 'date-fns';
 import {

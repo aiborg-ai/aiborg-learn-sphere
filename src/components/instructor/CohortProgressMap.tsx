@@ -5,7 +5,14 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, Clock, CheckCircle2, AlertCircle, Users, BarChart3 } from 'lucide-react';
+import {
+  TrendingUp,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  Users,
+  BarChart3,
+} from '@/components/ui/icons';
 import { useRealtimeProgress } from '@/hooks/useRealtimeProgress';
 import { formatDistanceToNow } from 'date-fns';
 

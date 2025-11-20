@@ -6,16 +6,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  LayoutGrid,
-  Plus,
-  Trash2,
-  Edit2,
-  Check,
-  X,
-  Star,
-  Copy,
-} from 'lucide-react';
+import { LayoutGrid, Plus, Trash2, Edit2, Check, X, Star, Copy } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -116,7 +107,7 @@ export function ViewManager({
         },
       });
     },
-    onSuccess: (newView) => {
+    onSuccess: newView => {
       queryClient.invalidateQueries({ queryKey: ['dashboard-views'] });
       toast.success('View created successfully');
       setIsCreating(false);
@@ -214,13 +205,9 @@ export function ViewManager({
       const view = views?.find(v => v.id === viewId);
       if (!view) throw new Error('View not found');
 
-      return await DashboardConfigService.createView(
-        user.id,
-        `${view.name} (Copy)`,
-        view.config
-      );
+      return await DashboardConfigService.createView(user.id, `${view.name} (Copy)`, view.config);
     },
-    onSuccess: (newView) => {
+    onSuccess: newView => {
       queryClient.invalidateQueries({ queryKey: ['dashboard-views'] });
       toast.success('View duplicated successfully');
       onViewSelect(newView.id);
@@ -284,8 +271,8 @@ export function ViewManager({
                     ref={createInputRef}
                     placeholder="Enter view name..."
                     value={newViewName}
-                    onChange={(e) => setNewViewName(e.target.value)}
-                    onKeyDown={(e) => {
+                    onChange={e => setNewViewName(e.target.value)}
+                    onKeyDown={e => {
                       if (e.key === 'Enter') handleCreateView();
                       if (e.key === 'Escape') {
                         setIsCreating(false);
@@ -318,9 +305,7 @@ export function ViewManager({
             {/* Views list */}
             <ScrollArea className="h-[400px] border rounded-lg">
               {isLoading && (
-                <div className="p-8 text-center text-muted-foreground">
-                  Loading views...
-                </div>
+                <div className="p-8 text-center text-muted-foreground">Loading views...</div>
               )}
 
               {!isLoading && views && views.length === 0 && (
@@ -348,8 +333,8 @@ export function ViewManager({
                           <Input
                             ref={editInputRef}
                             value={editingName}
-                            onChange={(e) => setEditingName(e.target.value)}
-                            onKeyDown={(e) => {
+                            onChange={e => setEditingName(e.target.value)}
+                            onKeyDown={e => {
                               if (e.key === 'Enter') handleRenameView(view.id);
                               if (e.key === 'Escape') cancelEditing();
                             }}
@@ -461,13 +446,16 @@ export function ViewManager({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Dashboard View?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete this dashboard view
-              and all its widgets.
+              This action cannot be undone. This will permanently delete this dashboard view and all
+              its widgets.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteView} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction
+              onClick={handleDeleteView}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>

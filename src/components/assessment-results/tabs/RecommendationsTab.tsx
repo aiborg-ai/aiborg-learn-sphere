@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Target, CheckCircle, Sparkles } from 'lucide-react';
+import { Target, CheckCircle, Sparkles } from '@/components/ui/icons';
 import type { CategoryInsight, Tool } from '../types';
 import { LearningPathRecommendations } from '@/components/recommendations/LearningPathRecommendations';
 import { useAuth } from '@/hooks/useAuth';

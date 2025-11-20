@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
-import { Heart, TrendingUp, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { Heart, TrendingUp, AlertTriangle, CheckCircle2 } from '@/components/ui/icons';
 import type { HealthScoreBreakdown } from '@/services/team/types';
 
 interface TeamHealthDashboardProps {

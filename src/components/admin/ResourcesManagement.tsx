@@ -55,7 +55,7 @@ import {
   Loader2,
   Search,
   Filter,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { logger } from '@/utils/logger';
 
 export function ResourcesManagement() {

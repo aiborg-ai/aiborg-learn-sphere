@@ -16,7 +16,7 @@ import {
   Calendar,
   Users,
   Trash2,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -85,9 +85,8 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
     mutationFn: async () => {
       if (!view) throw new Error('No view selected');
 
-      const expiresAt = expiresInDays > 0
-        ? new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000)
-        : undefined;
+      const expiresAt =
+        expiresInDays > 0 ? new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000) : undefined;
 
       return await ShareLinkService.createShareLink({
         dashboardViewId: view.id,
@@ -96,7 +95,7 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
         requireAuth,
       });
     },
-    onSuccess: (newLink) => {
+    onSuccess: newLink => {
       queryClient.invalidateQueries({ queryKey: ['share-links', view?.id] });
       toast.success('Share link created successfully');
 
@@ -192,7 +191,7 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'link' | 'publish')}>
+        <Tabs value={activeTab} onValueChange={v => setActiveTab(v as 'link' | 'publish')}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="link">
               <Lock className="h-4 w-4 mr-2" />
@@ -216,7 +215,7 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
                       <Label htmlFor="expiresIn">Expires In</Label>
                       <Select
                         value={expiresInDays.toString()}
-                        onValueChange={(v) => setExpiresInDays(parseInt(v))}
+                        onValueChange={v => setExpiresInDays(parseInt(v))}
                       >
                         <SelectTrigger id="expiresIn">
                           <SelectValue />
@@ -240,7 +239,7 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
                         min="0"
                         max={SECURITY_CONFIG.SHARE_LINK_MAX_USES}
                         value={maxUses}
-                        onChange={(e) => {
+                        onChange={e => {
                           const value = parseInt(e.target.value) || 0;
                           setMaxUses(Math.min(value, SECURITY_CONFIG.SHARE_LINK_MAX_USES));
                         }}
@@ -296,13 +295,11 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
                 {shareLinks && shareLinks.length > 0 && (
                   <ScrollArea className="h-64">
                     <div className="space-y-2">
-                      {shareLinks.map((link) => {
+                      {shareLinks.map(link => {
                         const isExpired = link.expires_at
                           ? new Date(link.expires_at) < new Date()
                           : false;
-                        const isMaxedOut = link.max_uses
-                          ? link.use_count >= link.max_uses
-                          : false;
+                        const isMaxedOut = link.max_uses ? link.use_count >= link.max_uses : false;
 
                         return (
                           <div
@@ -386,7 +383,7 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
                 <Input
                   id="templateName"
                   value={templateName}
-                  onChange={(e) => {
+                  onChange={e => {
                     const value = e.target.value.slice(0, SECURITY_CONFIG.MAX_TEMPLATE_NAME_LENGTH);
                     setTemplateName(value);
                   }}
@@ -394,20 +391,19 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
                   maxLength={SECURITY_CONFIG.MAX_TEMPLATE_NAME_LENGTH}
                 />
                 {templateName.length >= SECURITY_CONFIG.MAX_TEMPLATE_NAME_LENGTH && (
-                  <p className="text-xs text-amber-600">
-                    Maximum length reached
-                  </p>
+                  <p className="text-xs text-amber-600">Maximum length reached</p>
                 )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="templateDescription">
-                  Description ({templateDescription.length}/{SECURITY_CONFIG.MAX_TEMPLATE_DESC_LENGTH})
+                  Description ({templateDescription.length}/
+                  {SECURITY_CONFIG.MAX_TEMPLATE_DESC_LENGTH})
                 </Label>
                 <Input
                   id="templateDescription"
                   value={templateDescription}
-                  onChange={(e) => {
+                  onChange={e => {
                     const value = e.target.value.slice(0, SECURITY_CONFIG.MAX_TEMPLATE_DESC_LENGTH);
                     setTemplateDescription(value);
                   }}
@@ -415,9 +411,7 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
                   maxLength={SECURITY_CONFIG.MAX_TEMPLATE_DESC_LENGTH}
                 />
                 {templateDescription.length >= SECURITY_CONFIG.MAX_TEMPLATE_DESC_LENGTH && (
-                  <p className="text-xs text-amber-600">
-                    Maximum length reached
-                  </p>
+                  <p className="text-xs text-amber-600">Maximum length reached</p>
                 )}
               </div>
 
@@ -444,10 +438,11 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
                 <Input
                   id="templateTags"
                   value={templateTags}
-                  onChange={(e) => setTemplateTags(e.target.value)}
+                  onChange={e => setTemplateTags(e.target.value)}
                   placeholder="e.g., progress, analytics, overview"
                 />
-                {templateTags.split(',').filter(t => t.trim()).length > SECURITY_CONFIG.MAX_TEMPLATE_TAGS && (
+                {templateTags.split(',').filter(t => t.trim()).length >
+                  SECURITY_CONFIG.MAX_TEMPLATE_TAGS && (
                   <p className="text-xs text-amber-600">
                     Maximum {SECURITY_CONFIG.MAX_TEMPLATE_TAGS} tags allowed
                   </p>
@@ -457,8 +452,8 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
               <div className="p-4 border rounded-lg bg-blue-500/10 border-blue-500/20">
                 <p className="text-sm text-blue-900 dark:text-blue-100">
                   <strong>Note:</strong> Publishing your dashboard will make it available in the
-                  public template gallery. Other users will be able to view and clone your
-                  dashboard layout.
+                  public template gallery. Other users will be able to view and clone your dashboard
+                  layout.
                 </p>
               </div>
 

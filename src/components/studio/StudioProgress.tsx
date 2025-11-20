@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Check, Circle } from 'lucide-react';
+import { Check, Circle } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import type { WizardStep } from '@/types/studio.types';

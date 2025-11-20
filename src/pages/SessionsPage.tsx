@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Calendar, Users, Loader2, RefreshCw, AlertCircle, Filter } from 'lucide-react';
+import { Calendar, Users, Loader2, RefreshCw, AlertCircle, Filter } from '@/components/ui/icons';
 import { SessionCard, SessionRegistrationForm, SessionNotifications } from '@/components/sessions';
 import { useSessionData } from '@/hooks/useSessionData';
 import { useAuth } from '@/hooks/useAuth';

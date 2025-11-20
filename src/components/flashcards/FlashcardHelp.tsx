@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { HelpCircle, Brain, Keyboard, Target, Flame, Trophy } from 'lucide-react';
+import { HelpCircle, Brain, Keyboard, Target, Flame, Trophy } from '@/components/ui/icons';
 
 export function FlashcardHelp() {
   return (
@@ -55,9 +55,8 @@ export function FlashcardHelp() {
                     What is Spaced Repetition?
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    A learning technique that shows you information at increasing intervals
-                    just before you forget it. This leads to 25% better retention with less
-                    study time.
+                    A learning technique that shows you information at increasing intervals just
+                    before you forget it. This leads to 25% better retention with less study time.
                   </p>
                 </div>
 
@@ -93,7 +92,9 @@ export function FlashcardHelp() {
                   <h3 className="font-semibold mb-3">When to Use Each Button</h3>
                   <div className="space-y-3">
                     <div className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg">
-                      <Badge variant="destructive" className="mt-1">Again</Badge>
+                      <Badge variant="destructive" className="mt-1">
+                        Again
+                      </Badge>
                       <div className="flex-1">
                         <p className="font-medium text-sm mb-1">Completely Forgot</p>
                         <p className="text-xs text-muted-foreground">
@@ -103,7 +104,9 @@ export function FlashcardHelp() {
                     </div>
 
                     <div className="flex items-start gap-3 p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
-                      <Badge variant="outline" className="mt-1 border-orange-500">Hard</Badge>
+                      <Badge variant="outline" className="mt-1 border-orange-500">
+                        Hard
+                      </Badge>
                       <div className="flex-1">
                         <p className="font-medium text-sm mb-1">Difficult to Recall</p>
                         <p className="text-xs text-muted-foreground">
@@ -113,7 +116,9 @@ export function FlashcardHelp() {
                     </div>
 
                     <div className="flex items-start gap-3 p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                      <Badge variant="default" className="mt-1">Good</Badge>
+                      <Badge variant="default" className="mt-1">
+                        Good
+                      </Badge>
                       <div className="flex-1">
                         <p className="font-medium text-sm mb-1">Correct Answer</p>
                         <p className="text-xs text-muted-foreground">
@@ -123,7 +128,9 @@ export function FlashcardHelp() {
                     </div>
 
                     <div className="flex items-start gap-3 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                      <Badge variant="secondary" className="mt-1">Easy</Badge>
+                      <Badge variant="secondary" className="mt-1">
+                        Easy
+                      </Badge>
                       <div className="flex-1">
                         <p className="font-medium text-sm mb-1">Perfect Recall</p>
                         <p className="text-xs text-muted-foreground">
@@ -137,8 +144,8 @@ export function FlashcardHelp() {
                 <div className="bg-muted p-3 rounded-lg">
                   <p className="text-sm font-medium mb-1">💡 Pro Tip</p>
                   <p className="text-xs text-muted-foreground">
-                    Use "Good" for about 70% of your reviews. Be honest with yourself -
-                    rating everything as "Easy" will hurt your long-term retention!
+                    Use "Good" for about 70% of your reviews. Be honest with yourself - rating
+                    everything as "Easy" will hurt your long-term retention!
                   </p>
                 </div>
               </CardContent>
@@ -264,9 +271,7 @@ export function FlashcardHelp() {
         </Tabs>
 
         <div className="flex justify-between items-center pt-4 border-t">
-          <p className="text-xs text-muted-foreground">
-            Using SM-2 algorithm (same as Anki)
-          </p>
+          <p className="text-xs text-muted-foreground">Using SM-2 algorithm (same as Anki)</p>
           <Button variant="outline" size="sm" asChild>
             <a href="/FLASHCARD_USER_GUIDE.md" target="_blank">
               Full Guide

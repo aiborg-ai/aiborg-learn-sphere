@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from '@/components/ui/icons';
 import type { CallToActionProps } from './types';
 
 export function CallToAction({ onViewPrograms }: CallToActionProps) {

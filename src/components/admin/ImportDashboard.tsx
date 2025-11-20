@@ -14,7 +14,7 @@ import {
   AreaChart,
   Area,
 } from 'recharts';
-import { TrendingUp, Package, AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import { TrendingUp, Package, AlertCircle, CheckCircle, Clock } from '@/components/ui/icons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {

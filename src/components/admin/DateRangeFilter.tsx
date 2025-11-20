@@ -11,7 +11,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { useDateRange } from '@/contexts/DateRangeContext';
 import { PRESET_CONFIG, type PresetOption } from '@/contexts/DateRangeContext';
-import { CalendarIcon, Check } from 'lucide-react';
+import { CalendarIcon, Check } from '@/components/ui/icons';
 import { format } from 'date-fns';
 
 export interface DateRangeFilterProps {
@@ -128,9 +128,7 @@ export function DateRangeFilter({ onApply, className }: DateRangeFilterProps) {
                     onClick={() => handlePresetClick(presetKey)}
                     className="relative"
                   >
-                    {preset === presetKey && (
-                      <Check className="absolute left-2 h-3 w-3" />
-                    )}
+                    {preset === presetKey && <Check className="absolute left-2 h-3 w-3" />}
                     <span className={preset === presetKey ? 'ml-4' : ''}>
                       {PRESET_CONFIG[presetKey].label}
                     </span>
@@ -161,14 +159,12 @@ export function DateRangeFilter({ onApply, className }: DateRangeFilterProps) {
                   <Calendar
                     mode="single"
                     selected={customStart}
-                    onSelect={(date) => {
+                    onSelect={date => {
                       setCustomStart(date);
                       handleCustomDateChange(date, customEnd);
                       setShowStartPicker(false);
                     }}
-                    disabled={(date) =>
-                      date > new Date() || (customEnd ? date > customEnd : false)
-                    }
+                    disabled={date => date > new Date() || (customEnd ? date > customEnd : false)}
                     initialFocus
                   />
                 </PopoverContent>
@@ -192,12 +188,12 @@ export function DateRangeFilter({ onApply, className }: DateRangeFilterProps) {
                   <Calendar
                     mode="single"
                     selected={customEnd}
-                    onSelect={(date) => {
+                    onSelect={date => {
                       setCustomEnd(date);
                       handleCustomDateChange(customStart, date);
                       setShowEndPicker(false);
                     }}
-                    disabled={(date) =>
+                    disabled={date =>
                       date > new Date() || (customStart ? date < customStart : false)
                     }
                     initialFocus
@@ -208,11 +204,7 @@ export function DateRangeFilter({ onApply, className }: DateRangeFilterProps) {
           </div>
 
           {/* Validation Error */}
-          {validationError() && (
-            <div className="text-sm text-destructive">
-              {validationError()}
-            </div>
-          )}
+          {validationError() && <div className="text-sm text-destructive">{validationError()}</div>}
 
           {/* Current Selection Display */}
           <div className="text-sm text-muted-foreground">

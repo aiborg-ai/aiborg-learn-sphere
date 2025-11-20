@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ClipboardList, Calendar, TrendingUp, Users } from 'lucide-react';
+import { ClipboardList, Calendar, TrendingUp, Users } from '@/components/ui/icons';
 
 export default function InstructorSessionsPage() {
   const { courses } = useCourses();

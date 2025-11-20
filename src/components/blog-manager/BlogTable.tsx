@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Edit, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Edit, Trash2, Eye, EyeOff } from '@/components/ui/icons';
 import type { BlogPost } from '@/types/blog';
 
 interface BlogTableProps {

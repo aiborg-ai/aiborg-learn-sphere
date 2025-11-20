@@ -10,7 +10,7 @@ import {
   Maximize2,
   RotateCcw,
   Download,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import {
   Select,
   SelectContent,

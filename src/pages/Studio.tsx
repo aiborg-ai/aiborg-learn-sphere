@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { StudioHome } from '@/components/studio/StudioHome';
 import { StudioWizard } from '@/components/studio/StudioWizard';

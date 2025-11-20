@@ -54,7 +54,7 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useAdminFamilyPass, type FamilyPassGrant } from '@/hooks/useAdminFamilyPass';
 import { format, differenceInDays, addMonths } from 'date-fns';
 

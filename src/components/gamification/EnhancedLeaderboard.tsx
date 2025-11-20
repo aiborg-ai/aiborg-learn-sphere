@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Crown, Medal, Trophy, TrendingUp } from 'lucide-react';
+import { Crown, Medal, Trophy, TrendingUp } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
 interface LeaderboardEntry {

@@ -1,4 +1,4 @@
-import { Download, Check, X, Eye, EyeOff, Copy, Archive, Trash2 } from 'lucide-react';
+import { Download, Check, X, Eye, EyeOff, Copy, Archive, Trash2 } from '@/components/ui/icons';
 import { supabase } from '@/integrations/supabase/client';
 import type { BulkAction, BulkItem } from '../types';
 

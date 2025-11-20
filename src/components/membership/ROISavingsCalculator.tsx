@@ -12,7 +12,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { TrendingUp, Users, BookOpen, ArrowRight } from 'lucide-react';
+import { TrendingUp, Users, BookOpen, ArrowRight } from '@/components/ui/icons';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';

@@ -25,7 +25,7 @@ import {
   List,
   Home,
   Sparkles,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { Badge } from '@/components/ui/badge';
 
 interface SearchResult {

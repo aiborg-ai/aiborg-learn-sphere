@@ -5,9 +5,17 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { Zap } from 'lucide-react';
+import { Zap } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 import type { WidgetComponentProps, ChartWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -62,11 +70,12 @@ export function LearningVelocityWidget({ widget, isEditing }: WidgetComponentPro
     velocityData.reduce((sum, d) => sum + d.velocity, 0) / velocityData.length
   );
 
-  const trend = velocityData.length >= 2
-    ? velocityData[velocityData.length - 1].velocity > velocityData[0].velocity
-      ? 'up'
-      : 'down'
-    : 'neutral';
+  const trend =
+    velocityData.length >= 2
+      ? velocityData[velocityData.length - 1].velocity > velocityData[0].velocity
+        ? 'up'
+        : 'down'
+      : 'neutral';
 
   return (
     <div className="space-y-4">

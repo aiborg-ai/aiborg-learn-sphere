@@ -51,7 +51,7 @@ import {
   XCircle,
   History,
   Users,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { formatDistanceToNow } from 'date-fns';
 import type {
   ForumReportWithDetails,

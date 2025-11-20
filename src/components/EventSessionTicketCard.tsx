@@ -25,7 +25,7 @@ import {
   MapPin,
   ExternalLink,
   Loader2,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useCheckInEventSession, useManageEventTicket } from '@/hooks/useEventSessionTickets';
 import { useToast } from '@/hooks/use-toast';
 import { format, parseISO, isBefore, isAfter, addMinutes, subMinutes } from 'date-fns';

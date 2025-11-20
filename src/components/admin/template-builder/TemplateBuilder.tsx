@@ -14,7 +14,7 @@
  * - useTemplateExport: Export/copy functionality
  */
 import React, { useState } from 'react';
-import { Save } from 'lucide-react';
+import { Save } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';

@@ -23,7 +23,7 @@ import {
   Loader2,
   AlertCircle,
   Eye,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { format } from 'date-fns';
 
 export function AssessmentHistoryPanel() {

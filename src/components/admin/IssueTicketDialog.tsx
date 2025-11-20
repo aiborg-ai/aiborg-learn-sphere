@@ -23,7 +23,7 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
-import { Search, UserCheck, Loader2 } from 'lucide-react';
+import { Search, UserCheck, Loader2 } from '@/components/ui/icons';
 
 interface UserProfile {
   id: string;

@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Users } from 'lucide-react';
+import { Users } from '@/components/ui/icons';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { AudienceSelector } from '@/components/studio/shared/AudienceSelector';

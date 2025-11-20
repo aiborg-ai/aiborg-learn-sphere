@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BookOpen, Calendar } from 'lucide-react';
+import { BookOpen, Calendar } from '@/components/ui/icons';
 import { ReviewForm } from '@/components/forms';
 import EventReviewForm from '@/components/events/EventReviewForm';
 import { useAuth } from '@/hooks/useAuth';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Brain } from 'lucide-react';
+import { Brain } from '@/components/ui/icons';
 import type { AssessmentQuestion } from './types';
 
 interface AssessmentHeaderProps {

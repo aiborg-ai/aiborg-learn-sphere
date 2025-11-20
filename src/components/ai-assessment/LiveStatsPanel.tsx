@@ -20,7 +20,7 @@ import {
   Star,
   CheckCircle,
   XCircle,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 interface LiveStatsPanelProps {
   questionsAnswered: number;

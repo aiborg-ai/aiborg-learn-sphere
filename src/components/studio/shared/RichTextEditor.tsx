@@ -5,7 +5,16 @@
  */
 
 import React, { useState } from 'react';
-import { Bold, Italic, List, ListOrdered, Link as LinkIcon, Image, Eye, Code } from 'lucide-react';
+import {
+  Bold,
+  Italic,
+  List,
+  ListOrdered,
+  Link as LinkIcon,
+  Image,
+  Eye,
+  Code,
+} from '@/components/ui/icons';
 import DOMPurify from 'isomorphic-dompurify';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -113,9 +122,18 @@ export function RichTextEditor({
         let converted = paragraph;
 
         // Headers
-        converted = converted.replace(/^### (.+)$/gm, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>');
-        converted = converted.replace(/^## (.+)$/gm, '<h2 class="text-xl font-semibold mt-4 mb-2">$1</h2>');
-        converted = converted.replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>');
+        converted = converted.replace(
+          /^### (.+)$/gm,
+          '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>'
+        );
+        converted = converted.replace(
+          /^## (.+)$/gm,
+          '<h2 class="text-xl font-semibold mt-4 mb-2">$1</h2>'
+        );
+        converted = converted.replace(
+          /^# (.+)$/gm,
+          '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>'
+        );
 
         // Bold and italic
         converted = converted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');

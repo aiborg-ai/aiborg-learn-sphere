@@ -1,5 +1,5 @@
 import React from 'react';
-import { Edit, Copy, Archive, Trash2, MoreHorizontal } from 'lucide-react';
+import { Edit, Copy, Archive, Trash2, MoreHorizontal } from '@/components/ui/icons';
 import { format } from 'date-fns';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

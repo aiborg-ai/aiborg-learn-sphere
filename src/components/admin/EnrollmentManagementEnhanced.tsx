@@ -29,7 +29,7 @@ import {
   TrendingUp,
   Users,
   Upload,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { ManualEnrollmentForm } from './ManualEnrollmentForm';
 import { BulkEnrollmentDialog } from './BulkEnrollmentDialog';
 

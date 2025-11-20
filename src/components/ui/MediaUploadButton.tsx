@@ -6,7 +6,7 @@
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Button } from '@/components/ui/button';
-import { Upload, Image as ImageIcon, X, Loader2 } from 'lucide-react';
+import { Upload, Image as ImageIcon, X, Loader2 } from '@/components/ui/icons';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { logger } from '@/utils/logger';

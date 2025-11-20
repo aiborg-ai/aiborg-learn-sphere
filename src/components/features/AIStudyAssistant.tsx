@@ -25,7 +25,7 @@ import {
   Calendar,
   Brain,
   Loader2,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useToast } from '@/hooks/use-toast';
 
 interface Message {

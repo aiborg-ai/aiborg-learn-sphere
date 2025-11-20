@@ -26,7 +26,7 @@ import {
   CheckCircle,
   Activity,
   Download,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { formatDistanceToNow } from 'date-fns';
 import ExportModal from '@/components/analytics/ExportModal';
 import RefreshIndicator from '@/components/analytics/RefreshIndicator';
@@ -35,7 +35,7 @@ import type { ChartSection } from '@/services/analytics/EnhancedPDFExportService
 import { useAuth } from '@/hooks/useAuth';
 import { useAnalyticsPreferences, useShouldRefreshPage } from '@/hooks/useAnalyticsPreferences';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
-import { Settings } from 'lucide-react';
+import { Settings } from '@/components/ui/icons';
 
 export default function IndividualLearnerAnalytics() {
   const { userId } = useParams<{ userId: string }>();

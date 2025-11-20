@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from '@/components/ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { CalendarView } from '@/components/calendar/CalendarView';
 

@@ -10,7 +10,7 @@ import {
   TrendingDown,
   Minus,
   Zap,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { ADAPTIVE_CONFIG } from '@/config/adaptiveAssessment';
 import type { AdaptiveQuestion } from '@/services/AdaptiveAssessmentEngine';
 

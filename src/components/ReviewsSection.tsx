@@ -16,7 +16,7 @@ import {
   Plus,
   Filter,
   RefreshCw,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { format } from 'date-fns';
 
 import { logger } from '@/utils/logger';

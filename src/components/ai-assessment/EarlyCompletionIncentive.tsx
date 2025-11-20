@@ -7,7 +7,7 @@ import React from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Zap, Trophy, Star, Clock } from 'lucide-react';
+import { Zap, Trophy, Star, Clock } from '@/components/ui/icons';
 
 interface EarlyCompletionIncentiveProps {
   estimatedTimeMinutes: number;

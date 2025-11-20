@@ -5,7 +5,16 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ChevronRight, Eye, MessageCircle, Bookmark, Share2, Users, Pin, Lock } from 'lucide-react';
+import {
+  ChevronRight,
+  Eye,
+  MessageCircle,
+  Bookmark,
+  Share2,
+  Users,
+  Pin,
+  Lock,
+} from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';

@@ -12,7 +12,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Shield, ShieldCheck, Trash2, AlertCircle } from 'lucide-react';
+import { Shield, ShieldCheck, Trash2, AlertCircle } from '@/components/ui/icons';
 import { mfaService, type MFAFactor } from '@/services/auth/mfa-service';
 import { Button } from '@/components/ui/button';
 import {

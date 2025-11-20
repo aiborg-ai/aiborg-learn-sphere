@@ -17,8 +17,8 @@ import {
   Play,
   RotateCcw,
   LucideIcon,
-} from 'lucide-react';
-import * as Icons from 'lucide-react';
+} from '@/components/ui/icons';
+import * as Icons from '@/components/ui/icons';
 import type { AssessmentToolWithProgress } from '@/types/assessmentTools';
 import { cn } from '@/lib/utils';
 

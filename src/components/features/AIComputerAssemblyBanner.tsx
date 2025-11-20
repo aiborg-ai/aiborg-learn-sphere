@@ -11,7 +11,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { X, Cpu, Sparkles, ArrowRight, Calendar, Crown } from 'lucide-react';
+import { X, Cpu, Sparkles, ArrowRight, Calendar, Crown } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';

@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Settings, Image, Tag } from 'lucide-react';
+import { Settings, Image, Tag } from '@/components/ui/icons';
 
 interface Category {
   id: string;

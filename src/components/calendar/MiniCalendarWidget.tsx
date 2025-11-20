@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { format, isSameDay, parseISO, startOfMonth, endOfMonth } from 'date-fns';
-import { CalendarDays, ArrowRight, Clock, AlertCircle } from 'lucide-react';
+import { CalendarDays, ArrowRight, Clock, AlertCircle } from '@/components/ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';

@@ -26,7 +26,7 @@ import {
   ArrowRight,
   Search,
   Loader2,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useSearch } from '@/hooks/useSearch';
 import type { SearchResult, ContentType } from '@/services/search/SearchService';
 import { cn } from '@/lib/utils';
@@ -118,14 +118,7 @@ export function GlobalSearchEnhanced() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const {
-    query,
-    setQuery,
-    results,
-    isLoading,
-    hasQuery,
-    hasResults,
-  } = useSearch('', {
+  const { query, setQuery, results, isLoading, hasQuery, hasResults } = useSearch('', {
     limit: 10,
     minRelevance: 0.3,
   });
@@ -135,7 +128,7 @@ export function GlobalSearchEnhanced() {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen((open) => !open);
+        setOpen(open => !open);
       }
     };
 
@@ -179,13 +172,16 @@ export function GlobalSearchEnhanced() {
   };
 
   // Group results by type
-  const resultsByType = results.reduce((acc, result) => {
-    if (!acc[result.type]) {
-      acc[result.type] = [];
-    }
-    acc[result.type].push(result);
-    return acc;
-  }, {} as Record<ContentType, SearchResult[]>);
+  const resultsByType = results.reduce(
+    (acc, result) => {
+      if (!acc[result.type]) {
+        acc[result.type] = [];
+      }
+      acc[result.type].push(result);
+      return acc;
+    },
+    {} as Record<ContentType, SearchResult[]>
+  );
 
   return (
     <>
@@ -237,7 +233,7 @@ export function GlobalSearchEnhanced() {
               {Object.entries(resultsByType).map(([type, typeResults]) => (
                 <div key={type}>
                   <CommandGroup heading={CONTENT_TYPE_LABELS[type as ContentType] + 's'}>
-                    {typeResults.map((result) => (
+                    {typeResults.map(result => (
                       <SearchResultItem
                         key={`${result.type}-${result.id}`}
                         result={result}
@@ -282,12 +278,11 @@ export function GlobalSearchEnhanced() {
               </div>
               <div className="pt-2 border-t">
                 <p className="text-xs text-muted-foreground">
-                  <kbd className="px-1.5 py-0.5 text-xs font-mono bg-muted rounded">⌘K</kbd> to
-                  open • <kbd className="px-1.5 py-0.5 text-xs font-mono bg-muted rounded">↵</kbd>{' '}
-                  to select • <kbd className="px-1.5 py-0.5 text-xs font-mono bg-muted rounded">
-                    esc
-                  </kbd>{' '}
-                  to close
+                  <kbd className="px-1.5 py-0.5 text-xs font-mono bg-muted rounded">⌘K</kbd> to open
+                  • <kbd className="px-1.5 py-0.5 text-xs font-mono bg-muted rounded">↵</kbd> to
+                  select •{' '}
+                  <kbd className="px-1.5 py-0.5 text-xs font-mono bg-muted rounded">esc</kbd> to
+                  close
                 </p>
               </div>
             </div>

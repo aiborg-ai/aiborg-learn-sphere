@@ -2,7 +2,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bell, Check, ChevronRight, Info, AlertCircle, CheckCircle, Star } from 'lucide-react';
+import {
+  Bell,
+  Check,
+  ChevronRight,
+  Info,
+  AlertCircle,
+  CheckCircle,
+  Star,
+} from '@/components/ui/icons';
 import { useNavigate } from 'react-router-dom';
 
 export interface Notification {

@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Send } from 'lucide-react';
+import { Send } from '@/components/ui/icons';
 import { blogSchemas } from '@/lib/validation-schemas';
 import { logger } from '@/utils/logger';
 

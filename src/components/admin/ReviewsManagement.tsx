@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
-import { Star, Check, X, Loader2 } from 'lucide-react';
+import { Star, Check, X, Loader2 } from '@/components/ui/icons';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 

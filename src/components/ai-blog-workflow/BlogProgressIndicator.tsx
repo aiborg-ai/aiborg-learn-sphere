@@ -5,7 +5,7 @@
  * Similar to ClaimProgressIndicator but customized for blog workflow
  */
 
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
 interface BlogProgressIndicatorProps {

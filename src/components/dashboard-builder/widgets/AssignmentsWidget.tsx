@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { FileText, Clock, AlertCircle } from 'lucide-react';
+import { FileText, Clock, AlertCircle } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -100,11 +100,7 @@ export function AssignmentsWidget({ widget, isEditing }: WidgetComponentProps) {
             <div
               className={cn(
                 'p-2 rounded-lg',
-                isOverdue
-                  ? 'bg-red-500/20'
-                  : isUrgent
-                    ? 'bg-orange-500/20'
-                    : 'bg-background'
+                isOverdue ? 'bg-red-500/20' : isUrgent ? 'bg-orange-500/20' : 'bg-background'
               )}
             >
               {isOverdue ? (

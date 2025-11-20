@@ -18,7 +18,7 @@ import type { AdaptiveAssessmentEngine } from '@/services/AdaptiveAssessmentEngi
 import { supabase } from '@/integrations/supabase/client';
 import { Navbar, Footer } from '@/components/navigation';
 import { AIAssessmentWizardAdaptive } from '@/components/ai-assessment';
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from '@/components/ui/icons';
 import { logger } from '@/utils/logger';
 
 export default function AIFluencyAssessment() {

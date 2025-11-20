@@ -6,17 +6,13 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Search, ChevronDown, ChevronRight } from 'lucide-react';
+import { Plus, Search, ChevronDown, ChevronRight } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { WidgetRegistry } from '@/services/dashboard/WidgetRegistry';
 import type { WidgetCategory, WidgetType } from '@/types/dashboard';
 
@@ -103,7 +99,7 @@ export function WidgetPalette({ onAddWidget, className }: WidgetPaletteProps) {
             type="text"
             placeholder="Search widgets..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="pl-9"
           />
         </div>
@@ -173,14 +169,12 @@ export function WidgetPalette({ onAddWidget, className }: WidgetPaletteProps) {
 
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
-                            <h4 className="text-sm font-medium line-clamp-1">
-                              {widget.name}
-                            </h4>
+                            <h4 className="text-sm font-medium line-clamp-1">{widget.name}</h4>
                             <Button
                               size="icon"
                               variant="ghost"
                               className="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                              onClick={(e) => {
+                              onClick={e => {
                                 e.stopPropagation();
                                 onAddWidget(widget.type);
                               }}

@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useAssessmentTool } from '@/hooks/useAssessmentTools';
 import { useCreateAssessmentAttempt } from '@/hooks/useAssessmentAttempts';
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from '@/components/ui/icons';
 
 // Import the existing SME Assessment component
 import SMEAssessment from './SMEAssessment';

@@ -15,7 +15,7 @@ import {
   Clock,
   Grid3x3,
   LayoutGrid,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -96,7 +96,7 @@ export default function TemplateGalleryPage() {
                 type="text"
                 placeholder="Search templates..."
                 value={searchQuery}
-                onChange={(e) => {
+                onChange={e => {
                   setSearchQuery(e.target.value);
                   setPage(1);
                 }}
@@ -107,7 +107,7 @@ export default function TemplateGalleryPage() {
             {/* Category */}
             <Select
               value={category}
-              onValueChange={(value) => {
+              onValueChange={value => {
                 setCategory(value);
                 setPage(1);
               }}
@@ -129,7 +129,7 @@ export default function TemplateGalleryPage() {
             {/* Sort */}
             <Tabs
               value={sortBy}
-              onValueChange={(v) => {
+              onValueChange={v => {
                 setSortBy(v as TemplateSortBy);
                 setPage(1);
               }}
@@ -179,12 +179,10 @@ export default function TemplateGalleryPage() {
           <div
             className={cn(
               'grid gap-6',
-              viewMode === 'grid'
-                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-                : 'grid-cols-1'
+              viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'
             )}
           >
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+            {[1, 2, 3, 4, 5, 6].map(i => (
               <Skeleton key={i} className="h-96" />
             ))}
           </div>
@@ -194,9 +192,7 @@ export default function TemplateGalleryPage() {
         {error && (
           <div className="text-center py-12">
             <p className="text-destructive">Failed to load templates</p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Please try again later
-            </p>
+            <p className="text-sm text-muted-foreground mt-2">Please try again later</p>
           </div>
         )}
 
@@ -205,9 +201,7 @@ export default function TemplateGalleryPage() {
           <div className="text-center py-12">
             <LayoutGrid className="h-16 w-16 mx-auto mb-4 text-muted-foreground opacity-50" />
             <h3 className="text-lg font-semibold mb-2">No templates found</h3>
-            <p className="text-muted-foreground mb-6">
-              Try adjusting your search or filters
-            </p>
+            <p className="text-muted-foreground mb-6">Try adjusting your search or filters</p>
             <Button onClick={() => navigate('/dashboard-builder')}>
               Create Your Own Dashboard
             </Button>
@@ -220,17 +214,11 @@ export default function TemplateGalleryPage() {
             <div
               className={cn(
                 'grid gap-6',
-                viewMode === 'grid'
-                  ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-                  : 'grid-cols-1'
+                viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'
               )}
             >
-              {data.templates.map((template) => (
-                <TemplateCard
-                  key={template.id}
-                  template={template}
-                  onClone={handleClone}
-                />
+              {data.templates.map(template => (
+                <TemplateCard key={template.id} template={template} onClone={handleClone} />
               ))}
             </div>
 
@@ -239,7 +227,7 @@ export default function TemplateGalleryPage() {
               <div className="flex items-center justify-center gap-2 mt-12">
                 <Button
                   variant="outline"
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
                 >
                   Previous
@@ -274,7 +262,7 @@ export default function TemplateGalleryPage() {
 
                 <Button
                   variant="outline"
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
                 >
                   Next
@@ -293,8 +281,11 @@ export default function TemplateGalleryPage() {
             <div className="flex-1">
               <h3 className="font-semibold mb-2">Featured Templates</h3>
               <p className="text-sm text-muted-foreground">
-                Templates marked as <Badge variant="default" className="mx-1">Featured</Badge> are
-                hand-picked by our team for their design quality and usefulness. Clone them to
+                Templates marked as{' '}
+                <Badge variant="default" className="mx-1">
+                  Featured
+                </Badge>{' '}
+                are hand-picked by our team for their design quality and usefulness. Clone them to
                 get started quickly with a professional dashboard layout.
               </p>
             </div>

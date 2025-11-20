@@ -9,17 +9,13 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { X } from 'lucide-react';
+import { X } from '@/components/ui/icons';
 import type { Flashcard } from '@/services/spaced-repetition/FlashcardService';
 
 interface FlashcardEditorProps {
   deckId: string;
   flashcard?: Flashcard;
-  onSave: (data: {
-    front_content: string;
-    back_content: string;
-    tags?: string[];
-  }) => void;
+  onSave: (data: { front_content: string; back_content: string; tags?: string[] }) => void;
   onCancel: () => void;
   isSaving?: boolean;
 }
@@ -33,9 +29,7 @@ export function FlashcardEditor({
 }: FlashcardEditorProps) {
   const [frontContent, setFrontContent] = useState(flashcard?.front_content || '');
   const [backContent, setBackContent] = useState(flashcard?.back_content || '');
-  const [tagsInput, setTagsInput] = useState(
-    flashcard?.tags?.join(', ') || ''
-  );
+  const [tagsInput, setTagsInput] = useState(flashcard?.tags?.join(', ') || '');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,9 +52,7 @@ export function FlashcardEditor({
     <form onSubmit={handleSubmit}>
       <Card>
         <CardHeader>
-          <CardTitle>
-            {flashcard ? 'Edit Flashcard' : 'Create New Flashcard'}
-          </CardTitle>
+          <CardTitle>{flashcard ? 'Edit Flashcard' : 'Create New Flashcard'}</CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-4">
@@ -109,19 +101,12 @@ export function FlashcardEditor({
               value={tagsInput}
               onChange={e => setTagsInput(e.target.value)}
             />
-            <p className="text-xs text-muted-foreground">
-              Separate tags with commas
-            </p>
+            <p className="text-xs text-muted-foreground">Separate tags with commas</p>
           </div>
         </CardContent>
 
         <CardFooter className="flex justify-end gap-2">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={onCancel}
-            disabled={isSaving}
-          >
+          <Button type="button" variant="ghost" onClick={onCancel} disabled={isSaving}>
             <X className="h-4 w-4 mr-2" />
             Cancel
           </Button>

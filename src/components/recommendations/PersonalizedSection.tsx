@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RecommendationCard } from './RecommendationCard';
-import { Sparkles, RefreshCw, Settings, Info } from 'lucide-react';
+import { Sparkles, RefreshCw, Settings, Info } from '@/components/ui/icons';
 import type { Recommendation } from '@/services/ai/RecommendationEngineService';
 import { cn } from '@/lib/utils';
 
@@ -53,9 +53,7 @@ export function PersonalizedSection({
   maxItems,
   className,
 }: PersonalizedSectionProps) {
-  const displayRecommendations = maxItems
-    ? recommendations?.slice(0, maxItems)
-    : recommendations;
+  const displayRecommendations = maxItems ? recommendations?.slice(0, maxItems) : recommendations;
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -70,7 +68,9 @@ export function PersonalizedSection({
               <div>
                 <CardTitle className="flex items-center gap-2">
                   {title}
-                  {isLoading && <RefreshCw className="h-4 w-4 animate-spin text-muted-foreground" />}
+                  {isLoading && (
+                    <RefreshCw className="h-4 w-4 animate-spin text-muted-foreground" />
+                  )}
                 </CardTitle>
                 {description && <CardDescription className="mt-1">{description}</CardDescription>}
               </div>
@@ -161,7 +161,7 @@ export function PersonalizedSection({
             layout === 'list' && 'space-y-4'
           )}
         >
-          {displayRecommendations.map((recommendation) => (
+          {displayRecommendations.map(recommendation => (
             <RecommendationCard
               key={recommendation.id}
               recommendation={recommendation}
@@ -177,16 +177,11 @@ export function PersonalizedSection({
       )}
 
       {/* Show More */}
-      {!isLoading &&
-        recommendations &&
-        maxItems &&
-        recommendations.length > maxItems && (
-          <div className="flex justify-center">
-            <Button variant="outline">
-              View All {recommendations.length} Recommendations
-            </Button>
-          </div>
-        )}
+      {!isLoading && recommendations && maxItems && recommendations.length > maxItems && (
+        <div className="flex justify-center">
+          <Button variant="outline">View All {recommendations.length} Recommendations</Button>
+        </div>
+      )}
     </div>
   );
 }

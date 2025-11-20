@@ -3,7 +3,15 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, MapPin, Users, ExternalLink, CheckCircle, Ticket } from 'lucide-react';
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Users,
+  ExternalLink,
+  CheckCircle,
+  Ticket,
+} from '@/components/ui/icons';
 import { ShareButton } from '@/components/shared';
 import type { Event } from '@/hooks/useEvents';
 import { useEventRegistrations } from '@/hooks/useEventRegistrations';

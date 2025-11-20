@@ -1,5 +1,12 @@
 import React from 'react';
-import { CheckCircle2, XCircle, AlertCircle, Clock, SkipForward, RefreshCw } from 'lucide-react';
+import {
+  CheckCircle2,
+  XCircle,
+  AlertCircle,
+  Clock,
+  SkipForward,
+  RefreshCw,
+} from '@/components/ui/icons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';

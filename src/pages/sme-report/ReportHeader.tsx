@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Share2, FileText, Download, Building2, Loader2 } from 'lucide-react';
+import { ArrowLeft, Share2, FileText, Download, Building2, Loader2 } from '@/components/ui/icons';
 import type { ReportHeaderProps } from './types';
 
 export function ReportHeader({

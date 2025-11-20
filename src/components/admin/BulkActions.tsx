@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw } from '@/components/ui/icons';
 import { useToast } from '@/components/ui/use-toast';
 import { BulkActionsHeader } from './bulk-actions/BulkActionsHeader';
 import { BulkActionsFilters } from './bulk-actions/BulkActionsFilters';

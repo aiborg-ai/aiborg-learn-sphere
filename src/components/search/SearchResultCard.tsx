@@ -16,7 +16,7 @@ import {
   Sparkles,
   ArrowRight,
   Star,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { SearchResult, ContentType } from '@/services/search/SearchService';
 import { cn } from '@/lib/utils';
 
@@ -126,19 +126,14 @@ export function SearchResultCard({
 
       {result.description && (
         <CardContent className="pt-0">
-          <CardDescription
-            className={cn(
-              'text-sm',
-              showFullDescription ? '' : 'line-clamp-2'
-            )}
-          >
+          <CardDescription className={cn('text-sm', showFullDescription ? '' : 'line-clamp-2')}>
             {result.description}
           </CardDescription>
 
           {/* Tags */}
           {result.metadata?.tags && result.metadata.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-3">
-              {result.metadata.tags.slice(0, 5).map((tag) => (
+              {result.metadata.tags.slice(0, 5).map(tag => (
                 <Badge key={tag} variant="outline" className="text-xs">
                   {tag}
                 </Badge>

@@ -4,7 +4,7 @@
  * Shows a badge indicating content is available offline
  */
 
-import { WifiOff, Wifi } from 'lucide-react';
+import { WifiOff, Wifi } from '@/components/ui/icons';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 

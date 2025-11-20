@@ -6,12 +6,22 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useAutoRefresh, AUTO_REFRESH_INTERVALS, getTimeSinceRefresh } from '@/hooks/useAutoRefresh';
-import { RefreshCw, Clock } from 'lucide-react';
+import {
+  useAutoRefresh,
+  AUTO_REFRESH_INTERVALS,
+  getTimeSinceRefresh,
+} from '@/hooks/useAutoRefresh';
+import { RefreshCw, Clock } from '@/components/ui/icons';
 
 export interface AutoRefreshControlProps {
   onRefresh: () => Promise<void>;
@@ -112,7 +122,7 @@ export function AutoRefreshControl({
               <SelectValue placeholder="Select interval" />
             </SelectTrigger>
             <SelectContent>
-              {INTERVAL_OPTIONS.map((option) => (
+              {INTERVAL_OPTIONS.map(option => (
                 <SelectItem key={option.value} value={option.value.toString()}>
                   {option.label}
                 </SelectItem>
@@ -127,9 +137,7 @@ export function AutoRefreshControl({
             <Clock className="h-4 w-4" />
             <span>Last refresh:</span>
           </div>
-          <span className="font-medium">
-            {getTimeSinceRefresh(state.lastRefresh)}
-          </span>
+          <span className="font-medium">{getTimeSinceRefresh(state.lastRefresh)}</span>
         </div>
 
         {/* Manual Refresh Button */}
@@ -140,9 +148,7 @@ export function AutoRefreshControl({
           disabled={state.isRefreshing}
           className="w-full"
         >
-          <RefreshCw
-            className={cn('mr-2 h-4 w-4', state.isRefreshing && 'animate-spin')}
-          />
+          <RefreshCw className={cn('mr-2 h-4 w-4', state.isRefreshing && 'animate-spin')} />
           {state.isRefreshing ? 'Refreshing...' : 'Refresh Now'}
         </Button>
 

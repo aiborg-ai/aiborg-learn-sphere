@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, vs } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useTheme } from '@/components/theme-provider';
-import { Code, Copy, CheckCircle, FileCode, Lightbulb, Terminal } from 'lucide-react';
+import { Code, Copy, CheckCircle, FileCode, Lightbulb, Terminal } from '@/components/ui/icons';
 import { useToast } from '@/components/ui/use-toast';
 
 export interface CodeEvaluationProps {

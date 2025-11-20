@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { EnhancedVideoPlayer } from '@/components/EnhancedVideoPlayer';
 import { logger } from '@/utils/logger';
 import type { CourseMaterial } from './types';
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from '@/components/ui/icons';
 
 // Lazy load PDFViewer to avoid bundling 413 KB PDF.js in initial load
 const PDFViewer = React.lazy(() =>

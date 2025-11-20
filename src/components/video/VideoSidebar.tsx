@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { List, Edit, FileText } from 'lucide-react';
+import { List, Edit, FileText } from '@/components/ui/icons';
 import { VideoChapters } from './VideoChapters';
 import { VideoNotes } from './VideoNotes';
 import { VideoTranscript } from './VideoTranscript';

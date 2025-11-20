@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Target } from 'lucide-react';
+import { Target } from '@/components/ui/icons';
 import type { ActionPlanSectionProps } from './types';
 
 export function ActionPlanSection({ actionPlan }: ActionPlanSectionProps) {

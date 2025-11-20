@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { ArrowLeft, ArrowRight, Save, X, Clock } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, X, Clock } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';

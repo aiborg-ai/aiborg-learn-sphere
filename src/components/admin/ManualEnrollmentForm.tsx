@@ -21,7 +21,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuditLogs } from '@/hooks/useAuditLogs';
 import { logger } from '@/utils/logger';
-import { Search, Loader2, UserPlus } from 'lucide-react';
+import { Search, Loader2, UserPlus } from '@/components/ui/icons';
 
 interface ManualEnrollmentFormProps {
   open: boolean;

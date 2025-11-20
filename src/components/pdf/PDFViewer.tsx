@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, AlertCircle, FileText } from 'lucide-react';
+import { Loader2, AlertCircle, FileText } from '@/components/ui/icons';
 import { PDFControls } from './PDFControls';
 import { PDFThumbnails } from './PDFThumbnails';
 import { PDFSearch } from './PDFSearch';

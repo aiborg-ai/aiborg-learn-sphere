@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { ExerciseResults } from '@/components/exercise';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2 } from '@/components/ui/icons';
 import type { ExerciseSubmission } from '@/services/exercise/types';
 
 export default function ExerciseResultsPage() {

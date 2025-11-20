@@ -17,7 +17,7 @@ import {
   Zap,
   CheckCircle,
   XCircle,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { ADAPTIVE_CONFIG, getAugmentationLevel } from '@/config/adaptiveAssessment';
 
 interface AssessmentProgressIndicatorProps {

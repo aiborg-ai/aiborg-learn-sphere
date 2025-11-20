@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { ArrowUp, ArrowDown, Minus, Info } from 'lucide-react';
+import { ArrowUp, ArrowDown, Minus, Info } from '@/components/ui/icons';
 import type { Benchmark } from '../types';
 
 interface PeerComparisonTabProps {

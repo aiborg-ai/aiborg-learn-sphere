@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { useSubmitReview, useIntervalPreview } from '@/hooks/useSpacedRepetition';
 import { SM2AlgorithmService } from '@/services/spaced-repetition/SM2AlgorithmService';
 import type { Flashcard } from '@/services/spaced-repetition/FlashcardService';
-import { Flame, Trophy } from 'lucide-react';
+import { Flame, Trophy } from '@/components/ui/icons';
 
 interface FlashcardReviewProps {
   flashcards: Flashcard[];
@@ -32,7 +32,7 @@ export function FlashcardReview({
   const [showButtons, setShowButtons] = useState(false);
 
   const currentCard = flashcards[currentIndex];
-  const progress = ((currentIndex) / flashcards.length) * 100;
+  const progress = (currentIndex / flashcards.length) * 100;
   const remaining = flashcards.length - currentIndex;
 
   const submitReview = useSubmitReview();
@@ -143,11 +143,7 @@ export function FlashcardReview({
 
       {/* Flashcard */}
       <div className="max-w-2xl mx-auto">
-        <FlashcardCard
-          flashcard={currentCard}
-          showBack={isFlipped}
-          onFlip={handleFlip}
-        />
+        <FlashcardCard flashcard={currentCard} showBack={isFlipped} onFlip={handleFlip} />
       </div>
 
       {/* Review Buttons (shown after flip) */}
@@ -166,7 +162,8 @@ export function FlashcardReview({
       {!showButtons && (
         <div className="text-center">
           <p className="text-sm text-muted-foreground">
-            Click the card or press <kbd className="px-2 py-1 bg-muted rounded">Space</kbd> to reveal the answer
+            Click the card or press <kbd className="px-2 py-1 bg-muted rounded">Space</kbd> to
+            reveal the answer
           </p>
         </div>
       )}

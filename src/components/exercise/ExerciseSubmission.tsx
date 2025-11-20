@@ -37,7 +37,7 @@ import {
   AlertCircle,
   CheckCircle,
   Info,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { Exercise } from '@/services/exercise/types';
 
 interface ExerciseSubmissionProps {
@@ -238,16 +238,36 @@ export const ExerciseSubmission: React.FC<ExerciseSubmissionProps> = ({ exercise
                 dangerouslySetInnerHTML={{
                   __html: DOMPurify.sanitize(exercise.instructions, {
                     ALLOWED_TAGS: [
-                      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-                      'p', 'br', 'strong', 'em', 'u',
-                      'ul', 'ol', 'li',
-                      'a', 'code', 'pre', 'blockquote',
-                      'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
+                      'h1',
+                      'h2',
+                      'h3',
+                      'h4',
+                      'h5',
+                      'h6',
+                      'p',
+                      'br',
+                      'strong',
+                      'em',
+                      'u',
+                      'ul',
+                      'ol',
+                      'li',
+                      'a',
+                      'code',
+                      'pre',
+                      'blockquote',
+                      'img',
+                      'table',
+                      'thead',
+                      'tbody',
+                      'tr',
+                      'th',
+                      'td',
                     ],
                     ALLOWED_ATTR: ['href', 'title', 'src', 'alt', 'class'],
                     ALLOW_DATA_ATTR: false,
                     ALLOWED_URI_REGEXP: /^(?:https?:)/i,
-                  })
+                  }),
                 }}
               />
             </div>

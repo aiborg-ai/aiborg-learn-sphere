@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Calendar } from 'lucide-react';
+import { Calendar } from '@/components/ui/icons';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { AdvancedScheduler } from '@/components/studio/shared/AdvancedScheduler';

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Award } from 'lucide-react';
+import { Award } from '@/components/ui/icons';
 import { formatCurrency, formatPercentage } from './utils';
 import type { CourseAnalytics } from './types';
 

@@ -41,7 +41,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Plus, Search, Edit, Trash2, Filter } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Filter } from '@/components/ui/icons';
 import { QuestionForm } from '@/components/admin/QuestionForm';
 import {
   useAssessmentQuestions,

@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { Flame, Calendar as CalendarIcon } from 'lucide-react';
+import { Flame, Calendar as CalendarIcon } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import type { WidgetComponentProps, BaseWidgetConfig } from '@/types/dashboard';
@@ -37,12 +37,14 @@ export function StreaksWidget({ widget, isEditing }: WidgetComponentProps) {
 
       if (error && error.code !== 'PGRST116') throw error;
 
-      return data || {
-        current_streak: 0,
-        longest_streak: 0,
-        total_days: 0,
-        last_activity_date: new Date().toISOString().split('T')[0],
-      };
+      return (
+        data || {
+          current_streak: 0,
+          longest_streak: 0,
+          total_days: 0,
+          last_activity_date: new Date().toISOString().split('T')[0],
+        }
+      );
     },
     enabled: !isEditing,
     refetchInterval: config.refreshInterval ? config.refreshInterval * 1000 : false,
@@ -69,11 +71,15 @@ export function StreaksWidget({ widget, isEditing }: WidgetComponentProps) {
   };
 
   const last7Days = getLast7Days();
-  const lastActivityDate = streakData?.last_activity_date ? new Date(streakData.last_activity_date) : null;
+  const lastActivityDate = streakData?.last_activity_date
+    ? new Date(streakData.last_activity_date)
+    : null;
 
   const isDayActive = (date: Date) => {
     if (!lastActivityDate) return false;
-    const diffDays = Math.floor((lastActivityDate.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+    const diffDays = Math.floor(
+      (lastActivityDate.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+    );
     return diffDays >= 0 && diffDays < currentStreak;
   };
 

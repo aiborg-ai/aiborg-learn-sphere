@@ -26,7 +26,7 @@ import {
   Loader2,
   Link as LinkIcon,
   CloudUpload,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useToast } from '@/hooks/use-toast';
 import { logger } from '@/utils/logger';
 

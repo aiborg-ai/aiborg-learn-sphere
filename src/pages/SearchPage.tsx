@@ -14,14 +14,7 @@ import { SearchResultCard } from '@/components/search/SearchResultCard';
 import { SearchFilters } from '@/components/search/SearchFilters';
 import { useSearch, useSearchFilters } from '@/hooks/useSearch';
 import type { SearchResult } from '@/services/search/SearchService';
-import {
-  Search,
-  Sparkles,
-  ArrowLeft,
-  Info,
-  Lightbulb,
-  TrendingUp,
-} from 'lucide-react';
+import { Search, Sparkles, ArrowLeft, Info, Lightbulb, TrendingUp } from '@/components/ui/icons';
 
 export default function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -42,19 +35,14 @@ export default function SearchPage() {
   } = useSearchFilters();
 
   // Search hook
-  const {
-    query,
-    setQuery,
-    results,
-    isLoading,
-    error,
-    hasQuery,
-    hasResults,
-  } = useSearch(initialQuery, {
-    contentTypes,
-    minRelevance,
-    limit: 50,
-  });
+  const { query, setQuery, results, isLoading, error, hasQuery, hasResults } = useSearch(
+    initialQuery,
+    {
+      contentTypes,
+      minRelevance,
+      limit: 50,
+    }
+  );
 
   // Update URL when query changes
   useEffect(() => {
@@ -85,13 +73,16 @@ export default function SearchPage() {
   };
 
   // Group results by content type for better organization
-  const _resultsByType = results.reduce((acc, result) => {
-    if (!acc[result.type]) {
-      acc[result.type] = [];
-    }
-    acc[result.type].push(result);
-    return acc;
-  }, {} as Record<string, SearchResult[]>);
+  const _resultsByType = results.reduce(
+    (acc, result) => {
+      if (!acc[result.type]) {
+        acc[result.type] = [];
+      }
+      acc[result.type].push(result);
+      return acc;
+    },
+    {} as Record<string, SearchResult[]>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-hero">
@@ -124,7 +115,7 @@ export default function SearchPage() {
               type="text"
               placeholder="Search courses, learning paths, blog posts..."
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={e => setQuery(e.target.value)}
               className="pl-10 pr-12 h-12 text-lg bg-white/95 backdrop-blur-sm"
             />
             {query && (
@@ -255,7 +246,7 @@ export default function SearchPage() {
             {/* Results Grid */}
             {!isLoading && hasResults && (
               <div className="grid grid-cols-1 gap-4">
-                {results.map((result) => (
+                {results.map(result => (
                   <SearchResultCard
                     key={`${result.type}-${result.id}`}
                     result={result}

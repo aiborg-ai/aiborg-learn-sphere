@@ -18,7 +18,7 @@ import {
   CheckCircle2,
   Circle,
   AlertCircle,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { ExerciseWithSubmission } from '@/services/exercise/types';
 
 interface ExerciseCardProps {

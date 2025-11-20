@@ -9,7 +9,16 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Calendar, Edit, Trash2, MapPin, Clock, Users, Image, Archive } from 'lucide-react';
+import {
+  Calendar,
+  Edit,
+  Trash2,
+  MapPin,
+  Clock,
+  Users,
+  Image,
+  Archive,
+} from '@/components/ui/icons';
 import { Event } from './types';
 
 interface EventsTableProps {

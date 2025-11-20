@@ -1,7 +1,7 @@
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LogIn } from 'lucide-react';
+import { LogIn } from '@/components/ui/icons';
 
 interface RequireAuthProps {
   children: React.ReactNode;

@@ -12,7 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { ReviewForm } from '@/components/forms/ReviewForm';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { logger } from '@/utils/logger';

@@ -27,7 +27,14 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Download, FileSpreadsheet, Calendar, Settings, Loader2 } from 'lucide-react';
+import {
+  FileText,
+  Download,
+  FileSpreadsheet,
+  Calendar,
+  Settings,
+  Loader2,
+} from '@/components/ui/icons';
 import {
   EnhancedPDFExportService,
   DEFAULT_TEMPLATES as PDF_TEMPLATES,

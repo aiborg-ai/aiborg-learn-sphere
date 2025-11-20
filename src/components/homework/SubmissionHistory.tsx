@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { CheckCircle, Clock, FileText, Download, Eye } from 'lucide-react';
+import { CheckCircle, Clock, FileText, Download, Eye } from '@/components/ui/icons';
 import type { Submission } from './SubmissionForm';
 
 interface SubmissionHistoryProps {

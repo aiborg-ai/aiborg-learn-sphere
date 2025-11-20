@@ -1,5 +1,5 @@
 import React from 'react';
-import { Info } from 'lucide-react';
+import { Info } from '@/components/ui/icons';
 
 interface QuestionDisplayProps {
   question_text: string;

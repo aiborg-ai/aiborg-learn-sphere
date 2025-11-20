@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, Trophy, Award, Flame, FileText, Bell } from 'lucide-react';
+import { BookOpen, Trophy, Award, Flame, FileText, Bell } from '@/components/ui/icons';
 
 export interface DashboardStatsData {
   enrolledCourses: number;

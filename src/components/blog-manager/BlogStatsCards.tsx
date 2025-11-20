@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, Eye, Edit, TrendingUp } from 'lucide-react';
+import { FileText, Eye, Edit, TrendingUp } from '@/components/ui/icons';
 import type { BlogPost } from '@/types/blog';
 
 interface BlogStatsCardsProps {

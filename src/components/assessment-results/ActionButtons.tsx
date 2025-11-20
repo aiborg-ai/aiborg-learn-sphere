@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Share2, Download, RefreshCw, ChevronRight } from 'lucide-react';
+import { Share2, Download, RefreshCw, ChevronRight } from '@/components/ui/icons';
 
 interface ActionButtonsProps {
   onShare: () => void;

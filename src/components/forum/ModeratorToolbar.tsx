@@ -3,7 +3,7 @@
  * Quick moderation actions for threads and posts
  */
 
-import { Pin, Lock, Trash2, MoveHorizontal, Edit, Shield } from 'lucide-react';
+import { Pin, Lock, Trash2, MoveHorizontal, Edit, Shield } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,

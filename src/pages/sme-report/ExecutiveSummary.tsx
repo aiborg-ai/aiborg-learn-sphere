@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Target } from 'lucide-react';
+import { Target } from '@/components/ui/icons';
 import { getRatingColor, getRatingLabel } from './utils';
 import type { ExecutiveSummaryProps } from './types';
 

@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Ticket, Calendar, Loader2, AlertCircle, Repeat } from 'lucide-react';
+import { Ticket, Calendar, Loader2, AlertCircle, Repeat } from '@/components/ui/icons';
 import { useEventSessionTickets, useUpcomingEventTickets } from '@/hooks/useEventSessionTickets';
 import { EventSessionTicketCard } from '@/components/EventSessionTicketCard';
 import { useAuth } from '@/hooks/useAuth';

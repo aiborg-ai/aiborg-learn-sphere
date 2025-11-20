@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, RefreshCw, MessageSquare, Star, Mic, Video } from 'lucide-react';
+import { Loader2, RefreshCw, MessageSquare, Star, Mic, Video } from '@/components/ui/icons';
 
 interface Review {
   id: string;

@@ -4,7 +4,14 @@
  */
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DollarSign, TrendingUp, TrendingDown, AlertCircle, Zap, Clock } from 'lucide-react';
+import {
+  DollarSign,
+  TrendingUp,
+  TrendingDown,
+  AlertCircle,
+  Zap,
+  Clock,
+} from '@/components/ui/icons';
 import {
   useRealTimeCost,
   useProjectedMonthlyCost,

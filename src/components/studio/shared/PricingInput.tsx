@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { DollarSign, Tag, Users, Percent } from 'lucide-react';
+import { DollarSign, Tag, Users, Percent } from '@/components/ui/icons';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

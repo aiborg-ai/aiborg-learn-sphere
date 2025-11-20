@@ -19,7 +19,7 @@ import {
   FileText,
   RefreshCw,
   ChevronRight,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { ExerciseSubmission, Exercise } from '@/services/exercise/types';
 
 interface ExerciseResultsProps {

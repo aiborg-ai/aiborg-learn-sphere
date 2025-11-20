@@ -17,7 +17,7 @@ import type { CalendarEvent, CalendarEventType } from '@/types/calendar';
 import { EVENT_TYPE_COLORS, getEventTypeLabel } from '@/services/calendar/CalendarEventService';
 import { format, isSameDay } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { Clock } from 'lucide-react';
+import { Clock } from '@/components/ui/icons';
 
 interface MonthViewProps {
   /** Calendar events to display */

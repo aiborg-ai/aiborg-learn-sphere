@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Clock, FileJson, CheckCircle2, XCircle, AlertCircle, Eye, RefreshCw } from 'lucide-react';
+import {
+  Clock,
+  FileJson,
+  CheckCircle2,
+  XCircle,
+  AlertCircle,
+  Eye,
+  RefreshCw,
+} from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

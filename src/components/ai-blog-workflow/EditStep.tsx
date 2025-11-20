@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ArrowRight, Bold, Italic, List, Link2, Code } from 'lucide-react';
+import { ArrowRight, Bold, Italic, List, Link2, Code } from '@/components/ui/icons';
 import { supabase } from '@/integrations/supabase/client';
 
 interface EditStepProps {

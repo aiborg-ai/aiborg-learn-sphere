@@ -21,7 +21,7 @@ import {
   Loader2,
   Video,
   FileText,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import type { WatchLaterWithRelations } from '@/types/content-access';
 import {

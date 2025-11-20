@@ -18,7 +18,7 @@ import {
   Loader2,
   Activity,
   Zap,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { logger } from '@/utils/logger';
 import {
   LineChart,

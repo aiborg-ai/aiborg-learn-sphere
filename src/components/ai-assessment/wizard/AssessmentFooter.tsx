@@ -1,7 +1,7 @@
 import React from 'react';
 import { CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2 } from '@/components/ui/icons';
 
 interface AssessmentFooterProps {
   submitting: boolean;

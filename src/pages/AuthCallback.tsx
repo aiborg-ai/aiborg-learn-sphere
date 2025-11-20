@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Shield, CheckCircle2, Brain } from 'lucide-react';
+import { Loader2, Shield, CheckCircle2, Brain } from '@/components/ui/icons';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';

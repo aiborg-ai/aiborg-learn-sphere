@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/prefer-tag-over-role */
 import * as React from 'react';
 import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from '@/components/ui/icons';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';

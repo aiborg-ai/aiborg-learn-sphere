@@ -7,7 +7,7 @@
 import { useState, useRef, useCallback, Suspense } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { motion } from 'framer-motion';
-import { GripVertical, Settings, X, Lock, Unlock, Eye, EyeOff } from 'lucide-react';
+import { GripVertical, Settings, X, Lock, Unlock, Eye, EyeOff } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -53,48 +53,51 @@ export function DraggableWidget({
 
   const WidgetComponent = widgetDef.component;
 
-  const handleResizeStart = useCallback((handle: ResizeHandle, e: React.MouseEvent) => {
-    if (!isEditing || widget.locked) return;
+  const handleResizeStart = useCallback(
+    (handle: ResizeHandle, e: React.MouseEvent) => {
+      if (!isEditing || widget.locked) return;
 
-    e.stopPropagation();
-    setIsResizing(true);
-    setResizeHandle(handle);
-    startPosRef.current = { x: e.clientX, y: e.clientY };
-    startSizeRef.current = { ...size };
+      e.stopPropagation();
+      setIsResizing(true);
+      setResizeHandle(handle);
+      startPosRef.current = { x: e.clientX, y: e.clientY };
+      startSizeRef.current = { ...size };
 
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      const deltaX = moveEvent.clientX - startPosRef.current.x;
-      const deltaY = moveEvent.clientY - startPosRef.current.y;
+      const handleMouseMove = (moveEvent: MouseEvent) => {
+        const deltaX = moveEvent.clientX - startPosRef.current.x;
+        const deltaY = moveEvent.clientY - startPosRef.current.y;
 
-      let newWidth = startSizeRef.current.width;
-      let newHeight = startSizeRef.current.height;
+        let newWidth = startSizeRef.current.width;
+        let newHeight = startSizeRef.current.height;
 
-      // Calculate new size based on handle
-      if (handle.includes('e')) {
-        newWidth = startSizeRef.current.width + deltaX;
-      } else if (handle.includes('w')) {
-        newWidth = startSizeRef.current.width - deltaX;
-      }
+        // Calculate new size based on handle
+        if (handle.includes('e')) {
+          newWidth = startSizeRef.current.width + deltaX;
+        } else if (handle.includes('w')) {
+          newWidth = startSizeRef.current.width - deltaX;
+        }
 
-      if (handle.includes('s')) {
-        newHeight = startSizeRef.current.height + deltaY;
-      } else if (handle.includes('n')) {
-        newHeight = startSizeRef.current.height - deltaY;
-      }
+        if (handle.includes('s')) {
+          newHeight = startSizeRef.current.height + deltaY;
+        } else if (handle.includes('n')) {
+          newHeight = startSizeRef.current.height - deltaY;
+        }
 
-      onResize({ width: Math.max(100, newWidth), height: Math.max(80, newHeight) });
-    };
+        onResize({ width: Math.max(100, newWidth), height: Math.max(80, newHeight) });
+      };
 
-    const handleMouseUp = () => {
-      setIsResizing(false);
-      setResizeHandle(null);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
+      const handleMouseUp = () => {
+        setIsResizing(false);
+        setResizeHandle(null);
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  }, [isEditing, widget.locked, size, onResize]);
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    },
+    [isEditing, widget.locked, size, onResize]
+  );
 
   const toggleLock = useCallback(() => {
     onUpdate({ locked: !widget.locked });
@@ -110,9 +113,7 @@ export function DraggableWidget({
     top: position.y,
     width: size.width,
     height: size.height,
-    transform: transform
-      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-      : undefined,
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
     transition: isDragging || isResizing ? 'none' : 'all 0.2s ease',
     zIndex: isDragging || isResizing ? 1000 : widget.locked ? 1 : 10,
   };
@@ -251,7 +252,7 @@ export function DraggableWidget({
                   'opacity-0 group-hover:opacity-100',
                   isResizing && resizeHandle === handle && 'opacity-100'
                 )}
-                onMouseDown={(e) => handleResizeStart(handle, e)}
+                onMouseDown={e => handleResizeStart(handle, e)}
               />
             ))}
           </>

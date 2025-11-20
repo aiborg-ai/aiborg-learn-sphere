@@ -12,7 +12,7 @@ import React, { Suspense } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Settings, X, Grip } from 'lucide-react';
+import { Settings, X, Grip } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import type { DashboardWidget } from '@/types/dashboard';
 

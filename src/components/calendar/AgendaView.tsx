@@ -23,7 +23,7 @@ import {
   XCircle,
   PlayCircle,
   ArrowRight,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { CalendarEvent, EventGroup } from '@/types/calendar';
 import { EVENT_TYPE_COLORS, getEventTypeLabel } from '@/services/calendar/CalendarEventService';
 import { format, isToday, isPast, startOfDay } from 'date-fns';

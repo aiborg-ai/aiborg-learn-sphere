@@ -40,7 +40,7 @@ import {
   Search,
   Download,
   CheckCheck,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 interface InstructorAttendanceDashboardProps {
   courseId: number;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle } from '@/components/ui/icons';
 import { ScenarioQuestion } from '../ScenarioQuestion';
 import { DragDropRanking } from '../DragDropRanking';
 import { CodeEvaluation } from '../CodeEvaluation';

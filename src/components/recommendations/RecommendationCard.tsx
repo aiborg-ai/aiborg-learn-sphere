@@ -17,7 +17,7 @@ import {
   MapPin,
   FileText,
   CheckCircle2,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { Recommendation } from '@/services/ai/RecommendationEngineService';
 import { cn } from '@/lib/utils';
 
@@ -95,7 +95,7 @@ export function RecommendationCard({
           variant="ghost"
           size="icon"
           className="absolute top-2 right-2 h-6 w-6"
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             onDismiss(recommendation.id);
           }}
@@ -178,7 +178,7 @@ export function RecommendationCard({
         <div className="flex items-center gap-2">
           {onEnroll && (
             <Button
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 onEnroll(recommendation.id, recommendation.contentId);
               }}
@@ -194,7 +194,7 @@ export function RecommendationCard({
               <Button
                 variant="outline"
                 size="icon"
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   onFeedback(recommendation.id, true);
                 }}
@@ -205,7 +205,7 @@ export function RecommendationCard({
               <Button
                 variant="outline"
                 size="icon"
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   onFeedback(recommendation.id, false);
                 }}

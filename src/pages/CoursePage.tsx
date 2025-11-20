@@ -22,7 +22,7 @@ import {
   PenTool,
   UsersRound,
   RefreshCw,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { CourseMaterial } from '@/components/course-page/types';
 import { CourseHeader } from '@/components/course-page/CourseHeader';
 import { CourseOverviewTab } from '@/components/course-page/CourseOverviewTab';
@@ -36,7 +36,7 @@ import { ProgressSync } from '@/components/classroom/ProgressSync';
 import { ActiveStudentsBar } from '@/components/classroom/ActiveStudentsBar';
 import { LiveQuestionPanel } from '@/components/classroom/LiveQuestionPanel';
 import { useClassroomPresence } from '@/hooks/useClassroomPresence';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle } from '@/components/ui/icons';
 import { SimilarCoursesSection } from '@/components/recommendations/SimilarCoursesSection';
 
 /**
@@ -389,7 +389,7 @@ export default function CoursePage() {
             <SimilarCoursesSection
               courseId={courseId}
               limit={6}
-              onCourseClick={(id) => navigate(`/courses/${id}`)}
+              onCourseClick={id => navigate(`/courses/${id}`)}
             />
           </div>
         )}

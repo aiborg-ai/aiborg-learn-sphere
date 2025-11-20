@@ -16,7 +16,7 @@ import {
   useDeleteFlashcard,
   useDueCards,
 } from '@/hooks/useFlashcards';
-import { ArrowLeft, Plus, Play, Trash2, Loader2 } from 'lucide-react';
+import { ArrowLeft, Plus, Play, Trash2, Loader2 } from '@/components/ui/icons';
 
 export default function DeckPage() {
   const { deckId } = useParams<{ deckId: string }>();
@@ -84,11 +84,7 @@ export default function DeckPage() {
     <div className="container mx-auto py-8 space-y-6">
       {/* Header */}
       <div>
-        <Button
-          variant="ghost"
-          onClick={() => navigate('/flashcards')}
-          className="mb-4"
-        >
+        <Button variant="ghost" onClick={() => navigate('/flashcards')} className="mb-4">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Decks
         </Button>
@@ -96,18 +92,12 @@ export default function DeckPage() {
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold">{deck.title}</h1>
-            <p className="text-muted-foreground mt-1">
-              {deck.description || 'No description'}
-            </p>
+            <p className="text-muted-foreground mt-1">{deck.description || 'No description'}</p>
             <div className="flex items-center gap-3 mt-3">
               <Badge variant="secondary">
                 {deck.card_count} {deck.card_count === 1 ? 'card' : 'cards'}
               </Badge>
-              {dueCount > 0 && (
-                <Badge variant="default">
-                  {dueCount} due for review
-                </Badge>
-              )}
+              {dueCount > 0 && <Badge variant="default">{dueCount} due for review</Badge>}
             </div>
           </div>
 
@@ -118,10 +108,7 @@ export default function DeckPage() {
                 Start Review ({dueCount})
               </Button>
             )}
-            <Button
-              variant="outline"
-              onClick={() => setIsCreating(true)}
-            >
+            <Button variant="outline" onClick={() => setIsCreating(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Add Card
             </Button>
@@ -145,9 +132,7 @@ export default function DeckPage() {
 
         {cards && cards.length === 0 ? (
           <Card className="p-8 text-center">
-            <p className="text-muted-foreground mb-4">
-              No cards in this deck yet
-            </p>
+            <p className="text-muted-foreground mb-4">No cards in this deck yet</p>
             <Button onClick={() => setIsCreating(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Create Your First Card
@@ -160,12 +145,8 @@ export default function DeckPage() {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-base">
-                        {card.front_content}
-                      </CardTitle>
-                      <CardDescription className="mt-1">
-                        {card.back_content}
-                      </CardDescription>
+                      <CardTitle className="text-base">{card.front_content}</CardTitle>
+                      <CardDescription className="mt-1">{card.back_content}</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -181,11 +162,7 @@ export default function DeckPage() {
                       </div>
                     )}
                     <div className="flex gap-1">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleDeleteCard(card.id)}
-                      >
+                      <Button size="sm" variant="ghost" onClick={() => handleDeleteCard(card.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>

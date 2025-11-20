@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { lazy, Suspense, ComponentType } from 'react';
-import type { LucideProps } from 'lucide-react';
+import type { LucideProps } from '@/components/ui/icons';
 import { logger } from './logger';
 
 /**

@@ -5,7 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserReviews } from '@/hooks/useUserReviews';
-import { Loader2, User, ArrowLeft, Brain, Target, Trophy, ExternalLink } from 'lucide-react';
+import {
+  Loader2,
+  User,
+  ArrowLeft,
+  Brain,
+  Target,
+  Trophy,
+  ExternalLink,
+} from '@/components/ui/icons';
 import { Link } from 'react-router-dom';
 import { NotificationSettings } from '@/components/shared';
 import { supabase } from '@/integrations/supabase/client';

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Save } from 'lucide-react';
+import { Loader2, Save } from '@/components/ui/icons';
 import { useToast } from '@/components/ui/use-toast';
 import type { User } from '@supabase/supabase-js';
 

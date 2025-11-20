@@ -4,7 +4,7 @@
  */
 
 import { lazy, Suspense, ComponentType } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from '@/components/ui/icons';
 
 // Create a loading fallback component
 const ChartLoader = () => (

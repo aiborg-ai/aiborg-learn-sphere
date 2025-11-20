@@ -224,7 +224,7 @@ export function AccessibleTooltip({
 
 @example Icon with Tooltip
 ```tsx
-import { HelpCircle } from 'lucide-react';
+import { HelpCircle } from '@/components/ui/icons';
 
 <AccessibleTooltip content="Get help and support">
   <button aria-label="Help">

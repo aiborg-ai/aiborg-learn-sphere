@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Calendar, Clock, QrCode, X, CheckCircle } from 'lucide-react';
+import { Calendar, Clock, QrCode, X, CheckCircle } from '@/components/ui/icons';
 import { useSessionTickets } from '@/hooks/useSessionTickets';
 import { useToast } from '@/hooks/use-toast';
 

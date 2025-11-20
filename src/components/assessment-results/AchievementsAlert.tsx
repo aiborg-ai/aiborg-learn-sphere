@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Trophy } from 'lucide-react';
+import { Trophy } from '@/components/ui/icons';
 import type { Achievement } from './types';
 
 interface AchievementsAlertProps {

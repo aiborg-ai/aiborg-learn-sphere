@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle } from '@/components/ui/icons';
 import type { QuizQuestion } from '@/services/quiz/types';
 
 interface QuestionRendererProps {

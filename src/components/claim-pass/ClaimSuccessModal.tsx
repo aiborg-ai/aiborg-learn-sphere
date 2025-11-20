@@ -1,4 +1,4 @@
-import { CheckCircle2, Mail, Clock, Home } from 'lucide-react';
+import { CheckCircle2, Mail, Clock, Home } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

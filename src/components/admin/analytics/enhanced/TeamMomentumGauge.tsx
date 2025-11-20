@@ -16,7 +16,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { TrendingUp, TrendingDown, Minus, Zap } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Zap } from '@/components/ui/icons';
 import type { MomentumSummary } from '@/services/team/types';
 
 interface TeamMomentumGaugeProps {

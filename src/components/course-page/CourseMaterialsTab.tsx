@@ -7,7 +7,7 @@ import { DownloadButton } from '@/components/downloads/DownloadButton';
 import { WatchLaterButton } from '@/components/playlists/WatchLaterButton';
 import { OfflineBadge } from '@/components/offline/OfflineBadge';
 import { useOfflineContent } from '@/hooks/useOfflineContent';
-import { Video, FileText, Download, BookOpen, Eye } from 'lucide-react';
+import { Video, FileText, Download, BookOpen, Eye } from '@/components/ui/icons';
 import type { CourseMaterial } from './types';
 
 interface CourseMaterialsTabProps {
@@ -16,12 +16,19 @@ interface CourseMaterialsTabProps {
   onViewMaterial: (material: CourseMaterial) => void;
 }
 
-function MaterialRow({ material, courseId, onViewMaterial }: { material: CourseMaterial; courseId: string; onViewMaterial: (material: CourseMaterial) => void }) {
+function MaterialRow({
+  material,
+  courseId,
+  onViewMaterial,
+}: {
+  material: CourseMaterial;
+  courseId: string;
+  onViewMaterial: (material: CourseMaterial) => void;
+}) {
   const { isDownloaded } = useOfflineContent(courseId, 'course');
 
   const isPdf =
-    material.material_type === 'handbook' ||
-    material.file_url?.toLowerCase().endsWith('.pdf');
+    material.material_type === 'handbook' || material.file_url?.toLowerCase().endsWith('.pdf');
   const isVideo = material.material_type === 'recording';
 
   return (
@@ -37,7 +44,14 @@ function MaterialRow({ material, courseId, onViewMaterial }: { material: CourseM
         <div>
           <div className="flex items-center gap-2">
             <h4 className="font-medium">{material.title}</h4>
-            {isDownloaded && <OfflineBadge isOffline={true} variant="secondary" showIcon={false} className="text-xs" />}
+            {isDownloaded && (
+              <OfflineBadge
+                isOffline={true}
+                variant="secondary"
+                showIcon={false}
+                className="text-xs"
+              />
+            )}
           </div>
           {material.description && (
             <p className="text-sm text-muted-foreground">{material.description}</p>

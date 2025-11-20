@@ -7,7 +7,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
-import { BookOpen, Clock } from 'lucide-react';
+import { BookOpen, Clock } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import type { WidgetComponentProps, ProgressWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';

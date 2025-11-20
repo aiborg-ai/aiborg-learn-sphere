@@ -18,7 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { ChevronLeft, ChevronRight, Send, AlertTriangle, Loader2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Send, AlertTriangle, Loader2 } from '@/components/ui/icons';
 import { QuestionRenderer } from './QuestionRenderer';
 import { QuizTimer } from './QuizTimer';
 import { QuizProgress } from './QuizProgress';

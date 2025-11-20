@@ -14,7 +14,17 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Settings, Edit, Save, Plus, Trash2, Eye, EyeOff, RefreshCw, Shield } from 'lucide-react';
+import {
+  Settings,
+  Edit,
+  Save,
+  Plus,
+  Trash2,
+  Eye,
+  EyeOff,
+  RefreshCw,
+  Shield,
+} from '@/components/ui/icons';
 
 interface CMSContent {
   id: string;

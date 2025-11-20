@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/prefer-tag-over-role */
 import * as React from 'react';
 import { OTPInput, OTPInputContext } from 'input-otp';
-import { Dot } from 'lucide-react';
+import { Dot } from '@/components/ui/icons';
 
 import { cn } from '@/lib/utils';
 

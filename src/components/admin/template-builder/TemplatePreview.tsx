@@ -1,5 +1,5 @@
 import React from 'react';
-import { Copy, Download, Eye } from 'lucide-react';
+import { Copy, Download, Eye } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

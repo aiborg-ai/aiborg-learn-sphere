@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, ArrowLeft, BookOpen } from 'lucide-react';
+import { CheckCircle, ArrowLeft, BookOpen } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 
 const PaymentSuccess = () => {

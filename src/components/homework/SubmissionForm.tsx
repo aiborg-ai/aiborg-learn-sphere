@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { Upload, Save, Send, Loader2, FileIcon, X, AlertCircle } from 'lucide-react';
+import { Upload, Save, Send, Loader2, FileIcon, X, AlertCircle } from '@/components/ui/icons';
 import type { Assignment } from './AssignmentDetails';
 import {
   detectEarlySubmission,

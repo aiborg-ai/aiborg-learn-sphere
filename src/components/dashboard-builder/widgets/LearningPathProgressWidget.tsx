@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { Route, Target, TrendingUp } from 'lucide-react';
+import { Route, Target, TrendingUp } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -39,7 +39,8 @@ export function LearningPathProgressWidget({ widget, isEditing }: WidgetComponen
       return data?.map(path => {
         const milestones = path.milestones || [];
         const completedMilestones = milestones.filter((m: any) => m.completed).length;
-        const progress = milestones.length > 0 ? (completedMilestones / milestones.length) * 100 : 0;
+        const progress =
+          milestones.length > 0 ? (completedMilestones / milestones.length) * 100 : 0;
 
         return {
           ...path,
@@ -88,9 +89,7 @@ export function LearningPathProgressWidget({ widget, isEditing }: WidgetComponen
               </p>
             </div>
             {showPercentage && (
-              <span className="text-sm font-semibold shrink-0">
-                {Math.round(path.progress)}%
-              </span>
+              <span className="text-sm font-semibold shrink-0">{Math.round(path.progress)}%</span>
             )}
           </div>
 

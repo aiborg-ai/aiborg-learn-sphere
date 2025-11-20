@@ -14,7 +14,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, User, Mail, Calendar, AlertCircle, CheckCircle, UserPlus } from 'lucide-react';
+import {
+  Loader2,
+  User,
+  Mail,
+  Calendar,
+  AlertCircle,
+  CheckCircle,
+  UserPlus,
+} from '@/components/ui/icons';
 import { format } from 'date-fns';
 import type { SessionWithCounts, CreateRegistrationInput } from '@/types/session';
 import { useSessionRegistration } from '@/hooks/useSessionRegistration';

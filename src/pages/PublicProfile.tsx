@@ -25,7 +25,7 @@ import {
   Zap,
   Crown,
   Diamond,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 interface PublicProfileData {
   userId: string;

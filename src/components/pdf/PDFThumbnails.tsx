@@ -1,7 +1,7 @@
 import React from 'react';
 import { Document, Page } from 'react-pdf';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
 interface PDFThumbnailsProps {

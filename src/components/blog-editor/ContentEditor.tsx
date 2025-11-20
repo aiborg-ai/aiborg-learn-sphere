@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Bold, Italic, List, Link2, Code, Quote, Hash, ImageIcon } from 'lucide-react';
+import { Bold, Italic, List, Link2, Code, Quote, Hash, ImageIcon } from '@/components/ui/icons';
 
 interface ContentEditorProps {
   title: string;

@@ -1,5 +1,5 @@
 import { Navbar, Footer } from '@/components/navigation';
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from '@/components/ui/icons';
 
 export function LoadingState() {
   return (

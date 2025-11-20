@@ -11,7 +11,7 @@ import type { CalendarEvent } from '@/types/calendar';
 import { EVENT_TYPE_COLORS, getEventTypeLabel } from '@/services/calendar/CalendarEventService';
 import { format, isSameDay } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { Clock, MapPin, BookOpen } from 'lucide-react';
+import { Clock, MapPin, BookOpen } from '@/components/ui/icons';
 
 interface DayViewProps {
   events: CalendarEvent[];

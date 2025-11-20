@@ -4,7 +4,7 @@
  */
 
 import { Button } from '@/components/ui/button';
-import { XCircle, AlertCircle, CheckCircle, Sparkles } from 'lucide-react';
+import { XCircle, AlertCircle, CheckCircle, Sparkles } from '@/components/ui/icons';
 
 interface ReviewButtonsProps {
   onReview: (quality: 'again' | 'hard' | 'good' | 'easy') => void;
@@ -78,9 +78,7 @@ export function ReviewButtons({
               <Icon className={`h-5 w-5 ${button.color}`} />
               <span className="font-semibold">{button.label}</span>
             </div>
-            <div className="text-xs font-normal opacity-80">
-              {button.description}
-            </div>
+            <div className="text-xs font-normal opacity-80">{button.description}</div>
             <div className="text-sm font-medium">{interval}</div>
           </Button>
         );

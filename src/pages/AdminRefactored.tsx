@@ -27,7 +27,7 @@ import {
   Crown,
   ShieldCheck,
   Gift,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 // Only import AccessDenied eagerly (used before tabs render)
 import { AccessDenied } from '@/components/admin/AccessDenied';

@@ -11,9 +11,8 @@ import {
   DollarSign,
   Target,
   MessageSquare,
-  UsersIcon,
   TrendingUp,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import {
   PlatformMetricsCards,
   UserGrowthChart,
@@ -184,7 +183,7 @@ function DashboardContent() {
           )}
           {currentViewConfig.visibleSections.includes('teams') && (
             <TabsTrigger value="teams">
-              <UsersIcon className="h-4 w-4 mr-2" />
+              <Users className="h-4 w-4 mr-2" />
               Teams
             </TabsTrigger>
           )}

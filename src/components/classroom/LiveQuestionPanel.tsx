@@ -5,7 +5,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageCircle, Send, ThumbsUp, CheckCircle2, Pin, Clock, Loader2 } from 'lucide-react';
+import {
+  MessageCircle,
+  Send,
+  ThumbsUp,
+  CheckCircle2,
+  Pin,
+  Clock,
+  Loader2,
+} from '@/components/ui/icons';
 import { useClassroomQuestions } from '@/hooks/useClassroomQuestions';
 import { formatDistanceToNow } from 'date-fns';
 

@@ -322,7 +322,7 @@ function ControlledExample() {
 
 @example Tabs with Icons
 ```tsx
-import { Home, Settings, User } from 'lucide-react';
+import { Home, Settings, User } from '@/components/ui/icons';
 
 const tabs = [
   {

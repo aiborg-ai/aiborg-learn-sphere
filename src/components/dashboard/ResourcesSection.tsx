@@ -29,7 +29,7 @@ import {
   Folder,
   Filter,
   FileIcon,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { UserResource } from '@/hooks/useUserResources';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';

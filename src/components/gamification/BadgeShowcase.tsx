@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AnimatedBadge } from './AnimatedBadge';
-import { Trophy, Sparkles, ChevronRight } from 'lucide-react';
+import { Trophy, Sparkles, ChevronRight } from '@/components/ui/icons';
 import type { Achievement, UserAchievement } from '@/services/gamification';
 
 interface BadgeShowcaseProps {

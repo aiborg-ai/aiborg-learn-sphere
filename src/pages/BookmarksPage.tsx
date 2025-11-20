@@ -28,7 +28,7 @@ import {
   ExternalLink,
   Loader2,
   Filter,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import type { BookmarkType, BookmarkWithRelations } from '@/types/content-access';
 import {
   AlertDialog,

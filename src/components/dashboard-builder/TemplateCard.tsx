@@ -6,14 +6,7 @@
 
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  Star,
-  Download,
-  Eye,
-  Heart,
-  User,
-  LayoutGrid,
-} from 'lucide-react';
+import { Star, Download, Eye, Heart, User, LayoutGrid } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -39,7 +32,7 @@ export function TemplateCard({ template, onClone, className }: TemplateCardProps
       const result = await TemplateGalleryService.cloneTemplate(template.id);
       return result;
     },
-    onSuccess: (result) => {
+    onSuccess: result => {
       toast.success('Template cloned successfully');
       queryClient.invalidateQueries({ queryKey: ['dashboard-templates'] });
       if (onClone) {
@@ -120,7 +113,7 @@ export function TemplateCard({ template, onClone, className }: TemplateCardProps
         {/* Tags */}
         {template.tags && template.tags.length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {template.tags.slice(0, 3).map((tag) => (
+            {template.tags.slice(0, 3).map(tag => (
               <Badge key={tag} variant="secondary" className="text-xs">
                 {tag}
               </Badge>
@@ -165,7 +158,7 @@ export function TemplateCard({ template, onClone, className }: TemplateCardProps
         <div className="space-y-2">
           <p className="text-xs font-medium">Rate this template:</p>
           <div className="flex items-center gap-1">
-            {[1, 2, 3, 4, 5].map((rating) => (
+            {[1, 2, 3, 4, 5].map(rating => (
               <button
                 key={rating}
                 onClick={() => handleRate(rating)}
@@ -205,18 +198,11 @@ export function TemplateCard({ template, onClone, className }: TemplateCardProps
             title={template.is_favorited ? 'Remove from favorites' : 'Add to favorites'}
           >
             <Heart
-              className={cn(
-                'h-4 w-4',
-                template.is_favorited && 'fill-red-500 text-red-500'
-              )}
+              className={cn('h-4 w-4', template.is_favorited && 'fill-red-500 text-red-500')}
             />
           </Button>
 
-          <Button
-            size="sm"
-            onClick={handleClone}
-            disabled={cloneMutation.isPending}
-          >
+          <Button size="sm" onClick={handleClone} disabled={cloneMutation.isPending}>
             <Download className="h-4 w-4 mr-2" />
             Clone
           </Button>

@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { BookOpen, Trophy, Award, Flame } from 'lucide-react';
+import { BookOpen, Trophy, Award, Flame } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import type { WidgetComponentProps, StatsWidgetConfig } from '@/types/dashboard';

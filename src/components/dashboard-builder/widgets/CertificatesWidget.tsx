@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { Award, Download, ExternalLink } from 'lucide-react';
+import { Award, Download, ExternalLink } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -129,7 +129,9 @@ export function CertificatesWidget({ widget, isEditing }: WidgetComponentProps) 
                   size="icon"
                   variant="ghost"
                   className="h-8 w-8"
-                  onClick={() => handleDownload(cert.certificate_url, course?.title || 'Certificate')}
+                  onClick={() =>
+                    handleDownload(cert.certificate_url, course?.title || 'Certificate')
+                  }
                 >
                   <Download className="h-4 w-4" />
                 </Button>

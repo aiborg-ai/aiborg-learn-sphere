@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Lock, Sparkles, Star, Award } from 'lucide-react';
+import { Lock, Sparkles, Star, Award } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
 interface AnimatedBadgeProps {

@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { Bell, Check } from 'lucide-react';
+import { Bell, Check } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -92,9 +92,7 @@ export function NotificationsWidget({ widget, isEditing }: WidgetComponentProps)
                   {notification.title}
                 </p>
                 <p className="text-xs text-muted-foreground line-clamp-2">{notification.message}</p>
-                {showTimestamps && (
-                  <p className="text-xs text-muted-foreground mt-1">{timeAgo}</p>
-                )}
+                {showTimestamps && <p className="text-xs text-muted-foreground mt-1">{timeAgo}</p>}
               </div>
               {isUnread && (
                 <Button

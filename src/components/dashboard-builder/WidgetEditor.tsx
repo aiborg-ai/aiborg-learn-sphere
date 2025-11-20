@@ -6,7 +6,7 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Settings, X, Save } from 'lucide-react';
+import { Settings, X, Save } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -103,27 +103,23 @@ export function WidgetEditor({ widget, isOpen, onClose, onSave }: WidgetEditorPr
                     id="title"
                     placeholder={widgetDef.name}
                     {...register('title')}
-                    onChange={(e) => {
+                    onChange={e => {
                       register('title').onChange(e);
                       setHasChanges(true);
                     }}
                   />
-                  <p className="text-xs text-muted-foreground">
-                    Leave empty to use default title
-                  </p>
+                  <p className="text-xs text-muted-foreground">Leave empty to use default title</p>
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <Label htmlFor="showTitle">Show Title</Label>
-                    <p className="text-xs text-muted-foreground">
-                      Display the widget title
-                    </p>
+                    <p className="text-xs text-muted-foreground">Display the widget title</p>
                   </div>
                   <Switch
                     id="showTitle"
                     checked={watch('showTitle') ?? true}
-                    onCheckedChange={(checked) => {
+                    onCheckedChange={checked => {
                       setValue('showTitle', checked);
                       setHasChanges(true);
                     }}
@@ -145,14 +141,12 @@ export function WidgetEditor({ widget, isOpen, onClose, onSave }: WidgetEditorPr
                     min="0"
                     placeholder="0 (disabled)"
                     {...register('refreshInterval', { valueAsNumber: true })}
-                    onChange={(e) => {
+                    onChange={e => {
                       register('refreshInterval').onChange(e);
                       setHasChanges(true);
                     }}
                   />
-                  <p className="text-xs text-muted-foreground">
-                    Set to 0 to disable auto-refresh
-                  </p>
+                  <p className="text-xs text-muted-foreground">Set to 0 to disable auto-refresh</p>
                 </div>
               </div>
 
@@ -177,7 +171,7 @@ export function WidgetEditor({ widget, isOpen, onClose, onSave }: WidgetEditorPr
                       max="20"
                       placeholder="5"
                       {...register('limit', { valueAsNumber: true })}
-                      onChange={(e) => {
+                      onChange={e => {
                         register('limit').onChange(e);
                         setHasChanges(true);
                       }}
@@ -192,14 +186,12 @@ export function WidgetEditor({ widget, isOpen, onClose, onSave }: WidgetEditorPr
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label htmlFor="showTimestamps">Show Timestamps</Label>
-                      <p className="text-xs text-muted-foreground">
-                        Display time information
-                      </p>
+                      <p className="text-xs text-muted-foreground">Display time information</p>
                     </div>
                     <Switch
                       id="showTimestamps"
                       checked={watch('showTimestamps') ?? true}
-                      onCheckedChange={(checked) => {
+                      onCheckedChange={checked => {
                         setValue('showTimestamps', checked);
                         setHasChanges(true);
                       }}
@@ -212,14 +204,12 @@ export function WidgetEditor({ widget, isOpen, onClose, onSave }: WidgetEditorPr
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label htmlFor="groupByDate">Group by Date</Label>
-                      <p className="text-xs text-muted-foreground">
-                        Group activities by day
-                      </p>
+                      <p className="text-xs text-muted-foreground">Group activities by day</p>
                     </div>
                     <Switch
                       id="groupByDate"
                       checked={watch('groupByDate') ?? true}
-                      onCheckedChange={(checked) => {
+                      onCheckedChange={checked => {
                         setValue('groupByDate', checked);
                         setHasChanges(true);
                       }}
@@ -235,7 +225,7 @@ export function WidgetEditor({ widget, isOpen, onClose, onSave }: WidgetEditorPr
                     <Label htmlFor="sortBy">Sort By</Label>
                     <Select
                       value={watch('sortBy') || 'date'}
-                      onValueChange={(value) => {
+                      onValueChange={value => {
                         setValue('sortBy', value);
                         setHasChanges(true);
                       }}
@@ -268,7 +258,7 @@ export function WidgetEditor({ widget, isOpen, onClose, onSave }: WidgetEditorPr
                     <Switch
                       id="showPercentage"
                       checked={watch('showPercentage') ?? true}
-                      onCheckedChange={(checked) => {
+                      onCheckedChange={checked => {
                         setValue('showPercentage', checked);
                         setHasChanges(true);
                       }}
@@ -282,7 +272,7 @@ export function WidgetEditor({ widget, isOpen, onClose, onSave }: WidgetEditorPr
                     <Label htmlFor="chartType">Chart Type</Label>
                     <Select
                       value={watch('chartType') || 'line'}
-                      onValueChange={(value) => {
+                      onValueChange={value => {
                         setValue('chartType', value);
                         setHasChanges(true);
                       }}
@@ -305,14 +295,12 @@ export function WidgetEditor({ widget, isOpen, onClose, onSave }: WidgetEditorPr
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
                         <Label htmlFor="showEvents">Show Events</Label>
-                        <p className="text-xs text-muted-foreground">
-                          Display event indicators
-                        </p>
+                        <p className="text-xs text-muted-foreground">Display event indicators</p>
                       </div>
                       <Switch
                         id="showEvents"
                         checked={watch('showEvents') ?? true}
-                        onCheckedChange={(checked) => {
+                        onCheckedChange={checked => {
                           setValue('showEvents', checked);
                           setHasChanges(true);
                         }}
@@ -322,14 +310,12 @@ export function WidgetEditor({ widget, isOpen, onClose, onSave }: WidgetEditorPr
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
                         <Label htmlFor="showDeadlines">Show Deadlines</Label>
-                        <p className="text-xs text-muted-foreground">
-                          Display deadline indicators
-                        </p>
+                        <p className="text-xs text-muted-foreground">Display deadline indicators</p>
                       </div>
                       <Switch
                         id="showDeadlines"
                         checked={watch('showDeadlines') ?? true}
-                        onCheckedChange={(checked) => {
+                        onCheckedChange={checked => {
                           setValue('showDeadlines', checked);
                           setHasChanges(true);
                         }}

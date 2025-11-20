@@ -3,7 +3,7 @@
  * Main forum landing page with categories grid and hot threads
  */
 
-import { MessageCircle, TrendingUp, Users } from 'lucide-react';
+import { MessageCircle, TrendingUp, Users } from '@/components/ui/icons';
 import { CategoryCard } from '@/components/forum';
 import { ThreadCard } from '@/components/forum';
 import { useForumCategories, useHotThreads } from '@/hooks/forum';

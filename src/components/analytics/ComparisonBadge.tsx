@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import {
   formatPercentageChange,

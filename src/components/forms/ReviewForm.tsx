@@ -17,7 +17,16 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCourses } from '@/hooks/useCourses';
 import { useReviews } from '@/hooks/useReviews';
 import { useToast } from '@/hooks/use-toast';
-import { Star, MessageSquare, Mic, Video, Send, User, UserX, AlertCircle } from 'lucide-react';
+import {
+  Star,
+  MessageSquare,
+  Mic,
+  Video,
+  Send,
+  User,
+  UserX,
+  AlertCircle,
+} from '@/components/ui/icons';
 import { VoiceRecorder, VideoRecorder } from '@/components/media';
 import { supabase } from '@/integrations/supabase/client';
 import { useMarkRequestCompleted } from '@/hooks/useReviewRequests';
@@ -42,7 +51,12 @@ interface ReviewFormProps {
   onSuccess?: () => void;
 }
 
-export function ReviewForm({ requestId, _sessionId, _sessionType, onSuccess }: ReviewFormProps = {}) {
+export function ReviewForm({
+  requestId,
+  _sessionId,
+  _sessionType,
+  onSuccess,
+}: ReviewFormProps = {}) {
   const { user } = useAuth();
   const { courses } = useCourses();
   const { submitReview } = useReviews();

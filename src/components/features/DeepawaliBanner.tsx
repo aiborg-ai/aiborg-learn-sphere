@@ -10,7 +10,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { X, Flame, Sparkles } from 'lucide-react';
+import { X, Flame, Sparkles } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button';
 
 // Banner active period: 48 hours from deployment

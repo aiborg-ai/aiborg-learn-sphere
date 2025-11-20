@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Target, Brain } from 'lucide-react';
+import { Target, Brain } from '@/components/ui/icons';
 
 interface LearningPathsTabProps {
   onGeneratePath: () => void;

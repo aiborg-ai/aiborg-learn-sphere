@@ -4,7 +4,14 @@
  */
 
 import { useState } from 'react';
-import { MessageSquare, Edit, Trash2, Flag, CheckCircle, MoreVertical } from 'lucide-react';
+import {
+  MessageSquare,
+  Edit,
+  Trash2,
+  Flag,
+  CheckCircle,
+  MoreVertical,
+} from '@/components/ui/icons';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';

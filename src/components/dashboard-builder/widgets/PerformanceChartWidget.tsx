@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { LineChart, TrendingUp } from 'lucide-react';
+import { LineChart, TrendingUp } from '@/components/ui/icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   LineChart as RechartsLine,

@@ -20,7 +20,7 @@ import {
   ComposedChart,
   Bar,
 } from 'recharts';
-import { TrendingUp, Award, Zap } from 'lucide-react';
+import { TrendingUp, Award, Zap } from '@/components/ui/icons';
 
 interface DataPoint {
   date: string;

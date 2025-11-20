@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { logger } from '@/utils/logger';
-import { Clock, CheckCircle } from 'lucide-react';
+import { Clock, CheckCircle } from '@/components/ui/icons';
 import { useWatchLater } from '@/hooks/useWatchLater';
 import { useToast } from '@/hooks/use-toast';
 import { ActionButton, ActionButtonConfig } from '@/components/shared/ActionButton';

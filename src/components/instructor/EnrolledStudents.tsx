@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Users, Mail, Calendar, Loader2, TrendingUp } from 'lucide-react';
+import { Users, Mail, Calendar, Loader2, TrendingUp } from '@/components/ui/icons';
 import { logger } from '@/utils/logger';
 
 interface EnrolledStudentsProps {

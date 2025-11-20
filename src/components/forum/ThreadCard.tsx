@@ -4,7 +4,7 @@
  */
 
 import { Link } from 'react-router-dom';
-import { MessageCircle, Eye, Pin, Lock, CheckCircle } from 'lucide-react';
+import { MessageCircle, Eye, Pin, Lock, CheckCircle } from '@/components/ui/icons';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { VoteButtons } from './VoteButtons';

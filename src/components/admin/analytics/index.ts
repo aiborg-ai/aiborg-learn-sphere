@@ -12,6 +12,15 @@ export { AssessmentPerformanceChart } from './AssessmentPerformanceChart';
 export { AssessmentTypesChart } from './AssessmentTypesChart';
 export { AssessmentMetricsCard } from './AssessmentMetricsCard';
 export { useAnalyticsData } from './useAnalyticsData';
+
+// Phase 1.2 Analytics Components
+export { CourseCompletionHeatmap } from './CourseCompletionHeatmap';
+export { UserAcquisitionFunnel } from './UserAcquisitionFunnel';
+export { ChurnPredictionCard } from './ChurnPredictionCard';
+
+// Phase 2.1 RAG Components
+export { RAGDashboard } from './RAGDashboard';
+
 export * from './types';
 export * from './utils';
 export * from './constants';

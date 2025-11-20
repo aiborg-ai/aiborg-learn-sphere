@@ -1,6 +1,6 @@
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { WifiOff, Wifi } from 'lucide-react';
+import { WifiOff, Wifi } from '@/components/ui/icons';
 
 export const OfflineBanner = () => {
   const { isOnline, wasOffline } = useOnlineStatus({ showToast: false });

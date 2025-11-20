@@ -18,7 +18,7 @@ import {
   DollarSign,
   Download,
   RefreshCw,
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { useEnhancedTeamAnalytics } from '@/hooks/useTeamAnalytics';
 import { SkillsGapChart } from '@/components/admin/analytics/enhanced/SkillsGapChart';
 import { TeamMomentumGauge } from '@/components/admin/analytics/enhanced/TeamMomentumGauge';

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { CalendarDays, Clock, Eye, Heart, MessageCircle } from 'lucide-react';
+import { CalendarDays, Clock, Eye, Heart, MessageCircle } from '@/components/ui/icons';
 import type { BlogPost } from '@/types/blog';
 
 interface BlogPostCardProps {

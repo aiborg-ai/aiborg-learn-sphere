@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Gift } from 'lucide-react';
+import { Gift } from '@/components/ui/icons';
 import { ClaimProgressIndicator } from '@/components/claim-pass/ClaimProgressIndicator';
 import { EligibilityStep } from '@/components/claim-pass/EligibilityStep';
 import { UserInfoStep } from '@/components/claim-pass/UserInfoStep';

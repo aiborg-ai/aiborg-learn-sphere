@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Clock, Users, Globe, CheckCircle, User } from 'lucide-react';
+import { BookOpen, Clock, Users, Globe, CheckCircle, User } from '@/components/ui/icons';
 import { logger } from '@/utils/logger';
 
 interface CourseDetailsModalProps {

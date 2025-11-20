@@ -2,7 +2,14 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
-import { Shield, BarChart3, FileText, MessageSquare, Image, FolderOpen } from 'lucide-react';
+import {
+  Shield,
+  BarChart3,
+  FileText,
+  MessageSquare,
+  Image,
+  FolderOpen,
+} from '@/components/ui/icons';
 import BlogCMSDashboard from './components/BlogCMSDashboard';
 import BlogPostManager from './components/BlogPostManager';
 import BlogMediaLibrary from './components/BlogMediaLibrary';

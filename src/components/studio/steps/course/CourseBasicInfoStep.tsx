@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Info } from 'lucide-react';
+import { Info } from '@/components/ui/icons';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
