@@ -239,6 +239,21 @@ export default defineConfig(({ mode }) => ({
               return 'radix-ui-chunk';
             }
 
+            // React-dependent utility libraries (must load after React)
+            // These are commonly used by Radix and other UI libraries
+            if (
+              id.includes('react-remove-scroll') ||
+              id.includes('react-style-singleton') ||
+              id.includes('use-callback-ref') ||
+              id.includes('use-sidecar') ||
+              id.includes('@floating-ui') ||
+              id.includes('aria-hidden') ||
+              id.includes('react-focus-lock') ||
+              id.includes('focus-lock')
+            ) {
+              return 'radix-ui-chunk';
+            }
+
             // Supabase
             if (id.includes('@supabase')) {
               return 'supabase-chunk';
