@@ -19,6 +19,7 @@ export default defineConfig(({ mode }) => ({
     cspPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: null, // Disable service worker registration temporarily
       includeAssets: ['**/*.{png,svg,ico,woff,woff2}'],
       manifest: {
         name: 'Aiborg Learn Sphere',
