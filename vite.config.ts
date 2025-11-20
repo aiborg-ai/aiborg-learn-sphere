@@ -297,8 +297,9 @@ export default defineConfig(({ mode }) => ({
               return 'utils-chunk';
             }
 
-            // Everything else - should be much smaller now
-            return 'vendor-misc-chunk';
+            // Everything else goes to react-ecosystem to avoid createContext errors
+            // This ensures all libraries that might use React load together
+            return 'react-ecosystem-chunk';
           }
 
           // Application code - split by feature
