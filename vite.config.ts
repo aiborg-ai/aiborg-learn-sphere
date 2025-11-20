@@ -195,75 +195,23 @@ export default defineConfig(({ mode }) => ({
               return 'charts-libs-chunk';
             }
 
-            // React core and ALL React-dependent libraries - must load together
-            // This prevents "createContext is undefined" errors
+            // CONSOLIDATED REACT ECOSYSTEM
+            // All React-related libraries go together to avoid createContext errors
             if (
-              id.includes('react/') ||
-              id.includes('react-dom/') ||
+              id.includes('react') ||
               id.includes('scheduler') ||
-              // Include any library that uses React internals
-              id.includes('use-sync-external-store') ||
-              id.includes('use-isomorphic-layout-effect') ||
-              id.includes('react-is')
-            ) {
-              return 'react-core-chunk';
-            }
-
-            // React Router - navigation
-            if (id.includes('react-router') || id.includes('@remix-run')) {
-              return 'react-router-chunk';
-            }
-
-            // Radix UI - split into smaller groups
-            if (id.includes('@radix-ui')) {
-              // Heavy components
-              if (
-                id.includes('react-select') ||
-                id.includes('react-dropdown-menu') ||
-                id.includes('react-navigation-menu') ||
-                id.includes('react-menubar')
-              ) {
-                return 'radix-menu-chunk';
-              }
-              // Dialog-related
-              if (
-                id.includes('react-dialog') ||
-                id.includes('react-alert-dialog') ||
-                id.includes('react-popover') ||
-                id.includes('react-hover-card')
-              ) {
-                return 'radix-dialog-chunk';
-              }
-              // Form controls
-              if (
-                id.includes('react-checkbox') ||
-                id.includes('react-radio') ||
-                id.includes('react-switch') ||
-                id.includes('react-slider') ||
-                id.includes('react-toggle')
-              ) {
-                return 'radix-form-chunk';
-              }
-              // Everything else from Radix
-              return 'radix-ui-chunk';
-            }
-
-            // React-dependent utility libraries (must load after React)
-            // These are commonly used by Radix and other UI libraries
-            if (
-              id.includes('react-remove-scroll') ||
-              id.includes('react-style-singleton') ||
+              id.includes('@radix-ui') ||
+              id.includes('@floating-ui') ||
               id.includes('use-callback-ref') ||
               id.includes('use-sidecar') ||
-              id.includes('@floating-ui') ||
               id.includes('aria-hidden') ||
-              id.includes('react-focus-lock') ||
               id.includes('focus-lock') ||
               id.includes('embla-carousel') ||
               id.includes('detect-node-es') ||
-              id.includes('get-nonce')
+              id.includes('get-nonce') ||
+              id.includes('@remix-run')
             ) {
-              return 'radix-ui-chunk';
+              return 'react-ecosystem-chunk';
             }
 
             // Supabase
