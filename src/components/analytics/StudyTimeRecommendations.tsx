@@ -14,7 +14,6 @@ import {
   Sparkles,
   Sun,
   Moon,
-  Sunrise,
   Calendar,
   Target,
   TrendingUp,
@@ -54,7 +53,7 @@ interface StudyTimeRecommendationsProps {
 function getTimeIcon(time: string) {
   switch (time.toLowerCase()) {
     case 'morning':
-      return Sunrise;
+      return Sun;
     case 'afternoon':
       return Sun;
     case 'evening':

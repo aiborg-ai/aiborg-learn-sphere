@@ -74,6 +74,7 @@ const LearningPathsPage = lazy(() => import('./pages/LearningPathsPage'));
 const LearningPathWizard = lazy(() => import('./components/learning-path/LearningPathWizard'));
 const AILearningPathDetail = lazy(() => import('./pages/AILearningPathDetail'));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
+const AdvancedAnalyticsDashboard = lazy(() => import('./pages/AdvancedAnalyticsDashboard'));
 const GamificationPage = lazy(() => import('./pages/GamificationPage'));
 const IconTest = lazy(() =>
   import('@/components/shared/IconTest').then(m => ({ default: m.IconTest }))
@@ -368,6 +369,14 @@ const AppWithShortcuts = () => {
               element={
                 <RouteWrapper routeName="Analytics">
                   <AnalyticsPage />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/analytics/advanced"
+              element={
+                <RouteWrapper routeName="Advanced Analytics">
+                  <AdvancedAnalyticsDashboard />
                 </RouteWrapper>
               }
             />
