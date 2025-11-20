@@ -14,11 +14,29 @@ export function prioritizeReactPlugin(): Plugin {
       const preloads = html.match(modulePreloadRegex) || [];
 
       // Separate vendor/React preloads from others (must load first to avoid circular deps)
-      const vendorPreloads = preloads.filter(link => link.includes('vendor-chunk') || link.includes('react'));
-      const otherPreloads = preloads.filter(link => !link.includes('vendor-chunk') && !link.includes('react'));
+      // react-core-chunk must load FIRST, then other chunks that depend on React
+      const reactCorePreloads = preloads.filter(link => link.includes('react-core-chunk'));
+      const reactRelatedPreloads = preloads.filter(link =>
+        !link.includes('react-core-chunk') &&
+        (link.includes('react') || link.includes('radix'))
+      );
+      const vendorPreloads = preloads.filter(link =>
+        !link.includes('react-core-chunk') &&
+        !link.includes('react') &&
+        !link.includes('radix') &&
+        (link.includes('vendor') || link.includes('supabase') || link.includes('tanstack'))
+      );
+      const otherPreloads = preloads.filter(link =>
+        !link.includes('react-core-chunk') &&
+        !link.includes('react') &&
+        !link.includes('radix') &&
+        !link.includes('vendor') &&
+        !link.includes('supabase') &&
+        !link.includes('tanstack')
+      );
 
-      // Reorder: Vendor/React first, then everything else
-      const orderedPreloads = [...vendorPreloads, ...otherPreloads];
+      // Reorder: React core FIRST, then React-related, then vendors, then everything else
+      const orderedPreloads = [...reactCorePreloads, ...reactRelatedPreloads, ...vendorPreloads, ...otherPreloads];
 
       // Remove all existing modulepreload links
       let newHtml = html.replace(modulePreloadRegex, '');
