@@ -5,6 +5,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { PersonalizationProvider } from '@/contexts/PersonalizationContext';
+import { TenantProvider } from '@/contexts/TenantContext';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Icon } from '@/utils/iconLoader';
 import { useGlobalShortcuts } from '@/hooks/useKeyboardShortcuts';
@@ -432,13 +433,15 @@ const AppWithShortcuts = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="system" storageKey="aiborg-ui-theme">
-      <PersonalizationProvider>
-        <TooltipProvider>
-          <BrowserRouter>
-            <AppWithShortcuts />
-          </BrowserRouter>
-        </TooltipProvider>
-      </PersonalizationProvider>
+      <TenantProvider>
+        <PersonalizationProvider>
+          <TooltipProvider>
+            <BrowserRouter>
+              <AppWithShortcuts />
+            </BrowserRouter>
+          </TooltipProvider>
+        </PersonalizationProvider>
+      </TenantProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
