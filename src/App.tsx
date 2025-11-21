@@ -127,6 +127,11 @@ const ReviewSessionPage = lazy(() => import('./pages/flashcards/ReviewSessionPag
 // RAG Management (Admin)
 const RAGManagement = lazy(() => import('./pages/admin/RAGManagement'));
 
+// Tenant Management (Admin)
+const TenantManagement = lazy(() => import('./pages/admin/TenantManagement'));
+const WhiteLabelSettings = lazy(() => import('./pages/settings/WhiteLabelSettings'));
+const DomainManagement = lazy(() => import('./pages/settings/DomainManagement'));
+
 // Dashboard Builder
 const DashboardBuilderPage = lazy(() => import('./pages/DashboardBuilderPage'));
 const TemplateGalleryPage = lazy(() => import('./pages/TemplateGalleryPage'));
@@ -246,6 +251,30 @@ const AppWithShortcuts = () => {
               element={
                 <RouteWrapper routeName="RAG System">
                   <RAGManagement />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/admin/tenants"
+              element={
+                <RouteWrapper routeName="Tenant Management">
+                  <TenantManagement />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/settings/white-label"
+              element={
+                <RouteWrapper routeName="White-Label Settings">
+                  <WhiteLabelSettings />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/settings/domains"
+              element={
+                <RouteWrapper routeName="Domain Management">
+                  <DomainManagement />
                 </RouteWrapper>
               }
             />
