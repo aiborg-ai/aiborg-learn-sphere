@@ -1,7 +1,7 @@
--- Migration: Vault Subscription Claims System
+-- Migration: Vault Subscription Claims System (CORRECTED)
 -- Description: Allows FHOAI Vault subscribers to claim free Family Pass access
--- Author: AI Assistant
--- Date: 2025-11-05
+-- Instructions: Copy this entire file and paste it into Supabase Dashboard → SQL Editor → Run
+-- Date: 2025-11-22
 
 -- ============================================================================
 -- TABLE: vault_subscribers
