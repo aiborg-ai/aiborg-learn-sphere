@@ -41,7 +41,12 @@ export function RichTextEditor({
 }: RichTextEditorProps) {
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        // Explicitly configure StarterKit to ensure proper initialization
+        heading: {
+          levels: [1, 2, 3],
+        },
+      }),
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
@@ -57,7 +62,7 @@ export function RichTextEditor({
         placeholder,
       }),
     ],
-    content,
+    content: content || '', // Ensure content is never undefined
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
