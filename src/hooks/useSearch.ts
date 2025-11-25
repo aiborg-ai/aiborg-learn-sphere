@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * useSearch Hook
  * React hook for search functionality with caching and state management
@@ -5,7 +6,11 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useState, useCallback } from 'react';
-import { SearchService, type SearchOptions, type ContentType } from '@/services/search/SearchService';
+import {
+  SearchService,
+  type SearchOptions,
+  type ContentType,
+} from '@/services/search/SearchService';
 import { useDebounce } from '@/hooks/useDebounce';
 
 export interface UseSearchOptions extends SearchOptions {
@@ -18,11 +23,7 @@ export interface UseSearchOptions extends SearchOptions {
  * Provides search functionality with debouncing, caching, and state management
  */
 export function useSearch(initialQuery: string = '', options: UseSearchOptions = {}) {
-  const {
-    debounceMs = 300,
-    enabled = true,
-    ...searchOptions
-  } = options;
+  const { debounceMs = 300, enabled = true, ...searchOptions } = options;
 
   const [query, setQuery] = useState(initialQuery);
   const debouncedQuery = useDebounce(query, debounceMs);
@@ -102,16 +103,16 @@ export function useSearchHistory(maxItems: number = 10) {
     (query: string) => {
       if (!query || query.trim().length === 0) return;
 
-      setHistory((prev) => {
+      setHistory(prev => {
         // Remove duplicates and add to front
-        const filtered = prev.filter((item) => item !== query);
+        const filtered = prev.filter(item => item !== query);
         const updated = [query, ...filtered].slice(0, maxItems);
 
         // Save to localStorage
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
         } catch (error) {
-          console.error('Failed to save search history:', error);
+          logger.error('Failed to save search history:', error);
         }
 
         return updated;
@@ -121,13 +122,13 @@ export function useSearchHistory(maxItems: number = 10) {
   );
 
   const removeFromHistory = useCallback((query: string) => {
-    setHistory((prev) => {
-      const updated = prev.filter((item) => item !== query);
+    setHistory(prev => {
+      const updated = prev.filter(item => item !== query);
 
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
       } catch (error) {
-        console.error('Failed to update search history:', error);
+        logger.error('Failed to update search history:', error);
       }
 
       return updated;
@@ -139,7 +140,7 @@ export function useSearchHistory(maxItems: number = 10) {
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch (error) {
-      console.error('Failed to clear search history:', error);
+      logger.error('Failed to clear search history:', error);
     }
   }, []);
 
@@ -166,11 +167,11 @@ export function useSearchFilters() {
   const [minRelevance, setMinRelevance] = useState(0.3);
 
   const toggleContentType = useCallback((type: ContentType) => {
-    setContentTypes((prev) => {
+    setContentTypes(prev => {
       if (prev.includes(type)) {
         // Don't allow removing all types
         if (prev.length === 1) return prev;
-        return prev.filter((t) => t !== type);
+        return prev.filter(t => t !== type);
       } else {
         return [...prev, type];
       }

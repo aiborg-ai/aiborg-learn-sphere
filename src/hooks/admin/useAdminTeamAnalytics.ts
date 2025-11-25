@@ -4,7 +4,12 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { AdminAnalyticsService, type DateRange, type TeamMetrics, type TeamPerformanceData } from '@/services/analytics/AdminAnalyticsService';
+import {
+  AdminAnalyticsService,
+  type DateRange,
+  type TeamMetrics,
+  type TeamPerformanceData,
+} from '@/services/analytics/AdminAnalyticsService';
 
 /**
  * Query keys for team analytics
@@ -12,7 +17,8 @@ import { AdminAnalyticsService, type DateRange, type TeamMetrics, type TeamPerfo
 export const teamAnalyticsKeys = {
   all: ['admin', 'team-analytics'] as const,
   metrics: (dateRange: DateRange) => [...teamAnalyticsKeys.all, 'metrics', dateRange] as const,
-  performance: (dateRange: DateRange) => [...teamAnalyticsKeys.all, 'performance', dateRange] as const,
+  performance: (dateRange: DateRange) =>
+    [...teamAnalyticsKeys.all, 'performance', dateRange] as const,
 };
 
 /**
@@ -25,8 +31,8 @@ export const teamAnalyticsKeys = {
  *   end: '2025-01-31'
  * });
  *
- * console.log(metrics?.totalTeams);
- * console.log(metrics?.avgEngagementScore);
+ * logger.info(metrics?.totalTeams);
+ * logger.info(metrics?.avgEngagementScore);
  * ```
  */
 export function useTeamMetrics(dateRange: DateRange) {

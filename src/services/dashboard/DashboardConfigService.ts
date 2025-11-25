@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * Dashboard Configuration Service
  *
@@ -51,7 +52,7 @@ export class DashboardConfigService {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching dashboard views:', error);
+        logger.error('Error fetching dashboard views:', error);
         throw new AppError(
           'Failed to fetch dashboard views',
           ERROR_CODES.DATABASE_ERROR.code,
@@ -88,7 +89,7 @@ export class DashboardConfigService {
           // Not found
           return null;
         }
-        console.error('Error fetching dashboard view:', error);
+        logger.error('Error fetching dashboard view:', error);
         throw new AppError(
           'Failed to fetch dashboard view',
           ERROR_CODES.DATABASE_ERROR.code,
@@ -125,7 +126,7 @@ export class DashboardConfigService {
         // No default view found
         return null;
       }
-      console.error('Error fetching default view:', error);
+      logger.error('Error fetching default view:', error);
       throw new Error(`Failed to fetch default view: ${error.message}`);
     }
 
@@ -215,7 +216,7 @@ export class DashboardConfigService {
         .single();
 
       if (error) {
-        console.error('Error creating dashboard view:', error);
+        logger.error('Error creating dashboard view:', error);
         throw new AppError(
           'Failed to create dashboard view',
           ERROR_CODES.DATABASE_ERROR.code,
@@ -323,7 +324,7 @@ export class DashboardConfigService {
         .single();
 
       if (error) {
-        console.error('Error updating dashboard view:', error);
+        logger.error('Error updating dashboard view:', error);
         throw new AppError(
           'Failed to update dashboard view',
           ERROR_CODES.DATABASE_ERROR.code,
@@ -374,7 +375,7 @@ export class DashboardConfigService {
       const { error } = await supabase.from('custom_dashboard_views').delete().eq('id', viewId);
 
       if (error) {
-        console.error('Error deleting dashboard view:', error);
+        logger.error('Error deleting dashboard view:', error);
         throw new AppError(
           'Failed to delete dashboard view',
           ERROR_CODES.DATABASE_ERROR.code,
@@ -424,7 +425,7 @@ export class DashboardConfigService {
       .eq('is_default', true);
 
     if (error) {
-      console.error('Error unsetting default views:', error);
+      logger.error('Error unsetting default views:', error);
       throw new Error(`Failed to unset default views: ${error.message}`);
     }
   }
@@ -529,7 +530,7 @@ export class DashboardConfigService {
     const { data, error } = await query;
 
     if (error) {
-      console.error('Error fetching public views:', error);
+      logger.error('Error fetching public views:', error);
       throw new Error(`Failed to fetch public views: ${error.message}`);
     }
 

@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * AI Content Studio Component
  *
@@ -123,7 +124,7 @@ export function AIContentStudio() {
       setGeneratedCourses(coursesData);
       setLanguages(languagesData);
     } catch (error) {
-      console.error('Error loading AI content data:', error);
+      logger.error('Error loading AI content data:', error);
       toast({
         title: 'Error',
         description: 'Failed to load AI content data',

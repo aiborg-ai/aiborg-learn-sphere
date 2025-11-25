@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * Progress Sync Service
  *
@@ -29,12 +30,12 @@ class ProgressSyncServiceClass {
    */
   private setupNetworkListeners() {
     window.addEventListener('online', () => {
-      console.log('[ProgressSyncService] Device is online, syncing...');
+      logger.info('[ProgressSyncService] Device is online, syncing...');
       this.syncAll();
     });
 
     window.addEventListener('offline', () => {
-      console.log('[ProgressSyncService] Device is offline');
+      logger.info('[ProgressSyncService] Device is offline');
       this.emit({ type: 'sync-failed', data: { reason: 'offline' } });
     });
   }
@@ -68,12 +69,12 @@ class ProgressSyncServiceClass {
    */
   async syncAll(): Promise<{ synced: number; failed: number }> {
     if (this.isSyncing) {
-      console.log('[ProgressSyncService] Sync already in progress');
+      logger.info('[ProgressSyncService] Sync already in progress');
       return { synced: 0, failed: 0 };
     }
 
     if (!navigator.onLine) {
-      console.log('[ProgressSyncService] Device is offline, skipping sync');
+      logger.info('[ProgressSyncService] Device is offline, skipping sync');
       return { synced: 0, failed: 0 };
     }
 
@@ -82,7 +83,7 @@ class ProgressSyncServiceClass {
 
     try {
       const pending = await OfflineProgressDB.getPending();
-      console.log(`[ProgressSyncService] Syncing ${pending.length} items...`);
+      logger.info(`[ProgressSyncService] Syncing ${pending.length} items...`);
 
       let synced = 0;
       let failed = 0;
@@ -93,18 +94,18 @@ class ProgressSyncServiceClass {
           synced++;
           this.emit({ type: 'item-synced', data: item });
         } catch (error) {
-          console.error('[ProgressSyncService] Failed to sync item:', item.id, error);
+          logger.error('[ProgressSyncService] Failed to sync item:', item.id, error);
           failed++;
           this.emit({ type: 'item-failed', data: { item, error } });
         }
       }
 
-      console.log(`[ProgressSyncService] Sync completed: ${synced} synced, ${failed} failed`);
+      logger.info(`[ProgressSyncService] Sync completed: ${synced} synced, ${failed} failed`);
       this.emit({ type: 'sync-completed', data: { synced, failed } });
 
       return { synced, failed };
     } catch (error) {
-      console.error('[ProgressSyncService] Sync all failed:', error);
+      logger.error('[ProgressSyncService] Sync all failed:', error);
       this.emit({ type: 'sync-failed', data: error });
       throw error;
     } finally {
@@ -333,7 +334,7 @@ class ProgressSyncServiceClass {
       try {
         listener(event);
       } catch (error) {
-        console.error('[ProgressSyncService] Listener error:', error);
+        logger.error('[ProgressSyncService] Listener error:', error);
       }
     });
   }

@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * Template Gallery Service
  *
@@ -97,7 +98,7 @@ export class TemplateGalleryService {
       const { data, error, count } = await query;
 
       if (error) {
-        console.error('Error fetching templates:', error);
+        logger.error('Error fetching templates:', error);
         throw new AppError(
           'Failed to fetch templates',
           ERROR_CODES.DATABASE_ERROR.code,
@@ -149,7 +150,7 @@ export class TemplateGalleryService {
       if (error.code === 'PGRST116') {
         return null;
       }
-      console.error('Error fetching template:', error);
+      logger.error('Error fetching template:', error);
       throw new Error(`Failed to fetch template: ${error.message}`);
     }
 
@@ -248,7 +249,7 @@ export class TemplateGalleryService {
         .single();
 
       if (error) {
-        console.error('Error publishing template:', error);
+        logger.error('Error publishing template:', error);
         throw new AppError(
           'Failed to publish template',
           ERROR_CODES.DATABASE_ERROR.code,
@@ -318,7 +319,7 @@ export class TemplateGalleryService {
         .eq('id', templateId);
 
       if (error) {
-        console.error('Error unpublishing template:', error);
+        logger.error('Error unpublishing template:', error);
         throw new AppError(
           'Failed to unpublish template',
           ERROR_CODES.DATABASE_ERROR.code,
@@ -360,7 +361,7 @@ export class TemplateGalleryService {
       .single();
 
     if (error) {
-      console.error('Error updating template:', error);
+      logger.error('Error updating template:', error);
       throw new Error(`Failed to update template: ${error.message}`);
     }
 
@@ -461,7 +462,7 @@ export class TemplateGalleryService {
     });
 
     if (error) {
-      console.error('Error incrementing view count:', error);
+      logger.error('Error incrementing view count:', error);
       // Don't throw - this is not critical
     }
   }
@@ -475,7 +476,7 @@ export class TemplateGalleryService {
     });
 
     if (error) {
-      console.error('Error incrementing clone count:', error);
+      logger.error('Error incrementing clone count:', error);
       // Don't throw - this is not critical
     }
   }
@@ -539,7 +540,7 @@ export class TemplateGalleryService {
         .single();
 
       if (error) {
-        console.error('Error rating template:', error);
+        logger.error('Error rating template:', error);
         throw new AppError(
           'Failed to rate template',
           ERROR_CODES.DATABASE_ERROR.code,
@@ -579,7 +580,7 @@ export class TemplateGalleryService {
       .single();
 
     if (error) {
-      console.error('Error toggling favorite:', error);
+      logger.error('Error toggling favorite:', error);
       throw new Error(`Failed to toggle favorite: ${error.message}`);
     }
 
@@ -601,7 +602,7 @@ export class TemplateGalleryService {
       if (error.code === 'PGRST116') {
         return null;
       }
-      console.error('Error fetching user rating:', error);
+      logger.error('Error fetching user rating:', error);
       throw new Error(`Failed to fetch user rating: ${error.message}`);
     }
 
@@ -627,7 +628,7 @@ export class TemplateGalleryService {
       .eq('is_favorite', true);
 
     if (error) {
-      console.error('Error fetching favorites:', error);
+      logger.error('Error fetching favorites:', error);
       throw new Error(`Failed to fetch favorites: ${error.message}`);
     }
 
@@ -658,7 +659,7 @@ export class TemplateGalleryService {
       .limit(limit);
 
     if (error) {
-      console.error('Error fetching trending templates:', error);
+      logger.error('Error fetching trending templates:', error);
       throw new Error(`Failed to fetch trending templates: ${error.message}`);
     }
 
@@ -689,7 +690,7 @@ export class TemplateGalleryService {
       .limit(limit);
 
     if (error) {
-      console.error('Error fetching featured templates:', error);
+      logger.error('Error fetching featured templates:', error);
       throw new Error(`Failed to fetch featured templates: ${error.message}`);
     }
 
@@ -718,7 +719,7 @@ export class TemplateGalleryService {
       .eq('is_approved', true);
 
     if (error) {
-      console.error('Error fetching tags:', error);
+      logger.error('Error fetching tags:', error);
       return [];
     }
 

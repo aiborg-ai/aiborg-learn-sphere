@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * Error Handling Utilities
  *
@@ -50,7 +51,7 @@ export const ERROR_CODES = {
 export function handleError(error: unknown): AppError {
   // Log full error for debugging (only in development)
   if (import.meta.env.DEV) {
-    console.error('Error occurred:', error);
+    logger.error('Error occurred:', error);
   }
 
   // Already an AppError
@@ -124,7 +125,7 @@ export function logError(error: unknown, context?: Record<string, unknown>): voi
     // TODO: Send to error tracking service
     // Example: Sentry.captureException(error, { extra: context });
   } else {
-    console.error('[Error Log]', errorData);
+    logger.error('[Error Log]', errorData);
   }
 }
 

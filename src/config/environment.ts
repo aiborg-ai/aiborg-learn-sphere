@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * Environment Configuration & Validation
  *
@@ -5,10 +6,7 @@
  */
 
 // Required environment variables
-const requiredEnvVars = [
-  'VITE_SUPABASE_URL',
-  'VITE_SUPABASE_ANON_KEY',
-] as const;
+const requiredEnvVars = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_ANON_KEY'] as const;
 
 // Validate environment variables on startup
 function validateEnvironment(): void {
@@ -30,13 +28,13 @@ function validateEnvironment(): void {
   // Validate Supabase URL format
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
   if (supabaseUrl && !supabaseUrl.startsWith('https://')) {
-    console.warn('Warning: Supabase URL should use HTTPS');
+    logger.warn('Warning: Supabase URL should use HTTPS');
   }
 
   // Log environment info (dev only)
   if (import.meta.env.DEV) {
-    console.info('[Environment] Running in development mode');
-    console.info('[Environment] Supabase URL:', supabaseUrl);
+    logger.info('[Environment] Running in development mode');
+    logger.info('[Environment] Supabase URL:', supabaseUrl);
   }
 }
 
@@ -63,10 +61,10 @@ export const config = {
 if (import.meta.env.PROD) {
   // Keep error logging but disable info/warn/log
   const noop = () => {};
-  console.log = noop;
-  console.info = noop;
-  console.warn = noop;
-  // Keep console.error for critical issues
+  logger.info = noop;
+  logger.info = noop;
+  logger.warn = noop;
+  // Keep logger.error for critical issues
 }
 
 export default config;

@@ -180,7 +180,7 @@ export function useRefreshIntervalOptions() {
  *
  * const result = validate(formData);
  * if (!result.valid) {
- *   console.error('Validation errors:', result.errors);
+ *   logger.error('Validation errors:', result.errors);
  * }
  * ```
  */

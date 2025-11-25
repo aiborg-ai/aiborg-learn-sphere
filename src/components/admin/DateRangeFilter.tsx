@@ -33,7 +33,7 @@ export interface DateRangeFilterProps {
  * ```tsx
  * <DateRangeFilter
  *   onApply={() => {
- *     console.log('Date range applied');
+ *     logger.info('Date range applied');
  *     refetchData();
  *   }}
  * />

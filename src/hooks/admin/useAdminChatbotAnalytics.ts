@@ -4,7 +4,13 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { AdminAnalyticsService, type DateRange, type ChatbotMetrics, type ChatbotTrendData, type TopQuery } from '@/services/analytics/AdminAnalyticsService';
+import {
+  AdminAnalyticsService,
+  type DateRange,
+  type ChatbotMetrics,
+  type ChatbotTrendData,
+  type TopQuery,
+} from '@/services/analytics/AdminAnalyticsService';
 
 /**
  * Query keys for chatbot analytics
@@ -13,7 +19,8 @@ export const chatbotAnalyticsKeys = {
   all: ['admin', 'chatbot-analytics'] as const,
   metrics: (dateRange: DateRange) => [...chatbotAnalyticsKeys.all, 'metrics', dateRange] as const,
   trends: (dateRange: DateRange) => [...chatbotAnalyticsKeys.all, 'trends', dateRange] as const,
-  topQueries: (dateRange: DateRange, limit: number) => [...chatbotAnalyticsKeys.all, 'top-queries', dateRange, limit] as const,
+  topQueries: (dateRange: DateRange, limit: number) =>
+    [...chatbotAnalyticsKeys.all, 'top-queries', dateRange, limit] as const,
 };
 
 /**
@@ -26,8 +33,8 @@ export const chatbotAnalyticsKeys = {
  *   end: '2025-01-31'
  * });
  *
- * console.log(metrics?.totalConversations);
- * console.log(metrics?.avgSatisfaction);
+ * logger.info(metrics?.totalConversations);
+ * logger.info(metrics?.avgSatisfaction);
  * ```
  */
 export function useChatbotMetrics(dateRange: DateRange) {
@@ -139,7 +146,9 @@ export function prepareChatbotDataForExport(
       uniqueUsers: metrics?.uniqueUsers || 0,
       avgSatisfaction: metrics?.avgSatisfaction.toFixed(2) || '0.00',
       resolutionRate: `${(metrics?.resolutionRate || 0).toFixed(1)}%`,
-      avgDuration: metrics?.avgDurationMinutes ? `${metrics.avgDurationMinutes.toFixed(1)} min` : '0.0 min',
+      avgDuration: metrics?.avgDurationMinutes
+        ? `${metrics.avgDurationMinutes.toFixed(1)} min`
+        : '0.0 min',
     },
     trends: trends || [],
     topQueries: topQueries || [],

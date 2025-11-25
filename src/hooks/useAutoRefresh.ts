@@ -45,7 +45,7 @@ export interface AutoRefreshControls {
  *   enabled: true,
  * });
  *
- * console.log(state.lastRefresh); // Last refresh timestamp
+ * logger.info(state.lastRefresh); // Last refresh timestamp
  * ```
  *
  * @param options - Configuration options for auto-refresh

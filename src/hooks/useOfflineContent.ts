@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * useOfflineContent Hook
  *
@@ -27,7 +28,7 @@ export function useOfflineContent(contentId?: string, contentType?: string) {
     function handleOnline() {
       setIsOnline(true);
       // Try to sync progress when coming online
-      DownloadManager.syncProgress().catch(console.error);
+      DownloadManager.syncProgress().catch(error => logger.error('Sync progress failed', error));
     }
 
     function handleOffline() {
@@ -122,7 +123,7 @@ export function useOfflineDownloads() {
       const userDownloads = await DownloadManager.getUserDownloads();
       setDownloads(userDownloads);
     } catch (error) {
-      console.error('Failed to load downloads:', error);
+      logger.error('Failed to load downloads:', error);
     } finally {
       setIsLoading(false);
     }
@@ -158,7 +159,7 @@ export function useStorageStats() {
       const storageStats = await OfflineContentService.getStorageStats();
       setStats(storageStats);
     } catch (error) {
-      console.error('Failed to load storage stats:', error);
+      logger.error('Failed to load storage stats:', error);
     } finally {
       setIsLoading(false);
     }

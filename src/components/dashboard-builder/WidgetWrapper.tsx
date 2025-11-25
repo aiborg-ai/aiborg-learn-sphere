@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * Widget Wrapper
  *
@@ -144,7 +145,7 @@ class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Widget error:', error, errorInfo);
+    logger.error('Widget error:', error, errorInfo);
   }
 
   render() {

@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * Download Manager UI Component
  *
@@ -39,7 +40,7 @@ export function DownloadManagerUI() {
       const userDownloads = await DownloadManager.getUserDownloads();
       setDownloads(userDownloads);
     } catch (error) {
-      console.error('Failed to load downloads:', error);
+      logger.error('Failed to load downloads:', error);
       toast.error('Failed to load downloads');
     } finally {
       setIsLoading(false);
@@ -51,7 +52,7 @@ export function DownloadManagerUI() {
       const stats = await getStorageUsage();
       setStorageStats(stats);
     } catch (error) {
-      console.error('Failed to load storage stats:', error);
+      logger.error('Failed to load storage stats:', error);
     }
   }
 

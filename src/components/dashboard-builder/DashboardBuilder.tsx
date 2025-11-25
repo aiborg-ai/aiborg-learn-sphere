@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * Dashboard Builder
  *
@@ -185,7 +186,7 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
       toast.success('Dashboard saved successfully');
     } catch (error) {
       toast.error('Failed to save dashboard');
-      console.error('Save error:', error);
+      logger.error('Save error:', error);
     }
   }, [save]);
 
@@ -237,7 +238,7 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
         setMode('edit');
       } catch (error) {
         toast.error('Failed to import configuration');
-        console.error('Import error:', error);
+        logger.error('Import error:', error);
       }
     };
     input.click();

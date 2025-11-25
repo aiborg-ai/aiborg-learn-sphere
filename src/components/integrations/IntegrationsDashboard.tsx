@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * Integrations Dashboard Component
  *
@@ -15,10 +16,23 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Switch } from '@/components/ui/switch';
 import {
   Key,
@@ -27,17 +41,10 @@ import {
   Bell,
   Plus,
   RefreshCw,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  Settings,
   TestTube,
   Trash2,
-  ExternalLink,
-  Clock,
-  Activity,
   Building2,
-  Shield
+  Shield,
 } from '@/components/ui/icons';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -46,7 +53,7 @@ import {
   HRIntegration,
   WebhookEndpoint,
   NotificationChannel,
-  WEBHOOK_EVENTS
+  WEBHOOK_EVENTS,
 } from '@/services/integrations';
 
 interface IntegrationsDashboardProps {
@@ -121,7 +128,7 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
       setWebhooks(webhookData);
       setChannels(channelData);
     } catch (error) {
-      console.error('Error loading integrations:', error);
+      logger.error('Error loading integrations:', error);
       toast({
         title: 'Error',
         description: 'Failed to load integrations',
@@ -304,10 +311,10 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
               <Key className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{summary.sso.active}/{summary.sso.total}</div>
-              <p className="text-xs text-muted-foreground">
-                {summary.sso.verified} verified
-              </p>
+              <div className="text-2xl font-bold">
+                {summary.sso.active}/{summary.sso.total}
+              </div>
+              <p className="text-xs text-muted-foreground">{summary.sso.verified} verified</p>
             </CardContent>
           </Card>
 
@@ -317,9 +324,13 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{summary.hr.connected}/{summary.hr.total}</div>
+              <div className="text-2xl font-bold">
+                {summary.hr.connected}/{summary.hr.total}
+              </div>
               <p className="text-xs text-muted-foreground">
-                {summary.hr.lastSync ? `Last sync: ${new Date(summary.hr.lastSync).toLocaleDateString()}` : 'No sync yet'}
+                {summary.hr.lastSync
+                  ? `Last sync: ${new Date(summary.hr.lastSync).toLocaleDateString()}`
+                  : 'No sync yet'}
               </p>
             </CardContent>
           </Card>
@@ -330,7 +341,9 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
               <Webhook className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{summary.webhooks.active}/{summary.webhooks.total}</div>
+              <div className="text-2xl font-bold">
+                {summary.webhooks.active}/{summary.webhooks.total}
+              </div>
               <p className="text-xs text-muted-foreground">Active endpoints</p>
             </CardContent>
           </Card>
@@ -341,7 +354,9 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
               <Bell className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{summary.channels.active}/{summary.channels.total}</div>
+              <div className="text-2xl font-bold">
+                {summary.channels.active}/{summary.channels.total}
+              </div>
               <p className="text-xs text-muted-foreground">Slack, Teams, etc.</p>
             </CardContent>
           </Card>
@@ -449,9 +464,7 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
               <DialogContent className="max-w-lg">
                 <DialogHeader>
                   <DialogTitle>Configure SSO Provider</DialogTitle>
-                  <DialogDescription>
-                    Set up SAML 2.0 or OIDC authentication
-                  </DialogDescription>
+                  <DialogDescription>Set up SAML 2.0 or OIDC authentication</DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid gap-2">
@@ -639,9 +652,7 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
               <DialogContent className="max-w-lg">
                 <DialogHeader>
                   <DialogTitle>Create Webhook Endpoint</DialogTitle>
-                  <DialogDescription>
-                    Receive real-time event notifications
-                  </DialogDescription>
+                  <DialogDescription>Receive real-time event notifications</DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid gap-2">
@@ -789,7 +800,9 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
                     <Label>Channel Type</Label>
                     <Select
                       value={newChannel.channel_type}
-                      onValueChange={value => setNewChannel({ ...newChannel, channel_type: value as any })}
+                      onValueChange={value =>
+                        setNewChannel({ ...newChannel, channel_type: value as any })
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -815,7 +828,9 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
                       <Label>Webhook URL</Label>
                       <Input
                         value={newChannel.slack_webhook_url}
-                        onChange={e => setNewChannel({ ...newChannel, slack_webhook_url: e.target.value })}
+                        onChange={e =>
+                          setNewChannel({ ...newChannel, slack_webhook_url: e.target.value })
+                        }
                         placeholder="https://hooks.slack.com/services/..."
                       />
                     </div>

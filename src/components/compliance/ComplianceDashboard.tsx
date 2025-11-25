@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * Compliance Dashboard Component
  *
@@ -13,8 +14,22 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
@@ -22,23 +37,24 @@ import {
   AlertTriangle,
   Clock,
   CheckCircle2,
-  Users,
   FileText,
   Download,
   Plus,
   RefreshCw,
-  Calendar,
   Bell,
   Filter,
   Search,
-  Building2,
   Award,
   TrendingUp,
-  AlertCircle,
-  XCircle
+  XCircle,
 } from '@/components/ui/icons';
 import { useToast } from '@/hooks/use-toast';
-import { ComplianceService, ComplianceRequirement, UserComplianceItem, ComplianceSummary, ComplianceAuditLog } from '@/services/compliance';
+import {
+  ComplianceService,
+  ComplianceRequirement,
+  ComplianceSummary,
+  ComplianceAuditLog,
+} from '@/services/compliance';
 
 export function ComplianceDashboard() {
   const { toast } = useToast();
@@ -50,13 +66,15 @@ export function ComplianceDashboard() {
   const [summary, setSummary] = useState<ComplianceSummary | null>(null);
   const [requirements, setRequirements] = useState<ComplianceRequirement[]>([]);
   const [auditLog, setAuditLog] = useState<ComplianceAuditLog[]>([]);
-  const [reminders, setReminders] = useState<Array<{
-    user_id: string;
-    email: string;
-    requirement_title: string;
-    due_date: string;
-    days_until_due: number;
-  }>>([]);
+  const [reminders, setReminders] = useState<
+    Array<{
+      user_id: string;
+      email: string;
+      requirement_title: string;
+      due_date: string;
+      days_until_due: number;
+    }>
+  >([]);
 
   // Filter states
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
@@ -74,7 +92,7 @@ export function ComplianceDashboard() {
     passing_score: 80,
     regulatory_body: '',
     target_roles: [] as string[],
-    target_departments: [] as string[]
+    target_departments: [] as string[],
   });
 
   // Load initial data
@@ -89,7 +107,7 @@ export function ComplianceDashboard() {
         ComplianceService.getSummary(),
         ComplianceService.getRequirements(),
         ComplianceService.getAuditLog({ limit: 50 }),
-        ComplianceService.getReminders(30)
+        ComplianceService.getReminders(30),
       ]);
 
       setSummary(summaryData);
@@ -97,11 +115,11 @@ export function ComplianceDashboard() {
       setAuditLog(auditData);
       setReminders(remindersData);
     } catch (error) {
-      console.error('Error loading compliance data:', error);
+      logger.error('Error loading compliance data:', error);
       toast({
         title: 'Error',
         description: 'Failed to load compliance data',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -114,7 +132,7 @@ export function ComplianceDashboard() {
     setRefreshing(false);
     toast({
       title: 'Refreshed',
-      description: 'Compliance data has been updated'
+      description: 'Compliance data has been updated',
     });
   };
 
@@ -123,14 +141,14 @@ export function ComplianceDashboard() {
       const result = await ComplianceService.processExpiries();
       toast({
         title: 'Expiries Processed',
-        description: `${result.expired_count} expired, ${result.renewals_created} renewals created`
+        description: `${result.expired_count} expired, ${result.renewals_created} renewals created`,
       });
       await loadData();
     } catch (error) {
       toast({
         title: 'Error',
         description: 'Failed to process expiries',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -140,7 +158,7 @@ export function ComplianceDashboard() {
       await ComplianceService.createRequirement(newRequirement);
       toast({
         title: 'Requirement Created',
-        description: `"${newRequirement.title}" has been created`
+        description: `"${newRequirement.title}" has been created`,
       });
       setCreateDialogOpen(false);
       setNewRequirement({
@@ -152,14 +170,14 @@ export function ComplianceDashboard() {
         passing_score: 80,
         regulatory_body: '',
         target_roles: [],
-        target_departments: []
+        target_departments: [],
       });
       await loadData();
     } catch (error) {
       toast({
         title: 'Error',
         description: 'Failed to create requirement',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -168,7 +186,7 @@ export function ComplianceDashboard() {
     try {
       const data = await ComplianceService.exportData(format);
       const blob = new Blob([data], {
-        type: format === 'json' ? 'application/json' : 'text/csv'
+        type: format === 'json' ? 'application/json' : 'text/csv',
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -179,13 +197,13 @@ export function ComplianceDashboard() {
 
       toast({
         title: 'Export Complete',
-        description: `Report exported as ${format.toUpperCase()}`
+        description: `Report exported as ${format.toUpperCase()}`,
       });
     } catch (error) {
       toast({
         title: 'Error',
         description: 'Failed to export data',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     }
   };
@@ -199,22 +217,33 @@ export function ComplianceDashboard() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-500';
-      case 'in_progress': return 'bg-blue-500';
-      case 'overdue': return 'bg-red-500';
-      case 'expired': return 'bg-orange-500';
-      case 'exempted': return 'bg-gray-500';
-      default: return 'bg-gray-300';
+      case 'completed':
+        return 'bg-green-500';
+      case 'in_progress':
+        return 'bg-blue-500';
+      case 'overdue':
+        return 'bg-red-500';
+      case 'expired':
+        return 'bg-orange-500';
+      case 'exempted':
+        return 'bg-gray-500';
+      default:
+        return 'bg-gray-300';
     }
   };
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'training': return <ShieldCheck className="h-4 w-4" />;
-      case 'certification': return <Award className="h-4 w-4" />;
-      case 'policy_acknowledgment': return <FileText className="h-4 w-4" />;
-      case 'assessment': return <CheckCircle2 className="h-4 w-4" />;
-      default: return <ShieldCheck className="h-4 w-4" />;
+      case 'training':
+        return <ShieldCheck className="h-4 w-4" />;
+      case 'certification':
+        return <Award className="h-4 w-4" />;
+      case 'policy_acknowledgment':
+        return <FileText className="h-4 w-4" />;
+      case 'assessment':
+        return <CheckCircle2 className="h-4 w-4" />;
+      default:
+        return <ShieldCheck className="h-4 w-4" />;
     }
   };
 
@@ -251,9 +280,7 @@ export function ComplianceDashboard() {
             <DialogContent className="max-w-lg">
               <DialogHeader>
                 <DialogTitle>Create Compliance Requirement</DialogTitle>
-                <DialogDescription>
-                  Add a new compliance training requirement
-                </DialogDescription>
+                <DialogDescription>Add a new compliance training requirement</DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
@@ -270,7 +297,9 @@ export function ComplianceDashboard() {
                   <Textarea
                     id="description"
                     value={newRequirement.description}
-                    onChange={e => setNewRequirement({ ...newRequirement, description: e.target.value })}
+                    onChange={e =>
+                      setNewRequirement({ ...newRequirement, description: e.target.value })
+                    }
                     placeholder="Describe the compliance requirement..."
                     rows={3}
                   />
@@ -280,7 +309,9 @@ export function ComplianceDashboard() {
                     <Label>Category</Label>
                     <Select
                       value={newRequirement.category}
-                      onValueChange={value => setNewRequirement({ ...newRequirement, category: value as any })}
+                      onValueChange={value =>
+                        setNewRequirement({ ...newRequirement, category: value as any })
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -297,7 +328,9 @@ export function ComplianceDashboard() {
                     <Label>Frequency</Label>
                     <Select
                       value={newRequirement.frequency}
-                      onValueChange={value => setNewRequirement({ ...newRequirement, frequency: value as any })}
+                      onValueChange={value =>
+                        setNewRequirement({ ...newRequirement, frequency: value as any })
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -321,7 +354,12 @@ export function ComplianceDashboard() {
                       min={0}
                       max={100}
                       value={newRequirement.passing_score}
-                      onChange={e => setNewRequirement({ ...newRequirement, passing_score: parseInt(e.target.value) || 80 })}
+                      onChange={e =>
+                        setNewRequirement({
+                          ...newRequirement,
+                          passing_score: parseInt(e.target.value) || 80,
+                        })
+                      }
                     />
                   </div>
                   <div className="grid gap-2">
@@ -329,7 +367,9 @@ export function ComplianceDashboard() {
                     <Input
                       id="regulatory_body"
                       value={newRequirement.regulatory_body}
-                      onChange={e => setNewRequirement({ ...newRequirement, regulatory_body: e.target.value })}
+                      onChange={e =>
+                        setNewRequirement({ ...newRequirement, regulatory_body: e.target.value })
+                      }
                       placeholder="e.g., OSHA, GDPR"
                     />
                   </div>
@@ -372,9 +412,7 @@ export function ComplianceDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-destructive">{summary.overdue}</div>
-              <p className="text-xs text-muted-foreground mt-2">
-                Requires immediate attention
-              </p>
+              <p className="text-xs text-muted-foreground mt-2">Requires immediate attention</p>
             </CardContent>
           </Card>
 
@@ -385,9 +423,7 @@ export function ComplianceDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-500">{summary.expiring_soon}</div>
-              <p className="text-xs text-muted-foreground mt-2">
-                Within the next 30 days
-              </p>
+              <p className="text-xs text-muted-foreground mt-2">Within the next 30 days</p>
             </CardContent>
           </Card>
 
@@ -398,9 +434,7 @@ export function ComplianceDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-blue-500">{summary.in_progress}</div>
-              <p className="text-xs text-muted-foreground mt-2">
-                Currently being completed
-              </p>
+              <p className="text-xs text-muted-foreground mt-2">Currently being completed</p>
             </CardContent>
           </Card>
         </div>
@@ -426,18 +460,20 @@ export function ComplianceDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {['training', 'certification', 'policy_acknowledgment', 'assessment'].map(category => {
-                    const count = requirements.filter(r => r.category === category).length;
-                    return (
-                      <div key={category} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          {getCategoryIcon(category)}
-                          <span className="capitalize">{category.replace('_', ' ')}</span>
+                  {['training', 'certification', 'policy_acknowledgment', 'assessment'].map(
+                    category => {
+                      const count = requirements.filter(r => r.category === category).length;
+                      return (
+                        <div key={category} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            {getCategoryIcon(category)}
+                            <span className="capitalize">{category.replace('_', ' ')}</span>
+                          </div>
+                          <Badge variant="secondary">{count}</Badge>
                         </div>
-                        <Badge variant="secondary">{count}</Badge>
-                      </div>
-                    );
-                  })}
+                      );
+                    }
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -486,22 +522,35 @@ export function ComplianceDashboard() {
               <ScrollArea className="h-[300px]">
                 <div className="space-y-4">
                   {auditLog.slice(0, 10).map((log, index) => (
-                    <div key={log.id || index} className="flex items-start gap-3 pb-3 border-b last:border-0">
-                      <div className={`p-2 rounded-full ${
-                        log.action === 'completed' ? 'bg-green-100 text-green-600' :
-                        log.action === 'expired' ? 'bg-red-100 text-red-600' :
-                        log.action === 'assigned' ? 'bg-blue-100 text-blue-600' :
-                        'bg-gray-100 text-gray-600'
-                      }`}>
+                    <div
+                      key={log.id || index}
+                      className="flex items-start gap-3 pb-3 border-b last:border-0"
+                    >
+                      <div
+                        className={`p-2 rounded-full ${
+                          log.action === 'completed'
+                            ? 'bg-green-100 text-green-600'
+                            : log.action === 'expired'
+                              ? 'bg-red-100 text-red-600'
+                              : log.action === 'assigned'
+                                ? 'bg-blue-100 text-blue-600'
+                                : 'bg-gray-100 text-gray-600'
+                        }`}
+                      >
                         {log.action === 'completed' && <CheckCircle2 className="h-4 w-4" />}
                         {log.action === 'expired' && <XCircle className="h-4 w-4" />}
                         {log.action === 'assigned' && <Plus className="h-4 w-4" />}
-                        {!['completed', 'expired', 'assigned'].includes(log.action) && <FileText className="h-4 w-4" />}
+                        {!['completed', 'expired', 'assigned'].includes(log.action) && (
+                          <FileText className="h-4 w-4" />
+                        )}
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-medium capitalize">{log.action.replace('_', ' ')}</p>
+                        <p className="text-sm font-medium capitalize">
+                          {log.action.replace('_', ' ')}
+                        </p>
                         <p className="text-xs text-muted-foreground">
-                          {log.requirement_id && `Requirement: ${log.requirement_id.slice(0, 8)}...`}
+                          {log.requirement_id &&
+                            `Requirement: ${log.requirement_id.slice(0, 8)}...`}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {new Date(log.created_at).toLocaleString()}
@@ -571,17 +620,13 @@ export function ComplianceDashboard() {
                             {req.frequency.replace('_', '-')}
                           </Badge>
                           {req.regulatory_body && (
-                            <Badge variant="secondary">
-                              {req.regulatory_body}
-                            </Badge>
+                            <Badge variant="secondary">{req.regulatory_body}</Badge>
                           )}
                         </div>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-sm font-medium">
-                        {req.passing_score}% to pass
-                      </div>
+                      <div className="text-sm font-medium">{req.passing_score}% to pass</div>
                       <div className="text-xs text-muted-foreground">
                         {req.is_active ? 'Active' : 'Inactive'}
                       </div>
@@ -622,9 +667,11 @@ export function ComplianceDashboard() {
                       <div
                         key={index}
                         className={`p-3 rounded-lg border ${
-                          reminder.days_until_due <= 7 ? 'border-red-200 bg-red-50' :
-                          reminder.days_until_due <= 14 ? 'border-orange-200 bg-orange-50' :
-                          'border-gray-200'
+                          reminder.days_until_due <= 7
+                            ? 'border-red-200 bg-red-50'
+                            : reminder.days_until_due <= 14
+                              ? 'border-orange-200 bg-orange-50'
+                              : 'border-gray-200'
                         }`}
                       >
                         <div className="flex items-center justify-between">
@@ -633,11 +680,15 @@ export function ComplianceDashboard() {
                             <p className="text-sm text-muted-foreground">{reminder.email}</p>
                           </div>
                           <div className="text-right">
-                            <Badge variant={
-                              reminder.days_until_due <= 7 ? 'destructive' :
-                              reminder.days_until_due <= 14 ? 'default' :
-                              'secondary'
-                            }>
+                            <Badge
+                              variant={
+                                reminder.days_until_due <= 7
+                                  ? 'destructive'
+                                  : reminder.days_until_due <= 14
+                                    ? 'default'
+                                    : 'secondary'
+                              }
+                            >
                               {reminder.days_until_due} days
                             </Badge>
                             <p className="text-xs text-muted-foreground mt-1">
@@ -687,9 +738,7 @@ export function ComplianceDashboard() {
                             {log.action.replace('_', ' ')}
                           </Badge>
                         </td>
-                        <td className="py-2 px-3 text-sm">
-                          {log.user_id?.slice(0, 8) || '-'}...
-                        </td>
+                        <td className="py-2 px-3 text-sm">{log.user_id?.slice(0, 8) || '-'}...</td>
                         <td className="py-2 px-3 text-sm text-muted-foreground">
                           {log.old_value && <span>From: {JSON.stringify(log.old_value)} </span>}
                           {log.new_value && <span>To: {JSON.stringify(log.new_value)}</span>}
@@ -718,9 +767,7 @@ export function ComplianceDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Export Reports</CardTitle>
-                <CardDescription>
-                  Download compliance data for external reporting
-                </CardDescription>
+                <CardDescription>Download compliance data for external reporting</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 <Button
@@ -745,14 +792,12 @@ export function ComplianceDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Automated Reports</CardTitle>
-                <CardDescription>
-                  Schedule automatic compliance reports
-                </CardDescription>
+                <CardDescription>Schedule automatic compliance reports</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Automated reporting will be available in a future update.
-                  Configure email recipients and schedule for weekly or monthly compliance summaries.
+                  Automated reporting will be available in a future update. Configure email
+                  recipients and schedule for weekly or monthly compliance summaries.
                 </p>
               </CardContent>
             </Card>

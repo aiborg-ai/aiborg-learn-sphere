@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * Share Link Service
  *
@@ -126,7 +127,7 @@ export class ShareLinkService {
         .single();
 
       if (error) {
-        console.error('Error creating share link:', error);
+        logger.error('Error creating share link:', error);
         throw new AppError(
           'Failed to create share link',
           ERROR_CODES.DATABASE_ERROR.code,
@@ -228,7 +229,7 @@ export class ShareLinkService {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching share links:', error);
+      logger.error('Error fetching share links:', error);
       throw new Error(`Failed to fetch share links: ${error.message}`);
     }
 
@@ -251,7 +252,7 @@ export class ShareLinkService {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching user share links:', error);
+      logger.error('Error fetching user share links:', error);
       throw new Error(`Failed to fetch user share links: ${error.message}`);
     }
 
@@ -310,7 +311,7 @@ export class ShareLinkService {
         .eq('id', linkId);
 
       if (error) {
-        console.error('Error deactivating share link:', error);
+        logger.error('Error deactivating share link:', error);
         throw new AppError(
           'Failed to deactivate share link',
           ERROR_CODES.DATABASE_ERROR.code,
@@ -334,7 +335,7 @@ export class ShareLinkService {
       .eq('is_active', true);
 
     if (error) {
-      console.error('Error deactivating links:', error);
+      logger.error('Error deactivating links:', error);
       throw new Error(`Failed to deactivate links: ${error.message}`);
     }
   }
@@ -388,7 +389,7 @@ export class ShareLinkService {
       const { error } = await supabase.from('dashboard_share_links').delete().eq('id', linkId);
 
       if (error) {
-        console.error('Error deleting share link:', error);
+        logger.error('Error deleting share link:', error);
         throw new AppError(
           'Failed to delete share link',
           ERROR_CODES.DATABASE_ERROR.code,
@@ -427,7 +428,7 @@ export class ShareLinkService {
       .single();
 
     if (error) {
-      console.error('Error updating share link:', error);
+      logger.error('Error updating share link:', error);
       throw new Error(`Failed to update share link: ${error.message}`);
     }
 
@@ -441,7 +442,7 @@ export class ShareLinkService {
     const { data, error } = await supabase.rpc('deactivate_expired_share_links');
 
     if (error) {
-      console.error('Error cleaning up expired links:', error);
+      logger.error('Error cleaning up expired links:', error);
       return 0;
     }
 

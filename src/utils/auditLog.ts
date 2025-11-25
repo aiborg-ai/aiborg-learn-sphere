@@ -1,3 +1,4 @@
+import { logger } from '@/utils/logger';
 /**
  * Audit Logging
  *
@@ -39,9 +40,7 @@ interface AuditLogEntry {
 }
 
 // Log audit entry
-export async function logAudit(
-  entry: Omit<AuditLogEntry, 'timestamp'>
-): Promise<void> {
+export async function logAudit(entry: Omit<AuditLogEntry, 'timestamp'>): Promise<void> {
   try {
     const logEntry: AuditLogEntry = {
       ...entry,
@@ -56,18 +55,18 @@ export async function logAudit(
     } catch (dbError) {
       // Table might not exist yet - just log to console
       if (import.meta.env.DEV) {
-        console.info('[Audit]', logEntry);
+        logger.info('[Audit]', logEntry);
       }
     }
 
     // Also log to console in development
     if (import.meta.env.DEV) {
-      console.info('[Audit]', logEntry.action, logEntry.resource_type, logEntry.resource_id);
+      logger.info('[Audit]', logEntry.action, logEntry.resource_type, logEntry.resource_id);
     }
   } catch (error) {
     // Audit logging should never break the application
     if (import.meta.env.DEV) {
-      console.error('[Audit] Failed to log:', error);
+      logger.error('[Audit] Failed to log:', error);
     }
   }
 }

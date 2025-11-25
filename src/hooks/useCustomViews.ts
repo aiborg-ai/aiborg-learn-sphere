@@ -5,7 +5,11 @@
 
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { CustomViewsService, type CustomView, type ViewConfig } from '@/services/analytics/CustomViewsService';
+import {
+  CustomViewsService,
+  type CustomView,
+  type ViewConfig,
+} from '@/services/analytics/CustomViewsService';
 import { logger } from '@/utils/logger';
 import { toast } from '@/components/ui/use-toast';
 
@@ -24,7 +28,11 @@ export interface UseCustomViewsReturn {
   isLoading: boolean;
   error: Error | null;
   createView: (name: string, config: ViewConfig) => Promise<CustomView | undefined>;
-  updateView: (viewId: string, name?: string, config?: ViewConfig) => Promise<CustomView | undefined>;
+  updateView: (
+    viewId: string,
+    name?: string,
+    config?: ViewConfig
+  ) => Promise<CustomView | undefined>;
   deleteView: (viewId: string) => Promise<void>;
   loadView: (viewId: string) => Promise<void>;
   saveCurrentView: (name: string, config: ViewConfig) => Promise<CustomView | undefined>;
@@ -48,7 +56,7 @@ export interface UseCustomViewsReturn {
  *
  * // Check if user can create more views
  * if (!canCreateMore) {
- *   console.warn('Maximum of 10 views reached');
+ *   logger.warn('Maximum of 10 views reached');
  * }
  *
  * // Create a new view
@@ -90,12 +98,12 @@ export function useCustomViews(userId: string): UseCustomViewsReturn {
   const createMutation = useMutation({
     mutationFn: ({ name, config }: { name: string; config: ViewConfig }) =>
       CustomViewsService.createView(userId, name, config),
-    onSuccess: (newView) => {
+    onSuccess: newView => {
       // Update cache with new view
-      queryClient.setQueryData<CustomView[]>(
-        customViewsKeys.list(userId),
-        (old = []) => [...old, newView]
-      );
+      queryClient.setQueryData<CustomView[]>(customViewsKeys.list(userId), (old = []) => [
+        ...old,
+        newView,
+      ]);
 
       toast({
         title: 'View Created',
@@ -128,11 +136,10 @@ export function useCustomViews(userId: string): UseCustomViewsReturn {
       name?: string;
       config?: ViewConfig;
     }) => CustomViewsService.updateView(viewId, name, config),
-    onSuccess: (updatedView) => {
+    onSuccess: updatedView => {
       // Update cache with modified view
-      queryClient.setQueryData<CustomView[]>(
-        customViewsKeys.list(userId),
-        (old = []) => old.map(view => (view.id === updatedView.id ? updatedView : view))
+      queryClient.setQueryData<CustomView[]>(customViewsKeys.list(userId), (old = []) =>
+        old.map(view => (view.id === updatedView.id ? updatedView : view))
       );
 
       // Update current view if it's the one being edited
@@ -165,9 +172,8 @@ export function useCustomViews(userId: string): UseCustomViewsReturn {
     mutationFn: (viewId: string) => CustomViewsService.deleteView(viewId),
     onSuccess: (_, viewId) => {
       // Remove from cache
-      queryClient.setQueryData<CustomView[]>(
-        customViewsKeys.list(userId),
-        (old = []) => old.filter(view => view.id !== viewId)
+      queryClient.setQueryData<CustomView[]>(customViewsKeys.list(userId), (old = []) =>
+        old.filter(view => view.id !== viewId)
       );
 
       // Clear current view if it's the one being deleted
@@ -233,11 +239,7 @@ export function useCustomViews(userId: string): UseCustomViewsReturn {
    * Update an existing view
    */
   const updateView = useCallback(
-    async (
-      viewId: string,
-      name?: string,
-      config?: ViewConfig
-    ): Promise<CustomView | undefined> => {
+    async (viewId: string, name?: string, config?: ViewConfig): Promise<CustomView | undefined> => {
       try {
         // Check for duplicate names if name is being changed
         if (name) {
@@ -280,31 +282,28 @@ export function useCustomViews(userId: string): UseCustomViewsReturn {
   /**
    * Load a view and set it as current
    */
-  const loadView = useCallback(
-    async (viewId: string): Promise<void> => {
-      try {
-        const view = await CustomViewsService.getView(viewId);
-        if (view) {
-          setCurrentView(view);
-          logger.info('Custom view loaded', { viewId, name: view.name });
-        } else {
-          toast({
-            variant: 'destructive',
-            title: 'View Not Found',
-            description: 'The requested view could not be found.',
-          });
-        }
-      } catch (error) {
-        logger.error('Error loading view:', error);
+  const loadView = useCallback(async (viewId: string): Promise<void> => {
+    try {
+      const view = await CustomViewsService.getView(viewId);
+      if (view) {
+        setCurrentView(view);
+        logger.info('Custom view loaded', { viewId, name: view.name });
+      } else {
         toast({
           variant: 'destructive',
-          title: 'Failed to Load View',
-          description: error instanceof Error ? error.message : 'Unknown error occurred',
+          title: 'View Not Found',
+          description: 'The requested view could not be found.',
         });
       }
-    },
-    []
-  );
+    } catch (error) {
+      logger.error('Error loading view:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Failed to Load View',
+        description: error instanceof Error ? error.message : 'Unknown error occurred',
+      });
+    }
+  }, []);
 
   /**
    * Save current dashboard state as a new view or update existing view

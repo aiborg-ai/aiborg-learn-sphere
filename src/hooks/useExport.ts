@@ -16,8 +16,16 @@ export interface ExportState {
 }
 
 export interface UseExportReturn {
-  exportPDF: (sections: AnalyticsSection[], filename: string, dateRange?: DateRange) => Promise<void>;
-  exportSinglePDF: (section: AnalyticsSection, filename: string, dateRange?: DateRange) => Promise<void>;
+  exportPDF: (
+    sections: AnalyticsSection[],
+    filename: string,
+    dateRange?: DateRange
+  ) => Promise<void>;
+  exportSinglePDF: (
+    section: AnalyticsSection,
+    filename: string,
+    dateRange?: DateRange
+  ) => Promise<void>;
   exportCSV: <T extends Record<string, any>>(
     data: T[],
     filename: string,
@@ -52,7 +60,7 @@ export interface UseExportReturn {
  * await exportCSV(data, 'revenue-data', ['Date', 'Amount', 'Source']);
  *
  * // Check progress
- * console.log(state.progress); // 0-100
+ * logger.info(state.progress); // 0-100
  * ```
  *
  * @returns Export functions and state
@@ -153,11 +161,7 @@ export function useExport(): UseExportReturn {
    * Export single analytics section to PDF
    */
   const exportSinglePDF = useCallback(
-    async (
-      section: AnalyticsSection,
-      filename: string,
-      dateRange?: DateRange
-    ): Promise<void> => {
+    async (section: AnalyticsSection, filename: string, dateRange?: DateRange): Promise<void> => {
       try {
         setState({
           isExporting: true,
@@ -165,7 +169,10 @@ export function useExport(): UseExportReturn {
           error: null,
         });
 
-        logger.info('Starting single section PDF export', { filename, sectionTitle: section.title });
+        logger.info('Starting single section PDF export', {
+          filename,
+          sectionTitle: section.title,
+        });
 
         // Validate section
         if (!section) {
