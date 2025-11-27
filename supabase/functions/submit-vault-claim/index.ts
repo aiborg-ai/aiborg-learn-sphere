@@ -7,7 +7,8 @@ const APP_URL = Deno.env.get('VITE_APP_URL') || 'https://aiborg-ai-web.vercel.ap
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers':
+    'authorization, x-client-info, apikey, content-type, x-application-name',
 };
 
 interface FamilyMember {
