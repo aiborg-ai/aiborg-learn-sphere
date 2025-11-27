@@ -41,27 +41,29 @@ const Index = () => {
       <AIComputerAssemblyBanner />
       <DeepawaliBanner />
       <Navbar />
-      <HeroSection />
-      <NovemberVaultCampaignBanner />
-      <FamilyPassBanner />
-      <div id="about">
-        <AboutSection />
-      </div>
-      <div id="training-programs">
-        <TrainingPrograms />
-      </div>
-      <div id="events">
-        <EventsSection />
-      </div>
-      <div id="assessment-tools">
-        <AssessmentToolsSection />
-      </div>
-      <div id="reviews">
-        <ReviewsSection />
-      </div>
-      <div id="contact">
-        <ContactSection />
-      </div>
+      <main role="main">
+        <HeroSection />
+        <NovemberVaultCampaignBanner />
+        <FamilyPassBanner />
+        <div id="about">
+          <AboutSection />
+        </div>
+        <div id="training-programs">
+          <TrainingPrograms />
+        </div>
+        <div id="events">
+          <EventsSection />
+        </div>
+        <div id="assessment-tools">
+          <AssessmentToolsSection />
+        </div>
+        <div id="reviews">
+          <ReviewsSection />
+        </div>
+        <div id="contact">
+          <ContactSection />
+        </div>
+      </main>
       <Footer />
       <AIChatbot />
     </div>

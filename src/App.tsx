@@ -61,6 +61,7 @@ const AssessmentHistoryPanel = lazy(() =>
 );
 const AssessmentQuestionsManagement = lazy(() => import('./pages/AssessmentQuestionsManagement'));
 const CoursePage = lazy(() => import('./pages/CoursePage'));
+const CoursesListPage = lazy(() => import('./pages/CoursesListPage'));
 const InstructorDashboard = lazy(() => import('./pages/InstructorDashboard'));
 const ClassroomPage = lazy(() => import('./pages/instructor/ClassroomPage'));
 const BookmarksPage = lazy(() => import('./pages/BookmarksPage'));
@@ -334,6 +335,14 @@ const AppWithShortcuts = () => {
               }
             />
             <Route path="/user/:userId" element={<PublicProfile />} />
+            <Route
+              path="/courses"
+              element={
+                <RouteWrapper routeName="Courses">
+                  <CoursesListPage />
+                </RouteWrapper>
+              }
+            />
             <Route
               path="/course/:courseId"
               element={
