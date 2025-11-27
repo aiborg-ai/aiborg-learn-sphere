@@ -1,3 +1,6 @@
 # Prettier ignore file
 # Ignore accessibility templates (they contain example code in comments)
 src/templates/
+
+# Ignore GitHub Actions workflows (they contain inline scripts)
+.github/workflows/
