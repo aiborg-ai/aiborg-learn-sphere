@@ -1,7 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
+import { validateArray } from '@/lib/api-validation';
+import { CourseSchema } from '@/lib/schemas/database.schema';
 
+// Legacy interface kept for backward compatibility
 export interface Course {
   id: number;
   title: string;
@@ -27,22 +30,39 @@ export interface Course {
 
 const fetchCourses = async (): Promise<Course[]> => {
   // First fetch courses with their audiences from the view
-  const { data: coursesWithAudiences, error: viewError } = await supabase
+  const viewQuery = supabase
     .from('courses_with_audiences')
     .select('*')
     .eq('is_active', true)
     .eq('display', true)
     .order('sort_order', { ascending: true });
 
-  if (viewError) {
+  const { data: coursesWithAudiences, error: viewError } = await validateArray(
+    viewQuery,
+    CourseSchema,
+    {
+      validateInProduction: false, // Skip validation in production for performance
+      logErrors: true,
+      throwOnError: false, // Don't throw, fallback to unvalidated data
+    }
+  );
+
+  if (viewError && !coursesWithAudiences) {
     // Fallback to regular courses table if view doesn't exist yet
     logger.warn('View not available, falling back to regular table:', viewError);
-    const { data, error } = await supabase
+
+    const fallbackQuery = supabase
       .from('courses')
       .select('*')
       .eq('is_active', true)
       .eq('display', true)
       .order('sort_order', { ascending: true });
+
+    const { data, error } = await validateArray(fallbackQuery, CourseSchema, {
+      validateInProduction: false,
+      logErrors: true,
+      throwOnError: true, // Throw on fallback errors
+    });
 
     if (error) {
       throw error;
@@ -51,8 +71,8 @@ const fetchCourses = async (): Promise<Course[]> => {
     // For backward compatibility, create audiences array from single audience field
     return (data || []).map(course => ({
       ...course,
-      audiences: course.audience ? [course.audience] : [],
-    }));
+      audiences: course.audiences || (course.audience ? [course.audience] : []),
+    })) as Course[];
   }
 
   // Ensure backward compatibility by setting audience field from audiences array
@@ -60,7 +80,7 @@ const fetchCourses = async (): Promise<Course[]> => {
     ...course,
     audience: course.audiences?.[0] || course.audience || '', // Use first audience for backward compatibility
     audiences: course.audiences || (course.audience ? [course.audience] : []),
-  }));
+  })) as Course[];
 };
 
 export const useCourses = () => {
