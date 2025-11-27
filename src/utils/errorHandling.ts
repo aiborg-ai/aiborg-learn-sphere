@@ -120,10 +120,18 @@ export function logError(error: unknown, context?: Record<string, unknown>): voi
     context,
   };
 
-  // In production, send to error tracking service (Sentry, etc.)
+  // In production, send to error tracking service (Sentry)
   if (!import.meta.env.DEV) {
-    // TODO: Send to error tracking service
-    // Example: Sentry.captureException(error, { extra: context });
+    // Send to Sentry in production
+    import('../config/sentry')
+      .then(({ captureSentryException }) => {
+        if (error instanceof Error) {
+          captureSentryException(error, context);
+        }
+      })
+      .catch(() => {
+        // Silently fail if Sentry is not available
+      });
   } else {
     logger.error('[Error Log]', errorData);
   }

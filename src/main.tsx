@@ -6,6 +6,10 @@ import App from './App.tsx';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import './index.css';
 
+// Initialize Sentry for error tracking (production only)
+import { initializeSentry } from './config/sentry';
+initializeSentry();
+
 // Initialize i18n
 import './i18n/config';
 

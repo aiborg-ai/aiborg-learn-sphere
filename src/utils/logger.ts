@@ -134,6 +134,7 @@ class Logger {
 
   /**
    * Log error message (highest priority)
+   * Also forwards errors to Sentry in production
    */
   error(message: string, error?: Error | unknown, context?: LogContext): void {
     if (this.config.level > LogLevel.ERROR) return;
@@ -152,6 +153,20 @@ class Logger {
 
     // eslint-disable-next-line no-console
     console.error(this.formatMessage('ERROR', message) + this.formatContext(errorInfo));
+
+    // Forward to Sentry in production
+    if (typeof import.meta !== 'undefined' && import.meta.env?.PROD) {
+      try {
+        // Dynamic import to avoid bundling Sentry in development
+        import('../config/sentry').then(({ captureSentryException }) => {
+          if (error instanceof Error) {
+            captureSentryException(error, { message, ...context });
+          }
+        });
+      } catch {
+        // Silently fail if Sentry is not available
+      }
+    }
   }
 
   /**
