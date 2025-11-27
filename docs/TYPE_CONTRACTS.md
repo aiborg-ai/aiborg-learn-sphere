@@ -194,10 +194,17 @@ interface ValidationOptions {
 1. **Seed the database**:
 
    ```bash
-   # Load seed data
+   # Load seed data (requires service role access to auth.users)
    psql $DATABASE_URL -f supabase/seed/00_test_users.sql
    psql $DATABASE_URL -f supabase/seed/01_test_courses.sql
    ```
+
+   **Note**: The seed file inserts into `auth.users` which requires elevated privileges. If you get
+   permission errors:
+   - **Option 1**: Use a database connection with superuser/service role privileges
+   - **Option 2**: Use the alternative approach in the seed file (uncomment the section that
+     disables FK constraints)
+   - **Option 3**: Create test users manually via Supabase Auth API/Dashboard
 
 2. **Set environment variables**:
 
@@ -391,6 +398,25 @@ export SUPABASE_SERVICE_ROLE_KEY=your-key
 # Seed the database
 psql $DATABASE_URL -f supabase/seed/00_test_users.sql
 psql $DATABASE_URL -f supabase/seed/01_test_courses.sql
+```
+
+**Error:** "violates foreign key constraint profiles_user_id_fkey"
+
+**Solution:**
+
+This error occurs because `profiles` has a foreign key to `auth.users`. You need to insert into
+`auth.users` first.
+
+```bash
+# Option 1: Use service role connection (recommended)
+# The seed file automatically inserts into auth.users if you have permission
+
+# Option 2: Use alternative approach (uncomment in seed file)
+# Edit supabase/seed/00_test_users.sql and uncomment the ALTERNATIVE section
+# This temporarily disables FK constraints for testing
+
+# Option 3: Create users via Supabase Dashboard or Auth API
+# Then manually insert the corresponding profiles
 ```
 
 ---
