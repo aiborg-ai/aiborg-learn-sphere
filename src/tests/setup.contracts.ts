@@ -118,10 +118,9 @@ export function skipIfNoDatabase() {
  * Test user IDs for consistent testing
  */
 export const TEST_USER_IDS = {
-  student: '00000000-0000-0000-0000-000000000001',
-  instructor: '00000000-0000-0000-0000-000000000002',
-  admin: '00000000-0000-0000-0000-000000000003',
-  superAdmin: '00000000-0000-0000-0000-000000000004',
+  user: '00000000-0000-0000-0000-000000000001',
+  admin: '00000000-0000-0000-0000-000000000002',
+  instructor: '00000000-0000-0000-0000-000000000003',
 } as const;
 
 /**
