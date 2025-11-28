@@ -34,7 +34,7 @@ BEGIN
     VALUES (
       'Introduction to Web Development',
       'Learn the fundamentals of web development including HTML, CSS, and JavaScript.',
-      'Professional',
+      'Professionals',
       'Online',
       '8 weeks',
       '£99',
@@ -73,7 +73,7 @@ BEGIN
     VALUES (
       'Intermediate Python Programming',
       'Advanced Python concepts including OOP, data structures, and algorithms.',
-      'Professional',
+      'Professionals',
       'Online',
       '12 weeks',
       '£149',
@@ -112,7 +112,7 @@ BEGIN
     VALUES (
       'Enterprise AI Solutions',
       'Learn how to implement AI solutions in enterprise environments.',
-      'Business',
+      'SMEs',
       'Online',
       '16 weeks',
       'Free',
