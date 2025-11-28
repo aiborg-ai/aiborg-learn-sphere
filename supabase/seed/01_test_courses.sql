@@ -5,7 +5,6 @@
 
 DO $$
 DECLARE
-  test_instructor_id UUID := '00000000-0000-0000-0000-000000000002';
   course_id_1 INT;
   course_id_2 INT;
   course_id_3 INT;
@@ -17,22 +16,17 @@ BEGIN
     INSERT INTO public.courses (
       title,
       description,
-      instructor_id,
       audience,
-      audiences,
       mode,
-      level,
-      status,
       duration,
       price,
+      level,
       start_date,
-      max_enrollments,
       features,
+      category,
+      keywords,
       prerequisites,
-      learning_outcomes,
       is_active,
-      display,
-      currently_enrolling,
       sort_order,
       created_at,
       updated_at
@@ -40,21 +34,16 @@ BEGIN
     VALUES (
       'Introduction to Web Development',
       'Learn the fundamentals of web development including HTML, CSS, and JavaScript.',
-      test_instructor_id,
-      'students',
-      ARRAY['students', 'professionals'],
-      'online',
-      'beginner',
-      'published',
+      'Professional',
+      'Online',
       '8 weeks',
-      99.00,
-      NOW() + INTERVAL '7 days',
-      50,
+      '£99',
+      'Beginner',
+      '1st January 2025',
       ARRAY['Live sessions', 'Recorded lectures', 'Code exercises', 'Certificate'],
-      ARRAY['Basic computer skills', 'Internet access'],
-      ARRAY['Build responsive websites', 'Understand HTML/CSS/JS fundamentals', 'Deploy web applications'],
-      true,
-      true,
+      'Programming',
+      ARRAY['web', 'html', 'css', 'javascript'],
+      'Basic computer skills',
       true,
       1,
       NOW(),
@@ -66,22 +55,17 @@ BEGIN
     INSERT INTO public.courses (
       title,
       description,
-      instructor_id,
       audience,
-      audiences,
       mode,
-      level,
-      status,
       duration,
       price,
+      level,
       start_date,
-      max_enrollments,
       features,
+      category,
+      keywords,
       prerequisites,
-      learning_outcomes,
       is_active,
-      display,
-      currently_enrolling,
       sort_order,
       created_at,
       updated_at
@@ -89,21 +73,16 @@ BEGIN
     VALUES (
       'Intermediate Python Programming',
       'Advanced Python concepts including OOP, data structures, and algorithms.',
-      test_instructor_id,
-      'professionals',
-      ARRAY['professionals', 'students'],
-      'hybrid',
-      'intermediate',
-      'published',
+      'Professional',
+      'Online',
       '12 weeks',
-      149.00,
-      NOW() + INTERVAL '14 days',
-      30,
+      '£149',
+      'Intermediate',
+      '15th January 2025',
       ARRAY['Live coding sessions', 'Project-based learning', 'Mentorship', 'Career support'],
-      ARRAY['Basic Python knowledge', 'Programming fundamentals'],
-      ARRAY['Master OOP in Python', 'Implement complex data structures', 'Solve algorithmic problems'],
-      true,
-      true,
+      'Programming',
+      ARRAY['python', 'oop', 'algorithms'],
+      'Basic Python knowledge',
       true,
       2,
       NOW(),
@@ -111,26 +90,21 @@ BEGIN
     )
     RETURNING id INTO course_id_2;
 
-    -- Course 3: Enterprise AI Solutions (Free course for testing)
+    -- Course 3: Enterprise AI Solutions (Free course)
     INSERT INTO public.courses (
       title,
       description,
-      instructor_id,
       audience,
-      audiences,
       mode,
-      level,
-      status,
       duration,
       price,
+      level,
       start_date,
-      max_enrollments,
       features,
+      category,
+      keywords,
       prerequisites,
-      learning_outcomes,
       is_active,
-      display,
-      currently_enrolling,
       sort_order,
       created_at,
       updated_at
@@ -138,27 +112,40 @@ BEGIN
     VALUES (
       'Enterprise AI Solutions',
       'Learn how to implement AI solutions in enterprise environments.',
-      test_instructor_id,
-      'enterprises',
-      ARRAY['enterprises', 'professionals'],
-      'in-person',
-      'advanced',
-      'published',
+      'Business',
+      'Online',
       '16 weeks',
-      0.00, -- Free course
-      NOW() + INTERVAL '30 days',
-      20,
+      'Free',
+      'Advanced',
+      '1st February 2025',
       ARRAY['Hands-on projects', 'Industry case studies', 'Expert instructors', 'Certification'],
-      ARRAY['ML/AI fundamentals', 'Enterprise experience', 'Python/TensorFlow knowledge'],
-      ARRAY['Deploy AI models at scale', 'Build enterprise AI architecture', 'Manage AI teams'],
-      true,
-      true,
+      'AI Fundamentals',
+      ARRAY['ai', 'ml', 'enterprise'],
+      'ML/AI fundamentals',
       true,
       3,
       NOW(),
       NOW()
     )
     RETURNING id INTO course_id_3;
+
+    -- Add additional audiences if the junction table exists
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'course_audiences') THEN
+      -- Add secondary audiences for course 1
+      INSERT INTO public.course_audiences (course_id, audience)
+      VALUES (course_id_1, 'Teenagers')
+      ON CONFLICT (course_id, audience) DO NOTHING;
+
+      -- Add secondary audiences for course 2
+      INSERT INTO public.course_audiences (course_id, audience)
+      VALUES (course_id_2, 'Teenagers')
+      ON CONFLICT (course_id, audience) DO NOTHING;
+
+      -- Add secondary audiences for course 3
+      INSERT INTO public.course_audiences (course_id, audience)
+      VALUES (course_id_3, 'Professionals')
+      ON CONFLICT (course_id, audience) DO NOTHING;
+    END IF;
 
     RAISE NOTICE 'Test courses seeded successfully: %, %, %', course_id_1, course_id_2, course_id_3;
   ELSE
@@ -173,11 +160,24 @@ END $$;
 CREATE OR REPLACE FUNCTION cleanup_test_courses()
 RETURNS void AS $$
 BEGIN
+  -- Delete from course_audiences first (if it exists)
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'course_audiences') THEN
+    DELETE FROM public.course_audiences WHERE course_id IN (
+      SELECT id FROM public.courses WHERE title IN (
+        'Introduction to Web Development',
+        'Intermediate Python Programming',
+        'Enterprise AI Solutions'
+      )
+    );
+  END IF;
+
+  -- Then delete from courses
   DELETE FROM public.courses WHERE title IN (
     'Introduction to Web Development',
     'Intermediate Python Programming',
     'Enterprise AI Solutions'
   );
+
   RAISE NOTICE 'Test courses cleaned up';
 END;
 $$ LANGUAGE plpgsql;
