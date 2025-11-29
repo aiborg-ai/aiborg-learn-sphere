@@ -400,7 +400,7 @@ export class GoalPredictionService {
           type: 'celebrate',
           priority: 'low',
           title: "You're Almost There!",
-          description: 'Just a little more effort and you'll achieve your goal!',
+          description: "Just a little more effort and you'll achieve your goal!",
           actionItems: [
             'Complete remaining tasks',
             'Plan how to celebrate completion',

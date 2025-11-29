@@ -5,7 +5,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, TrendingDown, Minus, ArrowUpRight, ArrowDownRight } from '@/components/ui/icons';
+import { TrendingUp, TrendingDown, Minus } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
 export interface ComparisonMetric {
