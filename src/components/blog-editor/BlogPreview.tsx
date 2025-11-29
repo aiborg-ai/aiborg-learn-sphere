@@ -1,4 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
+import { CardImage } from '@/components/shared/OptimizedImage';
 
 interface BlogPreviewProps {
   title: string;
@@ -21,7 +22,7 @@ export function BlogPreview({
         <article className="prose prose-lg dark:prose-invert max-w-none">
           <h1>{title || 'Untitled Post'}</h1>
           {excerpt && <p className="text-xl text-muted-foreground">{excerpt}</p>}
-          {featuredImage && <img src={featuredImage} alt={title} className="w-full rounded-lg" />}
+          {featuredImage && <CardImage src={featuredImage} alt={title} className="w-full rounded-lg" />}
           <div dangerouslySetInnerHTML={{ __html: parseMarkdown(content) }} />
         </article>
       </CardContent>

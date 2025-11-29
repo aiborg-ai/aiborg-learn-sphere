@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Settings, Image, Tag } from '@/components/ui/icons';
+import { CardImage } from '@/components/shared/OptimizedImage';
 
 interface Category {
   id: string;
@@ -154,7 +155,7 @@ export function PostSettings({
         <CardContent>
           <div className="space-y-4">
             {featuredImage && (
-              <img src={featuredImage} alt="Featured" className="w-full rounded-lg" />
+              <CardImage src={featuredImage} alt="Featured" className="w-full rounded-lg" />
             )}
             <Input
               value={featuredImage}

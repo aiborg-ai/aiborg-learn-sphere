@@ -15,6 +15,7 @@ import {
   Sparkles,
   TrendingUp,
 } from '@/components/ui/icons';
+import { ThumbnailImage } from '@/components/shared/OptimizedImage';
 import { useNavigate } from 'react-router-dom';
 import type { Course } from '@/hooks/useCourses';
 import type { BlogPost } from '@/types/blog';
@@ -156,7 +157,7 @@ export function RecommendedResources({
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
                       {post.featured_image_url && (
-                        <img
+                        <ThumbnailImage
                           src={post.featured_image_url}
                           alt={post.title}
                           className="w-20 h-20 object-cover rounded flex-shrink-0"

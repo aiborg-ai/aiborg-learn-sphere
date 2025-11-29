@@ -19,8 +19,8 @@ export default defineConfig(({ mode }) => ({
     cspPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: null, // Disable service worker registration temporarily
-      includeAssets: ['**/*.{png,svg,ico,woff,woff2}'],
+      injectRegister: 'auto', // Enable service worker registration
+      includeAssets: ['**/*.{png,svg,ico,woff,woff2,webp}'],
       manifest: {
         name: 'Aiborg Learn Sphere',
         short_name: 'Aiborg',
@@ -56,8 +56,8 @@ export default defineConfig(({ mode }) => ({
         ],
       },
       workbox: {
-        // Temporarily exclude JS to fix chunk caching issues
-        globPatterns: ['**/*.{css,html,ico,png,svg,woff,woff2}'],
+        // Include all static assets including JS chunks
+        globPatterns: ['**/*.{css,html,ico,png,svg,woff,woff2,webp,js}'],
         runtimeCaching: [
           {
             // Cache-First for static assets

@@ -322,7 +322,10 @@ export default function Auth() {
             Back to Home
           </Link>
           <div className="flex items-center justify-center mb-4">
-            <img src="/logo.jpeg" alt="Aiborg" className="h-12 w-auto object-contain" />
+            <picture>
+              <source srcSet="/logo.webp" type="image/webp" />
+              <img src="/logo.jpeg" alt="Aiborg" className="h-12 w-auto object-contain" />
+            </picture>
           </div>
           <p className="text-white/80">Join the AI learning revolution</p>
         </div>

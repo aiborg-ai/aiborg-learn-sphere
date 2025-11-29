@@ -12,6 +12,7 @@ import { Sparkles, BookOpen, TrendingUp, ArrowRight, Info } from '@/components/u
 import { useSimilarContent } from '@/hooks/useRecommendations';
 import type { Recommendation } from '@/services/ai/RecommendationEngineService';
 import { cn } from '@/lib/utils';
+import { prefetchCourseDetails, prefetchCourseReviews, createPrefetchOnHoverWithDelay } from '@/utils/prefetch';
 
 export interface SimilarCoursesSectionProps {
   courseId: string;
@@ -42,10 +43,20 @@ function SimilarCourseCard({
 }) {
   const confidencePercent = Math.round(recommendation.confidenceScore * 100);
 
+  // Create prefetch handlers for this course card
+  const prefetchHandlers = createPrefetchOnHoverWithDelay(async () => {
+    await Promise.all([
+      prefetchCourseDetails(recommendation.contentId),
+      prefetchCourseReviews(recommendation.contentId),
+    ]);
+  }, 500); // 500ms delay for similar course cards
+
   return (
     <Card
       className="hover:shadow-lg transition-all cursor-pointer group"
       onClick={onClick}
+      onMouseEnter={prefetchHandlers.onMouseEnter}
+      onMouseLeave={prefetchHandlers.onMouseLeave}
       role="button"
       tabIndex={0}
     >

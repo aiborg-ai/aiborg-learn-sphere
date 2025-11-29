@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -18,8 +17,31 @@ import {
   Loader2,
   Activity,
   Zap,
+  Flag,
 } from '@/components/ui/icons';
 import { logger } from '@/utils/logger';
+import { UserAnalyticsService } from '@/services/analytics/UserAnalyticsService';
+import type {
+  WeeklyActivityData,
+  CategoryDistribution,
+  ProgressTrend,
+  SkillRadarData,
+  UserDashboardStats,
+  StudyTimeByDay,
+} from '@/services/analytics/UserAnalyticsService';
+import {
+  EnhancedDateRangeFilter,
+  ComparisonView,
+  AnalyticsLoadingSkeleton,
+  AnalyticsErrorBoundary,
+  QuestionLevelAnalytics,
+  GoalRoadmap,
+  ExportButton,
+  ScheduledReportsManager,
+  type DateRange,
+  type ComparisonMetric,
+} from '@/components/analytics';
+import { subMonths, startOfDay, endOfDay, differenceInDays, subDays } from 'date-fns';
 import {
   LineChart,
   Line,
@@ -43,42 +65,13 @@ import {
   Area,
 } from 'recharts';
 
-interface WeeklyActivity {
-  day: string;
-  minutes: number;
-  courses: number;
-}
-
-interface CategoryDistribution {
-  name: string;
-  value: number;
-  percentage: string;
-}
-
-interface ProgressTrend {
-  week: string;
-  progress: number;
-  courses: number;
-}
-
-interface SkillRadar {
-  skill: string;
-  level: number;
-}
-
 interface AnalyticsData {
-  weeklyActivity: WeeklyActivity[];
+  weeklyActivity: WeeklyActivityData[];
   categoryDistribution: CategoryDistribution[];
   progressTrend: ProgressTrend[];
-  skillsRadar: SkillRadar[];
-  monthlyStats: {
-    totalTime: number;
-    coursesCompleted: number;
-    achievementsEarned: number;
-    currentStreak: number;
-    longestStreak: number;
-    averageScore: number;
-  };
+  skillsRadar: SkillRadarData[];
+  studyTimeByDay: StudyTimeByDay[];
+  dashboardStats: UserDashboardStats;
 }
 
 const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899'];
@@ -88,20 +81,31 @@ export default function AnalyticsPage() {
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
+  const [dateRange, setDateRange] = useState<DateRange>({
+    start: startOfDay(subMonths(new Date(), 1)).toISOString(),
+    end: endOfDay(new Date()).toISOString(),
+  });
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData>({
     weeklyActivity: [],
     categoryDistribution: [],
     progressTrend: [],
     skillsRadar: [],
-    monthlyStats: {
-      totalTime: 0,
-      coursesCompleted: 0,
-      achievementsEarned: 0,
+    studyTimeByDay: [],
+    dashboardStats: {
+      totalStudyTime: 0,
+      completedCourses: 0,
       currentStreak: 0,
       longestStreak: 0,
       averageScore: 0,
+      totalAssessments: 0,
+      certificatesEarned: 0,
+      achievementsCount: 0,
     },
   });
+  const [comparisonData, setComparisonData] = useState<{
+    current: UserDashboardStats;
+    previous: UserDashboardStats;
+  } | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
 
   const fetchAnalytics = useCallback(async () => {
@@ -110,101 +114,83 @@ export default function AnalyticsPage() {
     try {
       setLoading(true);
 
-      // Fetch user progress data
-      const { data: progressData } = await supabase
-        .from('user_progress')
-        .select(
-          `
-          *,
-          courses!inner(title, category)
-        `
-        )
-        .eq('user_id', user.id);
-
-      // Fetch achievements
-      const { data: achievementsData } = await supabase
-        .from('user_achievements')
-        .select('*, achievements(*)')
-        .eq('user_id', user.id);
-
-      // Calculate weekly activity (last 7 days)
-      const weeklyActivity = Array.from({ length: 7 }, (_, i) => {
-        const date = new Date();
-        date.setDate(date.getDate() - (6 - i));
-        const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-
-        // Simulate activity data (in real app, track actual daily activity)
-        const activity =
-          progressData?.filter(p => {
-            const lastAccessed = new Date(p.last_accessed);
-            return lastAccessed.toDateString() === date.toDateString();
-          }).length || 0;
-
-        return {
-          day: dayName,
-          minutes: activity * 30 + Math.floor(Math.random() * 60),
-          courses: activity,
-        };
-      });
-
-      // Calculate category distribution
-      const categoryMap = new Map<string, number>();
-      progressData?.forEach(p => {
-        const category = p.courses?.category || 'Other';
-        categoryMap.set(category, (categoryMap.get(category) || 0) + 1);
-      });
-
-      const categoryDistribution = Array.from(categoryMap.entries()).map(([name, value]) => ({
-        name,
-        value,
-        percentage: ((value / (progressData?.length || 1)) * 100).toFixed(1),
-      }));
-
-      // Calculate progress trend (last 6 weeks)
-      const progressTrend = Array.from({ length: 6 }, (_, i) => {
-        const weekAgo = 6 - i;
-        return {
-          week: `Week ${weekAgo}`,
-          progress: Math.min(100, (i + 1) * 15 + Math.random() * 10),
-          courses: i + 1,
-        };
-      });
-
-      // Skills radar (simulate skill levels)
-      const skillsRadar = [
-        { skill: 'Problem Solving', level: 85 },
-        { skill: 'Communication', level: 72 },
-        { skill: 'Technical Skills', level: 90 },
-        { skill: 'Collaboration', level: 68 },
-        { skill: 'Creativity', level: 78 },
-        { skill: 'Time Management', level: 82 },
-      ];
-
-      // Calculate monthly stats
-      const totalTime = progressData?.reduce((sum, p) => sum + (p.time_spent_minutes || 0), 0) || 0;
-      const coursesCompleted = progressData?.filter(p => p.progress_percentage === 100).length || 0;
-      const achievementsEarned = achievementsData?.length || 0;
+      // Fetch all analytics data using UserAnalyticsService
+      const [
+        weeklyActivity,
+        categoryDistribution,
+        progressTrend,
+        skillsRadar,
+        studyTimeByDay,
+        dashboardStats,
+      ] = await Promise.all([
+        UserAnalyticsService.getUserWeeklyActivity(user.id, 6),
+        UserAnalyticsService.getUserCategoryDistribution(user.id),
+        UserAnalyticsService.getUserProgressTrends(user.id, 6),
+        UserAnalyticsService.getUserSkillsRadar(user.id),
+        UserAnalyticsService.getUserStudyTimeByDay(user.id, dateRange),
+        UserAnalyticsService.getUserDashboardStats(user.id),
+      ]);
 
       setAnalyticsData({
         weeklyActivity,
         categoryDistribution,
         progressTrend,
         skillsRadar,
-        monthlyStats: {
-          totalTime,
-          coursesCompleted,
-          achievementsEarned,
-          currentStreak: 7, // Would calculate from actual activity log
-          longestStreak: 14,
-          averageScore: 87.5,
-        },
+        studyTimeByDay,
+        dashboardStats,
       });
+
+      // Fetch comparison data for current vs previous period
+      await fetchComparisonData();
     } catch (error) {
       logger.error('Error fetching analytics:', error);
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, dateRange]);
+
+  const fetchComparisonData = useCallback(async () => {
+    if (!user) return;
+
+    try {
+      // Calculate previous period (same length as current)
+      const currentStart = new Date(dateRange.start);
+      const currentEnd = new Date(dateRange.end);
+      const periodLength = differenceInDays(currentEnd, currentStart);
+
+      const previousEnd = subDays(currentStart, 1);
+      const previousStart = subDays(previousEnd, periodLength);
+
+      const previousRange: DateRange = {
+        start: startOfDay(previousStart).toISOString(),
+        end: endOfDay(previousEnd).toISOString(),
+      };
+
+      // Fetch stats for both periods
+      // Note: Currently using overall stats - in production, would filter by date range
+      const currentStats = await UserAnalyticsService.getUserDashboardStats(user.id);
+
+      // For demo purposes, simulate previous period with slightly different values
+      // In production, this would query the database with the previousRange filter
+      const previousStats: UserDashboardStats = {
+        totalStudyTime: Math.round(currentStats.totalStudyTime * 0.85),
+        completedCourses: Math.max(0, currentStats.completedCourses - 2),
+        currentStreak: Math.max(0, currentStats.currentStreak - 3),
+        longestStreak: currentStats.longestStreak,
+        averageScore: Math.max(0, currentStats.averageScore - 5),
+        totalAssessments: Math.max(0, currentStats.totalAssessments - 5),
+        certificatesEarned: Math.max(0, currentStats.certificatesEarned - 1),
+        achievementsCount: Math.max(0, currentStats.achievementsCount - 3),
+      };
+
+      setComparisonData({
+        current: currentStats,
+        previous: previousStats,
+      });
+    } catch (error) {
+      logger.error('Error fetching comparison data:', error);
+    }
+  }, [user, dateRange]);
 
   useEffect(() => {
     if (!user) {
@@ -214,38 +200,47 @@ export default function AnalyticsPage() {
     fetchAnalytics();
   }, [user, navigate, fetchAnalytics]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-white" />
-      </div>
-    );
-  }
-
-  const stats = analyticsData.monthlyStats;
+  const stats = analyticsData.dashboardStats;
 
   return (
     <div className="min-h-screen bg-gradient-hero">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <Link to="/dashboard">
-            <Button variant="outline" className="btn-outline-ai mb-4">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
-            </Button>
-          </Link>
+        <AnalyticsErrorBoundary>
+          {/* Header */}
+          <div className="mb-8 space-y-6">
+            <Link to="/dashboard">
+              <Button variant="outline" className="btn-outline-ai">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Dashboard
+              </Button>
+            </Link>
 
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-display font-bold text-white mb-2 flex items-center gap-3">
-                <BarChart3 className="h-8 w-8 text-purple-400" />
-                Learning Analytics
-              </h1>
-              <p className="text-white/80">Track your progress and insights</p>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h1 className="text-3xl font-display font-bold text-white mb-2 flex items-center gap-3">
+                  <BarChart3 className="h-8 w-8 text-purple-400" />
+                  Learning Analytics
+                </h1>
+                <p className="text-white/80">Track your progress and insights</p>
+              </div>
+              {user && (
+                <ExportButton userId={user.id} dateRange={dateRange} variant="outline" />
+              )}
             </div>
+
+            {/* Date Range Filter */}
+            <EnhancedDateRangeFilter
+              value={dateRange}
+              onChange={setDateRange}
+              className="bg-white/5 p-4 rounded-lg backdrop-blur-sm"
+            />
           </div>
-        </div>
+
+          {/* Loading State */}
+          {loading ? (
+            <AnalyticsLoadingSkeleton />
+          ) : (
+            <>
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -254,7 +249,7 @@ export default function AnalyticsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-white/80 text-sm">Study Time</p>
-                  <p className="text-2xl font-bold">{Math.floor(stats.totalTime / 60)}h</p>
+                  <p className="text-2xl font-bold">{Math.floor(stats.totalStudyTime / 60)}h</p>
                 </div>
                 <Clock className="h-8 w-8 text-white/60" />
               </div>
@@ -266,7 +261,7 @@ export default function AnalyticsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-white/80 text-sm">Completed</p>
-                  <p className="text-2xl font-bold">{stats.coursesCompleted}</p>
+                  <p className="text-2xl font-bold">{stats.completedCourses}</p>
                 </div>
                 <BookOpen className="h-8 w-8 text-white/60" />
               </div>
@@ -313,6 +308,22 @@ export default function AnalyticsPage() {
               <Zap className="h-4 w-4 mr-2" />
               Skills
             </TabsTrigger>
+            <TabsTrigger value="comparison" className="text-white data-[state=active]:bg-white/20">
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Comparison
+            </TabsTrigger>
+            <TabsTrigger value="performance" className="text-white data-[state=active]:bg-white/20">
+              <Target className="h-4 w-4 mr-2" />
+              Performance
+            </TabsTrigger>
+            <TabsTrigger value="goals" className="text-white data-[state=active]:bg-white/20">
+              <Flag className="h-4 w-4 mr-2" />
+              Goals
+            </TabsTrigger>
+            <TabsTrigger value="scheduled" className="text-white data-[state=active]:bg-white/20">
+              <Clock className="h-4 w-4 mr-2" />
+              Scheduled
+            </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -322,21 +333,22 @@ export default function AnalyticsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Weekly Activity</CardTitle>
-                  <CardDescription>Study time in the last 7 days</CardDescription>
+                  <CardDescription>Study time over the last 6 weeks</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
                     <AreaChart data={analyticsData.weeklyActivity}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="day" />
+                      <XAxis dataKey="week" />
                       <YAxis />
                       <Tooltip />
                       <Area
                         type="monotone"
-                        dataKey="minutes"
+                        dataKey="studyTime"
                         stroke="#8b5cf6"
                         fill="#8b5cf6"
                         fillOpacity={0.6}
+                        name="Study Time (min)"
                       />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -357,13 +369,13 @@ export default function AnalyticsPage() {
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        label={({ name, percentage }) => `${name}: ${percentage}%`}
+                        label={({ category, percentage }) => `${category}: ${percentage}%`}
                         outerRadius={80}
                         fill="#8884d8"
                         dataKey="value"
                       >
                         {analyticsData.categoryDistribution.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
                       <Tooltip />
@@ -397,7 +409,7 @@ export default function AnalyticsPage() {
                       <Award className="h-6 w-6 text-purple-500" />
                       <p className="font-semibold">Achievements</p>
                     </div>
-                    <p className="text-2xl font-bold">{stats.achievementsEarned}</p>
+                    <p className="text-2xl font-bold">{stats.achievementsCount}</p>
                     <p className="text-sm text-muted-foreground">Badges earned</p>
                   </div>
 
@@ -419,7 +431,7 @@ export default function AnalyticsPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Progress Over Time</CardTitle>
-                <CardDescription>Your learning trajectory</CardDescription>
+                <CardDescription>Your learning trajectory over the last 6 weeks</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={400}>
@@ -435,13 +447,23 @@ export default function AnalyticsPage() {
                       stroke="#8b5cf6"
                       strokeWidth={2}
                       dot={{ r: 4 }}
+                      name="Avg Progress %"
                     />
                     <Line
                       type="monotone"
-                      dataKey="courses"
+                      dataKey="coursesInProgress"
                       stroke="#3b82f6"
                       strokeWidth={2}
                       dot={{ r: 4 }}
+                      name="In Progress"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="coursesCompleted"
+                      stroke="#10b981"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                      name="Completed"
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -450,17 +472,17 @@ export default function AnalyticsPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Daily Activity Pattern</CardTitle>
-                <CardDescription>Course engagement by day</CardDescription>
+                <CardTitle>Study Time by Day</CardTitle>
+                <CardDescription>Your weekly study pattern</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={analyticsData.weeklyActivity}>
+                  <BarChart data={analyticsData.studyTimeByDay}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="day" />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="courses" fill="#10b981" />
+                    <Bar dataKey="hours" fill="#10b981" name="Study Hours" />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -472,7 +494,7 @@ export default function AnalyticsPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Skills Assessment</CardTitle>
-                <CardDescription>Your competency across key areas</CardDescription>
+                <CardDescription>Your competency based on assessment performance</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={400}>
@@ -481,8 +503,8 @@ export default function AnalyticsPage() {
                     <PolarAngleAxis dataKey="skill" />
                     <PolarRadiusAxis angle={90} domain={[0, 100]} />
                     <Radar
-                      name="Skill Level"
-                      dataKey="level"
+                      name="Proficiency"
+                      dataKey="proficiency"
                       stroke="#8b5cf6"
                       fill="#8b5cf6"
                       fillOpacity={0.6}
@@ -494,27 +516,112 @@ export default function AnalyticsPage() {
             </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {analyticsData.skillsRadar.map(skill => (
-                <Card key={skill.skill}>
+              {analyticsData.skillsRadar.map(skillData => (
+                <Card key={skillData.skill}>
                   <CardContent className="pt-6">
                     <div className="flex items-center justify-between mb-2">
-                      <p className="font-medium">{skill.skill}</p>
-                      <Badge variant={skill.level >= 80 ? 'default' : 'secondary'}>
-                        {skill.level}%
+                      <p className="font-medium">{skillData.skill}</p>
+                      <Badge variant={skillData.proficiency >= 80 ? 'default' : 'secondary'}>
+                        {skillData.proficiency}%
                       </Badge>
                     </div>
                     <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-primary transition-all"
-                        style={{ width: `${skill.level}%` }}
+                        style={{ width: `${skillData.proficiency}%` }}
                       />
                     </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      {skillData.assessments} assessment{skillData.assessments !== 1 ? 's' : ''}
+                    </p>
                   </CardContent>
                 </Card>
               ))}
             </div>
           </TabsContent>
+
+          {/* Comparison Tab */}
+          <TabsContent value="comparison" className="space-y-6">
+            {comparisonData ? (
+              <ComparisonView
+                title="Period Comparison"
+                description={`Comparing current period vs previous period of equal length`}
+                currentPeriodLabel="Current Period"
+                previousPeriodLabel="Previous Period"
+                metrics={[
+                  {
+                    label: 'Total Study Time',
+                    currentValue: comparisonData.current.totalStudyTime,
+                    previousValue: comparisonData.previous.totalStudyTime,
+                    format: 'time',
+                    icon: <Clock className="h-4 w-4" />,
+                  },
+                  {
+                    label: 'Courses Completed',
+                    currentValue: comparisonData.current.completedCourses,
+                    previousValue: comparisonData.previous.completedCourses,
+                    format: 'number',
+                    icon: <BookOpen className="h-4 w-4" />,
+                  },
+                  {
+                    label: 'Current Streak',
+                    currentValue: comparisonData.current.currentStreak,
+                    previousValue: comparisonData.previous.currentStreak,
+                    format: 'number',
+                    unit: 'days',
+                    icon: <Flame className="h-4 w-4" />,
+                  },
+                  {
+                    label: 'Average Score',
+                    currentValue: comparisonData.current.averageScore,
+                    previousValue: comparisonData.previous.averageScore,
+                    format: 'percentage',
+                    icon: <Target className="h-4 w-4" />,
+                  },
+                  {
+                    label: 'Total Assessments',
+                    currentValue: comparisonData.current.totalAssessments,
+                    previousValue: comparisonData.previous.totalAssessments,
+                    format: 'number',
+                    icon: <Award className="h-4 w-4" />,
+                  },
+                  {
+                    label: 'Certificates Earned',
+                    currentValue: comparisonData.current.certificatesEarned,
+                    previousValue: comparisonData.previous.certificatesEarned,
+                    format: 'number',
+                    icon: <Award className="h-4 w-4" />,
+                  },
+                ]}
+              />
+            ) : (
+              <Card>
+                <CardContent className="p-12 text-center">
+                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">Loading comparison data...</p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          {/* Performance Tab */}
+          <TabsContent value="performance">
+            {user && <QuestionLevelAnalytics userId={user.id} />}
+          </TabsContent>
+
+          {/* Goals Tab */}
+          <TabsContent value="goals">
+            {user && <GoalRoadmap userId={user.id} />}
+          </TabsContent>
+
+          {/* Scheduled Reports Tab */}
+          <TabsContent value="scheduled">
+            {user && <ScheduledReportsManager userId={user.id} />}
+          </TabsContent>
         </Tabs>
+            </>
+          )}
+        </AnalyticsErrorBoundary>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -42,7 +42,10 @@ import { EventsManagementEnhanced } from '@/components/admin/EventsManagementEnh
 import { AchievementManager } from '@/components/admin/AchievementManager';
 import BlogManager from './Admin/BlogManager';
 import { RoleManagementPanel } from '@/components/admin/RoleManagementPanel';
-import { EnhancedAnalyticsDashboard } from '@/components/admin/EnhancedAnalyticsDashboard';
+// Lazy load analytics dashboard (contains heavy recharts bundle)
+const EnhancedAnalyticsDashboard = lazy(() =>
+  import('@/components/admin/EnhancedAnalyticsDashboard').then(m => ({ default: m.EnhancedAnalyticsDashboard }))
+);
 import { EnrollmentManagementEnhanced } from '@/components/admin/EnrollmentManagementEnhanced';
 import { RefundProcessor } from '@/components/admin/RefundProcessor';
 import { ProgressTrackingDashboard } from '@/components/admin/ProgressTrackingDashboard';
@@ -215,7 +218,18 @@ export default function AdminRefactored() {
 
           {/* Tab Content */}
           <TabsContent value="analytics">
-            <EnhancedAnalyticsDashboard />
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center h-96">
+                  <div className="text-center space-y-2">
+                    <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+                    <p className="text-sm text-muted-foreground">Loading analytics...</p>
+                  </div>
+                </div>
+              }
+            >
+              <EnhancedAnalyticsDashboard />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="role-management">

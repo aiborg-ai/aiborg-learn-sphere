@@ -15,6 +15,7 @@ import {
   Image as ImageIcon,
   ArrowRight,
 } from '@/components/ui/icons';
+import { CardImage } from '@/components/shared/OptimizedImage';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import type { TopicStepData } from '@/schemas/aiBlogWorkflow';
@@ -217,7 +218,7 @@ export function GenerationStep({ topicData, onNext, onBack }: GenerationStepProp
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
-                    <img
+                    <CardImage
                       src={image.thumbnail}
                       alt={`Option ${index + 1}`}
                       className="w-full h-48 object-cover"

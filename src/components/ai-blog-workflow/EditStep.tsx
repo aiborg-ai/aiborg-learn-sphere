@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ArrowRight, Bold, Italic, List, Link2, Code } from '@/components/ui/icons';
+import { CardImage } from '@/components/shared/OptimizedImage';
 import { supabase } from '@/integrations/supabase/client';
 
 interface EditStepProps {
@@ -331,7 +332,7 @@ export function EditStep({
               )}
               {watch('featuredImage') && (
                 <div className="mt-2">
-                  <img
+                  <CardImage
                     src={watch('featuredImage')}
                     alt="Featured"
                     className="w-full max-w-md rounded-lg border"

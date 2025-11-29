@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/icons';
 import { usePersonalization } from '@/contexts/PersonalizationContext';
 import { Link } from 'react-router-dom';
+import { HeroImage } from '@/components/shared/OptimizedImage';
 
 const audiences = [
   {
@@ -20,7 +21,7 @@ const audiences = [
     subtitle: 'Ages 8-11',
     description: 'Fun, interactive AI learning for young minds',
     icon: GraduationCap,
-    image: '/lovable-uploads/fd4d8f4b-a05e-497b-baa1-b38b134dddd3.png',
+    image: '/lovable-uploads/fd4d8f4b-a05e-497b-baa1-b38b134dddd3.webp',
     color: 'from-pink-300 to-purple-300',
     features: ['Visual Learning', 'Games & Puzzles', 'Safe Environment', 'Parent Dashboard'],
   },
@@ -30,7 +31,7 @@ const audiences = [
     subtitle: 'Ages 12-18',
     description: 'Advanced AI concepts for future innovators',
     icon: Brain,
-    image: '/lovable-uploads/a7179cc3-d562-480e-bb31-34c805ea7621.png',
+    image: '/lovable-uploads/a7179cc3-d562-480e-bb31-34c805ea7621.webp',
     color: 'from-blue-300 to-indigo-300',
     features: ['Coding Projects', 'AI Ethics', 'Career Paths', 'Peer Learning'],
   },
@@ -40,7 +41,7 @@ const audiences = [
     subtitle: 'Career Growth',
     description: 'AI skills for advancing your career',
     icon: Briefcase,
-    image: '/lovable-uploads/ce815291-0430-4cf1-b0ca-c223bc962ef6.png',
+    image: '/lovable-uploads/ce815291-0430-4cf1-b0ca-c223bc962ef6.webp',
     color: 'from-green-300 to-emerald-300',
     features: ['Industry Skills', 'Certifications', 'Real Projects', 'Networking'],
   },
@@ -50,7 +51,7 @@ const audiences = [
     subtitle: 'Enterprise',
     description: 'Transform your business with AI training',
     icon: Building2,
-    image: '/lovable-uploads/ea754477-6d41-40d8-824f-5d0275f282c7.png',
+    image: '/lovable-uploads/ea754477-6d41-40d8-824f-5d0275f282c7.webp',
     color: 'from-orange-300 to-red-300',
     features: ['Team Training', 'Custom Programs', 'ROI Tracking', 'Expert Support'],
   },
@@ -157,10 +158,11 @@ export function HeroSection() {
                 >
                   {/* Background Image */}
                   <div className="relative h-64 sm:h-72 md:h-80 overflow-hidden">
-                    <img
+                    <HeroImage
                       src={audience.image}
                       alt={`${audience.title} representative`}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      priority={true}
                     />
 
                     {/* Gradient Overlay */}

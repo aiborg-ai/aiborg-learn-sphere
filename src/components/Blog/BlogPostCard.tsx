@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CalendarDays, Clock, Eye, Heart, MessageCircle } from '@/components/ui/icons';
 import type { BlogPost } from '@/types/blog';
+import { CardImage } from '@/components/shared/OptimizedImage';
 
 interface BlogPostCardProps {
   post: BlogPost;
@@ -34,7 +35,7 @@ export const BlogPostCard = memo(function BlogPostCard({
         <Link to={`/blog/${post.slug}`}>
           {post.featured_image && (
             <div className="aspect-[16/9] overflow-hidden">
-              <img
+              <CardImage
                 src={post.featured_image}
                 alt={post.title}
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
@@ -102,7 +103,7 @@ export const BlogPostCard = memo(function BlogPostCard({
         <Link to={`/blog/${post.slug}`} className="flex gap-4 p-4">
           {post.featured_image && (
             <div className="w-24 h-24 flex-shrink-0 overflow-hidden rounded-md">
-              <img
+              <CardImage
                 src={post.featured_image}
                 alt={post.title}
                 className="w-full h-full object-cover"
@@ -134,7 +135,7 @@ export const BlogPostCard = memo(function BlogPostCard({
       <Link to={`/blog/${post.slug}`}>
         {post.featured_image && (
           <div className="aspect-video overflow-hidden">
-            <img
+            <CardImage
               src={post.featured_image}
               alt={post.title}
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"

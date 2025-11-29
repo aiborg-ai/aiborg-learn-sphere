@@ -3,6 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { Icon } from '@/utils/iconLoader';
+import { PrefetchLink } from '@/components/navigation/PrefetchLink';
+import { prefetchDashboard, prefetchUserProfile, prefetchUserEnrollments, prefetchUserAchievements, createPrefetchOnHoverWithDelay } from '@/utils/prefetch';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -60,6 +62,21 @@ export function Navbar() {
     }
   };
 
+  // Prefetch handlers for desktop dropdown menu
+  const dashboardPrefetchHandlers = user?.id
+    ? createPrefetchOnHoverWithDelay(async () => await prefetchDashboard(user.id), 300)
+    : null;
+
+  const profilePrefetchHandlers = user?.id
+    ? createPrefetchOnHoverWithDelay(async () => {
+        await Promise.all([
+          prefetchUserProfile(user.id),
+          prefetchUserEnrollments(user.id),
+          prefetchUserAchievements(user.id),
+        ]);
+      }, 300)
+    : null;
+
   return (
     <nav
       className="sticky top-0 z-50 bg-white/10 backdrop-blur-md border-b border-white/20"
@@ -69,7 +86,10 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2" aria-label="Aiborg home">
-            <img src="/logo.jpeg" alt="Aiborg logo" className="h-10 w-auto object-contain" />
+            <picture>
+              <source srcSet="/logo.webp" type="image/webp" />
+              <img src="/logo.jpeg" alt="Aiborg logo" className="h-10 w-auto object-contain" />
+            </picture>
           </Link>
 
           {/* Desktop Navigation */}
@@ -190,6 +210,8 @@ export function Navbar() {
                 >
                   <DropdownMenuItem
                     onClick={() => navigate('/dashboard')}
+                    onMouseEnter={() => dashboardPrefetchHandlers?.onMouseEnter()}
+                    onMouseLeave={() => dashboardPrefetchHandlers?.onMouseLeave()}
                     aria-label="Go to my dashboard"
                   >
                     <Icon name="LayoutDashboard" size={16} className="mr-2" aria-hidden="true" />
@@ -197,6 +219,8 @@ export function Navbar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => navigate('/profile')}
+                    onMouseEnter={() => profilePrefetchHandlers?.onMouseEnter()}
+                    onMouseLeave={() => profilePrefetchHandlers?.onMouseLeave()}
                     aria-label="Go to my profile"
                   >
                     <Icon name="User" size={16} className="mr-2" aria-hidden="true" />
@@ -361,7 +385,11 @@ export function Navbar() {
                 >
                   {profile?.display_name || user.email}
                 </p>
-                <Link to="/dashboard">
+                <PrefetchLink
+                  to="/dashboard"
+                  prefetchFn={async () => user?.id && await prefetchDashboard(user.id)}
+                  prefetchDelay={300}
+                >
                   <Button
                     variant="ghost"
                     className="w-full justify-start text-foreground hover:bg-muted/10"
@@ -370,8 +398,20 @@ export function Navbar() {
                     <Icon name="LayoutDashboard" size={16} className="mr-2" aria-hidden="true" />
                     My Dashboard
                   </Button>
-                </Link>
-                <Link to="/profile">
+                </PrefetchLink>
+                <PrefetchLink
+                  to="/profile"
+                  prefetchFn={async () => {
+                    if (user?.id) {
+                      await Promise.all([
+                        prefetchUserProfile(user.id),
+                        prefetchUserEnrollments(user.id),
+                        prefetchUserAchievements(user.id),
+                      ]);
+                    }
+                  }}
+                  prefetchDelay={300}
+                >
                   <Button
                     variant="ghost"
                     className="w-full justify-start text-foreground hover:bg-muted/10"
@@ -380,7 +420,7 @@ export function Navbar() {
                     <Icon name="User" size={16} className="mr-2" aria-hidden="true" />
                     Profile
                   </Button>
-                </Link>
+                </PrefetchLink>
                 {isAdmin && (
                   <Link to="/admin">
                     <Button

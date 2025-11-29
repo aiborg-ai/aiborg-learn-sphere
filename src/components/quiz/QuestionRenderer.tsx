@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle } from '@/components/ui/icons';
+import { CardImage } from '@/components/shared/OptimizedImage';
 import type { QuizQuestion } from '@/services/quiz/types';
 
 interface QuestionRendererProps {
@@ -49,7 +50,7 @@ export function QuestionRenderer({
 
     return (
       <div className="mb-4">
-        <img
+        <CardImage
           src={question.media_url}
           alt="Question media"
           className="max-w-full h-auto rounded-lg border"

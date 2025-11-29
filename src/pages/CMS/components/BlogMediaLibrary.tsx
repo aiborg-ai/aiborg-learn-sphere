@@ -20,6 +20,7 @@ import {
   X,
   Check,
 } from '@/components/ui/icons';
+import { CardImage } from '@/components/shared/OptimizedImage';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface MediaItem {
@@ -328,7 +329,7 @@ function BlogMediaLibrary() {
                   role="button"
                   tabIndex={0}
                 >
-                  <img
+                  <CardImage
                     src={item.thumbnail_url || item.file_url}
                     alt={item.alt_text || item.original_filename}
                     className="w-full h-full object-cover"
@@ -375,7 +376,7 @@ function BlogMediaLibrary() {
                   key={item.id}
                   className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors"
                 >
-                  <img
+                  <CardImage
                     src={item.thumbnail_url || item.file_url}
                     alt={item.alt_text || item.original_filename}
                     className="w-16 h-16 object-cover rounded"
@@ -414,7 +415,7 @@ function BlogMediaLibrary() {
                 <DialogTitle>{selectedMedia.original_filename}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
-                <img
+                <CardImage
                   src={selectedMedia.file_url}
                   alt={selectedMedia.alt_text || selectedMedia.original_filename}
                   className="w-full rounded-lg"
@@ -474,7 +475,7 @@ function BlogMediaLibrary() {
                 <DialogTitle>Edit Media Details</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
-                <img
+                <CardImage
                   src={editingMedia.thumbnail_url || editingMedia.file_url}
                   alt={editingMedia.alt_text || editingMedia.original_filename}
                   className="w-full rounded-lg"

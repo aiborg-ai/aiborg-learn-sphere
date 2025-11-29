@@ -5,10 +5,11 @@ import { HeroSection, ContactSection, AboutSection } from '@/components/sections
 import { TrainingPrograms } from '@/components/TrainingPrograms';
 import { EventsSection } from '@/components/events';
 import { ReviewsSection } from '@/components/ReviewsSection';
-import { AIChatbot, AIComputerAssemblyBanner, DeepawaliBanner } from '@/components/features';
+import { LazyAIChatbot, AIComputerAssemblyBanner, DeepawaliBanner } from '@/components/features';
 import { FamilyPassBanner } from '@/components/membership';
 import { AssessmentToolsSection } from '@/components/assessment-tools';
 import { NovemberVaultCampaignBanner } from '@/components/campaigns';
+import { prefetchCourses, prefetchEvents, createPrefetchOnScroll } from '@/utils/prefetch';
 
 const Index = () => {
   const location = useLocation();
@@ -36,6 +37,22 @@ const Index = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [location.hash]);
+
+  // Set up scroll-based prefetching for courses and events
+  useEffect(() => {
+    // Prefetch courses when user scrolls 60% down (approaching training-programs section)
+    const cleanupCourses = createPrefetchOnScroll(prefetchCourses, 0.6);
+
+    // Prefetch events when user scrolls 80% down (approaching events section)
+    const cleanupEvents = createPrefetchOnScroll(prefetchEvents, 0.8);
+
+    // Cleanup both scroll listeners on unmount
+    return () => {
+      cleanupCourses();
+      cleanupEvents();
+    };
+  }, []);
+
   return (
     <div className="min-h-screen">
       <AIComputerAssemblyBanner />
@@ -65,7 +82,7 @@ const Index = () => {
         </div>
       </main>
       <Footer />
-      <AIChatbot />
+      <LazyAIChatbot />
     </div>
   );
 };

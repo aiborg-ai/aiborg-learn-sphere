@@ -2,6 +2,7 @@
  * Feature Components - Barrel Export
  */
 export { AIChatbot } from './AIChatbot';
+export { LazyAIChatbot } from './LazyAIChatbot';
 export { AIComputerAssemblyBanner } from './AIComputerAssemblyBanner';
 export { AIStudyAssistant } from './AIStudyAssistant';
 export { CommandPalette } from './CommandPalette';

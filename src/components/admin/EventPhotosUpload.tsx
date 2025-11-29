@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Image, Upload, Trash2, X } from '@/components/ui/icons';
+import { ThumbnailImage } from '@/components/shared/OptimizedImage';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
@@ -280,7 +281,7 @@ export function EventPhotosUpload({
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {photos.map(photo => (
                   <div key={photo.id} className="relative group">
-                    <img
+                    <ThumbnailImage
                       src={photo.photo_url}
                       alt={photo.photo_caption || 'Event photo'}
                       className="w-full h-48 object-cover rounded-lg border"

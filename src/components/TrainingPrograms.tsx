@@ -43,6 +43,7 @@ import {
 import { ShareButton } from '@/components/shared';
 import { useHasActiveMembership } from '@/hooks/useMembership';
 import { useToast } from '@/hooks/use-toast';
+import { prefetchCourseDetails, prefetchCourseReviews, createPrefetchOnHoverWithDelay } from '@/utils/prefetch';
 
 export const TrainingPrograms = () => {
   const { courses, loading, error, refetch } = useCourses();
@@ -442,10 +443,20 @@ export const TrainingPrograms = () => {
           <>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {(showAllPrograms ? filteredPrograms : filteredPrograms.slice(0, 3)).map(program => {
+                // Create prefetch handlers for this course card
+                const prefetchHandlers = createPrefetchOnHoverWithDelay(async () => {
+                  await Promise.all([
+                    prefetchCourseDetails(program.id),
+                    prefetchCourseReviews(program.id),
+                  ]);
+                }, 500); // 500ms delay for course cards (slightly longer than navigation links)
+
                 return (
                   <Card
                     key={program.id}
                     className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+                    onMouseEnter={prefetchHandlers.onMouseEnter}
+                    onMouseLeave={prefetchHandlers.onMouseLeave}
                   >
                     <div className="p-6">
                       <div className="flex items-start justify-between mb-3">

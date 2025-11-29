@@ -13,3 +13,10 @@ export { LanguageSwitcher, CompactLanguageSwitcher } from './LanguageSwitcher';
 export { NotificationSettings } from './NotificationSettings';
 export { OfflineBanner } from './OfflineBanner';
 export { ShareButton } from './ShareButton';
+export {
+  OptimizedImage,
+  HeroImage,
+  CardImage,
+  ThumbnailImage,
+  type OptimizedImageProps,
+} from './OptimizedImage';

@@ -1,15 +1,24 @@
 /**
- * Analytics Components
- * Export all analytics-related components
+ * Analytics Components - Barrel Export
  */
+export { EnhancedDateRangeFilter } from './EnhancedDateRangeFilter';
+export type { DateRange, DatePreset, EnhancedDateRangeFilterProps } from './EnhancedDateRangeFilter';
 
-// Existing components
-export { SkillGapAnalysis } from './SkillGapAnalysis';
-export { PeerComparison } from './PeerComparison';
-export { StudyTimeRecommendations } from './StudyTimeRecommendations';
-export { ExportModal } from './ExportModal';
+export { ComparisonView } from './ComparisonView';
+export type { ComparisonMetric, ComparisonViewProps } from './ComparisonView';
 
-// New components (Advanced Analytics Dashboard)
-export { GoalProgressDashboard } from './GoalProgressDashboard';
-export { LearningVelocityCard } from './LearningVelocityCard';
-export { CompetencyHeatMap } from './CompetencyHeatMap';
+export {
+  AnalyticsLoadingSkeleton,
+  ChartLoadingSkeleton,
+  StatsCardSkeleton,
+} from './AnalyticsLoadingSkeleton';
+
+export { AnalyticsErrorBoundary, AnalyticsErrorDisplay } from './AnalyticsErrorBoundary';
+
+export { QuestionLevelAnalytics } from './QuestionLevelAnalytics';
+
+export { GoalRoadmap } from './GoalRoadmap';
+
+export { ExportButton } from './ExportButton';
+
+export { ScheduledReportsManager } from './ScheduledReportsManager';

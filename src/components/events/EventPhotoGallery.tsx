@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Image as ImageIcon, X, ChevronLeft, ChevronRight } from '@/components/ui/icons';
+import { CardImage } from '@/components/shared/OptimizedImage';
 import type { EventPhoto } from '@/hooks/useEvents';
 
 interface EventPhotoGalleryProps {
@@ -71,7 +72,7 @@ export function EventPhotoGallery({ photos, eventTitle }: EventPhotoGalleryProps
             >
               <CardContent className="p-0 relative">
                 <div className="aspect-video relative overflow-hidden">
-                  <img
+                  <CardImage
                     src={photo.photo_url}
                     alt={photo.photo_caption || `${eventTitle} photo ${index + 1}`}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
@@ -117,7 +118,7 @@ export function EventPhotoGallery({ photos, eventTitle }: EventPhotoGalleryProps
             </DialogHeader>
 
             <div className="relative">
-              <img
+              <CardImage
                 src={photos[selectedPhotoIndex].photo_url}
                 alt={
                   photos[selectedPhotoIndex].photo_caption ||

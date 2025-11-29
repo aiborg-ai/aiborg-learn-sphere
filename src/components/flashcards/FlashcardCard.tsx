@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { RotateCw } from '@/components/ui/icons';
+import { CardImage } from '@/components/shared/OptimizedImage';
 import type { Flashcard } from '@/services/spaced-repetition/FlashcardService';
 
 interface FlashcardCardProps {
@@ -45,7 +46,7 @@ export function FlashcardCard({
         >
           <div className="text-center space-y-4 w-full">
             {flashcard.front_image_url && (
-              <img
+              <CardImage
                 src={flashcard.front_image_url}
                 alt="Flashcard front"
                 className="max-w-full max-h-48 mx-auto rounded-lg object-contain"
@@ -72,7 +73,7 @@ export function FlashcardCard({
         >
           <div className="text-center space-y-4 w-full">
             {flashcard.back_image_url && (
-              <img
+              <CardImage
                 src={flashcard.back_image_url}
                 alt="Flashcard back"
                 className="max-w-full max-h-48 mx-auto rounded-lg object-contain"

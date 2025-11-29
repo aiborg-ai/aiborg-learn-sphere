@@ -24,6 +24,7 @@ import {
   CheckCircle2,
   Loader2,
 } from '@/components/ui/icons';
+import { CardImage } from '@/components/shared/OptimizedImage';
 import { useState } from 'react';
 
 interface ReviewStepProps {
@@ -143,7 +144,7 @@ export function ReviewStep({ editData, onBack, onEdit, onPublish }: ReviewStepPr
                 <ImageIcon className="h-4 w-4 text-muted-foreground" />
                 <div className="text-sm font-medium">Featured Image</div>
               </div>
-              <img
+              <CardImage
                 src={editData.featuredImage}
                 alt="Featured"
                 className="w-full max-w-md rounded-lg border"

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { CardImage } from '@/components/shared/OptimizedImage';
 import { parseMarkdown } from '@/utils/markdown';
 import { extractHeadings } from '@/utils/markdownSimple';
 import { CommentSection } from '@/components/blog/CommentSection';
@@ -287,10 +288,11 @@ export default function BlogPostPage() {
         {/* Featured Image */}
         {post.featured_image && (
           <div className="aspect-video overflow-hidden rounded-lg mb-8">
-            <img
+            <CardImage
               src={post.featured_image}
               alt={post.title}
               className="w-full h-full object-cover"
+              priority={true}
             />
           </div>
         )}

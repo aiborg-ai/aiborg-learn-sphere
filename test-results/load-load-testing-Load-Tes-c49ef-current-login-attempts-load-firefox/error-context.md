@@ -1,0 +1,50 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - region "Notifications (F8)":
+    - list
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - link "Back to Home" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - img [ref=e7]
+        - text: Back to Home
+      - img "Aiborg" [ref=e11]
+      - paragraph [ref=e12]: Join the AI learning revolution
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - heading "Welcome" [level=3] [ref=e15]
+        - paragraph [ref=e16]: Sign in to your account or create a new one
+      - generic [ref=e18]:
+        - tablist [ref=e19]:
+          - tab "Sign In" [selected] [ref=e20] [cursor=pointer]
+          - tab "Magic Link" [ref=e21] [cursor=pointer]
+          - tab "Sign Up" [ref=e22] [cursor=pointer]
+        - alert [ref=e23]:
+          - img [ref=e24]
+          - generic [ref=e28]: "Note: You'll be securely redirected to our authentication provider for sign-in."
+        - tabpanel "Sign In" [ref=e29]:
+          - generic [ref=e30]:
+            - button "Continue with Google" [ref=e31] [cursor=pointer]:
+              - img
+              - text: Continue with Google
+            - button "Continue with GitHub" [ref=e32] [cursor=pointer]:
+              - img
+              - text: Continue with GitHub
+          - generic [ref=e36]: Or continue with email
+          - generic [ref=e37]:
+            - generic [ref=e38]:
+              - text: Email
+              - textbox "Email" [ref=e39]:
+                - /placeholder: Enter your email
+                - text: taylor.hammes@gmail.com
+            - generic [ref=e40]:
+              - generic [ref=e41]:
+                - generic [ref=e42]: Password
+                - button "Forgot password?" [ref=e43] [cursor=pointer]
+              - textbox "Password" [active] [ref=e44]:
+                - /placeholder: Enter your password
+                - text: TestPassword123!
+            - button "Sign In" [ref=e45] [cursor=pointer]
+```

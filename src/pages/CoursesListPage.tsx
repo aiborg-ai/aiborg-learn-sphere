@@ -5,7 +5,7 @@
 
 import { Navbar, Footer } from '@/components/navigation';
 import { TrainingPrograms } from '@/components/TrainingPrograms';
-import { AIChatbot } from '@/components/features';
+import { LazyAIChatbot } from '@/components/features';
 
 const CoursesListPage = () => {
   return (
@@ -15,7 +15,7 @@ const CoursesListPage = () => {
         <TrainingPrograms />
       </main>
       <Footer />
-      <AIChatbot />
+      <LazyAIChatbot />
     </div>
   );
 };
