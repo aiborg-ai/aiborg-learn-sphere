@@ -12,6 +12,7 @@
 
 import { queryClient } from '@/App';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 
 /**
  * Prefetch course details
@@ -42,11 +43,7 @@ export async function prefetchUserProfile(userId: string) {
   await queryClient.prefetchQuery({
     queryKey: ['profile', userId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
+      const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
 
       if (error) throw error;
       return data;
@@ -65,7 +62,8 @@ export async function prefetchUserEnrollments(userId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('enrollments')
-        .select(`
+        .select(
+          `
           *,
           courses (
             id,
@@ -75,7 +73,8 @@ export async function prefetchUserEnrollments(userId: string) {
             category,
             level
           )
-        `)
+        `
+        )
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
@@ -138,13 +137,15 @@ export async function prefetchCourseReviews(courseId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('reviews')
-        .select(`
+        .select(
+          `
           *,
           profiles (
             full_name,
             avatar_url
           )
-        `)
+        `
+        )
         .eq('course_id', courseId)
         .eq('status', 'approved')
         .order('created_at', { ascending: false })
@@ -167,7 +168,8 @@ export async function prefetchUserAchievements(userId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('user_achievements')
-        .select(`
+        .select(
+          `
           *,
           achievements (
             id,
@@ -176,7 +178,8 @@ export async function prefetchUserAchievements(userId: string) {
             badge_icon,
             badge_color
           )
-        `)
+        `
+        )
         .eq('user_id', userId)
         .order('earned_at', { ascending: false });
 
@@ -210,7 +213,7 @@ export function createPrefetchOnHover(prefetchFn: () => Promise<void>) {
     if (!prefetchTriggered) {
       prefetchTriggered = true;
       prefetchFn().catch(err => {
-        console.warn('Prefetch failed:', err);
+        logger.warn('Prefetch failed:', err);
       });
     }
   };
@@ -235,7 +238,7 @@ export function createPrefetchOnHoverWithDelay(
       timeoutId = setTimeout(() => {
         prefetchTriggered = true;
         prefetchFn().catch(err => {
-          console.warn('Prefetch failed:', err);
+          logger.warn('Prefetch failed:', err);
         });
       }, delay);
     },
@@ -267,7 +270,7 @@ export function createPrefetchOnScroll(
     if (scrollPercentage >= threshold) {
       prefetchTriggered = true;
       prefetchFn().catch(err => {
-        console.warn('Prefetch on scroll failed:', err);
+        logger.warn('Prefetch on scroll failed:', err);
       });
 
       // Remove listener after triggering

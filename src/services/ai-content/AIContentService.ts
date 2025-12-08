@@ -291,7 +291,7 @@ class AIContentServiceClass {
     if (jobError) throw jobError;
 
     // Call edge function to generate course
-    const { data, error } = await supabase.functions.invoke('generate-course', {
+    const { data: _data, error } = await supabase.functions.invoke('generate-course', {
       body: {
         jobId,
         ...input,

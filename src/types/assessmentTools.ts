@@ -115,6 +115,19 @@ export interface AttemptHistoryItem {
 }
 
 /**
+ * Badge earned from assessment
+ */
+export interface BadgeEarned {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+  points: number;
+  isNew: boolean; // Whether this is newly earned (not previously held)
+}
+
+/**
  * Assessment results summary
  */
 export interface AssessmentResults {
@@ -123,7 +136,7 @@ export interface AssessmentResults {
   performance_by_category: CategoryPerformance[];
   percentile_rank?: number;
   recommendations: string[];
-  badges_earned?: string[];
+  badges_earned: BadgeEarned[];
 }
 
 /**

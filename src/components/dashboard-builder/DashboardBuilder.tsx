@@ -244,7 +244,7 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
     input.click();
   }, [config]);
 
-  const handleWidgetEdit = useCallback((widget: DashboardWidget) => {
+  const _handleWidgetEdit = useCallback((widget: DashboardWidget) => {
     setSelectedWidget(widget);
     setShowWidgetEditor(true);
   }, []);

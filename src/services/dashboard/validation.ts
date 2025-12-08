@@ -26,7 +26,7 @@ export function validateDashboardConfig(config: DashboardConfig): {
       errors.push(...result.error.errors.map(e => `${e.path.join('.')}: ${e.message}`));
       return { isValid: false, errors };
     }
-  } catch (error) {
+  } catch {
     errors.push('Invalid configuration structure');
     return { isValid: false, errors };
   }

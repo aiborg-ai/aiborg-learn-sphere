@@ -92,9 +92,10 @@ export function RAGDashboard() {
   const [selectedContentType, setSelectedContentType] = useState<string>('all');
   const [analyticsTimeframe, setAnalyticsTimeframe] = useState<string>('7d');
 
-  // Fetch all data on mount
+  // Fetch all data on mount and when timeframe changes
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [analyticsTimeframe]);
 
   const fetchData = async () => {

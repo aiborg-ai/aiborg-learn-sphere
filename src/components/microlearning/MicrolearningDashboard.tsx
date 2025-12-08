@@ -93,6 +93,7 @@ export function MicrolearningDashboard() {
     if (user?.id) {
       loadDashboardData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   const loadDashboardData = async () => {
@@ -150,7 +151,7 @@ export function MicrolearningDashboard() {
     }
   };
 
-  const handleDismissRecommendation = async (recId: string) => {
+  const _handleDismissRecommendation = async (recId: string) => {
     try {
       await MicrolearningService.dismissRecommendation(recId);
       setRecommendations(prev => prev.filter(r => r.id !== recId));

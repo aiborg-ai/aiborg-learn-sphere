@@ -61,6 +61,7 @@ export function DashboardCanvas({
     const containerWidth = containerRef.clientWidth;
     const totalGapWidth = GRID_GAP * (GRID_COLUMNS - 1);
     return (containerWidth - totalGapWidth) / GRID_COLUMNS;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [containerRef?.clientWidth]);
 
   // Convert grid units to pixels
@@ -109,7 +110,10 @@ export function DashboardCanvas({
     const deltaGridX = pixelsToGrid(delta.x, true);
     const deltaGridY = pixelsToGrid(delta.y, false);
 
-    const newX = Math.max(0, Math.min(GRID_COLUMNS - widget.size.width, widget.position.x + deltaGridX));
+    const newX = Math.max(
+      0,
+      Math.min(GRID_COLUMNS - widget.size.width, widget.position.x + deltaGridX)
+    );
     const newY = Math.max(0, widget.position.y + deltaGridY);
 
     // Check for collisions
@@ -171,9 +175,7 @@ export function DashboardCanvas({
   const canvasHeight = useMemo(() => {
     if (config.widgets.length === 0) return 600;
 
-    const maxY = Math.max(
-      ...config.widgets.map(w => w.position.y + w.size.height)
-    );
+    const maxY = Math.max(...config.widgets.map(w => w.position.y + w.size.height));
 
     return gridToPixels(Math.max(maxY, 8), false) + GRID_GAP;
   }, [config.widgets, gridToPixels]);
@@ -207,7 +209,9 @@ export function DashboardCanvas({
               linear-gradient(to bottom, hsl(var(--muted)) 1px, transparent 1px)
             `
             : 'none',
-          backgroundSize: isEditing ? `${cellWidth + GRID_GAP}px ${MIN_CELL_HEIGHT + GRID_GAP}px` : 'auto',
+          backgroundSize: isEditing
+            ? `${cellWidth + GRID_GAP}px ${MIN_CELL_HEIGHT + GRID_GAP}px`
+            : 'auto',
         }}
       >
         {config.widgets.length === 0 && isEditing && (
@@ -240,12 +244,14 @@ export function DashboardCanvas({
                   width: gridToPixels(widget.size.width, true),
                   height: gridToPixels(widget.size.height, false),
                 }}
-                onResize={(newSize) => handleResize(widget.id, {
-                  width: pixelsToGrid(newSize.width, true),
-                  height: pixelsToGrid(newSize.height, false),
-                })}
+                onResize={newSize =>
+                  handleResize(widget.id, {
+                    width: pixelsToGrid(newSize.width, true),
+                    height: pixelsToGrid(newSize.height, false),
+                  })
+                }
                 onRemove={() => onWidgetRemove?.(widget.id)}
-                onUpdate={(updates) => onWidgetUpdate?.(widget.id, updates)}
+                onUpdate={updates => onWidgetUpdate?.(widget.id, updates)}
               />
             );
           })}

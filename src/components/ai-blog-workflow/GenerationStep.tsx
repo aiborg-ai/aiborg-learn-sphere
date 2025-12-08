@@ -38,6 +38,7 @@ export function GenerationStep({ topicData, onNext, onBack }: GenerationStepProp
 
   useEffect(() => {
     generateBlogPost();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const generateBlogPost = async () => {

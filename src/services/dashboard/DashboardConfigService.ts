@@ -650,7 +650,7 @@ export class DashboardConfigService {
     for (row = 0; row <= maxRow + 1; row++) {
       for (let col = 0; col <= gridCols - widgetSize.width; col++) {
         const testPosition = { row, col };
-        const testWidget: DashboardWidget = {
+        const _testWidget: DashboardWidget = {
           id: 'test',
           type: 'stats',
           position: testPosition,

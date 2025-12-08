@@ -152,8 +152,6 @@ export class VaultClaimPage extends BasePage {
   async getReviewSummary(): Promise<Record<string, string>> {
     await this.waitForSelector(this.reviewSummary);
 
-    const summary: Record<string, string> = {};
-
     // Extract review data (adjust selectors based on actual implementation)
     const summaryText = await this.getText(this.reviewSummary);
     return { summaryText };

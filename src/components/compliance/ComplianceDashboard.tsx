@@ -78,7 +78,7 @@ export function ComplianceDashboard() {
 
   // Filter states
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [_statusFilter, _setStatusFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Dialog states
@@ -98,6 +98,7 @@ export function ComplianceDashboard() {
   // Load initial data
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadData = async () => {
@@ -144,7 +145,7 @@ export function ComplianceDashboard() {
         description: `${result.expired_count} expired, ${result.renewals_created} renewals created`,
       });
       await loadData();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to process expiries',
@@ -173,7 +174,7 @@ export function ComplianceDashboard() {
         target_departments: [],
       });
       await loadData();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to create requirement',
@@ -199,7 +200,7 @@ export function ComplianceDashboard() {
         title: 'Export Complete',
         description: `Report exported as ${format.toUpperCase()}`,
       });
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to export data',
@@ -215,7 +216,7 @@ export function ComplianceDashboard() {
     return true;
   });
 
-  const getStatusColor = (status: string) => {
+  const _getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
         return 'bg-green-500';

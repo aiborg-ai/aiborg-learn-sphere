@@ -5,12 +5,14 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
+import { GAMIFICATION_CONFIG } from '@/config/gamification';
 import type {
   AssessmentTool,
   AssessmentToolAttempt,
   AssessmentResults,
   CategoryPerformance,
   PooledQuestion,
+  BadgeEarned,
 } from '@/types/assessmentTools';
 
 export class AssessmentToolService {
@@ -100,17 +102,172 @@ export class AssessmentToolService {
       // Generate personalized recommendations
       const recommendations = this.generateRecommendations(attempt, tool, performanceByCategory);
 
+      // Determine badges earned from this assessment
+      const badgesEarned = await this.determineAssessmentBadges(attempt, tool, percentileRank);
+
       return {
         attempt,
         tool,
         performance_by_category: performanceByCategory,
         percentile_rank: percentileRank,
         recommendations,
-        badges_earned: [], // TODO: Implement badge system
+        badges_earned: badgesEarned,
       };
     } catch (error) {
       logger.error('Error generating assessment results:', error);
       throw error;
+    }
+  }
+
+  /**
+   * Determine which badges the user earned from this assessment
+   */
+  private static async determineAssessmentBadges(
+    attempt: AssessmentToolAttempt,
+    tool: AssessmentTool,
+    percentileRank: number
+  ): Promise<BadgeEarned[]> {
+    const badgesEarned: BadgeEarned[] = [];
+    const scorePercentage = attempt.score_percentage;
+    const passingScore = tool.passing_score_percentage;
+    const badges = GAMIFICATION_CONFIG.BADGES;
+
+    try {
+      // Get user's existing badges to check which are new
+      const { data: existingBadges } = await supabase
+        .from('user_achievements')
+        .select('achievement:achievements(name)')
+        .eq('user_id', attempt.user_id);
+
+      const earnedBadgeNames = new Set(
+        existingBadges?.map(b => (b.achievement as { name: string })?.name) || []
+      );
+
+      // Get count of completed assessments for this user
+      const { count: assessmentCount } = await supabase
+        .from('assessment_tool_attempts')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', attempt.user_id)
+        .eq('is_completed', true);
+
+      const totalAssessments = assessmentCount || 0;
+
+      // Helper to add badge if eligible
+      const addBadgeIfEligible = (badge: typeof badges.FIRST_ASSESSMENT, isEligible: boolean) => {
+        if (isEligible) {
+          const isNew = !earnedBadgeNames.has(badge.name);
+          badgesEarned.push({
+            id: badge.id,
+            name: badge.name,
+            icon: badge.icon,
+            description: badge.description,
+            rarity: badge.rarity as BadgeEarned['rarity'],
+            points: badge.points,
+            isNew,
+          });
+        }
+      };
+
+      // First assessment badge
+      addBadgeIfEligible(badges.FIRST_ASSESSMENT, totalAssessments === 1);
+
+      // Assessment streak badge (3 assessments)
+      addBadgeIfEligible(badges.ASSESSMENT_STREAK_3, totalAssessments >= 3);
+
+      // Score-based tier badges
+      addBadgeIfEligible(badges.ASSESSMENT_BRONZE, scorePercentage >= 60);
+      addBadgeIfEligible(badges.ASSESSMENT_SILVER, scorePercentage >= 75);
+      addBadgeIfEligible(badges.ASSESSMENT_GOLD, scorePercentage >= 90);
+      addBadgeIfEligible(badges.ASSESSMENT_PLATINUM, scorePercentage >= 95);
+      addBadgeIfEligible(badges.ASSESSMENT_PERFECT, scorePercentage === 100);
+
+      // Top percentile badge
+      addBadgeIfEligible(badges.TOP_PERCENTILE, percentileRank >= 90);
+
+      // Tool-specific certification badges
+      if (scorePercentage >= passingScore) {
+        const toolCategory = tool.category_type?.toLowerCase();
+        if (toolCategory === 'awareness' || tool.name?.toLowerCase().includes('awareness')) {
+          addBadgeIfEligible(badges.AI_AWARENESS_CERTIFIED, true);
+        }
+        if (toolCategory === 'fluency' || tool.name?.toLowerCase().includes('fluency')) {
+          addBadgeIfEligible(badges.AI_FLUENCY_CERTIFIED, true);
+        }
+      }
+
+      // Award badges to database (only new ones)
+      for (const badge of badgesEarned) {
+        if (badge.isNew) {
+          await this.awardBadgeToUser(attempt.user_id, badge, {
+            assessment_id: attempt.assessment_id,
+            attempt_id: attempt.id,
+            score_percentage: scorePercentage,
+            tool_name: tool.name,
+          });
+        }
+      }
+
+      logger.log(`Awarded ${badgesEarned.filter(b => b.isNew).length} new badges for assessment`);
+      return badgesEarned;
+    } catch (error) {
+      logger.error('Error determining assessment badges:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Award a badge to a user in the database
+   */
+  private static async awardBadgeToUser(
+    userId: string,
+    badge: BadgeEarned,
+    evidence: Record<string, unknown>
+  ): Promise<void> {
+    try {
+      // First, find or create the achievement in the database
+      let { data: achievement } = await supabase
+        .from('achievements')
+        .select('id')
+        .eq('name', badge.name)
+        .single();
+
+      if (!achievement) {
+        // Create the achievement if it doesn't exist
+        const { data: newAchievement, error: createError } = await supabase
+          .from('achievements')
+          .insert({
+            name: badge.name,
+            description: badge.description,
+            icon_emoji: badge.icon,
+            category: 'milestone',
+            rarity: badge.rarity,
+            criteria: {},
+            points: badge.points,
+            auto_allocate: true,
+          })
+          .select('id')
+          .single();
+
+        if (createError) {
+          logger.error('Error creating achievement:', createError);
+          return;
+        }
+        achievement = newAchievement;
+      }
+
+      // Award to user (ignore duplicates)
+      const { error: awardError } = await supabase.from('user_achievements').insert({
+        user_id: userId,
+        achievement_id: achievement.id,
+        evidence,
+      });
+
+      // Ignore unique constraint violations (user already has badge)
+      if (awardError && awardError.code !== '23505') {
+        logger.error('Error awarding badge:', awardError);
+      }
+    } catch (error) {
+      logger.error('Error in awardBadgeToUser:', error);
     }
   }
 

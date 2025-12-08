@@ -83,7 +83,7 @@ export function JitsiMeetRoom({
   roomName,
   displayName,
   email,
-  sessionId,
+  _sessionId,
   isModerator = false,
   onParticipantJoined,
   onParticipantLeft,
@@ -103,8 +103,8 @@ export function JitsiMeetRoom({
   const [isRecording, setIsRecording] = useState(false);
   const [participantCount, setParticipantCount] = useState(0);
   const [attendance, setAttendance] = useState<Map<string, AttendanceRecord>>(new Map());
-  const [isAudioMuted, setIsAudioMuted] = useState(false);
-  const [isVideoMuted, setIsVideoMuted] = useState(false);
+  const [_isAudioMuted, setIsAudioMuted] = useState(false);
+  const [_isVideoMuted, setIsVideoMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Load Jitsi External API script
@@ -326,27 +326,27 @@ export function JitsiMeetRoom({
   ]);
 
   // Control functions
-  const toggleAudio = useCallback(() => {
+  const _toggleAudio = useCallback(() => {
     apiRef.current?.executeCommand('toggleAudio');
   }, []);
 
-  const toggleVideo = useCallback(() => {
+  const _toggleVideo = useCallback(() => {
     apiRef.current?.executeCommand('toggleVideo');
   }, []);
 
-  const toggleScreenShare = useCallback(() => {
+  const _toggleScreenShare = useCallback(() => {
     apiRef.current?.executeCommand('toggleShareScreen');
   }, []);
 
-  const toggleChat = useCallback(() => {
+  const _toggleChat = useCallback(() => {
     apiRef.current?.executeCommand('toggleChat');
   }, []);
 
-  const toggleRaiseHand = useCallback(() => {
+  const _toggleRaiseHand = useCallback(() => {
     apiRef.current?.executeCommand('toggleRaiseHand');
   }, []);
 
-  const toggleTileView = useCallback(() => {
+  const _toggleTileView = useCallback(() => {
     apiRef.current?.executeCommand('toggleTileView');
   }, []);
 
@@ -362,7 +362,7 @@ export function JitsiMeetRoom({
     apiRef.current?.executeCommand('toggleBreakoutRooms');
   }, []);
 
-  const endMeeting = useCallback(() => {
+  const _endMeeting = useCallback(() => {
     if (isModerator) {
       apiRef.current?.executeCommand('endConference');
     } else {
@@ -381,7 +381,7 @@ export function JitsiMeetRoom({
   }, []);
 
   // Get attendance report
-  const getAttendanceReport = useCallback(() => {
+  const _getAttendanceReport = useCallback(() => {
     return Array.from(attendance.values()).map(record => ({
       ...record,
       duration:

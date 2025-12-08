@@ -26,8 +26,12 @@ import {
   ChevronRight,
   Play,
 } from '@/components/ui/icons';
-import { StudyPlanGeneratorService, type GeneratedStudyPlan, type DailyTask } from '@/services/study-planner/StudyPlanGeneratorService';
-import { format, isToday } from 'date-fns';
+import {
+  StudyPlanGeneratorService,
+  type GeneratedStudyPlan,
+  type DailyTask,
+} from '@/services/study-planner/StudyPlanGeneratorService';
+import { format } from 'date-fns';
 import { logger } from '@/utils/logger';
 import { useToast } from '@/hooks/use-toast';
 import { useStudyPlanUpdates } from '@/hooks/useRealtimeUpdates';
@@ -60,6 +64,7 @@ export function DailyTaskList({
 
   useEffect(() => {
     fetchTodayTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const fetchTodayTasks = async () => {
@@ -96,7 +101,7 @@ export function DailyTaskList({
       logger.error('Error fetching today tasks:', error);
       toast({
         title: 'Error',
-        description: 'Failed to load today\'s tasks',
+        description: "Failed to load today's tasks",
         variant: 'destructive',
       });
     } finally {
@@ -141,7 +146,7 @@ export function DailyTaskList({
         if (remaining.length === 0) {
           toast({
             title: '🏆 All Done for Today!',
-            description: 'You\'ve completed all your daily tasks. Excellent work!',
+            description: "You've completed all your daily tasks. Excellent work!",
           });
         }
       }
@@ -189,7 +194,7 @@ export function DailyTaskList({
     return Math.round((completed / todayTasks.length) * 100);
   };
 
-  const getTotalTime = () => {
+  const _getTotalTime = () => {
     return todayTasks.reduce((sum, task) => sum + task.estimated_minutes, 0);
   };
 
@@ -201,11 +206,23 @@ export function DailyTaskList({
 
   const getMotivationalMessage = () => {
     const progress = calculateProgress();
-    if (progress === 100) return { icon: Trophy, message: 'All tasks completed! 🎉', color: 'text-green-600' };
-    if (progress >= 75) return { icon: Flame, message: 'Almost there! Keep it up!', color: 'text-orange-500' };
-    if (progress >= 50) return { icon: CheckCircle2, message: 'Halfway done! You\'re doing great!', color: 'text-blue-500' };
-    if (progress >= 25) return { icon: Circle, message: 'Good start! Let\'s keep the momentum!', color: 'text-purple-500' };
-    return { icon: Circle, message: 'Ready to conquer today\'s tasks?', color: 'text-gray-500' };
+    if (progress === 100)
+      return { icon: Trophy, message: 'All tasks completed! 🎉', color: 'text-green-600' };
+    if (progress >= 75)
+      return { icon: Flame, message: 'Almost there! Keep it up!', color: 'text-orange-500' };
+    if (progress >= 50)
+      return {
+        icon: CheckCircle2,
+        message: "Halfway done! You're doing great!",
+        color: 'text-blue-500',
+      };
+    if (progress >= 25)
+      return {
+        icon: Circle,
+        message: "Good start! Let's keep the momentum!",
+        color: 'text-purple-500',
+      };
+    return { icon: Circle, message: "Ready to conquer today's tasks?", color: 'text-gray-500' };
   };
 
   if (loading) {
@@ -230,9 +247,7 @@ export function DailyTaskList({
           <p className="text-sm text-muted-foreground mb-4">
             No active study plan. Create one to get started!
           </p>
-          <Button onClick={() => navigate('/study-planner')}>
-            Create Study Plan
-          </Button>
+          <Button onClick={() => navigate('/study-planner')}>Create Study Plan</Button>
         </CardContent>
       </Card>
     );

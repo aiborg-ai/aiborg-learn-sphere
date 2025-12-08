@@ -32,7 +32,7 @@ test.describe('Payment and Enrollment Flow', () => {
 
   test('should complete full free course enrollment flow', async ({ page }) => {
     // Setup: Login as student
-    const testUser = generateUser('student');
+    const _testUser = generateUser('student');
     await setupAuthenticatedSession(page, 'student');
 
     // Navigate to courses page

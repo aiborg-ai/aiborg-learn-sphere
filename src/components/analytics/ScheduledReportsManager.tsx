@@ -64,6 +64,7 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
 
   useEffect(() => {
     fetchReports();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const fetchReports = async () => {
@@ -187,7 +188,9 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
 
   const getStatusBadge = (isActive: boolean) => {
     return isActive ? (
-      <Badge variant="default" className="bg-green-500">Active</Badge>
+      <Badge variant="default" className="bg-green-500">
+        Active
+      </Badge>
     ) : (
       <Badge variant="secondary">Paused</Badge>
     );
@@ -199,7 +202,9 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>Scheduled Reports</CardTitle>
-            <CardDescription>Automate your analytics report generation and delivery</CardDescription>
+            <CardDescription>
+              Automate your analytics report generation and delivery
+            </CardDescription>
           </div>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
@@ -221,7 +226,7 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
                   <Input
                     id="report-name"
                     value={formData.report_name}
-                    onChange={(e) => setFormData({ ...formData, report_name: e.target.value })}
+                    onChange={e => setFormData({ ...formData, report_name: e.target.value })}
                     placeholder="e.g., Weekly Performance Summary"
                   />
                 </div>
@@ -295,7 +300,7 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
                       id="email"
                       type="email"
                       value={formData.delivery_email}
-                      onChange={(e) => setFormData({ ...formData, delivery_email: e.target.value })}
+                      onChange={e => setFormData({ ...formData, delivery_email: e.target.value })}
                       placeholder="your@email.com"
                     />
                   </div>
@@ -330,7 +335,7 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
                     <span className="text-sm">Overview</span>
                     <Switch
                       checked={formData.include_overview}
-                      onCheckedChange={(checked) =>
+                      onCheckedChange={checked =>
                         setFormData({ ...formData, include_overview: checked })
                       }
                     />
@@ -339,7 +344,7 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
                     <span className="text-sm">Performance Analytics</span>
                     <Switch
                       checked={formData.include_performance}
-                      onCheckedChange={(checked) =>
+                      onCheckedChange={checked =>
                         setFormData({ ...formData, include_performance: checked })
                       }
                     />
@@ -348,7 +353,7 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
                     <span className="text-sm">Goals & Predictions</span>
                     <Switch
                       checked={formData.include_goals}
-                      onCheckedChange={(checked) =>
+                      onCheckedChange={checked =>
                         setFormData({ ...formData, include_goals: checked })
                       }
                     />
@@ -380,7 +385,7 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
           </div>
         ) : (
           <div className="space-y-4">
-            {reports.map((report) => (
+            {reports.map(report => (
               <Card key={report.id}>
                 <CardContent className="pt-6">
                   <div className="flex items-start justify-between">
@@ -411,7 +416,9 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
                           ) : (
                             <Download className="h-3 w-3" />
                           )}
-                          <span>{report.delivery_method === 'email' ? 'Email' : 'Auto Download'}</span>
+                          <span>
+                            {report.delivery_method === 'email' ? 'Email' : 'Auto Download'}
+                          </span>
                         </div>
                       </div>
                     </div>

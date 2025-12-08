@@ -42,12 +42,17 @@ export function RecommendedCoursesWidget({
   const navigate = useNavigate();
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const { data: recommendations, isLoading, error, refetch } = usePersonalizedRecommendations('course', {
+  const {
+    data: recommendations,
+    isLoading,
+    error,
+    refetch,
+  } = usePersonalizedRecommendations('course', {
     limit,
   });
 
   const feedbackMutation = useRecommendationFeedback();
-  const { trackClick, trackEnrollment, dismiss } = useRecommendationInteraction();
+  const { trackClick, trackEnrollment: _trackEnrollment, dismiss } = useRecommendationInteraction();
 
   const handleCourseClick = (courseId: string, recommendationId: string) => {
     trackClick(recommendationId);
@@ -153,11 +158,7 @@ export function RecommendedCoursesWidget({
               <Lightbulb className="h-5 w-5 text-yellow-500" />
               <CardTitle>Recommended for You</CardTitle>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/courses?recommended=true')}
-            >
+            <Button variant="ghost" size="sm" onClick={() => navigate('/courses?recommended=true')}>
               View All
               <ExternalLink className="h-4 w-4 ml-2" />
             </Button>
@@ -176,7 +177,7 @@ export function RecommendedCoursesWidget({
           >
             {/* Dismiss Button */}
             <button
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 handleDismiss(rec.recommendation_id);
               }}
@@ -217,17 +218,13 @@ export function RecommendedCoursesWidget({
 
               {/* Description */}
               {rec.description && !compact && (
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {rec.description}
-                </p>
+                <p className="text-sm text-muted-foreground line-clamp-2">{rec.description}</p>
               )}
 
               {/* Recommendation Reason */}
               {rec.metadata?.reason && (
                 <div className="bg-primary/5 border-l-2 border-primary px-3 py-2 rounded">
-                  <p className="text-xs text-primary font-medium">
-                    {rec.metadata.reason}
-                  </p>
+                  <p className="text-xs text-primary font-medium">{rec.metadata.reason}</p>
                 </div>
               )}
 
@@ -266,7 +263,7 @@ export function RecommendedCoursesWidget({
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         handleFeedback(rec.recommendation_id, true);
                       }}
@@ -277,7 +274,7 @@ export function RecommendedCoursesWidget({
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         handleFeedback(rec.recommendation_id, false);
                       }}
@@ -289,7 +286,7 @@ export function RecommendedCoursesWidget({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       setExpandedId(
                         expandedId === rec.recommendation_id ? null : rec.recommendation_id

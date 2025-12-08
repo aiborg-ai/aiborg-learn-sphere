@@ -79,7 +79,7 @@ export function useDashboardBuilder(options: UseDashboardBuilderOptions) {
   const {
     data: views = [],
     isLoading: isLoadingViews,
-    error: viewsError,
+    error: _viewsError,
   } = useQuery({
     queryKey: queryKeys.views,
     queryFn: () => DashboardConfigService.getUserViews(userId),
@@ -89,7 +89,7 @@ export function useDashboardBuilder(options: UseDashboardBuilderOptions) {
   const {
     data: currentView,
     isLoading: isLoadingView,
-    error: viewError,
+    error: _viewError,
   } = useQuery({
     queryKey: currentViewId ? queryKeys.view(currentViewId) : ['dashboard-view-null'],
     queryFn: () => (currentViewId ? DashboardConfigService.getView(currentViewId) : null),

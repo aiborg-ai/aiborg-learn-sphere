@@ -318,7 +318,7 @@ export function withValidation<T>(
       }
 
       if (prop === 'then' || prop === 'catch' || prop === 'finally') {
-        return async function (...args: any[]) {
+        return async function (..._args: any[]) {
           // This is the final execution of the query
           const result = await target;
           if (Array.isArray(result.data)) {
@@ -391,7 +391,7 @@ export function resetValidationMetrics(): void {
 /**
  * Track validation in metrics
  */
-function trackValidation(success: boolean, error?: z.ZodError, data?: unknown): void {
+function _trackValidation(success: boolean, error?: z.ZodError, data?: unknown): void {
   metrics.totalValidations++;
   if (success) {
     metrics.successfulValidations++;

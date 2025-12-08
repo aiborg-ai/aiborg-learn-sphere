@@ -54,7 +54,7 @@ export function WidgetEditor({ widget, isOpen, onClose, onSave }: WidgetEditorPr
     return null;
   }
 
-  const config = widget.config as BaseWidgetConfig;
+  const _config = widget.config as BaseWidgetConfig;
 
   const onSubmit = (data: any) => {
     onSave(widget.id, {

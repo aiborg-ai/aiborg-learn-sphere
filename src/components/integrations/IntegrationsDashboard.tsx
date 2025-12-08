@@ -80,7 +80,7 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
 
   // Dialog states
   const [ssoDialogOpen, setSSODialogOpen] = useState(false);
-  const [hrDialogOpen, setHRDialogOpen] = useState(false);
+  const [_hrDialogOpen, setHRDialogOpen] = useState(false);
   const [webhookDialogOpen, setWebhookDialogOpen] = useState(false);
   const [channelDialogOpen, setChannelDialogOpen] = useState(false);
 
@@ -109,6 +109,7 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
   // Load data
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [organizationId]);
 
   const loadData = async () => {
@@ -158,7 +159,7 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
         saml_certificate: '',
       });
       await loadData();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to create SSO configuration',
@@ -180,7 +181,7 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
       setWebhookDialogOpen(false);
       setNewWebhook({ name: '', url: '', events: [] });
       await loadData();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to create webhook',
@@ -207,7 +208,7 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
         subscribed_events: [],
       });
       await loadData();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to create notification channel',

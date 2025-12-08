@@ -23,7 +23,7 @@ const corsHeaders = {
 const EMBEDDING_MODEL = 'text-embedding-3-small';
 const CHAT_MODEL = 'gpt-4-turbo-preview';
 const MAX_CONTEXT_TOKENS = 6000; // Leave room for prompt + response
-const SIMILARITY_THRESHOLD = 0.7; // Only use results with >70% similarity
+const SIMILARITY_THRESHOLD = 0.6; // Only use results with >60% similarity
 const MAX_RESULTS = 5; // Top 5 most relevant pieces of content
 
 interface ChatMessage {

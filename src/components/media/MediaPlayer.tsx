@@ -43,7 +43,7 @@ export function MediaPlayer({
   path,
   type,
   className = '',
-  autoPlay = false,
+  autoPlay: _autoPlay = false,
 }: MediaPlayerProps) {
   const [state, setState] = useState<MediaState>({
     isPlaying: false,

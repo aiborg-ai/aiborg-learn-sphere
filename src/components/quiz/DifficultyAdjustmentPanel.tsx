@@ -14,7 +14,6 @@ import {
   TrendingUp,
   TrendingDown,
   Target,
-  Zap,
   AlertCircle,
   CheckCircle2,
   BarChart3,
@@ -22,15 +21,9 @@ import {
   Settings,
   Info,
   ChevronUp,
-  ChevronDown,
   Minus,
 } from '@/components/ui/icons';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 interface DifficultyLevel {
@@ -41,10 +34,30 @@ interface DifficultyLevel {
 }
 
 const DIFFICULTY_LEVELS: DifficultyLevel[] = [
-  { value: -2, label: 'Beginner', color: 'text-green-600 bg-green-50', description: 'Foundational concepts' },
-  { value: -1, label: 'Elementary', color: 'text-blue-600 bg-blue-50', description: 'Basic application' },
-  { value: 0, label: 'Intermediate', color: 'text-purple-600 bg-purple-50', description: 'Standard complexity' },
-  { value: 1, label: 'Advanced', color: 'text-orange-600 bg-orange-50', description: 'Complex scenarios' },
+  {
+    value: -2,
+    label: 'Beginner',
+    color: 'text-green-600 bg-green-50',
+    description: 'Foundational concepts',
+  },
+  {
+    value: -1,
+    label: 'Elementary',
+    color: 'text-blue-600 bg-blue-50',
+    description: 'Basic application',
+  },
+  {
+    value: 0,
+    label: 'Intermediate',
+    color: 'text-purple-600 bg-purple-50',
+    description: 'Standard complexity',
+  },
+  {
+    value: 1,
+    label: 'Advanced',
+    color: 'text-orange-600 bg-orange-50',
+    description: 'Complex scenarios',
+  },
   { value: 2, label: 'Expert', color: 'text-red-600 bg-red-50', description: 'Strategic thinking' },
 ];
 
@@ -181,8 +194,8 @@ export function DifficultyAdjustmentPanel({
               </TooltipTrigger>
               <TooltipContent>
                 <p className="max-w-xs text-xs">
-                  Difficulty automatically adjusts based on your performance using IRT
-                  (Item Response Theory). Ability estimate: {currentAbility.toFixed(2)}
+                  Difficulty automatically adjusts based on your performance using IRT (Item
+                  Response Theory). Ability estimate: {currentAbility.toFixed(2)}
                 </p>
               </TooltipContent>
             </Tooltip>
@@ -244,8 +257,8 @@ export function DifficultyAdjustmentPanel({
               recommendation.direction === 'increase'
                 ? 'bg-green-50 dark:bg-green-950 border-green-500'
                 : recommendation.direction === 'decrease'
-                ? 'bg-red-50 dark:bg-red-950 border-red-500'
-                : 'bg-blue-50 dark:bg-blue-950 border-blue-500'
+                  ? 'bg-red-50 dark:bg-red-950 border-red-500'
+                  : 'bg-blue-50 dark:bg-blue-950 border-blue-500'
             )}
           >
             <div className="flex items-start gap-3">
@@ -255,8 +268,8 @@ export function DifficultyAdjustmentPanel({
                   {recommendation.direction === 'increase'
                     ? '📈 Increase Difficulty'
                     : recommendation.direction === 'decrease'
-                    ? '📉 Decrease Difficulty'
-                    : '✅ Current Level Optimal'}
+                      ? '📉 Decrease Difficulty'
+                      : '✅ Current Level Optimal'}
                 </p>
                 <p className="text-xs text-muted-foreground">{recommendation.message}</p>
               </div>
@@ -272,11 +285,7 @@ export function DifficultyAdjustmentPanel({
                 <Settings className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium">Manual Adjustment</span>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowDetails(!showDetails)}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setShowDetails(!showDetails)}>
                 {showDetails ? 'Hide' : 'Show'}
               </Button>
             </div>
@@ -287,7 +296,8 @@ export function DifficultyAdjustmentPanel({
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs text-muted-foreground">Target Difficulty</span>
                     <span className="text-xs font-semibold">
-                      {DIFFICULTY_LEVELS.find(l => Math.abs(l.value - selectedDifficulty) < 0.5)?.label || 'Custom'}
+                      {DIFFICULTY_LEVELS.find(l => Math.abs(l.value - selectedDifficulty) < 0.5)
+                        ?.label || 'Custom'}
                     </span>
                   </div>
                   <Slider
@@ -308,7 +318,8 @@ export function DifficultyAdjustmentPanel({
                   <div className="flex items-center gap-2 p-2 bg-yellow-50 dark:bg-yellow-950 rounded text-xs">
                     <AlertCircle className="h-4 w-4 text-yellow-600" />
                     <span>
-                      Changing difficulty from {currentAbility.toFixed(2)} to {selectedDifficulty.toFixed(2)}
+                      Changing difficulty from {currentAbility.toFixed(2)} to{' '}
+                      {selectedDifficulty.toFixed(2)}
                     </span>
                   </div>
                 )}
@@ -340,10 +351,7 @@ export function DifficultyAdjustmentPanel({
             </h4>
             <div className="flex items-end justify-between h-20 gap-1">
               {performanceTrend.slice(-10).map((point, index) => (
-                <div
-                  key={index}
-                  className="flex-1 flex flex-col items-center justify-end gap-1"
-                >
+                <div key={index} className="flex-1 flex flex-col items-center justify-end gap-1">
                   <div
                     className={cn(
                       'w-full rounded-t transition-all',
@@ -376,7 +384,10 @@ export function DifficultyAdjustmentCompact({
   accuracy,
   questionsAnswered,
   performanceTrend,
-}: Omit<DifficultyAdjustmentPanelProps, 'compact' | 'showRecommendations' | 'allowManualAdjustment'>) {
+}: Omit<
+  DifficultyAdjustmentPanelProps,
+  'compact' | 'showRecommendations' | 'allowManualAdjustment'
+>) {
   return (
     <DifficultyAdjustmentPanel
       currentAbility={currentAbility}

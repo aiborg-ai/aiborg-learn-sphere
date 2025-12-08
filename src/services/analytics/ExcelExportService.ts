@@ -73,7 +73,7 @@ export class ExcelExportService {
   private static async addOverviewSheet(
     workbook: XLSX.WorkBook,
     userId: string,
-    dateRange?: { start: string; end: string }
+    _dateRange?: { start: string; end: string }
   ): Promise<void> {
     try {
       const [dashboardStats, weeklyActivity, categoryDistribution] = await Promise.all([
@@ -115,11 +115,7 @@ export class ExcelExportService {
       this.applyHeaderStyle(worksheet, 'A20');
 
       // Set column widths
-      worksheet['!cols'] = [
-        { wch: 30 },
-        { wch: 20 },
-        { wch: 15 },
-      ];
+      worksheet['!cols'] = [{ wch: 30 }, { wch: 20 }, { wch: 15 }];
 
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Overview');
     } catch (error) {
@@ -130,10 +126,7 @@ export class ExcelExportService {
   /**
    * Add Performance sheet with question-level analytics
    */
-  private static async addPerformanceSheet(
-    workbook: XLSX.WorkBook,
-    userId: string
-  ): Promise<void> {
+  private static async addPerformanceSheet(workbook: XLSX.WorkBook, userId: string): Promise<void> {
     try {
       const [stats, questions, topics, mistakes] = await Promise.all([
         PerformanceAnalyticsService.getDetailedPerformanceStats(userId),
@@ -157,9 +150,21 @@ export class ExcelExportService {
         [],
         ['Performance by Difficulty'],
         ['Difficulty', 'Accuracy (%)', 'Total Questions'],
-        ['Easy', stats.performanceByDifficulty.easy.percentage, stats.performanceByDifficulty.easy.total],
-        ['Medium', stats.performanceByDifficulty.medium.percentage, stats.performanceByDifficulty.medium.total],
-        ['Hard', stats.performanceByDifficulty.hard.percentage, stats.performanceByDifficulty.hard.total],
+        [
+          'Easy',
+          stats.performanceByDifficulty.easy.percentage,
+          stats.performanceByDifficulty.easy.total,
+        ],
+        [
+          'Medium',
+          stats.performanceByDifficulty.medium.percentage,
+          stats.performanceByDifficulty.medium.total,
+        ],
+        [
+          'Hard',
+          stats.performanceByDifficulty.hard.percentage,
+          stats.performanceByDifficulty.hard.total,
+        ],
         [],
         ['Topic Performance'],
         ['Topic', 'Accuracy (%)', 'Total Questions', 'Mastery Level'],
@@ -215,19 +220,12 @@ export class ExcelExportService {
   /**
    * Add Goals sheet with goal predictions and milestones
    */
-  private static async addGoalsSheet(
-    workbook: XLSX.WorkBook,
-    userId: string
-  ): Promise<void> {
+  private static async addGoalsSheet(workbook: XLSX.WorkBook, userId: string): Promise<void> {
     try {
       const goals = await GoalPredictionService.getUserGoals(userId);
 
       if (goals.length === 0) {
-        const noGoalsData = [
-          ['Goal Tracking & Predictions'],
-          [],
-          ['No learning goals found'],
-        ];
+        const noGoalsData = [['Goal Tracking & Predictions'], [], ['No learning goals found']];
         const worksheet = XLSX.utils.aoa_to_sheet(noGoalsData);
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Goals');
         return;
@@ -249,7 +247,7 @@ export class ExcelExportService {
       ];
 
       // Add predictions for each goal
-      let currentRow = goalsData.length;
+      const _currentRow = goalsData.length;
       for (const goal of goals) {
         if (goal.status === 'completed') continue;
 
@@ -262,7 +260,10 @@ export class ExcelExportService {
           ['Current Progress (%)', prediction.currentProgress],
           ['Predicted Progress (%)', prediction.predictedProgress],
           ['Completion Probability (%)', prediction.completionProbability],
-          ['Estimated Completion Date', format(new Date(prediction.estimatedCompletionDate), 'yyyy-MM-dd')],
+          [
+            'Estimated Completion Date',
+            format(new Date(prediction.estimatedCompletionDate), 'yyyy-MM-dd'),
+          ],
           ['Days Remaining', prediction.daysRemaining],
           ['On Track', prediction.isOnTrack ? 'Yes' : 'No'],
           ['Risk Level', prediction.riskLevel],
@@ -294,17 +295,13 @@ export class ExcelExportService {
           goalsData.push(
             ['Recommendations'],
             ['Priority', 'Title', 'Description'],
-            ...recommendations.map(r => [
-              r.priority,
-              r.title,
-              r.description,
-            ]),
+            ...recommendations.map(r => [r.priority, r.title, r.description]),
             []
           );
         }
 
         goalsData.push([], ['---'], []);
-        currentRow = goalsData.length;
+        // Row count tracked but not used in loop
       }
 
       const worksheet = XLSX.utils.aoa_to_sheet(goalsData);
@@ -314,13 +311,7 @@ export class ExcelExportService {
       this.applyHeaderStyle(worksheet, 'A3');
 
       // Set column widths
-      worksheet['!cols'] = [
-        { wch: 40 },
-        { wch: 25 },
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 15 },
-      ];
+      worksheet['!cols'] = [{ wch: 40 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
 
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Goals');
     } catch (error) {
@@ -396,9 +387,21 @@ export class ExcelExportService {
         [],
         ['Performance by Difficulty'],
         ['Difficulty', 'Accuracy (%)', 'Total'],
-        ['Easy', stats.performanceByDifficulty.easy.percentage, stats.performanceByDifficulty.easy.total],
-        ['Medium', stats.performanceByDifficulty.medium.percentage, stats.performanceByDifficulty.medium.total],
-        ['Hard', stats.performanceByDifficulty.hard.percentage, stats.performanceByDifficulty.hard.total],
+        [
+          'Easy',
+          stats.performanceByDifficulty.easy.percentage,
+          stats.performanceByDifficulty.easy.total,
+        ],
+        [
+          'Medium',
+          stats.performanceByDifficulty.medium.percentage,
+          stats.performanceByDifficulty.medium.total,
+        ],
+        [
+          'Hard',
+          stats.performanceByDifficulty.hard.percentage,
+          stats.performanceByDifficulty.hard.total,
+        ],
       ];
 
       await this.exportToCSV(csvData, `performance-summary-${format(new Date(), 'yyyy-MM-dd')}`);

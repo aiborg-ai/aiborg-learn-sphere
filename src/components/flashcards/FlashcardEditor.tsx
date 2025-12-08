@@ -21,7 +21,7 @@ interface FlashcardEditorProps {
 }
 
 export function FlashcardEditor({
-  deckId,
+  _deckId,
   flashcard,
   onSave,
   onCancel,

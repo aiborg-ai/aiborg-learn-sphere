@@ -58,7 +58,7 @@ const proficiencyColors: Record<string, string> = {
   expert: 'bg-yellow-200 text-yellow-700',
 };
 
-const proficiencyLevels = ['awareness', 'foundational', 'intermediate', 'advanced', 'expert'];
+const _proficiencyLevels = ['awareness', 'foundational', 'intermediate', 'advanced', 'expert'];
 
 export function SkillsDashboard() {
   const { user } = useAuth();

@@ -112,6 +112,7 @@ export function StudyPlannerDashboard() {
     if (user?.id) {
       loadDashboardData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   // Session timer

@@ -129,7 +129,10 @@ export class GoalPredictionService {
   /**
    * Predict goal completion using linear regression on historical progress
    */
-  static async predictGoalCompletion(userId: string, goalId: string): Promise<GoalPrediction | null> {
+  static async predictGoalCompletion(
+    userId: string,
+    goalId: string
+  ): Promise<GoalPrediction | null> {
     try {
       // Fetch goal details
       const { data: goalData, error: goalError } = await supabase
@@ -150,19 +153,20 @@ export class GoalPredictionService {
       const now = new Date();
 
       // Calculate time metrics
-      const totalDays = differenceInDays(targetDate, createdAt);
+      const _totalDays = differenceInDays(targetDate, createdAt);
       const elapsedDays = differenceInDays(now, createdAt);
       const remainingDays = differenceInDays(targetDate, now);
 
       // Simple linear prediction based on current progress rate
       const progressRate = elapsedDays > 0 ? currentProgress / elapsedDays : 0;
-      const predictedProgress = Math.min(100, currentProgress + (progressRate * remainingDays));
+      const predictedProgress = Math.min(100, currentProgress + progressRate * remainingDays);
 
       // Calculate completion probability using logistic function
       const progressGap = predictedProgress - 100;
-      const completionProbability = Math.min(100, Math.max(0,
-        100 / (1 + Math.exp(-progressGap / 20))
-      ));
+      const completionProbability = Math.min(
+        100,
+        Math.max(0, 100 / (1 + Math.exp(-progressGap / 20)))
+      );
 
       // Estimate completion date based on current rate
       const daysToComplete = progressRate > 0 ? (100 - currentProgress) / progressRate : Infinity;
@@ -182,9 +186,10 @@ export class GoalPredictionService {
       // Recommended daily effort (assuming 5 days per week)
       const weeklyDays = 5;
       const remainingEffort = 100 - currentProgress;
-      const recommendedDailyEffort = remainingDays > 0
-        ? Math.ceil((remainingEffort / remainingDays) * 30 * (7 / weeklyDays)) // 30 min per % point
-        : 0;
+      const recommendedDailyEffort =
+        remainingDays > 0
+          ? Math.ceil((remainingEffort / remainingDays) * 30 * (7 / weeklyDays)) // 30 min per % point
+          : 0;
 
       // Confidence score based on data quality
       const confidenceScore = Math.min(100, elapsedDays * 10); // More data = more confidence
@@ -242,9 +247,8 @@ export class GoalPredictionService {
         const targetProgress = (dayOffset / totalDays) * 100;
 
         // Linear interpolation for actual progress (simplified)
-        const actualProgress = dayOffset <= elapsedDays
-          ? (dayOffset / elapsedDays) * currentProgress
-          : currentProgress;
+        const actualProgress =
+          dayOffset <= elapsedDays ? (dayOffset / elapsedDays) * currentProgress : currentProgress;
 
         // Predicted progress using current rate
         const progressRate = elapsedDays > 0 ? currentProgress / elapsedDays : 0;

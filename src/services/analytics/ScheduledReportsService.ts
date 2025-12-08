@@ -11,7 +11,13 @@ import { ExcelExportService, type ExportOptions } from './ExcelExportService';
 export type ReportType = 'overview' | 'performance' | 'goals' | 'full';
 export type ReportFrequency = 'daily' | 'weekly' | 'monthly' | 'quarterly';
 export type DeliveryMethod = 'email' | 'download';
-export type DateRangeType = 'last_7_days' | 'last_30_days' | 'last_90_days' | 'current_month' | 'last_month' | 'custom';
+export type DateRangeType =
+  | 'last_7_days'
+  | 'last_30_days'
+  | 'last_90_days'
+  | 'current_month'
+  | 'last_month'
+  | 'custom';
 
 export interface ScheduledReport {
   id: string;
@@ -297,10 +303,7 @@ export class ScheduledReportsService {
           .from('scheduled_reports')
           .update({
             last_run_at: new Date().toISOString(),
-            next_run_at: this.calculateNextRunTime(
-              scheduledReport.frequency,
-              new Date()
-            ),
+            next_run_at: this.calculateNextRunTime(scheduledReport.frequency, new Date()),
           })
           .eq('id', scheduledReport.id);
 
@@ -382,14 +385,17 @@ export class ScheduledReportsService {
           start: startOfDay(new Date(now.getFullYear(), now.getMonth(), 1)).toISOString(),
           end: endOfDay(now).toISOString(),
         };
-      case 'last_month':
+      case 'last_month': {
         const lastMonth = subMonths(now, 1);
         return {
-          start: startOfDay(new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 1)).toISOString(),
+          start: startOfDay(
+            new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 1)
+          ).toISOString(),
           end: endOfDay(
             new Date(lastMonth.getFullYear(), lastMonth.getMonth() + 1, 0)
           ).toISOString(),
         };
+      }
       case 'custom':
         return {
           start: report.custom_start_date || startOfDay(subDays(now, 30)).toISOString(),

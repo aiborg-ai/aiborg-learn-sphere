@@ -7,9 +7,8 @@
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import { RecommendationEngineService } from './RecommendationEngineService';
-import { ProgressForecastService } from '../recommendations/ProgressForecastService';
 import { GoalPredictionService } from '../analytics/GoalPredictionService';
-import type { LearningGoal, GoalPrediction } from '../analytics/GoalPredictionService';
+import type { LearningGoal } from '../analytics/GoalPredictionService';
 
 // Cache duration in milliseconds
 const CACHE_DURATION = {
@@ -136,8 +135,8 @@ export class StudyAssistantOrchestrator {
    * Invalidate cache for a user
    */
   static invalidateUserCache(userId: string): void {
-    const keys = Array.from(cache.keys()).filter((key) => key.includes(userId));
-    keys.forEach((key) => cache.delete(key));
+    const keys = Array.from(cache.keys()).filter(key => key.includes(userId));
+    keys.forEach(key => cache.delete(key));
     logger.info('Cache invalidated for user', { userId, keysCleared: keys.length });
   }
 
@@ -228,11 +227,10 @@ export class StudyAssistantOrchestrator {
     const reasons: string[] = [];
 
     // Check for skill gap match
-    const matchingGap = context.skill_gaps?.find(
-      (gap) =>
-        recommendation.metadata?.topics?.some((topic: string) =>
-          gap.category.toLowerCase().includes(topic.toLowerCase())
-        )
+    const matchingGap = context.skill_gaps?.find(gap =>
+      recommendation.metadata?.topics?.some((topic: string) =>
+        gap.category.toLowerCase().includes(topic.toLowerCase())
+      )
     );
 
     if (matchingGap) {
@@ -259,7 +257,7 @@ export class StudyAssistantOrchestrator {
 
     // Check for goal alignment
     if (context.learning_goals?.length > 0) {
-      const matchingGoal = context.learning_goals.find((goal) =>
+      const matchingGoal = context.learning_goals.find(goal =>
         goal.description?.toLowerCase().includes(recommendation.content_title?.toLowerCase())
       );
       if (matchingGoal) {
@@ -330,9 +328,7 @@ export class StudyAssistantOrchestrator {
       const today = new Date().toISOString().split('T')[0];
 
       const todayTasks =
-        planData?.daily_tasks?.[today] ||
-        planData?.weekly_tasks?.[this.getCurrentWeek()] ||
-        [];
+        planData?.daily_tasks?.[today] || planData?.weekly_tasks?.[this.getCurrentWeek()] || [];
 
       return {
         id: data.id,
@@ -394,7 +390,7 @@ export class StudyAssistantOrchestrator {
 
     // Check for stagnant courses
     if (context.current_courses && context.current_courses.length > 0) {
-      const stagnantCourse = context.current_courses.find((c) => {
+      const stagnantCourse = context.current_courses.find(c => {
         const lastAccessed = new Date(c.last_accessed);
         const daysSince = (Date.now() - lastAccessed.getTime()) / (1000 * 60 * 60 * 24);
         return daysSince > 7 && c.progress_percentage < 100;
@@ -411,7 +407,7 @@ export class StudyAssistantOrchestrator {
 
     // Check for learning goals without study plans
     if (context.learning_goals && context.learning_goals.length > 0) {
-      const goalWithoutPlan = context.learning_goals.find((g) => g.status !== 'completed');
+      const goalWithoutPlan = context.learning_goals.find(g => g.status !== 'completed');
       if (goalWithoutPlan) {
         actions.push({
           action: 'Create study plan',
@@ -441,7 +437,7 @@ export class StudyAssistantOrchestrator {
       // Generate progress forecast if user has goals
       let progressForecast;
       if (context.learning_goals && context.learning_goals.length > 0) {
-        const activeGoal = context.learning_goals.find((g) => g.status !== 'completed');
+        const activeGoal = context.learning_goals.find(g => g.status !== 'completed');
         if (activeGoal) {
           try {
             const prediction = await GoalPredictionService.predictGoalCompletion(

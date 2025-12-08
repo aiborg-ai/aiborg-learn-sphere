@@ -97,9 +97,7 @@ export class RecommendationEngineService {
 
       if (excludeEnrolled) {
         const enrolledIds = new Set(profile.enrolledCourses);
-        filteredCourses = filteredCourses.filter(
-          (course) => !enrolledIds.has(course.content_id)
-        );
+        filteredCourses = filteredCourses.filter(course => !enrolledIds.has(course.content_id));
       }
 
       if (excludeDismissed) {
@@ -110,14 +108,12 @@ export class RecommendationEngineService {
           .eq('content_type', 'course')
           .not('dismissed_at', 'is', null);
 
-        const dismissedIds = new Set(dismissed?.map((d) => d.content_id) || []);
-        filteredCourses = filteredCourses.filter(
-          (course) => !dismissedIds.has(course.content_id)
-        );
+        const dismissedIds = new Set(dismissed?.map(d => d.content_id) || []);
+        filteredCourses = filteredCourses.filter(course => !dismissedIds.has(course.content_id));
       }
 
       // 6. Fetch full course details
-      const courseIds = filteredCourses.map((c) => c.content_id);
+      const courseIds = filteredCourses.map(c => c.content_id);
       const { data: courses } = await supabase
         .from('courses')
         .select('id, title, description, difficulty_level, category, tags, created_at')
@@ -128,7 +124,7 @@ export class RecommendationEngineService {
       // 7. Calculate final scores and rank
       const recommendations = await Promise.all(
         courses.map(async (course, index) => {
-          const similarCourse = filteredCourses.find((c) => c.content_id === course.id);
+          const similarCourse = filteredCourses.find(c => c.content_id === course.id);
           const vectorSimilarity = similarCourse?.similarity || 0;
 
           // Calculate component scores
@@ -174,7 +170,7 @@ export class RecommendationEngineService {
 
       // 8. Sort by confidence score and filter by minimum
       const rankedRecommendations = recommendations
-        .filter((rec) => rec.confidenceScore >= minConfidence)
+        .filter(rec => rec.confidenceScore >= minConfidence)
         .sort((a, b) => b.confidenceScore - a.confidenceScore)
         .slice(0, limit)
         .map((rec, index) => ({ ...rec, rank: index + 1 }));
@@ -229,7 +225,7 @@ export class RecommendationEngineService {
       );
 
       // Fetch full path details
-      const pathIds = similarPaths.map((p) => p.content_id);
+      const pathIds = similarPaths.map(p => p.content_id);
       const { data: paths } = await supabase
         .from('learning_paths')
         .select('id, title, description, difficulty_level, tags, created_at')
@@ -239,17 +235,13 @@ export class RecommendationEngineService {
 
       // Score and rank
       const recommendations = paths.map((path, index) => {
-        const similarPath = similarPaths.find((p) => p.content_id === path.id);
+        const similarPath = similarPaths.find(p => p.content_id === path.id);
         const vectorSimilarity = similarPath?.similarity || 0;
 
         const skillMatch = this.calculateSkillMatchForPath(path, preferences);
         const difficultyMatch = this.calculateDifficultyMatch(path, profile);
 
-        const confidenceScore = (
-          0.5 * vectorSimilarity +
-          0.3 * skillMatch +
-          0.2 * difficultyMatch
-        );
+        const confidenceScore = 0.5 * vectorSimilarity + 0.3 * skillMatch + 0.2 * difficultyMatch;
 
         return {
           id: `rec_path_${path.id}_${Date.now()}`,
@@ -276,7 +268,7 @@ export class RecommendationEngineService {
       });
 
       return recommendations
-        .filter((rec) => rec.confidenceScore >= minConfidence)
+        .filter(rec => rec.confidenceScore >= minConfidence)
         .sort((a, b) => b.confidenceScore - a.confidenceScore)
         .slice(0, limit)
         .map((rec, index) => ({ ...rec, rank: index + 1 }));
@@ -289,10 +281,7 @@ export class RecommendationEngineService {
   /**
    * Get similar courses based on content similarity
    */
-  static async getSimilarCourses(
-    courseId: string,
-    limit: number = 5
-  ): Promise<Recommendation[]> {
+  static async getSimilarCourses(courseId: string, limit: number = 5): Promise<Recommendation[]> {
     try {
       // Get course embedding
       const courseEmbedding = await EmbeddingService.getContentEmbedding(courseId, 'course');
@@ -311,12 +300,10 @@ export class RecommendationEngineService {
       );
 
       // Remove the source course itself
-      const filteredCourses = similarCourses.filter(
-        (course) => course.content_id !== courseId
-      );
+      const filteredCourses = similarCourses.filter(course => course.content_id !== courseId);
 
       // Fetch course details
-      const courseIds = filteredCourses.slice(0, limit).map((c) => c.content_id);
+      const courseIds = filteredCourses.slice(0, limit).map(c => c.content_id);
       const { data: courses } = await supabase
         .from('courses')
         .select('id, title, description, difficulty_level, category, tags')
@@ -325,7 +312,7 @@ export class RecommendationEngineService {
       if (!courses) return [];
 
       return courses.map((course, index) => {
-        const similarCourse = filteredCourses.find((c) => c.content_id === course.id);
+        const similarCourse = filteredCourses.find(c => c.content_id === course.id);
         const similarity = similarCourse?.similarity || 0;
 
         return {
@@ -372,32 +359,108 @@ export class RecommendationEngineService {
       .eq('user_id', userId);
 
     const completedCourses =
-      history
-        ?.filter((h: any) => h.completion_percentage === 100)
-        .map((h: any) => h.course_id) || [];
+      history?.filter((h: any) => h.completion_percentage === 100).map((h: any) => h.course_id) ||
+      [];
 
-    const enrolledCourses = enrollments?.map((e) => e.course_id) || [];
+    const enrolledCourses = enrollments?.map(e => e.course_id) || [];
 
     const averageScore =
       history?.reduce((sum: number, h: any) => sum + (h.avg_assessment_score || 0), 0) /
         (history?.length || 1) || 0;
+
+    // Calculate skill gaps from assessment results
+    const skillGaps = await this.calculateSkillGaps(userId);
 
     return {
       userId,
       completedCourses,
       enrolledCourses,
       averageScore,
-      skillGaps: [], // TODO: Calculate from assessment results
+      skillGaps,
     };
+  }
+
+  /**
+   * Calculate skill gaps from assessment results
+   * Analyzes assessment performance by category to identify weak areas
+   */
+  private static async calculateSkillGaps(userId: string): Promise<string[]> {
+    try {
+      // Get assessment attempts with performance by category
+      const { data: attempts } = await supabase
+        .from('assessment_tool_attempts')
+        .select(
+          `
+          id,
+          total_score,
+          max_possible_score,
+          performance_by_category,
+          assessment_tools (
+            name,
+            category
+          )
+        `
+        )
+        .eq('user_id', userId)
+        .eq('status', 'completed')
+        .order('completed_at', { ascending: false })
+        .limit(10);
+
+      if (!attempts || attempts.length === 0) {
+        return [];
+      }
+
+      // Aggregate performance by category
+      const categoryScores: Record<string, { total: number; count: number }> = {};
+
+      for (const attempt of attempts) {
+        // Parse performance by category if available
+        const perfByCategory = attempt.performance_by_category as Record<string, number> | null;
+
+        if (perfByCategory) {
+          for (const [category, score] of Object.entries(perfByCategory)) {
+            if (!categoryScores[category]) {
+              categoryScores[category] = { total: 0, count: 0 };
+            }
+            categoryScores[category].total += score;
+            categoryScores[category].count += 1;
+          }
+        }
+
+        // Also track overall tool category performance
+        const toolCategory = (attempt.assessment_tools as any)?.category;
+        if (toolCategory && attempt.max_possible_score > 0) {
+          const scorePercent = (attempt.total_score / attempt.max_possible_score) * 100;
+          if (!categoryScores[toolCategory]) {
+            categoryScores[toolCategory] = { total: 0, count: 0 };
+          }
+          categoryScores[toolCategory].total += scorePercent;
+          categoryScores[toolCategory].count += 1;
+        }
+      }
+
+      // Identify skill gaps (categories with average score < 70%)
+      const skillGaps: string[] = [];
+      const SKILL_GAP_THRESHOLD = 70;
+
+      for (const [category, scores] of Object.entries(categoryScores)) {
+        const avgScore = scores.total / scores.count;
+        if (avgScore < SKILL_GAP_THRESHOLD) {
+          skillGaps.push(category);
+        }
+      }
+
+      return skillGaps;
+    } catch (error) {
+      logger.error('Failed to calculate skill gaps:', error);
+      return [];
+    }
   }
 
   /**
    * Build query text from user profile
    */
-  private static buildUserQueryText(
-    profile: UserLearningProfile,
-    preferences: any
-  ): string {
+  private static buildUserQueryText(profile: UserLearningProfile, preferences: any): string {
     const parts: string[] = [];
 
     if (preferences?.interested_topics?.length) {
@@ -421,11 +484,73 @@ export class RecommendationEngineService {
 
   /**
    * Calculate skill match score (0.0 to 1.0)
+   * Higher score = course addresses user's skill gaps or matches their interests
    */
-  private static calculateSkillMatch(_course: any, _profile: UserLearningProfile): number {
-    // TODO: Implement proper skill matching based on course requirements vs user skills
-    // For now, return a placeholder score
-    return 0.7;
+  private static calculateSkillMatch(course: any, profile: UserLearningProfile): number {
+    let score = 0.5; // Base score
+
+    // Get course tags/keywords
+    const courseTags = new Set(
+      (course.tags || course.keywords || []).map((t: string) => t.toLowerCase())
+    );
+    const courseCategory = (course.category || '').toLowerCase();
+    const courseLevel = (course.level || course.difficulty_level || '').toLowerCase();
+
+    // Boost score if course addresses skill gaps
+    if (profile.skillGaps.length > 0) {
+      const skillGapsLower = profile.skillGaps.map(s => s.toLowerCase());
+      let gapMatches = 0;
+
+      for (const gap of skillGapsLower) {
+        // Check if course tags or category match the skill gap
+        if (courseTags.has(gap) || courseCategory.includes(gap)) {
+          gapMatches++;
+        }
+        // Also check for partial matches
+        for (const tag of courseTags) {
+          if (tag.includes(gap) || gap.includes(tag)) {
+            gapMatches += 0.5;
+          }
+        }
+      }
+
+      // Skill gap match can boost score by up to 0.3
+      score += Math.min(0.3, gapMatches * 0.15);
+    }
+
+    // Adjust score based on difficulty match
+    if (profile.averageScore > 0) {
+      const userLevel =
+        profile.averageScore > 85
+          ? 'advanced'
+          : profile.averageScore > 70
+            ? 'intermediate'
+            : 'beginner';
+
+      if (courseLevel === userLevel) {
+        score += 0.1; // Perfect match
+      } else if (
+        (userLevel === 'intermediate' &&
+          (courseLevel === 'beginner' || courseLevel === 'advanced')) ||
+        (userLevel === 'beginner' && courseLevel === 'intermediate') ||
+        (userLevel === 'advanced' && courseLevel === 'intermediate')
+      ) {
+        score += 0.05; // Close match
+      }
+    }
+
+    // Check if user has already completed prerequisites (if course has any)
+    if (profile.completedCourses.length > 0 && course.prerequisites?.length > 0) {
+      const prereqsMet = course.prerequisites.every((prereq: string) =>
+        profile.completedCourses.includes(prereq)
+      );
+      if (prereqsMet) {
+        score += 0.1;
+      }
+    }
+
+    // Ensure score is between 0 and 1
+    return Math.max(0, Math.min(1, score));
   }
 
   /**
@@ -436,13 +561,11 @@ export class RecommendationEngineService {
       return 0.5;
     }
 
-    const targetSkills = new Set(
-      preferences.target_skills.map((s: string) => s.toLowerCase())
-    );
+    const targetSkills = new Set(preferences.target_skills.map((s: string) => s.toLowerCase()));
     const pathTags = new Set(path.tags.map((t: string) => t.toLowerCase()));
 
     let matches = 0;
-    targetSkills.forEach((skill) => {
+    targetSkills.forEach(skill => {
       if (pathTags.has(skill)) matches++;
     });
 
@@ -464,8 +587,10 @@ export class RecommendationEngineService {
 
     // Determine user level from average score
     let userLevel = 2; // intermediate by default
-    if (profile.averageScore >= 90) userLevel = 4; // expert
-    else if (profile.averageScore >= 75) userLevel = 3; // advanced
+    if (profile.averageScore >= 90)
+      userLevel = 4; // expert
+    else if (profile.averageScore >= 75)
+      userLevel = 3; // advanced
     else if (profile.averageScore < 50) userLevel = 1; // beginner
 
     // Perfect match = 1.0, 1 level off = 0.7, 2 levels = 0.4, 3 levels = 0.1
@@ -502,10 +627,7 @@ export class RecommendationEngineService {
     popularityScore: number
   ): number {
     return (
-      0.4 * vectorSimilarity +
-      0.3 * skillMatch +
-      0.2 * difficultyMatch +
-      0.1 * popularityScore
+      0.4 * vectorSimilarity + 0.3 * skillMatch + 0.2 * difficultyMatch + 0.1 * popularityScore
     );
   }
 
@@ -563,7 +685,7 @@ export class RecommendationEngineService {
     context: string
   ): Promise<void> {
     try {
-      const records = recommendations.map((rec) => ({
+      const records = recommendations.map(rec => ({
         user_id: userId,
         recommendation_type: rec.contentType,
         content_id: rec.contentId,

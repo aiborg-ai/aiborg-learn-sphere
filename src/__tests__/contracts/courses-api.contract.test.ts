@@ -125,7 +125,7 @@ describe('Courses API Contract', () => {
     });
 
     it('should handle non-existent course', async () => {
-      const { data, error } = await supabase!
+      const { data, error: _error } = await supabase!
         .from('courses')
         .select('*')
         .eq('id', 999999)

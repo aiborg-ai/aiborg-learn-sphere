@@ -75,13 +75,13 @@ const sourceTypeIcons: Record<string, React.ElementType> = {
 export function AITutor() {
   const { selectedAudience, getPersonalizedContent } = usePersonalization();
   const {
-    currentConversation,
-    conversationHistory,
-    startNewConversation,
-    addMessage,
-    loadConversation,
-    deleteConversation,
-    exportConversations,
+    currentConversation: _currentConversation,
+    conversationHistory: _conversationHistory,
+    startNewConversation: _startNewConversation,
+    addMessage: _addMessage,
+    loadConversation: _loadConversation,
+    deleteConversation: _deleteConversation,
+    exportConversations: _exportConversations,
   } = useChatHistory();
 
   const [isOpen, setIsOpen] = useState(false);

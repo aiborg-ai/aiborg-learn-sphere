@@ -91,7 +91,8 @@ export class UserAnalyticsService {
           logger.error('Error fetching user progress:', progressError);
         }
 
-        const studyTime = progressData?.reduce((sum, p) => sum + (p.time_spent_minutes || 0), 0) || 0;
+        const studyTime =
+          progressData?.reduce((sum, p) => sum + (p.time_spent_minutes || 0), 0) || 0;
 
         // Fetch completed lessons (course progress)
         const { data: completionsData, error: completionsError } = await supabase
@@ -122,9 +123,10 @@ export class UserAnalyticsService {
         }
 
         const quizzesTaken = quizzesData?.length || 0;
-        const averageScore = quizzesData && quizzesData.length > 0
-          ? quizzesData.reduce((sum, q) => sum + (q.score || 0), 0) / quizzesData.length
-          : 0;
+        const averageScore =
+          quizzesData && quizzesData.length > 0
+            ? quizzesData.reduce((sum, q) => sum + (q.score || 0), 0) / quizzesData.length
+            : 0;
 
         weeklyData.push({
           week: weekLabel,
@@ -150,12 +152,14 @@ export class UserAnalyticsService {
       // Fetch user enrollments with course categories
       const { data, error } = await supabase
         .from('enrollments')
-        .select(`
+        .select(
+          `
           id,
           courses (
             category
           )
-        `)
+        `
+        )
         .eq('user_id', userId);
 
       if (error) {
@@ -174,7 +178,14 @@ export class UserAnalyticsService {
       });
 
       // Convert to array with percentages and colors
-      const colors = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', '#10b981', '#f59e0b', '#8b5cf6'];
+      const colors = [
+        'hsl(var(--primary))',
+        'hsl(var(--secondary))',
+        'hsl(var(--accent))',
+        '#10b981',
+        '#f59e0b',
+        '#8b5cf6',
+      ];
       const distribution = Object.entries(categoryCount).map(([category, count], index) => ({
         category,
         value: count,
@@ -192,10 +203,7 @@ export class UserAnalyticsService {
   /**
    * Get progress trends over time
    */
-  static async getUserProgressTrends(
-    userId: string,
-    weeks: number = 6
-  ): Promise<ProgressTrend[]> {
+  static async getUserProgressTrends(userId: string, weeks: number = 6): Promise<ProgressTrend[]> {
     try {
       const trends: ProgressTrend[] = [];
       const currentDate = new Date();
@@ -233,9 +241,11 @@ export class UserAnalyticsService {
 
         const coursesInProgress = inProgressData?.length || 0;
         const coursesCompleted = completedData?.length || 0;
-        const avgProgress = inProgressData && inProgressData.length > 0
-          ? inProgressData.reduce((sum, p) => sum + (p.progress_percentage || 0), 0) / inProgressData.length
-          : 0;
+        const avgProgress =
+          inProgressData && inProgressData.length > 0
+            ? inProgressData.reduce((sum, p) => sum + (p.progress_percentage || 0), 0) /
+              inProgressData.length
+            : 0;
 
         trends.push({
           week: weekLabel,
@@ -285,9 +295,11 @@ export class UserAnalyticsService {
       // This is a simplified version - in production, you'd map assessments to skills
       const skillData: SkillRadarData[] = skills.map((skill, index) => {
         const relevantAssessments = data?.slice(index, index + 3) || [];
-        const proficiency = relevantAssessments.length > 0
-          ? relevantAssessments.reduce((sum, a) => sum + (a.overall_score || 0), 0) / relevantAssessments.length
-          : 0;
+        const proficiency =
+          relevantAssessments.length > 0
+            ? relevantAssessments.reduce((sum, a) => sum + (a.overall_score || 0), 0) /
+              relevantAssessments.length
+            : 0;
 
         return {
           skill,
@@ -320,9 +332,7 @@ export class UserAnalyticsService {
         .eq('user_id', userId);
 
       if (dateRange) {
-        query = query
-          .gte('last_accessed', dateRange.start)
-          .lte('last_accessed', dateRange.end);
+        query = query.gte('last_accessed', dateRange.start).lte('last_accessed', dateRange.end);
       }
 
       const { data, error } = await query;
@@ -366,15 +376,16 @@ export class UserAnalyticsService {
   static async getUserDashboardStats(userId: string): Promise<UserDashboardStats> {
     try {
       // Fetch total study time
-      const { data: progressData, error: progressError } = await supabase
+      const { data: progressData, error: _progressError } = await supabase
         .from('user_progress')
         .select('time_spent_minutes')
         .eq('user_id', userId);
 
-      const totalStudyTime = progressData?.reduce((sum, p) => sum + (p.time_spent_minutes || 0), 0) || 0;
+      const totalStudyTime =
+        progressData?.reduce((sum, p) => sum + (p.time_spent_minutes || 0), 0) || 0;
 
       // Fetch completed courses
-      const { data: completedData, error: completedError } = await supabase
+      const { data: completedData, error: _completedError } = await supabase
         .from('user_progress')
         .select('course_id')
         .eq('user_id', userId)
@@ -384,7 +395,7 @@ export class UserAnalyticsService {
       const completedCourses = completedData?.length || 0;
 
       // Fetch streak data from user_dashboard
-      const { data: dashboardData, error: dashboardError } = await supabase
+      const { data: dashboardData, error: _dashboardError } = await supabase
         .from('user_dashboard')
         .select('current_streak')
         .eq('user_id', userId)
@@ -393,19 +404,21 @@ export class UserAnalyticsService {
       const currentStreak = dashboardData?.current_streak || 0;
 
       // Fetch average assessment score
-      const { data: assessmentData, error: assessmentError } = await supabase
+      const { data: assessmentData, error: _assessmentError } = await supabase
         .from('user_ai_assessments')
         .select('overall_score')
         .eq('user_id', userId);
 
-      const averageScore = assessmentData && assessmentData.length > 0
-        ? assessmentData.reduce((sum, a) => sum + (a.overall_score || 0), 0) / assessmentData.length
-        : 0;
+      const averageScore =
+        assessmentData && assessmentData.length > 0
+          ? assessmentData.reduce((sum, a) => sum + (a.overall_score || 0), 0) /
+            assessmentData.length
+          : 0;
 
       const totalAssessments = assessmentData?.length || 0;
 
       // Fetch certificates
-      const { data: certificatesData, error: certificatesError } = await supabase
+      const { data: certificatesData, error: _certificatesError } = await supabase
         .from('certificates')
         .select('id')
         .eq('user_id', userId);
@@ -413,7 +426,7 @@ export class UserAnalyticsService {
       const certificatesEarned = certificatesData?.length || 0;
 
       // Fetch achievements
-      const { data: achievementsData, error: achievementsError } = await supabase
+      const { data: achievementsData, error: _achievementsError } = await supabase
         .from('user_achievements')
         .select('id')
         .eq('user_id', userId);

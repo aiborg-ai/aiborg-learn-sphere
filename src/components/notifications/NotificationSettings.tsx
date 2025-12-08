@@ -74,7 +74,7 @@ export function NotificationSettings() {
     isSubscribed,
     isLoading,
     preferences,
-    requestPermission,
+    requestPermission: _requestPermission,
     subscribe,
     unsubscribe,
     updatePreference,

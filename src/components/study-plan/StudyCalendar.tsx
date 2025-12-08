@@ -27,10 +27,13 @@ import {
   Dumbbell,
   RefreshCw,
   Target,
-  AlertCircle,
 } from '@/components/ui/icons';
-import { StudyPlanGeneratorService, type GeneratedStudyPlan, type DailyTask } from '@/services/study-planner/StudyPlanGeneratorService';
-import { format, addWeeks, subWeeks, startOfWeek, endOfWeek, isSameDay, isToday, isPast, isFuture } from 'date-fns';
+import {
+  StudyPlanGeneratorService,
+  type GeneratedStudyPlan,
+  type DailyTask,
+} from '@/services/study-planner/StudyPlanGeneratorService';
+import { format, addWeeks, startOfWeek, isToday, isPast, isFuture } from 'date-fns';
 import { logger } from '@/utils/logger';
 import { useToast } from '@/hooks/use-toast';
 import { useStudyPlanUpdates } from '@/hooks/useRealtimeUpdates';
@@ -45,17 +48,12 @@ interface StudyCalendarProps {
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const DAY_KEYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
-export function StudyCalendar({
-  userId,
-  planId,
-  onTaskComplete,
-  onTaskClick,
-}: StudyCalendarProps) {
+export function StudyCalendar({ userId, planId, onTaskComplete, onTaskClick }: StudyCalendarProps) {
   const { toast } = useToast();
   const [studyPlan, setStudyPlan] = useState<GeneratedStudyPlan | null>(null);
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [selectedTask, setSelectedTask] = useState<DailyTask | null>(null);
+  const [_selectedTask, setSelectedTask] = useState<DailyTask | null>(null);
 
   // Real-time updates: Auto-refresh when study plan changes
   useStudyPlanUpdates(userId, () => {
@@ -231,7 +229,7 @@ export function StudyCalendar({
 
             <Select
               value={currentWeekIndex.toString()}
-              onValueChange={(value) => setCurrentWeekIndex(parseInt(value))}
+              onValueChange={value => setCurrentWeekIndex(parseInt(value))}
             >
               <SelectTrigger className="w-32">
                 <SelectValue />
@@ -332,9 +330,7 @@ export function StudyCalendar({
                       </Badge>
                     )}
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    {format(currentDayDate, 'MMM d')}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{format(currentDayDate, 'MMM d')}</p>
 
                   {tasks.length > 0 && (
                     <div className="mt-2">
@@ -353,7 +349,7 @@ export function StudyCalendar({
                       No tasks scheduled
                     </p>
                   ) : (
-                    tasks.map((task) => {
+                    tasks.map(task => {
                       const TaskIcon = getTaskIcon(task.task_type);
                       return (
                         <div
@@ -387,7 +383,7 @@ export function StudyCalendar({
                                 size="sm"
                                 variant="ghost"
                                 className="h-6 w-6 p-0"
-                                onClick={(e) => {
+                                onClick={e => {
                                   e.stopPropagation();
                                   handleTaskComplete(task);
                                 }}
@@ -417,10 +413,7 @@ export function StudyCalendar({
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold">
-              {Object.values(currentWeek.daily_tasks).reduce(
-                (sum, tasks) => sum + tasks.length,
-                0
-              )}
+              {Object.values(currentWeek.daily_tasks).reduce((sum, tasks) => sum + tasks.length, 0)}
             </p>
             <p className="text-xs text-muted-foreground">Total Tasks</p>
           </div>
@@ -436,8 +429,7 @@ export function StudyCalendar({
           <div className="text-center">
             <p className="text-2xl font-bold text-blue-600">
               {Object.values(currentWeek.daily_tasks).reduce(
-                (sum, tasks) =>
-                  sum + tasks.filter(t => !t.completed).length,
+                (sum, tasks) => sum + tasks.filter(t => !t.completed).length,
                 0
               )}
             </p>

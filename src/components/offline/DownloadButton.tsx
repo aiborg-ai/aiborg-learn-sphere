@@ -41,6 +41,7 @@ export function DownloadButton({
 
   useEffect(() => {
     checkDownloadStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contentId, contentType]);
 
   useEffect(() => {
@@ -64,6 +65,7 @@ export function DownloadButton({
     });
 
     return cleanup;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDownloading, contentId]);
 
   async function checkDownloadStatus() {

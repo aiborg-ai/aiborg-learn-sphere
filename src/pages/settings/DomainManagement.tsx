@@ -70,6 +70,7 @@ export default function DomainManagement() {
     if (tenantId) {
       loadDomains();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tenantId]);
 
   const loadDomains = async () => {

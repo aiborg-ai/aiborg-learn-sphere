@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useAssessmentTool } from '@/hooks/useAssessmentTools';
+import { useAssessmentTimer } from '@/hooks/useAssessmentTimer';
 import {
   useCreateAssessmentAttempt,
   useCompleteAssessmentAttempt,
@@ -34,6 +35,11 @@ export default function AIFluencyAssessment() {
   const { data: tool, isLoading: toolLoading } = useAssessmentTool('ai-fluency');
   const createAttempt = useCreateAssessmentAttempt();
   const completeAttempt = useCompleteAssessmentAttempt();
+  const {
+    elapsedSeconds,
+    pause: pauseTimer,
+    start: startTimer,
+  } = useAssessmentTimer({ autoStart: false });
 
   // Initialize assessment
   useEffect(() => {
@@ -90,6 +96,9 @@ export default function AIFluencyAssessment() {
           title: 'Assessment Started',
           description: `Starting attempt #${attempt.attempt_number} - Testing your AI fluency`,
         });
+
+        // Start the timer
+        startTimer();
       } catch (error) {
         logger.error('Error initializing assessment:', error);
         toast({
@@ -108,6 +117,9 @@ export default function AIFluencyAssessment() {
   // Handle assessment completion
   const _handleAssessmentComplete = async () => {
     if (!engine || !attemptId || !assessmentId) return;
+
+    // Pause the timer when completing
+    pauseTimer();
 
     try {
       // Get final results from engine
@@ -129,7 +141,7 @@ export default function AIFluencyAssessment() {
         abilityStandardError: state.standardError,
         questionsAnswered: performanceSummary.totalQuestions,
         correctAnswers: performanceSummary.correctAnswers,
-        timeSpentSeconds: 0, // TODO: Track time
+        timeSpentSeconds: elapsedSeconds,
         performanceByCategory: {},
       });
 

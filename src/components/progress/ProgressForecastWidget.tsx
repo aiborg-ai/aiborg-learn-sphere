@@ -7,7 +7,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -22,15 +21,13 @@ import {
   ArrowRight,
   Info,
 } from '@/components/ui/icons';
-import { GoalPredictionService, type GoalPrediction } from '@/services/analytics/GoalPredictionService';
-import { format, addWeeks } from 'date-fns';
-import { logger } from '@/utils/logger';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+  GoalPredictionService,
+  type GoalPrediction,
+} from '@/services/analytics/GoalPredictionService';
+import { format } from 'date-fns';
+import { logger } from '@/utils/logger';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useGoalUpdates } from '@/hooks/useRealtimeUpdates';
 
 interface ProgressForecastWidgetProps {
@@ -58,6 +55,7 @@ export function ProgressForecastWidget({
 
   useEffect(() => {
     fetchPrediction();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, goalId]);
 
   const fetchPrediction = async () => {
@@ -206,9 +204,7 @@ export function ProgressForecastWidget({
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium">Current Progress</span>
-            <span className="text-2xl font-bold text-primary">
-              {prediction.currentProgress}%
-            </span>
+            <span className="text-2xl font-bold text-primary">{prediction.currentProgress}%</span>
           </div>
           <Progress value={prediction.currentProgress} className="h-3" />
           <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
@@ -233,13 +229,9 @@ export function ProgressForecastWidget({
           <div className="p-4 border rounded-lg bg-secondary/20">
             <div className="flex items-center gap-2 mb-2">
               {getStatusIcon(prediction.isOnTrack, prediction.riskLevel)}
-              <span className="font-semibold">
-                {prediction.completionProbability}% Likely
-              </span>
+              <span className="font-semibold">{prediction.completionProbability}% Likely</span>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Chance of completing by target date
-            </p>
+            <p className="text-xs text-muted-foreground">Chance of completing by target date</p>
           </div>
         </div>
 
@@ -304,8 +296,8 @@ export function ProgressForecastWidget({
                   ⚠️ Action Needed
                 </p>
                 <p className="text-xs text-red-800 dark:text-red-200">
-                  Increase your daily study time to {prediction.recommendedDailyEffort} minutes
-                  to stay on track. Focus on high-priority topics.
+                  Increase your daily study time to {prediction.recommendedDailyEffort} minutes to
+                  stay on track. Focus on high-priority topics.
                 </p>
               </div>
             )}
@@ -328,8 +320,8 @@ export function ProgressForecastWidget({
                   ✅ On Track!
                 </p>
                 <p className="text-xs text-green-800 dark:text-green-200">
-                  Excellent progress! You're ahead of schedule. Keep up the momentum or
-                  consider tackling more advanced topics.
+                  Excellent progress! You're ahead of schedule. Keep up the momentum or consider
+                  tackling more advanced topics.
                 </p>
               </div>
             )}
@@ -351,7 +343,10 @@ export function ProgressForecastWidget({
 /**
  * Compact version for dashboard widgets
  */
-export function ProgressForecastCompact({ userId, goalId }: Omit<ProgressForecastWidgetProps, 'compact' | 'showRecommendations'>) {
+export function ProgressForecastCompact({
+  userId,
+  goalId,
+}: Omit<ProgressForecastWidgetProps, 'compact' | 'showRecommendations'>) {
   return (
     <ProgressForecastWidget
       userId={userId}

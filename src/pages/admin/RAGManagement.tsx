@@ -39,7 +39,7 @@ export default function RAGManagement() {
     try {
       const stats = await RAGService.getEmbeddingStats();
       setEmbeddingStats(stats);
-    } catch (error) {
+    } catch {
       // Failed to load stats - silent failure, will show empty state
     } finally {
       setIsLoadingStats(false);

@@ -7,7 +7,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import { StudyPlanGeneratorService } from '../study-planner/StudyPlanGeneratorService';
-import { addMinutes, addHours, addDays, isBefore, isAfter, format, startOfDay } from 'date-fns';
+import { addHours, addDays, isBefore, format, startOfDay } from 'date-fns';
 
 export type NotificationType =
   | 'study_reminder'
@@ -101,20 +101,18 @@ export class NotificationScheduler {
     preferences: Partial<NotificationPreferences>
   ): Promise<void> {
     try {
-      const { error } = await supabase
-        .from('user_ai_preferences')
-        .upsert({
-          user_id: userId,
-          enable_study_reminders: preferences.enable_study_reminders,
-          enable_deadline_alerts: preferences.enable_deadline_alerts,
-          enable_achievements: preferences.enable_achievements,
-          enable_encouragement: preferences.enable_encouragement,
-          preferred_reminder_times: preferences.preferred_reminder_times,
-          quiet_hours_start: preferences.quiet_hours_start,
-          quiet_hours_end: preferences.quiet_hours_end,
-          notification_frequency: preferences.frequency,
-          notification_channels: preferences.notification_channels,
-        });
+      const { error } = await supabase.from('user_ai_preferences').upsert({
+        user_id: userId,
+        enable_study_reminders: preferences.enable_study_reminders,
+        enable_deadline_alerts: preferences.enable_deadline_alerts,
+        enable_achievements: preferences.enable_achievements,
+        enable_encouragement: preferences.enable_encouragement,
+        preferred_reminder_times: preferences.preferred_reminder_times,
+        quiet_hours_start: preferences.quiet_hours_start,
+        quiet_hours_end: preferences.quiet_hours_end,
+        notification_frequency: preferences.frequency,
+        notification_channels: preferences.notification_channels,
+      });
 
       if (error) {
         throw error;
@@ -307,7 +305,10 @@ export class NotificationScheduler {
   /**
    * Send encouragement notification
    */
-  static async sendEncouragement(userId: string, context: 'low_activity' | 'streak' | 'milestone' | 'struggling'): Promise<void> {
+  static async sendEncouragement(
+    userId: string,
+    context: 'low_activity' | 'streak' | 'milestone' | 'struggling'
+  ): Promise<void> {
     try {
       const preferences = await this.getUserPreferences(userId);
 
@@ -318,19 +319,23 @@ export class NotificationScheduler {
       const messages: Record<typeof context, { title: string; message: string }> = {
         low_activity: {
           title: '📚 We Miss You!',
-          message: "It's been a while since your last study session. Even 15 minutes can make a difference. Ready to jump back in?",
+          message:
+            "It's been a while since your last study session. Even 15 minutes can make a difference. Ready to jump back in?",
         },
         streak: {
           title: '🔥 Amazing Streak!',
-          message: "You're on fire! Keep up this fantastic learning momentum. Your consistency is impressive!",
+          message:
+            "You're on fire! Keep up this fantastic learning momentum. Your consistency is impressive!",
         },
         milestone: {
           title: '🎯 Milestone Reached!',
-          message: "You've reached an important milestone in your learning journey. Celebrate your progress and keep going!",
+          message:
+            "You've reached an important milestone in your learning journey. Celebrate your progress and keep going!",
         },
         struggling: {
-          title: '💪 Don\'t Give Up!',
-          message: "Challenging topics are part of growth. Remember, every expert was once a beginner. You've got this!",
+          title: "💪 Don't Give Up!",
+          message:
+            "Challenging topics are part of growth. Remember, every expert was once a beginner. You've got this!",
         },
       };
 

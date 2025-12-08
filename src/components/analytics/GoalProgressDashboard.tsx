@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
@@ -194,9 +193,7 @@ export const GoalProgressDashboard: React.FC = () => {
               </div>
               <AlertTriangle className="h-8 w-8 text-orange-600" />
             </div>
-            <div className="mt-2 text-xs text-muted-foreground">
-              Need attention
-            </div>
+            <div className="mt-2 text-xs text-muted-foreground">Need attention</div>
           </CardContent>
         </Card>
       </div>
@@ -259,7 +256,10 @@ export const GoalProgressDashboard: React.FC = () => {
                             <div className="flex justify-between text-sm">
                               <span className="text-muted-foreground">Progress</span>
                               <span className="font-semibold">
-                                {Math.round((milestone.current_value / milestone.target_value) * 100)}%
+                                {Math.round(
+                                  (milestone.current_value / milestone.target_value) * 100
+                                )}
+                                %
                               </span>
                             </div>
                             <Progress
@@ -312,9 +312,7 @@ export const GoalProgressDashboard: React.FC = () => {
                               {goal.goal_type.replace('_', ' ').toUpperCase()}
                             </h4>
                           </div>
-                          <Badge className={getPriorityColor(goal.priority)}>
-                            {goal.priority}
-                          </Badge>
+                          <Badge className={getPriorityColor(goal.priority)}>{goal.priority}</Badge>
                         </div>
 
                         <div className="space-y-2">
@@ -366,9 +364,7 @@ export const GoalProgressDashboard: React.FC = () => {
                             <Award className="h-5 w-5 text-primary" />
                             <h4 className="font-semibold">{goal.target_role_name}</h4>
                           </div>
-                          <Badge className={getPriorityColor(goal.priority)}>
-                            {goal.priority}
-                          </Badge>
+                          <Badge className={getPriorityColor(goal.priority)}>{goal.priority}</Badge>
                         </div>
 
                         <div className="space-y-2">
@@ -405,7 +401,8 @@ export const GoalProgressDashboard: React.FC = () => {
                 <Alert>
                   <Calendar className="h-4 w-4" />
                   <AlertDescription>
-                    No study plans created. Create an AI-powered study plan to structure your learning!
+                    No study plans created. Create an AI-powered study plan to structure your
+                    learning!
                   </AlertDescription>
                 </Alert>
               ) : (
@@ -454,7 +451,8 @@ export const GoalProgressDashboard: React.FC = () => {
                               <p className="text-muted-foreground">Time Commitment</p>
                               <p className="font-semibold">
                                 {plan.hours_per_week}h/week
-                                {plan.total_hours_planned && ` (${plan.total_hours_planned}h total)`}
+                                {plan.total_hours_planned &&
+                                  ` (${plan.total_hours_planned}h total)`}
                               </p>
                             </div>
                           </div>

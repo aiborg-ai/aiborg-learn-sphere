@@ -52,7 +52,7 @@ export async function logAudit(entry: Omit<AuditLogEntry, 'timestamp'>): Promise
     // Log to Supabase audit table (if table exists)
     try {
       await supabase.from('audit_logs').insert(logEntry);
-    } catch (dbError) {
+    } catch {
       // Table might not exist yet - just log to console
       if (import.meta.env.DEV) {
         logger.info('[Audit]', logEntry);

@@ -28,7 +28,7 @@ export const CompetencyHeatMap: React.FC = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [snapshot, setSnapshot] = useState<CompetencySnapshot | null>(null);
-  const [timeSeries, setTimeSeries] = useState<any[]>([]);
+  const [_timeSeries, setTimeSeries] = useState<unknown[]>([]);
   const [heatMapData, setHeatMapData] = useState<DayCell[]>([]);
 
   const loadCompetencyData = useCallback(async () => {
@@ -259,9 +259,8 @@ export const CompetencyHeatMap: React.FC = () => {
                       {heatMapData.reduce((max, day) => (day.score > max.score ? day : max)).score >
                       0
                         ? format(
-                            heatMapData.reduce((max, day) =>
-                              day.score > max.score ? day : max
-                            ).date,
+                            heatMapData.reduce((max, day) => (day.score > max.score ? day : max))
+                              .date,
                             'MMM dd'
                           )
                         : 'N/A'}
@@ -287,9 +286,7 @@ export const CompetencyHeatMap: React.FC = () => {
                       <div className="flex items-center justify-between mb-3">
                         <div>
                           <h4 className="font-semibold">{category}</h4>
-                          <Badge className="mt-1 text-xs">
-                            {getCompetencyLevel(data.score)}
-                          </Badge>
+                          <Badge className="mt-1 text-xs">{getCompetencyLevel(data.score)}</Badge>
                         </div>
                         <div className="text-right">
                           <p className="text-2xl font-bold">{Math.round(data.score)}%</p>

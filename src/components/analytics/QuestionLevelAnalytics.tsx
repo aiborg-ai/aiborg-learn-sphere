@@ -18,8 +18,26 @@ import {
 } from '@/services/analytics/PerformanceAnalyticsService';
 import { ChartLoadingSkeleton } from './AnalyticsLoadingSkeleton';
 import { AnalyticsErrorDisplay } from './AnalyticsErrorBoundary';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { CheckCircle2, XCircle, Clock, TrendingUp, AlertTriangle, Target } from '@/components/ui/icons';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+} from 'recharts';
+import {
+  CheckCircle2,
+  XCircle,
+  Clock,
+  TrendingUp,
+  AlertTriangle,
+  Target,
+} from '@/components/ui/icons';
 
 interface QuestionLevelAnalyticsProps {
   userId: string;
@@ -37,6 +55,7 @@ export function QuestionLevelAnalytics({ userId }: QuestionLevelAnalyticsProps) 
 
   useEffect(() => {
     fetchPerformanceData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const fetchPerformanceData = async () => {
@@ -145,11 +164,16 @@ export function QuestionLevelAnalytics({ userId }: QuestionLevelAnalyticsProps) 
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Improvement</p>
-                <p className={`text-2xl font-bold ${stats.improvementRate >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {stats.improvementRate > 0 ? '+' : ''}{stats.improvementRate}%
+                <p
+                  className={`text-2xl font-bold ${stats.improvementRate >= 0 ? 'text-green-500' : 'text-red-500'}`}
+                >
+                  {stats.improvementRate > 0 ? '+' : ''}
+                  {stats.improvementRate}%
                 </p>
               </div>
-              <TrendingUp className={`h-8 w-8 ${stats.improvementRate >= 0 ? 'text-green-500' : 'text-red-500'}`} />
+              <TrendingUp
+                className={`h-8 w-8 ${stats.improvementRate >= 0 ? 'text-green-500' : 'text-red-500'}`}
+              />
             </div>
             <p className="text-xs text-muted-foreground mt-2">
               Consistency: {stats.consistencyScore}/100
@@ -177,11 +201,25 @@ export function QuestionLevelAnalytics({ userId }: QuestionLevelAnalyticsProps) 
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={[
-                  { difficulty: 'Easy', accuracy: stats.performanceByDifficulty.easy.percentage, total: stats.performanceByDifficulty.easy.total },
-                  { difficulty: 'Medium', accuracy: stats.performanceByDifficulty.medium.percentage, total: stats.performanceByDifficulty.medium.total },
-                  { difficulty: 'Hard', accuracy: stats.performanceByDifficulty.hard.percentage, total: stats.performanceByDifficulty.hard.total },
-                ]}>
+                <BarChart
+                  data={[
+                    {
+                      difficulty: 'Easy',
+                      accuracy: stats.performanceByDifficulty.easy.percentage,
+                      total: stats.performanceByDifficulty.easy.total,
+                    },
+                    {
+                      difficulty: 'Medium',
+                      accuracy: stats.performanceByDifficulty.medium.percentage,
+                      total: stats.performanceByDifficulty.medium.total,
+                    },
+                    {
+                      difficulty: 'Hard',
+                      accuracy: stats.performanceByDifficulty.hard.percentage,
+                      total: stats.performanceByDifficulty.hard.total,
+                    },
+                  ]}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="difficulty" />
                   <YAxis />
@@ -207,7 +245,13 @@ export function QuestionLevelAnalytics({ userId }: QuestionLevelAnalyticsProps) 
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey="accuracy" stroke="#8b5cf6" strokeWidth={2} name="Accuracy %" />
+                    <Line
+                      type="monotone"
+                      dataKey="accuracy"
+                      stroke="#8b5cf6"
+                      strokeWidth={2}
+                      name="Accuracy %"
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -225,14 +269,23 @@ export function QuestionLevelAnalytics({ userId }: QuestionLevelAnalyticsProps) 
             <CardContent>
               <div className="space-y-3">
                 {questions.map((q, index) => (
-                  <div key={q.questionId} className="p-4 border rounded-lg hover:bg-secondary/50 transition-colors">
+                  <div
+                    key={q.questionId}
+                    className="p-4 border rounded-lg hover:bg-secondary/50 transition-colors"
+                  >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-sm font-medium">Question {index + 1}</span>
-                          {q.topic && <Badge variant="outline" className="text-xs">{q.topic}</Badge>}
+                          {q.topic && (
+                            <Badge variant="outline" className="text-xs">
+                              {q.topic}
+                            </Badge>
+                          )}
                         </div>
-                        <p className="text-sm text-muted-foreground line-clamp-2">{q.questionText || 'Question text unavailable'}</p>
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {q.questionText || 'Question text unavailable'}
+                        </p>
                       </div>
                       <div className="text-right">
                         <div className="flex items-center gap-2">
@@ -263,7 +316,7 @@ export function QuestionLevelAnalytics({ userId }: QuestionLevelAnalyticsProps) 
         {/* Topics Tab */}
         <TabsContent value="topics">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {topics.map((topic) => (
+            {topics.map(topic => (
               <Card key={topic.topic}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -290,7 +343,9 @@ export function QuestionLevelAnalytics({ userId }: QuestionLevelAnalyticsProps) 
                         </p>
                         <ul className="text-xs text-muted-foreground space-y-1">
                           {topic.weakAreas.slice(0, 2).map((area, i) => (
-                            <li key={i} className="line-clamp-1">• {area}</li>
+                            <li key={i} className="line-clamp-1">
+                              • {area}
+                            </li>
                           ))}
                         </ul>
                       </div>
@@ -304,7 +359,9 @@ export function QuestionLevelAnalytics({ userId }: QuestionLevelAnalyticsProps) 
                         </p>
                         <ul className="text-xs text-muted-foreground space-y-1">
                           {topic.strongAreas.slice(0, 2).map((area, i) => (
-                            <li key={i} className="line-clamp-1">• {area}</li>
+                            <li key={i} className="line-clamp-1">
+                              • {area}
+                            </li>
                           ))}
                         </ul>
                       </div>
@@ -321,7 +378,9 @@ export function QuestionLevelAnalytics({ userId }: QuestionLevelAnalyticsProps) 
           <Card>
             <CardHeader>
               <CardTitle>Common Mistakes</CardTitle>
-              <CardDescription>Questions you frequently get wrong - focus here for improvement</CardDescription>
+              <CardDescription>
+                Questions you frequently get wrong - focus here for improvement
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {mistakes.length === 0 ? (
@@ -334,7 +393,10 @@ export function QuestionLevelAnalytics({ userId }: QuestionLevelAnalyticsProps) 
               ) : (
                 <div className="space-y-4">
                   {mistakes.map((mistake, index) => (
-                    <div key={mistake.questionId} className="p-4 border-l-4 border-red-500 bg-red-50 dark:bg-red-950 rounded-r-lg">
+                    <div
+                      key={mistake.questionId}
+                      className="p-4 border-l-4 border-red-500 bg-red-50 dark:bg-red-950 rounded-r-lg"
+                    >
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
@@ -342,9 +404,12 @@ export function QuestionLevelAnalytics({ userId }: QuestionLevelAnalyticsProps) 
                             <span className="font-medium">Mistake #{index + 1}</span>
                             {mistake.topic && <Badge variant="outline">{mistake.topic}</Badge>}
                           </div>
-                          <p className="text-sm mb-2">{mistake.questionText || 'Question text unavailable'}</p>
+                          <p className="text-sm mb-2">
+                            {mistake.questionText || 'Question text unavailable'}
+                          </p>
                           <p className="text-xs text-muted-foreground">
-                            Answered incorrectly {mistake.incorrectCount} time{mistake.incorrectCount !== 1 ? 's' : ''}
+                            Answered incorrectly {mistake.incorrectCount} time
+                            {mistake.incorrectCount !== 1 ? 's' : ''}
                           </p>
                         </div>
                       </div>

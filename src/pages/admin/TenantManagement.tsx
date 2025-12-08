@@ -80,6 +80,7 @@ export default function TenantManagement() {
 
   useEffect(() => {
     loadTenants();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadTenants = async () => {

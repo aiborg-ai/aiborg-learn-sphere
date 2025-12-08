@@ -31,7 +31,10 @@ import {
   ArrowRight,
   X,
 } from '@/components/ui/icons';
-import { StudyAssistantOrchestrator, type CourseRecommendation } from '@/services/ai/StudyAssistantOrchestrator';
+import {
+  StudyAssistantOrchestrator,
+  type CourseRecommendation,
+} from '@/services/ai/StudyAssistantOrchestrator';
 import { useRecommendationInteraction } from '@/hooks/useRecommendations';
 import { logger } from '@/utils/logger';
 
@@ -69,6 +72,7 @@ export function PostAssessmentRecommendations({
     if (open && userId) {
       fetchRecommendations();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, userId, assessmentResult]);
 
   const fetchRecommendations = async () => {
@@ -90,7 +94,9 @@ export function PostAssessmentRecommendations({
     }
   };
 
-  const getAbilityLevel = (theta: number): { level: string; color: string; description: string } => {
+  const getAbilityLevel = (
+    theta: number
+  ): { level: string; color: string; description: string } => {
     if (theta > 1.5) {
       return {
         level: 'Expert',
@@ -125,8 +131,10 @@ export function PostAssessmentRecommendations({
   };
 
   const getPerformanceMessage = (accuracy: number) => {
-    if (accuracy >= 90) return { icon: Trophy, message: 'Outstanding Performance!', color: 'text-yellow-500' };
-    if (accuracy >= 75) return { icon: CheckCircle2, message: 'Great Job!', color: 'text-green-500' };
+    if (accuracy >= 90)
+      return { icon: Trophy, message: 'Outstanding Performance!', color: 'text-yellow-500' };
+    if (accuracy >= 75)
+      return { icon: CheckCircle2, message: 'Great Job!', color: 'text-green-500' };
     if (accuracy >= 60) return { icon: Target, message: 'Good Progress!', color: 'text-blue-500' };
     return { icon: AlertTriangle, message: 'Keep Learning!', color: 'text-orange-500' };
   };
@@ -152,7 +160,10 @@ export function PostAssessmentRecommendations({
   const PerformanceIcon = performanceInfo.icon;
 
   // Map theta (-3 to +3) to percentage (0 to 100)
-  const abilityPercentage = Math.min(100, Math.max(0, ((assessmentResult.ability_estimate + 3) / 6) * 100));
+  const abilityPercentage = Math.min(
+    100,
+    Math.max(0, ((assessmentResult.ability_estimate + 3) / 6) * 100)
+  );
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -298,7 +309,7 @@ export function PostAssessmentRecommendations({
                           </div>
 
                           <Button
-                            onClick={(e) => {
+                            onClick={e => {
                               e.stopPropagation();
                               handleEnroll(rec.course_id);
                             }}
@@ -375,16 +386,21 @@ export function PostAssessmentRecommendations({
             Close
           </Button>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => {
-              onClose();
-              navigate('/assessments');
-            }}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                onClose();
+                navigate('/assessments');
+              }}
+            >
               Take Another Assessment
             </Button>
-            <Button onClick={() => {
-              onClose();
-              navigate('/courses');
-            }}>
+            <Button
+              onClick={() => {
+                onClose();
+                navigate('/courses');
+              }}
+            >
               Browse Courses
             </Button>
           </div>

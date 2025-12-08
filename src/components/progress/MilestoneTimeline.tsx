@@ -19,15 +19,17 @@ import {
   Gift,
   Clock,
   Calendar,
-  TrendingUp,
   Star,
   Award,
   Zap,
   Flag,
   ChevronRight,
 } from '@/components/ui/icons';
-import { StudyPlanGeneratorService, type GeneratedStudyPlan } from '@/services/study-planner/StudyPlanGeneratorService';
-import { format, addWeeks, startOfDay, isPast, isFuture, differenceInDays, isToday } from 'date-fns';
+import {
+  StudyPlanGeneratorService,
+  type GeneratedStudyPlan,
+} from '@/services/study-planner/StudyPlanGeneratorService';
+import { format, isFuture, differenceInDays } from 'date-fns';
 import { logger } from '@/utils/logger';
 import { cn } from '@/lib/utils';
 import { useStudyPlanUpdates } from '@/hooks/useRealtimeUpdates';
@@ -77,6 +79,7 @@ export function MilestoneTimeline({
 
   useEffect(() => {
     fetchMilestones();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, planId]);
 
   const fetchMilestones = async () => {
@@ -109,7 +112,8 @@ export function MilestoneTimeline({
         const allTasks = Object.values(week.daily_tasks).flat();
         const completedTasks = allTasks.filter(t => t.completed).length;
         const totalTasks = allTasks.length;
-        const actualCompletion = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        const actualCompletion =
+          totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
         // Determine milestone status
         const isCompleted = actualCompletion >= week.milestone.target_completion;
@@ -282,9 +286,7 @@ export function MilestoneTimeline({
         </CardHeader>
         <CardContent className="p-8 text-center">
           <Target className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">
-            No milestones defined in your study plan
-          </p>
+          <p className="text-sm text-muted-foreground">No milestones defined in your study plan</p>
         </CardContent>
       </Card>
     );
@@ -310,7 +312,9 @@ export function MilestoneTimeline({
           </div>
           {!compact && (
             <div className="text-right">
-              <p className="text-2xl font-bold text-primary">{completedMilestones}/{totalMilestones}</p>
+              <p className="text-2xl font-bold text-primary">
+                {completedMilestones}/{totalMilestones}
+              </p>
               <p className="text-xs text-muted-foreground">Completed</p>
             </div>
           )}
@@ -346,8 +350,8 @@ export function MilestoneTimeline({
                       milestone.is_completed
                         ? 'bg-green-500'
                         : milestone.is_current
-                        ? 'bg-primary'
-                        : 'bg-gray-300'
+                          ? 'bg-primary'
+                          : 'bg-gray-300'
                     )}
                   >
                     {getMilestoneIcon(milestone)}
@@ -396,7 +400,8 @@ export function MilestoneTimeline({
                         <div>
                           <div className="flex items-center justify-between mb-1">
                             <span className="text-xs text-muted-foreground">
-                              Progress: {milestone.actual_completion}% / Target: {milestone.target_completion}%
+                              Progress: {milestone.actual_completion}% / Target:{' '}
+                              {milestone.target_completion}%
                             </span>
                             <span className="text-xs font-bold">
                               {getProgressPercentage(milestone)}%
@@ -434,14 +439,17 @@ export function MilestoneTimeline({
                         <div className="pt-3 border-t">
                           <div className="flex items-center justify-between">
                             <p className="text-xs font-medium text-primary">
-                              {milestone.actual_completion}% complete • {milestone.target_completion - (milestone.actual_completion || 0)}% to go
+                              {milestone.actual_completion}% complete •{' '}
+                              {milestone.target_completion - (milestone.actual_completion || 0)}% to
+                              go
                             </p>
-                            {milestone.actual_completion && milestone.actual_completion < milestone.target_completion && (
-                              <Button size="sm" variant="outline">
-                                Continue Learning
-                                <ChevronRight className="h-3 w-3 ml-1" />
-                              </Button>
-                            )}
+                            {milestone.actual_completion &&
+                              milestone.actual_completion < milestone.target_completion && (
+                                <Button size="sm" variant="outline">
+                                  Continue Learning
+                                  <ChevronRight className="h-3 w-3 ml-1" />
+                                </Button>
+                              )}
                           </div>
                         </div>
                       )}
@@ -463,16 +471,12 @@ export function MilestoneTimeline({
             </div>
             <div className="text-center">
               <Target className="h-5 w-5 mx-auto mb-1 text-blue-600" />
-              <p className="text-xl font-bold">
-                {milestones.filter(m => m.is_current).length}
-              </p>
+              <p className="text-xl font-bold">{milestones.filter(m => m.is_current).length}</p>
               <p className="text-xs text-muted-foreground">In Progress</p>
             </div>
             <div className="text-center">
               <Clock className="h-5 w-5 mx-auto mb-1 text-gray-600" />
-              <p className="text-xl font-bold">
-                {milestones.filter(m => m.is_upcoming).length}
-              </p>
+              <p className="text-xl font-bold">{milestones.filter(m => m.is_upcoming).length}</p>
               <p className="text-xs text-muted-foreground">Upcoming</p>
             </div>
             <div className="text-center">
@@ -492,7 +496,10 @@ export function MilestoneTimeline({
 /**
  * Compact version for dashboard widgets
  */
-export function MilestoneTimelineCompact({ userId, planId }: Omit<MilestoneTimelineProps, 'compact' | 'showUpcoming' | 'maxMilestones'>) {
+export function MilestoneTimelineCompact({
+  userId,
+  planId,
+}: Omit<MilestoneTimelineProps, 'compact' | 'showUpcoming' | 'maxMilestones'>) {
   return (
     <MilestoneTimeline
       userId={userId}

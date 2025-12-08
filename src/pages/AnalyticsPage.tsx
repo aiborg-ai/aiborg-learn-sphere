@@ -39,7 +39,6 @@ import {
   ExportButton,
   ScheduledReportsManager,
   type DateRange,
-  type ComparisonMetric,
 } from '@/components/analytics';
 import { subMonths, startOfDay, endOfDay, differenceInDays, subDays } from 'date-fns';
 import {
@@ -161,7 +160,7 @@ export default function AnalyticsPage() {
       const previousEnd = subDays(currentStart, 1);
       const previousStart = subDays(previousEnd, periodLength);
 
-      const previousRange: DateRange = {
+      const _previousRange: DateRange = {
         start: startOfDay(previousStart).toISOString(),
         end: endOfDay(previousEnd).toISOString(),
       };
@@ -223,9 +222,7 @@ export default function AnalyticsPage() {
                 </h1>
                 <p className="text-white/80">Track your progress and insights</p>
               </div>
-              {user && (
-                <ExportButton userId={user.id} dateRange={dateRange} variant="outline" />
-              )}
+              {user && <ExportButton userId={user.id} dateRange={dateRange} variant="outline" />}
             </div>
 
             {/* Date Range Filter */}
@@ -241,384 +238,409 @@ export default function AnalyticsPage() {
             <AnalyticsLoadingSkeleton />
           ) : (
             <>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 border-0 text-white">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/80 text-sm">Study Time</p>
-                  <p className="text-2xl font-bold">{Math.floor(stats.totalStudyTime / 60)}h</p>
-                </div>
-                <Clock className="h-8 w-8 text-white/60" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 border-0 text-white">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/80 text-sm">Completed</p>
-                  <p className="text-2xl font-bold">{stats.completedCourses}</p>
-                </div>
-                <BookOpen className="h-8 w-8 text-white/60" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-orange-500 to-orange-600 border-0 text-white">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/80 text-sm">Current Streak</p>
-                  <p className="text-2xl font-bold">{stats.currentStreak} days</p>
-                </div>
-                <Flame className="h-8 w-8 text-white/60" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-green-500 to-green-600 border-0 text-white">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/80 text-sm">Avg Score</p>
-                  <p className="text-2xl font-bold">{stats.averageScore}%</p>
-                </div>
-                <Target className="h-8 w-8 text-white/60" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Charts */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-white/10 border-white/20">
-            <TabsTrigger value="overview" className="text-white data-[state=active]:bg-white/20">
-              <Activity className="h-4 w-4 mr-2" />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="progress" className="text-white data-[state=active]:bg-white/20">
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Progress
-            </TabsTrigger>
-            <TabsTrigger value="skills" className="text-white data-[state=active]:bg-white/20">
-              <Zap className="h-4 w-4 mr-2" />
-              Skills
-            </TabsTrigger>
-            <TabsTrigger value="comparison" className="text-white data-[state=active]:bg-white/20">
-              <BarChart3 className="h-4 w-4 mr-2" />
-              Comparison
-            </TabsTrigger>
-            <TabsTrigger value="performance" className="text-white data-[state=active]:bg-white/20">
-              <Target className="h-4 w-4 mr-2" />
-              Performance
-            </TabsTrigger>
-            <TabsTrigger value="goals" className="text-white data-[state=active]:bg-white/20">
-              <Flag className="h-4 w-4 mr-2" />
-              Goals
-            </TabsTrigger>
-            <TabsTrigger value="scheduled" className="text-white data-[state=active]:bg-white/20">
-              <Clock className="h-4 w-4 mr-2" />
-              Scheduled
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Weekly Activity */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Weekly Activity</CardTitle>
-                  <CardDescription>Study time over the last 6 weeks</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <AreaChart data={analyticsData.weeklyActivity}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="week" />
-                      <YAxis />
-                      <Tooltip />
-                      <Area
-                        type="monotone"
-                        dataKey="studyTime"
-                        stroke="#8b5cf6"
-                        fill="#8b5cf6"
-                        fillOpacity={0.6}
-                        name="Study Time (min)"
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              {/* Category Distribution */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Course Categories</CardTitle>
-                  <CardDescription>Distribution by subject</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={analyticsData.categoryDistribution}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ category, percentage }) => `${category}: ${percentage}%`}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {analyticsData.categoryDistribution.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Streaks & Achievements */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Milestones & Achievements</CardTitle>
-                <CardDescription>Your learning journey highlights</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 bg-orange-50 dark:bg-orange-950 rounded-lg">
-                    <div className="flex items-center gap-3 mb-2">
-                      <Flame className="h-6 w-6 text-orange-500" />
-                      <p className="font-semibold">Learning Streak</p>
-                    </div>
-                    <p className="text-2xl font-bold">{stats.currentStreak} days</p>
-                    <p className="text-sm text-muted-foreground">
-                      Longest: {stats.longestStreak} days
-                    </p>
-                  </div>
-
-                  <div className="p-4 bg-purple-50 dark:bg-purple-950 rounded-lg">
-                    <div className="flex items-center gap-3 mb-2">
-                      <Award className="h-6 w-6 text-purple-500" />
-                      <p className="font-semibold">Achievements</p>
-                    </div>
-                    <p className="text-2xl font-bold">{stats.achievementsCount}</p>
-                    <p className="text-sm text-muted-foreground">Badges earned</p>
-                  </div>
-
-                  <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                    <div className="flex items-center gap-3 mb-2">
-                      <Target className="h-6 w-6 text-blue-500" />
-                      <p className="font-semibold">Average Score</p>
-                    </div>
-                    <p className="text-2xl font-bold">{stats.averageScore}%</p>
-                    <p className="text-sm text-muted-foreground">Across all assessments</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Progress Tab */}
-          <TabsContent value="progress" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Progress Over Time</CardTitle>
-                <CardDescription>Your learning trajectory over the last 6 weeks</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
-                  <LineChart data={analyticsData.progressTrend}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="week" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="progress"
-                      stroke="#8b5cf6"
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                      name="Avg Progress %"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="coursesInProgress"
-                      stroke="#3b82f6"
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                      name="In Progress"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="coursesCompleted"
-                      stroke="#10b981"
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                      name="Completed"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Study Time by Day</CardTitle>
-                <CardDescription>Your weekly study pattern</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={analyticsData.studyTimeByDay}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="day" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="hours" fill="#10b981" name="Study Hours" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Skills Tab */}
-          <TabsContent value="skills" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Skills Assessment</CardTitle>
-                <CardDescription>Your competency based on assessment performance</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
-                  <RadarChart data={analyticsData.skillsRadar}>
-                    <PolarGrid />
-                    <PolarAngleAxis dataKey="skill" />
-                    <PolarRadiusAxis angle={90} domain={[0, 100]} />
-                    <Radar
-                      name="Proficiency"
-                      dataKey="proficiency"
-                      stroke="#8b5cf6"
-                      fill="#8b5cf6"
-                      fillOpacity={0.6}
-                    />
-                    <Tooltip />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {analyticsData.skillsRadar.map(skillData => (
-                <Card key={skillData.skill}>
+              {/* Quick Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <Card className="bg-gradient-to-br from-purple-500 to-purple-600 border-0 text-white">
                   <CardContent className="pt-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="font-medium">{skillData.skill}</p>
-                      <Badge variant={skillData.proficiency >= 80 ? 'default' : 'secondary'}>
-                        {skillData.proficiency}%
-                      </Badge>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-white/80 text-sm">Study Time</p>
+                        <p className="text-2xl font-bold">
+                          {Math.floor(stats.totalStudyTime / 60)}h
+                        </p>
+                      </div>
+                      <Clock className="h-8 w-8 text-white/60" />
                     </div>
-                    <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-primary transition-all"
-                        style={{ width: `${skillData.proficiency}%` }}
-                      />
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      {skillData.assessments} assessment{skillData.assessments !== 1 ? 's' : ''}
-                    </p>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-          </TabsContent>
 
-          {/* Comparison Tab */}
-          <TabsContent value="comparison" className="space-y-6">
-            {comparisonData ? (
-              <ComparisonView
-                title="Period Comparison"
-                description={`Comparing current period vs previous period of equal length`}
-                currentPeriodLabel="Current Period"
-                previousPeriodLabel="Previous Period"
-                metrics={[
-                  {
-                    label: 'Total Study Time',
-                    currentValue: comparisonData.current.totalStudyTime,
-                    previousValue: comparisonData.previous.totalStudyTime,
-                    format: 'time',
-                    icon: <Clock className="h-4 w-4" />,
-                  },
-                  {
-                    label: 'Courses Completed',
-                    currentValue: comparisonData.current.completedCourses,
-                    previousValue: comparisonData.previous.completedCourses,
-                    format: 'number',
-                    icon: <BookOpen className="h-4 w-4" />,
-                  },
-                  {
-                    label: 'Current Streak',
-                    currentValue: comparisonData.current.currentStreak,
-                    previousValue: comparisonData.previous.currentStreak,
-                    format: 'number',
-                    unit: 'days',
-                    icon: <Flame className="h-4 w-4" />,
-                  },
-                  {
-                    label: 'Average Score',
-                    currentValue: comparisonData.current.averageScore,
-                    previousValue: comparisonData.previous.averageScore,
-                    format: 'percentage',
-                    icon: <Target className="h-4 w-4" />,
-                  },
-                  {
-                    label: 'Total Assessments',
-                    currentValue: comparisonData.current.totalAssessments,
-                    previousValue: comparisonData.previous.totalAssessments,
-                    format: 'number',
-                    icon: <Award className="h-4 w-4" />,
-                  },
-                  {
-                    label: 'Certificates Earned',
-                    currentValue: comparisonData.current.certificatesEarned,
-                    previousValue: comparisonData.previous.certificatesEarned,
-                    format: 'number',
-                    icon: <Award className="h-4 w-4" />,
-                  },
-                ]}
-              />
-            ) : (
-              <Card>
-                <CardContent className="p-12 text-center">
-                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">Loading comparison data...</p>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
+                <Card className="bg-gradient-to-br from-blue-500 to-blue-600 border-0 text-white">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-white/80 text-sm">Completed</p>
+                        <p className="text-2xl font-bold">{stats.completedCourses}</p>
+                      </div>
+                      <BookOpen className="h-8 w-8 text-white/60" />
+                    </div>
+                  </CardContent>
+                </Card>
 
-          {/* Performance Tab */}
-          <TabsContent value="performance">
-            {user && <QuestionLevelAnalytics userId={user.id} />}
-          </TabsContent>
+                <Card className="bg-gradient-to-br from-orange-500 to-orange-600 border-0 text-white">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-white/80 text-sm">Current Streak</p>
+                        <p className="text-2xl font-bold">{stats.currentStreak} days</p>
+                      </div>
+                      <Flame className="h-8 w-8 text-white/60" />
+                    </div>
+                  </CardContent>
+                </Card>
 
-          {/* Goals Tab */}
-          <TabsContent value="goals">
-            {user && <GoalRoadmap userId={user.id} />}
-          </TabsContent>
+                <Card className="bg-gradient-to-br from-green-500 to-green-600 border-0 text-white">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-white/80 text-sm">Avg Score</p>
+                        <p className="text-2xl font-bold">{stats.averageScore}%</p>
+                      </div>
+                      <Target className="h-8 w-8 text-white/60" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
 
-          {/* Scheduled Reports Tab */}
-          <TabsContent value="scheduled">
-            {user && <ScheduledReportsManager userId={user.id} />}
-          </TabsContent>
-        </Tabs>
+              {/* Charts */}
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+                <TabsList className="bg-white/10 border-white/20">
+                  <TabsTrigger
+                    value="overview"
+                    className="text-white data-[state=active]:bg-white/20"
+                  >
+                    <Activity className="h-4 w-4 mr-2" />
+                    Overview
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="progress"
+                    className="text-white data-[state=active]:bg-white/20"
+                  >
+                    <TrendingUp className="h-4 w-4 mr-2" />
+                    Progress
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="skills"
+                    className="text-white data-[state=active]:bg-white/20"
+                  >
+                    <Zap className="h-4 w-4 mr-2" />
+                    Skills
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="comparison"
+                    className="text-white data-[state=active]:bg-white/20"
+                  >
+                    <BarChart3 className="h-4 w-4 mr-2" />
+                    Comparison
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="performance"
+                    className="text-white data-[state=active]:bg-white/20"
+                  >
+                    <Target className="h-4 w-4 mr-2" />
+                    Performance
+                  </TabsTrigger>
+                  <TabsTrigger value="goals" className="text-white data-[state=active]:bg-white/20">
+                    <Flag className="h-4 w-4 mr-2" />
+                    Goals
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="scheduled"
+                    className="text-white data-[state=active]:bg-white/20"
+                  >
+                    <Clock className="h-4 w-4 mr-2" />
+                    Scheduled
+                  </TabsTrigger>
+                </TabsList>
+
+                {/* Overview Tab */}
+                <TabsContent value="overview" className="space-y-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Weekly Activity */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Weekly Activity</CardTitle>
+                        <CardDescription>Study time over the last 6 weeks</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <AreaChart data={analyticsData.weeklyActivity}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="week" />
+                            <YAxis />
+                            <Tooltip />
+                            <Area
+                              type="monotone"
+                              dataKey="studyTime"
+                              stroke="#8b5cf6"
+                              fill="#8b5cf6"
+                              fillOpacity={0.6}
+                              name="Study Time (min)"
+                            />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </CardContent>
+                    </Card>
+
+                    {/* Category Distribution */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Course Categories</CardTitle>
+                        <CardDescription>Distribution by subject</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <PieChart>
+                            <Pie
+                              data={analyticsData.categoryDistribution}
+                              cx="50%"
+                              cy="50%"
+                              labelLine={false}
+                              label={({ category, percentage }) => `${category}: ${percentage}%`}
+                              outerRadius={80}
+                              fill="#8884d8"
+                              dataKey="value"
+                            >
+                              {analyticsData.categoryDistribution.map((entry, index) => (
+                                <Cell
+                                  key={`cell-${index}`}
+                                  fill={entry.color || COLORS[index % COLORS.length]}
+                                />
+                              ))}
+                            </Pie>
+                            <Tooltip />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Streaks & Achievements */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Milestones & Achievements</CardTitle>
+                      <CardDescription>Your learning journey highlights</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="p-4 bg-orange-50 dark:bg-orange-950 rounded-lg">
+                          <div className="flex items-center gap-3 mb-2">
+                            <Flame className="h-6 w-6 text-orange-500" />
+                            <p className="font-semibold">Learning Streak</p>
+                          </div>
+                          <p className="text-2xl font-bold">{stats.currentStreak} days</p>
+                          <p className="text-sm text-muted-foreground">
+                            Longest: {stats.longestStreak} days
+                          </p>
+                        </div>
+
+                        <div className="p-4 bg-purple-50 dark:bg-purple-950 rounded-lg">
+                          <div className="flex items-center gap-3 mb-2">
+                            <Award className="h-6 w-6 text-purple-500" />
+                            <p className="font-semibold">Achievements</p>
+                          </div>
+                          <p className="text-2xl font-bold">{stats.achievementsCount}</p>
+                          <p className="text-sm text-muted-foreground">Badges earned</p>
+                        </div>
+
+                        <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                          <div className="flex items-center gap-3 mb-2">
+                            <Target className="h-6 w-6 text-blue-500" />
+                            <p className="font-semibold">Average Score</p>
+                          </div>
+                          <p className="text-2xl font-bold">{stats.averageScore}%</p>
+                          <p className="text-sm text-muted-foreground">Across all assessments</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Progress Tab */}
+                <TabsContent value="progress" className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Progress Over Time</CardTitle>
+                      <CardDescription>
+                        Your learning trajectory over the last 6 weeks
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={400}>
+                        <LineChart data={analyticsData.progressTrend}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="week" />
+                          <YAxis />
+                          <Tooltip />
+                          <Legend />
+                          <Line
+                            type="monotone"
+                            dataKey="progress"
+                            stroke="#8b5cf6"
+                            strokeWidth={2}
+                            dot={{ r: 4 }}
+                            name="Avg Progress %"
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="coursesInProgress"
+                            stroke="#3b82f6"
+                            strokeWidth={2}
+                            dot={{ r: 4 }}
+                            name="In Progress"
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="coursesCompleted"
+                            stroke="#10b981"
+                            strokeWidth={2}
+                            dot={{ r: 4 }}
+                            name="Completed"
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Study Time by Day</CardTitle>
+                      <CardDescription>Your weekly study pattern</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={analyticsData.studyTimeByDay}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="day" />
+                          <YAxis />
+                          <Tooltip />
+                          <Bar dataKey="hours" fill="#10b981" name="Study Hours" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Skills Tab */}
+                <TabsContent value="skills" className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Skills Assessment</CardTitle>
+                      <CardDescription>
+                        Your competency based on assessment performance
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={400}>
+                        <RadarChart data={analyticsData.skillsRadar}>
+                          <PolarGrid />
+                          <PolarAngleAxis dataKey="skill" />
+                          <PolarRadiusAxis angle={90} domain={[0, 100]} />
+                          <Radar
+                            name="Proficiency"
+                            dataKey="proficiency"
+                            stroke="#8b5cf6"
+                            fill="#8b5cf6"
+                            fillOpacity={0.6}
+                          />
+                          <Tooltip />
+                        </RadarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {analyticsData.skillsRadar.map(skillData => (
+                      <Card key={skillData.skill}>
+                        <CardContent className="pt-6">
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="font-medium">{skillData.skill}</p>
+                            <Badge variant={skillData.proficiency >= 80 ? 'default' : 'secondary'}>
+                              {skillData.proficiency}%
+                            </Badge>
+                          </div>
+                          <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-primary transition-all"
+                              style={{ width: `${skillData.proficiency}%` }}
+                            />
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-2">
+                            {skillData.assessments} assessment
+                            {skillData.assessments !== 1 ? 's' : ''}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </TabsContent>
+
+                {/* Comparison Tab */}
+                <TabsContent value="comparison" className="space-y-6">
+                  {comparisonData ? (
+                    <ComparisonView
+                      title="Period Comparison"
+                      description={`Comparing current period vs previous period of equal length`}
+                      currentPeriodLabel="Current Period"
+                      previousPeriodLabel="Previous Period"
+                      metrics={[
+                        {
+                          label: 'Total Study Time',
+                          currentValue: comparisonData.current.totalStudyTime,
+                          previousValue: comparisonData.previous.totalStudyTime,
+                          format: 'time',
+                          icon: <Clock className="h-4 w-4" />,
+                        },
+                        {
+                          label: 'Courses Completed',
+                          currentValue: comparisonData.current.completedCourses,
+                          previousValue: comparisonData.previous.completedCourses,
+                          format: 'number',
+                          icon: <BookOpen className="h-4 w-4" />,
+                        },
+                        {
+                          label: 'Current Streak',
+                          currentValue: comparisonData.current.currentStreak,
+                          previousValue: comparisonData.previous.currentStreak,
+                          format: 'number',
+                          unit: 'days',
+                          icon: <Flame className="h-4 w-4" />,
+                        },
+                        {
+                          label: 'Average Score',
+                          currentValue: comparisonData.current.averageScore,
+                          previousValue: comparisonData.previous.averageScore,
+                          format: 'percentage',
+                          icon: <Target className="h-4 w-4" />,
+                        },
+                        {
+                          label: 'Total Assessments',
+                          currentValue: comparisonData.current.totalAssessments,
+                          previousValue: comparisonData.previous.totalAssessments,
+                          format: 'number',
+                          icon: <Award className="h-4 w-4" />,
+                        },
+                        {
+                          label: 'Certificates Earned',
+                          currentValue: comparisonData.current.certificatesEarned,
+                          previousValue: comparisonData.previous.certificatesEarned,
+                          format: 'number',
+                          icon: <Award className="h-4 w-4" />,
+                        },
+                      ]}
+                    />
+                  ) : (
+                    <Card>
+                      <CardContent className="p-12 text-center">
+                        <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+                        <p className="text-muted-foreground">Loading comparison data...</p>
+                      </CardContent>
+                    </Card>
+                  )}
+                </TabsContent>
+
+                {/* Performance Tab */}
+                <TabsContent value="performance">
+                  {user && <QuestionLevelAnalytics userId={user.id} />}
+                </TabsContent>
+
+                {/* Goals Tab */}
+                <TabsContent value="goals">{user && <GoalRoadmap userId={user.id} />}</TabsContent>
+
+                {/* Scheduled Reports Tab */}
+                <TabsContent value="scheduled">
+                  {user && <ScheduledReportsManager userId={user.id} />}
+                </TabsContent>
+              </Tabs>
             </>
           )}
         </AnalyticsErrorBoundary>

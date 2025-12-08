@@ -59,12 +59,14 @@ export function GoalRoadmap({ userId }: GoalRoadmapProps) {
 
   useEffect(() => {
     fetchGoals();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   useEffect(() => {
     if (selectedGoalId) {
       fetchGoalDetails(selectedGoalId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGoalId]);
 
   const fetchGoals = async () => {
@@ -155,7 +157,7 @@ export function GoalRoadmap({ userId }: GoalRoadmapProps) {
     <div className="space-y-6">
       {/* Goals Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {goals.slice(0, 3).map((goal) => (
+        {goals.slice(0, 3).map(goal => (
           <Card
             key={goal.id}
             className={`cursor-pointer transition-all ${
@@ -322,7 +324,7 @@ export function GoalRoadmap({ userId }: GoalRoadmapProps) {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {milestones.map((milestone, index) => (
+                  {milestones.map((milestone, _index) => (
                     <div
                       key={milestone.id}
                       className={`p-4 border-l-4 rounded-r-lg ${

@@ -96,6 +96,7 @@ export function EnhancedDateRangeFilter({
     if (defaultPreset) {
       onChange(defaultPreset.getRange());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handlePresetChange = (preset: DatePreset) => {
@@ -155,7 +156,7 @@ export function EnhancedDateRangeFilter({
                 selected={customStart}
                 onSelect={setCustomStart}
                 initialFocus
-                disabled={(date) => date > new Date()}
+                disabled={date => date > new Date()}
               />
             </div>
             <div>
@@ -164,7 +165,7 @@ export function EnhancedDateRangeFilter({
                 mode="single"
                 selected={customEnd}
                 onSelect={setCustomEnd}
-                disabled={(date) => {
+                disabled={date => {
                   if (!customStart) return date > new Date();
                   return date < customStart || date > new Date();
                 }}

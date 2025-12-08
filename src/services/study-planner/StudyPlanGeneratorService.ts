@@ -6,10 +6,10 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
-import { GoalPredictionService, type LearningGoal } from '../analytics/GoalPredictionService';
+import { GoalPredictionService } from '../analytics/GoalPredictionService';
 import { GapAnalysisService } from '../learning-path/GapAnalysisService';
 import { ContentSequencingService } from '../learning-path/ContentSequencingService';
-import { addDays, addWeeks, format, startOfDay, endOfDay, differenceInDays } from 'date-fns';
+import { addDays, addWeeks, startOfDay } from 'date-fns';
 
 export interface StudyPlanInput {
   user_id: string;
@@ -74,7 +74,10 @@ export class StudyPlanGeneratorService {
    */
   static async generateStudyPlan(input: StudyPlanInput): Promise<GeneratedStudyPlan> {
     try {
-      logger.info('Generating study plan', { userId: input.user_id, duration: input.weeks_duration });
+      logger.info('Generating study plan', {
+        userId: input.user_id,
+        duration: input.weeks_duration,
+      });
 
       // Step 1: Gather user context
       const context = await this.gatherUserContext(input.user_id, input.goal_id);
@@ -89,7 +92,12 @@ export class StudyPlanGeneratorService {
       const weeklySchedules = await this.distributeTasksAcrossWeeks(input, content);
 
       // Step 5: Generate AI rationale
-      const aiRationale = await this.generateAIRationale(input, context, skillGaps, weeklySchedules);
+      const aiRationale = await this.generateAIRationale(
+        input,
+        context,
+        skillGaps,
+        weeklySchedules
+      );
 
       // Step 6: Save to database
       const studyPlan = await this.saveStudyPlan(input, weeklySchedules, aiRationale);
@@ -118,7 +126,7 @@ export class StudyPlanGeneratorService {
     // Add goal information if specified
     if (goalId) {
       const goal = await GoalPredictionService.getUserGoals(userId);
-      const specificGoal = goal.find((g) => g.id === goalId);
+      const specificGoal = goal.find(g => g.id === goalId);
       return { ...context, selected_goal: specificGoal };
     }
 
@@ -167,7 +175,7 @@ export class StudyPlanGeneratorService {
 
         if (courses) {
           content.push(
-            ...courses.map((c) => ({
+            ...courses.map(c => ({
               type: 'course',
               id: c.id,
               title: c.title,
@@ -189,7 +197,7 @@ export class StudyPlanGeneratorService {
 
         if (exercises) {
           content.push(
-            ...exercises.map((e) => ({
+            ...exercises.map(e => ({
               type: 'exercise',
               id: e.id,
               title: e.title,
@@ -213,10 +221,7 @@ export class StudyPlanGeneratorService {
   /**
    * Map difficulty preference to actual difficulty level
    */
-  private static mapDifficultyPreference(
-    preference: string | undefined,
-    gap: any
-  ): string {
+  private static mapDifficultyPreference(preference: string | undefined, gap: any): string {
     if (preference === 'comfortable') {
       return gap.current_level || 'beginner';
     } else if (preference === 'challenging') {
@@ -271,10 +276,7 @@ export class StudyPlanGeneratorService {
         // Fill the day with tasks
         while (dayMinutesRemaining > 15 && contentIndex < sequencedContent.length) {
           const item = sequencedContent[contentIndex];
-          const estimatedMinutes = Math.min(
-            item.estimated_hours * 60,
-            dayMinutesRemaining
-          );
+          const estimatedMinutes = Math.min(item.estimated_hours * 60, dayMinutesRemaining);
 
           if (estimatedMinutes < 15) {
             // Not enough time for this task, skip to next day
@@ -332,7 +334,8 @@ export class StudyPlanGeneratorService {
           ? {
               title: `Week ${weekNum} Checkpoint`,
               target_completion: Math.round(weekProgress),
-              reward: weekNum === input.weeks_duration ? 'Course completion certificate' : undefined,
+              reward:
+                weekNum === input.weeks_duration ? 'Course completion certificate' : undefined,
             }
           : undefined;
 
@@ -361,15 +364,11 @@ export class StudyPlanGeneratorService {
   ): Promise<string> {
     const gapSummary = skillGaps
       .slice(0, 3)
-      .map((g) => g.category)
+      .map(g => g.category)
       .join(', ');
     const totalTasks = weeklySchedules.reduce(
       (sum, week) =>
-        sum +
-        Object.values(week.daily_tasks).reduce(
-          (daySum, tasks) => daySum + tasks.length,
-          0
-        ),
+        sum + Object.values(week.daily_tasks).reduce((daySum, tasks) => daySum + tasks.length, 0),
       0
     );
 
@@ -380,7 +379,7 @@ export class StudyPlanGeneratorService {
 **Plan Structure:**
 - ${input.hours_per_week} hours per week across ${input.available_days?.length || 7} days
 - ${totalTasks} total learning activities
-- ${weeklySchedules.filter((w) => w.milestone).length} milestone checkpoints
+- ${weeklySchedules.filter(w => w.milestone).length} milestone checkpoints
 - Difficulty level: ${input.difficulty_preference || 'Adaptive to your progress'}
 
 **Learning Approach:**
@@ -463,7 +462,7 @@ The plan progressively builds on foundational concepts, with ${input.include_rev
       for (const week of weeklySchedules) {
         for (const day in week.daily_tasks) {
           const tasks = week.daily_tasks[day];
-          const task = tasks.find((t) => t.task_id === taskId);
+          const task = tasks.find(t => t.task_id === taskId);
           if (task) {
             task.completed = true;
             task.completed_at = new Date().toISOString();
@@ -481,18 +480,14 @@ The plan progressively builds on foundational concepts, with ${input.include_rev
       // Recalculate completion percentage
       const totalTasks = weeklySchedules.reduce(
         (sum, week) =>
-          sum +
-          Object.values(week.daily_tasks).reduce(
-            (daySum, tasks) => daySum + tasks.length,
-            0
-          ),
+          sum + Object.values(week.daily_tasks).reduce((daySum, tasks) => daySum + tasks.length, 0),
         0
       );
       const completedTasks = weeklySchedules.reduce(
         (sum, week) =>
           sum +
           Object.values(week.daily_tasks).reduce(
-            (daySum, tasks) => daySum + tasks.filter((t) => t.completed).length,
+            (daySum, tasks) => daySum + tasks.filter(t => t.completed).length,
             0
           ),
         0
@@ -549,7 +544,9 @@ The plan progressively builds on foundational concepts, with ${input.include_rev
         start_date: data.start_date,
         end_date: data.target_date,
         total_weeks: planData.input_parameters?.weeks_duration || 0,
-        total_hours: planData.input_parameters?.hours_per_week * planData.input_parameters?.weeks_duration || 0,
+        total_hours:
+          planData.input_parameters?.hours_per_week * planData.input_parameters?.weeks_duration ||
+          0,
         weekly_schedules: planData.weekly_schedules || [],
         completion_percentage: data.completion_percentage || 0,
         status: data.status,

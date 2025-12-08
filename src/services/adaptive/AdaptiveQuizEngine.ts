@@ -4,7 +4,12 @@
  * Provides dynamic difficulty adjustment, hints, and real-time performance tracking
  */
 
-import { AdaptiveAssessmentEngine, AdaptiveQuestion, AnswerResult, AssessmentState } from '../AdaptiveAssessmentEngine';
+import {
+  AdaptiveAssessmentEngine,
+  AdaptiveQuestion,
+  AnswerResult,
+  AssessmentState,
+} from '../AdaptiveAssessmentEngine';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 
@@ -67,7 +72,7 @@ export class AdaptiveQuizEngine extends AdaptiveAssessmentEngine {
   private quizState: AdaptiveQuizState;
   private startTime: number;
 
-  constructor(quizId: string, userId: string) {
+  constructor(quizId: string, _userId: string) {
     super(quizId);
     this.startTime = Date.now();
 
@@ -254,7 +259,7 @@ export class AdaptiveQuizEngine extends AdaptiveAssessmentEngine {
   private updatePerformanceMetrics(
     questionId: string,
     result: AnswerResult,
-    timeSpent: number
+    _timeSpent: number
   ): void {
     const metrics = this.quizState.performance_metrics;
 

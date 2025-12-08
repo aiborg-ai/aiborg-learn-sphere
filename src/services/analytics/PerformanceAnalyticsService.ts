@@ -76,7 +76,8 @@ export class PerformanceAnalyticsService {
     try {
       const { data, error } = await supabase
         .from('assessment_answer_performance')
-        .select(`
+        .select(
+          `
           question_id,
           is_correct,
           time_spent,
@@ -87,7 +88,8 @@ export class PerformanceAnalyticsService {
             irt_difficulty,
             irt_discrimination
           )
-        `)
+        `
+        )
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
         .limit(1000); // Get more data for aggregation
@@ -98,13 +100,16 @@ export class PerformanceAnalyticsService {
       }
 
       // Aggregate by question
-      const performanceMap = new Map<string, {
-        questionText?: string;
-        topic?: string;
-        difficulty?: number;
-        discrimination?: number;
-        attempts: { correct: boolean; timeSpent: number; date: string }[];
-      }>();
+      const performanceMap = new Map<
+        string,
+        {
+          questionText?: string;
+          topic?: string;
+          difficulty?: number;
+          discrimination?: number;
+          attempts: { correct: boolean; timeSpent: number; date: string }[];
+        }
+      >();
 
       data?.forEach((item: any) => {
         const qid = item.question_id;
@@ -125,24 +130,26 @@ export class PerformanceAnalyticsService {
       });
 
       // Convert to array and calculate metrics
-      const performance: QuestionPerformance[] = Array.from(performanceMap.entries()).map(([questionId, data]) => {
-        const totalAttempts = data.attempts.length;
-        const correctAttempts = data.attempts.filter(a => a.correct).length;
-        const totalTime = data.attempts.reduce((sum, a) => sum + a.timeSpent, 0);
+      const performance: QuestionPerformance[] = Array.from(performanceMap.entries()).map(
+        ([questionId, data]) => {
+          const totalAttempts = data.attempts.length;
+          const correctAttempts = data.attempts.filter(a => a.correct).length;
+          const totalTime = data.attempts.reduce((sum, a) => sum + a.timeSpent, 0);
 
-        return {
-          questionId,
-          questionText: data.questionText,
-          topic: data.topic,
-          difficulty: data.difficulty,
-          discrimination: data.discrimination,
-          totalAttempts,
-          correctAttempts,
-          accuracy: totalAttempts > 0 ? (correctAttempts / totalAttempts) * 100 : 0,
-          averageTimeSpent: totalAttempts > 0 ? totalTime / totalAttempts : 0,
-          lastAttemptDate: data.attempts[0]?.date,
-        };
-      });
+          return {
+            questionId,
+            questionText: data.questionText,
+            topic: data.topic,
+            difficulty: data.difficulty,
+            discrimination: data.discrimination,
+            totalAttempts,
+            correctAttempts,
+            accuracy: totalAttempts > 0 ? (correctAttempts / totalAttempts) * 100 : 0,
+            averageTimeSpent: totalAttempts > 0 ? totalTime / totalAttempts : 0,
+            lastAttemptDate: data.attempts[0]?.date,
+          };
+        }
+      );
 
       // Sort by most recent attempts and limit
       return performance
@@ -176,39 +183,43 @@ export class PerformanceAnalyticsService {
       });
 
       // Calculate topic metrics
-      const topicPerformance: TopicPerformance[] = Array.from(topicMap.entries()).map(([topic, questions]) => {
-        const totalQuestions = questions.length;
-        const averageAccuracy = questions.reduce((sum, q) => sum + q.accuracy, 0) / totalQuestions;
-        const averageDifficulty = questions.reduce((sum, q) => sum + (q.difficulty || 0), 0) / totalQuestions;
+      const topicPerformance: TopicPerformance[] = Array.from(topicMap.entries()).map(
+        ([topic, questions]) => {
+          const totalQuestions = questions.length;
+          const averageAccuracy =
+            questions.reduce((sum, q) => sum + q.accuracy, 0) / totalQuestions;
+          const averageDifficulty =
+            questions.reduce((sum, q) => sum + (q.difficulty || 0), 0) / totalQuestions;
 
-        // Determine mastery level
-        let masteryLevel: 'beginner' | 'intermediate' | 'advanced' | 'expert';
-        if (averageAccuracy >= 90) masteryLevel = 'expert';
-        else if (averageAccuracy >= 75) masteryLevel = 'advanced';
-        else if (averageAccuracy >= 60) masteryLevel = 'intermediate';
-        else masteryLevel = 'beginner';
+          // Determine mastery level
+          let masteryLevel: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+          if (averageAccuracy >= 90) masteryLevel = 'expert';
+          else if (averageAccuracy >= 75) masteryLevel = 'advanced';
+          else if (averageAccuracy >= 60) masteryLevel = 'intermediate';
+          else masteryLevel = 'beginner';
 
-        // Identify weak and strong areas (sub-topics)
-        const weakAreas = questions
-          .filter(q => q.accuracy < 50)
-          .map(q => q.questionText || 'Unknown')
-          .slice(0, 3);
+          // Identify weak and strong areas (sub-topics)
+          const weakAreas = questions
+            .filter(q => q.accuracy < 50)
+            .map(q => q.questionText || 'Unknown')
+            .slice(0, 3);
 
-        const strongAreas = questions
-          .filter(q => q.accuracy >= 90)
-          .map(q => q.questionText || 'Unknown')
-          .slice(0, 3);
+          const strongAreas = questions
+            .filter(q => q.accuracy >= 90)
+            .map(q => q.questionText || 'Unknown')
+            .slice(0, 3);
 
-        return {
-          topic,
-          totalQuestions,
-          averageAccuracy: Math.round(averageAccuracy),
-          averageDifficulty: Math.round(averageDifficulty * 100) / 100,
-          masteryLevel,
-          weakAreas,
-          strongAreas,
-        };
-      });
+          return {
+            topic,
+            totalQuestions,
+            averageAccuracy: Math.round(averageAccuracy),
+            averageDifficulty: Math.round(averageDifficulty * 100) / 100,
+            masteryLevel,
+            weakAreas,
+            strongAreas,
+          };
+        }
+      );
 
       return topicPerformance.sort((a, b) => b.averageAccuracy - a.averageAccuracy);
     } catch (error) {
@@ -220,17 +231,22 @@ export class PerformanceAnalyticsService {
   /**
    * Get learning curve data showing improvement over time
    */
-  static async getLearningCurve(userId: string, topicFilter?: string): Promise<LearningCurveData[]> {
+  static async getLearningCurve(
+    userId: string,
+    topicFilter?: string
+  ): Promise<LearningCurveData[]> {
     try {
-      let query = supabase
+      const query = supabase
         .from('assessment_answer_performance')
-        .select(`
+        .select(
+          `
           is_correct,
           created_at,
           quiz_questions (
             topic
           )
-        `)
+        `
+        )
         .eq('user_id', userId)
         .order('created_at', { ascending: true });
 
@@ -244,11 +260,16 @@ export class PerformanceAnalyticsService {
       // Filter by topic if specified
       let filteredData = data || [];
       if (topicFilter) {
-        filteredData = filteredData.filter((item: any) => item.quiz_questions?.topic === topicFilter);
+        filteredData = filteredData.filter(
+          (item: any) => item.quiz_questions?.topic === topicFilter
+        );
       }
 
       // Group by day and calculate metrics
-      const dailyPerformance = new Map<string, { correct: number; total: number; dates: string[] }>();
+      const dailyPerformance = new Map<
+        string,
+        { correct: number; total: number; dates: string[] }
+      >();
 
       filteredData.forEach((item: any) => {
         const date = new Date(item.created_at).toISOString().split('T')[0];
@@ -344,7 +365,8 @@ export class PerformanceAnalyticsService {
       const totalCorrect = questions.reduce((sum, q) => sum + q.correctAttempts, 0);
       const totalIncorrect = totalAttempts - totalCorrect;
       const overallAccuracy = (totalCorrect / totalAttempts) * 100;
-      const averageTimePerQuestion = questions.reduce((sum, q) => sum + q.averageTimeSpent, 0) / questions.length;
+      const averageTimePerQuestion =
+        questions.reduce((sum, q) => sum + q.averageTimeSpent, 0) / questions.length;
 
       // Performance by difficulty (using IRT difficulty)
       const easy = questions.filter(q => (q.difficulty || 0) < 0.3);
@@ -375,7 +397,8 @@ export class PerformanceAnalyticsService {
       // Calculate consistency score (inverse of variance)
       const accuracies = questions.map(q => q.accuracy);
       const mean = accuracies.reduce((sum, a) => sum + a, 0) / accuracies.length;
-      const variance = accuracies.reduce((sum, a) => sum + Math.pow(a - mean, 2), 0) / accuracies.length;
+      const variance =
+        accuracies.reduce((sum, a) => sum + Math.pow(a - mean, 2), 0) / accuracies.length;
       const stdDev = Math.sqrt(variance);
       const consistencyScore = Math.max(0, Math.min(100, 100 - stdDev));
 

@@ -73,7 +73,7 @@ test.describe('User Signup Flow', () => {
   });
 
   test('should reject signup with weak password', async ({ page }) => {
-    const newUser = generateUser('student');
+    const _newUser = generateUser('student');
 
     await authPage.navigate();
     await authPage.switchToSignup();
@@ -185,7 +185,7 @@ test.describe('User Login Flow', () => {
     expect(errorMessage.toLowerCase()).toMatch(/password|credentials|invalid/);
   });
 
-  test('should reject login with empty fields', async ({ page }) => {
+  test('should reject login with empty fields', async ({ page: _page }) => {
     await authPage.navigate();
 
     // Try to login without filling fields
@@ -252,7 +252,7 @@ test.describe('Password Reset Flow', () => {
     await authPage.waitForSuccess();
   });
 
-  test('should validate password reset form', async ({ page }) => {
+  test('should validate password reset form', async ({ page: _page }) => {
     // This test assumes we have a reset token
     // In real scenario, would need to intercept email and get token
     test.skip(); // Skip for now as it requires email integration
@@ -270,11 +270,11 @@ test.describe('Password Reset Flow', () => {
 
 test.describe('Email Verification Flow', () => {
   let authPage: AuthPage;
-  let dashboardPage: DashboardPage;
+  let _dashboardPage: DashboardPage;
 
   test.beforeEach(async ({ page }) => {
     authPage = new AuthPage(page);
-    dashboardPage = new DashboardPage(page);
+    _dashboardPage = new DashboardPage(page);
   });
 
   test('should show verification banner for unverified users', async () => {
