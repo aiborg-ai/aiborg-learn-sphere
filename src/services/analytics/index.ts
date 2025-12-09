@@ -15,5 +15,13 @@ export { BenchmarkService } from './BenchmarkService';
 export { AdminAnalyticsService } from './AdminAnalyticsService';
 export { GoalsAnalyticsService } from './GoalsAnalyticsService';
 
+// New AI Study Assistant analytics services
+export { AbilityTrajectoryService, abilityTrajectoryService } from './AbilityTrajectoryService';
+export { StudyEffectivenessService, studyEffectivenessService } from './StudyEffectivenessService';
+export {
+  EnhancedGoalPredictionService,
+  enhancedGoalPredictionService,
+} from './EnhancedGoalPredictionService';
+
 // Re-export legacy unified service (facade for backward compatibility)
 export { AnalyticsService } from '../AnalyticsService';

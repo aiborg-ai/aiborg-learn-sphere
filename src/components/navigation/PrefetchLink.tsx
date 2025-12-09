@@ -23,7 +23,7 @@
  */
 
 import { Link, LinkProps } from 'react-router-dom';
-import { createPrefetchOnHoverWithDelay } from '@/utils/prefetch';
+import { createPrefetchOnHoverWithDelay, prefetchRouteChunk } from '@/utils/prefetch';
 
 export interface PrefetchLinkProps extends LinkProps {
   /**
@@ -44,6 +44,12 @@ export interface PrefetchLinkProps extends LinkProps {
    * Default: true
    */
   prefetchEnabled?: boolean;
+
+  /**
+   * Whether to prefetch the route chunk (JS code)
+   * Default: true - always prefetch chunk on hover
+   */
+  prefetchChunk?: boolean;
 }
 
 /**
@@ -54,6 +60,7 @@ export function PrefetchLink({
   prefetchFn,
   prefetchDelay = 300,
   prefetchEnabled = true,
+  prefetchChunk = true,
   children,
   onMouseEnter,
   onMouseLeave,
@@ -67,6 +74,13 @@ export function PrefetchLink({
 
   // Merge prefetch handlers with any existing handlers
   const handleMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Always prefetch route chunk immediately (no delay needed for code)
+    if (prefetchChunk && prefetchEnabled) {
+      const path = typeof to === 'string' ? to : to.pathname || '';
+      prefetchRouteChunk(path);
+    }
+
+    // Prefetch data with delay
     if (prefetchHandlers) {
       prefetchHandlers.onMouseEnter();
     }
@@ -85,12 +99,7 @@ export function PrefetchLink({
   };
 
   return (
-    <Link
-      to={to}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      {...props}
-    >
+    <Link to={to} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} {...props}>
       {children}
     </Link>
   );

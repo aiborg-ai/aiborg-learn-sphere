@@ -4,7 +4,14 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { Icon } from '@/utils/iconLoader';
 import { PrefetchLink } from '@/components/navigation/PrefetchLink';
-import { prefetchDashboard, prefetchUserProfile, prefetchUserEnrollments, prefetchUserAchievements, createPrefetchOnHoverWithDelay } from '@/utils/prefetch';
+import {
+  prefetchDashboard,
+  prefetchUserProfile,
+  prefetchUserEnrollments,
+  prefetchUserAchievements,
+  createPrefetchOnHoverWithDelay,
+  prefetchRouteChunk,
+} from '@/utils/prefetch';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -64,16 +71,27 @@ export function Navbar() {
 
   // Prefetch handlers for desktop dropdown menu
   const dashboardPrefetchHandlers = user?.id
-    ? createPrefetchOnHoverWithDelay(async () => await prefetchDashboard(user.id), 300)
+    ? createPrefetchOnHoverWithDelay(async () => {
+        prefetchRouteChunk('/dashboard');
+        await prefetchDashboard(user.id);
+      }, 300)
     : null;
 
   const profilePrefetchHandlers = user?.id
     ? createPrefetchOnHoverWithDelay(async () => {
+        prefetchRouteChunk('/profile');
         await Promise.all([
           prefetchUserProfile(user.id),
           prefetchUserEnrollments(user.id),
           prefetchUserAchievements(user.id),
         ]);
+      }, 300)
+    : null;
+
+  // Admin prefetch handler
+  const adminPrefetchHandlers = isAdmin
+    ? createPrefetchOnHoverWithDelay(async () => {
+        prefetchRouteChunk('/admin');
       }, 300)
     : null;
 
@@ -94,7 +112,11 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/ai-assessment" className="relative" aria-label="AI Assessment - New feature">
+            <PrefetchLink
+              to="/ai-assessment"
+              className="relative"
+              aria-label="AI Assessment - New feature"
+            >
               <Button
                 variant="ghost"
                 className="text-foreground/80 hover:text-foreground transition-colors gap-2"
@@ -108,7 +130,7 @@ export function Navbar() {
                   NEW
                 </Badge>
               </Button>
-            </Link>
+            </PrefetchLink>
             <button
               onClick={() => handleNavClick('training-programs')}
               className="text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
@@ -116,13 +138,13 @@ export function Navbar() {
             >
               Programs
             </button>
-            <Link
+            <PrefetchLink
               to="/blog"
               className="text-foreground/80 hover:text-foreground transition-colors"
               aria-label="Go to blog"
             >
               Blog
-            </Link>
+            </PrefetchLink>
             <button
               onClick={() => handleNavClick('events')}
               className="text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
@@ -231,6 +253,8 @@ export function Navbar() {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => navigate('/admin')}
+                        onMouseEnter={() => adminPrefetchHandlers?.onMouseEnter()}
+                        onMouseLeave={() => adminPrefetchHandlers?.onMouseLeave()}
                         aria-label="Go to admin dashboard"
                       >
                         <Icon name="Shield" size={16} className="mr-2" aria-hidden="true" />
@@ -247,7 +271,7 @@ export function Navbar() {
               </DropdownMenu>
             ) : (
               <div className="flex items-center gap-4">
-                <Link to="/auth">
+                <PrefetchLink to="/auth">
                   <Button
                     variant="ghost"
                     className="text-foreground hover:bg-muted/10"
@@ -255,12 +279,12 @@ export function Navbar() {
                   >
                     Sign In
                   </Button>
-                </Link>
-                <Link to="/auth">
+                </PrefetchLink>
+                <PrefetchLink to="/auth">
                   <Button className="btn-hero" aria-label="Get started with Aiborg">
                     Get Started
                   </Button>
-                </Link>
+                </PrefetchLink>
               </div>
             )}
           </div>
@@ -305,14 +329,14 @@ export function Navbar() {
             >
               Programs
             </button>
-            <Link
+            <PrefetchLink
               to="/blog"
               className="block text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
               onClick={() => setIsOpen(false)}
               aria-label="Go to blog"
             >
               Blog
-            </Link>
+            </PrefetchLink>
             <button
               className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
               onClick={() => {
@@ -387,7 +411,7 @@ export function Navbar() {
                 </p>
                 <PrefetchLink
                   to="/dashboard"
-                  prefetchFn={async () => user?.id && await prefetchDashboard(user.id)}
+                  prefetchFn={async () => user?.id && (await prefetchDashboard(user.id))}
                   prefetchDelay={300}
                 >
                   <Button
@@ -422,7 +446,7 @@ export function Navbar() {
                   </Button>
                 </PrefetchLink>
                 {isAdmin && (
-                  <Link to="/admin">
+                  <PrefetchLink to="/admin">
                     <Button
                       variant="ghost"
                       className="w-full justify-start text-foreground hover:bg-muted/10"
@@ -431,7 +455,7 @@ export function Navbar() {
                       <Icon name="Shield" size={16} className="mr-2" aria-hidden="true" />
                       Admin Dashboard
                     </Button>
-                  </Link>
+                  </PrefetchLink>
                 )}
                 <Button
                   variant="ghost"
@@ -448,7 +472,7 @@ export function Navbar() {
                 className="space-y-2 pt-4 border-t border-muted/20"
                 aria-label="Authentication options"
               >
-                <Link to="/auth">
+                <PrefetchLink to="/auth">
                   <Button
                     variant="ghost"
                     className="w-full text-foreground hover:bg-muted/10"
@@ -456,12 +480,12 @@ export function Navbar() {
                   >
                     Sign In
                   </Button>
-                </Link>
-                <Link to="/auth">
+                </PrefetchLink>
+                <PrefetchLink to="/auth">
                   <Button className="w-full btn-hero" aria-label="Get started with Aiborg">
                     Get Started
                   </Button>
-                </Link>
+                </PrefetchLink>
               </section>
             )}
           </nav>

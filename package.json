@@ -77,6 +77,13 @@
     "@sentry/vite-plugin": "^4.6.1",
     "@supabase/supabase-js": "^2.78.0",
     "@tanstack/react-query": "^5.90.5",
+    "@tiptap/extension-link": "^3.13.0",
+    "@tiptap/extension-placeholder": "^3.13.0",
+    "@tiptap/extension-text-align": "^3.13.0",
+    "@tiptap/extension-underline": "^3.13.0",
+    "@tiptap/pm": "^3.13.0",
+    "@tiptap/react": "^3.13.0",
+    "@tiptap/starter-kit": "^3.13.0",
     "@types/dompurify": "^3.0.5",
     "@types/marked": "^5.0.2",
     "@types/qrcode": "^1.5.5",
@@ -168,6 +175,7 @@
     "vercel": "^37.0.0",
     "vite": "^5.4.1",
     "vite-bundle-visualizer": "^1.2.1",
+    "vite-plugin-compression": "^0.5.1",
     "vite-plugin-html": "^3.2.2",
     "vitest": "^3.2.4"
   }

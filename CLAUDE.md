@@ -16,6 +16,14 @@ repository.
 - `npm run lint:fix` - Auto-fix ESLint issues where possible
 - `npm run check:all` - Run lint + typecheck + format check
 
+### Spec Kit (spec-driven workflow)
+
+- Specs live in `spec-kit/` (mirrors of constitution/specifications plus plans/tasks pointers).
+- CLI is installed as `specify`:
+  - `specify --help` - CLI usage
+  - `specify check` - Verify tooling
+  - Avoid `specify init` (structure already present); edit the Markdown files directly.
+
 ### Code Quality & Accessibility
 
 This project enforces comprehensive **accessibility linting** using `eslint-plugin-jsx-a11y`

@@ -14,6 +14,67 @@ import { queryClient } from '@/App';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 
+// Track which chunks have been prefetched to avoid duplicate requests
+const prefetchedChunks = new Set<string>();
+
+/**
+ * Route chunk loaders - dynamically import page components
+ * These match the lazy() imports in App.tsx
+ */
+const routeChunkLoaders: Record<string, () => Promise<unknown>> = {
+  '/dashboard': () => import('@/pages/DashboardRefactored'),
+  '/profile': () => import('@/pages/Profile'),
+  '/analytics': () => import('@/pages/AnalyticsPage'),
+  '/admin': () => import('@/pages/AdminRefactored'),
+  '/courses': () => import('@/pages/CoursesListPage'),
+  '/course': () => import('@/pages/CoursePage'),
+  '/my-courses': () => import('@/pages/MyCoursesPage'),
+  '/auth': () => import('@/pages/Auth'),
+  '/ai-assessment': () => import('@/pages/AIAssessment'),
+  '/studio': () => import('@/pages/Studio'),
+  '/family-membership': () => import('@/pages/FamilyMembershipPage'),
+  '/search': () => import('@/pages/SearchPage'),
+  '/achievements': () => import('@/pages/AchievementsPage'),
+  '/learning-paths': () => import('@/pages/LearningPathsPage'),
+  '/gamification': () => import('@/pages/GamificationPage'),
+};
+
+/**
+ * Prefetch the JavaScript chunk for a route
+ * Call this on link hover to load the page code before navigation
+ */
+export function prefetchRouteChunk(routePath: string): void {
+  // Normalize path: extract base route (e.g., /course/123 → /course)
+  const basePath = '/' + (routePath.split('/')[1] || '');
+
+  // Skip if already prefetched
+  if (prefetchedChunks.has(basePath)) {
+    return;
+  }
+
+  const loader = routeChunkLoaders[basePath];
+  if (loader) {
+    prefetchedChunks.add(basePath);
+    loader().catch(err => {
+      // Remove from set so it can be retried
+      prefetchedChunks.delete(basePath);
+      logger.warn('Route chunk prefetch failed:', basePath, err);
+    });
+  }
+}
+
+/**
+ * Prefetch both the route chunk and data for a route
+ * Most efficient when called on link hover
+ */
+export async function prefetchRoute(route: string, params?: Record<string, string>): Promise<void> {
+  // Prefetch chunk (non-blocking)
+  prefetchRouteChunk(route);
+
+  // Prefetch data
+  await prefetchRouteData(route, params);
+}
+
 /**
  * Prefetch course details
  * Call this when user hovers over a course card

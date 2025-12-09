@@ -1,28 +1,34 @@
 # AIBorg Learn Sphere - Spec-Kit Setup
 
-This directory contains the Spec-Driven Development configuration for the AIBorg Learn Sphere project.
+This directory contains the Spec-Driven Development configuration for the AIBorg Learn Sphere
+project.
 
 ## What is Spec-Kit?
 
-Spec-Kit is a toolkit from GitHub that enables Spec-Driven Development - an approach where specifications become executable and directly generate working implementations rather than just guiding them.
+Spec-Kit is a toolkit from GitHub that enables Spec-Driven Development - an approach where
+specifications become executable and directly generate working implementations rather than just
+guiding them.
 
 ## Project Structure
 
 ```
 spec-kit/
-├── constitution.md      # Project principles and guidelines
-├── specifications.md    # Detailed feature specifications
-├── plans/              # Implementation plans
-├── tasks/              # Task breakdowns
-└── implementations/    # Generated code
+├── constitution.md      # Project principles and guidelines (mirrors root copy)
+├── specifications.md    # Detailed feature specifications (mirrors root copy)
+├── plans/               # Implementation plans (pointers to canonical plans)
+├── tasks/               # Task breakdowns (pointers to canonical tasks)
+└── implementations/     # Generated code or implementation notes
 ```
 
 ## How to Use
 
 ### 1. Review the Constitution
-Read `constitution.md` to understand the project's core principles, quality standards, and non-negotiables.
+
+Read `constitution.md` to understand the project's core principles, quality standards, and
+non-negotiables.
 
 ### 2. Review Specifications
+
 Check `specifications.md` for detailed feature requirements and success metrics.
 
 ### 3. Use Slash Commands with Claude Code
@@ -30,31 +36,41 @@ Check `specifications.md` for detailed feature requirements and success metrics.
 When working with Claude Code (claude.ai/code), use these commands:
 
 #### `/constitution`
+
 Establish or update project principles:
+
 ```
 /constitution Update the constitution to include new security requirements for OWASP Top 10 compliance
 ```
 
 #### `/specify`
+
 Create or update specifications:
+
 ```
 /specify Add a new feature for student discussion forums with threading, voting, and moderation capabilities
 ```
 
 #### `/plan`
+
 Generate implementation plans:
+
 ```
 /plan Create a plan to implement the course filtering feature using React Query and optimistic updates
 ```
 
 #### `/tasks`
+
 Break down work into actionable tasks:
+
 ```
 /tasks Break down the enrollment system implementation into specific development tasks
 ```
 
 #### `/implement`
+
 Execute the implementation:
+
 ```
 /implement Implement the course display filtering feature based on the current specifications
 ```
@@ -62,6 +78,7 @@ Execute the implementation:
 ## Current Specifications
 
 ### Core Features Specified:
+
 1. ✅ Course Management System
 2. ✅ Enrollment & Payment System
 3. ✅ Learning Dashboard
@@ -72,6 +89,7 @@ Execute the implementation:
 8. ✅ Admin Dashboard
 
 ### Technical Requirements:
+
 - Performance: < 3s page load, < 500ms API response
 - Security: SOC 2, GDPR compliant, E2E encryption
 - Accessibility: WCAG 2.1 AA compliant
@@ -80,11 +98,13 @@ Execute the implementation:
 ## Next Steps
 
 1. **Create Implementation Plan**:
+
    ```
    /plan Design the implementation for the enhanced course filtering system with display field support
    ```
 
 2. **Generate Tasks**:
+
    ```
    /tasks Create tasks for implementing the JSON-based course and event creation system
    ```
@@ -97,6 +117,7 @@ Execute the implementation:
 ## Integration with Existing Codebase
 
 The spec-kit setup works alongside the existing React/TypeScript codebase:
+
 - Specifications guide new feature development
 - Constitution ensures code quality standards
 - Plans provide technical implementation details
@@ -120,6 +141,7 @@ The spec-kit setup works alongside the existing React/TypeScript codebase:
 ## Support
 
 For questions about Spec-Kit usage with AIBorg:
+
 - Review the specifications and constitution
 - Use Claude Code with slash commands
 - Check the Spec-Kit documentation
@@ -127,5 +149,4 @@ For questions about Spec-Kit usage with AIBorg:
 
 ---
 
-*Last Updated: September 2025*
-*Spec-Kit Version: 0.0.51*
+_Last Updated: September 2025_ _Spec-Kit Version: 0.0.51_

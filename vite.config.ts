@@ -5,6 +5,7 @@ import { componentTagger } from 'lovable-tagger';
 import { prioritizeReactPlugin } from './vite-plugins/prioritize-react';
 import { cspPlugin } from './vite-plugins/csp-plugin';
 import { VitePWA } from 'vite-plugin-pwa';
+import viteCompression from 'vite-plugin-compression';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -133,6 +134,20 @@ export default defineConfig(({ mode }) => ({
         enabled: false, // Disable PWA in development
       },
     }),
+    // Gzip compression for smaller transfer sizes
+    viteCompression({
+      algorithm: 'gzip',
+      ext: '.gz',
+      threshold: 1024, // Only compress files > 1KB
+      deleteOriginFile: false,
+    }),
+    // Brotli compression (better ratio than gzip)
+    viteCompression({
+      algorithm: 'brotliCompress',
+      ext: '.br',
+      threshold: 1024,
+      deleteOriginFile: false,
+    }),
   ].filter(Boolean),
   resolve: {
     alias: {
@@ -159,24 +174,28 @@ export default defineConfig(({ mode }) => ({
     },
     reportCompressedSize: false,
     chunkSizeWarningLimit: 400,
-    // Disable modulepreload for better lazy loading
+    // Selective modulepreload - only critical chunks
     modulePreload: {
       polyfill: false,
       resolveDependencies: (filename, deps, depsInfo) => {
-        // CRITICAL FIX: Ensure react-vendor loads before everything else
-        // Filter out heavy chunks and ensure proper order
-        const filteredDeps = deps.filter(
-          dep =>
-            !dep.includes('charts-chunk') &&
-            !dep.includes('pdf-chunk') &&
-            !dep.includes('pdf-export-chunk') &&
-            !dep.includes('admin-components')
+        // Only preload critical chunks needed for initial render
+        const criticalChunks = [
+          'react-core',
+          'react-router',
+          'supabase-chunk',
+          'tanstack-query',
+          'utils-chunk',
+        ];
+
+        // Filter to only include critical dependencies
+        const filteredDeps = deps.filter(dep =>
+          criticalChunks.some(critical => dep.includes(critical))
         );
 
-        // Sort to ensure react-vendor comes first
+        // Sort to ensure react-core loads first
         return filteredDeps.sort((a, b) => {
-          if (a.includes('react-vendor')) return -1;
-          if (b.includes('react-vendor')) return 1;
+          if (a.includes('react-core')) return -1;
+          if (b.includes('react-core')) return 1;
           return 0;
         });
       },
@@ -186,9 +205,18 @@ export default defineConfig(({ mode }) => ({
         // OPTIMIZED CHUNKING STRATEGY - Split vendor bundle into smaller chunks
         manualChunks: id => {
           if (id.includes('node_modules')) {
-            // PDF & Document handling - lazy loaded, keep separate
-            if (id.includes('pdfjs-dist') || id.includes('jspdf') || id.includes('html2canvas')) {
-              return 'pdf-libs-chunk';
+            // PDF & Document handling - split into granular chunks for better lazy loading
+            // PDF.js for viewing (used by react-pdf) - largest
+            if (id.includes('pdfjs-dist')) {
+              return 'pdfjs-viewer-chunk';
+            }
+            // jsPDF for generating PDFs
+            if (id.includes('jspdf')) {
+              return 'pdf-generator-chunk';
+            }
+            // html2canvas for DOM capture (often used with PDF generation)
+            if (id.includes('html2canvas')) {
+              return 'html2canvas-chunk';
             }
 
             // Charts - lazy loaded, keep separate
@@ -196,23 +224,49 @@ export default defineConfig(({ mode }) => ({
               return 'charts-libs-chunk';
             }
 
-            // CONSOLIDATED REACT ECOSYSTEM
-            // All React-related libraries go together to avoid createContext errors
+            // React Router - MUST come before react-core because @remix-run/router is used internally
+            if (id.includes('react-router') || id.includes('@remix-run/router')) {
+              return 'react-router-chunk';
+            }
+
+            // SPLIT REACT ECOSYSTEM for better caching
+            // React Core - essential, always needed
+            // Exclude specific react-* libraries that should be in their own chunks
             if (
-              id.includes('react') ||
+              (id.includes('react') &&
+                !id.includes('@radix-ui') &&
+                !id.includes('react-router') &&
+                !id.includes('react-day-picker') &&
+                !id.includes('react-dropzone') &&
+                !id.includes('react-resizable-panels') &&
+                !id.includes('react-helmet')) ||
               id.includes('scheduler') ||
-              id.includes('@radix-ui') ||
+              id.includes('@remix-run')
+            ) {
+              return 'react-core-chunk';
+            }
+
+            // Radix UI Components - large but often tree-shaken
+            if (id.includes('@radix-ui')) {
+              return 'radix-ui-chunk';
+            }
+
+            // React UI Utilities - context-dependent helpers
+            if (
               id.includes('@floating-ui') ||
               id.includes('use-callback-ref') ||
               id.includes('use-sidecar') ||
               id.includes('aria-hidden') ||
               id.includes('focus-lock') ||
-              id.includes('embla-carousel') ||
               id.includes('detect-node-es') ||
-              id.includes('get-nonce') ||
-              id.includes('@remix-run')
+              id.includes('get-nonce')
             ) {
-              return 'react-ecosystem-chunk';
+              return 'react-ui-utils-chunk';
+            }
+
+            // Embla Carousel - only used in certain pages
+            if (id.includes('embla-carousel')) {
+              return 'carousel-chunk';
             }
 
             // Supabase
@@ -240,8 +294,8 @@ export default defineConfig(({ mode }) => ({
               return 'dnd-kit-chunk';
             }
 
-            // Date libraries
-            if (id.includes('date-fns')) {
+            // Date libraries (including timezone utilities)
+            if (id.includes('date-fns') || id.includes('date-fns-tz')) {
               return 'date-libs-chunk';
             }
 
@@ -264,9 +318,9 @@ export default defineConfig(({ mode }) => ({
               return 'markdown-chunk';
             }
 
-            // PDF viewing (react-pdf)
+            // PDF viewing (react-pdf) - group with pdfjs
             if (id.includes('react-pdf')) {
-              return 'pdf-libs-chunk'; // Merge with other PDF libraries
+              return 'pdfjs-viewer-chunk';
             }
 
             // Motion/Animation
@@ -284,8 +338,12 @@ export default defineConfig(({ mode }) => ({
               return 'ui-utils-chunk';
             }
 
-            // File processing
-            if (id.includes('jszip') || id.includes('dompurify')) {
+            // File processing (including SSR DOMPurify wrapper)
+            if (
+              id.includes('jszip') ||
+              id.includes('dompurify') ||
+              id.includes('isomorphic-dompurify')
+            ) {
               return 'file-processing-chunk';
             }
 
@@ -296,6 +354,127 @@ export default defineConfig(({ mode }) => ({
               id.includes('tailwind-merge')
             ) {
               return 'utils-chunk';
+            }
+
+            // === HIGH PRIORITY: Further chunk splitting ===
+
+            // Excel/Spreadsheet - LARGE, only for admin import/export
+            if (id.includes('xlsx') || id.includes('exceljs')) {
+              return 'xlsx-chunk';
+            }
+
+            // Sentry error tracking - can be deferred/lazy loaded
+            if (id.includes('@sentry')) {
+              return 'sentry-chunk';
+            }
+
+            // === MEDIUM PRIORITY: Feature-specific chunks ===
+
+            // Panel resizing - dashboard builder feature only
+            if (id.includes('react-resizable-panels')) {
+              return 'panels-chunk';
+            }
+
+            // Calendar picker - used in specific date forms
+            if (id.includes('react-day-picker')) {
+              return 'calendar-picker-chunk';
+            }
+
+            // File upload - feature-specific
+            if (id.includes('react-dropzone')) {
+              return 'file-upload-chunk';
+            }
+
+            // === LOW PRIORITY: Small utilities ===
+
+            // SEO utilities
+            if (id.includes('react-helmet')) {
+              return 'seo-chunk';
+            }
+
+            // Theme management
+            if (id.includes('next-themes')) {
+              return 'theme-chunk';
+            }
+
+            // OTP input - group with forms
+            if (id.includes('input-otp')) {
+              return 'form-libs-chunk';
+            }
+
+            // QR code generation
+            if (id.includes('qrcode')) {
+              return 'qr-chunk';
+            }
+
+            // === ADDITIONAL CHUNKS to reduce react-ecosystem bloat ===
+
+            // Text encoding/decoding utilities
+            if (id.includes('iconv-lite') || id.includes('safer-buffer')) {
+              return 'text-encoding-chunk';
+            }
+
+            // Lodash - commonly used utility
+            if (id.includes('lodash')) {
+              return 'lodash-chunk';
+            }
+
+            // UUID generation
+            if (id.includes('uuid')) {
+              return 'uuid-chunk';
+            }
+
+            // Canvas/Image processing
+            if (
+              id.includes('canvg') ||
+              id.includes('stackblur-canvas') ||
+              id.includes('rgbcolor')
+            ) {
+              return 'canvas-utils-chunk';
+            }
+
+            // Core-js polyfills
+            if (id.includes('core-js')) {
+              return 'polyfills-chunk';
+            }
+
+            // Compat/browser detection
+            if (id.includes('bowser') || id.includes('ua-parser')) {
+              return 'browser-compat-chunk';
+            }
+
+            // Symbol polyfills
+            if (id.includes('symbol-observable')) {
+              return 'observable-chunk';
+            }
+
+            // Deepmerge/deep-equal utilities
+            if (
+              id.includes('deepmerge') ||
+              id.includes('deep-equal') ||
+              id.includes('fast-deep-equal')
+            ) {
+              return 'deep-utils-chunk';
+            }
+
+            // CSS-in-JS related
+            if (id.includes('csstype') || id.includes('emotion') || id.includes('stylis')) {
+              return 'css-runtime-chunk';
+            }
+
+            // Object-assign/Object.assign polyfills
+            if (id.includes('object-assign')) {
+              return 'polyfills-chunk';
+            }
+
+            // Tiny invariant/warning utilities (React ecosystem helpers)
+            if (id.includes('tiny-invariant') || id.includes('tiny-warning')) {
+              return 'react-helpers-chunk';
+            }
+
+            // Hoist non-react-statics (React HOC helper)
+            if (id.includes('hoist-non-react-statics')) {
+              return 'react-helpers-chunk';
             }
 
             // Everything else goes to react-ecosystem to avoid createContext errors

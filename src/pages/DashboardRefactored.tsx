@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -27,6 +27,8 @@ import {
   Ticket,
 } from '@/components/ui/icons';
 import { Link } from 'react-router-dom';
+import { CardSkeleton } from '@/components/skeletons';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // Import dashboard components
 import { DashboardStats, type DashboardStatsData } from '@/components/dashboard/DashboardStats';
@@ -37,21 +39,51 @@ import {
   NotificationsSection,
   type Notification,
 } from '@/components/dashboard/NotificationsSection';
-import { MiniCalendarWidget } from '@/components/calendar/MiniCalendarWidget';
-import { AIInsightsWidget } from '@/components/dashboard/AIInsightsWidget';
-import { StudyRecommendations } from '@/components/dashboard/StudyRecommendations';
-import { AIStudyAssistant } from '@/components/features';
-import { CompactLearningPathRecommendations } from '@/components/recommendations/CompactLearningPathRecommendations';
 import { ResourcesSection } from '@/components/dashboard/ResourcesSection';
 import { useUserResources } from '@/hooks/useUserResources';
 import { AttendanceTicketsSection } from '@/components/dashboard/AttendanceTicketsSection';
 import { useAttendanceTickets } from '@/hooks/useAttendanceTickets';
-import { PersonalizedSection } from '@/components/recommendations/PersonalizedSection';
 import {
   usePersonalizedRecommendations,
   useRecommendationFeedback,
   useRecommendationInteraction,
 } from '@/hooks/useRecommendations';
+
+// Lazy load heavy AI/recommendation components
+const MiniCalendarWidget = lazy(() =>
+  import('@/components/calendar/MiniCalendarWidget').then(m => ({ default: m.MiniCalendarWidget }))
+);
+const AIInsightsWidget = lazy(() =>
+  import('@/components/dashboard/AIInsightsWidget').then(m => ({ default: m.AIInsightsWidget }))
+);
+const StudyRecommendations = lazy(() =>
+  import('@/components/dashboard/StudyRecommendations').then(m => ({
+    default: m.StudyRecommendations,
+  }))
+);
+const AIStudyAssistant = lazy(() => import('@/components/features/AIStudyAssistant'));
+const CompactLearningPathRecommendations = lazy(() =>
+  import('@/components/recommendations/CompactLearningPathRecommendations').then(m => ({
+    default: m.CompactLearningPathRecommendations,
+  }))
+);
+const PersonalizedSection = lazy(() =>
+  import('@/components/recommendations/PersonalizedSection').then(m => ({
+    default: m.PersonalizedSection,
+  }))
+);
+
+// Widget skeleton for AI components
+const WidgetSkeleton = () => (
+  <div className="bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-6">
+    <Skeleton className="h-6 w-40 mb-4 bg-white/10" />
+    <div className="space-y-3">
+      <Skeleton className="h-4 w-full bg-white/10" />
+      <Skeleton className="h-4 w-3/4 bg-white/10" />
+      <Skeleton className="h-4 w-5/6 bg-white/10" />
+    </div>
+  </div>
+);
 
 export default function DashboardRefactored() {
   const [dataLoading, setDataLoading] = useState(true);
@@ -100,18 +132,49 @@ export default function DashboardRefactored() {
     try {
       setDataLoading(true);
 
-      // Fetch dashboard stats
-      const { data: dashboardData, error: dashboardError } = await supabase
-        .from('user_dashboard')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
+      // PARALLEL DATA FETCHING - All queries run simultaneously
+      const [
+        dashboardResult,
+        progressResult,
+        achievementResult,
+        notificationResult,
+        assignmentResult,
+      ] = await Promise.all([
+        // Dashboard stats
+        supabase.from('user_dashboard').select('*').eq('user_id', user.id).single(),
+        // User progress
+        supabase
+          .from('user_progress')
+          .select(`*, courses!inner(title)`)
+          .eq('user_id', user.id)
+          .order('last_accessed', { ascending: false }),
+        // Achievements
+        supabase
+          .from('user_achievements')
+          .select(`*, achievements!inner(name, description, icon_emoji, rarity, is_featured)`)
+          .eq('user_id', user.id)
+          .order('earned_at', { ascending: false }),
+        // Notifications
+        supabase
+          .from('notifications')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(20),
+        // Assignments
+        supabase
+          .from('homework_assignments')
+          .select(`*, courses!inner(title)`)
+          .eq('user_id', user.id)
+          .order('due_date', { ascending: true }),
+      ]);
 
+      // Process dashboard stats
+      const { data: dashboardData, error: dashboardError } = dashboardResult;
       if (dashboardError && dashboardError.code === '42P01') {
         logger.log('LMS tables not found in production');
         setLmsSetupRequired(true);
       }
-
       if (dashboardData) {
         setStats({
           enrolledCourses: dashboardData.enrolled_courses || 0,
@@ -123,22 +186,11 @@ export default function DashboardRefactored() {
         });
       }
 
-      // Fetch user progress
-      const { data: progressData, error: progressError } = await supabase
-        .from('user_progress')
-        .select(
-          `
-          *,
-          courses!inner(title)
-        `
-        )
-        .eq('user_id', user.id)
-        .order('last_accessed', { ascending: false });
-
+      // Process user progress
+      const { data: progressData, error: progressError } = progressResult;
       if (progressError && progressError.code === '42P01') {
         logger.log('User progress table not found');
       }
-
       if (progressData) {
         setUserProgress(
           progressData.map(p => ({
@@ -152,22 +204,11 @@ export default function DashboardRefactored() {
         );
       }
 
-      // Fetch achievements
-      const { data: achievementData, error: achievementError } = await supabase
-        .from('user_achievements')
-        .select(
-          `
-          *,
-          achievements!inner(name, description, icon_emoji, rarity, is_featured)
-        `
-        )
-        .eq('user_id', user.id)
-        .order('earned_at', { ascending: false });
-
+      // Process achievements
+      const { data: achievementData, error: achievementError } = achievementResult;
       if (achievementError && achievementError.code === '42P01') {
         logger.log('Achievements table not found');
       }
-
       if (achievementData) {
         setAchievements(
           achievementData.map(a => ({
@@ -182,18 +223,11 @@ export default function DashboardRefactored() {
         );
       }
 
-      // Fetch notifications
-      const { data: notificationData, error: notificationError } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(20);
-
+      // Process notifications
+      const { data: notificationData, error: notificationError } = notificationResult;
       if (notificationError && notificationError.code === '42P01') {
         logger.log('Notifications table not found');
       }
-
       if (notificationData) {
         setNotifications(
           notificationData.map(n => ({
@@ -208,22 +242,11 @@ export default function DashboardRefactored() {
         );
       }
 
-      // Fetch assignments
-      const { data: assignmentData, error: assignmentError } = await supabase
-        .from('homework_assignments')
-        .select(
-          `
-          *,
-          courses!inner(title)
-        `
-        )
-        .eq('user_id', user.id)
-        .order('due_date', { ascending: true });
-
+      // Process assignments
+      const { data: assignmentData, error: assignmentError } = assignmentResult;
       if (assignmentError && assignmentError.code === '42P01') {
         logger.log('Homework tables not found');
       }
-
       if (assignmentData) {
         setAssignments(
           assignmentData.map(a => ({
@@ -480,26 +503,36 @@ export default function DashboardRefactored() {
 
             {/* AI-Powered Features Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <AIInsightsWidget />
-              <StudyRecommendations />
-              {user && <CompactLearningPathRecommendations userId={user.id} />}
+              <Suspense fallback={<WidgetSkeleton />}>
+                <AIInsightsWidget />
+              </Suspense>
+              <Suspense fallback={<WidgetSkeleton />}>
+                <StudyRecommendations />
+              </Suspense>
+              {user && (
+                <Suspense fallback={<WidgetSkeleton />}>
+                  <CompactLearningPathRecommendations userId={user.id} />
+                </Suspense>
+              )}
             </div>
 
             {/* AI-Powered Personalized Recommendations */}
-            <PersonalizedSection
-              title="Recommended For You"
-              description="AI-powered course recommendations based on your learning history and goals"
-              recommendations={courseRecommendations}
-              isLoading={recommendationsLoading}
-              onEnroll={handleRecommendationEnroll}
-              onFeedback={handleRecommendationFeedback}
-              onDismiss={handleRecommendationDismiss}
-              onClick={handleRecommendationClick}
-              onRefresh={() => refetchRecommendations()}
-              showExplanations={true}
-              layout="grid"
-              maxItems={6}
-            />
+            <Suspense fallback={<CardSkeleton />}>
+              <PersonalizedSection
+                title="Recommended For You"
+                description="AI-powered course recommendations based on your learning history and goals"
+                recommendations={courseRecommendations}
+                isLoading={recommendationsLoading}
+                onEnroll={handleRecommendationEnroll}
+                onFeedback={handleRecommendationFeedback}
+                onDismiss={handleRecommendationDismiss}
+                onClick={handleRecommendationClick}
+                onRefresh={() => refetchRecommendations()}
+                showExplanations={true}
+                layout="grid"
+                maxItems={6}
+              />
+            </Suspense>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
@@ -510,7 +543,9 @@ export default function DashboardRefactored() {
                 />
               </div>
               <div>
-                <MiniCalendarWidget />
+                <Suspense fallback={<WidgetSkeleton />}>
+                  <MiniCalendarWidget />
+                </Suspense>
               </div>
             </div>
           </TabsContent>
@@ -586,7 +621,9 @@ export default function DashboardRefactored() {
         </Tabs>
 
         {/* AI Study Assistant - Always Available */}
-        <AIStudyAssistant />
+        <Suspense fallback={null}>
+          <AIStudyAssistant />
+        </Suspense>
       </div>
     </div>
   );

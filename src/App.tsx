@@ -16,6 +16,20 @@ import { RouteWrapper } from '@/components/RouteWrapper';
 import { PerformanceMonitoring } from '@/components/monitoring/PerformanceMonitoring';
 import { LoginNotificationChecker } from '@/components/notifications/LoginNotificationChecker';
 import { InstallPWAPrompt } from '@/components/pwa/InstallPWAPrompt';
+import {
+  DashboardSkeleton,
+  ProfileSkeleton,
+  AnalyticsSkeleton,
+  CourseSkeleton,
+  StudioSkeleton,
+  AdminSkeleton,
+  CalendarSkeleton,
+  SessionSkeleton,
+  DashboardBuilderSkeleton,
+  SMEAssessmentSkeleton,
+  WorkshopSessionSkeleton,
+  InstructorDashboardSkeleton,
+} from '@/components/skeletons';
 
 // Create a loading component
 const PageLoader = () => (
@@ -179,25 +193,31 @@ const AppWithShortcuts = () => {
             <Route
               path="/profile"
               element={
-                <RouteWrapper routeName="Profile">
-                  <Profile />
-                </RouteWrapper>
+                <Suspense fallback={<ProfileSkeleton />}>
+                  <RouteWrapper routeName="Profile">
+                    <Profile />
+                  </RouteWrapper>
+                </Suspense>
               }
             />
             <Route
               path="/dashboard"
               element={
-                <RouteWrapper routeName="Dashboard">
-                  <Dashboard />
-                </RouteWrapper>
+                <Suspense fallback={<DashboardSkeleton />}>
+                  <RouteWrapper routeName="Dashboard">
+                    <Dashboard />
+                  </RouteWrapper>
+                </Suspense>
               }
             />
             <Route
               path="/dashboard-builder"
               element={
-                <RouteWrapper routeName="Dashboard Builder">
-                  <DashboardBuilderPage />
-                </RouteWrapper>
+                <Suspense fallback={<DashboardBuilderSkeleton />}>
+                  <RouteWrapper routeName="Dashboard Builder">
+                    <DashboardBuilderPage />
+                  </RouteWrapper>
+                </Suspense>
               }
             />
             <Route
@@ -211,17 +231,21 @@ const AppWithShortcuts = () => {
             <Route
               path="/admin"
               element={
-                <RouteWrapper routeName="Admin">
-                  <Admin />
-                </RouteWrapper>
+                <Suspense fallback={<AdminSkeleton />}>
+                  <RouteWrapper routeName="Admin">
+                    <Admin />
+                  </RouteWrapper>
+                </Suspense>
               }
             />
             <Route
               path="/admin/studio"
               element={
-                <RouteWrapper routeName="Studio">
-                  <Studio />
-                </RouteWrapper>
+                <Suspense fallback={<StudioSkeleton />}>
+                  <RouteWrapper routeName="Studio">
+                    <Studio />
+                  </RouteWrapper>
+                </Suspense>
               }
             />
             <Route
@@ -347,17 +371,21 @@ const AppWithShortcuts = () => {
             <Route
               path="/course/:courseId"
               element={
-                <RouteWrapper routeName="Course">
-                  <CoursePage />
-                </RouteWrapper>
+                <Suspense fallback={<CourseSkeleton />}>
+                  <RouteWrapper routeName="Course">
+                    <CoursePage />
+                  </RouteWrapper>
+                </Suspense>
               }
             />
             <Route
               path="/instructor"
               element={
-                <RouteWrapper routeName="Instructor Dashboard">
-                  <InstructorDashboard />
-                </RouteWrapper>
+                <Suspense fallback={<InstructorDashboardSkeleton />}>
+                  <RouteWrapper routeName="Instructor Dashboard">
+                    <InstructorDashboard />
+                  </RouteWrapper>
+                </Suspense>
               }
             />
             <Route
@@ -370,7 +398,16 @@ const AppWithShortcuts = () => {
             />
             <Route path="/ai-assessment" element={<AIAssessment />} />
             <Route path="/ai-assessment/results/:assessmentId" element={<AIAssessmentResults />} />
-            <Route path="/sme-assessment" element={<SMEAssessment />} />
+            <Route
+              path="/sme-assessment"
+              element={
+                <Suspense fallback={<SMEAssessmentSkeleton />}>
+                  <RouteWrapper routeName="SME Assessment">
+                    <SMEAssessment />
+                  </RouteWrapper>
+                </Suspense>
+              }
+            />
             <Route path="/sme-assessment-report/:assessmentId" element={<SMEAssessmentReport />} />
 
             {/* New Assessment Tool routes */}
@@ -394,7 +431,14 @@ const AppWithShortcuts = () => {
             />
             <Route path="/watch-later" element={<WatchLaterPage />} />
             <Route path="/playlists" element={<PlaylistsPage />} />
-            <Route path="/calendar" element={<CalendarPage />} />
+            <Route
+              path="/calendar"
+              element={
+                <Suspense fallback={<CalendarSkeleton />}>
+                  <CalendarPage />
+                </Suspense>
+              }
+            />
             <Route path="/review/submit" element={<ReviewSubmissionPage />} />
             <Route path="/achievements" element={<AchievementsPage />} />
             <Route path="/my-courses" element={<MyCoursesPage />} />
@@ -407,9 +451,11 @@ const AppWithShortcuts = () => {
             <Route
               path="/analytics"
               element={
-                <RouteWrapper routeName="Analytics">
-                  <AnalyticsPage />
-                </RouteWrapper>
+                <Suspense fallback={<AnalyticsSkeleton />}>
+                  <RouteWrapper routeName="Analytics">
+                    <AnalyticsPage />
+                  </RouteWrapper>
+                </Suspense>
               }
             />
             <Route
@@ -446,10 +492,26 @@ const AppWithShortcuts = () => {
             {/* Workshop routes */}
             <Route path="/workshops" element={<WorkshopsPage />} />
             <Route path="/workshop/:workshopId" element={<WorkshopsPage />} />
-            <Route path="/workshop/session/:sessionId" element={<WorkshopSessionPage />} />
+            <Route
+              path="/workshop/session/:sessionId"
+              element={
+                <Suspense fallback={<WorkshopSessionSkeleton />}>
+                  <RouteWrapper routeName="Workshop Session">
+                    <WorkshopSessionPage />
+                  </RouteWrapper>
+                </Suspense>
+              }
+            />
 
             {/* Session routes */}
-            <Route path="/sessions" element={<SessionsPage />} />
+            <Route
+              path="/sessions"
+              element={
+                <Suspense fallback={<SessionSkeleton />}>
+                  <SessionsPage />
+                </Suspense>
+              }
+            />
 
             {/* Membership routes */}
             <Route path="/family-membership" element={<FamilyMembershipPage />} />
