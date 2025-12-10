@@ -55,3 +55,8 @@ export * from './use-toast';
 
 // Blog Hooks
 export * from './blog';
+
+// Spaced Repetition & Feedback Loop
+export * from './useEnhancedSM2';
+export * from './useRetentionPrediction';
+export * from './useFeedbackLoop';

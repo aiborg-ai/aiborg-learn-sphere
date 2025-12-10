@@ -33,3 +33,5 @@ export {
   RetentionPredictionService,
   retentionPredictionService,
 } from './RetentionPredictionService';
+
+export { CrossDeckScheduler, crossDeckScheduler } from './CrossDeckScheduler';
