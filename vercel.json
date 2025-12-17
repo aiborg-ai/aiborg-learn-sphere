@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "rm -rf node_modules && npm ci",
-  "buildCommand": "rm -rf node_modules/.vite dist && npm run build",
+  "installCommand": "npm cache clean --force && rm -rf node_modules && npm ci",
+  "buildCommand": "rm -rf node_modules/.vite dist .cache && npm run build",
   "rewrites": [
     {
       "source": "/(.*)",

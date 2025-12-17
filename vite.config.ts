@@ -7,6 +7,7 @@ import { cspPlugin } from './vite-plugins/csp-plugin';
 import { VitePWA } from 'vite-plugin-pwa';
 import viteCompression from 'vite-plugin-compression';
 
+// Build cache buster: 2024-12-17-v2
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
@@ -591,3 +592,4 @@ export default defineConfig(({ mode }) => ({
     devSourcemap: false,
   },
 }));
+// Build trigger: 1765921325
