@@ -153,8 +153,8 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      // Force canvg to use CommonJS build to fix circular dependency issues
-      canvg: path.resolve(__dirname, 'node_modules/canvg/lib/index.cjs'),
+      // Force canvg to use UMD build to fix circular dependency issues
+      canvg: path.resolve(__dirname, 'node_modules/canvg/lib/umd.js'),
     },
     dedupe: ['canvg', 'rgbcolor', 'stackblur-canvas'],
   },
