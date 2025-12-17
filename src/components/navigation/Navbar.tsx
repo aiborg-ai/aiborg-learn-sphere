@@ -97,16 +97,24 @@ export function Navbar() {
 
   return (
     <nav
-      className="sticky top-0 z-50 bg-white/10 backdrop-blur-md border-b border-white/20"
+      className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl backdrop-saturate-150 border-b border-border/50 shadow-soft"
       aria-label="Main navigation"
     >
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-18">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2" aria-label="Aiborg home">
+          <Link
+            to="/"
+            className="flex items-center gap-2 transition-transform duration-200 hover:scale-105"
+            aria-label="Aiborg home"
+          >
             <picture>
               <source srcSet="/logo.webp" type="image/webp" />
-              <img src="/logo.jpeg" alt="Aiborg logo" className="h-10 w-auto object-contain" />
+              <img
+                src="/logo.jpeg"
+                alt="Aiborg logo"
+                className="h-10 w-auto object-contain drop-shadow-sm"
+              />
             </picture>
           </Link>
 
@@ -133,56 +141,56 @@ export function Navbar() {
             </PrefetchLink>
             <button
               onClick={() => handleNavClick('training-programs')}
-              className="text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
+              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
               aria-label="Navigate to training programs section"
             >
               Programs
             </button>
             <PrefetchLink
               to="/blog"
-              className="text-foreground/80 hover:text-foreground transition-colors"
+              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
               aria-label="Go to blog"
             >
               Blog
             </PrefetchLink>
             <button
               onClick={() => handleNavClick('events')}
-              className="text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
+              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
               aria-label="Navigate to events section"
             >
               Events
             </button>
             <button
               onClick={() => handleNavClick('reviews')}
-              className="text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
+              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
               aria-label="Navigate to reviews section"
             >
               Reviews
             </button>
             <button
               onClick={() => handleNavClick('about')}
-              className="text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
+              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
               aria-label="Navigate to about section"
             >
               About
             </button>
             <button
               onClick={() => handleNavClick('contact')}
-              className="text-foreground/80 hover:text-foreground transition-colors cursor-pointer"
+              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
               aria-label="Navigate to contact section"
             >
               Contact
             </button>
             <button
               onClick={() => setIsFAQOpen(true)}
-              className="text-foreground/80 hover:text-foreground transition-colors"
+              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
               aria-label="Open frequently asked questions"
             >
               FAQ
             </button>
             <button
               onClick={() => setIsTermsOpen(true)}
-              className="text-foreground/80 hover:text-foreground transition-colors"
+              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
               aria-label="Open terms and conditions"
             >
               Terms

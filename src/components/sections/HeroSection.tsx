@@ -63,23 +63,37 @@ export function HeroSection() {
 
   return (
     <section className="relative min-h-screen bg-gradient-hero overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-3xl animate-pulse delay-500"></div>
+      {/* Enhanced Animated Background Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/15 rounded-full blur-3xl animate-float-slow" />
+        <div
+          className="absolute bottom-20 right-10 w-96 h-96 bg-accent/12 rounded-full blur-3xl animate-float-slow"
+          style={{ animationDelay: '2s' }}
+        />
+        <div
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-secondary/8 rounded-full blur-3xl animate-pulse-soft"
+          style={{ animationDelay: '1s' }}
+        />
+        {/* Additional subtle particles */}
+        <div className="absolute top-1/4 right-1/4 w-32 h-32 bg-primary/10 rounded-full blur-2xl animate-float" />
+        <div
+          className="absolute bottom-1/3 left-1/4 w-48 h-48 bg-accent/8 rounded-full blur-2xl animate-float"
+          style={{ animationDelay: '3s' }}
+        />
       </div>
 
       <div className="relative z-10 container mx-auto px-4 pt-20 pb-12">
         {/* Main Brand Section */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-white/20">
+        <div className="text-center mb-16 animate-fade-in-up">
+          <div className="inline-flex items-center gap-2.5 bg-white/20 backdrop-blur-md rounded-full px-6 py-3 mb-8 border border-white/25 shadow-soft">
             <Sparkles className="h-5 w-5 text-secondary animate-pulse" />
-            <span className="text-white font-medium">Convert AI Opportunity !</span>
+            <span className="text-white font-medium text-sm tracking-wide">
+              Convert AI Opportunity !
+            </span>
           </div>
 
-          <h1 className="font-display text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold mb-4 md:mb-6">
-            <span className="block text-secondary">
+          <h1 className="text-display-xl mb-4 md:mb-6">
+            <span className="block text-secondary drop-shadow-[0_4px_20px_rgba(255,200,180,0.4)]">
               aiborg
               <sup className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-secondary/80 font-normal ml-1">
                 ™
@@ -87,22 +101,26 @@ export function HeroSection() {
             </span>
           </h1>
 
-          <p className="text-xl sm:text-2xl md:text-3xl text-accent font-semibold mb-3 md:mb-4 font-display drop-shadow-sm">
+          <p className="text-2xl sm:text-3xl md:text-4xl text-gradient-primary font-semibold mb-4 md:mb-5 font-display animate-fade-in-up-delay-1">
             AI-augmented Human
           </p>
 
-          <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-8 md:mb-12 leading-relaxed px-4 sm:px-0">
+          <p className="text-body-lg text-white/90 max-w-2xl mx-auto mb-8 md:mb-12 px-4 sm:px-0 animate-fade-in-up-delay-2">
             Transform your future with cutting-edge AI education. Personalized learning paths for
             every age and profession.
           </p>
 
           {!selectedAudience && (
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <Button size="lg" className="btn-hero group">
-                Get Started
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 animate-fade-in-up-delay-3">
+              <Button size="xl" variant="hero" className="group animate-glow-pulse">
+                <span>Get Started</span>
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Button>
-              <Button size="lg" variant="outline" className="btn-outline-ai">
+              <Button
+                size="xl"
+                variant="ghost-border"
+                className="text-white border-white/30 hover:border-white hover:text-white hover:bg-white/10"
+              >
                 Watch Demo
               </Button>
             </div>
@@ -136,26 +154,35 @@ export function HeroSection() {
 
         {/* Audience Selection */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <h2 className="text-2xl sm:text-3xl font-display font-bold text-center text-white mb-3 md:mb-4">
+          <h2 className="text-section-heading text-center text-white mb-3 md:mb-4">
             Choose Your Learning Journey
           </h2>
-          <p className="text-base sm:text-lg text-white/80 text-center mb-8 md:mb-12 px-4 sm:px-0">
-            Discover personalized AI education programs
+          <p className="text-body-lg text-white/80 text-center mb-10 md:mb-14 px-4 sm:px-0 max-w-lg mx-auto">
+            Discover personalized AI education programs designed for your goals
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 md:mb-12">
-            {audiences.map(audience => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 mb-8 md:mb-12">
+            {audiences.map((audience, index) => {
               const Icon = audience.icon;
               const isSelected = selectedAudience === audience.id;
 
               return (
                 <Card
                   key={audience.id}
-                  className={`relative overflow-hidden cursor-pointer transition-all duration-500 group hover:scale-105 hover:shadow-2xl active:scale-95 ${
-                    isSelected ? 'ring-2 ring-primary shadow-lg scale-105' : ''
+                  className={`group relative overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-lifted active:scale-[0.98] ${
+                    isSelected
+                      ? 'ring-2 ring-primary shadow-primary scale-[1.02]'
+                      : 'hover:scale-[1.03] hover:-translate-y-1'
                   }`}
+                  style={{ animationDelay: `${index * 100}ms` }}
                   onClick={() => setSelectedAudience(audience.id)}
                 >
+                  {/* Selection indicator bar */}
+                  <div
+                    className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent z-20 transition-transform duration-300 origin-left ${
+                      isSelected ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                    }`}
+                  />
                   {/* Background Image */}
                   <div className="relative h-64 sm:h-72 md:h-80 overflow-hidden">
                     <HeroImage
@@ -172,11 +199,11 @@ export function HeroSection() {
                       }`}
                     ></div>
 
-                    {/* Icon Badge */}
+                    {/* Icon Badge with glow */}
                     <div
-                      className={`absolute top-4 right-4 w-12 h-12 rounded-full bg-gradient-to-br ${audience.color} p-3 shadow-lg transition-transform duration-300 group-hover:scale-110`}
+                      className={`absolute top-4 right-4 w-12 h-12 rounded-full bg-gradient-to-br ${audience.color} p-3 shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]`}
                     >
-                      <Icon className="h-6 w-6 text-white" />
+                      <Icon className="h-6 w-6 text-white drop-shadow-sm" />
                     </div>
 
                     {/* Content Overlay */}
