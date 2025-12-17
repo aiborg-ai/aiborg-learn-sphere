@@ -153,7 +153,10 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // Force canvg to use CommonJS build to fix circular dependency issues
+      canvg: path.resolve(__dirname, 'node_modules/canvg/lib/index.cjs'),
     },
+    dedupe: ['canvg', 'rgbcolor', 'stackblur-canvas'],
   },
   build: {
     // Performance optimizations
@@ -570,6 +573,10 @@ export default defineConfig(({ mode }) => ({
       '@radix-ui/react-dialog',
       '@radix-ui/react-dropdown-menu',
       '@radix-ui/react-select',
+      // Include canvg and dependencies to fix circular dependency issues
+      'canvg',
+      'rgbcolor',
+      'stackblur-canvas',
     ],
     // Ensure React is available as an external in dev
     entries: ['src/main.tsx'],
@@ -578,7 +585,6 @@ export default defineConfig(({ mode }) => ({
       // Exclude heavy libraries to enable lazy loading
       'recharts',
       'pdfjs-dist',
-      'jspdf',
       'html2canvas',
     ],
   },
