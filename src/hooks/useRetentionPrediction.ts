@@ -280,6 +280,11 @@ export function useRetentionDashboard() {
   const hasData =
     retentionStats.stats !== null || forgettingCurve.curve !== null || dueItems.items.length > 0;
 
+  const loadDashboardData = useCallback(() => {
+    retentionStats.refetch();
+    dueItems.refetch();
+  }, [retentionStats, dueItems]);
+
   return {
     // Stats
     stats: retentionStats.stats,
@@ -301,6 +306,7 @@ export function useRetentionDashboard() {
     // State
     isLoading,
     hasData,
+    loadDashboardData,
     errors: {
       stats: retentionStats.error,
       curve: forgettingCurve.error,

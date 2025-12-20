@@ -26,9 +26,14 @@ interface DayCell {
 
 export const CompetencyHeatMap: React.FC = () => {
   const { user } = useAuth();
+  interface TimeSeriesData {
+    snapshot_date: string;
+    overall_competency: number;
+  }
+
   const [loading, setLoading] = useState(true);
   const [snapshot, setSnapshot] = useState<CompetencySnapshot | null>(null);
-  const [_timeSeries, setTimeSeries] = useState<unknown[]>([]);
+  const [_timeSeries, setTimeSeries] = useState<TimeSeriesData[]>([]);
   const [heatMapData, setHeatMapData] = useState<DayCell[]>([]);
 
   const loadCompetencyData = useCallback(async () => {
@@ -52,7 +57,7 @@ export const CompetencyHeatMap: React.FC = () => {
       const heatMap = dayInterval.map(date => {
         const dateStr = format(date, 'yyyy-MM-dd');
         const dayData = timeSeriesData.find(
-          (d: any) => format(new Date(d.snapshot_date), 'yyyy-MM-dd') === dateStr
+          (d: TimeSeriesData) => format(new Date(d.snapshot_date), 'yyyy-MM-dd') === dateStr
         );
 
         return {

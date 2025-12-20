@@ -242,6 +242,7 @@ export function VideoEmbed({
             </div>
           </div>
         ) : (
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- iframe onLoad/onError handlers are necessary for loading state management
           <iframe
             src={embedUrl}
             title={title || `${videoInfo.provider} video`}

@@ -19,7 +19,7 @@ const CACHE_DURATION = {
 };
 
 // Simple in-memory cache (in production, use Redis/Upstash)
-const cache = new Map<string, { data: any; timestamp: number }>();
+const cache = new Map<string, { data: unknown; timestamp: number }>();
 
 export interface UserStudyContext {
   user_id: string;
@@ -195,17 +195,28 @@ export class StudyAssistantOrchestrator {
           );
 
           // Enhance with reasoning
-          const enhanced = recommendations.map((rec: any) => ({
-            course_id: rec.content_id,
-            course_title: rec.title || rec.content_title,
-            course_description: rec.description,
-            difficulty_level: rec.difficulty_level || 'intermediate',
-            estimated_hours: rec.estimated_hours || 0,
-            score: rec.score,
-            reason: this.generateRecommendationReason(rec, context),
-            topics: rec.metadata?.topics || [],
-            prerequisites: rec.metadata?.prerequisites || [],
-          }));
+          const enhanced = recommendations.map(
+            (rec: {
+              content_id: string;
+              title?: string;
+              content_title?: string;
+              description?: string;
+              difficulty_level?: string;
+              estimated_hours?: number;
+              score: number;
+              metadata?: { topics?: string[]; prerequisites?: string[] };
+            }) => ({
+              course_id: rec.content_id,
+              course_title: rec.title || rec.content_title,
+              course_description: rec.description,
+              difficulty_level: rec.difficulty_level || 'intermediate',
+              estimated_hours: rec.estimated_hours || 0,
+              score: rec.score,
+              reason: this.generateRecommendationReason(rec, context),
+              topics: rec.metadata?.topics || [],
+              prerequisites: rec.metadata?.prerequisites || [],
+            })
+          );
 
           return enhanced;
         } catch (error) {
@@ -221,7 +232,12 @@ export class StudyAssistantOrchestrator {
    * Generate human-readable recommendation reason
    */
   private static generateRecommendationReason(
-    recommendation: any,
+    recommendation: {
+      score: number;
+      difficulty_level?: string;
+      content_title?: string;
+      metadata?: { topics?: string[] };
+    },
     context: UserStudyContext
   ): string {
     const reasons: string[] = [];
@@ -324,7 +340,11 @@ export class StudyAssistantOrchestrator {
       }
 
       // Parse plan_data to extract today's tasks
-      const planData = data.plan_data as any;
+      const planData = data.plan_data as {
+        daily_tasks?: Record<string, unknown[]>;
+        weekly_tasks?: Record<string, unknown[]>;
+        milestones?: unknown[];
+      };
       const today = new Date().toISOString().split('T')[0];
 
       const todayTasks =

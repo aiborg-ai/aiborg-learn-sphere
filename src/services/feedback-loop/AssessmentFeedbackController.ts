@@ -378,7 +378,7 @@ export class AssessmentFeedbackController {
     userId: string,
     assessmentId: string,
     action: RecommendedAction,
-    triggers: DetectedTrigger[]
+    _triggers: DetectedTrigger[]
   ): Promise<AppliedAction[]> {
     const appliedActions: AppliedAction[] = [];
 

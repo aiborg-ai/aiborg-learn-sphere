@@ -328,6 +328,7 @@ export function MediaPlayer({
 
   if (type === 'video') {
     return (
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- Video player container with mouse/touch interactions for control visibility
       <div
         ref={containerRef}
         className={`relative group ${className} ${state.isFullscreen ? 'fixed inset-0 z-50 bg-black' : ''}`}

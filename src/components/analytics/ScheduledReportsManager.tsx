@@ -330,10 +330,11 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
 
                 {/* Include Sections */}
                 <div className="space-y-3 pt-2">
-                  <Label>Include in Report</Label>
+                  <Label htmlFor="include-overview">Include in Report</Label>
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Overview</span>
                     <Switch
+                      id="include-overview"
                       checked={formData.include_overview}
                       onCheckedChange={checked =>
                         setFormData({ ...formData, include_overview: checked })

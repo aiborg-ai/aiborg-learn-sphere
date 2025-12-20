@@ -43,7 +43,7 @@ export function validateDashboardConfig(config: DashboardConfig): {
     const widget = config.widgets[i];
 
     // Validate widget type exists
-    const widgetDef = WidgetRegistry.get(widget.type as any);
+    const widgetDef = WidgetRegistry.get(widget.type as DashboardWidget['type']);
     if (!widgetDef) {
       errors.push(`Widget ${i}: Unknown widget type '${widget.type}'`);
       continue;

@@ -145,7 +145,17 @@ const RAGManagement = lazy(() => import('./pages/admin/RAGManagement'));
 // Tenant Management (Admin)
 const TenantManagement = lazy(() => import('./pages/admin/TenantManagement'));
 const WhiteLabelSettings = lazy(() => import('./pages/settings/WhiteLabelSettings'));
+
+// AIBORGLingo Admin
+const LingoAdmin = lazy(() => import('./pages/admin/lingo/LingoAdmin'));
 const DomainManagement = lazy(() => import('./pages/settings/DomainManagement'));
+
+// AIBORGLingo User Pages
+const LingoHome = lazy(() => import('./pages/lingo/LingoHome'));
+const LingoLessonPlayer = lazy(() => import('./pages/lingo/LingoLessonPlayer'));
+const LingoLessonComplete = lazy(() => import('./pages/lingo/LingoLessonComplete'));
+const LingoLeaderboard = lazy(() => import('./pages/lingo/LingoLeaderboard'));
+const LingoAchievements = lazy(() => import('./pages/lingo/LingoAchievements'));
 
 // Dashboard Builder
 const DashboardBuilderPage = lazy(() => import('./pages/DashboardBuilderPage'));
@@ -288,6 +298,57 @@ const AppWithShortcuts = () => {
                 </RouteWrapper>
               }
             />
+            <Route
+              path="/admin/lingo"
+              element={
+                <RouteWrapper routeName="AIBORGLingo Admin">
+                  <LingoAdmin />
+                </RouteWrapper>
+              }
+            />
+
+            {/* AIBORGLingo User Routes */}
+            <Route
+              path="/lingo"
+              element={
+                <RouteWrapper routeName="AIBORGLingo">
+                  <LingoHome />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/lingo/lesson/:lessonId"
+              element={
+                <RouteWrapper routeName="Lingo Lesson">
+                  <LingoLessonPlayer />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/lingo/lesson/:lessonId/complete"
+              element={
+                <RouteWrapper routeName="Lesson Complete">
+                  <LingoLessonComplete />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/lingo/leaderboard"
+              element={
+                <RouteWrapper routeName="Lingo Leaderboard">
+                  <LingoLeaderboard />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/lingo/achievements"
+              element={
+                <RouteWrapper routeName="Lingo Achievements">
+                  <LingoAchievements />
+                </RouteWrapper>
+              }
+            />
+
             <Route
               path="/settings/white-label"
               element={

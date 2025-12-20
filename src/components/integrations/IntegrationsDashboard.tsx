@@ -469,12 +469,17 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid gap-2">
-                    <Label>Provider Type</Label>
+                    <Label htmlFor="sso-provider-type">Provider Type</Label>
                     <Select
                       value={newSSO.provider_type}
-                      onValueChange={value => setNewSSO({ ...newSSO, provider_type: value as any })}
+                      onValueChange={value =>
+                        setNewSSO({
+                          ...newSSO,
+                          provider_type: value as SSOConfiguration['provider_type'],
+                        })
+                      }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger id="sso-provider-type">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -488,8 +493,9 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
                     </Select>
                   </div>
                   <div className="grid gap-2">
-                    <Label>Display Name</Label>
+                    <Label htmlFor="sso-display-name">Display Name</Label>
                     <Input
+                      id="sso-display-name"
                       value={newSSO.display_name}
                       onChange={e => setNewSSO({ ...newSSO, display_name: e.target.value })}
                       placeholder="e.g., Corporate SSO"
@@ -498,24 +504,27 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
                   {newSSO.provider_type === 'saml' && (
                     <>
                       <div className="grid gap-2">
-                        <Label>Entity ID</Label>
+                        <Label htmlFor="sso-entity-id">Entity ID</Label>
                         <Input
+                          id="sso-entity-id"
                           value={newSSO.saml_entity_id}
                           onChange={e => setNewSSO({ ...newSSO, saml_entity_id: e.target.value })}
                           placeholder="https://idp.example.com/saml"
                         />
                       </div>
                       <div className="grid gap-2">
-                        <Label>SSO URL</Label>
+                        <Label htmlFor="sso-sso-url">SSO URL</Label>
                         <Input
+                          id="sso-sso-url"
                           value={newSSO.saml_sso_url}
                           onChange={e => setNewSSO({ ...newSSO, saml_sso_url: e.target.value })}
                           placeholder="https://idp.example.com/sso"
                         />
                       </div>
                       <div className="grid gap-2">
-                        <Label>X.509 Certificate</Label>
+                        <Label htmlFor="sso-certificate">X.509 Certificate</Label>
                         <Textarea
+                          id="sso-certificate"
                           value={newSSO.saml_certificate}
                           onChange={e => setNewSSO({ ...newSSO, saml_certificate: e.target.value })}
                           placeholder="-----BEGIN CERTIFICATE-----"
@@ -657,24 +666,29 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid gap-2">
-                    <Label>Name</Label>
+                    <Label htmlFor="webhook-name">Name</Label>
                     <Input
+                      id="webhook-name"
                       value={newWebhook.name}
                       onChange={e => setNewWebhook({ ...newWebhook, name: e.target.value })}
                       placeholder="e.g., Enrollment Notifications"
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label>URL</Label>
+                    <Label htmlFor="webhook-url">URL</Label>
                     <Input
+                      id="webhook-url"
                       value={newWebhook.url}
                       onChange={e => setNewWebhook({ ...newWebhook, url: e.target.value })}
                       placeholder="https://your-app.com/webhooks"
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label>Events</Label>
-                    <div className="max-h-40 overflow-y-auto border rounded p-2 space-y-1">
+                    <Label htmlFor="webhook-events">Events</Label>
+                    <div
+                      id="webhook-events"
+                      className="max-h-40 overflow-y-auto border rounded p-2 space-y-1"
+                    >
                       {WEBHOOK_EVENTS.map(event => (
                         <label key={event} className="flex items-center gap-2 text-sm">
                           <input
@@ -798,14 +812,17 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid gap-2">
-                    <Label>Channel Type</Label>
+                    <Label htmlFor="channel-type">Channel Type</Label>
                     <Select
                       value={newChannel.channel_type}
                       onValueChange={value =>
-                        setNewChannel({ ...newChannel, channel_type: value as any })
+                        setNewChannel({
+                          ...newChannel,
+                          channel_type: value as NotificationChannel['channel_type'],
+                        })
                       }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger id="channel-type">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -817,8 +834,9 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
                     </Select>
                   </div>
                   <div className="grid gap-2">
-                    <Label>Name</Label>
+                    <Label htmlFor="channel-name">Name</Label>
                     <Input
+                      id="channel-name"
                       value={newChannel.name}
                       onChange={e => setNewChannel({ ...newChannel, name: e.target.value })}
                       placeholder="e.g., Training Notifications"
@@ -826,8 +844,9 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
                   </div>
                   {newChannel.channel_type === 'slack' && (
                     <div className="grid gap-2">
-                      <Label>Webhook URL</Label>
+                      <Label htmlFor="channel-webhook-url">Webhook URL</Label>
                       <Input
+                        id="channel-webhook-url"
                         value={newChannel.slack_webhook_url}
                         onChange={e =>
                           setNewChannel({ ...newChannel, slack_webhook_url: e.target.value })

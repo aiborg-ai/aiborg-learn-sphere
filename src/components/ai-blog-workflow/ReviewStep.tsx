@@ -187,7 +187,9 @@ export function ReviewStep({ editData, onBack, onEdit, onPublish }: ReviewStepPr
               <div className="text-sm font-medium mb-3 block">How would you like to publish?</div>
               <RadioGroup
                 value={publishOption}
-                onValueChange={value => setValue('publishOption', value as any)}
+                onValueChange={value =>
+                  setValue('publishOption', value as 'draft' | 'publish' | 'schedule')
+                }
               >
                 <div className="flex items-center space-x-2 p-3 border rounded-lg">
                   <RadioGroupItem value="draft" id="draft" />

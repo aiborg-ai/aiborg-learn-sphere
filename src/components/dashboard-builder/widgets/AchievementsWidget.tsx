@@ -18,6 +18,21 @@ interface AchievementWidgetConfig extends BaseWidgetConfig {
   showDates?: boolean;
 }
 
+interface Achievement {
+  id: string;
+  name: string;
+  description?: string;
+  icon?: string;
+  category?: string;
+  points?: number;
+}
+
+interface UserAchievement {
+  id: string;
+  earned_at: string;
+  achievement: Achievement | null;
+}
+
 export function AchievementsWidget({ widget, isEditing }: WidgetComponentProps) {
   const config = widget.config as AchievementWidgetConfig;
   const limit = config.limit || 6;
@@ -60,7 +75,7 @@ export function AchievementsWidget({ widget, isEditing }: WidgetComponentProps) 
 
       const { data, error } = await query;
       if (error) throw error;
-      return data;
+      return data as UserAchievement[];
     },
     enabled: !isEditing,
     refetchInterval: config.refreshInterval ? config.refreshInterval * 1000 : false,
@@ -102,7 +117,7 @@ export function AchievementsWidget({ widget, isEditing }: WidgetComponentProps) 
   return (
     <div className="grid grid-cols-2 gap-3">
       {achievements.map(userAchievement => {
-        const achievement = userAchievement.achievement as any;
+        const achievement = userAchievement.achievement;
         const IconComponent = getIconComponent(achievement?.icon);
         const earnedDate = new Date(userAchievement.earned_at);
 

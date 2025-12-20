@@ -358,7 +358,7 @@ test.describe('Load Testing - Filter Operations', () => {
 });
 
 test.describe('Load Testing - Session Management', () => {
-  test('should handle multiple concurrent sessions @load', async ({ page, context }) => {
+  test('should handle multiple concurrent sessions @load', async ({ page, context: _context }) => {
     await setupAuthenticatedSession(page, 'student');
 
     await page.goto('/dashboard');

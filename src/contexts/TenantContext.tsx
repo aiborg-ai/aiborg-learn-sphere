@@ -82,6 +82,44 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [error, setError] = useState<Error | null>(null);
 
   /**
+   * Apply tenant branding to the DOM
+   */
+  const applyBranding = useCallback((branding: TenantBranding) => {
+    const root = document.documentElement;
+
+    // Apply CSS custom properties
+    root.style.setProperty('--primary', branding.primary_color);
+    root.style.setProperty('--secondary', branding.secondary_color);
+    root.style.setProperty('--accent', branding.accent_color);
+
+    if (branding.background_color) {
+      root.style.setProperty('--background', branding.background_color);
+    }
+
+    if (branding.text_color) {
+      root.style.setProperty('--foreground', branding.text_color);
+    }
+
+    // Apply font family
+    if (branding.font_family && branding.font_family !== 'Inter') {
+      loadCustomFont(branding.font_family);
+    }
+
+    // Update favicon
+    if (branding.favicon_url) {
+      updateFavicon(branding.favicon_url);
+    }
+
+    // Update page title
+    updatePageTitle(branding.name);
+
+    // Inject custom CSS
+    if (branding.custom_css) {
+      injectCustomCSS(branding.custom_css);
+    }
+  }, []);
+
+  /**
    * Load tenant information based on current domain/subdomain
    */
   const loadTenant = useCallback(async () => {
@@ -134,7 +172,7 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       });
 
       // Parse and set branding
-      const brandingData = data.branding as any;
+      const brandingData = data.branding as Record<string, unknown>;
       const tenantBranding: TenantBranding = {
         id: data.id,
         name: data.display_name,
@@ -171,45 +209,7 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     } finally {
       setIsLoading(false);
     }
-  }, []);
-
-  /**
-   * Apply tenant branding to the DOM
-   */
-  const applyBranding = useCallback((branding: TenantBranding) => {
-    const root = document.documentElement;
-
-    // Apply CSS custom properties
-    root.style.setProperty('--primary', branding.primary_color);
-    root.style.setProperty('--secondary', branding.secondary_color);
-    root.style.setProperty('--accent', branding.accent_color);
-
-    if (branding.background_color) {
-      root.style.setProperty('--background', branding.background_color);
-    }
-
-    if (branding.text_color) {
-      root.style.setProperty('--foreground', branding.text_color);
-    }
-
-    // Apply font family
-    if (branding.font_family && branding.font_family !== 'Inter') {
-      loadCustomFont(branding.font_family);
-    }
-
-    // Update favicon
-    if (branding.favicon_url) {
-      updateFavicon(branding.favicon_url);
-    }
-
-    // Update page title
-    updatePageTitle(branding.name);
-
-    // Inject custom CSS
-    if (branding.custom_css) {
-      injectCustomCSS(branding.custom_css);
-    }
-  }, []);
+  }, [applyBranding]);
 
   /**
    * Load custom Google Font

@@ -260,11 +260,7 @@ export class FlashcardService {
    * Get single flashcard
    */
   static async getFlashcard(cardId: string): Promise<Flashcard> {
-    const { data, error } = await supabase
-      .from('flashcards')
-      .select('*')
-      .eq('id', cardId)
-      .single();
+    const { data, error } = await supabase.from('flashcards').select('*').eq('id', cardId).single();
 
     if (error) {
       logger.error('Failed to fetch flashcard:', error);
@@ -365,10 +361,7 @@ export class FlashcardService {
   /**
    * Submit a review and update SM-2 state
    */
-  static async submitReview(
-    flashcardId: string,
-    quality: number
-  ): Promise<FlashcardReview> {
+  static async submitReview(flashcardId: string, quality: number): Promise<FlashcardReview> {
     const reviewState = await this.getReviewState(flashcardId);
 
     const currentState: SM2State = {
@@ -387,14 +380,10 @@ export class FlashcardService {
       ef: review.newState.easinessFactor,
     };
 
-    const updatedHistory = [
-      ...(reviewState.review_history || []),
-      historyEntry,
-    ];
+    const updatedHistory = [...(reviewState.review_history || []), historyEntry];
 
     // Calculate new average quality
-    const totalQuality =
-      (reviewState.average_quality * reviewState.total_reviews) + quality;
+    const totalQuality = reviewState.average_quality * reviewState.total_reviews + quality;
     const newTotalReviews = reviewState.total_reviews + 1;
     const newAverageQuality = totalQuality / newTotalReviews;
 
@@ -408,8 +397,7 @@ export class FlashcardService {
         last_reviewed: new Date().toISOString(),
         next_review_date: review.nextReviewDate.toISOString(),
         total_reviews: newTotalReviews,
-        total_correct:
-          quality >= 3 ? reviewState.total_correct + 1 : reviewState.total_correct,
+        total_correct: quality >= 3 ? reviewState.total_correct + 1 : reviewState.total_correct,
         total_incorrect:
           quality < 3 ? reviewState.total_incorrect + 1 : reviewState.total_incorrect,
         review_history: updatedHistory,
@@ -431,9 +419,9 @@ export class FlashcardService {
   /**
    * Get due cards for a deck
    */
-  static async getDueCards(deckId: string): Promise<
-    Array<Flashcard & { review: FlashcardReview }>
-  > {
+  static async getDueCards(
+    deckId: string
+  ): Promise<Array<Flashcard & { review: FlashcardReview }>> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -452,7 +440,7 @@ export class FlashcardService {
       throw error;
     }
 
-    return (data || []) as any;
+    return (data || []) as Array<Flashcard & { review: FlashcardReview }>;
   }
 
   /**

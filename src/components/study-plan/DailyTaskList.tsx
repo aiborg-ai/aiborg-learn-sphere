@@ -176,7 +176,7 @@ export function DailyTaskList({
   };
 
   const getTaskIcon = (taskType: string) => {
-    const icons: Record<string, any> = {
+    const icons: Record<string, React.ComponentType<{ className?: string }>> = {
       course: Book,
       exercise: Dumbbell,
       quiz: FileText,

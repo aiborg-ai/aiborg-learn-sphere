@@ -107,47 +107,6 @@ export default function AnalyticsPage() {
   } | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
 
-  const fetchAnalytics = useCallback(async () => {
-    if (!user) return;
-
-    try {
-      setLoading(true);
-
-      // Fetch all analytics data using UserAnalyticsService
-      const [
-        weeklyActivity,
-        categoryDistribution,
-        progressTrend,
-        skillsRadar,
-        studyTimeByDay,
-        dashboardStats,
-      ] = await Promise.all([
-        UserAnalyticsService.getUserWeeklyActivity(user.id, 6),
-        UserAnalyticsService.getUserCategoryDistribution(user.id),
-        UserAnalyticsService.getUserProgressTrends(user.id, 6),
-        UserAnalyticsService.getUserSkillsRadar(user.id),
-        UserAnalyticsService.getUserStudyTimeByDay(user.id, dateRange),
-        UserAnalyticsService.getUserDashboardStats(user.id),
-      ]);
-
-      setAnalyticsData({
-        weeklyActivity,
-        categoryDistribution,
-        progressTrend,
-        skillsRadar,
-        studyTimeByDay,
-        dashboardStats,
-      });
-
-      // Fetch comparison data for current vs previous period
-      await fetchComparisonData();
-    } catch (error) {
-      logger.error('Error fetching analytics:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [user, dateRange]);
-
   const fetchComparisonData = useCallback(async () => {
     if (!user) return;
 
@@ -190,6 +149,47 @@ export default function AnalyticsPage() {
       logger.error('Error fetching comparison data:', error);
     }
   }, [user, dateRange]);
+
+  const fetchAnalytics = useCallback(async () => {
+    if (!user) return;
+
+    try {
+      setLoading(true);
+
+      // Fetch all analytics data using UserAnalyticsService
+      const [
+        weeklyActivity,
+        categoryDistribution,
+        progressTrend,
+        skillsRadar,
+        studyTimeByDay,
+        dashboardStats,
+      ] = await Promise.all([
+        UserAnalyticsService.getUserWeeklyActivity(user.id, 6),
+        UserAnalyticsService.getUserCategoryDistribution(user.id),
+        UserAnalyticsService.getUserProgressTrends(user.id, 6),
+        UserAnalyticsService.getUserSkillsRadar(user.id),
+        UserAnalyticsService.getUserStudyTimeByDay(user.id, dateRange),
+        UserAnalyticsService.getUserDashboardStats(user.id),
+      ]);
+
+      setAnalyticsData({
+        weeklyActivity,
+        categoryDistribution,
+        progressTrend,
+        skillsRadar,
+        studyTimeByDay,
+        dashboardStats,
+      });
+
+      // Fetch comparison data for current vs previous period
+      await fetchComparisonData();
+    } catch (error) {
+      logger.error('Error fetching analytics:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [user, dateRange, fetchComparisonData]);
 
   useEffect(() => {
     if (!user) {

@@ -67,7 +67,9 @@ export class CustomViewsService {
       return views;
     } catch (error) {
       logger.error('Error fetching custom views:', error);
-      throw new Error(`Failed to fetch custom views: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to fetch custom views: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -106,7 +108,9 @@ export class CustomViewsService {
       return view;
     } catch (error) {
       logger.error('Error fetching custom view:', error);
-      throw new Error(`Failed to fetch custom view: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to fetch custom view: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -117,11 +121,7 @@ export class CustomViewsService {
    * @param config - View configuration
    * @returns Created custom view
    */
-  static async createView(
-    userId: string,
-    name: string,
-    config: ViewConfig
-  ): Promise<CustomView> {
+  static async createView(userId: string, name: string, config: ViewConfig): Promise<CustomView> {
     try {
       // Validate name
       if (!name || name.trim().length === 0) {
@@ -134,9 +134,7 @@ export class CustomViewsService {
 
       // Check for duplicate names
       const existingViews = await this.getViews(userId);
-      const duplicate = existingViews.find(
-        v => v.name.toLowerCase() === name.toLowerCase()
-      );
+      const duplicate = existingViews.find(v => v.name.toLowerCase() === name.toLowerCase());
 
       if (duplicate) {
         throw new Error(`A view named "${name}" already exists. Please choose a different name.`);
@@ -198,11 +196,7 @@ export class CustomViewsService {
    * @param config - Optional new configuration
    * @returns Updated custom view
    */
-  static async updateView(
-    viewId: string,
-    name?: string,
-    config?: ViewConfig
-  ): Promise<CustomView> {
+  static async updateView(viewId: string, name?: string, config?: ViewConfig): Promise<CustomView> {
     try {
       // Validate at least one field is provided
       if (!name && !config) {
@@ -210,7 +204,7 @@ export class CustomViewsService {
       }
 
       // Build update object
-      const updates: any = {
+      const updates: Record<string, unknown> = {
         updated_at: new Date().toISOString(),
       };
 
@@ -269,10 +263,7 @@ export class CustomViewsService {
   static async deleteView(viewId: string): Promise<void> {
     try {
       // Delete view (RLS ensures user owns the view)
-      const { error } = await supabase
-        .from('custom_dashboard_views')
-        .delete()
-        .eq('id', viewId);
+      const { error } = await supabase.from('custom_dashboard_views').delete().eq('id', viewId);
 
       if (error) {
         throw error;
@@ -281,7 +272,9 @@ export class CustomViewsService {
       logger.info('Deleted custom view', { viewId });
     } catch (error) {
       logger.error('Error deleting custom view:', error);
-      throw new Error(`Failed to delete custom view: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to delete custom view: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 

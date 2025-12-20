@@ -30,7 +30,11 @@ export function SimilarContentCard({
   showRatings = true,
 }: SimilarContentCardProps) {
   const navigate = useNavigate();
-  const { data: similarContent, isLoading, error } = useSimilarContent(contentId, contentType, limit);
+  const {
+    data: similarContent,
+    isLoading,
+    error,
+  } = useSimilarContent(contentId, contentType, limit);
   const { trackClick } = useRecommendationInteraction();
 
   const handleContentClick = (id: string, recommendationId?: string) => {
@@ -96,19 +100,25 @@ export function SimilarContentCard({
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        {similarContent.map((content: any, index) => (
-          <div
-            key={content.content_id || content.id || index}
-            className="group p-4 border rounded-lg hover:border-primary hover:bg-secondary/30 transition-all cursor-pointer"
-            onClick={() => handleContentClick(content.content_id || content.id, content.recommendation_id)}
+        {similarContent.map((content: Record<string, unknown>, index) => (
+          <button
+            type="button"
+            key={String(content.content_id ?? content.id ?? index)}
+            className="group p-4 border rounded-lg hover:border-primary hover:bg-secondary/30 transition-all cursor-pointer bg-transparent text-left w-full"
+            onClick={() =>
+              handleContentClick(
+                String(content.content_id ?? content.id),
+                content.recommendation_id as string | undefined
+              )
+            }
           >
             <div className="space-y-2">
               {/* Title and Badge */}
               <div className="flex items-start justify-between gap-2">
                 <h4 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors flex-1">
-                  {content.content_title || content.title}
+                  {String(content.content_title ?? content.title)}
                 </h4>
-                {content.score && content.score > 0.8 && (
+                {typeof content.score === 'number' && content.score > 0.8 && (
                   <Badge variant="secondary" className="text-xs whitespace-nowrap">
                     <Star className="h-3 w-3 mr-1" />
                     Match
@@ -119,7 +129,7 @@ export function SimilarContentCard({
               {/* Description */}
               {content.description && (
                 <p className="text-xs text-muted-foreground line-clamp-2">
-                  {content.description}
+                  {String(content.description)}
                 </p>
               )}
 
@@ -128,40 +138,47 @@ export function SimilarContentCard({
                 {content.difficulty_level && (
                   <Badge
                     variant="outline"
-                    className={`text-xs ${getDifficultyColor(content.difficulty_level)}`}
+                    className={`text-xs ${getDifficultyColor(String(content.difficulty_level))}`}
                   >
-                    {content.difficulty_level}
+                    {String(content.difficulty_level)}
                   </Badge>
                 )}
 
-                {content.metadata?.estimated_hours && (
+                {typeof (content.metadata as Record<string, unknown>)?.estimated_hours ===
+                  'number' && (
                   <span className="flex items-center gap-1">
                     <Clock className="h-3 w-3" />
-                    {content.metadata.estimated_hours}h
+                    {(content.metadata as Record<string, unknown>).estimated_hours}h
                   </span>
                 )}
 
-                {showRatings && content.metadata?.average_rating && (
-                  <span className="flex items-center gap-1">
-                    <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                    {content.metadata.average_rating.toFixed(1)}
-                  </span>
-                )}
+                {showRatings &&
+                  typeof (content.metadata as Record<string, unknown>)?.average_rating ===
+                    'number' && (
+                    <span className="flex items-center gap-1">
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      {(
+                        (content.metadata as Record<string, unknown>).average_rating as number
+                      ).toFixed(1)}
+                    </span>
+                  )}
 
-                {content.metadata?.enrollment_count && (
+                {typeof (content.metadata as Record<string, unknown>)?.enrollment_count ===
+                  'number' && (
                   <span className="flex items-center gap-1">
                     <Users className="h-3 w-3" />
-                    {content.metadata.enrollment_count > 1000
-                      ? `${(content.metadata.enrollment_count / 1000).toFixed(1)}k`
-                      : content.metadata.enrollment_count}
+                    {((content.metadata as Record<string, unknown>).enrollment_count as number) >
+                    1000
+                      ? `${(((content.metadata as Record<string, unknown>).enrollment_count as number) / 1000).toFixed(1)}k`
+                      : (content.metadata as Record<string, unknown>).enrollment_count}
                   </span>
                 )}
               </div>
 
               {/* Similarity Reason (if provided) */}
-              {content.metadata?.similarity_reason && (
+              {(content.metadata as Record<string, unknown>)?.similarity_reason && (
                 <p className="text-xs text-primary bg-primary/5 px-2 py-1 rounded">
-                  {content.metadata.similarity_reason}
+                  {String((content.metadata as Record<string, unknown>).similarity_reason)}
                 </p>
               )}
 
@@ -170,16 +187,19 @@ export function SimilarContentCard({
                 variant="ghost"
                 size="sm"
                 className="w-full justify-between group-hover:bg-primary group-hover:text-primary-foreground transition-colors mt-2"
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
-                  handleContentClick(content.content_id || content.id, content.recommendation_id);
+                  handleContentClick(
+                    String(content.content_id ?? content.id),
+                    content.recommendation_id as string | undefined
+                  );
                 }}
               >
                 <span>View {contentType === 'course' ? 'Course' : 'Learning Path'}</span>
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
-          </div>
+          </button>
         ))}
 
         {/* View All Link */}

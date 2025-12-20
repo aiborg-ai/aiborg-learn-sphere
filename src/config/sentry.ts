@@ -24,6 +24,7 @@ export function initializeSentry(): void {
   // Get DSN from environment
   const dsn = import.meta.env.VITE_SENTRY_DSN;
   if (!dsn) {
+    // eslint-disable-next-line no-console
     console.warn('Sentry DSN not configured. Error reporting disabled.');
     return;
   }
@@ -124,6 +125,7 @@ export function initializeSentry(): void {
       }
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Failed to initialize Sentry:', error);
   }
 }
@@ -151,7 +153,7 @@ export function addSentryBreadcrumb(
   message: string,
   category: string,
   level: Sentry.SeverityLevel = 'info',
-  data?: Record<string, any>
+  data?: Record<string, unknown>
 ): void {
   if (!import.meta.env.PROD) return;
 
@@ -167,7 +169,7 @@ export function addSentryBreadcrumb(
 /**
  * Capture an exception manually
  */
-export function captureSentryException(error: Error, context?: Record<string, any>): void {
+export function captureSentryException(error: Error, context?: Record<string, unknown>): void {
   if (!import.meta.env.PROD) return;
 
   Sentry.captureException(error, {
@@ -181,7 +183,7 @@ export function captureSentryException(error: Error, context?: Record<string, an
 export function captureSentryMessage(
   message: string,
   level: Sentry.SeverityLevel = 'info',
-  context?: Record<string, any>
+  context?: Record<string, unknown>
 ): void {
   if (!import.meta.env.PROD) return;
 
@@ -202,7 +204,7 @@ export function setSentryTag(key: string, value: string): void {
 /**
  * Set context for additional information
  */
-export function setSentryContext(name: string, context: Record<string, any>): void {
+export function setSentryContext(name: string, context: Record<string, unknown>): void {
   if (!import.meta.env.PROD) return;
   Sentry.setContext(name, context);
 }

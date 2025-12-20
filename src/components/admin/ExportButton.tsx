@@ -21,7 +21,7 @@ import type { AnalyticsSection, DateRange } from '@/utils/pdfExport';
 export interface ExportButtonProps {
   section?: string;
   sections?: AnalyticsSection[];
-  data?: any[];
+  data?: Record<string, unknown>[];
   dateRange?: DateRange;
   headers?: string[];
   metadata?: Record<string, string>;
@@ -169,7 +169,7 @@ export interface CompactExportButtonProps {
   format: 'pdf' | 'csv';
   section?: string;
   sections?: AnalyticsSection[];
-  data?: any[];
+  data?: Record<string, unknown>[];
   dateRange?: DateRange;
   headers?: string[];
   metadata?: Record<string, string>;

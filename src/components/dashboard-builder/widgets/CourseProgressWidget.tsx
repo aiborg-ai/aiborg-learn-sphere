@@ -12,6 +12,19 @@ import { cn } from '@/lib/utils';
 import type { WidgetComponentProps, ProgressWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';
 
+interface Course {
+  id: string;
+  title: string;
+  duration: string | null;
+}
+
+interface CourseEnrollment {
+  id: string;
+  progress: number | null;
+  completed_at: string | null;
+  course: Course | null;
+}
+
 export function CourseProgressWidget({ widget, isEditing }: WidgetComponentProps) {
   const config = widget.config as ProgressWidgetConfig;
   const showPercentage = config.showPercentage !== false;
@@ -50,7 +63,7 @@ export function CourseProgressWidget({ widget, isEditing }: WidgetComponentProps
         .limit(limit);
 
       if (error) throw error;
-      return data;
+      return data as CourseEnrollment[];
     },
     enabled: !isEditing,
     refetchInterval: config.refreshInterval ? config.refreshInterval * 1000 : false,
@@ -78,7 +91,7 @@ export function CourseProgressWidget({ widget, isEditing }: WidgetComponentProps
   return (
     <div className="space-y-4">
       {courses.map(enrollment => {
-        const course = enrollment.course as any;
+        const course = enrollment.course;
         const progress = enrollment.progress || 0;
         const isCompleted = !!enrollment.completed_at;
 

@@ -4,7 +4,7 @@
  * Target Audiences: Young Learners, Teenagers, Professionals
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
@@ -40,6 +40,11 @@ export default function AIAwarenessAssessment() {
     pause: pauseTimer,
     start: startTimer,
   } = useAssessmentTimer({ autoStart: false });
+
+  // Wrap startTimer in useCallback to stabilize reference
+  const stableStartTimer = useCallback(() => {
+    startTimer();
+  }, [startTimer]);
 
   // Initialize assessment
   useEffect(() => {
@@ -98,7 +103,7 @@ export default function AIAwarenessAssessment() {
         });
 
         // Start the timer
-        startTimer();
+        stableStartTimer();
       } catch (error) {
         logger.error('Error initializing assessment:', error);
         toast({
@@ -112,7 +117,7 @@ export default function AIAwarenessAssessment() {
     };
 
     initializeAssessment();
-  }, [authLoading, user, tool, attemptId, createAttempt, toast, navigate]);
+  }, [authLoading, user, tool, attemptId, createAttempt, toast, navigate, stableStartTimer]);
 
   // Handle assessment completion
   const _handleAssessmentComplete = async () => {

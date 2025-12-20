@@ -10,7 +10,7 @@
  * - AI recommendations
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -115,18 +115,22 @@ export function StudyPlannerDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
-  // Session timer
+  // Session timer - wrap timer functions in useCallback
+  const startTimer = useCallback(() => {
+    setSessionTime(prev => prev + 1);
+  }, []);
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (activeSession && !isSessionPaused) {
-      interval = setInterval(() => {
-        setSessionTime(prev => prev + 1);
-      }, 1000);
+      interval = setInterval(startTimer, 1000);
     }
-    return () => clearInterval(interval);
-  }, [activeSession, isSessionPaused]);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [activeSession, isSessionPaused, startTimer]);
 
-  const loadDashboardData = async () => {
+  const loadDashboardData = useCallback(async () => {
     if (!user?.id) return;
 
     setIsLoading(true);
@@ -149,37 +153,40 @@ export function StudyPlannerDashboard() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user?.id, toast]);
 
-  const handleStartSession = async (title?: string) => {
-    if (!user?.id) return;
+  const handleStartSession = useCallback(
+    async (title?: string) => {
+      if (!user?.id) return;
 
-    try {
-      const session = await StudyPlannerService.startSession(user.id, {
-        title: title || 'Quick Study Session',
-        plannedDuration: learningStyle?.preferred_session_length || 25,
-      });
-      setActiveSession(session);
-      setSessionTime(0);
-      setIsSessionPaused(false);
-      toast({
-        description: 'Study session started! Stay focused.',
-      });
-    } catch (error) {
-      logger.error('Error starting session:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to start session',
-        variant: 'destructive',
-      });
-    }
-  };
+      try {
+        const session = await StudyPlannerService.startSession(user.id, {
+          title: title || 'Quick Study Session',
+          plannedDuration: learningStyle?.preferred_session_length || 25,
+        });
+        setActiveSession(session);
+        setSessionTime(0);
+        setIsSessionPaused(false);
+        toast({
+          description: 'Study session started! Stay focused.',
+        });
+      } catch (error) {
+        logger.error('Error starting session:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to start session',
+          variant: 'destructive',
+        });
+      }
+    },
+    [user?.id, learningStyle?.preferred_session_length, toast]
+  );
 
   const handlePauseSession = () => {
     setIsSessionPaused(!isSessionPaused);
   };
 
-  const handleEndSession = async () => {
+  const handleEndSession = useCallback(async () => {
     if (!activeSession) return;
 
     try {
@@ -200,7 +207,7 @@ export function StudyPlannerDashboard() {
         variant: 'destructive',
       });
     }
-  };
+  }, [activeSession, toast, loadDashboardData]);
 
   const handleCreatePlan = async () => {
     if (!user?.id || !newPlanTitle) return;
@@ -292,8 +299,9 @@ export function StudyPlannerDashboard() {
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <Label>Plan Title</Label>
+                  <Label htmlFor="plan-title">Plan Title</Label>
                   <Input
+                    id="plan-title"
                     value={newPlanTitle}
                     onChange={e => setNewPlanTitle(e.target.value)}
                     placeholder="e.g., Master React Development"

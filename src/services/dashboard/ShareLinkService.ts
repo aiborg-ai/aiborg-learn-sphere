@@ -184,9 +184,11 @@ export class ShareLinkService {
       isValid,
       isExpired,
       isMaxedOut,
-      dashboardConfig: isValid ? (link.dashboard_view as any)?.config : undefined,
-      creatorName: (link.creator as any)?.full_name,
-      viewName: (link.dashboard_view as any)?.name,
+      dashboardConfig: isValid
+        ? (link.dashboard_view as { config?: DashboardConfig })?.config
+        : undefined,
+      creatorName: (link.creator as { full_name?: string })?.full_name,
+      viewName: (link.dashboard_view as { name?: string })?.name,
       allowEditing: link.allow_editing,
     };
   }
@@ -211,7 +213,7 @@ export class ShareLinkService {
     if (error && error.code === '42883') {
       await supabase
         .from('dashboard_share_links')
-        .update({ current_uses: supabase.sql`current_uses + 1` as any })
+        .update({ current_uses: supabase.sql`current_uses + 1` as unknown as number })
         .eq('share_token', token);
     }
 
@@ -414,7 +416,12 @@ export class ShareLinkService {
       isActive?: boolean;
     }
   ): Promise<DashboardShareLink> {
-    const updateData: any = {};
+    const updateData: Partial<{
+      expires_at: string | null;
+      max_uses: number | null;
+      allow_editing: boolean;
+      is_active: boolean;
+    }> = {};
     if (updates.expiresAt !== undefined) updateData.expires_at = updates.expiresAt;
     if (updates.maxUses !== undefined) updateData.max_uses = updates.maxUses;
     if (updates.allowEditing !== undefined) updateData.allow_editing = updates.allowEditing;

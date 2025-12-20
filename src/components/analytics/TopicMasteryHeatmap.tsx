@@ -323,9 +323,10 @@ export function TopicMasteryHeatmap({
           ) : (
             <div className="space-y-2">
               {sortedTopics.map(topic => (
-                <div
+                <button
+                  type="button"
                   key={topic.topicId}
-                  className="flex items-center gap-3 p-3 border rounded-lg hover:bg-accent/50 cursor-pointer"
+                  className="flex items-center gap-3 p-3 border rounded-lg hover:bg-accent/50 cursor-pointer bg-transparent text-left w-full"
                   onClick={() => onTopicClick?.(topic.topicId)}
                 >
                   <div
@@ -348,7 +349,7 @@ export function TopicMasteryHeatmap({
                   {topic.masteryHistory.length > 1 && (
                     <TrendingUp className="h-4 w-4 text-green-600" />
                   )}
-                </div>
+                </button>
               ))}
             </div>
           )}

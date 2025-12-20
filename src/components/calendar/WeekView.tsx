@@ -70,29 +70,22 @@ export function WeekView({ events, selectedDate, onEventClick }: WeekViewProps) 
                     {dayEvents.map(event => {
                       const typeConfig = EVENT_TYPE_COLORS[event.type];
                       return (
-                        <div
+                        <button
+                          type="button"
                           key={event.id}
                           className={cn(
-                            'text-xs p-2 rounded cursor-pointer hover:shadow transition-all',
+                            'text-xs p-2 rounded cursor-pointer hover:shadow transition-all w-full text-left',
                             typeConfig.bg,
                             'text-white'
                           )}
                           onClick={() => onEventClick?.(event)}
-                          onKeyDown={e => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              onEventClick?.(event);
-                            }
-                          }}
-                          role="button"
-                          tabIndex={0}
                           aria-label={`View ${event.title} details`}
                         >
                           <div className="font-medium truncate">{event.title}</div>
                           <div className="opacity-90 text-[10px] mt-0.5">
                             {format(event.startDate, 'h:mm a')}
                           </div>
-                        </div>
+                        </button>
                       );
                     })}
                     {dayEvents.length === 0 && (

@@ -159,8 +159,25 @@ export class StudyPlanGeneratorService {
   /**
    * Select appropriate content based on gaps and preferences
    */
-  private static async selectContent(input: StudyPlanInput, skillGaps: any[]) {
-    const content: any[] = [];
+  private static async selectContent(
+    input: StudyPlanInput,
+    skillGaps: Array<{
+      category: string;
+      priority?: number;
+      current_level?: string;
+      target_level?: string;
+      current_ability?: number;
+    }>
+  ) {
+    const content: Array<{
+      type: string;
+      id: string;
+      title: string;
+      estimated_hours: number;
+      difficulty: string;
+      topics: string[];
+      priority: number;
+    }> = [];
 
     try {
       // For each skill gap, find relevant content
@@ -221,7 +238,10 @@ export class StudyPlanGeneratorService {
   /**
    * Map difficulty preference to actual difficulty level
    */
-  private static mapDifficultyPreference(preference: string | undefined, gap: any): string {
+  private static mapDifficultyPreference(
+    preference: string | undefined,
+    gap: { current_level?: string; target_level?: string; current_ability?: number }
+  ): string {
     if (preference === 'comfortable') {
       return gap.current_level || 'beginner';
     } else if (preference === 'challenging') {
@@ -239,7 +259,15 @@ export class StudyPlanGeneratorService {
    */
   private static async distributeTasksAcrossWeeks(
     input: StudyPlanInput,
-    content: any[]
+    content: Array<{
+      type: string;
+      id: string;
+      title: string;
+      estimated_hours: number;
+      difficulty: string;
+      topics: string[];
+      priority: number;
+    }>
   ): Promise<WeeklySchedule[]> {
     const weeklySchedules: WeeklySchedule[] = [];
     const startDate = startOfDay(new Date());
@@ -285,7 +313,7 @@ export class StudyPlanGeneratorService {
 
           dayTasks.push({
             task_id: `${item.type}-${item.id}-${weekNum}-${day}`,
-            task_type: item.type as any,
+            task_type: item.type as DailyTask['task_type'],
             title: item.title,
             content_id: item.id,
             estimated_minutes: Math.round(estimatedMinutes),
@@ -358,8 +386,8 @@ export class StudyPlanGeneratorService {
    */
   private static async generateAIRationale(
     input: StudyPlanInput,
-    context: any,
-    skillGaps: any[],
+    context: unknown,
+    skillGaps: Array<{ category: string }>,
     weeklySchedules: WeeklySchedule[]
   ): Promise<string> {
     const gapSummary = skillGaps
@@ -455,7 +483,7 @@ The plan progressively builds on foundational concepts, with ${input.include_rev
       }
 
       // Update task in plan_data
-      const planData = plan.plan_data as any;
+      const planData = plan.plan_data as { weekly_schedules?: WeeklySchedule[] };
       const weeklySchedules: WeeklySchedule[] = planData.weekly_schedules || [];
 
       let taskFound = false;
@@ -534,7 +562,11 @@ The plan progressively builds on foundational concepts, with ${input.include_rev
         return null;
       }
 
-      const planData = data.plan_data as any;
+      const planData = data.plan_data as {
+        ai_rationale?: string;
+        input_parameters?: StudyPlanInput;
+        weekly_schedules?: WeeklySchedule[];
+      };
 
       return {
         id: data.id,

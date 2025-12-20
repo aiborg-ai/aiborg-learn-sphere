@@ -220,10 +220,11 @@ export default function ManagerDashboard() {
             <CardContent>
               <div className="space-y-2">
                 {filteredReports.map(report => (
-                  <div
+                  <button
                     key={report.report_user_id}
+                    type="button"
                     onClick={() => navigate(`/admin/learner-analytics/${report.report_user_id}`)}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
+                    className="bg-transparent border-0 p-0 text-left w-full flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
                   >
                     <div className="flex items-center gap-4">
                       <Avatar>
@@ -276,7 +277,7 @@ export default function ManagerDashboard() {
                       )}
                       <ChevronRight className="h-5 w-5 text-muted-foreground" />
                     </div>
-                  </div>
+                  </button>
                 ))}
 
                 {filteredReports.length === 0 && (

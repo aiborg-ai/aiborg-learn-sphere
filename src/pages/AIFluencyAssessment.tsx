@@ -112,7 +112,8 @@ export default function AIFluencyAssessment() {
     };
 
     initializeAssessment();
-  }, [authLoading, user, tool, attemptId, createAttempt, toast, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authLoading, user, tool, attemptId, createAttempt.isPending]);
 
   // Handle assessment completion
   const _handleAssessmentComplete = async () => {

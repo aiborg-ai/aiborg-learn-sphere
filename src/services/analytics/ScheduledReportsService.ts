@@ -152,7 +152,7 @@ export class ScheduledReportsService {
     input: UpdateScheduledReportInput
   ): Promise<ScheduledReport | null> {
     try {
-      const updates: any = { ...input };
+      const updates: Record<string, unknown> = { ...input };
 
       // Recalculate next_run_at if frequency changed
       if (input.frequency) {

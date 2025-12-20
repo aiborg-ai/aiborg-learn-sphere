@@ -187,7 +187,11 @@ export class EnhancedSM2Service {
       let updatedCount = 0;
 
       for (const flashcard of flashcards || []) {
-        const source = (flashcard.flashcard_sources as any)?.[0];
+        const sources = flashcard.flashcard_sources as Array<{
+          initial_ef: number;
+          irt_difficulty: number;
+        }> | null;
+        const source = sources?.[0];
         if (!source) continue;
 
         const irtDifficulty = source.irt_difficulty;
@@ -241,16 +245,12 @@ export class EnhancedSM2Service {
       }
 
       // Calculate personalized multipliers based on actual performance
-      let totalEFChange = 0;
-      let totalIntervalChange = 0;
       let successCount = 0;
       let failCount = 0;
 
       for (const review of reviewData) {
         if (review.quality >= 3) {
           successCount++;
-          totalEFChange += review.ef_after - review.ef_before;
-          totalIntervalChange += review.interval_after / Math.max(1, review.interval_before);
         } else {
           failCount++;
         }
@@ -412,7 +412,11 @@ export class EnhancedSM2Service {
         .single();
 
       const currentAbility = assessment?.current_ability || 0;
-      const source = (flashcard.flashcard_sources as any)?.[0];
+      const sources = flashcard.flashcard_sources as Array<{
+        initial_ef: number;
+        irt_difficulty: number;
+      }> | null;
+      const source = sources?.[0];
 
       // Build current state
       const currentState: EnhancedSM2State = {
@@ -532,7 +536,8 @@ export class EnhancedSM2Service {
 
     // Calculate retention for each
     return (data || []).map(card => {
-      const source = (card.flashcard_sources as any)?.[0];
+      const sources = card.flashcard_sources as Array<{ irt_difficulty: number }> | null;
+      const source = sources?.[0];
       const daysSinceReview = card.last_review_date
         ? Math.floor(
             (Date.now() - new Date(card.last_review_date).getTime()) / (1000 * 60 * 60 * 24)

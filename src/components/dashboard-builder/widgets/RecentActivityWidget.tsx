@@ -58,25 +58,25 @@ export function RecentActivityWidget({ widget, isEditing }: WidgetComponentProps
         ...(enrollments.data || []).map(e => ({
           type: 'enrollment' as const,
           timestamp: e.created_at,
-          description: `Enrolled in ${(e.course as any)?.title}`,
+          description: `Enrolled in ${(e.course as Record<string, unknown>)?.title as string}`,
           icon: BookOpen,
         })),
         ...(completions.data || []).map(c => ({
           type: 'completion' as const,
           timestamp: c.completed_at,
-          description: `Completed ${(c.course as any)?.title}`,
+          description: `Completed ${(c.course as Record<string, unknown>)?.title as string}`,
           icon: FileCheck,
         })),
         ...(achievements.data || []).map(a => ({
           type: 'achievement' as const,
           timestamp: a.earned_at,
-          description: `Earned "${(a.achievement as any)?.name}"`,
+          description: `Earned "${(a.achievement as Record<string, unknown>)?.name as string}"`,
           icon: Trophy,
         })),
         ...(comments.data || []).map(c => ({
           type: 'comment' as const,
           timestamp: c.created_at,
-          description: `Commented on "${(c.post as any)?.title}"`,
+          description: `Commented on "${(c.post as Record<string, unknown>)?.title as string}"`,
           icon: MessageSquare,
         })),
       ]

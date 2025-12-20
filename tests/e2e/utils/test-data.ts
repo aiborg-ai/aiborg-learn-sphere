@@ -184,7 +184,7 @@ export interface VaultClaimData {
   vaultEmail: string;
   vaultSubscriptionEndDate: string;
   familyMembers: FamilyMember[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface FamilyMember {

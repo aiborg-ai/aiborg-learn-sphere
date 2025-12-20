@@ -107,12 +107,18 @@ export class TemplateGalleryService {
       }
 
       // Transform data to include dashboard config
-      const templates: DashboardTemplate[] = (data || []).map((item: any) => ({
-        ...item,
-        creator_name: item.creator?.full_name,
-        creator_avatar: item.creator?.avatar_url,
-        dashboard_config: item.dashboard_view?.config,
-      }));
+      const templates: DashboardTemplate[] = (data || []).map(
+        (item: {
+          creator?: { full_name?: string; avatar_url?: string };
+          dashboard_view?: { config?: DashboardConfig };
+          [key: string]: unknown;
+        }) => ({
+          ...item,
+          creator_name: item.creator?.full_name,
+          creator_avatar: item.creator?.avatar_url,
+          dashboard_config: item.dashboard_view?.config,
+        })
+      );
 
       const pagination: TemplatePagination = {
         page,
@@ -345,7 +351,13 @@ export class TemplateGalleryService {
       previewImageUrl?: string;
     }
   ): Promise<DashboardTemplate> {
-    const updateData: any = {};
+    const updateData: Partial<{
+      name: string;
+      description: string;
+      category: TemplateCategory;
+      tags: string[];
+      preview_image_url: string;
+    }> = {};
     if (updates.name !== undefined) updateData.name = updates.name;
     if (updates.description !== undefined) updateData.description = updates.description;
     if (updates.category !== undefined) updateData.category = updates.category;
@@ -443,12 +455,12 @@ export class TemplateGalleryService {
           message: 'Template cloned successfully',
         };
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         viewId: '',
-        view: {} as any,
+        view: {} as DashboardView,
         success: false,
-        message: error.message || 'Failed to clone template',
+        message: error instanceof Error ? error.message : 'Failed to clone template',
       };
     }
   }
@@ -632,13 +644,21 @@ export class TemplateGalleryService {
       throw new Error(`Failed to fetch favorites: ${error.message}`);
     }
 
-    return (data || []).map((item: any) => ({
-      ...item.template,
-      creator_name: item.template.creator?.full_name,
-      creator_avatar: item.template.creator?.avatar_url,
-      dashboard_config: item.template.dashboard_view?.config,
-      is_favorited: true,
-    }));
+    return (data || []).map(
+      (item: {
+        template: {
+          creator?: { full_name?: string; avatar_url?: string };
+          dashboard_view?: { config?: DashboardConfig };
+          [key: string]: unknown;
+        };
+      }) => ({
+        ...item.template,
+        creator_name: item.template.creator?.full_name,
+        creator_avatar: item.template.creator?.avatar_url,
+        dashboard_config: item.template.dashboard_view?.config,
+        is_favorited: true,
+      })
+    );
   }
 
   /**
@@ -663,12 +683,18 @@ export class TemplateGalleryService {
       throw new Error(`Failed to fetch trending templates: ${error.message}`);
     }
 
-    return (data || []).map((item: any) => ({
-      ...item,
-      creator_name: item.creator?.full_name,
-      creator_avatar: item.creator?.avatar_url,
-      dashboard_config: item.dashboard_view?.config,
-    }));
+    return (data || []).map(
+      (item: {
+        creator?: { full_name?: string; avatar_url?: string };
+        dashboard_view?: { config?: DashboardConfig };
+        [key: string]: unknown;
+      }) => ({
+        ...item,
+        creator_name: item.creator?.full_name,
+        creator_avatar: item.creator?.avatar_url,
+        dashboard_config: item.dashboard_view?.config,
+      })
+    );
   }
 
   /**
@@ -694,12 +720,18 @@ export class TemplateGalleryService {
       throw new Error(`Failed to fetch featured templates: ${error.message}`);
     }
 
-    return (data || []).map((item: any) => ({
-      ...item,
-      creator_name: item.creator?.full_name,
-      creator_avatar: item.creator?.avatar_url,
-      dashboard_config: item.dashboard_view?.config,
-    }));
+    return (data || []).map(
+      (item: {
+        creator?: { full_name?: string; avatar_url?: string };
+        dashboard_view?: { config?: DashboardConfig };
+        [key: string]: unknown;
+      }) => ({
+        ...item,
+        creator_name: item.creator?.full_name,
+        creator_avatar: item.creator?.avatar_url,
+        dashboard_config: item.dashboard_view?.config,
+      })
+    );
   }
 
   /**

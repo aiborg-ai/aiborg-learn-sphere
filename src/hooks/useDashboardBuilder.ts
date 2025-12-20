@@ -12,6 +12,7 @@ import { DashboardConfigService } from '@/services/dashboard/DashboardConfigServ
 import type {
   DashboardConfig,
   DashboardWidget,
+  DashboardView,
   BuilderMode,
   WidgetPosition,
   WidgetSize,
@@ -127,7 +128,7 @@ export function useDashboardBuilder(options: UseDashboardBuilderOptions) {
 
   // Update view
   const updateViewMutation = useMutation({
-    mutationFn: (data: { viewId: string; updates: any }) =>
+    mutationFn: (data: { viewId: string; updates: Partial<DashboardView> }) =>
       DashboardConfigService.updateView(data.viewId, data.updates),
     onSuccess: view => {
       queryClient.invalidateQueries({ queryKey: queryKeys.views });
@@ -202,7 +203,8 @@ export function useDashboardBuilder(options: UseDashboardBuilderOptions) {
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [autoSave, isDirty, config, currentViewId, mode]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- autoSaveTimer intentionally excluded to prevent infinite loop
+  }, [autoSave, isDirty, config, currentViewId, mode, autoSaveDelay, handleSave]);
 
   // ============================================================================
   // Widget Operations
@@ -334,6 +336,7 @@ export function useDashboardBuilder(options: UseDashboardBuilderOptions) {
       viewId: currentViewId,
       updates: { config },
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- toast is a stable function from useToast and doesn't need to be in dependencies
   }, [currentViewId, config, updateViewMutation]);
 
   const handleSaveAs = useCallback(
@@ -361,15 +364,16 @@ export function useDashboardBuilder(options: UseDashboardBuilderOptions) {
         queryClient.invalidateQueries({ queryKey: queryKeys.views });
         queryClient.invalidateQueries({ queryKey: queryKeys.defaultView });
         toast({ title: 'Success', description: 'Default view updated' });
-      } catch (error: any) {
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to set default view';
         toast({
           title: 'Error',
-          description: error.message || 'Failed to set default view',
+          description: errorMessage,
           variant: 'destructive',
         });
       }
     },
-    [queryClient, toast]
+    [queryClient, toast, queryKeys.views, queryKeys.defaultView]
   );
 
   // ============================================================================

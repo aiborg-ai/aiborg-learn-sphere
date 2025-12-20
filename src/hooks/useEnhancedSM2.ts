@@ -243,8 +243,8 @@ export function useIntervalPreview(currentState: {
 /**
  * Composite hook for complete review session
  */
-export function useReviewSession(deckId?: string) {
-  const { dueCards, urgencyCounts, totalDue, isLoading, refetch } = useDueCardsWithRetention(50);
+export function useReviewSession(_deckId?: string) {
+  const { dueCards, urgencyCounts, isLoading, refetch } = useDueCardsWithRetention(50);
   const { submitReview, isSubmitting, lastResult } = useEnhancedReview();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sessionStats, setSessionStats] = useState({

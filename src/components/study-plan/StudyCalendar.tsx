@@ -63,6 +63,7 @@ export function StudyCalendar({ userId, planId, onTaskComplete, onTaskClick }: S
 
   useEffect(() => {
     fetchStudyPlan();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, planId]);
 
   const fetchStudyPlan = async () => {
@@ -133,7 +134,7 @@ export function StudyCalendar({ userId, planId, onTaskComplete, onTaskClick }: S
   };
 
   const getTaskIcon = (taskType: string) => {
-    const icons: Record<string, any> = {
+    const icons: Record<string, typeof Book> = {
       course: Book,
       exercise: Dumbbell,
       quiz: FileText,
@@ -352,9 +353,10 @@ export function StudyCalendar({ userId, planId, onTaskComplete, onTaskClick }: S
                     tasks.map(task => {
                       const TaskIcon = getTaskIcon(task.task_type);
                       return (
-                        <div
+                        <button
                           key={task.task_id}
-                          className={`p-2 border rounded cursor-pointer hover:shadow-md transition-all ${getTaskColor(task)}`}
+                          type="button"
+                          className={`bg-transparent border-0 p-0 text-left w-full p-2 border rounded cursor-pointer hover:shadow-md transition-all ${getTaskColor(task)}`}
                           onClick={() => {
                             setSelectedTask(task);
                             if (onTaskClick) {
@@ -395,7 +397,7 @@ export function StudyCalendar({ userId, planId, onTaskComplete, onTaskClick }: S
                               <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
                             )}
                           </div>
-                        </div>
+                        </button>
                       );
                     })
                   )}

@@ -130,8 +130,14 @@ export class CrossDeckScheduler {
 
       // Process deck cards
       for (const card of deckCards || []) {
-        const deck = card.flashcard_decks as any;
-        const reviews = card.flashcard_reviews as any[];
+        const deck = card.flashcard_decks as { id: string; title: string; created_by: string };
+        const reviews = card.flashcard_reviews as Array<{
+          easiness_factor: number;
+          interval_days: number;
+          repetition_count: number;
+          next_review_date: string;
+          last_reviewed: string | null;
+        }> | null;
         const review = reviews?.[0];
 
         if (!review || new Date(review.next_review_date) > now) continue;
@@ -255,7 +261,7 @@ export class CrossDeckScheduler {
     dailyLimit: number = 50
   ): Promise<DailySchedule[]> {
     try {
-      const { cards, totalCards } = await this.getUnifiedReviewQueue(userId, 500);
+      const { cards } = await this.getUnifiedReviewQueue(userId, 500);
 
       const schedules: DailySchedule[] = [];
       const usedCards = new Set<string>();

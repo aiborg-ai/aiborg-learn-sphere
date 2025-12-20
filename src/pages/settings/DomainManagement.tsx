@@ -124,11 +124,11 @@ export default function DomainManagement() {
       setIsAddOpen(false);
       setNewDomain('');
       loadDomains();
-    } catch (error: any) {
+    } catch (error) {
       logger.error('Failed to add domain', error);
       toast({
         title: 'Error',
-        description: error.message || 'Failed to add domain',
+        description: error instanceof Error ? error.message : 'Failed to add domain',
         variant: 'destructive',
       });
     } finally {
@@ -158,11 +158,11 @@ export default function DomainManagement() {
           variant: 'destructive',
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       logger.error('Failed to verify domain', error);
       toast({
         title: 'Error',
-        description: error.message || 'Failed to verify domain',
+        description: error instanceof Error ? error.message : 'Failed to verify domain',
         variant: 'destructive',
       });
     }
@@ -182,11 +182,11 @@ export default function DomainManagement() {
       });
 
       loadDomains();
-    } catch (error: any) {
+    } catch (error) {
       logger.error('Failed to delete domain', error);
       toast({
         title: 'Error',
-        description: error.message || 'Failed to delete domain',
+        description: error instanceof Error ? error.message : 'Failed to delete domain',
         variant: 'destructive',
       });
     }
@@ -304,7 +304,9 @@ export default function DomainManagement() {
                 <Label htmlFor="method">Verification Method</Label>
                 <Select
                   value={verificationMethod}
-                  onValueChange={(value: any) => setVerificationMethod(value)}
+                  onValueChange={value =>
+                    setVerificationMethod(value as 'dns_txt' | 'dns_cname' | 'http_file')
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />

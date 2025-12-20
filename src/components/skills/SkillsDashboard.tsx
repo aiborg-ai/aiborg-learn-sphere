@@ -86,12 +86,14 @@ export function SkillsDashboard() {
     if (user?.id) {
       loadDashboardData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   useEffect(() => {
     if (user?.id && selectedJobRole) {
       loadJobMatch();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id, selectedJobRole]);
 
   const loadDashboardData = async () => {

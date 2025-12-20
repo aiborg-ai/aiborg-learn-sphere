@@ -58,7 +58,16 @@ async function searchPexels(query: string, count: number, apiKey: string): Promi
 
   const data = await response.json();
 
-  return data.photos.map((photo: any) => ({
+  interface PexelsPhoto {
+    src: {
+      large: string;
+      medium: string;
+    };
+    photographer: string;
+    photographer_url: string;
+  }
+
+  return (data.photos as PexelsPhoto[]).map(photo => ({
     url: photo.src.large,
     thumbnail: photo.src.medium,
     photographer: photo.photographer,

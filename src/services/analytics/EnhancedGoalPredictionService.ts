@@ -473,7 +473,7 @@ export class EnhancedGoalPredictionService {
    */
   private identifyAccelerationFactors(
     factors: PredictionFactors,
-    goal: GoalData
+    _goal: GoalData
   ): AccelerationFactor[] {
     const accelerators: AccelerationFactor[] = [];
 

@@ -41,7 +41,7 @@ export interface ScheduledNotification {
   message: string;
   priority: NotificationPriority;
   scheduled_for: string; // ISO datetime
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   delivered: boolean;
   delivered_at?: string;
   created_at?: string;
@@ -447,7 +447,7 @@ export class NotificationScheduler {
   /**
    * Get pending notifications for user
    */
-  static async getPendingNotifications(userId: string): Promise<any[]> {
+  static async getPendingNotifications(userId: string): Promise<ScheduledNotification[]> {
     try {
       const { data, error } = await supabase
         .from('notifications')

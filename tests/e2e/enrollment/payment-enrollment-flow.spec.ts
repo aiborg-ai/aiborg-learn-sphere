@@ -383,7 +383,7 @@ test.describe('Enrollment Edge Cases', () => {
     }
   });
 
-  test('should show loading state during enrollment', async ({ page }) => {
+  test('should show loading state during enrollment', async ({ page: _page }) => {
     await coursesPage.navigate();
     const courses = await coursesPage.getAllVisibleCourses();
 

@@ -154,6 +154,16 @@ export function useRealTimeAnalytics(
   );
 
   /**
+   * Fetch comparison data wrapper
+   */
+  const fetchComparisonData = useCallback(
+    (isRefresh: boolean) => {
+      return fetchAnalytics(isRefresh);
+    },
+    [fetchAnalytics]
+  );
+
+  /**
    * Subscribe to real-time updates
    */
   const subscribeToUpdates = useCallback(() => {
@@ -171,7 +181,7 @@ export function useRealTimeAnalytics(
         },
         () => {
           logger.info('Ability trajectory updated, refreshing...');
-          fetchAnalytics(true);
+          fetchComparisonData(true);
         }
       )
       .on(
@@ -184,7 +194,7 @@ export function useRealTimeAnalytics(
         },
         () => {
           logger.info('Study session recorded, refreshing...');
-          fetchAnalytics(true);
+          fetchComparisonData(true);
         }
       )
       .on(
@@ -197,7 +207,7 @@ export function useRealTimeAnalytics(
         },
         () => {
           logger.info('Learning goals updated, refreshing...');
-          fetchAnalytics(true);
+          fetchComparisonData(true);
         }
       )
       .subscribe();
@@ -205,7 +215,7 @@ export function useRealTimeAnalytics(
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [userId, fetchAnalytics]);
+  }, [userId, fetchComparisonData]);
 
   // Initial fetch
   useEffect(() => {
@@ -353,6 +363,18 @@ export function useGoalPredictions() {
   return { predictions, atRisk, isLoading };
 }
 
+interface FeedbackEventData {
+  id: string;
+  user_id: string;
+  assessment_id: string;
+  event_type: string;
+  ability_before: number;
+  ability_after: number;
+  triggers_fired: string[];
+  trigger_data: Record<string, unknown>;
+  created_at: string;
+}
+
 /**
  * Hook for feedback loop data
  */
@@ -360,7 +382,7 @@ export function useFeedbackLoop() {
   const { user } = useAuth();
   const userId = user?.id;
 
-  const [feedbackEvents, setFeedbackEvents] = useState<any[]>([]);
+  const [feedbackEvents, setFeedbackEvents] = useState<FeedbackEventData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

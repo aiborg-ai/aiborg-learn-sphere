@@ -18,12 +18,23 @@ import { EditStep } from '@/components/ai-blog-workflow/EditStep';
 import { ReviewStep } from '@/components/ai-blog-workflow/ReviewStep';
 import { PublishSuccessModal } from '@/components/ai-blog-workflow/PublishSuccessModal';
 import type { TopicStepData, EditStepData, ReviewStepData } from '@/schemas/aiBlogWorkflow';
+import type { StockImage } from '@/utils/imageSearch';
+
+interface GeneratedContent {
+  title: string;
+  excerpt: string;
+  content: string;
+  suggestedCategory?: string;
+  suggestedTags?: string[];
+  metaTitle?: string;
+  metaDescription?: string;
+}
 
 interface WorkflowData {
   topic?: TopicStepData;
   generation?: {
-    generatedContent: any;
-    selectedImage: any;
+    generatedContent: GeneratedContent;
+    selectedImage: StockImage;
   };
   edit?: EditStepData;
   review?: ReviewStepData;
@@ -56,7 +67,10 @@ export default function AIBlogWorkflow() {
   };
 
   // Step 2: Generation & Image Selection
-  const handleGenerationNext = (data: { generatedContent: any; selectedImage: any }) => {
+  const handleGenerationNext = (data: {
+    generatedContent: GeneratedContent;
+    selectedImage: StockImage;
+  }) => {
     setWorkflowData(prev => ({ ...prev, generation: data }));
     setCurrentStep(3);
   };

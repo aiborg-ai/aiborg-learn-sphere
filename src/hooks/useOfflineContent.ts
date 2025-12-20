@@ -16,12 +16,25 @@ export function useOfflineContent(contentId?: string, contentType?: string) {
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
+  const checkDownloadStatus = useCallback(async () => {
+    if (!contentId || !contentType) return;
+
+    const downloaded = await DownloadManager.isDownloaded(contentId, contentType);
+    setIsDownloaded(downloaded);
+
+    const status = await DownloadManager.getDownloadStatus(contentId, contentType);
+    if (status?.status === 'downloading') {
+      setIsDownloading(true);
+      setDownloadProgress(status.progress);
+    }
+  }, [contentId, contentType]);
+
   useEffect(() => {
     // Check download status
     if (contentId && contentType) {
       checkDownloadStatus();
     }
-  }, [contentId, contentType]);
+  }, [contentId, contentType, checkDownloadStatus]);
 
   useEffect(() => {
     // Listen for online/offline events
@@ -43,19 +56,6 @@ export function useOfflineContent(contentId?: string, contentType?: string) {
       window.removeEventListener('offline', handleOffline);
     };
   }, []);
-
-  async function checkDownloadStatus() {
-    if (!contentId || !contentType) return;
-
-    const downloaded = await DownloadManager.isDownloaded(contentId, contentType);
-    setIsDownloaded(downloaded);
-
-    const status = await DownloadManager.getDownloadStatus(contentId, contentType);
-    if (status?.status === 'downloading') {
-      setIsDownloading(true);
-      setDownloadProgress(status.progress);
-    }
-  }
 
   const download = useCallback(async () => {
     if (!contentId || !contentType) return;

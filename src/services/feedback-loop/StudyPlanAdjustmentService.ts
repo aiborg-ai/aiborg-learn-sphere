@@ -61,7 +61,7 @@ export class StudyPlanAdjustmentService {
   async reduceDifficulty(
     userId: string,
     severity: AdjustmentSeverity,
-    categories?: string[]
+    _categories?: string[]
   ): Promise<PlanAdjustmentResult> {
     try {
       const plan = await this.getActiveStudyPlan(userId);
@@ -125,7 +125,7 @@ export class StudyPlanAdjustmentService {
   async increaseDifficulty(
     userId: string,
     severity: AdjustmentSeverity,
-    categories?: string[]
+    _categories?: string[]
   ): Promise<PlanAdjustmentResult> {
     try {
       const plan = await this.getActiveStudyPlan(userId);
@@ -519,7 +519,7 @@ export class StudyPlanAdjustmentService {
   /**
    * Create failure result
    */
-  private createFailureResult(reason: string): PlanAdjustmentResult {
+  private createFailureResult(_reason: string): PlanAdjustmentResult {
     return {
       success: false,
       adjustmentId: '',

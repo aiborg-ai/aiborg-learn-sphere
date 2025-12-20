@@ -100,7 +100,7 @@ export interface BaseWidgetConfig {
   appearance?: WidgetAppearance;
 
   // Filters
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
 }
 
 /**
@@ -183,7 +183,7 @@ export interface WidgetDefinition {
   minSize: WidgetSize;
   maxSize: WidgetSize;
   defaultConfig: WidgetConfig;
-  configSchema?: any; // Zod schema for validation
+  configSchema?: unknown; // Zod schema for validation
   component: React.ComponentType<WidgetComponentProps>;
   previewComponent?: React.ComponentType<WidgetPreviewProps>;
   requiresAuth?: boolean;
@@ -561,7 +561,7 @@ export interface DashboardEvent {
   type: DashboardEventType;
   viewId?: string;
   timestamp: number;
-  data?: any;
+  data?: unknown;
 }
 
 // ============================================================================

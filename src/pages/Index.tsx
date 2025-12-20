@@ -5,7 +5,12 @@ import { HeroSection, ContactSection, AboutSection } from '@/components/sections
 import { TrainingPrograms } from '@/components/TrainingPrograms';
 import { EventsSection } from '@/components/events';
 import { ReviewsSection } from '@/components/ReviewsSection';
-import { LazyAIChatbot, AIComputerAssemblyBanner, DeepawaliBanner } from '@/components/features';
+import {
+  LazyAIChatbot,
+  AIBORGLingoBanner,
+  AIComputerAssemblyBanner,
+  DeepawaliBanner,
+} from '@/components/features';
 import { FamilyPassBanner } from '@/components/membership';
 import { AssessmentToolsSection } from '@/components/assessment-tools';
 import { NovemberVaultCampaignBanner } from '@/components/campaigns';
@@ -55,6 +60,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <AIBORGLingoBanner />
       <AIComputerAssemblyBanner />
       <DeepawaliBanner />
       <Navbar />

@@ -44,7 +44,7 @@ export async function logout(page: Page) {
 
     // Wait for redirect to home or auth
     await page.waitForURL(/\/(auth|$)/, { timeout: 5000 });
-  } catch (error) {
+  } catch {
     // If logout fails, try alternative method
     await page.goto('/auth');
   }
@@ -92,7 +92,7 @@ export async function clearAuthState(page: Page) {
 /**
  * Get current user from session
  */
-export async function getCurrentUser(page: Page): Promise<any | null> {
+export async function getCurrentUser(page: Page): Promise<unknown | null> {
   try {
     return await page.evaluate(() => {
       const userString = localStorage.getItem('user');

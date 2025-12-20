@@ -107,11 +107,11 @@ export function EventSeriesDialog({ open, onOpenChange, onSuccess }: EventSeries
 
       if (onSuccess) onSuccess();
       onOpenChange(false);
-    } catch (error: any) {
+    } catch (error) {
       logger.error('Error generating event sessions:', error);
       toast({
         title: 'Error',
-        description: error.message || 'Failed to generate sessions',
+        description: error instanceof Error ? error.message : 'Failed to generate sessions',
         variant: 'destructive',
       });
     } finally {

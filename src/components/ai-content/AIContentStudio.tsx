@@ -360,6 +360,7 @@ export function AIContentStudio() {
             Translate
           </TabsTrigger>
           <TabsTrigger value="video" className="flex items-center gap-1">
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <Video className="h-4 w-4" />
             Video
           </TabsTrigger>
@@ -380,8 +381,9 @@ export function AIContentStudio() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-2">
-                  <Label>Course Topic *</Label>
+                  <Label htmlFor="course-topic">Course Topic *</Label>
                   <Input
+                    id="course-topic"
                     value={courseForm.topic}
                     onChange={e => setCourseForm({ ...courseForm, topic: e.target.value })}
                     placeholder="e.g., Introduction to Machine Learning"
@@ -390,14 +392,17 @@ export function AIContentStudio() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
-                    <Label>Audience</Label>
+                    <Label htmlFor="course-audience">Audience</Label>
                     <Select
                       value={courseForm.audience}
                       onValueChange={value =>
-                        setCourseForm({ ...courseForm, audience: value as any })
+                        setCourseForm({
+                          ...courseForm,
+                          audience: value as 'primary' | 'secondary' | 'professional' | 'business',
+                        })
                       }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger id="course-audience">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -409,14 +414,17 @@ export function AIContentStudio() {
                     </Select>
                   </div>
                   <div className="grid gap-2">
-                    <Label>Difficulty</Label>
+                    <Label htmlFor="course-difficulty">Difficulty</Label>
                     <Select
                       value={courseForm.difficulty}
                       onValueChange={value =>
-                        setCourseForm({ ...courseForm, difficulty: value as any })
+                        setCourseForm({
+                          ...courseForm,
+                          difficulty: value as 'beginner' | 'intermediate' | 'advanced' | 'expert',
+                        })
                       }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger id="course-difficulty">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -431,8 +439,9 @@ export function AIContentStudio() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
-                    <Label>Duration (hours)</Label>
+                    <Label htmlFor="course-duration">Duration (hours)</Label>
                     <Input
+                      id="course-duration"
                       type="number"
                       min={1}
                       max={100}
@@ -446,8 +455,9 @@ export function AIContentStudio() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label>Number of Modules</Label>
+                    <Label htmlFor="course-modules">Number of Modules</Label>
                     <Input
+                      id="course-modules"
                       type="number"
                       min={1}
                       max={20}
@@ -460,8 +470,14 @@ export function AIContentStudio() {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <Label>Include Quizzes</Label>
+                  <label
+                    htmlFor="include-quizzes"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Include Quizzes
+                  </label>
                   <Switch
+                    id="include-quizzes"
                     checked={courseForm.include_quizzes}
                     onCheckedChange={checked =>
                       setCourseForm({ ...courseForm, include_quizzes: checked })
@@ -470,8 +486,14 @@ export function AIContentStudio() {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <Label>Include Exercises</Label>
+                  <label
+                    htmlFor="include-exercises"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Include Exercises
+                  </label>
                   <Switch
+                    id="include-exercises"
                     checked={courseForm.include_exercises}
                     onCheckedChange={checked =>
                       setCourseForm({ ...courseForm, include_exercises: checked })
@@ -509,9 +531,10 @@ export function AIContentStudio() {
                 <ScrollArea className="h-[350px]">
                   <div className="space-y-3">
                     {templates.map(template => (
-                      <div
+                      <button
                         key={template.id}
-                        className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                        type="button"
+                        className={`bg-transparent border-0 p-0 text-left w-full p-3 border rounded-lg cursor-pointer transition-colors ${
                           courseForm.template_id === template.id
                             ? 'border-primary bg-primary/5'
                             : 'hover:border-muted-foreground/50'
@@ -533,7 +556,7 @@ export function AIContentStudio() {
                           <Badge variant="outline">{template.default_modules} modules</Badge>
                           <Badge variant="outline">{template.default_duration_hours}h</Badge>
                         </div>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </ScrollArea>
@@ -595,8 +618,9 @@ export function AIContentStudio() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-2">
-                <Label>Source Content *</Label>
+                <Label htmlFor="quiz-content">Source Content *</Label>
                 <Textarea
+                  id="quiz-content"
                   value={quizForm.source_content}
                   onChange={e => setQuizForm({ ...quizForm, source_content: e.target.value })}
                   placeholder="Paste the content you want to generate questions from..."
@@ -606,8 +630,9 @@ export function AIContentStudio() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label>Number of Questions</Label>
+                  <Label htmlFor="quiz-num-questions">Number of Questions</Label>
                   <Input
+                    id="quiz-num-questions"
                     type="number"
                     min={1}
                     max={50}
@@ -618,12 +643,17 @@ export function AIContentStudio() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label>Difficulty</Label>
+                  <Label htmlFor="quiz-difficulty">Difficulty</Label>
                   <Select
                     value={quizForm.difficulty}
-                    onValueChange={value => setQuizForm({ ...quizForm, difficulty: value as any })}
+                    onValueChange={value =>
+                      setQuizForm({
+                        ...quizForm,
+                        difficulty: value as 'beginner' | 'intermediate' | 'advanced' | 'expert',
+                      })
+                    }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger id="quiz-difficulty">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -637,8 +667,14 @@ export function AIContentStudio() {
               </div>
 
               <div className="flex items-center justify-between">
-                <Label>Include Explanations</Label>
+                <label
+                  htmlFor="quiz-explanations"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Include Explanations
+                </label>
                 <Switch
+                  id="quiz-explanations"
                   checked={quizForm.include_explanations}
                   onCheckedChange={checked =>
                     setQuizForm({ ...quizForm, include_explanations: checked })
@@ -678,8 +714,9 @@ export function AIContentStudio() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-2">
-                <Label>Content ID</Label>
+                <Label htmlFor="translation-content-id">Content ID</Label>
                 <Input
+                  id="translation-content-id"
                   value={translationForm.content_id}
                   onChange={e =>
                     setTranslationForm({ ...translationForm, content_id: e.target.value })
@@ -689,14 +726,14 @@ export function AIContentStudio() {
               </div>
 
               <div className="grid gap-2">
-                <Label>Content Type</Label>
+                <Label htmlFor="translation-content-type">Content Type</Label>
                 <Select
                   value={translationForm.content_type}
                   onValueChange={value =>
                     setTranslationForm({ ...translationForm, content_type: value })
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger id="translation-content-type">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -709,14 +746,14 @@ export function AIContentStudio() {
               </div>
 
               <div className="grid gap-2">
-                <Label>Target Language</Label>
+                <Label htmlFor="translation-target-language">Target Language</Label>
                 <Select
                   value={translationForm.target_language}
                   onValueChange={value =>
                     setTranslationForm({ ...translationForm, target_language: value })
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger id="translation-target-language">
                     <SelectValue placeholder="Select language" />
                   </SelectTrigger>
                   <SelectContent>
@@ -765,6 +802,7 @@ export function AIContentStudio() {
                   Coming soon: AI-powered video script generation with visual cues and timing.
                 </p>
                 <Button disabled className="w-full">
+                  {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                   <Video className="h-4 w-4 mr-2" />
                   Generate Script
                 </Button>
@@ -808,6 +846,7 @@ export function AIContentStudio() {
                         {job.job_type === 'course' && <BookOpen className="h-4 w-4" />}
                         {job.job_type === 'quiz' && <HelpCircle className="h-4 w-4" />}
                         {job.job_type === 'translation' && <Languages className="h-4 w-4" />}
+                        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                         {job.job_type === 'video_script' && <Video className="h-4 w-4" />}
                         {job.job_type === 'slide_deck' && <Presentation className="h-4 w-4" />}
                         <div>

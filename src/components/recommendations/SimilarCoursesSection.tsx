@@ -12,7 +12,11 @@ import { Sparkles, BookOpen, TrendingUp, ArrowRight, Info } from '@/components/u
 import { useSimilarContent } from '@/hooks/useRecommendations';
 import type { Recommendation } from '@/services/ai/RecommendationEngineService';
 import { cn } from '@/lib/utils';
-import { prefetchCourseDetails, prefetchCourseReviews, createPrefetchOnHoverWithDelay } from '@/utils/prefetch';
+import {
+  prefetchCourseDetails,
+  prefetchCourseReviews,
+  createPrefetchOnHoverWithDelay,
+} from '@/utils/prefetch';
 
 export interface SimilarCoursesSectionProps {
   courseId: string;
@@ -52,57 +56,58 @@ function SimilarCourseCard({
   }, 500); // 500ms delay for similar course cards
 
   return (
-    <Card
-      className="hover:shadow-lg transition-all cursor-pointer group"
+    <button
+      type="button"
+      className="bg-transparent border-0 p-0 text-left w-full"
       onClick={onClick}
       onMouseEnter={prefetchHandlers.onMouseEnter}
       onMouseLeave={prefetchHandlers.onMouseLeave}
-      role="button"
-      tabIndex={0}
     >
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1 min-w-0">
-            <CardTitle className="text-base line-clamp-2 group-hover:text-primary transition-colors">
-              {recommendation.title}
-            </CardTitle>
+      <Card className="hover:shadow-lg transition-all cursor-pointer group">
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-base line-clamp-2 group-hover:text-primary transition-colors">
+                {recommendation.title}
+              </CardTitle>
+            </div>
+            <Badge
+              variant="secondary"
+              className={cn('shrink-0', getConfidenceColor(recommendation.confidenceScore))}
+            >
+              {confidencePercent}% match
+            </Badge>
           </div>
-          <Badge
-            variant="secondary"
-            className={cn('shrink-0', getConfidenceColor(recommendation.confidenceScore))}
-          >
-            {confidencePercent}% match
-          </Badge>
-        </div>
-      </CardHeader>
+        </CardHeader>
 
-      <CardContent className="space-y-3">
-        {/* Description */}
-        <CardDescription className="line-clamp-2 text-sm">
-          {recommendation.description}
-        </CardDescription>
+        <CardContent className="space-y-3">
+          {/* Description */}
+          <CardDescription className="line-clamp-2 text-sm">
+            {recommendation.description}
+          </CardDescription>
 
-        {/* Metadata */}
-        <div className="flex flex-wrap gap-2">
-          {recommendation.metadata?.difficulty && (
-            <Badge variant="outline" className="text-xs">
-              {recommendation.metadata.difficulty}
-            </Badge>
-          )}
-          {recommendation.metadata?.category && (
-            <Badge variant="outline" className="text-xs">
-              {recommendation.metadata.category}
-            </Badge>
-          )}
-        </div>
+          {/* Metadata */}
+          <div className="flex flex-wrap gap-2">
+            {recommendation.metadata?.difficulty && (
+              <Badge variant="outline" className="text-xs">
+                {recommendation.metadata.difficulty}
+              </Badge>
+            )}
+            {recommendation.metadata?.category && (
+              <Badge variant="outline" className="text-xs">
+                {recommendation.metadata.category}
+              </Badge>
+            )}
+          </div>
 
-        {/* Action */}
-        <div className="flex items-center justify-between pt-2 border-t">
-          <span className="text-xs text-muted-foreground">{recommendation.reason.primary}</span>
-          <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-        </div>
-      </CardContent>
-    </Card>
+          {/* Action */}
+          <div className="flex items-center justify-between pt-2 border-t">
+            <span className="text-xs text-muted-foreground">{recommendation.reason.primary}</span>
+            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+          </div>
+        </CardContent>
+      </Card>
+    </button>
   );
 }
 

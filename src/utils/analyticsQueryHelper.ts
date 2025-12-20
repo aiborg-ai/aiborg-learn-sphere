@@ -11,11 +11,12 @@ import { logger } from '@/utils/logger';
 /**
  * Execute a query for both current and comparison periods
  */
-export async function executeComparisonQuery<T extends Record<string, any>>(
+export async function executeComparisonQuery<T extends Record<string, unknown>>(
   tableName: string,
   dateRange: DateRange,
   comparisonDateRange: DateRange | null,
   selectFields: string = '*',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   additionalFilters?: (query: any) => any
 ): Promise<{
   current: T[];
@@ -79,13 +80,13 @@ export async function executeComparisonQuery<T extends Record<string, any>>(
 /**
  * Execute an aggregate query with comparison
  */
-export async function executeComparisonAggregateQuery(
+export async function executeComparisonAggregateQuery<T = unknown>(
   query: string,
-  currentParams: Record<string, any>,
-  comparisonParams: Record<string, any> | null
+  currentParams: Record<string, unknown>,
+  comparisonParams: Record<string, unknown> | null
 ): Promise<{
-  current: any;
-  comparison: any | null;
+  current: T;
+  comparison: T | null;
 }> {
   // Execute current period query
   const { data: currentData, error: currentError } = await supabase.rpc(query, currentParams);

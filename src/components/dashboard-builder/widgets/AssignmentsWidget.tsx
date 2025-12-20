@@ -12,6 +12,19 @@ import { cn } from '@/lib/utils';
 import type { WidgetComponentProps, ActivityWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';
 
+interface Course {
+  title: string;
+}
+
+interface Assignment {
+  id: string;
+  title: string;
+  description: string | null;
+  due_date: string;
+  status: string;
+  course: Course | null;
+}
+
 export function AssignmentsWidget({ widget, isEditing }: WidgetComponentProps) {
   const config = widget.config as ActivityWidgetConfig;
   const limit = config.limit || 8;
@@ -45,7 +58,7 @@ export function AssignmentsWidget({ widget, isEditing }: WidgetComponentProps) {
         .limit(limit);
 
       if (error) throw error;
-      return data;
+      return data as Assignment[];
     },
     enabled: !isEditing,
     refetchInterval: config.refreshInterval ? config.refreshInterval * 1000 : false,
@@ -113,7 +126,7 @@ export function AssignmentsWidget({ widget, isEditing }: WidgetComponentProps) {
             <div className="flex-1 min-w-0">
               <h4 className="text-sm font-medium line-clamp-1">{assignment.title}</h4>
               <p className="text-xs text-muted-foreground line-clamp-1">
-                {(assignment.course as any)?.title || 'Course'}
+                {assignment.course?.title || 'Course'}
               </p>
 
               {showTimestamps && (

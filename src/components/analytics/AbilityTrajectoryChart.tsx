@@ -252,9 +252,10 @@ export function AbilityTrajectoryChart({
                 dataKey="ability"
                 stroke={trendConfig?.chartColor || '#3b82f6'}
                 strokeWidth={2.5}
-                dot={(props: any) => {
+                dot={(props: { cx?: number; cy?: number; payload?: AbilityChartPoint }) => {
                   const { cx, cy, payload } = props;
-                  if (!payload || payload.isForecast) return null;
+                  if (!payload || payload.isForecast || cx === undefined || cy === undefined)
+                    return null;
                   return (
                     <circle
                       cx={cx}

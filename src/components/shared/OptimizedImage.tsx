@@ -84,7 +84,11 @@ const getImageSrc = (src: string, useWebP: boolean): string => {
 /**
  * Generates srcset string for responsive images
  */
-const generateSrcSet = (src: string, sizes?: Record<string, number>, useWebP?: boolean): string | undefined => {
+const generateSrcSet = (
+  src: string,
+  sizes?: Record<string, number>,
+  useWebP?: boolean
+): string | undefined => {
   if (!sizes) return undefined;
 
   const ext = useWebP ? '.webp' : '';
@@ -139,14 +143,17 @@ export function OptimizedImage({
 
   // Determine which image source to use
   const imageSrc = isInView
-    ? (hasError ? src : getImageSrc(src, supportsWebP))
-    : (showPlaceholder ? placeholderSrc : '');
+    ? hasError
+      ? src
+      : getImageSrc(src, supportsWebP)
+    : showPlaceholder
+      ? placeholderSrc
+      : '';
 
-  const imageSrcSet = isInView && !hasError
-    ? generateSrcSet(src, sizes, supportsWebP)
-    : undefined;
+  const imageSrcSet = isInView && !hasError ? generateSrcSet(src, sizes, supportsWebP) : undefined;
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- onLoad/onError handlers are necessary for image loading state and fallback management
     <img
       ref={imgRef}
       src={imageSrc}

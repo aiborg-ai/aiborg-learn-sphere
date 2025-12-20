@@ -191,7 +191,7 @@ test.describe('Student Learning Journey', () => {
     }
   });
 
-  test('should allow students to take notes', async ({ page }) => {
+  test('should allow students to take notes', async ({ page: _page }) => {
     await coursesPage.navigate();
     const courses = await coursesPage.getAllVisibleCourses();
 
@@ -213,7 +213,7 @@ test.describe('Student Learning Journey', () => {
     }
   });
 
-  test('should allow downloading course resources', async ({ page }) => {
+  test('should allow downloading course resources', async ({ page: _page }) => {
     await coursesPage.navigate();
     const courses = await coursesPage.getAllVisibleCourses();
 
@@ -236,7 +236,7 @@ test.describe('Student Learning Journey', () => {
     }
   });
 
-  test('should allow posting questions in discussion', async ({ page }) => {
+  test('should allow posting questions in discussion', async ({ page: _page }) => {
     await coursesPage.navigate();
     const courses = await coursesPage.getAllVisibleCourses();
 
@@ -253,11 +253,11 @@ test.describe('Student Learning Journey', () => {
       await learningPage.postQuestion(testQuestion);
 
       // Verify question posted (implementation dependent)
-      await page.waitForTimeout(1000);
+      await _page.waitForTimeout(1000);
     }
   });
 
-  test('should handle quiz attempts', async ({ page }) => {
+  test('should handle quiz attempts', async ({ page: _page }) => {
     await coursesPage.navigate();
     const courses = await coursesPage.getAllVisibleCourses();
 
@@ -340,7 +340,7 @@ test.describe('Student Learning Journey', () => {
     }
   });
 
-  test('should return to dashboard from course', async ({ page }) => {
+  test('should return to dashboard from course', async ({ page: _page }) => {
     await coursesPage.navigate();
     const courses = await coursesPage.getAllVisibleCourses();
 
@@ -381,7 +381,7 @@ test.describe('Learning Experience Edge Cases', () => {
     await page.context().setOffline(false);
   });
 
-  test('should persist video progress on page reload', async ({ page }) => {
+  test('should persist video progress on page reload', async ({ page: _page }) => {
     // This test would require actual course enrollment
     // Placeholder for video progress persistence testing
     test.skip();

@@ -128,11 +128,11 @@ export default function WhiteLabelSettings() {
 
       // Refresh branding to apply changes
       await refreshBranding();
-    } catch (error: any) {
+    } catch (error) {
       logger.error('Failed to save branding', error);
       toast({
         title: 'Error',
-        description: error.message || 'Failed to save branding settings',
+        description: error instanceof Error ? error.message : 'Failed to save branding settings',
         variant: 'destructive',
       });
     } finally {
@@ -268,7 +268,9 @@ export default function WhiteLabelSettings() {
                   <Label htmlFor="theme_mode">Theme Mode</Label>
                   <Select
                     value={formData.theme_mode}
-                    onValueChange={(value: any) => setFormData({ ...formData, theme_mode: value })}
+                    onValueChange={(value: 'light' | 'dark' | 'system' | 'custom') =>
+                      setFormData({ ...formData, theme_mode: value })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -386,12 +388,13 @@ export default function WhiteLabelSettings() {
                 />
                 {formData.logo_url && (
                   <div className="mt-2 p-4 border rounded-lg bg-muted/50">
+                    {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
                     <img
                       src={formData.logo_url}
                       alt="Logo preview"
                       className="h-16 object-contain"
                       onError={e => {
-                        (e.target as HTMLImageElement).style.display = 'none';
+                        (e.currentTarget as HTMLImageElement).style.display = 'none';
                       }}
                     />
                   </div>
@@ -409,12 +412,13 @@ export default function WhiteLabelSettings() {
                 />
                 {formData.favicon_url && (
                   <div className="mt-2 p-4 border rounded-lg bg-muted/50">
+                    {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
                     <img
                       src={formData.favicon_url}
                       alt="Favicon preview"
                       className="h-8 w-8 object-contain"
                       onError={e => {
-                        (e.target as HTMLImageElement).style.display = 'none';
+                        (e.currentTarget as HTMLImageElement).style.display = 'none';
                       }}
                     />
                   </div>

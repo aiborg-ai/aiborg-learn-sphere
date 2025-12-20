@@ -275,7 +275,14 @@ export class DashboardConfigService {
         );
       }
 
-      const updateData: any = {};
+      const updateData: Partial<{
+        name: string;
+        config: DashboardConfig;
+        is_default: boolean;
+        is_public: boolean;
+        layout_type: LayoutType;
+        theme_config: ThemeConfig;
+      }> = {};
 
       // Sanitize name if provided
       if (updates.name !== undefined) {

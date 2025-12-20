@@ -102,12 +102,14 @@ class GoalsAnalyticsServiceClass {
     try {
       const { data, error } = await supabase
         .from('user_career_goals')
-        .select(`
+        .select(
+          `
           *,
           job_role:target_role_id (
             title
           )
-        `)
+        `
+        )
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
@@ -115,9 +117,10 @@ class GoalsAnalyticsServiceClass {
 
       // Map the job role name
       return (
-        data?.map((goal: any) => ({
+        data?.map(goal => ({
           ...goal,
-          target_role_name: goal.job_role?.title || 'Unknown Role',
+          target_role_name:
+            (goal as { job_role?: { title?: string } }).job_role?.title || 'Unknown Role',
         })) || []
       );
     } catch (error) {
@@ -177,20 +180,16 @@ class GoalsAnalyticsServiceClass {
       ).length;
       const completedGoals = allGoals.filter(g => g.status === 'completed').length;
 
-      const overallProgress =
-        allGoals.reduce((sum, g) => sum + g.progress, 0) / (totalGoals || 1);
+      const overallProgress = allGoals.reduce((sum, g) => sum + g.progress, 0) / (totalGoals || 1);
 
       const goalsOnTrack = allGoals.filter(g => g.progress >= 75).length;
       const goalsAtRisk = allGoals.filter(
         g => g.progress < 50 && (g.status === 'active' || g.status === 'draft')
       ).length;
 
-      const activeGoalsList = allGoals.filter(
-        g => g.status === 'active' || g.status === 'draft'
-      );
+      const activeGoalsList = allGoals.filter(g => g.status === 'active' || g.status === 'draft');
       const averageCompletionRate =
-        activeGoalsList.reduce((sum, g) => sum + g.progress, 0) /
-        (activeGoalsList.length || 1);
+        activeGoalsList.reduce((sum, g) => sum + g.progress, 0) / (activeGoalsList.length || 1);
 
       return {
         totalGoals,
@@ -346,10 +345,7 @@ class GoalsAnalyticsServiceClass {
   /**
    * Update learning goal progress
    */
-  async updateLearningGoalProgress(
-    goalId: string,
-    currentProgress: number
-  ): Promise<void> {
+  async updateLearningGoalProgress(goalId: string, currentProgress: number): Promise<void> {
     try {
       const { error } = await supabase
         .from('user_learning_goals')
@@ -375,10 +371,7 @@ class GoalsAnalyticsServiceClass {
   ): Promise<void> {
     try {
       if (goalType === 'learning') {
-        await supabase
-          .from('user_learning_goals')
-          .update({ status: 'completed' })
-          .eq('id', goalId);
+        await supabase.from('user_learning_goals').update({ status: 'completed' }).eq('id', goalId);
       } else if (goalType === 'career') {
         await supabase
           .from('user_career_goals')

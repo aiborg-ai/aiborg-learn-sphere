@@ -12,6 +12,27 @@ import { Badge } from '@/components/ui/badge';
 import type { WidgetComponentProps, ProgressWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';
 
+interface Milestone {
+  completed: boolean;
+}
+
+interface LearningPath {
+  id: string;
+  goal_title: string;
+  goal_description: string | null;
+  skill_level: string | null;
+  timeline: string | null;
+  status: string;
+  created_at: string;
+  milestones: Milestone[] | null;
+}
+
+interface EnrichedLearningPath extends LearningPath {
+  progress: number;
+  completedMilestones: number;
+  totalMilestones: number;
+}
+
 export function LearningPathProgressWidget({ widget, isEditing }: WidgetComponentProps) {
   const config = widget.config as ProgressWidgetConfig;
   const showPercentage = config.showPercentage !== false;
@@ -35,10 +56,11 @@ export function LearningPathProgressWidget({ widget, isEditing }: WidgetComponen
 
       if (error) throw error;
 
+      const pathData = data as LearningPath[];
       // Calculate progress for each path
-      return data?.map(path => {
+      return pathData?.map(path => {
         const milestones = path.milestones || [];
-        const completedMilestones = milestones.filter((m: any) => m.completed).length;
+        const completedMilestones = milestones.filter(m => m.completed).length;
         const progress =
           milestones.length > 0 ? (completedMilestones / milestones.length) * 100 : 0;
 
@@ -47,7 +69,7 @@ export function LearningPathProgressWidget({ widget, isEditing }: WidgetComponen
           progress,
           completedMilestones,
           totalMilestones: milestones.length,
-        };
+        } as EnrichedLearningPath;
       });
     },
     enabled: !isEditing,

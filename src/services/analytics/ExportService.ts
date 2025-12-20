@@ -3,7 +3,12 @@
  * Provides PDF and CSV export functionality for analytics data
  */
 
-import { exportAnalyticsToPDF, exportSingleAnalyticsToPDF, AnalyticsSection, DateRange } from '@/utils/pdfExport';
+import {
+  exportAnalyticsToPDF,
+  exportSingleAnalyticsToPDF,
+  AnalyticsSection,
+  DateRange,
+} from '@/utils/pdfExport';
 import { exportToCSV, sanitizeForCsv } from '@/utils/export/csvExport';
 import { logger } from '@/utils/logger';
 
@@ -30,10 +35,7 @@ export class ExportService {
    * @param sections - Array of analytics sections to include in PDF
    * @param config - Export configuration with filename and date range
    */
-  static async exportToPDF(
-    sections: AnalyticsSection[],
-    config: ExportConfig
-  ): Promise<void> {
+  static async exportToPDF(sections: AnalyticsSection[], config: ExportConfig): Promise<void> {
     try {
       // Validate sections
       if (!sections || sections.length === 0) {
@@ -60,7 +62,9 @@ export class ExportService {
       });
     } catch (error) {
       logger.error('Error exporting to PDF:', error);
-      throw new Error(`Failed to export PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to export PDF: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -69,10 +73,7 @@ export class ExportService {
    * @param section - Single analytics section to export
    * @param config - Export configuration with filename and date range
    */
-  static async exportSingleToPDF(
-    section: AnalyticsSection,
-    config: ExportConfig
-  ): Promise<void> {
+  static async exportSingleToPDF(section: AnalyticsSection, config: ExportConfig): Promise<void> {
     try {
       // Validate section
       if (!section) {
@@ -99,7 +100,9 @@ export class ExportService {
       });
     } catch (error) {
       logger.error('Error exporting single section to PDF:', error);
-      throw new Error(`Failed to export PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to export PDF: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -109,7 +112,7 @@ export class ExportService {
    * @param config - Export configuration with filename and optional metadata
    * @param headers - Optional custom headers for CSV columns
    */
-  static async exportToCSV<T extends Record<string, any>>(
+  static async exportToCSV<T extends Record<string, unknown>>(
     data: T[],
     config: ExportConfig,
     headers?: string[]
@@ -159,7 +162,9 @@ export class ExportService {
       });
     } catch (error) {
       logger.error('Error exporting to CSV:', error);
-      throw new Error(`Failed to export CSV: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to export CSV: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 

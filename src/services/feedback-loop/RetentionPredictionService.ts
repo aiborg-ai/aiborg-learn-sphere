@@ -20,12 +20,6 @@ import {
   PersonalizedSM2Params,
 } from './FeedbackLoopTypes';
 
-interface TopicRetentionData {
-  topicId: string;
-  observations: RetentionObservation[];
-  curve?: ForgettingCurve;
-}
-
 export class RetentionPredictionService {
   // Default forgetting curve parameters (Ebbinghaus-like)
   private defaultDecayConstant = 0.3; // R = e^(-k*t), k = decay constant
@@ -315,7 +309,13 @@ export class RetentionPredictionService {
   /**
    * Fit exponential curve to observations using least squares
    */
-  private fitExponentialCurve(observations: any[]): { decayConstant: number; confidence: number } {
+  private fitExponentialCurve(
+    observations: Array<{
+      days_since_last_review: number;
+      was_recalled: boolean;
+      quality_score: number | null;
+    }>
+  ): { decayConstant: number; confidence: number } {
     // Transform to linear: ln(R) = -k*t
     // We use quality_score >= 3 as "recalled" proxy, or was_recalled field
 
@@ -389,7 +389,13 @@ export class RetentionPredictionService {
   /**
    * Analyze retention patterns from observations
    */
-  private analyzeRetentionPatterns(observations: any[]) {
+  private analyzeRetentionPatterns(
+    observations: Array<{
+      was_recalled: boolean;
+      quality_score: number | null;
+      days_since_last_review: number;
+    }>
+  ) {
     let highRetentionCount = 0;
     let lowRetentionCount = 0;
     let totalHalfLife = 0;
@@ -453,7 +459,9 @@ export class RetentionPredictionService {
   /**
    * Calculate prediction accuracy
    */
-  private calculatePredictionAccuracy(observations: any[]): number {
+  private calculatePredictionAccuracy(
+    observations: Array<{ predicted_retention: number | null; was_recalled: boolean }>
+  ): number {
     let correct = 0;
 
     for (const obs of observations) {
@@ -474,8 +482,8 @@ export class RetentionPredictionService {
    * Get cached forgetting curve
    */
   private async getCachedForgettingCurve(
-    userId: string,
-    topicId?: string
+    _userId: string,
+    _topicId?: string
   ): Promise<ForgettingCurve | null> {
     // In production, this would use Redis or similar cache
     // For now, we'll rebuild each time

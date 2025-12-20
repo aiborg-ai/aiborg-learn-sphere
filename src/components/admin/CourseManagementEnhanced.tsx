@@ -6,6 +6,7 @@ import { BookOpen, Plus } from '@/components/ui/icons';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
+import { LingoReorderService } from '@/services/lingo/LingoReorderService';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,6 +29,7 @@ export function CourseManagementEnhanced({
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [deletingCourse, setDeletingCourse] = useState<Course | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isReordering, setIsReordering] = useState(false);
   const { toast } = useToast();
 
   // State for dynamic array fields
@@ -289,6 +291,41 @@ export function CourseManagementEnhanced({
     });
   };
 
+  const handleReorderCourses = async (reorderedCourses: Course[]) => {
+    setIsReordering(true);
+    try {
+      const reorderItems = reorderedCourses.map((course, index) => ({
+        id: String(course.id),
+        sort_order: index,
+      }));
+
+      await LingoReorderService.reorderCourses(reorderItems);
+
+      // Update local state with new order
+      const updatedCourses = reorderedCourses.map((course, index) => ({
+        ...course,
+        sort_order: index,
+      }));
+      setCourses(updatedCourses);
+
+      toast({
+        title: 'Success',
+        description: 'Courses reordered successfully',
+      });
+    } catch (error) {
+      logger.error('Failed to reorder courses', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to reorder courses. Please try again.',
+        variant: 'destructive',
+      });
+      // Reload to restore original order
+      onRefresh();
+    } finally {
+      setIsReordering(false);
+    }
+  };
+
   return (
     <>
       <Card>
@@ -314,6 +351,8 @@ export function CourseManagementEnhanced({
             onDelete={openDeleteDialog}
             onDuplicate={handleDuplicate}
             onToggleStatus={toggleCourseStatus}
+            onReorder={handleReorderCourses}
+            isReordering={isReordering}
           />
         </CardContent>
       </Card>

@@ -17,7 +17,6 @@ import { RetentionCard } from './RetentionCard';
 
 export function RetentionDashboard() {
   const {
-    stats,
     recallRate,
     predictionAccuracy,
     curve,

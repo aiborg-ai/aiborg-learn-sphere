@@ -344,7 +344,7 @@ export class ExcelExportService {
    * Export a single sheet as CSV
    */
   static async exportToCSV(
-    data: any[][],
+    data: unknown[][],
     fileName: string = `export-${format(new Date(), 'yyyy-MM-dd')}`
   ): Promise<void> {
     try {

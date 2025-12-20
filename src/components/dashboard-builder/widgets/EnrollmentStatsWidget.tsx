@@ -16,6 +16,18 @@ interface EnrollmentStatsConfig extends BaseWidgetConfig {
   showProgress?: boolean;
 }
 
+interface Course {
+  category: string | null;
+}
+
+interface Enrollment {
+  id: string;
+  progress: number | null;
+  status: string | null;
+  completed_at: string | null;
+  course: Course | null;
+}
+
 export function EnrollmentStatsWidget({ widget, isEditing }: WidgetComponentProps) {
   const config = widget.config as EnrollmentStatsConfig;
   const showBreakdown = config.showBreakdown !== false;
@@ -47,18 +59,19 @@ export function EnrollmentStatsWidget({ widget, isEditing }: WidgetComponentProp
 
       if (error) throw error;
 
-      const total = enrollments?.length || 0;
-      const completed = enrollments?.filter(e => e.completed_at).length || 0;
+      const enrollmentData = enrollments as Enrollment[];
+      const total = enrollmentData?.length || 0;
+      const completed = enrollmentData?.filter(e => e.completed_at).length || 0;
       const inProgress =
-        enrollments?.filter(e => !e.completed_at && (e.progress || 0) > 0).length || 0;
-      const notStarted = enrollments?.filter(e => !e.progress || e.progress === 0).length || 0;
+        enrollmentData?.filter(e => !e.completed_at && (e.progress || 0) > 0).length || 0;
+      const notStarted = enrollmentData?.filter(e => !e.progress || e.progress === 0).length || 0;
       const avgProgress =
-        total > 0 ? enrollments.reduce((sum, e) => sum + (e.progress || 0), 0) / total : 0;
+        total > 0 ? enrollmentData.reduce((sum, e) => sum + (e.progress || 0), 0) / total : 0;
 
       // Category breakdown
       const categoryCount: Record<string, number> = {};
-      enrollments?.forEach(e => {
-        const category = (e.course as any)?.category || 'Other';
+      enrollmentData?.forEach(e => {
+        const category = e.course?.category || 'Other';
         categoryCount[category] = (categoryCount[category] || 0) + 1;
       });
 

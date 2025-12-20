@@ -43,16 +43,20 @@ export function StudyRecommendationsWidget({ widget, isEditing }: WidgetComponen
       ]);
 
       const userPrefs = preferences.data;
-      const enrolledCourseIds = new Set(enrollments.data?.map((e: any) => e.course?.id) || []);
+      const enrolledCourseIds = new Set(
+        enrollments.data?.map(
+          (e: Record<string, unknown>) => (e.course as Record<string, unknown>)?.id as string
+        ) || []
+      );
 
       // Extract user's interests from enrolled courses
       const userKeywords = new Set<string>();
       const userCategories = new Set<string>();
 
-      enrollments.data?.forEach((enrollment: any) => {
-        const course = enrollment.course;
-        course?.keywords?.forEach((keyword: string) => userKeywords.add(keyword));
-        if (course?.category) userCategories.add(course.category);
+      enrollments.data?.forEach((enrollment: Record<string, unknown>) => {
+        const course = enrollment.course as Record<string, unknown>;
+        (course?.keywords as string[])?.forEach((keyword: string) => userKeywords.add(keyword));
+        if (course?.category) userCategories.add(course.category as string);
       });
 
       // Generate recommendations

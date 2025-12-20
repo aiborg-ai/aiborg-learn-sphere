@@ -25,9 +25,23 @@ import { ArrowRight, Bold, Italic, List, Link2, Code } from '@/components/ui/ico
 import { CardImage } from '@/components/shared/OptimizedImage';
 import { supabase } from '@/integrations/supabase/client';
 
+interface GeneratedContent {
+  title: string;
+  excerpt: string;
+  content: string;
+  suggestedCategory?: string;
+  suggestedTags?: string[];
+  metaTitle?: string;
+  metaDescription?: string;
+}
+
+interface SelectedImage {
+  url: string;
+}
+
 interface EditStepProps {
-  generatedContent: any;
-  selectedImage: any;
+  generatedContent: GeneratedContent;
+  selectedImage: SelectedImage;
   initialData?: Partial<EditStepData>;
   onNext: (data: EditStepData) => void;
   onBack: () => void;
@@ -40,8 +54,18 @@ export function EditStep({
   onNext,
   onBack,
 }: EditStepProps) {
-  const [categories, setCategories] = useState<any[]>([]);
-  const [allTags, setAllTags] = useState<any[]>([]);
+  interface Category {
+    id: string;
+    name: string;
+  }
+
+  interface Tag {
+    id: string;
+    name: string;
+  }
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [allTags, setAllTags] = useState<Tag[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>(
     initialData?.tags || generatedContent.suggestedTags || []
   );

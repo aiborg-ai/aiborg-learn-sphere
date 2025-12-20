@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -11,6 +12,8 @@ import { useCourses } from '@/hooks/useCourses';
 import { useChatHistory } from '@/hooks/useChatHistory';
 import { generateFallbackResponse } from '@/utils/chatbotFallback';
 import { logger } from '@/utils/logger';
+import { OllamaService } from '@/services/ai/OllamaService';
+import { OllamaModelSelector } from '@/components/features/OllamaModelSelector';
 import {
   MessageCircle,
   Send,
@@ -137,6 +140,8 @@ export function AIChatbot() {
   );
   const [messageMetadata, setMessageMetadata] = useState<Record<string, MessageMetadata>>({});
   const [messageRatings, setMessageRatings] = useState<Record<string, MessageRating>>({});
+  const [selectedOllamaModel, setSelectedOllamaModel] = useState(OllamaService.getDefaultModel());
+  const [useOllama, setUseOllama] = useState(true); // Toggle between Ollama and cloud API
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Get messages from current conversation
@@ -342,16 +347,81 @@ export function AIChatbot() {
     const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const startTime = Date.now();
 
-    try {
-      // Call the ai-chat-with-analytics-cached edge function with conversation tracking
-      const coursesData = getCourseRecommendations().map(course => ({
-        title: course.title,
-        price: course.price,
-        duration: course.duration,
-        level: course.level || 'beginner',
-        audience: selectedAudience,
-      }));
+    // Get course data for context
+    const coursesData = getCourseRecommendations().map(course => ({
+      title: course.title,
+      price: course.price,
+      duration: course.duration,
+      level: course.level || 'beginner',
+      audience: selectedAudience,
+    }));
 
+    // Try Ollama first if enabled
+    if (useOllama) {
+      try {
+        const isHealthy = await OllamaService.checkHealth();
+
+        if (isHealthy) {
+          // Build system prompt with course context
+          const systemPrompt = `You are aiborg chat, a friendly and helpful AI learning assistant for Aiborg Learn Sphere, an AI-augmented learning platform.
+
+Your role is to:
+- Help users discover courses that match their learning goals
+- Answer questions about AI, machine learning, and our programs
+- Be conversational, friendly, and ${selectedAudience === 'primary' ? 'use simple language with fun emojis 🎮🌟' : selectedAudience === 'secondary' ? 'be relatable and encouraging' : selectedAudience === 'business' ? 'be professional and focus on ROI/business value' : 'be professional and helpful'}
+
+Available courses for ${selectedAudience || 'all audiences'}:
+${coursesData.map(c => `- ${c.title} (${c.price}, ${c.duration}, ${c.level})`).join('\n')}
+
+Keep responses concise but helpful. If asked about pricing, enrollment, or specific course details, provide accurate information from the course list above.`;
+
+          // Build conversation history
+          const conversationMessages = messages.slice(-6).map(msg => ({
+            role: msg.sender === 'user' ? ('user' as const) : ('assistant' as const),
+            content: msg.content,
+          }));
+
+          const ollamaMessages = [
+            { role: 'system' as const, content: systemPrompt },
+            ...conversationMessages,
+            { role: 'user' as const, content: userMessage },
+          ];
+
+          const response = await OllamaService.chat(ollamaMessages, {
+            model: selectedOllamaModel,
+            temperature: 0.7,
+            maxTokens: 512,
+          });
+
+          const responseTime = Date.now() - startTime;
+
+          const metadata: MessageMetadata = {
+            model: selectedOllamaModel,
+            cost: { usd: 0 }, // Ollama is free!
+            cache_hit: false,
+            response_time_ms: responseTime,
+          };
+
+          setMessageMetadata(prev => ({
+            ...prev,
+            [messageId]: metadata,
+          }));
+
+          logger.log('Ollama response generated successfully', {
+            model: selectedOllamaModel,
+            response_time: responseTime,
+            eval_count: response.eval_count,
+          });
+
+          return { response: response.message.content, metadata, messageId };
+        }
+      } catch (error) {
+        logger.warn('Ollama failed, falling back to cloud API:', error);
+      }
+    }
+
+    // Fallback to cloud API (Supabase Edge Function)
+    try {
       const { data, error } = await supabase.functions.invoke('ai-chat-with-analytics-cached', {
         body: {
           messages: [{ role: 'user', content: userMessage }],
@@ -366,7 +436,6 @@ export function AIChatbot() {
 
       const responseTime = Date.now() - startTime;
 
-      // Return the AI response with metadata
       if (data && data.response) {
         const metadata: MessageMetadata = {
           model: data.model || (data.cache_hit ? 'cached' : 'gpt-4-turbo-preview'),
@@ -376,24 +445,22 @@ export function AIChatbot() {
           response_time_ms: responseTime,
         };
 
-        // Store metadata for this message
         setMessageMetadata(prev => ({
           ...prev,
           [messageId]: metadata,
         }));
 
-        logger.log('AI response generated successfully', {
+        logger.log('Cloud AI response generated successfully', {
           tokens: data.usage?.total_tokens,
           cost: metadata.cost.usd,
           cache_hit: metadata.cache_hit,
-          cache_source: metadata.cache_source,
           response_time: responseTime,
         });
 
         return { response: data.response, metadata, messageId };
       }
 
-      throw new Error('No response from AI');
+      throw new Error('No response from cloud AI');
     } catch (error) {
       logger.error('Error generating AI response:', error);
 
@@ -404,7 +471,6 @@ export function AIChatbot() {
         getCourseRecommendations()
       );
 
-      // Show WhatsApp if suggested
       if (fallback.showWhatsApp) {
         setShowWhatsApp(true);
       }
@@ -587,6 +653,42 @@ export function AIChatbot() {
       );
     }
 
+    // Ollama models (local)
+    if (
+      metadata.model?.includes(':') ||
+      metadata.model?.includes('llama') ||
+      metadata.model?.includes('qwen') ||
+      metadata.model?.includes('deepseek')
+    ) {
+      const modelName = metadata.model?.split(':')[0] || metadata.model;
+      const getOllamaIcon = () => {
+        if (modelName?.includes('llama')) return '🦙';
+        if (modelName?.includes('qwen')) return '🌟';
+        if (modelName?.includes('deepseek')) return '🔍';
+        return '🤖';
+      };
+
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Badge
+                variant="secondary"
+                className="text-xs gap-1 bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300"
+              >
+                <span className="text-sm">{getOllamaIcon()}</span>
+                {modelName}
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Local Ollama Model - Free!</p>
+              <p className="text-xs opacity-70">{metadata.response_time_ms}ms</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
     if (metadata.model === 'gpt-4-turbo-preview') {
       return (
         <TooltipProvider>
@@ -697,50 +799,80 @@ export function AIChatbot() {
         className={`${isFullscreen ? 'h-screen rounded-none' : 'h-[600px]'} flex flex-col shadow-2xl border-primary/20`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b bg-gradient-primary rounded-t-lg">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Avatar className="h-10 w-10 border-2 border-white/20">
-                <AvatarFallback className="bg-white/10 text-white">
-                  <Bot className="h-5 w-5" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+        <div className="flex flex-col border-b bg-gradient-primary rounded-t-lg">
+          <div className="flex items-center justify-between p-4">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <Avatar className="h-10 w-10 border-2 border-white/20">
+                  <AvatarFallback className="bg-white/10 text-white">
+                    <Bot className="h-5 w-5" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+              </div>
+              <div>
+                <h3 className="font-semibold text-white">aiborg chat</h3>
+                <p className="text-xs text-white/80">Online • Ready to help</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-white">aiborg chat</h3>
-              <p className="text-xs text-white/80">Online • Ready to help</p>
+            <div className="flex items-center gap-2">
+              {/* Conversation History Dropdown */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowHistory(!showHistory)}
+                className="text-white hover:bg-white/10"
+                title="Conversation History"
+              >
+                <History className="h-4 w-4" />
+              </Button>
+              {/* Fullscreen Toggle */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsFullscreen(!isFullscreen)}
+                className="text-white hover:bg-white/10"
+                title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+              >
+                {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsOpen(false)}
+                className="text-white hover:bg-white/10"
+              >
+                <X className="h-4 w-4" />
+              </Button>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {/* Conversation History Dropdown */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowHistory(!showHistory)}
-              className="text-white hover:bg-white/10"
-              title="Conversation History"
-            >
-              <History className="h-4 w-4" />
-            </Button>
-            {/* Fullscreen Toggle */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsFullscreen(!isFullscreen)}
-              className="text-white hover:bg-white/10"
-              title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
-            >
-              {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsOpen(false)}
-              className="text-white hover:bg-white/10"
-            >
-              <X className="h-4 w-4" />
-            </Button>
+
+          {/* Model Selector Bar */}
+          <div className="px-4 pb-3 flex items-center gap-2">
+            <OllamaModelSelector
+              selectedModel={selectedOllamaModel}
+              onModelChange={setSelectedOllamaModel}
+              compact={!isFullscreen}
+              className="flex-1"
+            />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={useOllama ? 'secondary' : 'ghost'}
+                    size="sm"
+                    onClick={() => setUseOllama(!useOllama)}
+                    className={`h-8 px-2 text-xs ${useOllama ? 'bg-white/20 text-white' : 'text-white/60 hover:bg-white/10'}`}
+                  >
+                    {useOllama ? '🦙 Local' : '☁️ Cloud'}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>{useOllama ? 'Using local Ollama (Free)' : 'Using cloud API (Paid)'}</p>
+                  <p className="text-xs opacity-70">Click to switch</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
 
@@ -1000,7 +1132,10 @@ export function AIChatbot() {
                 <div className="flex flex-col items-center">
                   <div className="bg-white p-2 rounded-lg border">
                     <picture>
-                      <source srcSet="/lovable-uploads/062b8b8d-3c09-41cf-92a4-d274f73d56d7.webp" type="image/webp" />
+                      <source
+                        srcSet="/lovable-uploads/062b8b8d-3c09-41cf-92a4-d274f73d56d7.webp"
+                        type="image/webp"
+                      />
                       <img
                         src="/lovable-uploads/062b8b8d-3c09-41cf-92a4-d274f73d56d7.png"
                         alt="WhatsApp QR Code"

@@ -25,7 +25,7 @@ export function calculateDelta(current: number, previous: number): number {
 /**
  * Wrap analytics data with comparison metrics
  */
-export function withComparison<T extends Record<string, any>>(
+export function withComparison<T extends Record<string, unknown>>(
   current: T,
   comparison: T | null,
   valueKey: keyof T
@@ -53,7 +53,7 @@ export function withComparison<T extends Record<string, any>>(
 /**
  * Wrap array of analytics data with comparison metrics
  */
-export function withComparisonArray<T extends Record<string, any>>(
+export function withComparisonArray<T extends Record<string, unknown>>(
   currentArray: T[],
   comparisonArray: T[] | null,
   valueKey: keyof T,

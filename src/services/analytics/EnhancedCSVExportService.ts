@@ -20,7 +20,7 @@ export interface CSVTemplate {
 }
 
 export interface CSVExportConfig {
-  data: Array<Record<string, any>>;
+  data: Array<Record<string, unknown>>;
   template?: CSVTemplate;
   filename: string;
   metadata?: Record<string, string>;
@@ -30,7 +30,7 @@ export interface CSVExportConfig {
 export interface BulkExportConfig {
   exports: Array<{
     name: string;
-    data: Array<Record<string, any>>;
+    data: Array<Record<string, unknown>>;
     template?: CSVTemplate;
   }>;
   zipFilename: string;
@@ -265,13 +265,13 @@ export class EnhancedCSVExportService {
    * Apply template to data
    */
   private static applyTemplate(
-    data: Array<Record<string, any>>,
+    data: Array<Record<string, unknown>>,
     template: CSVTemplate
-  ): { data: Array<Record<string, any>>; headers: string[] } {
+  ): { data: Array<Record<string, unknown>>; headers: string[] } {
     const headers = template.columns.map(col => col.label);
 
     const formattedData = data.map(row => {
-      const formatted: Record<string, any> = {};
+      const formatted: Record<string, unknown> = {};
 
       for (const col of template.columns) {
         const value = row[col.key];
@@ -340,8 +340,11 @@ export class EnhancedCSVExportService {
   /**
    * Build summary row for numeric columns
    */
-  private static buildSummaryRow(data: Array<Record<string, any>>, template: CSVTemplate): string {
-    const summaryValues: any[] = [];
+  private static buildSummaryRow(
+    data: Array<Record<string, unknown>>,
+    template: CSVTemplate
+  ): string {
+    const summaryValues: unknown[] = [];
 
     for (let i = 0; i < template.columns.length; i++) {
       const col = template.columns[i];
@@ -400,7 +403,7 @@ export class EnhancedCSVExportService {
   /**
    * Format date according to template
    */
-  private static formatDate(value: any, format: 'iso' | 'us' | 'eu'): string {
+  private static formatDate(value: unknown, format: 'iso' | 'us' | 'eu'): string {
     const date = typeof value === 'string' ? new Date(value) : value;
 
     if (!(date instanceof Date) || isNaN(date.getTime())) {

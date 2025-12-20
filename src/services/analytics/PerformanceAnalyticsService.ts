@@ -111,7 +111,20 @@ export class PerformanceAnalyticsService {
         }
       >();
 
-      data?.forEach((item: any) => {
+      interface AnswerPerformanceItem {
+        question_id: string;
+        is_correct: boolean;
+        time_spent: number | null;
+        created_at: string;
+        quiz_questions?: {
+          question_text?: string;
+          topic?: string;
+          irt_difficulty?: number;
+          irt_discrimination?: number;
+        } | null;
+      }
+
+      data?.forEach((item: AnswerPerformanceItem) => {
         const qid = item.question_id;
         if (!performanceMap.has(qid)) {
           performanceMap.set(qid, {
@@ -258,11 +271,17 @@ export class PerformanceAnalyticsService {
       }
 
       // Filter by topic if specified
-      let filteredData = data || [];
+      interface LearningCurveItem {
+        is_correct: boolean;
+        created_at: string;
+        quiz_questions?: {
+          topic?: string;
+        } | null;
+      }
+
+      let filteredData: LearningCurveItem[] = (data as LearningCurveItem[]) || [];
       if (topicFilter) {
-        filteredData = filteredData.filter(
-          (item: any) => item.quiz_questions?.topic === topicFilter
-        );
+        filteredData = filteredData.filter(item => item.quiz_questions?.topic === topicFilter);
       }
 
       // Group by day and calculate metrics
@@ -271,7 +290,7 @@ export class PerformanceAnalyticsService {
         { correct: number; total: number; dates: string[] }
       >();
 
-      filteredData.forEach((item: any) => {
+      filteredData.forEach(item => {
         const date = new Date(item.created_at).toISOString().split('T')[0];
         if (!dailyPerformance.has(date)) {
           dailyPerformance.set(date, { correct: 0, total: 0, dates: [] });

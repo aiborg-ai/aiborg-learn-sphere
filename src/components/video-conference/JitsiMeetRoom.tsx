@@ -33,7 +33,10 @@ interface JitsiMeetOptions {
   width?: string | number;
   height?: string | number;
   configOverwrite?: Record<string, unknown>;
-  interfaceConfigOverwrite?: Record<string, unknown>;
+  interfaceConfigOverwrite?: Record<
+    string,
+    (string | number | boolean)[] | string | number | boolean
+  >;
   userInfo?: {
     displayName?: string;
     email?: string;
@@ -395,6 +398,7 @@ export function JitsiMeetRoom({
         <Skeleton className="absolute inset-0 rounded-lg" />
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <Video className="h-8 w-8 animate-pulse mx-auto mb-2" />
             <p className="text-sm text-muted-foreground">Loading video conference...</p>
           </div>

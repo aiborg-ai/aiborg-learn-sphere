@@ -24,7 +24,8 @@ const OLLAMA_DIMENSIONS = 768; // nomic-embed-text uses 768 dimensions
 
 // Dynamic configuration based on provider
 const EMBEDDING_MODEL = EMBEDDING_PROVIDER === 'openai' ? OPENAI_MODEL : OLLAMA_MODEL;
-const _EMBEDDING_DIMENSIONS = EMBEDDING_PROVIDER === 'openai' ? OPENAI_DIMENSIONS : OLLAMA_DIMENSIONS;
+const _EMBEDDING_DIMENSIONS =
+  EMBEDDING_PROVIDER === 'openai' ? OPENAI_DIMENSIONS : OLLAMA_DIMENSIONS;
 
 // Rate limiting
 const MAX_REQUESTS_PER_MINUTE = 5000;
@@ -159,9 +160,7 @@ export class EmbeddingService {
   /**
    * Generate embeddings for multiple texts in batch
    */
-  static async generateBatchEmbeddings(
-    texts: string[]
-  ): Promise<Map<number, EmbeddingResult>> {
+  static async generateBatchEmbeddings(texts: string[]): Promise<Map<number, EmbeddingResult>> {
     const results = new Map<number, EmbeddingResult>();
 
     if (EMBEDDING_PROVIDER === 'ollama') {
@@ -217,7 +216,7 @@ export class EmbeddingService {
           const data = await response.json();
 
           // Map results back to original indices
-          data.data.forEach((item: any, i: number) => {
+          data.data.forEach((item: { embedding: number[] }, i: number) => {
             const originalIndex = batchIndex * BATCH_SIZE + i;
             results.set(originalIndex, {
               embedding: item.embedding,
@@ -351,13 +350,19 @@ export class EmbeddingService {
       }
 
       // Generate embedding texts
-      const embeddingTexts = courses.map((course: any) =>
-        this.generateEmbeddingText({
-          title: course.title,
-          description: course.description || undefined,
-          tags: course.keywords || undefined,
-          category: course.category || undefined,
-        })
+      const embeddingTexts = courses.map(
+        (course: {
+          title: string;
+          description?: string | null;
+          keywords?: string[] | null;
+          category?: string | null;
+        }) =>
+          this.generateEmbeddingText({
+            title: course.title,
+            description: course.description || undefined,
+            tags: course.keywords || undefined,
+            category: course.category || undefined,
+          })
       );
 
       // Generate embeddings in batch
@@ -372,14 +377,21 @@ export class EmbeddingService {
         }
 
         try {
+          const course = courses[i] as {
+            id: string;
+            title: string;
+            description: string | null;
+            keywords?: string[] | null;
+            level?: string | null;
+          };
           await this.saveContentEmbedding({
-            content_id: courses[i].id,
+            content_id: course.id,
             content_type: 'course',
             embedding: embeddingResult.embedding,
-            title: courses[i].title,
-            description: courses[i].description,
-            tags: (courses[i] as any).keywords || [],
-            difficulty_level: (courses[i] as any).level,
+            title: course.title,
+            description: course.description,
+            tags: course.keywords || [],
+            difficulty_level: course.level || undefined,
             embedding_text: embeddingTexts[i],
             model_version: EMBEDDING_MODEL,
           });
@@ -421,7 +433,7 @@ export class EmbeddingService {
         return stats;
       }
 
-      const embeddingTexts = paths.map((_path) =>
+      const embeddingTexts = paths.map(_path =>
         this.generateEmbeddingText({
           title: _path.title,
           description: _path.description || undefined,
@@ -488,13 +500,20 @@ export class EmbeddingService {
         return stats;
       }
 
-      const embeddingTexts = posts.map((post: any) =>
-        this.generateEmbeddingText({
-          title: post.title,
-          description: post.excerpt || post.content?.substring(0, 500),
-          tags: post.tags || undefined,
-          category: post.category || undefined,
-        })
+      const embeddingTexts = posts.map(
+        (post: {
+          title: string;
+          excerpt?: string | null;
+          content?: string | null;
+          tags?: string[] | null;
+          category?: string | null;
+        }) =>
+          this.generateEmbeddingText({
+            title: post.title,
+            description: post.excerpt || post.content?.substring(0, 500),
+            tags: post.tags || undefined,
+            category: post.category || undefined,
+          })
       );
 
       const embeddings = await this.generateBatchEmbeddings(embeddingTexts);
@@ -550,8 +569,11 @@ export class EmbeddingService {
     let learningPaths = { total: 0, success: 0, failed: 0 };
     try {
       learningPaths = await this.updateLearningPathEmbeddings();
-    } catch (error: any) {
-      logger.info('Skipping learning paths:', error.message);
+    } catch (error) {
+      logger.info(
+        'Skipping learning paths:',
+        error instanceof Error ? error.message : 'Unknown error'
+      );
     }
 
     const blogPosts = await this.updateBlogPostEmbeddings();
@@ -580,7 +602,7 @@ export class EmbeddingService {
     contentType?: string,
     limit: number = 10,
     minSimilarity: number = 0.5
-  ): Promise<any[]> {
+  ): Promise<Array<{ content_id: string; similarity: number; content_type: string }>> {
     try {
       const { data, error } = await supabase.rpc('find_similar_content', {
         query_embedding: `[${embedding.join(',')}]`,
@@ -609,6 +631,6 @@ export class EmbeddingService {
   }
 
   private static sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }

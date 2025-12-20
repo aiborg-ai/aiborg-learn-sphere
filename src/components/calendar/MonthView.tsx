@@ -134,7 +134,7 @@ export function MonthView({
             {Object.entries(EVENT_TYPE_COLORS).map(([type, config]) => (
               <div key={type} className="flex items-center gap-2">
                 <div className={cn('w-3 h-3 rounded-full', config.bg)}></div>
-                <span>{getEventTypeLabel(type as any)}</span>
+                <span>{getEventTypeLabel(type as CalendarEventType)}</span>
               </div>
             ))}
           </div>

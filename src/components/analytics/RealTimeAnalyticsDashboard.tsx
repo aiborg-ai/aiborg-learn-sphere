@@ -52,11 +52,8 @@ export function RealTimeAnalyticsDashboard({
   const {
     abilityTrajectory,
     learningVelocity,
-    studyInsights,
-    optimalSchedule,
     studyStats,
     goalPredictions,
-    goalsAtRisk,
     isLoading,
     isRefreshing,
     error,

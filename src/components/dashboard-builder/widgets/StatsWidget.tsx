@@ -91,7 +91,9 @@ export function StatsWidget({ widget, isEditing }: WidgetComponentProps) {
   ];
 
   const displayedMetrics = metrics.filter(m =>
-    config.metrics ? config.metrics.includes(m.key as any) : true
+    config.metrics
+      ? config.metrics.includes(m.key as 'courses' | 'achievements' | 'certificates' | 'streaks')
+      : true
   );
 
   return (

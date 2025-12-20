@@ -28,6 +28,22 @@ import {
 import { logger } from '@/utils/logger';
 import { toast } from 'sonner';
 
+interface RecommendationItem {
+  recommendation_id: string;
+  content_id: string;
+  content_title?: string;
+  title?: string;
+  description?: string;
+  difficulty_level?: string;
+  score?: number;
+  metadata?: {
+    estimated_hours?: number;
+    reason?: string;
+    topics?: string[];
+    prerequisites?: string[];
+  };
+}
+
 interface RecommendedCoursesWidgetProps {
   limit?: number;
   showHeader?: boolean;
@@ -169,10 +185,11 @@ export function RecommendedCoursesWidget({
         </CardHeader>
       )}
       <CardContent className={compact ? 'p-4 space-y-3' : 'space-y-4'}>
-        {recommendations.map((rec: any, index) => (
-          <div
+        {recommendations.map((rec: RecommendationItem, index) => (
+          <button
+            type="button"
             key={rec.recommendation_id || rec.content_id || index}
-            className="group relative p-4 border rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer"
+            className="group relative p-4 border rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer bg-transparent text-left w-full"
             onClick={() => handleCourseClick(rec.content_id, rec.recommendation_id)}
           >
             {/* Dismiss Button */}
@@ -299,7 +316,7 @@ export function RecommendedCoursesWidget({
                 </div>
               )}
             </div>
-          </div>
+          </button>
         ))}
       </CardContent>
     </Card>

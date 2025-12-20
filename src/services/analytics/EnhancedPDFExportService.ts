@@ -261,6 +261,7 @@ export class EnhancedPDFExportService {
    * Add cover page to PDF
    */
   private static addCoverPage(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     pdf: any,
     metadata: ReportMetadata,
     brandColor: { r: number; g: number; b: number },
@@ -342,6 +343,7 @@ export class EnhancedPDFExportService {
    * Add table of contents
    */
   private static addTableOfContents(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     pdf: any,
     toc: Array<{ title: string; page: number }>,
     brandColor: { r: number; g: number; b: number },
@@ -400,6 +402,7 @@ export class EnhancedPDFExportService {
    * Add footers to all pages
    */
   private static addFooters(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     pdf: any,
     metadata: ReportMetadata,
     pageWidth: number,

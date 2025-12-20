@@ -18,6 +18,20 @@ interface CertificateWidgetConfig extends BaseWidgetConfig {
   showPreview?: boolean;
 }
 
+interface Course {
+  id: string;
+  title: string;
+  category: string | null;
+}
+
+interface Certificate {
+  id: string;
+  certificate_number: string;
+  issued_at: string;
+  certificate_url: string | null;
+  course: Course | null;
+}
+
 export function CertificatesWidget({ widget, isEditing }: WidgetComponentProps) {
   const config = widget.config as CertificateWidgetConfig;
   const limit = config.limit || 5;
@@ -52,7 +66,7 @@ export function CertificatesWidget({ widget, isEditing }: WidgetComponentProps) 
         .limit(limit);
 
       if (error) throw error;
-      return data;
+      return data as Certificate[];
     },
     enabled: !isEditing,
     refetchInterval: config.refreshInterval ? config.refreshInterval * 1000 : false,
@@ -88,7 +102,7 @@ export function CertificatesWidget({ widget, isEditing }: WidgetComponentProps) 
   return (
     <div className="space-y-3">
       {certificates.map(cert => {
-        const course = cert.course as any;
+        const course = cert.course;
         const issuedDate = new Date(cert.issued_at);
 
         return (
@@ -119,7 +133,7 @@ export function CertificatesWidget({ widget, isEditing }: WidgetComponentProps) 
                   size="icon"
                   variant="ghost"
                   className="h-8 w-8"
-                  onClick={() => window.open(cert.certificate_url, '_blank')}
+                  onClick={() => window.open(cert.certificate_url!, '_blank')}
                 >
                   <ExternalLink className="h-4 w-4" />
                 </Button>
@@ -130,7 +144,7 @@ export function CertificatesWidget({ widget, isEditing }: WidgetComponentProps) 
                   variant="ghost"
                   className="h-8 w-8"
                   onClick={() =>
-                    handleDownload(cert.certificate_url, course?.title || 'Certificate')
+                    handleDownload(cert.certificate_url!, course?.title || 'Certificate')
                   }
                 >
                   <Download className="h-4 w-4" />

@@ -327,7 +327,7 @@ test.describe('Social Login Flow', () => {
     expect(hasGoogle || hasGitHub).toBe(true);
   });
 
-  test('should handle social login OAuth flow', async ({ context }) => {
+  test('should handle social login OAuth flow', async ({ context: _context }) => {
     await authPage.navigate();
 
     // Note: Testing OAuth flows requires special setup

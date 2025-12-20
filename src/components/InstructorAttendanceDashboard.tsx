@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSessionAttendance } from '@/hooks/useSessionAttendance';
+import { useSessionAttendance, AttendanceListItem } from '@/hooks/useSessionAttendance';
 import { useCourseSessions } from '@/hooks/useCourseSessions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -56,7 +56,7 @@ export function InstructorAttendanceDashboard({ courseId }: InstructorAttendance
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStudents, setSelectedStudents] = useState<Set<string>>(new Set());
   const [showNotesDialog, setShowNotesDialog] = useState(false);
-  const [currentStudent, setCurrentStudent] = useState<any>(null);
+  const [currentStudent, setCurrentStudent] = useState<AttendanceListItem | null>(null);
   const [notes, setNotes] = useState('');
   const [participationScore, setParticipationScore] = useState<number | undefined>();
 
@@ -87,16 +87,16 @@ export function InstructorAttendanceDashboard({ courseId }: InstructorAttendance
         title: 'Success',
         description: `Attendance marked as ${status}`,
       });
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: 'Error',
-        description: error.message || 'Failed to mark attendance',
+        description: error instanceof Error ? error.message : 'Failed to mark attendance',
         variant: 'destructive',
       });
     }
   };
 
-  const handleOpenNotesDialog = (student: any) => {
+  const handleOpenNotesDialog = (student: AttendanceListItem) => {
     setCurrentStudent(student);
     setNotes(student.instructor_notes || '');
     setParticipationScore(student.participation_score);
@@ -119,10 +119,10 @@ export function InstructorAttendanceDashboard({ courseId }: InstructorAttendance
         description: 'Notes and score saved',
       });
       setShowNotesDialog(false);
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: 'Error',
-        description: error.message || 'Failed to save notes',
+        description: error instanceof Error ? error.message : 'Failed to save notes',
         variant: 'destructive',
       });
     }
@@ -160,10 +160,10 @@ export function InstructorAttendanceDashboard({ courseId }: InstructorAttendance
         title: 'Success',
         description: `Marked ${selectedStudents.size} students as present`,
       });
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: 'Error',
-        description: error.message || 'Failed to mark attendance',
+        description: error instanceof Error ? error.message : 'Failed to mark attendance',
         variant: 'destructive',
       });
     }
@@ -176,10 +176,10 @@ export function InstructorAttendanceDashboard({ courseId }: InstructorAttendance
         title: 'Success',
         description: 'All students marked as present',
       });
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: 'Error',
-        description: error.message || 'Failed to mark all present',
+        description: error instanceof Error ? error.message : 'Failed to mark all present',
         variant: 'destructive',
       });
     }

@@ -133,7 +133,10 @@ export function GoalRoadmap({ userId }: GoalRoadmapProps) {
   const selectedGoal = goals.find(g => g.id === selectedGoalId);
 
   const getStatusBadge = (status: string) => {
-    const variants: Record<string, { variant: any; color: string }> = {
+    const variants: Record<
+      string,
+      { variant: 'default' | 'secondary' | 'outline' | 'destructive'; color: string }
+    > = {
       completed: { variant: 'default', color: 'text-green-500' },
       on_track: { variant: 'secondary', color: 'text-blue-500' },
       in_progress: { variant: 'outline', color: 'text-yellow-500' },
@@ -145,7 +148,7 @@ export function GoalRoadmap({ userId }: GoalRoadmapProps) {
   };
 
   const getRiskBadge = (level: string) => {
-    const variants: Record<string, any> = {
+    const variants: Record<string, 'default' | 'secondary' | 'destructive'> = {
       low: 'default',
       medium: 'secondary',
       high: 'destructive',

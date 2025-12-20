@@ -259,7 +259,17 @@ export class AbilityTrajectoryService {
   private buildTrajectory(
     userId: string,
     categoryId: string | undefined,
-    snapshots: any[]
+    snapshots: Array<{
+      id: string;
+      user_id: string;
+      category_id: string | null;
+      ability_estimate: number;
+      standard_error: number;
+      confidence_lower: number;
+      confidence_upper: number;
+      source_assessment_id?: string;
+      recorded_at: string;
+    }>
   ): AbilityTrajectory {
     const mappedSnapshots: AbilitySnapshot[] = snapshots.map(s => ({
       id: s.id,
@@ -350,7 +360,7 @@ export class AbilityTrajectoryService {
    */
   private generateInsights(trajectory: AbilityTrajectory): AbilityInsight[] {
     const insights: AbilityInsight[] = [];
-    const { velocity, volatility, trend, snapshots, currentAbility } = trajectory;
+    const { velocity, volatility, trend, snapshots } = trajectory;
 
     // Improvement insight
     if (trend === 'improving' && velocity > 0.1) {

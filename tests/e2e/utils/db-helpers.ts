@@ -236,7 +236,7 @@ export async function recordExists(table: string, column: string, value: string)
     }
 
     return !!data;
-  } catch (error) {
+  } catch {
     return false;
   }
 }

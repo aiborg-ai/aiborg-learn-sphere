@@ -26,7 +26,7 @@ export interface UseExportReturn {
     filename: string,
     dateRange?: DateRange
   ) => Promise<void>;
-  exportCSV: <T extends Record<string, any>>(
+  exportCSV: <T extends Record<string, unknown>>(
     data: T[],
     filename: string,
     headers?: string[],
@@ -227,7 +227,7 @@ export function useExport(): UseExportReturn {
    * Export data to CSV format
    */
   const exportCSV = useCallback(
-    async <T extends Record<string, any>>(
+    async <T extends Record<string, unknown>>(
       data: T[],
       filename: string,
       headers?: string[],

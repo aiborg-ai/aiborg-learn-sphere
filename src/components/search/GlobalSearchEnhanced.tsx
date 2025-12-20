@@ -36,6 +36,7 @@ const CONTENT_TYPE_ICONS: Record<ContentType, React.ReactNode> = {
   learning_path: <MapPin className="h-4 w-4" />,
   blog_post: <FileText className="h-4 w-4" />,
   assignment: <FileQuestion className="h-4 w-4" />,
+  // eslint-disable-next-line jsx-a11y/media-has-caption
   material: <Video className="h-4 w-4" />,
 };
 

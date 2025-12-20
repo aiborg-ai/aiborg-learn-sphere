@@ -56,7 +56,7 @@ export function WidgetEditor({ widget, isOpen, onClose, onSave }: WidgetEditorPr
 
   const _config = widget.config as BaseWidgetConfig;
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: Record<string, unknown>) => {
     onSave(widget.id, {
       config: {
         ...widget.config,
@@ -333,12 +333,12 @@ export function WidgetEditor({ widget, isOpen, onClose, onSave }: WidgetEditorPr
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Width</Label>
-                    <Input type="number" value={widget.size.width} disabled />
+                    <Label htmlFor="width">Width</Label>
+                    <Input id="width" type="number" value={widget.size.width} disabled />
                   </div>
                   <div className="space-y-2">
-                    <Label>Height</Label>
-                    <Input type="number" value={widget.size.height} disabled />
+                    <Label htmlFor="height">Height</Label>
+                    <Input id="height" type="number" value={widget.size.height} disabled />
                   </div>
                 </div>
 

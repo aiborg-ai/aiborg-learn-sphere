@@ -27,6 +27,7 @@ import {
   Crown,
   ShieldCheck,
   Gift,
+  GraduationCap,
 } from '@/components/ui/icons';
 
 // Only import AccessDenied eagerly (used before tabs render)
@@ -44,7 +45,9 @@ import BlogManager from './Admin/BlogManager';
 import { RoleManagementPanel } from '@/components/admin/RoleManagementPanel';
 // Lazy load analytics dashboard (contains heavy recharts bundle)
 const EnhancedAnalyticsDashboard = lazy(() =>
-  import('@/components/admin/EnhancedAnalyticsDashboard').then(m => ({ default: m.EnhancedAnalyticsDashboard }))
+  import('@/components/admin/EnhancedAnalyticsDashboard').then(m => ({
+    default: m.EnhancedAnalyticsDashboard,
+  }))
 );
 import { EnrollmentManagementEnhanced } from '@/components/admin/EnrollmentManagementEnhanced';
 import { RefundProcessor } from '@/components/admin/RefundProcessor';
@@ -56,6 +59,7 @@ import { FamilyPassManagement } from '@/components/admin/FamilyPassManagement';
 import { ModeratorDashboard } from '@/components/admin/ModeratorDashboard';
 import { RegistrantsManagement } from '@/components/admin/RegistrantsManagement';
 import { VaultClaimsManagement } from '@/components/admin/VaultClaimsManagement';
+import { UserProgressDashboard } from '@/components/admin/user-progress';
 
 export default function AdminRefactored() {
   const { user } = useAuth();
@@ -214,6 +218,13 @@ export default function AdminRefactored() {
               <Mail className="h-4 w-4 mr-2" />
               Registrants
             </TabsTrigger>
+            <TabsTrigger
+              value="user-progress"
+              className="text-white data-[state=active]:bg-white/20"
+            >
+              <GraduationCap className="h-4 w-4 mr-2" />
+              User Progress
+            </TabsTrigger>
           </TabsList>
 
           {/* Tab Content */}
@@ -311,6 +322,10 @@ export default function AdminRefactored() {
 
           <TabsContent value="registrants">
             <RegistrantsManagement />
+          </TabsContent>
+
+          <TabsContent value="user-progress">
+            <UserProgressDashboard />
           </TabsContent>
         </Tabs>
       </div>

@@ -307,14 +307,21 @@ export function ComplianceDashboard() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
-                    <Label>Category</Label>
+                    <Label htmlFor="category">Category</Label>
                     <Select
                       value={newRequirement.category}
                       onValueChange={value =>
-                        setNewRequirement({ ...newRequirement, category: value as any })
+                        setNewRequirement({
+                          ...newRequirement,
+                          category: value as
+                            | 'training'
+                            | 'certification'
+                            | 'policy_acknowledgment'
+                            | 'assessment',
+                        })
                       }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger id="category">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -326,14 +333,22 @@ export function ComplianceDashboard() {
                     </Select>
                   </div>
                   <div className="grid gap-2">
-                    <Label>Frequency</Label>
+                    <Label htmlFor="frequency">Frequency</Label>
                     <Select
                       value={newRequirement.frequency}
                       onValueChange={value =>
-                        setNewRequirement({ ...newRequirement, frequency: value as any })
+                        setNewRequirement({
+                          ...newRequirement,
+                          frequency: value as
+                            | 'once'
+                            | 'quarterly'
+                            | 'bi_annual'
+                            | 'annual'
+                            | 'custom',
+                        })
                       }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger id="frequency">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>

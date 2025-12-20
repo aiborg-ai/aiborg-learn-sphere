@@ -225,13 +225,15 @@ function GoalCard({ goal, compact = false, onClick }: GoalCardProps) {
 
   if (compact) {
     return (
-      <div
+      <button
+        type="button"
         className={cn(
-          'p-3 rounded-lg border cursor-pointer transition-colors hover:bg-accent/50',
+          'bg-transparent border-0 p-0 text-left w-full p-3 rounded-lg border cursor-pointer transition-colors hover:bg-accent/50',
           status.borderColor,
           status.bgColor
         )}
         onClick={onClick}
+        aria-label={`View details for ${goal.goalTitle || 'goal'}`}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -248,19 +250,12 @@ function GoalCard({ goal, compact = false, onClick }: GoalCardProps) {
           </div>
         </div>
         <Progress value={successProbability * 100} className="h-1.5 mt-2" />
-      </div>
+      </button>
     );
   }
 
   return (
-    <div
-      className={cn(
-        'p-4 rounded-lg border transition-colors',
-        onClick && 'cursor-pointer hover:bg-accent/30',
-        status.borderColor
-      )}
-      onClick={onClick}
-    >
+    <div className={cn('p-4 rounded-lg border transition-colors', status.borderColor)}>
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-start gap-3">

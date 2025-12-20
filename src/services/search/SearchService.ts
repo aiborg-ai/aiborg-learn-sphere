@@ -40,10 +40,7 @@ export class SearchService {
   /**
    * Perform hybrid search (keyword + semantic)
    */
-  static async search(
-    query: string,
-    options: SearchOptions = {}
-  ): Promise<SearchResult[]> {
+  static async search(query: string, options: SearchOptions = {}): Promise<SearchResult[]> {
     const {
       limit = 20,
       contentTypes = ['course', 'learning_path', 'blog_post', 'assignment', 'material'],
@@ -68,7 +65,7 @@ export class SearchService {
       const mergedResults = this.mergeResults(keywordResults, semanticResults);
 
       // Filter by minimum relevance
-      const filteredResults = mergedResults.filter((r) => r.relevanceScore >= minRelevance);
+      const filteredResults = mergedResults.filter(r => r.relevanceScore >= minRelevance);
 
       // Return top N results
       return filteredResults.slice(0, limit);
@@ -95,17 +92,23 @@ export class SearchService {
         const { data, error } = await supabase
           .from('courses')
           .select('id, title, description, category, difficulty_level, tags')
-          .or(`title.ilike.${searchTerm},description.ilike.${searchTerm},category.ilike.${searchTerm}`)
+          .or(
+            `title.ilike.${searchTerm},description.ilike.${searchTerm},category.ilike.${searchTerm}`
+          )
           .limit(limit);
 
         if (!error && data) {
           results.push(
-            ...data.map((course) => ({
+            ...data.map(course => ({
               id: course.id,
               type: 'course' as ContentType,
               title: course.title,
               description: course.description || '',
-              relevanceScore: this.calculateKeywordRelevance(query, course.title, course.description),
+              relevanceScore: this.calculateKeywordRelevance(
+                query,
+                course.title,
+                course.description
+              ),
               matchType: 'keyword' as const,
               metadata: {
                 category: course.category,
@@ -131,7 +134,7 @@ export class SearchService {
 
         if (!error && data) {
           results.push(
-            ...data.map((path) => ({
+            ...data.map(path => ({
               id: path.id,
               type: 'learning_path' as ContentType,
               title: path.title,
@@ -156,13 +159,15 @@ export class SearchService {
         const { data, error } = await supabase
           .from('blog_posts')
           .select('id, title, excerpt, meta_description, author_id')
-          .or(`title.ilike.${searchTerm},excerpt.ilike.${searchTerm},meta_description.ilike.${searchTerm}`)
+          .or(
+            `title.ilike.${searchTerm},excerpt.ilike.${searchTerm},meta_description.ilike.${searchTerm}`
+          )
           .eq('status', 'published')
           .limit(limit);
 
         if (!error && data) {
           results.push(
-            ...data.map((post) => ({
+            ...data.map(post => ({
               id: post.id,
               type: 'blog_post' as ContentType,
               title: post.title,
@@ -196,12 +201,16 @@ export class SearchService {
 
         if (!error && data) {
           results.push(
-            ...data.map((assignment) => ({
+            ...data.map(assignment => ({
               id: assignment.id,
               type: 'assignment' as ContentType,
               title: assignment.title,
               description: assignment.description || '',
-              relevanceScore: this.calculateKeywordRelevance(query, assignment.title, assignment.description),
+              relevanceScore: this.calculateKeywordRelevance(
+                query,
+                assignment.title,
+                assignment.description
+              ),
               matchType: 'keyword' as const,
               metadata: {
                 url: `/courses/${assignment.course_id}`,
@@ -225,7 +234,7 @@ export class SearchService {
 
         if (!error && data) {
           results.push(
-            ...data.map((material) => ({
+            ...data.map(material => ({
               id: material.id,
               type: 'material' as ContentType,
               title: material.title,
@@ -261,8 +270,8 @@ export class SearchService {
 
       // Map our content types to database content types
       const dbContentTypes = contentTypes
-        .filter((type) => ['course', 'learning_path', 'blog_post'].includes(type))
-        .map((type) => type);
+        .filter(type => ['course', 'learning_path', 'blog_post'].includes(type))
+        .map(type => type);
 
       if (dbContentTypes.length === 0) {
         return [];
@@ -281,18 +290,27 @@ export class SearchService {
           );
 
           results.push(
-            ...similarContent.map((item: any) => ({
-              id: item.content_id,
-              type: contentType as ContentType,
-              title: item.title || '',
-              description: item.description || '',
-              relevanceScore: item.similarity || 0,
-              matchType: 'semantic' as const,
-              metadata: {
-                difficulty: item.difficulty_level,
-                tags: item.tags || [],
-              },
-            }))
+            ...similarContent.map(
+              (item: {
+                content_id: string;
+                title?: string;
+                description?: string;
+                similarity?: number;
+                difficulty_level?: string;
+                tags?: string[];
+              }) => ({
+                id: item.content_id,
+                type: contentType as ContentType,
+                title: item.title || '',
+                description: item.description || '',
+                relevanceScore: item.similarity || 0,
+                matchType: 'semantic' as const,
+                metadata: {
+                  difficulty: item.difficulty_level,
+                  tags: item.tags || [],
+                },
+              })
+            )
           );
         } catch (error) {
           logger.error(`Semantic search failed for ${contentType}:`, error);
@@ -333,7 +351,7 @@ export class SearchService {
     // Partial word match = 0.4
     const queryWords = queryLower.split(/\s+/);
     const titleWords = titleLower.split(/\s+/);
-    const matchingWords = queryWords.filter((word) => titleWords.some((tw) => tw.includes(word)));
+    const matchingWords = queryWords.filter(word => titleWords.some(tw => tw.includes(word)));
 
     if (matchingWords.length > 0) {
       return 0.4 * (matchingWords.length / queryWords.length);
@@ -352,13 +370,13 @@ export class SearchService {
     const resultMap = new Map<string, SearchResult>();
 
     // Add keyword results
-    keywordResults.forEach((result) => {
+    keywordResults.forEach(result => {
       const key = `${result.type}-${result.id}`;
       resultMap.set(key, result);
     });
 
     // Merge semantic results
-    semanticResults.forEach((result) => {
+    semanticResults.forEach(result => {
       const key = `${result.type}-${result.id}`;
       const existing = resultMap.get(key);
 
@@ -400,7 +418,7 @@ export class SearchService {
 
       if (error || !data) return [];
 
-      return data.map((item) => item.title);
+      return data.map(item => item.title);
     } catch (error) {
       logger.error('Failed to get suggestions:', error);
       return [];

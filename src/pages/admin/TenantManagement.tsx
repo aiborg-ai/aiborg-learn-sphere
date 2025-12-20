@@ -138,11 +138,11 @@ export default function TenantManagement() {
         max_storage_gb: 5,
       });
       loadTenants();
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to create tenant', error);
       toast({
         title: 'Error',
-        description: error.message || 'Failed to create tenant',
+        description: error instanceof Error ? error.message : 'Failed to create tenant',
         variant: 'destructive',
       });
     }

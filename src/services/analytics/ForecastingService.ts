@@ -3,7 +3,12 @@
  * Provides revenue, user growth, and enrollment forecasting using linear regression
  */
 
-import { linearRegression, predict, confidenceInterval, assessModelQuality } from '@/utils/forecasting/linearRegression';
+import {
+  linearRegression,
+  predict,
+  confidenceInterval,
+  assessModelQuality,
+} from '@/utils/forecasting/linearRegression';
 import { logger } from '@/utils/logger';
 
 export interface ForecastResult {
@@ -52,7 +57,7 @@ export class ForecastingService {
   /**
    * Validate historical data has enough points
    */
-  private static validateData(data: any[], minPoints: number = this.MIN_DATA_POINTS): void {
+  private static validateData(data: unknown[], minPoints: number = this.MIN_DATA_POINTS): void {
     if (!data || data.length < minPoints) {
       throw new Error(
         `Insufficient data for forecasting. Need at least ${minPoints} days of historical data, got ${data?.length || 0}`

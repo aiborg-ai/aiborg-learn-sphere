@@ -32,13 +32,6 @@ interface AssessmentQuestion {
   topics?: string[];
 }
 
-interface QuizAnswer {
-  question_id: string;
-  is_correct: boolean;
-  selected_options: string[];
-  ability_estimate: number;
-}
-
 export class FlashcardGenerationService {
   private sm2Params: SM2CalibrationParams;
 
@@ -430,11 +423,23 @@ export class FlashcardGenerationService {
     return (data || [])
       .filter(f => {
         if (!sourceType) return true;
-        const source = (f.flashcard_sources as any)?.[0];
+        const sources = f.flashcard_sources as Array<{
+          source_type: string;
+          question_id: string;
+          initial_ef: number;
+          irt_difficulty: number;
+        }> | null;
+        const source = sources?.[0];
         return source?.source_type === sourceType;
       })
       .map(f => {
-        const source = (f.flashcard_sources as any)?.[0];
+        const sources = f.flashcard_sources as Array<{
+          source_type: string;
+          question_id: string;
+          initial_ef: number;
+          irt_difficulty: number;
+        }> | null;
+        const source = sources?.[0];
         return {
           id: f.id,
           front: f.front,
@@ -498,8 +503,9 @@ export class FlashcardGenerationService {
         // Sum for averages
         totalInitialEF += item.initial_ef;
         totalDifficulty += item.irt_difficulty;
-        totalCurrentEF += (item.flashcards as any).easiness_factor;
-        totalReps += (item.flashcards as any).repetitions;
+        const flashcards = item.flashcards as { easiness_factor: number; repetitions: number };
+        totalCurrentEF += flashcards.easiness_factor;
+        totalReps += flashcards.repetitions;
       }
 
       stats.averageInitialEF = totalInitialEF / data.length;

@@ -20,6 +20,25 @@ import {
 import type { WidgetComponentProps, ChartWidgetConfig } from '@/types/dashboard';
 import { supabase } from '@/integrations/supabase/client';
 
+interface Assessment {
+  title: string;
+}
+
+interface AssessmentResult {
+  id: string;
+  score: number;
+  passed: boolean;
+  completed_at: string;
+  assessment: Assessment | null;
+}
+
+interface ScoreData {
+  name: string;
+  score: number;
+  passed: boolean;
+  date: string;
+}
+
 export function AssessmentScoresWidget({ widget, isEditing }: WidgetComponentProps) {
   const config = widget.config as ChartWidgetConfig;
   const limit = config.limit || 10;
@@ -52,12 +71,13 @@ export function AssessmentScoresWidget({ widget, isEditing }: WidgetComponentPro
 
       if (error) throw error;
 
-      return data?.map(result => ({
-        name: (result.assessment as any)?.title?.substring(0, 20) || 'Assessment',
+      const results = data as AssessmentResult[];
+      return results?.map(result => ({
+        name: result.assessment?.title?.substring(0, 20) || 'Assessment',
         score: result.score,
         passed: result.passed,
         date: new Date(result.completed_at).toLocaleDateString(),
-      }));
+      })) as ScoreData[];
     },
     enabled: !isEditing,
     refetchInterval: config.refreshInterval ? config.refreshInterval * 1000 : false,

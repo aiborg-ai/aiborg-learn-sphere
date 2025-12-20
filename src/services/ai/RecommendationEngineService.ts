@@ -24,7 +24,7 @@ export interface Recommendation {
   confidenceScore: number;
   rank: number;
   reason: RecommendationReason;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface RecommendationReason {
@@ -359,14 +359,20 @@ export class RecommendationEngineService {
       .eq('user_id', userId);
 
     const completedCourses =
-      history?.filter((h: any) => h.completion_percentage === 100).map((h: any) => h.course_id) ||
-      [];
+      history
+        ?.filter(
+          (h: { completion_percentage: number; course_id: string }) =>
+            h.completion_percentage === 100
+        )
+        .map(h => h.course_id) || [];
 
     const enrolledCourses = enrollments?.map(e => e.course_id) || [];
 
     const averageScore =
-      history?.reduce((sum: number, h: any) => sum + (h.avg_assessment_score || 0), 0) /
-        (history?.length || 1) || 0;
+      history?.reduce(
+        (sum: number, h: { avg_assessment_score?: number }) => sum + (h.avg_assessment_score || 0),
+        0
+      ) / (history?.length || 1) || 0;
 
     // Calculate skill gaps from assessment results
     const skillGaps = await this.calculateSkillGaps(userId);
@@ -428,7 +434,7 @@ export class RecommendationEngineService {
         }
 
         // Also track overall tool category performance
-        const toolCategory = (attempt.assessment_tools as any)?.category;
+        const toolCategory = (attempt.assessment_tools as { category?: string } | null)?.category;
         if (toolCategory && attempt.max_possible_score > 0) {
           const scorePercent = (attempt.total_score / attempt.max_possible_score) * 100;
           if (!categoryScores[toolCategory]) {
@@ -460,7 +466,14 @@ export class RecommendationEngineService {
   /**
    * Build query text from user profile
    */
-  private static buildUserQueryText(profile: UserLearningProfile, preferences: any): string {
+  private static buildUserQueryText(
+    profile: UserLearningProfile,
+    preferences: {
+      interested_topics?: string[];
+      learning_goals?: string[];
+      target_skills?: string[];
+    } | null
+  ): string {
     const parts: string[] = [];
 
     if (preferences?.interested_topics?.length) {
@@ -486,7 +499,17 @@ export class RecommendationEngineService {
    * Calculate skill match score (0.0 to 1.0)
    * Higher score = course addresses user's skill gaps or matches their interests
    */
-  private static calculateSkillMatch(course: any, profile: UserLearningProfile): number {
+  private static calculateSkillMatch(
+    course: {
+      tags?: string[] | null;
+      keywords?: string[] | null;
+      category?: string | null;
+      level?: string | null;
+      difficulty_level?: string | null;
+      prerequisites?: string[];
+    },
+    profile: UserLearningProfile
+  ): number {
     let score = 0.5; // Base score
 
     // Get course tags/keywords
@@ -556,7 +579,10 @@ export class RecommendationEngineService {
   /**
    * Calculate skill match for learning path
    */
-  private static calculateSkillMatchForPath(path: any, preferences: any): number {
+  private static calculateSkillMatchForPath(
+    path: { tags?: string[] | null },
+    preferences: { target_skills?: string[] } | null
+  ): number {
     if (!preferences?.target_skills?.length || !path.tags?.length) {
       return 0.5;
     }
@@ -575,7 +601,10 @@ export class RecommendationEngineService {
   /**
    * Calculate difficulty match score (0.0 to 1.0)
    */
-  private static calculateDifficultyMatch(content: any, profile: UserLearningProfile): number {
+  private static calculateDifficultyMatch(
+    content: { difficulty_level?: string | null },
+    profile: UserLearningProfile
+  ): number {
     const difficultyMap: Record<string, number> = {
       beginner: 1,
       intermediate: 2,
@@ -639,7 +668,7 @@ export class RecommendationEngineService {
     skillMatch: number,
     difficultyMatch: number,
     popularityScore: number,
-    course: any,
+    course: { difficulty_level?: string | null; category?: string | null; tags?: string[] | null },
     profile: UserLearningProfile
   ): RecommendationReason {
     const factors = {

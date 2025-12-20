@@ -245,14 +245,24 @@ export function DraggableWidget({
         {isEditing && !widget.locked && (
           <>
             {resizeHandles.map(handle => (
+              // eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- Resize handle requires absolute positioning and custom styling that button elements don't support well
               <div
                 key={handle}
+                role="button"
+                tabIndex={0}
+                aria-label={`Resize widget ${handle}`}
                 className={cn(
                   getHandleStyle(handle),
                   'opacity-0 group-hover:opacity-100',
                   isResizing && resizeHandle === handle && 'opacity-100'
                 )}
                 onMouseDown={e => handleResizeStart(handle, e)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleResizeStart(handle, e as unknown as React.MouseEvent);
+                  }
+                }}
               />
             ))}
           </>

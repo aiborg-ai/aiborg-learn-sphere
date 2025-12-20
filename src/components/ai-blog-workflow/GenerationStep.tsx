@@ -22,15 +22,25 @@ import type { TopicStepData } from '@/schemas/aiBlogWorkflow';
 import { searchImages, extractImageSearchKeywords, type StockImage } from '@/utils/imageSearch';
 import { logger } from '@/utils/logger';
 
+interface GeneratedContent {
+  title: string;
+  excerpt: string;
+  content: string;
+  suggestedCategory?: string;
+  suggestedTags?: string[];
+  metaTitle?: string;
+  metaDescription?: string;
+}
+
 interface GenerationStepProps {
   topicData: TopicStepData;
-  onNext: (data: { generatedContent: any; selectedImage: StockImage }) => void;
+  onNext: (data: { generatedContent: GeneratedContent; selectedImage: StockImage }) => void;
   onBack: () => void;
 }
 
 export function GenerationStep({ topicData, onNext, onBack }: GenerationStepProps) {
   const [isGenerating, setIsGenerating] = useState(true);
-  const [generatedContent, setGeneratedContent] = useState<any>(null);
+  const [generatedContent, setGeneratedContent] = useState<GeneratedContent | null>(null);
   const [suggestedImages, setSuggestedImages] = useState<StockImage[]>([]);
   const [selectedImage, setSelectedImage] = useState<StockImage | null>(null);
   const [error, setError] = useState<string | null>(null);

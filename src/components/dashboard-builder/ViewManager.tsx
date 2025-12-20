@@ -353,8 +353,9 @@ export function ViewManager({
                         </>
                       ) : (
                         <>
-                          <div
-                            className="flex-1 min-w-0 cursor-pointer"
+                          <button
+                            type="button"
+                            className="flex-1 min-w-0 cursor-pointer bg-transparent border-0 p-0 text-left"
                             onClick={() => {
                               onViewSelect(view.id);
                               onClose();
@@ -378,7 +379,7 @@ export function ViewManager({
                               {view.config.widgets.length} widgets •{' '}
                               {new Date(view.updated_at).toLocaleDateString()}
                             </p>
-                          </div>
+                          </button>
 
                           <div className="flex items-center gap-1 shrink-0">
                             {!view.is_default && (

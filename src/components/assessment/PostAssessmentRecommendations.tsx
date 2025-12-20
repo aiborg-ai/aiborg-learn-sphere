@@ -64,7 +64,7 @@ export function PostAssessmentRecommendations({
 }: PostAssessmentRecommendationsProps) {
   const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState<CourseRecommendation[]>([]);
-  const [insights, setInsights] = useState<any[]>([]);
+  const [insights, setInsights] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(true);
   const { trackClick, trackEnrollment } = useRecommendationInteraction();
 
@@ -361,16 +361,21 @@ export function PostAssessmentRecommendations({
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground">{insight.description}</p>
-                          {insight.action_items && insight.action_items.length > 0 && (
-                            <ul className="mt-2 space-y-1">
-                              {insight.action_items.map((item: string, i: number) => (
-                                <li key={i} className="text-xs text-primary flex items-start gap-2">
-                                  <CheckCircle2 className="h-3 w-3 mt-0.5 flex-shrink-0" />
-                                  <span>{item}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
+                          {insight.action_items &&
+                            Array.isArray(insight.action_items) &&
+                            insight.action_items.length > 0 && (
+                              <ul className="mt-2 space-y-1">
+                                {insight.action_items.map((item: unknown, i: number) => (
+                                  <li
+                                    key={i}
+                                    className="text-xs text-primary flex items-start gap-2"
+                                  >
+                                    <CheckCircle2 className="h-3 w-3 mt-0.5 flex-shrink-0" />
+                                    <span>{String(item)}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
                         </div>
                       </div>
                     </CardContent>

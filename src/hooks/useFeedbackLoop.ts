@@ -42,6 +42,18 @@ interface FeedbackState {
   isProcessing: boolean;
 }
 
+interface FeedbackEventRow {
+  id: string;
+  user_id: string;
+  assessment_id: string;
+  event_type: string;
+  ability_before: number;
+  ability_after: number;
+  triggers_fired: string[];
+  trigger_data: Record<string, unknown>;
+  created_at: string;
+}
+
 /**
  * Hook for submitting answers with feedback loop processing
  */
@@ -148,7 +160,7 @@ export function useFeedbackEvents(limit: number = 20) {
   });
 
   const events = useMemo(() => {
-    return (query.data || []).map((event: any) => ({
+    return (query.data || []).map((event: FeedbackEventRow) => ({
       id: event.id,
       userId: event.user_id,
       assessmentId: event.assessment_id,
@@ -321,7 +333,7 @@ export function useSlidingWindowMetrics(assessmentId: string) {
  */
 export function useFeedbackLoopIntegration(assessmentId: string, planId?: string) {
   const answerSubmit = useAnswerSubmit(assessmentId);
-  const triggerDetection = useTriggerDetection();
+  const _triggerDetection = useTriggerDetection();
   const planAdjustments = usePlanAdjustments(planId || '');
   const slidingWindow = useSlidingWindowMetrics(assessmentId);
 

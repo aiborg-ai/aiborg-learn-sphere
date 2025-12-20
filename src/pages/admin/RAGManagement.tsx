@@ -24,8 +24,21 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
+interface EmbeddingStats {
+  total: number;
+  by_type: Record<string, number>;
+}
+
+interface RAGQuery {
+  query_text: string;
+  search_latency_ms: number;
+  results_count: number;
+  was_helpful: boolean | null;
+  top_result_similarity?: number;
+}
+
 export default function RAGManagement() {
-  const [embeddingStats, setEmbeddingStats] = useState<any>(null);
+  const [embeddingStats, setEmbeddingStats] = useState<EmbeddingStats | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
 
   const generateEmbeddings = useGenerateEmbeddings();
@@ -264,7 +277,7 @@ export default function RAGManagement() {
                           <Clock className="h-5 w-5 text-muted-foreground" />
                           {Math.round(
                             getAnalytics.data.reduce(
-                              (sum: number, q: any) => sum + (q.search_latency_ms || 0),
+                              (sum: number, q: RAGQuery) => sum + (q.search_latency_ms || 0),
                               0
                             ) / getAnalytics.data.length
                           )}
@@ -282,7 +295,7 @@ export default function RAGManagement() {
                           <TrendingUp className="h-5 w-5 text-muted-foreground" />
                           {(
                             getAnalytics.data.reduce(
-                              (sum: number, q: any) => sum + (q.results_count || 0),
+                              (sum: number, q: RAGQuery) => sum + (q.results_count || 0),
                               0
                             ) / getAnalytics.data.length
                           ).toFixed(1)}
@@ -298,8 +311,10 @@ export default function RAGManagement() {
                         <div className="text-2xl font-bold flex items-center gap-1">
                           <CheckCircle className="h-5 w-5 text-green-500" />
                           {(
-                            (getAnalytics.data.filter((q: any) => q.was_helpful === true).length /
-                              getAnalytics.data.filter((q: any) => q.was_helpful !== null).length) *
+                            (getAnalytics.data.filter((q: RAGQuery) => q.was_helpful === true)
+                              .length /
+                              getAnalytics.data.filter((q: RAGQuery) => q.was_helpful !== null)
+                                .length) *
                               100 || 0
                           ).toFixed(0)}
                           %
@@ -309,7 +324,7 @@ export default function RAGManagement() {
                   </div>
 
                   <div className="border rounded-lg p-4 max-h-96 overflow-y-auto space-y-2">
-                    {getAnalytics.data.slice(0, 20).map((query: any, idx: number) => (
+                    {getAnalytics.data.slice(0, 20).map((query: RAGQuery, idx: number) => (
                       <div key={idx} className="border-b pb-2 last:border-b-0">
                         <p className="text-sm font-medium">"{query.query_text.slice(0, 80)}..."</p>
                         <div className="flex gap-2 mt-1">

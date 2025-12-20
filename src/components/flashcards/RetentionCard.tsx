@@ -5,6 +5,7 @@
  * Shows urgency status and optimal review timing.
  */
 
+import { useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -32,43 +33,44 @@ interface RetentionCardProps {
 export function RetentionCard({ item, onClick, showDetails = true }: RetentionCardProps) {
   const retention = item.retention ?? item.estimatedRetention ?? 0;
 
-  const urgencyConfig = {
-    overdue: {
-      color: 'border-red-500/50 bg-red-500/5',
-      badge: 'bg-red-500 text-white',
-      icon: <AlertCircle className="h-4 w-4" />,
-      label: 'Overdue',
-    },
-    due_soon: {
-      color: 'border-orange-500/50 bg-orange-500/5',
-      badge: 'bg-orange-500 text-white',
-      icon: <Timer className="h-4 w-4" />,
-      label: 'Due Soon',
-    },
-    optimal: {
-      color: 'border-green-500/50 bg-green-500/5',
-      badge: 'bg-green-500 text-white',
-      icon: <CheckCircle2 className="h-4 w-4" />,
-      label: 'Optimal',
-    },
-    early: {
-      color: 'border-blue-500/50 bg-blue-500/5',
-      badge: 'bg-blue-500 text-white',
-      icon: <Clock className="h-4 w-4" />,
-      label: 'Early',
-    },
-  };
+  const urgencyConfig = useMemo(
+    () => ({
+      overdue: {
+        color: 'border-red-500/50 bg-red-500/5',
+        badge: 'bg-red-500 text-white',
+        icon: <AlertCircle className="h-4 w-4" />,
+        label: 'Overdue',
+      },
+      due_soon: {
+        color: 'border-orange-500/50 bg-orange-500/5',
+        badge: 'bg-orange-500 text-white',
+        icon: <Timer className="h-4 w-4" />,
+        label: 'Due Soon',
+      },
+      optimal: {
+        color: 'border-green-500/50 bg-green-500/5',
+        badge: 'bg-green-500 text-white',
+        icon: <CheckCircle2 className="h-4 w-4" />,
+        label: 'Optimal',
+      },
+      early: {
+        color: 'border-blue-500/50 bg-blue-500/5',
+        badge: 'bg-blue-500 text-white',
+        icon: <Clock className="h-4 w-4" />,
+        label: 'Early',
+      },
+    }),
+    []
+  );
 
   const config = urgencyConfig[item.urgency];
 
-  const retentionColor =
-    retention >= 0.85
-      ? 'text-green-500'
-      : retention >= 0.7
-        ? 'text-yellow-500'
-        : retention >= 0.5
-          ? 'text-orange-500'
-          : 'text-red-500';
+  const retentionColor = useMemo(() => {
+    if (retention >= 0.85) return 'text-green-500';
+    if (retention >= 0.7) return 'text-yellow-500';
+    if (retention >= 0.5) return 'text-orange-500';
+    return 'text-red-500';
+  }, [retention]);
 
   return (
     <Card
@@ -155,9 +157,10 @@ export function RetentionCardCompact({ item, onClick }: RetentionCardProps) {
   };
 
   return (
-    <div
+    <button
+      type="button"
       className={cn(
-        'flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors',
+        'flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors bg-transparent text-left w-full',
         onClick && 'cursor-pointer'
       )}
       onClick={onClick}
@@ -189,7 +192,7 @@ export function RetentionCardCompact({ item, onClick }: RetentionCardProps) {
         </div>
         <div className="text-xs text-muted-foreground">retention</div>
       </div>
-    </div>
+    </button>
   );
 }
 

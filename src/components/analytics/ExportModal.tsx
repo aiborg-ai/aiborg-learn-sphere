@@ -59,7 +59,7 @@ export interface ExportModalProps {
   reportSubtitle?: string;
 
   // CSV Export options
-  csvData?: Array<Record<string, any>>;
+  csvData?: Array<Record<string, string | number | boolean | null>>;
   csvTemplate?: string; // Template key from DEFAULT_TEMPLATES
 
   // Common options

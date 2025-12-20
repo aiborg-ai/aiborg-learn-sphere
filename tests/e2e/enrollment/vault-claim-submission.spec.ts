@@ -265,7 +265,7 @@ test.describe('Vault Claim Submission Flow', () => {
     expect(errorMessage.toLowerCase()).toContain('already');
   });
 
-  test('should display review summary with correct information', async ({ page }) => {
+  test('should display review summary with correct information', async ({ page: _page }) => {
     const members = generateFamilyMembers(2);
     testClaimData.familyMembers = members;
 
@@ -365,7 +365,7 @@ test.describe('Vault Claim Submission Flow', () => {
 
       // Logout
       await logout(page);
-    } catch (error) {
+    } catch {
       // If login fails (user doesn't exist), skip this test
       test.skip();
     }

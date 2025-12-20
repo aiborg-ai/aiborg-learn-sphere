@@ -171,7 +171,14 @@ export class UserAnalyticsService {
       const categoryCount: Record<string, number> = {};
       let total = 0;
 
-      data?.forEach((enrollment: any) => {
+      interface EnrollmentWithCategory {
+        id: string;
+        courses?: {
+          category?: string;
+        } | null;
+      }
+
+      data?.forEach((enrollment: EnrollmentWithCategory) => {
         const category = enrollment.courses?.category || 'Uncategorized';
         categoryCount[category] = (categoryCount[category] || 0) + 1;
         total++;

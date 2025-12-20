@@ -99,7 +99,7 @@ function shouldValidate(options: Required<ValidationOptions>): boolean {
  * ```
  */
 export async function validateSingle<T>(
-  queryPromise: Promise<PostgrestSingleResponse<any>>,
+  queryPromise: Promise<PostgrestSingleResponse<unknown>>,
   schema: z.ZodSchema<T>,
   options?: ValidationOptions
 ): Promise<ValidatedResponse<T>> {
@@ -171,7 +171,7 @@ export async function validateSingle<T>(
  * ```
  */
 export async function validateArray<T>(
-  queryPromise: Promise<PostgrestResponse<any>>,
+  queryPromise: Promise<PostgrestResponse<unknown>>,
   itemSchema: z.ZodSchema<T>,
   options?: ValidationOptions
 ): Promise<ValidatedResponse<T[]>> {
@@ -301,30 +301,42 @@ export function validateData<T>(
  * ```
  */
 export function withValidation<T>(
-  queryBuilder: any,
+  queryBuilder: unknown,
   schema: z.ZodSchema<T>,
   options?: ValidationOptions
 ) {
-  return new Proxy(queryBuilder, {
-    get(target, prop) {
-      const original = target[prop];
+  return new Proxy(queryBuilder as object, {
+    get(target: Record<string, unknown>, prop: string | symbol) {
+      const original = target[prop as string];
 
       // Intercept execution methods
       if (prop === 'single') {
-        return async function (...args: any[]) {
-          const query = original.apply(target, args);
-          return validateSingle(query, schema, options);
+        return async function (...args: unknown[]) {
+          const query = (original as (...args: unknown[]) => unknown).apply(target, args);
+          return validateSingle(
+            query as Promise<PostgrestSingleResponse<unknown>>,
+            schema,
+            options
+          );
         };
       }
 
       if (prop === 'then' || prop === 'catch' || prop === 'finally') {
-        return async function (..._args: any[]) {
+        return async function (..._args: unknown[]) {
           // This is the final execution of the query
-          const result = await target;
+          const result = await (target as Promise<{ data: unknown }>);
           if (Array.isArray(result.data)) {
-            return validateArray(Promise.resolve(result), schema, options);
+            return validateArray(
+              Promise.resolve(result as PostgrestResponse<unknown>),
+              schema,
+              options
+            );
           } else {
-            return validateSingle(Promise.resolve(result), schema, options);
+            return validateSingle(
+              Promise.resolve(result as PostgrestSingleResponse<unknown>),
+              schema,
+              options
+            );
           }
         };
       }
@@ -339,7 +351,7 @@ export function withValidation<T>(
  * Validates partial updates (PATCH/UPDATE operations)
  * Uses partial schema that makes all fields optional
  */
-export function validatePartial<T extends z.ZodObject<any>>(
+export function validatePartial<T extends z.ZodObject<z.ZodRawShape>>(
   schema: T,
   data: unknown,
   options?: ValidationOptions

@@ -49,7 +49,8 @@ export function SkillChartWidget({ widget, isEditing }: WidgetComponentProps) {
       const skillMap: Record<string, number[]> = {};
 
       enrollments?.forEach(enrollment => {
-        const keywords = (enrollment.course as any)?.keywords || [];
+        const keywords =
+          ((enrollment.course as Record<string, unknown>)?.keywords as string[]) || [];
         const progress = enrollment.progress || 0;
 
         keywords.forEach((keyword: string) => {

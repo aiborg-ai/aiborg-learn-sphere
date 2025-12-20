@@ -19,11 +19,13 @@ export type RealtimeTable =
 export type RealtimeEvent = 'INSERT' | 'UPDATE' | 'DELETE' | '*';
 
 export interface RealtimeUpdateCallbacks {
-  onStudyPlanUpdate?: (payload: RealtimePostgresChangesPayload<any>) => void;
-  onNotificationUpdate?: (payload: RealtimePostgresChangesPayload<any>) => void;
-  onGoalUpdate?: (payload: RealtimePostgresChangesPayload<any>) => void;
-  onInsightUpdate?: (payload: RealtimePostgresChangesPayload<any>) => void;
-  onRecommendationUpdate?: (payload: RealtimePostgresChangesPayload<any>) => void;
+  onStudyPlanUpdate?: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void;
+  onNotificationUpdate?: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void;
+  onGoalUpdate?: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void;
+  onInsightUpdate?: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void;
+  onRecommendationUpdate?: (
+    payload: RealtimePostgresChangesPayload<Record<string, unknown>>
+  ) => void;
   onError?: (error: Error) => void;
 }
 
@@ -36,6 +38,12 @@ export function useRealtimeUpdates(
   enabled: boolean = true
 ) {
   const channelRef = useRef<RealtimeChannel | null>(null);
+  const callbacksRef = useRef(callbacks);
+
+  // Update callbacks ref when callbacks change
+  useEffect(() => {
+    callbacksRef.current = callbacks;
+  }, [callbacks]);
 
   useEffect(() => {
     if (!enabled || !userId) {
@@ -47,7 +55,7 @@ export function useRealtimeUpdates(
     const channel = supabase.channel(channelName);
 
     // Subscribe to study plan updates
-    if (callbacks.onStudyPlanUpdate) {
+    if (callbacksRef.current.onStudyPlanUpdate) {
       channel.on(
         'postgres_changes',
         {
@@ -56,15 +64,15 @@ export function useRealtimeUpdates(
           table: 'ai_study_plans',
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
+        payload => {
           logger.info('Study plan update received:', payload);
-          callbacks.onStudyPlanUpdate!(payload);
+          callbacksRef.current.onStudyPlanUpdate!(payload);
         }
       );
     }
 
     // Subscribe to notification updates
-    if (callbacks.onNotificationUpdate) {
+    if (callbacksRef.current.onNotificationUpdate) {
       channel.on(
         'postgres_changes',
         {
@@ -73,15 +81,15 @@ export function useRealtimeUpdates(
           table: 'notifications',
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
+        payload => {
           logger.info('Notification update received:', payload);
-          callbacks.onNotificationUpdate!(payload);
+          callbacksRef.current.onNotificationUpdate!(payload);
         }
       );
     }
 
     // Subscribe to goal updates
-    if (callbacks.onGoalUpdate) {
+    if (callbacksRef.current.onGoalUpdate) {
       channel.on(
         'postgres_changes',
         {
@@ -90,15 +98,15 @@ export function useRealtimeUpdates(
           table: 'user_learning_goals',
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
+        payload => {
           logger.info('Goal update received:', payload);
-          callbacks.onGoalUpdate!(payload);
+          callbacksRef.current.onGoalUpdate!(payload);
         }
       );
     }
 
     // Subscribe to insight updates
-    if (callbacks.onInsightUpdate) {
+    if (callbacksRef.current.onInsightUpdate) {
       channel.on(
         'postgres_changes',
         {
@@ -107,15 +115,15 @@ export function useRealtimeUpdates(
           table: 'ai_learning_insights',
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
+        payload => {
           logger.info('Insight update received:', payload);
-          callbacks.onInsightUpdate!(payload);
+          callbacksRef.current.onInsightUpdate!(payload);
         }
       );
     }
 
     // Subscribe to recommendation updates
-    if (callbacks.onRecommendationUpdate) {
+    if (callbacksRef.current.onRecommendationUpdate) {
       channel.on(
         'postgres_changes',
         {
@@ -124,21 +132,21 @@ export function useRealtimeUpdates(
           table: 'recommendation_history',
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
+        payload => {
           logger.info('Recommendation update received:', payload);
-          callbacks.onRecommendationUpdate!(payload);
+          callbacksRef.current.onRecommendationUpdate!(payload);
         }
       );
     }
 
     // Subscribe to the channel
-    channel.subscribe((status) => {
+    channel.subscribe(status => {
       if (status === 'SUBSCRIBED') {
         logger.info(`Subscribed to real-time updates for user ${userId}`);
       } else if (status === 'CHANNEL_ERROR') {
         logger.error('Error subscribing to real-time channel');
-        if (callbacks.onError) {
-          callbacks.onError(new Error('Failed to subscribe to real-time updates'));
+        if (callbacksRef.current.onError) {
+          callbacksRef.current.onError(new Error('Failed to subscribe to real-time updates'));
         }
       }
     });
@@ -153,7 +161,7 @@ export function useRealtimeUpdates(
         channelRef.current = null;
       }
     };
-  }, [userId, enabled, JSON.stringify(callbacks)]);
+  }, [userId, enabled]);
 
   return {
     unsubscribe: () => {
@@ -170,14 +178,10 @@ export function useRealtimeUpdates(
  */
 export function useStudyPlanUpdates(
   userId: string,
-  onUpdate: (payload: RealtimePostgresChangesPayload<any>) => void,
+  onUpdate: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void,
   enabled: boolean = true
 ) {
-  return useRealtimeUpdates(
-    userId,
-    { onStudyPlanUpdate: onUpdate },
-    enabled
-  );
+  return useRealtimeUpdates(userId, { onStudyPlanUpdate: onUpdate }, enabled);
 }
 
 /**
@@ -185,14 +189,10 @@ export function useStudyPlanUpdates(
  */
 export function useNotificationUpdates(
   userId: string,
-  onUpdate: (payload: RealtimePostgresChangesPayload<any>) => void,
+  onUpdate: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void,
   enabled: boolean = true
 ) {
-  return useRealtimeUpdates(
-    userId,
-    { onNotificationUpdate: onUpdate },
-    enabled
-  );
+  return useRealtimeUpdates(userId, { onNotificationUpdate: onUpdate }, enabled);
 }
 
 /**
@@ -200,14 +200,10 @@ export function useNotificationUpdates(
  */
 export function useGoalUpdates(
   userId: string,
-  onUpdate: (payload: RealtimePostgresChangesPayload<any>) => void,
+  onUpdate: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void,
   enabled: boolean = true
 ) {
-  return useRealtimeUpdates(
-    userId,
-    { onGoalUpdate: onUpdate },
-    enabled
-  );
+  return useRealtimeUpdates(userId, { onGoalUpdate: onUpdate }, enabled);
 }
 
 /**

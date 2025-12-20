@@ -85,7 +85,15 @@ export function TopicStep({ initialData, onNext }: TopicStepProps) {
             {/* Audience */}
             <div className="space-y-2">
               <Label htmlFor="audience">Target Audience *</Label>
-              <Select value={audience} onValueChange={value => setValue('audience', value as any)}>
+              <Select
+                value={audience}
+                onValueChange={value =>
+                  setValue(
+                    'audience',
+                    value as 'primary' | 'secondary' | 'professional' | 'business'
+                  )
+                }
+              >
                 <SelectTrigger id="audience">
                   <SelectValue placeholder="Select audience" />
                 </SelectTrigger>
@@ -112,7 +120,12 @@ export function TopicStep({ initialData, onNext }: TopicStepProps) {
             {/* Tone */}
             <div className="space-y-2">
               <Label htmlFor="tone">Writing Tone *</Label>
-              <Select value={tone} onValueChange={value => setValue('tone', value as any)}>
+              <Select
+                value={tone}
+                onValueChange={value =>
+                  setValue('tone', value as 'professional' | 'casual' | 'technical' | 'friendly')
+                }
+              >
                 <SelectTrigger id="tone">
                   <SelectValue placeholder="Select tone" />
                 </SelectTrigger>
@@ -131,7 +144,10 @@ export function TopicStep({ initialData, onNext }: TopicStepProps) {
             {/* Length */}
             <div className="space-y-2">
               <Label htmlFor="length">Content Length *</Label>
-              <Select value={length} onValueChange={value => setValue('length', value as any)}>
+              <Select
+                value={length}
+                onValueChange={value => setValue('length', value as 'short' | 'medium' | 'long')}
+              >
                 <SelectTrigger id="length">
                   <SelectValue placeholder="Select length" />
                 </SelectTrigger>

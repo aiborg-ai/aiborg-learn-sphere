@@ -11,7 +11,7 @@ import { logger } from '@/utils/logger';
  * @param value Cell value
  * @returns Escaped value
  */
-function escapeCsvCell(value: any): string {
+function escapeCsvCell(value: unknown): string {
   if (value === null || value === undefined) {
     return '';
   }
@@ -42,7 +42,7 @@ function escapeCsvCell(value: any): string {
  * @param headers Optional custom headers (uses object keys if not provided)
  * @returns CSV string
  */
-export function arrayToCsv(data: Array<Record<string, any>>, headers?: string[]): string {
+export function arrayToCsv(data: Array<Record<string, unknown>>, headers?: string[]): string {
   if (data.length === 0) {
     return '';
   }
@@ -72,7 +72,7 @@ export function arrayToCsv(data: Array<Record<string, any>>, headers?: string[])
  * @param headers Optional custom headers
  */
 export function exportToCSV(
-  data: Array<Record<string, any>>,
+  data: Array<Record<string, unknown>>,
   filename: string,
   headers?: string[]
 ): void {
@@ -155,12 +155,12 @@ export function formatNumberForCsv(value: number | string, decimals: number = 2)
  * @returns Sanitized data
  */
 export function sanitizeForCsv(
-  data: Array<Record<string, any>>,
+  data: Array<Record<string, unknown>>,
   dateFields: string[] = [],
   numberFields: string[] = []
-): Array<Record<string, any>> {
+): Array<Record<string, unknown>> {
   return data.map(row => {
-    const sanitized: Record<string, any> = {};
+    const sanitized: Record<string, unknown> = {};
 
     for (const [key, value] of Object.entries(row)) {
       if (dateFields.includes(key)) {
@@ -185,7 +185,7 @@ export function sanitizeForCsv(
  * @param headers Optional custom headers
  */
 export function exportWithMetadata(
-  data: Array<Record<string, any>>,
+  data: Array<Record<string, unknown>>,
   filename: string,
   metadata: Record<string, string>,
   headers?: string[]
