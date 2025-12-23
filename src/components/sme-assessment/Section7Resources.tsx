@@ -69,6 +69,7 @@ export function Section7Resources({ formData, onUpdate }: Section7ResourcesProps
               size="icon"
               className="absolute top-4 right-4 text-destructive hover:text-destructive"
               onClick={() => removeResource(index)}
+              aria-label="Remove resource"
             >
               <Trash2 className="h-4 w-4" />
             </Button>

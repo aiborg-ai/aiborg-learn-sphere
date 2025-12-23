@@ -434,7 +434,13 @@ export function QuestionForm({ initialData, onSubmit, onCancel, isLoading }: Que
                   </div>
 
                   {fields.length > 1 && (
-                    <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => remove(index)}
+                      aria-label="Delete option"
+                    >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
                   )}

@@ -388,7 +388,12 @@ export function SecureFileUpload({
                       <AlertCircle className="h-5 w-5 text-destructive" />
                     )}
                     {item.status === 'pending' && (
-                      <Button size="icon" variant="ghost" onClick={() => removeUpload(item)}>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => removeUpload(item)}
+                        aria-label="Remove file"
+                      >
                         <X className="h-4 w-4" />
                       </Button>
                     )}

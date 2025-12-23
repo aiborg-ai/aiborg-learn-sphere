@@ -147,7 +147,7 @@ export function StudioWizard({
           <div className="py-12 text-center space-y-4">
             <div className="text-6xl">{config.icon}</div>
             <div>
-              <h3 className="text-lg font-semibold">{currentStepConfig?.title}</h3>
+              <h2 className="text-lg font-semibold">{currentStepConfig?.title}</h2>
               <p className="text-sm text-muted-foreground mt-1">{currentStepConfig?.description}</p>
             </div>
             <Alert>

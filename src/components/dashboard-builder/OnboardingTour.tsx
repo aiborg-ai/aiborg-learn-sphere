@@ -222,7 +222,13 @@ export function OnboardingTour({ isOpen, onComplete, onSkip }: OnboardingTourPro
                     </div>
                   </div>
 
-                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={handleSkip}>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8"
+                    aria-label="Close tour"
+                    onClick={handleSkip}
+                  >
                     <X className="h-4 w-4" />
                   </Button>
                 </div>

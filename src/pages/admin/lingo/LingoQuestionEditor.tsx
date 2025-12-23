@@ -589,6 +589,7 @@ export function LingoQuestionEditor() {
                             variant="ghost"
                             size="icon"
                             onClick={() => removeArrayItem('options', i)}
+                            aria-label="Remove option"
                           >
                             <Icon name="X" className="h-4 w-4" />
                           </Button>
@@ -638,6 +639,7 @@ export function LingoQuestionEditor() {
                           variant="ghost"
                           size="icon"
                           onClick={() => removeArrayItem('answers', i)}
+                          aria-label="Remove answer"
                         >
                           <Icon name="X" className="h-4 w-4" />
                         </Button>
@@ -670,7 +672,12 @@ export function LingoQuestionEditor() {
                         className="flex-1"
                       />
                       {(formData.pairs?.length || 0) > 1 && (
-                        <Button variant="ghost" size="icon" onClick={() => removePair(i)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removePair(i)}
+                          aria-label="Remove pair"
+                        >
                           <Icon name="X" className="h-4 w-4" />
                         </Button>
                       )}
@@ -700,6 +707,7 @@ export function LingoQuestionEditor() {
                           variant="ghost"
                           size="icon"
                           onClick={() => removeArrayItem('steps', i)}
+                          aria-label="Remove step"
                         >
                           <Icon name="X" className="h-4 w-4" />
                         </Button>

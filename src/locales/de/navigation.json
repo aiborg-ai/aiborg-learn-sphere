@@ -1,1 +1,60 @@
-{}
+{
+  "menu": {
+    "home": "Startseite",
+    "programs": "Programme",
+    "blog": "Blog",
+    "events": "Veranstaltungen",
+    "reviews": "Bewertungen",
+    "about": "Über Uns",
+    "contact": "Kontakt",
+    "faq": "FAQ",
+    "terms": "Bedingungen"
+  },
+  "aiAssessment": {
+    "title": "KI-Bewertung",
+    "badge": "NEU"
+  },
+  "user": {
+    "menu": "Benutzermenü",
+    "dashboard": "Mein Dashboard",
+    "profile": "Profil",
+    "settings": "Einstellungen",
+    "signIn": "Anmelden",
+    "signOut": "Abmelden",
+    "getStarted": "Loslegen",
+    "adminDashboard": "Admin-Dashboard"
+  },
+  "features": {
+    "search": "Suchen",
+    "keyboardShortcuts": "Tastenkürzel",
+    "keyboardShortcutsHint": "Drücken Sie Shift+? für Tastenkürzel",
+    "themeToggle": "Design Wechseln"
+  },
+  "mobile": {
+    "openMenu": "Menü Öffnen",
+    "closeMenu": "Menü Schließen"
+  },
+  "aria": {
+    "mainNavigation": "Hauptnavigation",
+    "primaryMenu": "Hauptmenü",
+    "userAccountMenu": "Benutzerkonto-Menü",
+    "mobileMenu": "Mobile Navigation",
+    "aiborgHome": "Aiborg Startseite",
+    "navigateToPrograms": "Zur Schulungsprogramme-Sektion navigieren",
+    "navigateToEvents": "Zur Veranstaltungen-Sektion navigieren",
+    "navigateToReviews": "Zur Bewertungen-Sektion navigieren",
+    "navigateToAbout": "Zur Über Uns-Sektion navigieren",
+    "navigateToContact": "Zur Kontakt-Sektion navigieren",
+    "openFaq": "Häufig gestellte Fragen öffnen",
+    "openTerms": "Allgemeine Geschäftsbedingungen öffnen",
+    "goToBlog": "Zum Blog gehen",
+    "goToDashboard": "Zu meinem Dashboard gehen",
+    "goToProfile": "Zu meinem Profil gehen",
+    "goToAdmin": "Zum Admin-Dashboard gehen",
+    "signInToAccount": "Bei Ihrem Konto anmelden",
+    "signOutOfAccount": "Von Ihrem Konto abmelden",
+    "getStartedWithAiborg": "Mit Aiborg loslegen",
+    "aiAssessmentNewFeature": "KI-Bewertung - Neue Funktion",
+    "loggedInAs": "Angemeldet als {{name}}"
+  }
+}

@@ -158,6 +158,7 @@ export function BlogTable({
                         size="icon"
                         onClick={() => onToggleStatus(post)}
                         title={post.status === 'published' ? 'Hide article' : 'Show article'}
+                        aria-label={post.status === 'published' ? 'Hide article' : 'Show article'}
                       >
                         {post.status === 'published' ? (
                           <EyeOff className="h-4 w-4" />
@@ -170,6 +171,7 @@ export function BlogTable({
                         size="icon"
                         onClick={() => onEdit(post)}
                         title="Edit article"
+                        aria-label="Edit article"
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -178,6 +180,7 @@ export function BlogTable({
                         size="icon"
                         onClick={() => onView(post.slug)}
                         title="View article"
+                        aria-label="View article"
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
@@ -186,6 +189,7 @@ export function BlogTable({
                         size="icon"
                         onClick={() => onDelete(post.id)}
                         title="Delete article"
+                        aria-label="Delete article"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

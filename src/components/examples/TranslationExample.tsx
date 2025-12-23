@@ -25,41 +25,41 @@ export function TranslationExample() {
       <CardContent className="space-y-4">
         {/* Example 1: Simple translation */}
         <div>
-          <h3 className="font-semibold mb-2">Simple Translation:</h3>
+          <h2 className="font-semibold mb-2">Simple Translation:</h2>
           <p>{t('actions.save', { ns: 'common' })}</p>
           <p>{t('actions.cancel', { ns: 'common' })}</p>
         </div>
 
         {/* Example 2: Translation with interpolation */}
         <div>
-          <h3 className="font-semibold mb-2">Translation with Variables:</h3>
+          <h2 className="font-semibold mb-2">Translation with Variables:</h2>
           <p>{t('validation.minLength', { min: 8 })}</p>
           <p>{t('courses.progress.percentage', { percent: 75 })}</p>
         </div>
 
         {/* Example 3: Using different namespaces */}
         <div>
-          <h3 className="font-semibold mb-2">Different Namespaces:</h3>
+          <h2 className="font-semibold mb-2">Different Namespaces:</h2>
           <p>Navigation: {tNav('menu.home')}</p>
           <p>Auth: {tAuth('signIn.title')}</p>
         </div>
 
         {/* Example 4: Nested translations */}
         <div>
-          <h3 className="font-semibold mb-2">Nested Keys:</h3>
+          <h2 className="font-semibold mb-2">Nested Keys:</h2>
           <p>{t('common:app.name')}</p>
           <p>{t('common:app.tagline')}</p>
         </div>
 
         {/* Example 5: Fallback translation */}
         <div>
-          <h3 className="font-semibold mb-2">With Fallback:</h3>
+          <h2 className="font-semibold mb-2">With Fallback:</h2>
           <p>{t('nonexistent.key', 'Fallback text if key not found')}</p>
         </div>
 
         {/* Example 6: In button components */}
         <div>
-          <h3 className="font-semibold mb-2">In Components:</h3>
+          <h2 className="font-semibold mb-2">In Components:</h2>
           <div className="flex gap-2">
             <Button>{t('common:actions.save')}</Button>
             <Button variant="outline">{t('common:actions.cancel')}</Button>
@@ -68,7 +68,7 @@ export function TranslationExample() {
 
         {/* Example 7: Array of translations */}
         <div>
-          <h3 className="font-semibold mb-2">Status Messages:</h3>
+          <h2 className="font-semibold mb-2">Status Messages:</h2>
           <ul className="list-disc list-inside">
             <li>{t('status.success')}</li>
             <li>{t('status.pending')}</li>

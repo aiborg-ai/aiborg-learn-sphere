@@ -360,7 +360,7 @@ export function MediaPlayer({
                 onClick={togglePlay}
                 onTouchEnd={handleDoubleTap}
               >
-                <track kind="captions" srcLang="en" label="English" src="" />
+                {/* Caption tracks will be dynamically loaded when available */}
               </video>
 
               {/* Custom touch-optimized controls */}

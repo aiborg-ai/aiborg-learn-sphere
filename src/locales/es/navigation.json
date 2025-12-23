@@ -21,11 +21,13 @@
     "settings": "Configuración",
     "signIn": "Iniciar Sesión",
     "signOut": "Cerrar Sesión",
+    "getStarted": "Comenzar",
     "adminDashboard": "Panel de Administración"
   },
   "features": {
     "search": "Buscar",
     "keyboardShortcuts": "Atajos de Teclado",
+    "keyboardShortcutsHint": "Presiona Shift+? para atajos",
     "themeToggle": "Cambiar Tema"
   },
   "mobile": {
@@ -36,6 +38,23 @@
     "mainNavigation": "Navegación principal",
     "primaryMenu": "Menú principal",
     "userAccountMenu": "Menú de cuenta de usuario",
-    "mobileMenu": "Menú de navegación móvil"
+    "mobileMenu": "Menú de navegación móvil",
+    "aiborgHome": "Inicio de Aiborg",
+    "navigateToPrograms": "Navegar a la sección de programas de capacitación",
+    "navigateToEvents": "Navegar a la sección de eventos",
+    "navigateToReviews": "Navegar a la sección de reseñas",
+    "navigateToAbout": "Navegar a la sección acerca de",
+    "navigateToContact": "Navegar a la sección de contacto",
+    "openFaq": "Abrir preguntas frecuentes",
+    "openTerms": "Abrir términos y condiciones",
+    "goToBlog": "Ir al blog",
+    "goToDashboard": "Ir a mi panel",
+    "goToProfile": "Ir a mi perfil",
+    "goToAdmin": "Ir al panel de administración",
+    "signInToAccount": "Iniciar sesión en tu cuenta",
+    "signOutOfAccount": "Cerrar sesión de tu cuenta",
+    "getStartedWithAiborg": "Comenzar con Aiborg",
+    "aiAssessmentNewFeature": "Evaluación de IA - Nueva función",
+    "loggedInAs": "Conectado como {{name}}"
   }
 }

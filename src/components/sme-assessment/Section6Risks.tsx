@@ -79,6 +79,7 @@ export function Section6Risks({ formData, onUpdate }: Section6RisksProps) {
                 size="icon"
                 className="absolute top-4 right-4 text-destructive hover:text-destructive"
                 onClick={() => removeRisk(index)}
+                aria-label="Remove risk"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>

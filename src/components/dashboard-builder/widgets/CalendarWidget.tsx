@@ -122,11 +122,23 @@ export function CalendarWidget({ widget, isEditing }: WidgetComponentProps) {
     <div className="space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={previousMonth}>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8"
+          aria-label="Previous month"
+          onClick={previousMonth}
+        >
           <ChevronLeft className="h-4 w-4" />
         </Button>
         <h4 className="text-sm font-semibold">{monthName}</h4>
-        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={nextMonth}>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8"
+          aria-label="Next month"
+          onClick={nextMonth}
+        >
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>

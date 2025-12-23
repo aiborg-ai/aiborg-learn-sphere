@@ -58,6 +58,7 @@ export function Section3PainPoints({ formData, onUpdate }: Section3PainPointsPro
               size="icon"
               className="absolute top-4 right-4 text-destructive hover:text-destructive"
               onClick={() => removePainPoint(index)}
+              aria-label="Remove pain point"
             >
               <Trash2 className="h-4 w-4" />
             </Button>

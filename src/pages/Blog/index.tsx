@@ -248,6 +248,7 @@ export default function BlogPage() {
                       variant={(filters.page || 1) === i + 1 ? 'default' : 'outline'}
                       size="icon"
                       onClick={() => handlePageChange(i + 1)}
+                      aria-label={`Go to page ${i + 1}`}
                     >
                       {i + 1}
                     </Button>

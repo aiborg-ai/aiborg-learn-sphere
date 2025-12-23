@@ -72,6 +72,7 @@ export function WidgetWrapper({
             size="icon"
             variant="ghost"
             className="h-6 w-6 bg-background/80 backdrop-blur"
+            aria-label="Configure widget"
             onClick={e => {
               e.stopPropagation();
               onConfigure?.();
@@ -83,6 +84,7 @@ export function WidgetWrapper({
             size="icon"
             variant="ghost"
             className="h-6 w-6 bg-background/80 backdrop-blur text-destructive"
+            aria-label="Remove widget"
             onClick={e => {
               e.stopPropagation();
               onRemove?.();

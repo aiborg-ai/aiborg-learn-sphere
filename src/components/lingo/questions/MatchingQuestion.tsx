@@ -144,6 +144,7 @@ export function MatchingQuestion({
                         e.stopPropagation();
                         handleUnmatch(item);
                       }}
+                      aria-label="Unmatch item"
                     >
                       <Unlink className="h-3 w-3" />
                     </Button>

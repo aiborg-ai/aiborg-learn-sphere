@@ -1,32 +1,120 @@
-hirendra@gmail.com
-HVOne2025
+# AiBorg Learn Sphere - Project Notes
 
+## Admin Dashboard
 
-Admin Dashboard URL:
+- Dashboard URL: https://www.aiborg.ai/admin
+- Admin Email: hirendra.vikram@aiborg.ai
 
-  - https://www.aiborg.ai/admin
+## API Keys & Secrets
 
+⚠️ **SECURITY NOTE**: All API keys and secrets have been removed from this file.
+Configure secrets via:
+- Supabase Dashboard → Project Settings → API
+- Vercel Dashboard → Project Settings → Environment Variables
+- NGROK Dashboard → https://dashboard.ngrok.com/get-started/your-authtoken
 
-  Admin Account with Dashboard Access
-
-  Email: hirendra@gmail.com
-
-  Alternative/Official Email: hirendra.vikram@aiborg.ai
-
-
-
-
-stripe password
--------------------
-
-----------------------------------------------
-supabase project API Keys
-sb_secret_RjBgDxdqc-gmRTaKGDfl8g_-4wzGpKr
------------------------------------------------
-NGROK
-353rz79n257rqKWcQo4PZZo3IeN_4FFE8guRdYFVURphCXpMY
 --------------------------------------------------
+HV Wishlist:
+"Lesson on Demand"
+User can generate a lesson, based on a topic, level and contents and curriculum, just like a workflow, in the end the suer gets a well prepared lesson plan and notes. This shall use our ollama LLM. 
 
+
+------------
+ Recommended Next Steps
+
+  Immediate Priority (High Impact)
+
+  1
+  2. Increase Test Coverage - Currently at 20%, target is 60%
+  3. Address ESLint Warnings - 349 accessibility and code quality issues
+ 
+
+
+
+  5. Image optimization - Those 4 large images (2-3MB each) causing PWA
+  warnings
+
+  6. Image Compression - lovable-uploads folder contains 2-3MB images
+
+  Roadmap Items (Per docs)
+
+  - Advanced Analytics Dashboard (Priority: 2556)
+  - (Priority: 2430)
+  - Collaborative Learning Tools (Priority: 2430)
+  - 
+
+  ---
+  Which area would you like to focus on first? I can:
+  -
+  - Run tests and improve coverage
+  - Address ESLint/accessibility warnings
+  - 
+  - Help with a specific feature from the roadmap
+-------------------------------------------------------
+
+
+
+
+
+
+
+
+  1. Template usage: Wire BlogRequest.template into BlogGenerator (load via
+     TemplateManager, merge into prompt/structure), and add a test fixture +
+     templates example. Right now templates are unused.
+  2. Parsing robustness: Harden parse_response to tolerate varied AI outputs
+     (fallback headings, cleaner tags split, guard against missing sections)
+     and expand tests to cover edge cases (no tags, HTML-ish responses, extra
+     whitespace).
+  3. Batch/parallel config: Implement the BatchConfig.parallel/stop_on_error
+     knobs in scripts/batch_generate.py (threaded or process pool), add
+     progress/logging, and tests for dry-run/error paths.
+  4. History/metadata: Use HistoryConfig to persist generation metadata (SQLite
+     or flat JSONL), and surface recent runs via a CLI command.
+  5. Export polish: Escape HTML content for the HTML exporter, add optional
+     featured image support, and write exporter unit tests for all formats
+     (frontmatter/JSON/HTML).
+
+
+
+
+
+
+
+
+
+
+
+-------------------
+ 
+  🎯 Next Steps (Optional)
+
+  For further optimization, consider:
+  1.
+  2. 
+  3.
+  4. Monitor Core Web Vitals with the
+  existing performance monitoring
+  5. Consider implementing critical CSS
+  extraction
+
+
+
+
+Concrete Next Steps (low lift first)
+
+  1. 
+  2. 
+  3. Harden CI: parallel lint/type/test, stage-scoped lint-staged, and
+     Playwright smoke on Vercel preview URLs.
+  4. 
+  5. Security pass: review RLS policies, add CSP/SRI headers, and sanitize/
+     render AI content safely.
+  6. Migrations: require migrations to run before deploy; add drift check in CI
+     and document rollback/forward paths.
+  7. A11y: run axe checks in CI on core pages and fix violations as they appear.
+
+-----------------
 
 
 
@@ -42,16 +130,8 @@ NGROK
 
 The remaining high-priority items from the Q1 2025 roadmap are:
 
-  1. Advanced Analytics Dashboard (Priority Score: 2556, 8 weeks)
-    - Learning progress visualization
-    - Performance metrics
-    - Goal tracking
-    - Export capabilities
-  2. AI-Powered Study Assistant (Priority Score: 2430, 6 weeks)
-    - Smart content recommendations
-    - Personalized study plans
-    - Progress predictions
-    - Adaptive difficulty
+  1. 
+  2. 
   3. Collaborative Learning Tools (Priority Score: 2430, 5 weeks)
     - Study groups
     - Peer reviews
@@ -147,7 +227,7 @@ Option 1: Expose Ollama via a Public URL (Recommended for Development)
 -----------------------------------------------------------------
 
   1. Continue analytics (make it even more powerful)
-  2. Build something new (gamification, learning paths, etc.)
+  2.
   3. Optimize existing (performance, UX improvement
 
 

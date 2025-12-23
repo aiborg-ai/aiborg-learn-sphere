@@ -11,10 +11,15 @@ import {
   type LearningStyle,
   type ExplanationResponse,
 } from '@/services/ai/WrongAnswerExplanationService';
+import {
+  FreeResponseGradingService,
+  type GradingResult,
+} from '@/services/ai/FreeResponseGradingService';
 
 // Extended result with AI explanation
 export interface GradingResultWithExplanation extends AnswerResult {
   aiExplanation?: ExplanationResponse;
+  aiGradingResult?: GradingResult;
 }
 
 export class LingoGradingService {
@@ -163,47 +168,70 @@ export class LingoGradingService {
 
   /**
    * Grade free response question using AI
-   * This is async and calls the AI service
+   * Uses FreeResponseGradingService with multi-provider support
    */
   static async gradeFreeResponse(
     userAnswer: string,
     idealAnswer: string,
     rubric: string,
     strictness: number = 0.7,
-    passScore: number = 0.65
-  ): Promise<AnswerResult> {
+    passScore: number = 0.65,
+    questionText?: string
+  ): Promise<AnswerResult & { aiGradingResult?: GradingResult }> {
     try {
-      // Simple keyword matching for now
-      // In production, this would call an AI service for semantic similarity
-      const userWords = this.extractKeywords(userAnswer);
-      const idealWords = this.extractKeywords(idealAnswer);
-
-      let matchCount = 0;
-      for (const word of userWords) {
-        if (idealWords.some(iw => this.fuzzyMatch(word, iw, strictness))) {
-          matchCount++;
-        }
-      }
-
-      const score = idealWords.length > 0 ? matchCount / idealWords.length : 0;
-      const passed = score >= passScore;
+      // Use AI grading service
+      const gradingResult = await FreeResponseGradingService.grade({
+        userAnswer,
+        idealAnswer,
+        questionText: questionText || 'Please provide your response.',
+        rubric: rubric || undefined,
+        strictness,
+        passScore,
+      });
 
       return {
-        correct: passed,
-        score: Math.min(1, score),
-        feedback: passed
-          ? 'Good answer! Your response covers the key points.'
-          : 'Your answer could be improved. Consider including: ' +
-            idealWords.slice(0, 3).join(', '),
+        correct: gradingResult.passed,
+        score: gradingResult.score,
+        feedback: gradingResult.feedback,
+        aiGradingResult: gradingResult,
       };
     } catch (error) {
-      logger.error('Error grading free response:', error);
-      return {
-        correct: false,
-        score: 0,
-        feedback: 'Unable to grade response. Please try again.',
-      };
+      logger.error('Error grading free response with AI:', error);
+
+      // Fall back to keyword matching
+      return this.gradeFreeResponseFallback(userAnswer, idealAnswer, strictness, passScore);
     }
+  }
+
+  /**
+   * Fallback keyword-based grading for free response
+   */
+  private static gradeFreeResponseFallback(
+    userAnswer: string,
+    idealAnswer: string,
+    strictness: number = 0.7,
+    passScore: number = 0.65
+  ): AnswerResult {
+    const userWords = this.extractKeywords(userAnswer);
+    const idealWords = this.extractKeywords(idealAnswer);
+
+    let matchCount = 0;
+    for (const word of userWords) {
+      if (idealWords.some(iw => this.fuzzyMatch(word, iw, strictness))) {
+        matchCount++;
+      }
+    }
+
+    const score = idealWords.length > 0 ? matchCount / idealWords.length : 0;
+    const passed = score >= passScore;
+
+    return {
+      correct: passed,
+      score: Math.min(1, score),
+      feedback: passed
+        ? 'Good answer! Your response covers the key points.'
+        : 'Your answer could be improved. Consider including: ' + idealWords.slice(0, 3).join(', '),
+    };
   }
 
   // ============================================================

@@ -1,1 +1,61 @@
-{}
+{
+  "common": {
+    "course": "Kurs",
+    "courses": "Kurse",
+    "myCourses": "Meine Kurse",
+    "allCourses": "Alle Kurse",
+    "enrolledCourses": "Eingeschriebene Kurse",
+    "availableCourses": "Verfügbare Kurse"
+  },
+  "actions": {
+    "enroll": "Jetzt Einschreiben",
+    "viewCourse": "Kurs Ansehen",
+    "continueCourse": "Kurs Fortsetzen",
+    "startCourse": "Kurs Starten",
+    "completeCourse": "Kurs Abschließen",
+    "browseCourses": "Kurse Durchsuchen"
+  },
+  "details": {
+    "overview": "Übersicht",
+    "materials": "Materialien",
+    "quizzes": "Quiz",
+    "exercises": "Übungen",
+    "workshops": "Workshops",
+    "assignments": "Aufgaben",
+    "description": "Beschreibung",
+    "instructor": "Dozent",
+    "duration": "Dauer",
+    "level": "Niveau",
+    "price": "Preis",
+    "free": "Kostenlos"
+  },
+  "progress": {
+    "title": "Ihr Fortschritt",
+    "completed": "Abgeschlossen",
+    "inProgress": "In Bearbeitung",
+    "notStarted": "Nicht Begonnen",
+    "percentage": "{{percent}}% Abgeschlossen",
+    "materials": "{{completed}} von {{total}} Materialien abgeschlossen",
+    "quizzes": "{{completed}} von {{total}} Quiz abgeschlossen"
+  },
+  "enrollment": {
+    "required": "Einschreibung Erforderlich",
+    "requirementMessage": "Sie müssen sich für diesen Kurs einschreiben, um auf den Inhalt zugreifen zu können.",
+    "success": "Erfolgreich in den Kurs eingeschrieben",
+    "backToDashboard": "Zurück zum Dashboard"
+  },
+  "errors": {
+    "notFound": "Kurs Nicht Gefunden",
+    "notFoundMessage": "Der gesuchte Kurs existiert nicht oder wurde entfernt.",
+    "loadError": "Fehler beim Laden des Kurses",
+    "enrollError": "Fehler bei der Kurseinschreibung"
+  },
+  "tabs": {
+    "overviewTab": "Übersicht-Tab",
+    "materialsTab": "Kursmaterialien-Tab",
+    "quizzesTab": "Quiz-Tab, {{count}} Quiz verfügbar",
+    "exercisesTab": "Übungen-Tab, {{count}} Übungen verfügbar",
+    "workshopsTab": "Workshops-Tab, {{count}} Workshops verfügbar",
+    "assignmentsTab": "Aufgaben-Tab, {{count}} Aufgaben verfügbar"
+  }
+}

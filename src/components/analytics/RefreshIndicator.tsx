@@ -119,6 +119,7 @@ export default function RefreshIndicator({
                   className="h-7 w-7"
                   onClick={onManualRefresh}
                   disabled={isRefreshing}
+                  aria-label="Refresh data"
                 >
                   <RefreshCw className={cn('h-4 w-4', isRefreshing && 'animate-spin')} />
                 </Button>

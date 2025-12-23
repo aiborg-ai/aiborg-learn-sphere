@@ -217,6 +217,7 @@ export function EventPhotosUpload({
                     size="icon"
                     onClick={() => setSelectedFile(null)}
                     disabled={isUploading}
+                    aria-label="Clear selected file"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -296,6 +297,7 @@ export function EventPhotosUpload({
                       variant="destructive"
                       className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
                       onClick={() => handleDelete(photo.id, photo.photo_url)}
+                      aria-label="Delete photo"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

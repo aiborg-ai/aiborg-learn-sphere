@@ -62,6 +62,7 @@ export function Section4UserImpact({ formData, onUpdate }: Section4UserImpactPro
               size="icon"
               className="absolute top-4 right-4 text-destructive hover:text-destructive"
               onClick={() => removeUserImpact(index)}
+              aria-label="Remove user group"
             >
               <Trash2 className="h-4 w-4" />
             </Button>

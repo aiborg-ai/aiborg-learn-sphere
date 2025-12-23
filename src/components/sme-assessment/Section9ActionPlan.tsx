@@ -128,6 +128,7 @@ export function Section9ActionPlan({ formData, onUpdate }: Section9ActionPlanPro
                   size="icon"
                   onClick={() => removeNextStep(index)}
                   className="text-destructive hover:text-destructive"
+                  aria-label="Remove next step"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

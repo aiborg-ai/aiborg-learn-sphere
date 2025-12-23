@@ -1,1 +1,61 @@
-{}
+{
+  "hero": {
+    "title": "Découvrez Votre",
+    "titleHighlight": "Niveau d'Augmentation IA",
+    "description": "Passez notre évaluation complète pour comprendre à quel point vous êtes augmenté par l'IA dans votre travail quotidien et obtenez une feuille de route personnalisée pour augmenter votre productivité avec les outils IA.",
+    "startButton": "Commencer l'Évaluation Gratuite",
+    "learnMore": "En Savoir Plus",
+    "requirements": "Connexion requise • Pas de carte de crédit • 10-15 minutes • Résultats instantanés"
+  },
+  "stats": {
+    "assessmentsTaken": "Évaluations Réalisées",
+    "userSatisfaction": "Satisfaction Utilisateur",
+    "productivityGain": "Gain de Productivité Moyen"
+  },
+  "features": {
+    "title": "Pourquoi Passer Cette Évaluation ?",
+    "subtitle": "Obtenez des informations exploitables pour transformer votre productivité avec l'IA",
+    "duration": {
+      "title": "10-15 Minutes",
+      "description": "Évaluation rapide et complète de votre utilisation des outils IA"
+    },
+    "analysis": {
+      "title": "Analyse Détaillée",
+      "description": "Obtenez des informations sur 8 catégories clés d'utilisation de l'IA"
+    },
+    "comparison": {
+      "title": "Comparaison avec les Pairs",
+      "description": "Voyez comment vous vous comparez aux autres dans votre domaine"
+    },
+    "roadmap": {
+      "title": "Feuille de Route Personnalisée",
+      "description": "Obtenez un plan personnalisé pour augmenter l'augmentation IA"
+    },
+    "badges": {
+      "title": "Gagnez des Badges",
+      "description": "Débloquez des réalisations au fur et à mesure de votre progression"
+    },
+    "tracking": {
+      "title": "Suivez les Progrès",
+      "description": "Surveillez votre parcours d'adoption de l'IA au fil du temps"
+    }
+  },
+  "wizard": {
+    "progress": "Question {{current}} sur {{total}}",
+    "skip": "Passer",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "submit": "Soumettre l'Évaluation",
+    "selectAnswer": "Sélectionnez votre réponse",
+    "multipleAnswers": "Sélectionnez toutes les réponses applicables"
+  },
+  "results": {
+    "title": "Vos Résultats d'Évaluation",
+    "score": "Votre Score",
+    "level": "Votre Niveau",
+    "recommendations": "Recommandations",
+    "shareResults": "Partager les Résultats",
+    "retakeAssessment": "Repasser l'Évaluation",
+    "viewDetails": "Voir le Rapport Détaillé"
+  }
+}

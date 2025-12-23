@@ -1,9 +1,17 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Save } from '@/components/ui/icons';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Loader2, Save, Globe } from '@/components/ui/icons';
 import { useToast } from '@/components/ui/use-toast';
 import type { User } from '@supabase/supabase-js';
 
@@ -11,6 +19,7 @@ interface Profile {
   user_id: string;
   display_name: string | null;
   role: string;
+  preferred_language?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -18,13 +27,25 @@ interface Profile {
 interface ProfileTabProps {
   user: User;
   profile: Profile | null;
-  onUpdate: (updates: { display_name: string }) => Promise<{ error: Error | null }>;
+  onUpdate: (updates: {
+    display_name: string;
+    preferred_language?: string;
+  }) => Promise<{ error: Error | null }>;
 }
+
+const SUPPORTED_LANGUAGES = [
+  { code: 'en', name: 'English', nativeName: 'English' },
+  { code: 'es', name: 'Spanish', nativeName: 'Español' },
+  { code: 'fr', name: 'French', nativeName: 'Français' },
+  { code: 'de', name: 'German', nativeName: 'Deutsch' },
+];
 
 export function ProfileTab({ user, profile, onUpdate }: ProfileTabProps) {
   const [displayName, setDisplayName] = useState(profile?.display_name || '');
+  const [preferredLanguage, setPreferredLanguage] = useState(profile?.preferred_language || 'en');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { i18n } = useTranslation();
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +53,13 @@ export function ProfileTab({ user, profile, onUpdate }: ProfileTabProps) {
 
     const { error } = await onUpdate({
       display_name: displayName,
+      preferred_language: preferredLanguage,
     });
+
+    // If language was changed and update succeeded, also update i18n
+    if (!error && preferredLanguage !== i18n.language) {
+      i18n.changeLanguage(preferredLanguage);
+    }
 
     if (error) {
       toast({
@@ -85,6 +112,31 @@ export function ProfileTab({ user, profile, onUpdate }: ProfileTabProps) {
               onChange={e => setDisplayName(e.target.value)}
               className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="preferredLanguage" className="text-white flex items-center gap-2">
+              <Globe className="h-4 w-4" />
+              Preferred Language
+            </Label>
+            <Select value={preferredLanguage} onValueChange={setPreferredLanguage}>
+              <SelectTrigger
+                id="preferredLanguage"
+                className="bg-white/10 border-white/20 text-white"
+              >
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent>
+                {SUPPORTED_LANGUAGES.map(lang => (
+                  <SelectItem key={lang.code} value={lang.code}>
+                    {lang.nativeName} ({lang.name})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-white/60">
+              Choose your preferred language for the user interface
+            </p>
           </div>
 
           {profile && (

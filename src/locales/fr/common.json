@@ -1,1 +1,67 @@
-{}
+{
+  "app": {
+    "name": "Aiborg",
+    "tagline": "Plateforme d'Apprentissage Alimentée par l'IA"
+  },
+  "actions": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "submit": "Soumettre",
+    "continue": "Continuer",
+    "back": "Retour",
+    "next": "Suivant",
+    "finish": "Terminer",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "export": "Exporter",
+    "import": "Importer",
+    "download": "Télécharger",
+    "upload": "Téléverser",
+    "refresh": "Actualiser",
+    "loading": "Chargement...",
+    "viewMore": "Voir Plus",
+    "viewLess": "Voir Moins",
+    "learnMore": "En Savoir Plus",
+    "getStarted": "Commencer"
+  },
+  "status": {
+    "success": "Succès",
+    "error": "Erreur",
+    "warning": "Avertissement",
+    "info": "Information",
+    "pending": "En Attente",
+    "completed": "Terminé",
+    "inProgress": "En Cours",
+    "failed": "Échoué"
+  },
+  "messages": {
+    "success": "Opération terminée avec succès",
+    "error": "Une erreur s'est produite. Veuillez réessayer.",
+    "noData": "Aucune donnée disponible",
+    "loading": "Chargement des données...",
+    "saved": "Modifications enregistrées avec succès",
+    "deleted": "Supprimé avec succès",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet élément ?"
+  },
+  "time": {
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "tomorrow": "Demain",
+    "thisWeek": "Cette Semaine",
+    "thisMonth": "Ce Mois",
+    "lastWeek": "La Semaine Dernière",
+    "lastMonth": "Le Mois Dernier"
+  },
+  "validation": {
+    "required": "Ce champ est obligatoire",
+    "email": "Veuillez entrer une adresse e-mail valide",
+    "minLength": "La longueur minimale est de {{min}} caractères",
+    "maxLength": "La longueur maximale est de {{max}} caractères",
+    "password": "Le mot de passe doit contenir au moins 8 caractères",
+    "passwordMatch": "Les mots de passe ne correspondent pas"
+  }
+}

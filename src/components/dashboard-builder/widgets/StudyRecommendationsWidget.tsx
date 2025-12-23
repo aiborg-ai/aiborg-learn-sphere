@@ -167,6 +167,7 @@ export function StudyRecommendationsWidget({ widget, isEditing }: WidgetComponen
             size="icon"
             variant="ghost"
             className="h-8 w-8 shrink-0"
+            aria-label="View course details"
             onClick={() => {
               // Navigate to course page
               window.location.href = `/courses/${rec.id}`;

@@ -133,6 +133,7 @@ export function CertificatesWidget({ widget, isEditing }: WidgetComponentProps) 
                   size="icon"
                   variant="ghost"
                   className="h-8 w-8"
+                  aria-label="View certificate"
                   onClick={() => window.open(cert.certificate_url!, '_blank')}
                 >
                   <ExternalLink className="h-4 w-4" />
@@ -143,6 +144,7 @@ export function CertificatesWidget({ widget, isEditing }: WidgetComponentProps) 
                   size="icon"
                   variant="ghost"
                   className="h-8 w-8"
+                  aria-label="Download certificate"
                   onClick={() =>
                     handleDownload(cert.certificate_url!, course?.title || 'Certificate')
                   }

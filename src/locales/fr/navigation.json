@@ -1,1 +1,60 @@
-{}
+{
+  "menu": {
+    "home": "Accueil",
+    "programs": "Programmes",
+    "blog": "Blog",
+    "events": "Événements",
+    "reviews": "Avis",
+    "about": "À Propos",
+    "contact": "Contact",
+    "faq": "FAQ",
+    "terms": "Conditions"
+  },
+  "aiAssessment": {
+    "title": "Évaluation IA",
+    "badge": "NOUVEAU"
+  },
+  "user": {
+    "menu": "Menu Utilisateur",
+    "dashboard": "Mon Tableau de Bord",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "signIn": "Connexion",
+    "signOut": "Déconnexion",
+    "getStarted": "Commencer",
+    "adminDashboard": "Tableau de Bord Admin"
+  },
+  "features": {
+    "search": "Rechercher",
+    "keyboardShortcuts": "Raccourcis Clavier",
+    "keyboardShortcutsHint": "Appuyez sur Shift+? pour les raccourcis",
+    "themeToggle": "Changer de Thème"
+  },
+  "mobile": {
+    "openMenu": "Ouvrir le Menu",
+    "closeMenu": "Fermer le Menu"
+  },
+  "aria": {
+    "mainNavigation": "Navigation principale",
+    "primaryMenu": "Menu principal",
+    "userAccountMenu": "Menu du compte utilisateur",
+    "mobileMenu": "Menu de navigation mobile",
+    "aiborgHome": "Accueil Aiborg",
+    "navigateToPrograms": "Naviguer vers la section des programmes de formation",
+    "navigateToEvents": "Naviguer vers la section des événements",
+    "navigateToReviews": "Naviguer vers la section des avis",
+    "navigateToAbout": "Naviguer vers la section à propos",
+    "navigateToContact": "Naviguer vers la section contact",
+    "openFaq": "Ouvrir les questions fréquemment posées",
+    "openTerms": "Ouvrir les conditions générales",
+    "goToBlog": "Aller au blog",
+    "goToDashboard": "Aller à mon tableau de bord",
+    "goToProfile": "Aller à mon profil",
+    "goToAdmin": "Aller au tableau de bord admin",
+    "signInToAccount": "Se connecter à votre compte",
+    "signOutOfAccount": "Se déconnecter de votre compte",
+    "getStartedWithAiborg": "Commencer avec Aiborg",
+    "aiAssessmentNewFeature": "Évaluation IA - Nouvelle fonctionnalité",
+    "loggedInAs": "Connecté en tant que {{name}}"
+  }
+}

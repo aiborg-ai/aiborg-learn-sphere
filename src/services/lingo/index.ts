@@ -4,4 +4,6 @@
  */
 
 export { LingoService } from './LingoService';
-export { LingoGradingService } from './LingoGradingService';
+export { LingoGradingService, type GradingResultWithExplanation } from './LingoGradingService';
+export { LingoImportExportService } from './LingoImportExportService';
+export { LingoReorderService } from './LingoReorderService';

@@ -106,7 +106,7 @@ export function EnhancedVideoPlayer({
                 saveProgress();
               }}
             >
-              <track kind="captions" srcLang="en" label="English" src="" />
+              {/* Caption tracks will be dynamically loaded when available */}
             </video>
 
             {/* Quiz Overlay */}

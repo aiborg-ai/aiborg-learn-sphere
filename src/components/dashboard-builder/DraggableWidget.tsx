@@ -187,6 +187,7 @@ export function DraggableWidget({
                 size="icon"
                 variant="ghost"
                 className="h-6 w-6"
+                aria-label={widget.locked ? 'Unlock widget' : 'Lock widget'}
                 onClick={toggleLock}
                 title={widget.locked ? 'Unlock widget' : 'Lock widget'}
               >
@@ -197,6 +198,7 @@ export function DraggableWidget({
                 size="icon"
                 variant="ghost"
                 className="h-6 w-6"
+                aria-label={widget.hidden ? 'Show widget' : 'Hide widget'}
                 onClick={toggleVisibility}
                 title={widget.hidden ? 'Show widget' : 'Hide widget'}
               >
@@ -207,6 +209,7 @@ export function DraggableWidget({
                 size="icon"
                 variant="ghost"
                 className="h-6 w-6"
+                aria-label="Configure widget"
                 onClick={() => setShowConfig(!showConfig)}
                 title="Configure widget"
               >
@@ -217,6 +220,7 @@ export function DraggableWidget({
                 size="icon"
                 variant="ghost"
                 className="h-6 w-6 text-destructive hover:text-destructive"
+                aria-label="Remove widget"
                 onClick={onRemove}
                 title="Remove widget"
               >

@@ -16,6 +16,8 @@ import { RouteWrapper } from '@/components/RouteWrapper';
 import { PerformanceMonitoring } from '@/components/monitoring/PerformanceMonitoring';
 import { LoginNotificationChecker } from '@/components/notifications/LoginNotificationChecker';
 import { InstallPWAPrompt } from '@/components/pwa/InstallPWAPrompt';
+import { SkipLink } from '@/components/accessibility/SkipLink';
+import { AnnouncerProvider } from '@/components/accessibility/LiveRegion';
 import {
   DashboardSkeleton,
   ProfileSkeleton,
@@ -164,6 +166,11 @@ const TemplateGalleryPage = lazy(() => import('./pages/TemplateGalleryPage'));
 // Offline Content
 const OfflineContentPage = lazy(() => import('./pages/OfflineContent'));
 
+// Surveys
+const SurveysPage = lazy(() => import('./pages/surveys/SurveysPage'));
+const PublicSurvey = lazy(() => import('./pages/surveys/PublicSurvey'));
+const AdminSurveys = lazy(() => import('./pages/admin/AdminSurveys'));
+
 // Export queryClient for use in prefetch utilities
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -182,6 +189,8 @@ const AppWithShortcuts = () => {
 
   return (
     <>
+      {/* WCAG 2.4.1: Skip link for keyboard users to bypass navigation */}
+      <SkipLink href="#main-content">Skip to main content</SkipLink>
       <OfflineBanner />
       <InstallPWAPrompt />
       <PerformanceMonitoring />
@@ -306,6 +315,18 @@ const AppWithShortcuts = () => {
                 </RouteWrapper>
               }
             />
+            <Route
+              path="/admin/surveys"
+              element={
+                <RouteWrapper routeName="Surveys Admin">
+                  <AdminSurveys />
+                </RouteWrapper>
+              }
+            />
+
+            {/* Public Surveys */}
+            <Route path="/surveys" element={<SurveysPage />} />
+            <Route path="/surveys/:surveyId" element={<PublicSurvey />} />
 
             {/* AIBORGLingo User Routes */}
             <Route
@@ -597,11 +618,14 @@ const App = () => (
     <ThemeProvider defaultTheme="system" storageKey="aiborg-ui-theme">
       <TenantProvider>
         <PersonalizationProvider>
-          <TooltipProvider>
-            <BrowserRouter>
-              <AppWithShortcuts />
-            </BrowserRouter>
-          </TooltipProvider>
+          {/* WCAG 4.1.3: Global announcer for screen reader status messages */}
+          <AnnouncerProvider>
+            <TooltipProvider>
+              <BrowserRouter>
+                <AppWithShortcuts />
+              </BrowserRouter>
+            </TooltipProvider>
+          </AnnouncerProvider>
         </PersonalizationProvider>
       </TenantProvider>
     </ThemeProvider>

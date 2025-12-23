@@ -286,6 +286,7 @@ export function AIStudyAssistant() {
               size="sm"
               onClick={handleClose}
               className="hover:bg-white/20 text-white"
+              aria-label="Close assistant"
             >
               <X className="h-4 w-4" />
             </Button>

@@ -120,6 +120,39 @@ export default defineConfig(({ mode }) => ({
             },
           },
           {
+            // Cache-First for video content with range request support
+            // Critical for offline lesson playback and video seeking
+            urlPattern: /\.(?:mp4|webm|m3u8|mov|avi|mkv)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'video-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+              rangeRequests: true, // Enable partial content (206) for video seeking
+              cacheableResponse: {
+                statuses: [0, 200, 206],
+              },
+            },
+          },
+          {
+            // Cache-First for audio content (podcasts, lessons)
+            urlPattern: /\.(?:mp3|wav|ogg|aac|m4a)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'audio-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+              rangeRequests: true,
+              cacheableResponse: {
+                statuses: [0, 200, 206],
+              },
+            },
+          },
+          {
             // Exclude auth endpoints from caching
             urlPattern: /^https:\/\/.*\.supabase\.co\/auth\/.*/i,
             handler: 'NetworkOnly',

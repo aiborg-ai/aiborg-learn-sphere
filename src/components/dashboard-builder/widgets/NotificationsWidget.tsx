@@ -99,6 +99,7 @@ export function NotificationsWidget({ widget, isEditing }: WidgetComponentProps)
                   size="icon"
                   variant="ghost"
                   className="h-8 w-8 shrink-0"
+                  aria-label="Mark as read"
                   onClick={() => {
                     // Mark as read
                     supabase

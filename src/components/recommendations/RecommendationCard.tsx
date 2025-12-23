@@ -99,6 +99,7 @@ export function RecommendationCard({
             e.stopPropagation();
             onDismiss(recommendation.id);
           }}
+          aria-label="Dismiss recommendation"
         >
           <X className="h-4 w-4" />
         </Button>

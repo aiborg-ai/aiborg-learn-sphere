@@ -67,6 +67,7 @@ export function Section8Competitive({ formData, onUpdate }: Section8CompetitiveP
               size="icon"
               className="absolute top-4 right-4 text-destructive hover:text-destructive"
               onClick={() => removeCompetitor(index)}
+              aria-label="Remove competitor"
             >
               <Trash2 className="h-4 w-4" />
             </Button>

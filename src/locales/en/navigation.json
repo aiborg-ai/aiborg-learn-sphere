@@ -21,11 +21,13 @@
     "settings": "Settings",
     "signIn": "Sign In",
     "signOut": "Sign Out",
+    "getStarted": "Get Started",
     "adminDashboard": "Admin Dashboard"
   },
   "features": {
     "search": "Search",
     "keyboardShortcuts": "Keyboard Shortcuts",
+    "keyboardShortcutsHint": "Press Shift+? for shortcuts",
     "themeToggle": "Toggle Theme"
   },
   "mobile": {
@@ -36,6 +38,23 @@
     "mainNavigation": "Main navigation",
     "primaryMenu": "Primary menu",
     "userAccountMenu": "User account menu",
-    "mobileMenu": "Mobile navigation menu"
+    "mobileMenu": "Mobile navigation menu",
+    "aiborgHome": "Aiborg home",
+    "navigateToPrograms": "Navigate to training programs section",
+    "navigateToEvents": "Navigate to events section",
+    "navigateToReviews": "Navigate to reviews section",
+    "navigateToAbout": "Navigate to about section",
+    "navigateToContact": "Navigate to contact section",
+    "openFaq": "Open frequently asked questions",
+    "openTerms": "Open terms and conditions",
+    "goToBlog": "Go to blog",
+    "goToDashboard": "Go to my dashboard",
+    "goToProfile": "Go to my profile",
+    "goToAdmin": "Go to admin dashboard",
+    "signInToAccount": "Sign in to your account",
+    "signOutOfAccount": "Sign out of your account",
+    "getStartedWithAiborg": "Get started with Aiborg",
+    "aiAssessmentNewFeature": "AI Assessment - New feature",
+    "loggedInAs": "Logged in as {{name}}"
   }
 }

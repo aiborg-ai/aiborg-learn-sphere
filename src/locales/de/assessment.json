@@ -1,1 +1,61 @@
-{}
+{
+  "hero": {
+    "title": "Entdecken Sie Ihr",
+    "titleHighlight": "KI-Augmentierungs-Level",
+    "description": "Nehmen Sie an unserer umfassenden Bewertung teil, um zu verstehen, wie KI-augmentiert Sie bei Ihrer täglichen Arbeit sind, und erhalten Sie eine personalisierte Roadmap zur Steigerung Ihrer Produktivität mit KI-Tools.",
+    "startButton": "Kostenlose Bewertung Starten",
+    "learnMore": "Mehr Erfahren",
+    "requirements": "Anmeldung erforderlich • Keine Kreditkarte • 10-15 Minuten • Sofortige Ergebnisse"
+  },
+  "stats": {
+    "assessmentsTaken": "Durchgeführte Bewertungen",
+    "userSatisfaction": "Benutzerzufriedenheit",
+    "productivityGain": "Durchschn. Produktivitätssteigerung"
+  },
+  "features": {
+    "title": "Warum Diese Bewertung Machen?",
+    "subtitle": "Erhalten Sie umsetzbare Erkenntnisse zur Transformation Ihrer Produktivität mit KI",
+    "duration": {
+      "title": "10-15 Minuten",
+      "description": "Schnelle, umfassende Bewertung Ihrer KI-Tool-Nutzung"
+    },
+    "analysis": {
+      "title": "Detaillierte Analyse",
+      "description": "Erhalten Sie Einblicke in 8 wichtige KI-Nutzungskategorien"
+    },
+    "comparison": {
+      "title": "Peer-Vergleich",
+      "description": "Sehen Sie, wie Sie sich mit anderen in Ihrem Bereich vergleichen"
+    },
+    "roadmap": {
+      "title": "Personalisierte Roadmap",
+      "description": "Erhalten Sie einen maßgeschneiderten Plan zur KI-Augmentierung"
+    },
+    "badges": {
+      "title": "Abzeichen Verdienen",
+      "description": "Schalten Sie Erfolge frei, während Sie sich verbessern"
+    },
+    "tracking": {
+      "title": "Fortschritt Verfolgen",
+      "description": "Überwachen Sie Ihre KI-Adoptionsreise im Laufe der Zeit"
+    }
+  },
+  "wizard": {
+    "progress": "Frage {{current}} von {{total}}",
+    "skip": "Überspringen",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "submit": "Bewertung Absenden",
+    "selectAnswer": "Wählen Sie Ihre Antwort",
+    "multipleAnswers": "Wählen Sie alle zutreffenden aus"
+  },
+  "results": {
+    "title": "Ihre Bewertungsergebnisse",
+    "score": "Ihre Punktzahl",
+    "level": "Ihr Level",
+    "recommendations": "Empfehlungen",
+    "shareResults": "Ergebnisse Teilen",
+    "retakeAssessment": "Bewertung Wiederholen",
+    "viewDetails": "Detaillierten Bericht Anzeigen"
+  }
+}

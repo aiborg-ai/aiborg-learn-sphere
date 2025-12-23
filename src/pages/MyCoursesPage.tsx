@@ -392,6 +392,7 @@ export default function MyCoursesPage() {
               variant={viewMode === 'grid' ? 'default' : 'outline'}
               size="icon"
               onClick={() => setViewMode('grid')}
+              aria-label="Grid view"
             >
               <LayoutGrid className="h-4 w-4" />
             </Button>
@@ -399,6 +400,7 @@ export default function MyCoursesPage() {
               variant={viewMode === 'list' ? 'default' : 'outline'}
               size="icon"
               onClick={() => setViewMode('list')}
+              aria-label="List view"
             >
               <List className="h-4 w-4" />
             </Button>

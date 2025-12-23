@@ -55,6 +55,7 @@ import {
   NotificationChannel,
   WEBHOOK_EVENTS,
 } from '@/services/integrations';
+import { LTIPlatformManager } from './LTIPlatformManager';
 
 interface IntegrationsDashboardProps {
   organizationId: string;
@@ -369,6 +370,7 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="sso">SSO</TabsTrigger>
+          <TabsTrigger value="lti">LTI</TabsTrigger>
           <TabsTrigger value="hr">HR Systems</TabsTrigger>
           <TabsTrigger value="webhooks">Webhooks</TabsTrigger>
           <TabsTrigger value="channels">Channels</TabsTrigger>
@@ -454,7 +456,7 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
         {/* SSO Tab */}
         <TabsContent value="sso" className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Single Sign-On Providers</h3>
+            <h2 className="text-lg font-medium">Single Sign-On Providers</h2>
             <Dialog open={ssoDialogOpen} onOpenChange={setSSODialogOpen}>
               <DialogTrigger asChild>
                 <Button>
@@ -588,10 +590,15 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
           </div>
         </TabsContent>
 
+        {/* LTI Tab */}
+        <TabsContent value="lti" className="space-y-4">
+          <LTIPlatformManager />
+        </TabsContent>
+
         {/* HR Systems Tab */}
         <TabsContent value="hr" className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">HR System Integrations</h3>
+            <h2 className="text-lg font-medium">HR System Integrations</h2>
             <Button onClick={() => setHRDialogOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Add HR Integration
@@ -651,7 +658,7 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
         {/* Webhooks Tab */}
         <TabsContent value="webhooks" className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Webhook Endpoints</h3>
+            <h2 className="text-lg font-medium">Webhook Endpoints</h2>
             <Dialog open={webhookDialogOpen} onOpenChange={setWebhookDialogOpen}>
               <DialogTrigger asChild>
                 <Button>
@@ -795,7 +802,7 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
         {/* Notification Channels Tab */}
         <TabsContent value="channels" className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Notification Channels</h3>
+            <h2 className="text-lg font-medium">Notification Channels</h2>
             <Dialog open={channelDialogOpen} onOpenChange={setChannelDialogOpen}>
               <DialogTrigger asChild>
                 <Button>

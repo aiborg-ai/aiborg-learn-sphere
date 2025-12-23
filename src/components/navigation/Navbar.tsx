@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -31,6 +32,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isFAQOpen, setIsFAQOpen] = useState(false);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
+  const { t } = useTranslation('navigation');
   const { user, profile, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -98,7 +100,7 @@ export function Navbar() {
   return (
     <nav
       className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl backdrop-saturate-150 border-b border-border/50 shadow-soft"
-      aria-label="Main navigation"
+      aria-label={t('aria.mainNavigation')}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-18">
@@ -106,7 +108,7 @@ export function Navbar() {
           <Link
             to="/"
             className="flex items-center gap-2 transition-transform duration-200 hover:scale-105"
-            aria-label="Aiborg home"
+            aria-label={t('aria.aiborgHome')}
           >
             <picture>
               <source srcSet="/logo.webp" type="image/webp" />
@@ -123,77 +125,77 @@ export function Navbar() {
             <PrefetchLink
               to="/ai-assessment"
               className="relative"
-              aria-label="AI Assessment - New feature"
+              aria-label={t('aria.aiAssessmentNewFeature')}
             >
               <Button
                 variant="ghost"
                 className="text-foreground/80 hover:text-foreground transition-colors gap-2"
               >
                 <Icon name="Sparkles" size={16} aria-hidden="true" />
-                AI Assessment
+                {t('aiAssessment.title')}
                 <Badge
                   className="absolute -top-2 -right-6 bg-red-500 text-white text-[10px] px-1.5 py-0.5"
-                  aria-label="New feature"
+                  aria-label={t('aiAssessment.badge')}
                 >
-                  NEW
+                  {t('aiAssessment.badge')}
                 </Badge>
               </Button>
             </PrefetchLink>
             <button
               onClick={() => handleNavClick('training-programs')}
               className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
-              aria-label="Navigate to training programs section"
+              aria-label={t('aria.navigateToPrograms')}
             >
-              Programs
+              {t('menu.programs')}
             </button>
             <PrefetchLink
               to="/blog"
               className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
-              aria-label="Go to blog"
+              aria-label={t('aria.goToBlog')}
             >
-              Blog
+              {t('menu.blog')}
             </PrefetchLink>
             <button
               onClick={() => handleNavClick('events')}
               className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
-              aria-label="Navigate to events section"
+              aria-label={t('aria.navigateToEvents')}
             >
-              Events
+              {t('menu.events')}
             </button>
             <button
               onClick={() => handleNavClick('reviews')}
               className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
-              aria-label="Navigate to reviews section"
+              aria-label={t('aria.navigateToReviews')}
             >
-              Reviews
+              {t('menu.reviews')}
             </button>
             <button
               onClick={() => handleNavClick('about')}
               className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
-              aria-label="Navigate to about section"
+              aria-label={t('aria.navigateToAbout')}
             >
-              About
+              {t('menu.about')}
             </button>
             <button
               onClick={() => handleNavClick('contact')}
               className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
-              aria-label="Navigate to contact section"
+              aria-label={t('aria.navigateToContact')}
             >
-              Contact
+              {t('menu.contact')}
             </button>
             <button
               onClick={() => setIsFAQOpen(true)}
               className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
-              aria-label="Open frequently asked questions"
+              aria-label={t('aria.openFaq')}
             >
-              FAQ
+              {t('menu.faq')}
             </button>
             <button
               onClick={() => setIsTermsOpen(true)}
               className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
-              aria-label="Open terms and conditions"
+              aria-label={t('aria.openTerms')}
             >
-              Terms
+              {t('menu.terms')}
             </button>
 
             {/* Global Search - AI-Powered */}
@@ -206,13 +208,13 @@ export function Navbar() {
                   variant="ghost"
                   size="icon"
                   onClick={() => window.dispatchEvent(new CustomEvent('show-shortcuts-help'))}
-                  aria-label="Show keyboard shortcuts (Shift+?)"
+                  aria-label={t('features.keyboardShortcuts')}
                 >
                   <Icon name="Keyboard" size={20} aria-hidden="true" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Keyboard Shortcuts (Shift+?)</p>
+                <p>{t('features.keyboardShortcutsHint')}</p>
               </TooltipContent>
             </Tooltip>
 
@@ -228,7 +230,7 @@ export function Navbar() {
                   <Button
                     variant="ghost"
                     className="text-foreground hover:bg-muted/10"
-                    aria-label="User account menu"
+                    aria-label={t('aria.userAccountMenu')}
                   >
                     <Icon name="User" size={16} className="mr-2" aria-hidden="true" />
                     {profile?.display_name || user.email}
@@ -236,25 +238,25 @@ export function Navbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   className="bg-white/90 backdrop-blur-md border-white/20"
-                  aria-label="User menu options"
+                  aria-label={t('user.menu')}
                 >
                   <DropdownMenuItem
                     onClick={() => navigate('/dashboard')}
                     onMouseEnter={() => dashboardPrefetchHandlers?.onMouseEnter()}
                     onMouseLeave={() => dashboardPrefetchHandlers?.onMouseLeave()}
-                    aria-label="Go to my dashboard"
+                    aria-label={t('aria.goToDashboard')}
                   >
                     <Icon name="LayoutDashboard" size={16} className="mr-2" aria-hidden="true" />
-                    My Dashboard
+                    {t('user.dashboard')}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => navigate('/profile')}
                     onMouseEnter={() => profilePrefetchHandlers?.onMouseEnter()}
                     onMouseLeave={() => profilePrefetchHandlers?.onMouseLeave()}
-                    aria-label="Go to my profile"
+                    aria-label={t('aria.goToProfile')}
                   >
                     <Icon name="User" size={16} className="mr-2" aria-hidden="true" />
-                    Profile
+                    {t('user.profile')}
                   </DropdownMenuItem>
                   {isAdmin && (
                     <>
@@ -263,17 +265,17 @@ export function Navbar() {
                         onClick={() => navigate('/admin')}
                         onMouseEnter={() => adminPrefetchHandlers?.onMouseEnter()}
                         onMouseLeave={() => adminPrefetchHandlers?.onMouseLeave()}
-                        aria-label="Go to admin dashboard"
+                        aria-label={t('aria.goToAdmin')}
                       >
                         <Icon name="Shield" size={16} className="mr-2" aria-hidden="true" />
-                        Admin Dashboard
+                        {t('user.adminDashboard')}
                       </DropdownMenuItem>
                     </>
                   )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut} aria-label="Sign out of your account">
+                  <DropdownMenuItem onClick={handleSignOut} aria-label={t('aria.signOutOfAccount')}>
                     <Icon name="LogOut" size={16} className="mr-2" aria-hidden="true" />
-                    Sign Out
+                    {t('user.signOut')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -283,14 +285,14 @@ export function Navbar() {
                   <Button
                     variant="ghost"
                     className="text-foreground hover:bg-muted/10"
-                    aria-label="Sign in to your account"
+                    aria-label={t('aria.signInToAccount')}
                   >
-                    Sign In
+                    {t('user.signIn')}
                   </Button>
                 </PrefetchLink>
                 <PrefetchLink to="/auth">
-                  <Button className="btn-hero" aria-label="Get started with Aiborg">
-                    Get Started
+                  <Button className="btn-hero" aria-label={t('aria.getStartedWithAiborg')}>
+                    {t('user.getStarted')}
                   </Button>
                 </PrefetchLink>
               </div>
@@ -303,7 +305,7 @@ export function Navbar() {
             size="sm"
             className="md:hidden text-foreground active:scale-95 transition-transform"
             onClick={() => setIsOpen(!isOpen)}
-            aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-label={isOpen ? t('mobile.closeMenu') : t('mobile.openMenu')}
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
           >
@@ -325,7 +327,7 @@ export function Navbar() {
           <nav
             id="mobile-menu"
             className="md:hidden py-4 space-y-4 border-t border-white/20 animate-in slide-in-from-top duration-300"
-            aria-label="Mobile navigation menu"
+            aria-label={t('aria.mobileMenu')}
           >
             <button
               className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
@@ -333,17 +335,17 @@ export function Navbar() {
                 handleNavClick('training-programs');
                 setIsOpen(false);
               }}
-              aria-label="Navigate to training programs section"
+              aria-label={t('aria.navigateToPrograms')}
             >
-              Programs
+              {t('menu.programs')}
             </button>
             <PrefetchLink
               to="/blog"
               className="block text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
               onClick={() => setIsOpen(false)}
-              aria-label="Go to blog"
+              aria-label={t('aria.goToBlog')}
             >
-              Blog
+              {t('menu.blog')}
             </PrefetchLink>
             <button
               className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
@@ -351,9 +353,9 @@ export function Navbar() {
                 handleNavClick('events');
                 setIsOpen(false);
               }}
-              aria-label="Navigate to events section"
+              aria-label={t('aria.navigateToEvents')}
             >
-              Events
+              {t('menu.events')}
             </button>
             <button
               className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
@@ -361,9 +363,9 @@ export function Navbar() {
                 handleNavClick('reviews');
                 setIsOpen(false);
               }}
-              aria-label="Navigate to reviews section"
+              aria-label={t('aria.navigateToReviews')}
             >
-              Reviews
+              {t('menu.reviews')}
             </button>
             <button
               className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
@@ -371,9 +373,9 @@ export function Navbar() {
                 handleNavClick('about');
                 setIsOpen(false);
               }}
-              aria-label="Navigate to about section"
+              aria-label={t('aria.navigateToAbout')}
             >
-              About
+              {t('menu.about')}
             </button>
             <button
               className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
@@ -381,9 +383,9 @@ export function Navbar() {
                 handleNavClick('contact');
                 setIsOpen(false);
               }}
-              aria-label="Navigate to contact section"
+              aria-label={t('aria.navigateToContact')}
             >
-              Contact
+              {t('menu.contact')}
             </button>
             <button
               onClick={() => {
@@ -391,9 +393,9 @@ export function Navbar() {
                 setIsOpen(false);
               }}
               className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
-              aria-label="Open frequently asked questions"
+              aria-label={t('aria.openFaq')}
             >
-              FAQ
+              {t('menu.faq')}
             </button>
             <button
               onClick={() => {
@@ -401,19 +403,19 @@ export function Navbar() {
                 setIsOpen(false);
               }}
               className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
-              aria-label="Open terms and conditions"
+              aria-label={t('aria.openTerms')}
             >
-              Terms
+              {t('menu.terms')}
             </button>
 
             {user ? (
               <section
                 className="space-y-2 pt-4 border-t border-muted/20"
-                aria-label="User account menu"
+                aria-label={t('aria.userAccountMenu')}
               >
                 <p
                   className="text-foreground font-medium"
-                  aria-label={`Logged in as ${profile?.display_name || user.email}`}
+                  aria-label={t('aria.loggedInAs', { name: profile?.display_name || user.email })}
                 >
                   {profile?.display_name || user.email}
                 </p>
@@ -425,10 +427,10 @@ export function Navbar() {
                   <Button
                     variant="ghost"
                     className="w-full justify-start text-foreground hover:bg-muted/10"
-                    aria-label="Go to my dashboard"
+                    aria-label={t('aria.goToDashboard')}
                   >
                     <Icon name="LayoutDashboard" size={16} className="mr-2" aria-hidden="true" />
-                    My Dashboard
+                    {t('user.dashboard')}
                   </Button>
                 </PrefetchLink>
                 <PrefetchLink
@@ -447,10 +449,10 @@ export function Navbar() {
                   <Button
                     variant="ghost"
                     className="w-full justify-start text-foreground hover:bg-muted/10"
-                    aria-label="Go to my profile"
+                    aria-label={t('aria.goToProfile')}
                   >
                     <Icon name="User" size={16} className="mr-2" aria-hidden="true" />
-                    Profile
+                    {t('user.profile')}
                   </Button>
                 </PrefetchLink>
                 {isAdmin && (
@@ -458,10 +460,10 @@ export function Navbar() {
                     <Button
                       variant="ghost"
                       className="w-full justify-start text-foreground hover:bg-muted/10"
-                      aria-label="Go to admin dashboard"
+                      aria-label={t('aria.goToAdmin')}
                     >
                       <Icon name="Shield" size={16} className="mr-2" aria-hidden="true" />
-                      Admin Dashboard
+                      {t('user.adminDashboard')}
                     </Button>
                   </PrefetchLink>
                 )}
@@ -469,29 +471,29 @@ export function Navbar() {
                   variant="ghost"
                   className="w-full justify-start text-foreground hover:bg-muted/10"
                   onClick={handleSignOut}
-                  aria-label="Sign out of your account"
+                  aria-label={t('aria.signOutOfAccount')}
                 >
                   <Icon name="LogOut" size={16} className="mr-2" aria-hidden="true" />
-                  Sign Out
+                  {t('user.signOut')}
                 </Button>
               </section>
             ) : (
               <section
                 className="space-y-2 pt-4 border-t border-muted/20"
-                aria-label="Authentication options"
+                aria-label={t('aria.userAccountMenu')}
               >
                 <PrefetchLink to="/auth">
                   <Button
                     variant="ghost"
                     className="w-full text-foreground hover:bg-muted/10"
-                    aria-label="Sign in to your account"
+                    aria-label={t('aria.signInToAccount')}
                   >
-                    Sign In
+                    {t('user.signIn')}
                   </Button>
                 </PrefetchLink>
                 <PrefetchLink to="/auth">
-                  <Button className="w-full btn-hero" aria-label="Get started with Aiborg">
-                    Get Started
+                  <Button className="w-full btn-hero" aria-label={t('aria.getStartedWithAiborg')}>
+                    {t('user.getStarted')}
                   </Button>
                 </PrefetchLink>
               </section>

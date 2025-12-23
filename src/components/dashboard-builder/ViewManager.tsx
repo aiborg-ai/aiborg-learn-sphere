@@ -280,12 +280,13 @@ export function ViewManager({
                       }
                     }}
                   />
-                  <Button size="icon" onClick={handleCreateView}>
+                  <Button size="icon" aria-label="Create view" onClick={handleCreateView}>
                     <Check className="h-4 w-4" />
                   </Button>
                   <Button
                     size="icon"
                     variant="ghost"
+                    aria-label="Cancel"
                     onClick={() => {
                       setIsCreating(false);
                       setNewViewName('');
@@ -343,11 +344,17 @@ export function ViewManager({
                           <Button
                             size="icon"
                             variant="ghost"
+                            aria-label="Save view name"
                             onClick={() => handleRenameView(view.id)}
                           >
                             <Check className="h-4 w-4" />
                           </Button>
-                          <Button size="icon" variant="ghost" onClick={cancelEditing}>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            aria-label="Cancel editing"
+                            onClick={cancelEditing}
+                          >
                             <X className="h-4 w-4" />
                           </Button>
                         </>
@@ -387,6 +394,7 @@ export function ViewManager({
                                 size="icon"
                                 variant="ghost"
                                 className="h-8 w-8"
+                                aria-label="Set as default"
                                 onClick={() => setDefaultMutation.mutate(view.id)}
                                 title="Set as default"
                               >
@@ -398,6 +406,7 @@ export function ViewManager({
                               size="icon"
                               variant="ghost"
                               className="h-8 w-8"
+                              aria-label="Duplicate view"
                               onClick={() => duplicateViewMutation.mutate(view.id)}
                               title="Duplicate view"
                             >
@@ -408,6 +417,7 @@ export function ViewManager({
                               size="icon"
                               variant="ghost"
                               className="h-8 w-8"
+                              aria-label="Rename view"
                               onClick={() => startEditing(view)}
                               title="Rename view"
                             >
@@ -418,6 +428,7 @@ export function ViewManager({
                               size="icon"
                               variant="ghost"
                               className="h-8 w-8 text-destructive hover:text-destructive"
+                              aria-label="Delete view"
                               onClick={() => setDeletingViewId(view.id)}
                               title="Delete view"
                             >

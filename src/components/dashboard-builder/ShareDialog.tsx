@@ -345,6 +345,7 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
                               size="icon"
                               variant="ghost"
                               className="h-8 w-8"
+                              aria-label="Copy share link"
                               onClick={() => handleCopyLink(link.token)}
                               disabled={isExpired || isMaxedOut}
                             >
@@ -359,6 +360,7 @@ export function ShareDialog({ view, isOpen, onClose }: ShareDialogProps) {
                               size="icon"
                               variant="ghost"
                               className="h-8 w-8 text-destructive hover:text-destructive"
+                              aria-label="Delete share link"
                               onClick={() => deleteShareLinkMutation.mutate(link.id)}
                             >
                               <Trash2 className="h-4 w-4" />

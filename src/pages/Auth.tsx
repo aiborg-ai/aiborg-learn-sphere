@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,6 +53,7 @@ export default function Auth() {
   const [accountType, setAccountType] = useState<'individual' | 'company_admin'>('individual');
   const [industry, setIndustry] = useState('');
   const [companySize, setCompanySize] = useState('');
+  const { t } = useTranslation('auth');
   const {
     signIn,
     signUp,
@@ -261,8 +263,8 @@ export default function Auth() {
       const rateLimit = checkPasswordResetLimit(resetEmail);
       if (!rateLimit.allowed) {
         toast({
-          title: 'Too many requests',
-          description: rateLimit.message || 'Please try again later.',
+          title: t('errors.tooManyRequests'),
+          description: rateLimit.message || t('errors.tryAgainLater'),
           variant: 'destructive',
         });
         setIsResetting(false);
@@ -280,16 +282,15 @@ export default function Auth() {
       if (error) throw error;
 
       toast({
-        title: 'Password reset email sent',
-        description: 'Please check your email for the password reset link.',
+        title: t('resetPassword.success'),
+        description: t('resetPassword.checkEmail'),
       });
       setShowResetDialog(false);
       setResetEmail('');
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to send password reset email';
+      const errorMessage = error instanceof Error ? error.message : t('errors.resetFailed');
       toast({
-        title: 'Error',
+        title: t('errors.signInFailed'),
         description: errorMessage,
         variant: 'destructive',
       });
@@ -304,7 +305,7 @@ export default function Auth() {
       <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-white mx-auto mb-4" />
-          <p className="text-white/80">Loading...</p>
+          <p className="text-white/80">{t('loading')}</p>
         </div>
       </div>
     );
@@ -319,7 +320,7 @@ export default function Auth() {
             className="inline-flex items-center gap-2 text-white hover:text-secondary transition-colors mb-4"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Home
+            {t('backToHome')}
           </Link>
           <div className="flex items-center justify-center mb-4">
             <picture>
@@ -327,30 +328,30 @@ export default function Auth() {
               <img src="/logo.jpeg" alt="Aiborg" className="h-12 w-auto object-contain" />
             </picture>
           </div>
-          <p className="text-white/80">Join the AI learning revolution</p>
+          <p className="text-white/80">{t('tagline')}</p>
         </div>
 
         <Card className="bg-white/10 backdrop-blur-md border-white/20">
           <CardHeader>
-            <CardTitle className="text-white text-center">Welcome</CardTitle>
+            <CardTitle className="text-white text-center">{t('welcome')}</CardTitle>
             <CardDescription className="text-white/80 text-center">
-              Sign in to your account or create a new one
+              {t('welcomeSubtitle')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-3 bg-white/10">
                 <TabsTrigger value="signin" className="text-white data-[state=active]:bg-white/20">
-                  Sign In
+                  {t('signIn.title')}
                 </TabsTrigger>
                 <TabsTrigger
                   value="magiclink"
                   className="text-white data-[state=active]:bg-white/20"
                 >
-                  Magic Link
+                  {t('magicLink.title')}
                 </TabsTrigger>
                 <TabsTrigger value="signup" className="text-white data-[state=active]:bg-white/20">
-                  Sign Up
+                  {t('signUp.title')}
                 </TabsTrigger>
               </TabsList>
 
@@ -364,7 +365,7 @@ export default function Auth() {
               <Alert className="mt-4 bg-blue-500/10 border-blue-500/30">
                 <Info className="h-4 w-4 text-blue-400" />
                 <AlertDescription className="text-white/80 text-xs">
-                  Note: You'll be securely redirected to our authentication provider for sign-in.
+                  {t('oauthNotice')}
                 </AlertDescription>
               </Alert>
 
@@ -382,7 +383,7 @@ export default function Auth() {
                     ) : (
                       <GoogleIcon className="mr-2 h-4 w-4" />
                     )}
-                    Continue with Google
+                    {t('oauth.continueWithGoogle')}
                   </Button>
 
                   <Button
@@ -397,7 +398,7 @@ export default function Auth() {
                     ) : (
                       <GitHubIcon className="mr-2 h-4 w-4" />
                     )}
-                    Continue with GitHub
+                    {t('oauth.continueWithGitHub')}
                   </Button>
                 </div>
 
@@ -407,7 +408,7 @@ export default function Auth() {
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
                     <span className="bg-transparent px-2 text-white/60">
-                      Or continue with email
+                      {t('oauth.orContinueWithEmail')}
                     </span>
                   </div>
                 </div>
@@ -415,13 +416,13 @@ export default function Auth() {
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-white">
-                      Email
+                      {t('signIn.email')}
                     </Label>
                     <Input
                       id="email"
                       name="email"
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder={t('signIn.emailPlaceholder')}
                       required
                       className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     />
@@ -429,7 +430,7 @@ export default function Auth() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="password" className="text-white">
-                        Password
+                        {t('signIn.password')}
                       </Label>
                       <Button
                         type="button"
@@ -437,21 +438,21 @@ export default function Auth() {
                         className="p-0 h-auto text-xs text-white/80 hover:text-white"
                         onClick={() => setShowResetDialog(true)}
                       >
-                        Forgot password?
+                        {t('signIn.forgotPassword')}
                       </Button>
                     </div>
                     <Input
                       id="password"
                       name="password"
                       type="password"
-                      placeholder="Enter your password"
+                      placeholder={t('signIn.passwordPlaceholder')}
                       required
                       className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     />
                   </div>
                   <Button type="submit" className="w-full btn-hero" disabled={isLoading}>
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Sign In
+                    {t('signIn.button')}
                   </Button>
                 </form>
               </TabsContent>
@@ -460,8 +461,8 @@ export default function Auth() {
                 <MagicLinkAuth
                   onSuccess={() => {
                     toast({
-                      title: 'Magic Link Sent!',
-                      description: 'Check your email for a sign-in link.',
+                      title: t('magicLink.success'),
+                      description: t('magicLink.checkEmail'),
                     });
                   }}
                   redirectTo={window.location.origin}
@@ -482,7 +483,7 @@ export default function Auth() {
                     ) : (
                       <GoogleIcon className="mr-2 h-4 w-4" />
                     )}
-                    Continue with Google
+                    {t('oauth.continueWithGoogle')}
                   </Button>
 
                   <Button
@@ -497,7 +498,7 @@ export default function Auth() {
                     ) : (
                       <GitHubIcon className="mr-2 h-4 w-4" />
                     )}
-                    Continue with GitHub
+                    {t('oauth.continueWithGitHub')}
                   </Button>
                 </div>
 
@@ -506,14 +507,16 @@ export default function Auth() {
                     <Separator className="w-full bg-white/20" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-transparent px-2 text-white/60">Or sign up with email</span>
+                    <span className="bg-transparent px-2 text-white/60">
+                      {t('oauth.orSignUpWithEmail')}
+                    </span>
                   </div>
                 </div>
 
                 <form onSubmit={handleSignUp} className="space-y-4">
                   {/* Account Type Selection */}
                   <div className="space-y-3">
-                    <div className="text-sm font-medium text-white">Account Type</div>
+                    <div className="text-sm font-medium text-white">{t('accountType.label')}</div>
                     <RadioGroup
                       value={accountType}
                       onValueChange={value =>
@@ -528,7 +531,7 @@ export default function Auth() {
                           className="text-white cursor-pointer flex items-center gap-2"
                         >
                           <User className="h-4 w-4" />
-                          Individual
+                          {t('accountType.individual')}
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2 bg-white/10 rounded-lg p-3 flex-1 cursor-pointer hover:bg-white/20">
@@ -542,27 +545,26 @@ export default function Auth() {
                           className="text-white cursor-pointer flex items-center gap-2"
                         >
                           <Building2 className="h-4 w-4" />
-                          Company Admin
+                          {t('accountType.companyAdmin')}
                         </Label>
                       </div>
                     </RadioGroup>
                     {accountType === 'company_admin' && (
                       <p className="text-xs text-white/60">
-                        As a company admin, you can create your company profile and take AI
-                        readiness assessments for your organization.
+                        {t('accountType.companyAdminDescription')}
                       </p>
                     )}
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="displayName" className="text-white">
-                      Display Name
+                      {t('signUp.displayName')}
                     </Label>
                     <Input
                       id="displayName"
                       name="displayName"
                       type="text"
-                      placeholder="Enter your display name"
+                      placeholder={t('signUp.displayNamePlaceholder')}
                       required
                       className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     />
@@ -573,13 +575,13 @@ export default function Auth() {
                     <>
                       <div className="space-y-2">
                         <Label htmlFor="companyName" className="text-white">
-                          Company Name <span className="text-red-400">*</span>
+                          {t('company.name')} <span className="text-red-400">*</span>
                         </Label>
                         <Input
                           id="companyName"
                           name="companyName"
                           type="text"
-                          placeholder="Enter your company name"
+                          placeholder={t('company.namePlaceholder')}
                           required={accountType === 'company_admin'}
                           className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                         />
@@ -587,49 +589,61 @@ export default function Auth() {
 
                       <div className="space-y-2">
                         <Label htmlFor="industry" className="text-white">
-                          Industry <span className="text-red-400">*</span>
+                          {t('company.industry')} <span className="text-red-400">*</span>
                         </Label>
                         <Select value={industry} onValueChange={setIndustry}>
                           <SelectTrigger
                             id="industry"
                             className="bg-white/10 border-white/20 text-white"
                           >
-                            <SelectValue placeholder="Select industry" />
+                            <SelectValue placeholder={t('company.industryPlaceholder')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="technology">Technology</SelectItem>
-                            <SelectItem value="healthcare">Healthcare</SelectItem>
-                            <SelectItem value="finance">Finance</SelectItem>
-                            <SelectItem value="education">Education</SelectItem>
-                            <SelectItem value="retail">Retail</SelectItem>
-                            <SelectItem value="manufacturing">Manufacturing</SelectItem>
-                            <SelectItem value="professional-services">
-                              Professional Services
+                            <SelectItem value="technology">
+                              {t('company.industries.technology')}
                             </SelectItem>
-                            <SelectItem value="hospitality">Hospitality</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
+                            <SelectItem value="healthcare">
+                              {t('company.industries.healthcare')}
+                            </SelectItem>
+                            <SelectItem value="finance">
+                              {t('company.industries.finance')}
+                            </SelectItem>
+                            <SelectItem value="education">
+                              {t('company.industries.education')}
+                            </SelectItem>
+                            <SelectItem value="retail">{t('company.industries.retail')}</SelectItem>
+                            <SelectItem value="manufacturing">
+                              {t('company.industries.manufacturing')}
+                            </SelectItem>
+                            <SelectItem value="professional-services">
+                              {t('company.industries.professionalServices')}
+                            </SelectItem>
+                            <SelectItem value="hospitality">
+                              {t('company.industries.hospitality')}
+                            </SelectItem>
+                            <SelectItem value="other">{t('company.industries.other')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
 
                       <div className="space-y-2">
                         <Label htmlFor="companySize" className="text-white">
-                          Company Size <span className="text-red-400">*</span>
+                          {t('company.size')} <span className="text-red-400">*</span>
                         </Label>
                         <Select value={companySize} onValueChange={setCompanySize}>
                           <SelectTrigger
                             id="companySize"
                             className="bg-white/10 border-white/20 text-white"
                           >
-                            <SelectValue placeholder="Select company size" />
+                            <SelectValue placeholder={t('company.sizePlaceholder')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="1-10">1-10 employees</SelectItem>
-                            <SelectItem value="11-50">11-50 employees</SelectItem>
-                            <SelectItem value="51-200">51-200 employees</SelectItem>
-                            <SelectItem value="201-500">201-500 employees</SelectItem>
-                            <SelectItem value="501-1000">501-1000 employees</SelectItem>
-                            <SelectItem value="1000+">1000+ employees</SelectItem>
+                            <SelectItem value="1-10">{t('company.sizes.1-10')}</SelectItem>
+                            <SelectItem value="11-50">{t('company.sizes.11-50')}</SelectItem>
+                            <SelectItem value="51-200">{t('company.sizes.51-200')}</SelectItem>
+                            <SelectItem value="201-500">{t('company.sizes.201-500')}</SelectItem>
+                            <SelectItem value="501-1000">{t('company.sizes.501-1000')}</SelectItem>
+                            <SelectItem value="1000+">{t('company.sizes.1000+')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -638,46 +652,43 @@ export default function Auth() {
 
                   <div className="space-y-2">
                     <Label htmlFor="signup-email" className="text-white">
-                      Email
+                      {t('signUp.email')}
                     </Label>
                     <Input
                       id="signup-email"
                       name="email"
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder={t('signUp.emailPlaceholder')}
                       required
                       className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-password" className="text-white">
-                      Password
+                      {t('signUp.password')}
                     </Label>
                     <Input
                       id="signup-password"
                       name="password"
                       type="password"
-                      placeholder="Enter your password"
+                      placeholder={t('signUp.passwordPlaceholder')}
                       required
                       minLength={12}
                       maxLength={128}
                       className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
-                      title="Password must be at least 12 characters with uppercase, lowercase, numbers, and special characters"
+                      title={t('signUp.passwordHint')}
                     />
-                    <p className="text-xs text-white/60">
-                      Must be 12+ characters with uppercase, lowercase, numbers, and special
-                      characters
-                    </p>
+                    <p className="text-xs text-white/60">{t('signUp.passwordHint')}</p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="confirmPassword" className="text-white">
-                      Confirm Password
+                      {t('signUp.confirmPassword')}
                     </Label>
                     <Input
                       id="confirmPassword"
                       name="confirmPassword"
                       type="password"
-                      placeholder="Confirm your password"
+                      placeholder={t('signUp.confirmPasswordPlaceholder')}
                       required
                       minLength={12}
                       maxLength={128}
@@ -686,7 +697,7 @@ export default function Auth() {
                   </div>
                   <Button type="submit" className="w-full btn-hero" disabled={isLoading}>
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Create Account
+                    {t('signUp.button')}
                   </Button>
                 </form>
               </TabsContent>
@@ -698,18 +709,16 @@ export default function Auth() {
       <Dialog open={showResetDialog} onOpenChange={setShowResetDialog}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Reset Password</DialogTitle>
-            <DialogDescription>
-              Enter your email address and we'll send you a link to reset your password.
-            </DialogDescription>
+            <DialogTitle>{t('resetPassword.title')}</DialogTitle>
+            <DialogDescription>{t('resetPassword.subtitle')}</DialogDescription>
           </DialogHeader>
           <form onSubmit={handlePasswordReset} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="reset-email">Email</Label>
+              <Label htmlFor="reset-email">{t('resetPassword.email')}</Label>
               <Input
                 id="reset-email"
                 type="email"
-                placeholder="Enter your email"
+                placeholder={t('resetPassword.emailPlaceholder')}
                 value={resetEmail}
                 onChange={e => setResetEmail(e.target.value)}
                 required
@@ -724,16 +733,16 @@ export default function Auth() {
                 disabled={isResetting}
                 className="flex-1"
               >
-                Cancel
+                {t('resetPassword.cancel')}
               </Button>
               <Button type="submit" disabled={isResetting} className="flex-1">
                 {isResetting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Sending...
+                    {t('resetPassword.sending')}
                   </>
                 ) : (
-                  'Send Reset Email'
+                  t('resetPassword.button')
                 )}
               </Button>
             </div>

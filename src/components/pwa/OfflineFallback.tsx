@@ -30,7 +30,7 @@ export function OfflineFallback() {
 
         <div className="space-y-4">
           <div className="text-sm text-left bg-muted/50 p-4 rounded-lg">
-            <h3 className="font-semibold mb-2">What you can do:</h3>
+            <h2 className="font-semibold mb-2">What you can do:</h2>
             <ul className="space-y-1 text-muted-foreground">
               <li>• Access previously viewed courses</li>
               <li>• Continue downloaded lessons</li>

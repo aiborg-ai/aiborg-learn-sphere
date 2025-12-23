@@ -69,6 +69,7 @@ export function Section5Benefits({ formData, onUpdate }: Section5BenefitsProps) 
               size="icon"
               className="absolute top-4 right-4 text-destructive hover:text-destructive"
               onClick={() => removeBenefit(index)}
+              aria-label="Remove benefit"
             >
               <Trash2 className="h-4 w-4" />
             </Button>

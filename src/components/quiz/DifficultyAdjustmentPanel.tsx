@@ -188,7 +188,7 @@ export function DifficultyAdjustmentPanel({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" aria-label="Show difficulty information">
                   <Info className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>

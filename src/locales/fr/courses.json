@@ -1,1 +1,61 @@
-{}
+{
+  "common": {
+    "course": "Cours",
+    "courses": "Cours",
+    "myCourses": "Mes Cours",
+    "allCourses": "Tous les Cours",
+    "enrolledCourses": "Cours Inscrits",
+    "availableCourses": "Cours Disponibles"
+  },
+  "actions": {
+    "enroll": "S'inscrire Maintenant",
+    "viewCourse": "Voir le Cours",
+    "continueCourse": "Continuer le Cours",
+    "startCourse": "Commencer le Cours",
+    "completeCourse": "Terminer le Cours",
+    "browseCourses": "Parcourir les Cours"
+  },
+  "details": {
+    "overview": "Aperçu",
+    "materials": "Matériaux",
+    "quizzes": "Quiz",
+    "exercises": "Exercices",
+    "workshops": "Ateliers",
+    "assignments": "Devoirs",
+    "description": "Description",
+    "instructor": "Instructeur",
+    "duration": "Durée",
+    "level": "Niveau",
+    "price": "Prix",
+    "free": "Gratuit"
+  },
+  "progress": {
+    "title": "Votre Progression",
+    "completed": "Terminé",
+    "inProgress": "En Cours",
+    "notStarted": "Non Commencé",
+    "percentage": "{{percent}}% Terminé",
+    "materials": "{{completed}} sur {{total}} matériaux terminés",
+    "quizzes": "{{completed}} sur {{total}} quiz terminés"
+  },
+  "enrollment": {
+    "required": "Inscription Requise",
+    "requirementMessage": "Vous devez vous inscrire à ce cours pour accéder à son contenu.",
+    "success": "Inscription au cours réussie",
+    "backToDashboard": "Retour au Tableau de Bord"
+  },
+  "errors": {
+    "notFound": "Cours Non Trouvé",
+    "notFoundMessage": "Le cours que vous recherchez n'existe pas ou a été supprimé.",
+    "loadError": "Erreur de chargement du cours",
+    "enrollError": "Erreur d'inscription au cours"
+  },
+  "tabs": {
+    "overviewTab": "Onglet aperçu",
+    "materialsTab": "Onglet matériaux du cours",
+    "quizzesTab": "Onglet quiz, {{count}} quiz disponibles",
+    "exercisesTab": "Onglet exercices, {{count}} exercices disponibles",
+    "workshopsTab": "Onglet ateliers, {{count}} ateliers disponibles",
+    "assignmentsTab": "Onglet devoirs, {{count}} devoirs disponibles"
+  }
+}

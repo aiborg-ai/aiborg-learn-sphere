@@ -85,7 +85,12 @@ export function PersonalizedSection({
                 </Button>
               )}
               {onSettings && (
-                <Button variant="outline" size="icon" onClick={onSettings}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={onSettings}
+                  aria-label="Open settings"
+                >
                   <Settings className="h-4 w-4" />
                 </Button>
               )}

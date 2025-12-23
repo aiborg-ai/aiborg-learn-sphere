@@ -174,6 +174,7 @@ export function WidgetPalette({ onAddWidget, className }: WidgetPaletteProps) {
                               size="icon"
                               variant="ghost"
                               className="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                              aria-label={`Add ${widget.name} widget`}
                               onClick={e => {
                                 e.stopPropagation();
                                 onAddWidget(widget.type);

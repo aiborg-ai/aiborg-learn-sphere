@@ -156,6 +156,7 @@ export default function TemplateGalleryPage() {
               size="icon"
               onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
               title={viewMode === 'grid' ? 'Switch to list view' : 'Switch to grid view'}
+              aria-label={viewMode === 'grid' ? 'Switch to list view' : 'Switch to grid view'}
             >
               <Grid3x3 className="h-4 w-4" />
             </Button>
@@ -253,6 +254,7 @@ export default function TemplateGalleryPage() {
                         variant={page === pageNum ? 'default' : 'outline'}
                         onClick={() => setPage(pageNum)}
                         size="icon"
+                        aria-label={`Go to page ${pageNum}`}
                       >
                         {pageNum}
                       </Button>

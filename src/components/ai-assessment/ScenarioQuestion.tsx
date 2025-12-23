@@ -110,7 +110,7 @@ export const ScenarioQuestion: React.FC<ScenarioQuestionProps> = ({
                 onPause={() => setIsPlaying(false)}
                 muted={isMuted}
               >
-                <track kind="captions" srcLang="en" label="English" src="" />
+                {/* Caption tracks will be dynamically loaded when available */}
                 Your browser does not support the video tag.
               </video>
             </AspectRatio>
@@ -154,7 +154,7 @@ export const ScenarioQuestion: React.FC<ScenarioQuestionProps> = ({
                   muted={isMuted}
                   className="flex-1"
                 >
-                  <track kind="captions" srcLang="en" label="English" src="" />
+                  {/* Caption tracks will be dynamically loaded when available */}
                   Your browser does not support the audio tag.
                 </audio>
                 <Button variant="ghost" size="sm" onClick={() => setIsMuted(!isMuted)}>
