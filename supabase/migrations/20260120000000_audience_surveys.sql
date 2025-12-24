@@ -3,6 +3,11 @@
 -- Gather learning preferences from different audience categories
 -- =============================================
 
+-- Drop existing types if they exist
+DROP TYPE IF EXISTS audience_category CASCADE;
+DROP TYPE IF EXISTS survey_status CASCADE;
+DROP TYPE IF EXISTS survey_question_type CASCADE;
+
 -- Audience categories enum
 CREATE TYPE audience_category AS ENUM (
   'professional',      -- Working professionals seeking upskilling
