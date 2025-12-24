@@ -62,8 +62,8 @@ CREATE TABLE IF NOT EXISTS lti_resource_links (
   context_label TEXT,
 
   -- Mapping to our content
-  course_id UUID REFERENCES courses(id) ON DELETE SET NULL,
-  lesson_id UUID, -- Optional: specific lesson mapping
+  course_id INTEGER REFERENCES courses(id) ON DELETE SET NULL,
+  lesson_id INTEGER, -- Optional: specific lesson mapping
 
   -- Deep linking data
   content_items JSONB DEFAULT '[]',
