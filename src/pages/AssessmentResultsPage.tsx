@@ -4,7 +4,7 @@
  */
 
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAssessmentAttempt } from '@/hooks/useAssessmentAttempts';
+import { useAssessmentAttempt, useAssessmentAttemptHistory } from '@/hooks/useAssessmentAttempts';
 import { useAssessmentTool } from '@/hooks/useAssessmentTools';
 import { useAssessmentRecommendations } from '@/hooks/useAssessmentRecommendations';
 import { AssessmentToolService } from '@/services/assessment-tools/AssessmentToolService';
@@ -14,9 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { EnhancedPerformanceBreakdown } from '@/components/assessment/EnhancedPerformanceBreakdown';
-import { RecommendedResources } from '@/components/assessment/RecommendedResources';
-import { LearningPathRoadmap } from '@/components/assessment/LearningPathRoadmap';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Trophy,
   Clock,
@@ -27,21 +25,31 @@ import {
   Share2,
   Download,
   Target,
-  Award,
-  Lightbulb,
   Loader2,
   AlertCircle,
+  TrendingUp,
+  GitCompare,
+  BarChart3,
+  Lightbulb,
+  LayoutDashboard,
 } from '@/components/ui/icons';
 import { useEffect, useState } from 'react';
 import type { AssessmentResults } from '@/types/assessmentTools';
 import { logger } from '@/utils/logger';
+
+// Import tab components
+import { OverviewTab } from '@/components/assessment-results/tabs/OverviewTab';
+import { TrendsTab } from '@/components/assessment-results/tabs/TrendsTab';
+import { ComparisonTab } from '@/components/assessment-results/tabs/ComparisonTab';
+import { CategoryAnalysisTab } from '@/components/assessment-results/tabs/CategoryAnalysisTab';
+import { ResourcesTab } from '@/components/assessment-results/tabs/ResourcesTab';
 
 export default function AssessmentResultsPage() {
   const { toolSlug, attemptId } = useParams<{ toolSlug: string; attemptId: string }>();
   const navigate = useNavigate();
 
   const { data: attempt, isLoading: attemptLoading } = useAssessmentAttempt(attemptId);
-  const [_toolId, setToolId] = useState<string | null>(null);
+  const [toolId, setToolId] = useState<string | null>(null);
 
   // Get tool ID from attempt
   useEffect(() => {
@@ -51,6 +59,9 @@ export default function AssessmentResultsPage() {
   }, [attempt]);
 
   const { data: tool } = useAssessmentTool(toolSlug || '');
+  const { data: attemptHistory, isLoading: historyLoading } = useAssessmentAttemptHistory(
+    toolId || ''
+  );
   const [results, setResults] = useState<AssessmentResults | null>(null);
   const [isLoadingResults, setIsLoadingResults] = useState(true);
 
@@ -206,78 +217,74 @@ export default function AssessmentResultsPage() {
           </CardContent>
         </Card>
 
-        {/* Enhanced Performance Breakdown */}
-        {results.performance_by_category.length > 0 && (
-          <EnhancedPerformanceBreakdown
-            performance={results.performance_by_category}
-            averageScore={attempt.score_percentage}
-          />
-        )}
+        {/* Tabs */}
+        <Tabs defaultValue="overview" className="mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
+            <TabsTrigger value="overview" className="gap-2">
+              <LayoutDashboard className="h-4 w-4" />
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="trends" className="gap-2">
+              <TrendingUp className="h-4 w-4" />
+              Trends
+            </TabsTrigger>
+            <TabsTrigger value="comparison" className="gap-2">
+              <GitCompare className="h-4 w-4" />
+              Comparison
+            </TabsTrigger>
+            <TabsTrigger value="category-analysis" className="gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Categories
+            </TabsTrigger>
+            <TabsTrigger value="resources" className="gap-2">
+              <Lightbulb className="h-4 w-4" />
+              Resources
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Recommendations */}
-        {results.recommendations.length > 0 && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Lightbulb className="h-5 w-5" />
-                Personalized Recommendations
-              </CardTitle>
-              <CardDescription>Suggestions to improve your skills</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                {results.recommendations.map((rec, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">{rec}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        )}
+          {/* Overview Tab */}
+          <TabsContent value="overview">
+            <OverviewTab results={results} averageScore={attempt.score_percentage} />
+          </TabsContent>
 
-        {/* Badges Earned */}
-        {results.badges_earned && results.badges_earned.length > 0 && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Award className="h-5 w-5" />
-                Badges Earned
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-3">
-                {results.badges_earned.map((badge, index) => (
-                  <Badge key={index} variant="secondary" className="text-sm px-4 py-2">
-                    <Award className="mr-2 h-4 w-4" />
-                    {badge}
-                  </Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Learning Path */}
-        {!recommendationsLoading &&
-          recommendations?.learningPath &&
-          recommendations.learningPath.length > 0 && (
-            <LearningPathRoadmap steps={recommendations.learningPath} className="mb-8" />
-          )}
-
-        {/* Recommended Resources */}
-        {!recommendationsLoading && recommendations && (
-          <div className="mb-8">
-            <RecommendedResources
-              courses={recommendations.courses}
-              blogPosts={recommendations.blogPosts}
-              weakCategories={results.performance_by_category
-                .filter(cat => cat.score_percentage < 70)
-                .map(cat => cat.category_name.toLowerCase())}
+          {/* Trends Tab */}
+          <TabsContent value="trends">
+            <TrendsTab
+              attemptHistory={attemptHistory || []}
+              currentAttempt={attempt}
+              tool={tool}
+              isLoading={historyLoading}
             />
-          </div>
-        )}
+          </TabsContent>
+
+          {/* Comparison Tab */}
+          <TabsContent value="comparison">
+            <ComparisonTab
+              attemptHistory={attemptHistory || []}
+              currentAttempt={attempt}
+              percentileRank={results.percentile_rank}
+              isLoading={historyLoading}
+            />
+          </TabsContent>
+
+          {/* Category Analysis Tab */}
+          <TabsContent value="category-analysis">
+            <CategoryAnalysisTab
+              attemptHistory={attemptHistory || []}
+              currentCategoryPerformance={attempt.performance_by_category}
+              isLoading={historyLoading}
+            />
+          </TabsContent>
+
+          {/* Resources Tab */}
+          <TabsContent value="resources">
+            <ResourcesTab
+              recommendations={recommendations}
+              performanceByCategory={results.performance_by_category}
+              recommendationsLoading={recommendationsLoading}
+            />
+          </TabsContent>
+        </Tabs>
 
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-4 justify-center">
