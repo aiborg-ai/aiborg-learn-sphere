@@ -5,6 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { pdf } from '@react-pdf/renderer';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { useAssessment } from '@/hooks/useAIReadinessAssessment';
@@ -16,6 +17,7 @@ import {
   DimensionBreakdown,
   RecommendationsRoadmap,
 } from '@/components/ai-readiness/results';
+import { PDFReport } from '@/components/ai-readiness/results/PDFReport';
 import { createRoadmap } from '@/services/ai-readiness/RecommendationGenerator';
 import { Loader2, AlertCircle, ArrowLeft, Download, Share2, RefreshCw } from 'lucide-react';
 import type { ReadinessRecommendation, DimensionScore, DimensionType } from '@/types/aiReadiness';
@@ -29,6 +31,7 @@ export default function AIReadinessResults() {
   const { data: assessment, isLoading: assessmentLoading } = useAssessment(assessmentId || null);
   const [recommendations, setRecommendations] = useState<ReadinessRecommendation[]>([]);
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(true);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   // Check authentication
   useEffect(() => {
@@ -96,12 +99,97 @@ export default function AIReadinessResults() {
     }
   };
 
-  // Handle download (placeholder)
-  const handleDownload = () => {
-    toast({
-      title: 'Coming Soon',
-      description: 'PDF export will be available soon!',
-    });
+  // Handle PDF download
+  const handleDownload = async () => {
+    if (!assessment) return;
+
+    setIsGeneratingPDF(true);
+    try {
+      // Prepare dimension scores
+      const dimensionScores: DimensionScore[] = [
+        {
+          dimension: 'overall' as DimensionType,
+          score: assessment.overall_readiness_score || 0,
+          weighted_score: assessment.overall_readiness_score || 0,
+          question_count: 64,
+          answered_count: 64,
+        },
+        {
+          dimension: 'strategic' as DimensionType,
+          score: assessment.strategic_alignment_score || 0,
+          weighted_score: assessment.strategic_alignment_score || 0,
+          question_count: 10,
+          answered_count: 10,
+        },
+        {
+          dimension: 'data' as DimensionType,
+          score: assessment.data_maturity_score || 0,
+          weighted_score: assessment.data_maturity_score || 0,
+          question_count: 12,
+          answered_count: 12,
+        },
+        {
+          dimension: 'tech' as DimensionType,
+          score: assessment.tech_infrastructure_score || 0,
+          weighted_score: assessment.tech_infrastructure_score || 0,
+          question_count: 10,
+          answered_count: 10,
+        },
+        {
+          dimension: 'human' as DimensionType,
+          score: assessment.human_capital_score || 0,
+          weighted_score: assessment.human_capital_score || 0,
+          question_count: 12,
+          answered_count: 12,
+        },
+        {
+          dimension: 'process' as DimensionType,
+          score: assessment.process_maturity_score || 0,
+          weighted_score: assessment.process_maturity_score || 0,
+          question_count: 10,
+          answered_count: 10,
+        },
+        {
+          dimension: 'change' as DimensionType,
+          score: assessment.change_readiness_score || 0,
+          weighted_score: assessment.change_readiness_score || 0,
+          question_count: 10,
+          answered_count: 10,
+        },
+      ];
+
+      // Generate PDF
+      const blob = await pdf(
+        <PDFReport
+          assessment={assessment}
+          dimensionScores={dimensionScores}
+          recommendations={recommendations}
+        />
+      ).toBlob();
+
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `AI-Readiness-Report-${assessment.company_name || 'Assessment'}-${new Date().toISOString().split('T')[0]}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: 'PDF Downloaded',
+        description: 'Your AI-Readiness report has been downloaded successfully!',
+      });
+    } catch (error) {
+      toast({
+        title: 'Download Failed',
+        description: 'Failed to generate PDF. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
   // Handle retake
@@ -244,10 +332,20 @@ export default function AIReadinessResults() {
             <Button
               variant="outline"
               onClick={handleDownload}
+              disabled={isGeneratingPDF}
               className="text-white border-white/20 hover:bg-white/10"
             >
-              <Download className="h-4 w-4 mr-2" />
-              Download PDF
+              {isGeneratingPDF ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4 mr-2" />
+                  Download PDF
+                </>
+              )}
             </Button>
             <Button
               variant="outline"
