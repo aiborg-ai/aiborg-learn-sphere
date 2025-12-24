@@ -1,79 +1,253 @@
-/**
- * AI Readiness Assessment Page
- * Wrapper for the existing SME Assessment with Assessment Tools integration
- * Target Audience: SMEs (Business)
- */
+// ============================================================================
+// AI-Readiness Assessment Page
+// Main assessment interface using BaseAssessmentWizard and all sections
+// ============================================================================
 
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useToast } from '@/hooks/use-toast';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useAssessmentTool } from '@/hooks/useAssessmentTools';
-import { useCreateAssessmentAttempt } from '@/hooks/useAssessmentAttempts';
-import { Loader2 } from '@/components/ui/icons';
-
-// Import the existing SME Assessment component
-import SMEAssessment from './SMEAssessment';
+import { useToast } from '@/hooks/use-toast';
+import {
+  useCreateAssessment,
+  useAssessment,
+  useSaveSection,
+  useCompleteAssessment,
+} from '@/hooks/useAIReadinessAssessment';
+import { BaseAssessmentWizard } from '@/components/ai-readiness';
+import {
+  StrategicAlignmentSection,
+  DataMaturitySection,
+  TechInfrastructureSection,
+  HumanCapitalSection,
+  ProcessMaturitySection,
+  ChangeReadinessSection,
+} from '@/components/ai-readiness/sections';
+import { Loader2, Target, Database, Cpu, Users, GitBranch, RefreshCw } from 'lucide-react';
+import type { DimensionType, AIReadinessFormData } from '@/types/aiReadiness';
+import { defaultFormData } from '@/types/aiReadiness';
 
 export default function AIReadinessAssessment() {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
-  const [attemptId, setAttemptId] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  // Fetch the AI-Readiness tool
-  const { data: tool, isLoading: toolLoading } = useAssessmentTool('ai-readiness');
-  const createAttempt = useCreateAssessmentAttempt();
+  const [assessmentId, setAssessmentId] = useState<string | null>(searchParams.get('id') || null);
+  const [formData, setFormData] = useState<AIReadinessFormData>(defaultFormData);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Create attempt on mount
+  // Hooks
+  const createAssessment = useCreateAssessment();
+  const { data: assessment, isLoading: assessmentLoading } = useAssessment(assessmentId);
+  const saveSection = useSaveSection();
+  const completeAssessment = useCompleteAssessment();
+
+  // Check authentication
   useEffect(() => {
-    // Wait for auth to finish loading
     if (authLoading) return;
 
-    // Check if user is authenticated after loading is complete
     if (!user) {
       toast({
         title: 'Authentication Required',
-        description: 'Please sign in to take the AI Readiness Assessment.',
+        description: 'Please sign in to take the AI-Readiness Assessment.',
         variant: 'destructive',
       });
       navigate('/auth', { state: { returnTo: '/assessment/ai-readiness' } });
-      return;
     }
+  }, [authLoading, user, navigate, toast]);
 
-    if (tool && !attemptId && !createAttempt.isPending) {
-      // Create a new attempt
-      createAttempt.mutate(tool.id, {
-        onSuccess: attempt => {
-          setAttemptId(attempt.id);
-          toast({
-            title: 'Assessment Started',
-            description: `Starting attempt #${attempt.attempt_number}`,
-          });
+  // Initialize assessment
+  useEffect(() => {
+    if (authLoading || !user || isInitialized) return;
+
+    // If no assessment ID, create new one
+    if (!assessmentId && !createAssessment.isPending) {
+      const companyName = searchParams.get('company') || undefined;
+      const industry = searchParams.get('industry') || undefined;
+      const companySize = searchParams.get('size') || undefined;
+
+      createAssessment.mutate(
+        {
+          company_name: companyName,
+          industry,
+          company_size: companySize,
+          assessment_tier: 'freemium',
         },
-        onError: () => {
-          toast({
-            title: 'Error',
-            description: 'Failed to start assessment. Please try again.',
-            variant: 'destructive',
+        {
+          onSuccess: newAssessment => {
+            setAssessmentId(newAssessment.id);
+            setIsInitialized(true);
+            toast({
+              title: 'Assessment Started',
+              description: 'Your AI-Readiness assessment has been created.',
+            });
+          },
+          onError: () => {
+            toast({
+              title: 'Error',
+              description: 'Failed to start assessment. Please try again.',
+              variant: 'destructive',
+            });
+          },
+        }
+      );
+    } else if (assessmentId) {
+      setIsInitialized(true);
+    }
+  }, [authLoading, user, assessmentId, searchParams, createAssessment, toast, isInitialized]);
+
+  // Load existing responses into form data
+  useEffect(() => {
+    if (!assessment) return;
+
+    // TODO: Load responses from dimension tables
+    // For now, using defaults
+  }, [assessment]);
+
+  // Handle section change
+  const handleSectionChange = (sectionId: DimensionType, data: Record<string, unknown>) => {
+    setFormData(prev => ({
+      ...prev,
+      [sectionId]: data,
+    }));
+  };
+
+  // Handle save draft
+  const handleSaveDraft = async () => {
+    if (!assessmentId) return;
+
+    // Save all sections
+    const sections: DimensionType[] = ['strategic', 'data', 'tech', 'human', 'process', 'change'];
+
+    for (const section of sections) {
+      const sectionData = formData[section];
+      if (sectionData && Object.keys(sectionData).length > 0) {
+        try {
+          await saveSection.mutateAsync({
+            assessmentId,
+            section,
+            responses: sectionData,
           });
-        },
+        } catch (error) {
+          // Continue saving other sections even if one fails
+        }
+      }
+    }
+  };
+
+  // Handle completion
+  const handleComplete = async () => {
+    if (!assessmentId) return;
+
+    try {
+      await completeAssessment.mutateAsync({
+        assessmentId,
+        formData,
+      });
+
+      toast({
+        title: 'Assessment Complete!',
+        description: 'Generating your personalized readiness report...',
+      });
+
+      // Navigate to results page
+      navigate(`/assessment/ai-readiness/results/${assessmentId}`);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to complete assessment. Please try again.',
+        variant: 'destructive',
       });
     }
-  }, [authLoading, user, tool, attemptId, createAttempt, toast, navigate]);
+  };
 
-  if (toolLoading || createAttempt.isPending || !attemptId) {
+  // Define sections
+  const sections = [
+    {
+      id: 'strategic' as DimensionType,
+      title: 'Strategic Alignment',
+      description: 'Assess leadership commitment, budget, and strategic clarity for AI adoption',
+      icon: Target,
+      component: StrategicAlignmentSection,
+      questionsCount: 10,
+    },
+    {
+      id: 'data' as DimensionType,
+      title: 'Data Maturity',
+      description:
+        'Evaluate data quality, accessibility, governance, and readiness for AI applications',
+      icon: Database,
+      component: DataMaturitySection,
+      questionsCount: 12,
+    },
+    {
+      id: 'tech' as DimensionType,
+      title: 'Technical Infrastructure',
+      description: 'Review IT systems, cloud readiness, APIs, and technical capabilities',
+      icon: Cpu,
+      component: TechInfrastructureSection,
+      questionsCount: 10,
+    },
+    {
+      id: 'human' as DimensionType,
+      title: 'Human Capital',
+      description: 'Assess team AI literacy, skills, training, and learning culture',
+      icon: Users,
+      component: HumanCapitalSection,
+      questionsCount: 12,
+    },
+    {
+      id: 'process' as DimensionType,
+      title: 'Process Maturity',
+      description: 'Evaluate process documentation, standardization, and automation readiness',
+      icon: GitBranch,
+      component: ProcessMaturitySection,
+      questionsCount: 10,
+    },
+    {
+      id: 'change' as DimensionType,
+      title: 'Change Readiness',
+      description: 'Measure organizational capacity for change management and cultural adaptation',
+      icon: RefreshCw,
+      component: ChangeReadinessSection,
+      questionsCount: 10,
+    },
+  ];
+
+  // Show loading state
+  if (authLoading || !isInitialized || (assessmentId && assessmentLoading)) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading AI Readiness Assessment...</p>
+          <Loader2 className="h-12 w-12 animate-spin text-white mx-auto mb-4" />
+          <p className="text-white/80">Loading AI-Readiness Assessment...</p>
         </div>
       </div>
     );
   }
 
-  // Render the existing SME Assessment component
-  // The SME Assessment already has all the logic, we just track it as an assessment tool attempt
-  return <SMEAssessment />;
+  return (
+    <div className="min-h-screen bg-gradient-hero py-12 px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-white mb-3">AI-Readiness Assessment</h1>
+          <p className="text-xl text-white/80 max-w-3xl mx-auto">
+            Evaluate your organization's readiness for AI adoption across 6 critical dimensions.
+            Receive a personalized roadmap and actionable recommendations.
+          </p>
+        </div>
+
+        {/* Assessment Wizard */}
+        <BaseAssessmentWizard
+          sections={sections}
+          formData={formData}
+          onSectionChange={handleSectionChange}
+          onSaveDraft={handleSaveDraft}
+          onComplete={handleComplete}
+          autoSaveInterval={30000}
+        />
+      </div>
+    </div>
+  );
 }
