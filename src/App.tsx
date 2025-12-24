@@ -70,6 +70,7 @@ const SMEAssessmentReport = lazy(() => import('./pages/SMEAssessmentReport'));
 // New Assessment Tool pages
 const AIReadinessAssessment = lazy(() => import('./pages/AIReadinessAssessment'));
 const AIReadinessResults = lazy(() => import('./pages/AIReadinessResults'));
+const AIReadinessAdminDashboard = lazy(() => import('./pages/admin/AIReadinessAdminDashboard'));
 const AIAwarenessAssessment = lazy(() => import('./pages/AIAwarenessAssessment'));
 const AIFluencyAssessment = lazy(() => import('./pages/AIFluencyAssessment'));
 const AssessmentResultsPage = lazy(() => import('./pages/AssessmentResultsPage'));
@@ -499,6 +500,7 @@ const AppWithShortcuts = () => {
               path="/assessment/ai-readiness/results/:assessmentId"
               element={<AIReadinessResults />}
             />
+            <Route path="/admin/ai-readiness-dashboard" element={<AIReadinessAdminDashboard />} />
             <Route path="/assessment/ai-awareness" element={<AIAwarenessAssessment />} />
             <Route path="/assessment/ai-fluency" element={<AIFluencyAssessment />} />
             <Route
