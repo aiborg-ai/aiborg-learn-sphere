@@ -126,6 +126,19 @@ ALTER TABLE survey_responses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE survey_answers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE survey_templates ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Anyone can view active surveys" ON surveys;
+DROP POLICY IF EXISTS "Anyone can view questions for active surveys" ON survey_questions;
+DROP POLICY IF EXISTS "Anyone can submit survey responses" ON survey_responses;
+DROP POLICY IF EXISTS "Anyone can update own incomplete responses" ON survey_responses;
+DROP POLICY IF EXISTS "Anyone can submit survey answers" ON survey_answers;
+DROP POLICY IF EXISTS "Admins can manage surveys" ON surveys;
+DROP POLICY IF EXISTS "Admins can manage questions" ON survey_questions;
+DROP POLICY IF EXISTS "Admins can view all responses" ON survey_responses;
+DROP POLICY IF EXISTS "Admins can view all answers" ON survey_answers;
+DROP POLICY IF EXISTS "Anyone can view templates" ON survey_templates;
+DROP POLICY IF EXISTS "Admins can manage templates" ON survey_templates;
+
 -- Public can view active surveys
 CREATE POLICY "Anyone can view active surveys"
   ON surveys FOR SELECT

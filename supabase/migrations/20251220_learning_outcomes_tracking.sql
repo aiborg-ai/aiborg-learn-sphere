@@ -11,7 +11,7 @@
 CREATE TABLE IF NOT EXISTS assessment_pairs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
-  course_id UUID,
+  course_id INTEGER,
   skill_id VARCHAR(100),
   pre_assessment_id UUID NOT NULL,
   post_assessment_id UUID,
@@ -363,6 +363,24 @@ ALTER TABLE experiment_events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE experiment_metrics ENABLE ROW LEVEL SECURITY;
 ALTER TABLE institutional_reports ENABLE ROW LEVEL SECURITY;
 ALTER TABLE learning_outcomes_summary ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view own assessment pairs" ON assessment_pairs;
+DROP POLICY IF EXISTS "Users can view own improvement metrics" ON learning_improvement_metrics;
+DROP POLICY IF EXISTS "Users can view own mastery progression" ON mastery_progression;
+DROP POLICY IF EXISTS "Users can view own experiment assignments" ON experiment_assignments;
+DROP POLICY IF EXISTS "Users can view own outcomes summary" ON learning_outcomes_summary;
+DROP POLICY IF EXISTS "System can manage assessment pairs" ON assessment_pairs;
+DROP POLICY IF EXISTS "System can manage improvement metrics" ON learning_improvement_metrics;
+DROP POLICY IF EXISTS "System can manage mastery progression" ON mastery_progression;
+DROP POLICY IF EXISTS "System can manage experiments" ON experiments;
+DROP POLICY IF EXISTS "System can manage variants" ON experiment_variants;
+DROP POLICY IF EXISTS "System can manage assignments" ON experiment_assignments;
+DROP POLICY IF EXISTS "System can manage events" ON experiment_events;
+DROP POLICY IF EXISTS "System can manage metrics" ON experiment_metrics;
+DROP POLICY IF EXISTS "System can manage reports" ON institutional_reports;
+DROP POLICY IF EXISTS "System can manage outcomes" ON learning_outcomes_summary;
+DROP POLICY IF EXISTS "Anyone can view mastery levels" ON mastery_level_config;
 
 -- Users can view their own data
 CREATE POLICY "Users can view own assessment pairs"
