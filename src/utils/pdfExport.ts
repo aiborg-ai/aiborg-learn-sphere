@@ -176,7 +176,7 @@ export const exportAnalyticsToPDF = async (
     currentY += 10;
 
     // Capture and add each section
-    for (const section of sections.filter((s) => s.includeInExport)) {
+    for (const section of sections.filter(s => s.includeInExport)) {
       const element = document.getElementById(section.elementId);
 
       if (!element) {
@@ -235,18 +235,8 @@ export const exportAnalyticsToPDF = async (
 
     for (let i = 1; i <= pageCount; i++) {
       pdf.setPage(i);
-      pdf.text(
-        `Page ${i} of ${pageCount}`,
-        pageWidth / 2,
-        pageHeight - 10,
-        { align: 'center' }
-      );
-      pdf.text(
-        '© AIBORG Learn Sphere',
-        pageWidth - margin,
-        pageHeight - 10,
-        { align: 'right' }
-      );
+      pdf.text(`Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+      pdf.text('© AIBORG Learn Sphere', pageWidth - margin, pageHeight - 10, { align: 'right' });
     }
 
     // Save PDF
@@ -300,6 +290,26 @@ export const exportSMEAssessmentReportToPDF = async (
   const filename = `${sanitizedCompanyName}_AI_Assessment_${date}.pdf`;
 
   await exportToPDF('sme-assessment-report-content', {
+    filename,
+    quality: 0.95,
+    scale: 2,
+  });
+};
+
+/**
+ * Export Skills Assessment Report to PDF
+ * @param userName - Name of the user for filename
+ * @param assessmentId - Assessment ID for filename
+ */
+export const exportSkillsAssessmentToPDF = async (
+  userName: string,
+  _assessmentId: string
+): Promise<void> => {
+  const sanitizedUserName = userName.replace(/[^a-z0-9]/gi, '-');
+  const date = new Date().toISOString().split('T')[0];
+  const filename = `Skills-Assessment-${sanitizedUserName}-${date}.pdf`;
+
+  await exportToPDF('skills-assessment-report-content', {
     filename,
     quality: 0.95,
     scale: 2,
