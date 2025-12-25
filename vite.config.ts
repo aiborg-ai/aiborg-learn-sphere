@@ -261,13 +261,16 @@ export default defineConfig(({ mode }) => ({
       '@radix-ui/react-dialog',
       '@radix-ui/react-dropdown-menu',
       '@radix-ui/react-select',
+      // Pre-optimize recharts and lodash to fix import issues
+      'recharts',
+      'lodash',
     ],
     // Ensure React is available as an external in dev
     entries: ['src/main.tsx'],
     exclude: [
       '@supabase/supabase-js/dist/module/lib/types',
       // Exclude heavy libraries to enable lazy loading
-      'recharts',
+      // 'recharts', // REMOVED - needs to be optimized for lodash compatibility
       'pdfjs-dist',
       'html2canvas',
     ],
