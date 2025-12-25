@@ -40,6 +40,7 @@ import {
   Laptop,
   Smartphone,
   Tablet,
+  Loader2,
 } from '@/components/ui/icons';
 import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
@@ -51,12 +52,16 @@ import { useAuth } from '@/hooks/useAuth';
 import { useAnalyticsPreferences, useShouldRefreshPage } from '@/hooks/useAnalyticsPreferences';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 import { Settings } from '@/components/ui/icons';
+import { exportAnalyticsToPDF, type AnalyticsSection, type DateRange } from '@/utils/pdfExport';
+import { toast } from 'sonner';
+import { logger } from '@/utils/logger';
 
 export default function ChatbotAnalytics() {
   const { user } = useAuth();
   const [dateRange] = useState(() => getDateRange('30d'));
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [isExportingPDF, setIsExportingPDF] = useState(false);
 
   // Get user preferences
   const { data: preferences } = useAnalyticsPreferences(user?.id || '');
@@ -119,6 +124,39 @@ export default function ChatbotAnalytics() {
     setExportModalOpen(true);
   };
 
+  const handleExportPDF = async () => {
+    try {
+      setIsExportingPDF(true);
+      toast.info('Generating PDF report... This may take a few moments', { duration: 3000 });
+
+      const sections: AnalyticsSection[] = [
+        { title: 'Cost Overview', elementId: 'chatbot-cost-overview', includeInExport: true },
+        { title: 'Daily Usage', elementId: 'chatbot-daily-costs', includeInExport: true },
+        { title: 'Session Analytics', elementId: 'chatbot-sessions', includeInExport: true },
+        { title: 'Topic Distribution', elementId: 'chatbot-topics', includeInExport: true },
+        { title: 'Sentiment Analysis', elementId: 'chatbot-sentiment', includeInExport: true },
+        { title: 'User Feedback', elementId: 'chatbot-feedback', includeInExport: true },
+      ];
+
+      const pdfDateRange: DateRange = {
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+        preset: '30 Days',
+      };
+
+      const timestamp = new Date().toISOString().split('T')[0];
+      const filename = `Chatbot-Analytics-${timestamp}.pdf`;
+
+      await exportAnalyticsToPDF(sections, pdfDateRange, filename);
+      toast.success('PDF report generated successfully!');
+    } catch (error) {
+      logger.error('PDF export error:', error);
+      toast.error('Failed to generate PDF. Please try again.');
+    } finally {
+      setIsExportingPDF(false);
+    }
+  };
+
   // Define sections for PDF export
   const exportSections: ChartSection[] = [
     { elementId: 'chatbot-overview', title: 'Overview', includeInExport: true },
@@ -172,16 +210,26 @@ export default function ChatbotAnalytics() {
               <Settings className="h-4 w-4 mr-2" />
               Settings
             </Button>
+            <Button variant="outline" size="sm" onClick={handleExportPDF} disabled={isExportingPDF}>
+              {isExportingPDF ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Download className="h-4 w-4 mr-2" />
+              )}
+              {isExportingPDF ? 'Exporting...' : 'Export PDF'}
+            </Button>
             <Button variant="outline" size="sm" onClick={handleExport}>
               <Download className="h-4 w-4 mr-2" />
-              Export
+              Export Data
             </Button>
           </div>
         </div>
       </div>
 
       {/* Cost Overview Cards */}
-      <CostOverviewCards key={refreshKey} />
+      <div id="chatbot-cost-overview">
+        <CostOverviewCards />
+      </div>
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="overview" className="space-y-4">
@@ -199,7 +247,7 @@ export default function ChatbotAnalytics() {
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-4">
           {/* Daily Costs Chart */}
-          <Card>
+          <Card id="chatbot-daily-costs">
             <CardHeader>
               <CardTitle>Daily Costs (Last 30 Days)</CardTitle>
               <CardDescription>Track daily spending and usage trends</CardDescription>
@@ -458,7 +506,7 @@ export default function ChatbotAnalytics() {
             </Card>
           </div>
 
-          <Card>
+          <Card id="chatbot-sessions">
             <CardHeader>
               <CardTitle>Session Analytics</CardTitle>
               <CardDescription>Daily session metrics and device breakdown</CardDescription>
@@ -530,7 +578,7 @@ export default function ChatbotAnalytics() {
 
         {/* Topics Tab */}
         <TabsContent value="topics" className="space-y-4">
-          <Card>
+          <Card id="chatbot-topics">
             <CardHeader>
               <CardTitle>Topic Distribution</CardTitle>
               <CardDescription>Conversation topics based on keyword analysis</CardDescription>
@@ -645,7 +693,7 @@ export default function ChatbotAnalytics() {
             </Card>
           </div>
 
-          <Card>
+          <Card id="chatbot-sentiment">
             <CardHeader>
               <CardTitle>Sentiment Trends</CardTitle>
               <CardDescription>Track conversation sentiment over time</CardDescription>
@@ -740,7 +788,7 @@ export default function ChatbotAnalytics() {
             </Card>
           </div>
 
-          <Card>
+          <Card id="chatbot-feedback">
             <CardHeader>
               <CardTitle>User Feedback</CardTitle>
               <CardDescription>Track user satisfaction and feedback trends</CardDescription>

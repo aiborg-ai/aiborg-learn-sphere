@@ -12,7 +12,11 @@ import {
   Target,
   MessageSquare,
   TrendingUp,
+  Download,
 } from '@/components/ui/icons';
+import { exportAnalyticsToPDF, type AnalyticsSection, type DateRange } from '@/utils/pdfExport';
+import { toast } from 'sonner';
+import { logger } from '@/utils/logger';
 import {
   PlatformMetricsCards,
   UserGrowthChart,
@@ -44,6 +48,7 @@ import type { ViewConfig } from '@/services/analytics/CustomViewsService';
 function DashboardContent() {
   const [activeTab, setActiveTab] = useState('overview');
   const [forecastDays, _setForecastDays] = useState<30 | 60 | 90>(30);
+  const [isExportingPDF, setIsExportingPDF] = useState(false);
   const { startDate, endDate } = useDateRange();
 
   // Construct date range for analytics
@@ -92,6 +97,51 @@ function DashboardContent() {
     await fetchAllAnalytics(dateRange, forecastDays);
   };
 
+  const handleExportPDF = async () => {
+    try {
+      setIsExportingPDF(true);
+      toast.info('Generating PDF report... This may take a few moments', { duration: 3000 });
+
+      const sections: AnalyticsSection[] = [
+        {
+          title: 'Platform Metrics',
+          elementId: 'platform-metrics-overview',
+          includeInExport: true,
+        },
+        {
+          title: 'User Growth & Engagement',
+          elementId: 'analytics-overview-tab',
+          includeInExport: true,
+        },
+        { title: 'User Analytics', elementId: 'analytics-users-tab', includeInExport: true },
+        { title: 'Course Analytics', elementId: 'analytics-courses-tab', includeInExport: true },
+        { title: 'Revenue Analytics', elementId: 'analytics-revenue-tab', includeInExport: true },
+        {
+          title: 'Assessment Analytics',
+          elementId: 'analytics-assessments-tab',
+          includeInExport: true,
+        },
+      ];
+
+      const pdfDateRange: DateRange = {
+        startDate: startDate || null,
+        endDate: endDate || null,
+        preset: startDate && endDate ? 'Custom Range' : 'All Time',
+      };
+
+      const timestamp = new Date().toISOString().split('T')[0];
+      const filename = `Enhanced-Analytics-Dashboard-${timestamp}.pdf`;
+
+      await exportAnalyticsToPDF(sections, pdfDateRange, filename);
+      toast.success('PDF report generated successfully!');
+    } catch (error) {
+      logger.error('PDF export error:', error);
+      toast.error('Failed to generate PDF. Please try again.');
+    } finally {
+      setIsExportingPDF(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -120,6 +170,14 @@ function DashboardContent() {
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
+          <Button variant="outline" onClick={handleExportPDF} disabled={isExportingPDF}>
+            {isExportingPDF ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4 mr-2" />
+            )}
+            {isExportingPDF ? 'Exporting...' : 'Export PDF'}
+          </Button>
         </div>
       </div>
 
@@ -140,7 +198,9 @@ function DashboardContent() {
       </div>
 
       {/* Platform Overview Metrics */}
-      <PlatformMetricsCards platformMetrics={platformMetrics} revenueMetrics={revenueMetrics} />
+      <div id="platform-metrics-overview">
+        <PlatformMetricsCards platformMetrics={platformMetrics} revenueMetrics={revenueMetrics} />
+      </div>
 
       {/* Detailed Analytics Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
@@ -197,7 +257,7 @@ function DashboardContent() {
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
+          <div id="analytics-overview-tab" className="grid gap-6 md:grid-cols-2">
             <UserGrowthChart data={userGrowth} />
             <EngagementMetricsCard data={engagementMetrics} />
           </div>
@@ -205,7 +265,7 @@ function DashboardContent() {
 
         {/* Users Tab */}
         <TabsContent value="users" className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
+          <div id="analytics-users-tab" className="grid gap-6 md:grid-cols-2">
             <UserDistributionChart platformMetrics={platformMetrics} />
             <UserActivityChart data={userGrowth} />
           </div>
@@ -213,26 +273,32 @@ function DashboardContent() {
 
         {/* Courses Tab */}
         <TabsContent value="courses" className="space-y-6">
-          <CourseEnrollmentChart data={courseAnalytics} />
-          <CoursePerformanceTable data={courseAnalytics} />
+          <div id="analytics-courses-tab" className="space-y-6">
+            <CourseEnrollmentChart data={courseAnalytics} />
+            <CoursePerformanceTable data={courseAnalytics} />
+          </div>
         </TabsContent>
 
         {/* Revenue Tab */}
         <TabsContent value="revenue" className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            <RevenueTrendChart data={revenueMetrics} />
-            <RevenueByCourseChart data={revenueMetrics} />
+          <div id="analytics-revenue-tab" className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <RevenueTrendChart data={revenueMetrics} />
+              <RevenueByCourseChart data={revenueMetrics} />
+            </div>
+            <RevenueSummaryCard data={revenueMetrics} />
           </div>
-          <RevenueSummaryCard data={revenueMetrics} />
         </TabsContent>
 
         {/* Assessments Tab */}
         <TabsContent value="assessments" className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            <AssessmentPerformanceChart data={assessmentAnalytics} />
-            <AssessmentTypesChart data={assessmentAnalytics} />
+          <div id="analytics-assessments-tab" className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <AssessmentPerformanceChart data={assessmentAnalytics} />
+              <AssessmentTypesChart data={assessmentAnalytics} />
+            </div>
+            <AssessmentMetricsCard data={assessmentAnalytics} />
           </div>
-          <AssessmentMetricsCard data={assessmentAnalytics} />
         </TabsContent>
 
         {/* Chatbot Analytics Tab */}

@@ -26,6 +26,7 @@ import {
   CheckCircle,
   Activity,
   Download,
+  Loader2,
 } from '@/components/ui/icons';
 import { formatDistanceToNow } from 'date-fns';
 import ExportModal from '@/components/analytics/ExportModal';
@@ -36,6 +37,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { useAnalyticsPreferences, useShouldRefreshPage } from '@/hooks/useAnalyticsPreferences';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 import { Settings } from '@/components/ui/icons';
+import { exportAnalyticsToPDF, type AnalyticsSection, type DateRange } from '@/utils/pdfExport';
+import { toast } from 'sonner';
+import { logger } from '@/utils/logger';
 
 export default function IndividualLearnerAnalytics() {
   const { userId } = useParams<{ userId: string }>();
@@ -44,6 +48,7 @@ export default function IndividualLearnerAnalytics() {
   const [selectedTab, setSelectedTab] = useState('overview');
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [isExportingPDF, setIsExportingPDF] = useState(false);
 
   // Get user preferences
   const { data: preferences } = useAnalyticsPreferences(user?.id || '');
@@ -64,6 +69,74 @@ export default function IndividualLearnerAnalytics() {
       await Promise.all([refetchDashboard(), refetchHealthScore()]);
     },
   });
+
+  // PDF Export Handler
+  const handleExportPDF = async () => {
+    if (!dashboard?.summary) {
+      toast.error('Unable to export PDF - no data available');
+      return;
+    }
+
+    try {
+      setIsExportingPDF(true);
+      toast.info('Generating PDF report... This may take a few moments', { duration: 3000 });
+
+      // Define sections to include in the PDF
+      const sections: AnalyticsSection[] = [
+        {
+          title: 'Learner Overview',
+          elementId: 'learner-header',
+          includeInExport: true,
+        },
+        {
+          title: 'Key Performance Metrics',
+          elementId: 'learner-metrics',
+          includeInExport: true,
+        },
+        {
+          title: 'Course Performance',
+          elementId: 'learner-courses',
+          includeInExport: true,
+        },
+        {
+          title: 'Learning Velocity',
+          elementId: 'learner-velocity',
+          includeInExport: true,
+        },
+        {
+          title: 'Skills Progress',
+          elementId: 'learner-skills',
+          includeInExport: true,
+        },
+        {
+          title: 'Engagement Timeline',
+          elementId: 'learner-engagement',
+          includeInExport: true,
+        },
+      ];
+
+      // Date range (no filter applied for learner analytics)
+      const dateRange: DateRange = {
+        startDate: null,
+        endDate: null,
+        preset: 'All Time',
+      };
+
+      // Generate filename
+      const timestamp = new Date().toISOString().split('T')[0];
+      const learnerName = dashboard.summary.full_name?.replace(/\s+/g, '-') || userId;
+      const filename = `Learner-Analytics-${learnerName}-${timestamp}.pdf`;
+
+      await exportAnalyticsToPDF(sections, dateRange, filename);
+
+      toast.success('PDF report generated successfully!');
+    } catch (error) {
+      logger.error('PDF export error:', error);
+      toast.error('Failed to generate PDF. Please try again.');
+    } finally {
+      setIsExportingPDF(false);
+    }
+  };
 
   // Export sections
   const exportSections: ChartSection[] = [
@@ -157,7 +230,7 @@ export default function IndividualLearnerAnalytics() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div id="learner-header" className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)} aria-label="Go back">
             <ArrowLeft className="h-4 w-4" />
@@ -202,9 +275,17 @@ export default function IndividualLearnerAnalytics() {
             <Settings className="h-4 w-4 mr-2" />
             Settings
           </Button>
+          <Button variant="outline" size="sm" onClick={handleExportPDF} disabled={isExportingPDF}>
+            {isExportingPDF ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4 mr-2" />
+            )}
+            {isExportingPDF ? 'Exporting...' : 'Export PDF'}
+          </Button>
           <Button variant="outline" size="sm" onClick={() => setExportModalOpen(true)}>
             <Download className="h-4 w-4 mr-2" />
-            Export
+            Export Data
           </Button>
 
           {/* Health Score */}
@@ -256,7 +337,7 @@ export default function IndividualLearnerAnalytics() {
       )}
 
       {/* Key Metrics */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div id="learner-metrics" className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
@@ -478,228 +559,241 @@ export default function IndividualLearnerAnalytics() {
 
         {/* Courses Tab */}
         <TabsContent value="courses" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>All Courses</CardTitle>
-              <CardDescription>Detailed course performance breakdown</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {courses && courses.length > 0 ? (
-                <div className="space-y-4">
-                  {courses.map(course => (
-                    <div
-                      key={course.course_id}
-                      className="p-4 border rounded-lg space-y-3 hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h4 className="font-medium">{course.course_title}</h4>
-                          <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-                            {course.category && <Badge variant="outline">{course.category}</Badge>}
-                            {course.difficulty_level && (
-                              <Badge variant="outline">{course.difficulty_level}</Badge>
-                            )}
+          <div id="learner-courses">
+            <Card>
+              <CardHeader>
+                <CardTitle>All Courses</CardTitle>
+                <CardDescription>Detailed course performance breakdown</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {courses && courses.length > 0 ? (
+                  <div className="space-y-4">
+                    {courses.map(course => (
+                      <div
+                        key={course.course_id}
+                        className="p-4 border rounded-lg space-y-3 hover:bg-muted/50 transition-colors"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h4 className="font-medium">{course.course_title}</h4>
+                            <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
+                              {course.category && (
+                                <Badge variant="outline">{course.category}</Badge>
+                              )}
+                              {course.difficulty_level && (
+                                <Badge variant="outline">{course.difficulty_level}</Badge>
+                              )}
+                            </div>
                           </div>
+                          <Badge
+                            variant={
+                              course.engagement_score >= 80
+                                ? 'default'
+                                : course.engagement_score >= 50
+                                  ? 'secondary'
+                                  : 'outline'
+                            }
+                          >
+                            Engagement: {course.engagement_score}
+                          </Badge>
                         </div>
-                        <Badge
-                          variant={
-                            course.engagement_score >= 80
-                              ? 'default'
-                              : course.engagement_score >= 50
-                                ? 'secondary'
-                                : 'outline'
-                          }
-                        >
-                          Engagement: {course.engagement_score}
-                        </Badge>
-                      </div>
 
-                      <div className="grid grid-cols-4 gap-4 text-sm">
-                        <div>
-                          <div className="text-muted-foreground">Progress</div>
-                          <div className="font-medium">
-                            {course.progress_percentage.toFixed(0)}%
+                        <div className="grid grid-cols-4 gap-4 text-sm">
+                          <div>
+                            <div className="text-muted-foreground">Progress</div>
+                            <div className="font-medium">
+                              {course.progress_percentage.toFixed(0)}%
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Time Spent</div>
+                            <div className="font-medium">
+                              {Math.round(course.time_spent_minutes / 60)}h
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Assignments</div>
+                            <div className="font-medium">
+                              {course.submitted_count}/{course.assignment_count}
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Avg Score</div>
+                            <div className="font-medium">
+                              {course.avg_assignment_score.toFixed(1)}%
+                            </div>
                           </div>
                         </div>
-                        <div>
-                          <div className="text-muted-foreground">Time Spent</div>
-                          <div className="font-medium">
-                            {Math.round(course.time_spent_minutes / 60)}h
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-muted-foreground">Assignments</div>
-                          <div className="font-medium">
-                            {course.submitted_count}/{course.assignment_count}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-muted-foreground">Avg Score</div>
-                          <div className="font-medium">
-                            {course.avg_assignment_score.toFixed(1)}%
-                          </div>
-                        </div>
-                      </div>
 
-                      <Progress value={course.progress_percentage} className="h-2" />
+                        <Progress value={course.progress_percentage} className="h-2" />
 
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>
-                          Enrolled {formatDistanceToNow(new Date(course.enrolled_at))} ago
-                        </span>
-                        {course.completed_at ? (
-                          <span className="flex items-center gap-1 text-green-600">
-                            <CheckCircle className="h-3 w-3" />
-                            Completed {formatDistanceToNow(new Date(course.completed_at))} ago
-                          </span>
-                        ) : (
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
                           <span>
-                            Last accessed {formatDistanceToNow(new Date(course.last_accessed))} ago
+                            Enrolled {formatDistanceToNow(new Date(course.enrolled_at))} ago
                           </span>
-                        )}
+                          {course.completed_at ? (
+                            <span className="flex items-center gap-1 text-green-600">
+                              <CheckCircle className="h-3 w-3" />
+                              Completed {formatDistanceToNow(new Date(course.completed_at))} ago
+                            </span>
+                          ) : (
+                            <span>
+                              Last accessed {formatDistanceToNow(new Date(course.last_accessed))}{' '}
+                              ago
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-muted-foreground py-8">No courses enrolled</p>
-              )}
-            </CardContent>
-          </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center text-muted-foreground py-8">No courses enrolled</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         {/* Velocity Tab */}
         <TabsContent value="velocity" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Learning Velocity</CardTitle>
-              <CardDescription>Weekly learning activity trends</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {velocity && velocity.length > 0 ? (
-                <div className="space-y-4">
-                  {velocity.map(week => (
-                    <div key={week.week_start} className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          Week of {new Date(week.week_start).toLocaleDateString()}
-                        </span>
-                        <div className="flex gap-4">
-                          <span>{week.active_courses} courses</span>
-                          <span>{Math.round(week.weekly_time_spent / 60)}h</span>
-                          <span>{week.active_days_in_week} days</span>
+          <div id="learner-velocity">
+            <Card>
+              <CardHeader>
+                <CardTitle>Learning Velocity</CardTitle>
+                <CardDescription>Weekly learning activity trends</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {velocity && velocity.length > 0 ? (
+                  <div className="space-y-4">
+                    {velocity.map(week => (
+                      <div key={week.week_start} className="space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">
+                            Week of {new Date(week.week_start).toLocaleDateString()}
+                          </span>
+                          <div className="flex gap-4">
+                            <span>{week.active_courses} courses</span>
+                            <span>{Math.round(week.weekly_time_spent / 60)}h</span>
+                            <span>{week.active_days_in_week} days</span>
+                          </div>
+                        </div>
+                        <div className="h-6 bg-muted rounded overflow-hidden flex">
+                          <div
+                            className="bg-blue-500"
+                            style={{
+                              width: `${Math.min((week.weekly_time_spent / 600) * 100, 100)}%`,
+                            }}
+                            title={`${week.weekly_time_spent} minutes`}
+                          />
                         </div>
                       </div>
-                      <div className="h-6 bg-muted rounded overflow-hidden flex">
-                        <div
-                          className="bg-blue-500"
-                          style={{
-                            width: `${Math.min((week.weekly_time_spent / 600) * 100, 100)}%`,
-                          }}
-                          title={`${week.weekly_time_spent} minutes`}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-muted-foreground py-8">No velocity data available</p>
-              )}
-            </CardContent>
-          </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center text-muted-foreground py-8">
+                    No velocity data available
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         {/* Skills Tab */}
         <TabsContent value="skills" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Skills Progress</CardTitle>
-              <CardDescription>Skill acquisition and proficiency levels</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {skills && skills.length > 0 ? (
-                <div className="space-y-4">
-                  {skills.map(skill => (
-                    <div key={skill.skill_name} className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <span className="font-medium">{skill.skill_name}</span>
-                          {skill.skill_category && (
-                            <span className="text-sm text-muted-foreground ml-2">
-                              ({skill.skill_category})
-                            </span>
-                          )}
+          <div id="learner-skills">
+            <Card>
+              <CardHeader>
+                <CardTitle>Skills Progress</CardTitle>
+                <CardDescription>Skill acquisition and proficiency levels</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {skills && skills.length > 0 ? (
+                  <div className="space-y-4">
+                    {skills.map(skill => (
+                      <div key={skill.skill_name} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="font-medium">{skill.skill_name}</span>
+                            {skill.skill_category && (
+                              <span className="text-sm text-muted-foreground ml-2">
+                                ({skill.skill_category})
+                              </span>
+                            )}
+                          </div>
+                          <Badge
+                            variant={
+                              skill.proficiency_level === 'expert'
+                                ? 'default'
+                                : skill.proficiency_level === 'advanced'
+                                  ? 'secondary'
+                                  : 'outline'
+                            }
+                          >
+                            {skill.proficiency_level}
+                          </Badge>
                         </div>
-                        <Badge
-                          variant={
-                            skill.proficiency_level === 'expert'
-                              ? 'default'
-                              : skill.proficiency_level === 'advanced'
-                                ? 'secondary'
-                                : 'outline'
+                        <div className="text-xs text-muted-foreground">
+                          {skill.completed_courses_with_skill} of {skill.courses_with_skill} courses
+                          completed • {skill.avg_progress_in_skill.toFixed(0)}% avg progress
+                        </div>
+                        <Progress
+                          value={
+                            (skill.completed_courses_with_skill / skill.courses_with_skill) * 100
                           }
-                        >
-                          {skill.proficiency_level}
-                        </Badge>
+                          className="h-2"
+                        />
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        {skill.completed_courses_with_skill} of {skill.courses_with_skill} courses
-                        completed • {skill.avg_progress_in_skill.toFixed(0)}% avg progress
-                      </div>
-                      <Progress
-                        value={
-                          (skill.completed_courses_with_skill / skill.courses_with_skill) * 100
-                        }
-                        className="h-2"
-                      />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-muted-foreground py-8">No skills data available</p>
-              )}
-            </CardContent>
-          </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center text-muted-foreground py-8">No skills data available</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         {/* Engagement Tab */}
         <TabsContent value="engagement" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Engagement Timeline</CardTitle>
-              <CardDescription>Recent activity and engagement patterns</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {timeline && timeline.length > 0 ? (
-                <div className="space-y-3">
-                  {timeline.slice(0, 14).map(event => (
-                    <div
-                      key={`${event.activity_date}-${event.event_type}`}
-                      className="flex items-center justify-between text-sm"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="text-muted-foreground min-w-[80px]">
-                          {new Date(event.activity_date).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                          })}
+          <div id="learner-engagement">
+            <Card>
+              <CardHeader>
+                <CardTitle>Engagement Timeline</CardTitle>
+                <CardDescription>Recent activity and engagement patterns</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {timeline && timeline.length > 0 ? (
+                  <div className="space-y-3">
+                    {timeline.slice(0, 14).map(event => (
+                      <div
+                        key={`${event.activity_date}-${event.event_type}`}
+                        className="flex items-center justify-between text-sm"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="text-muted-foreground min-w-[80px]">
+                            {new Date(event.activity_date).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                            })}
+                          </div>
+                          <Badge variant="outline">{event.event_type}</Badge>
                         </div>
-                        <Badge variant="outline">{event.event_type}</Badge>
+                        <div className="flex items-center gap-3 text-muted-foreground">
+                          <span>{event.event_count} events</span>
+                          <span>{Math.round(event.session_duration_minutes)}m session</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-3 text-muted-foreground">
-                        <span>{event.event_count} events</span>
-                        <span>{Math.round(event.session_duration_minutes)}m session</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-muted-foreground py-8">
-                  No engagement data available
-                </p>
-              )}
-            </CardContent>
-          </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center text-muted-foreground py-8">
+                    No engagement data available
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
 
