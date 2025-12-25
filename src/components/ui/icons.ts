@@ -57,6 +57,7 @@ export {
   ChevronsLeft,
   ChevronsRight,
   ChevronsUp,
+  ChevronsUpDown,
   ChevronUp,
   Circle,
   ClipboardCheck,

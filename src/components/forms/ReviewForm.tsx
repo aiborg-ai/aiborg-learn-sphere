@@ -29,8 +29,9 @@ import {
 } from '@/components/ui/icons';
 import { VoiceRecorder, VideoRecorder } from '@/components/media';
 import { supabase } from '@/integrations/supabase/client';
-import { useMarkRequestCompleted } from '@/hooks/useReviewRequests';
-import type { SessionType } from '@/types/reviewRequest';
+// TEMPORARY: Commented out until ReviewRequestService is ready
+// import { useMarkRequestCompleted } from '@/hooks/useReviewRequests';
+// import type { SessionType } from '@/types/reviewRequest';
 
 import { logger } from '@/utils/logger';
 
@@ -47,7 +48,7 @@ interface ReviewFormData {
 interface ReviewFormProps {
   requestId?: string;
   sessionId?: string;
-  sessionType?: SessionType;
+  sessionType?: any; // SessionType - TEMPORARY until type is ready
   onSuccess?: () => void;
 }
 
@@ -62,7 +63,8 @@ export function ReviewForm({
   const { submitReview } = useReviews();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { markRequestCompleted } = useMarkRequestCompleted();
+  // TEMPORARY: Commented out until ReviewRequestService is ready
+  // const { markRequestCompleted } = useMarkRequestCompleted();
 
   const [formData, setFormData] = useState<ReviewFormData>({
     courseId: '',
@@ -183,15 +185,16 @@ export function ReviewForm({
         rating: formData.rating,
       });
 
+      // TEMPORARY: Commented out until ReviewRequestService is ready
       // If this review was submitted from a review request, mark it as completed
-      if (requestId && reviewData?.id) {
-        try {
-          await markRequestCompleted({ requestId, reviewId: reviewData.id });
-        } catch (error) {
-          logger.error('Failed to mark review request as completed:', error);
-          // Don't fail the whole submission if this fails
-        }
-      }
+      // if (requestId && reviewData?.id) {
+      //   try {
+      //     await markRequestCompleted({ requestId, reviewId: reviewData.id });
+      //   } catch (error) {
+      //     logger.error('Failed to mark review request as completed:', error);
+      //     // Don't fail the whole submission if this fails
+      //   }
+      // }
 
       toast({
         title: 'Review Submitted Successfully!',

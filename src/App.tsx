@@ -74,6 +74,7 @@ const AIReadinessAdminDashboard = lazy(() => import('./pages/admin/AIReadinessAd
 const AIAwarenessAssessment = lazy(() => import('./pages/AIAwarenessAssessment'));
 const AIFluencyAssessment = lazy(() => import('./pages/AIFluencyAssessment'));
 const AssessmentResultsPage = lazy(() => import('./pages/AssessmentResultsPage'));
+const SkillsAssessmentResultsPage = lazy(() => import('./pages/SkillsAssessmentResultsPage'));
 const AssessmentHistoryPanel = lazy(() =>
   import('./components/assessment-tools').then(m => ({ default: m.AssessmentHistoryPanel }))
 );
@@ -132,6 +133,23 @@ const ForumPage = lazy(() => import('./pages/ForumPage'));
 const ForumCategoryPage = lazy(() => import('./pages/ForumCategoryPage'));
 const ForumThreadPage = lazy(() => import('./pages/ForumThreadPage'));
 
+// Study Groups pages
+// TEMPORARY: Commented out until pages are ready
+// const StudyGroupsPage = lazy(() => import('./pages/StudyGroupsPage'));
+// const StudyGroupDetailPage = lazy(() => import('./pages/StudyGroupDetailPage'));
+
+// Peer Review pages
+// TEMPORARY: Commented out until page is ready
+// const PeerReviewPage = lazy(() => import('./pages/PeerReviewPage'));
+
+// Shared Resources page
+// TEMPORARY: Commented out until page is ready
+// const SharedResourcesPage = lazy(() => import('./pages/SharedResourcesPage'));
+
+// Collaborative Hub page
+// TEMPORARY: Commented out until page is ready
+// const CollaborativePage = lazy(() => import('./pages/CollaborativePage'));
+
 // Session pages
 const SessionsPage = lazy(() => import('./pages/SessionsPage'));
 
@@ -172,6 +190,10 @@ const OfflineContentPage = lazy(() => import('./pages/OfflineContent'));
 const SurveysPage = lazy(() => import('./pages/surveys/SurveysPage'));
 const PublicSurvey = lazy(() => import('./pages/surveys/PublicSurvey'));
 const AdminSurveys = lazy(() => import('./pages/admin/AdminSurveys'));
+
+// Aggregated Reports
+// TEMPORARY: Commented out until page is ready
+// const AggregatedReportsDashboard = lazy(() => import('./pages/admin/AggregatedReportsDashboard'));
 
 // Export queryClient for use in prefetch utilities
 export const queryClient = new QueryClient({
@@ -325,6 +347,17 @@ const AppWithShortcuts = () => {
                 </RouteWrapper>
               }
             />
+            {/* TEMPORARY: Commented out until AggregatedReportsDashboard is ready */}
+            {/* <Route
+              path="/admin/reports"
+              element={
+                <Suspense fallback={<AnalyticsSkeleton />}>
+                  <RouteWrapper routeName="Aggregated Reports">
+                    <AggregatedReportsDashboard />
+                  </RouteWrapper>
+                </Suspense>
+              }
+            /> */}
 
             {/* Public Surveys */}
             <Route path="/surveys" element={<SurveysPage />} />
@@ -507,6 +540,10 @@ const AppWithShortcuts = () => {
               path="/assessment/:toolSlug/results/:attemptId"
               element={<AssessmentResultsPage />}
             />
+            <Route
+              path="/skills/assessment/:assessmentId/results"
+              element={<SkillsAssessmentResultsPage />}
+            />
             <Route path="/assessment/:toolSlug/history" element={<AssessmentHistoryPanel />} />
             <Route path="/bookmarks" element={<BookmarksPage />} />
             <Route path="/downloads" element={<DownloadsPage />} />
@@ -610,6 +647,20 @@ const AppWithShortcuts = () => {
             <Route path="/forum" element={<ForumPage />} />
             <Route path="/forum/:categorySlug" element={<ForumCategoryPage />} />
             <Route path="/forum/:categorySlug/:threadSlug" element={<ForumThreadPage />} />
+
+            {/* TEMPORARY: Commented out until collaborative pages are ready */}
+            {/* Collaborative Hub - Main Page */}
+            {/* <Route path="/collaborate" element={<CollaborativePage />} /> */}
+
+            {/* Study Groups routes */}
+            {/* <Route path="/collaborate/groups" element={<StudyGroupsPage />} /> */}
+            {/* <Route path="/collaborate/groups/:groupId" element={<StudyGroupDetailPage />} /> */}
+
+            {/* Peer Review routes */}
+            {/* <Route path="/collaborate/peer-review" element={<PeerReviewPage />} /> */}
+
+            {/* Shared Resources routes */}
+            {/* <Route path="/collaborate/resources" element={<SharedResourcesPage />} /> */}
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

@@ -18,12 +18,16 @@ import {
   DollarSign,
   Download,
   RefreshCw,
+  Loader2,
 } from '@/components/ui/icons';
 import { useEnhancedTeamAnalytics } from '@/hooks/useTeamAnalytics';
 import { SkillsGapChart } from '@/components/admin/analytics/enhanced/SkillsGapChart';
 import { TeamMomentumGauge } from '@/components/admin/analytics/enhanced/TeamMomentumGauge';
 import { TeamHealthDashboard } from '@/components/admin/analytics/enhanced/TeamHealthDashboard';
 import { ROIMetricsCards } from '@/components/admin/analytics/enhanced/ROIMetricsCards';
+import { exportAnalyticsToPDF, type AnalyticsSection, type DateRange } from '@/utils/pdfExport';
+import { toast } from 'sonner';
+import { logger } from '@/utils/logger';
 
 interface EnhancedTeamAnalyticsProps {
   organizationId: string;
@@ -34,9 +38,57 @@ export function EnhancedTeamAnalytics({ organizationId, managerId }: EnhancedTea
   const analytics = useEnhancedTeamAnalytics(organizationId, managerId);
 
   const [activeTab, setActiveTab] = React.useState('overview');
+  const [isExporting, setIsExporting] = React.useState(false);
 
-  const handleExport = () => {
-    // TODO: Implement CSV/PDF export functionality
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      toast.info('Generating PDF report... This may take a few moments', { duration: 3000 });
+
+      // Define sections to include in the PDF
+      const sections: AnalyticsSection[] = [
+        {
+          title: 'Team Health Dashboard',
+          elementId: 'team-health-dashboard',
+          includeInExport: true,
+        },
+        {
+          title: 'Team Momentum',
+          elementId: 'team-momentum-gauge',
+          includeInExport: true,
+        },
+        {
+          title: 'ROI Metrics',
+          elementId: 'roi-metrics-cards',
+          includeInExport: true,
+        },
+        {
+          title: 'Skills Gap Analysis',
+          elementId: 'skills-gap-chart',
+          includeInExport: true,
+        },
+      ];
+
+      // Date range (no filter applied for team analytics)
+      const dateRange: DateRange = {
+        startDate: null,
+        endDate: null,
+        preset: 'All Time',
+      };
+
+      // Generate filename
+      const timestamp = new Date().toISOString().split('T')[0];
+      const filename = `Team-Analytics-${organizationId}-${timestamp}.pdf`;
+
+      await exportAnalyticsToPDF(sections, dateRange, filename);
+
+      toast.success('PDF report generated successfully!');
+    } catch (error) {
+      logger.error('PDF export error:', error);
+      toast.error('Failed to generate PDF. Please try again.');
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const handleRefresh = () => {
@@ -59,9 +111,13 @@ export function EnhancedTeamAnalytics({ organizationId, managerId }: EnhancedTea
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
-          <Button variant="outline" size="sm" onClick={handleExport}>
-            <Download className="h-4 w-4 mr-2" />
-            Export
+          <Button variant="outline" size="sm" onClick={handleExport} disabled={isExporting}>
+            {isExporting ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4 mr-2" />
+            )}
+            {isExporting ? 'Exporting...' : 'Export'}
           </Button>
         </div>
       </div>
@@ -91,36 +147,44 @@ export function EnhancedTeamAnalytics({ organizationId, managerId }: EnhancedTea
         <TabsContent value="overview" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
             {/* Team Health Score */}
-            <TeamHealthDashboard
-              data={analytics.healthScore.data}
-              isLoading={analytics.healthScore.isLoading}
-              isError={analytics.healthScore.isError}
-            />
+            <div id="team-health-dashboard">
+              <TeamHealthDashboard
+                data={analytics.healthScore.data}
+                isLoading={analytics.healthScore.isLoading}
+                isError={analytics.healthScore.isError}
+              />
+            </div>
 
             {/* Team Momentum */}
-            <TeamMomentumGauge
-              data={analytics.momentum.data}
-              isLoading={analytics.momentum.isLoading}
-              isError={analytics.momentum.isError}
-            />
+            <div id="team-momentum-gauge">
+              <TeamMomentumGauge
+                data={analytics.momentum.data}
+                isLoading={analytics.momentum.isLoading}
+                isError={analytics.momentum.isError}
+              />
+            </div>
           </div>
 
           {/* ROI Overview */}
-          <ROIMetricsCards
-            data={analytics.roi.data}
-            isLoading={analytics.roi.isLoading}
-            isError={analytics.roi.isError}
-          />
+          <div id="roi-metrics-cards">
+            <ROIMetricsCards
+              data={analytics.roi.data}
+              isLoading={analytics.roi.isLoading}
+              isError={analytics.roi.isError}
+            />
+          </div>
         </TabsContent>
 
         {/* Skills & Learning Tab */}
         <TabsContent value="skills" className="space-y-6">
           {/* Skills Gap Analysis */}
-          <SkillsGapChart
-            data={analytics.skillsGap.data || []}
-            isLoading={analytics.skillsGap.isLoading}
-            isError={analytics.skillsGap.isError}
-          />
+          <div id="skills-gap-chart">
+            <SkillsGapChart
+              data={analytics.skillsGap.data || []}
+              isLoading={analytics.skillsGap.isLoading}
+              isError={analytics.skillsGap.isError}
+            />
+          </div>
 
           {/* Learning Path Effectiveness & Time to Competency */}
           <div className="grid gap-6 md:grid-cols-2">

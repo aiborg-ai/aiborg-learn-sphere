@@ -11,3 +11,7 @@ export { PostTree } from './PostTree';
 export { ModeratorToolbar } from './ModeratorToolbar';
 export { CategoryCard } from './CategoryCard';
 export { ThreadFilters } from './ThreadFilters';
+// TEMPORARY: Commented out until CreateThreadModal is ready
+// export { CreateThreadModal } from './CreateThreadModal';
+// TEMPORARY: Commented out until ForumSearchBar is ready
+// export { ForumSearchBar } from './ForumSearchBar';

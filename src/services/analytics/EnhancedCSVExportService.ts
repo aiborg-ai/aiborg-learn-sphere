@@ -117,6 +117,22 @@ export const DEFAULT_TEMPLATES: Record<string, CSVTemplate> = {
     includeSummaryRow: false,
     dateFormat: 'iso',
   },
+  aggregatedPerformance: {
+    name: 'Aggregated Performance Report',
+    columns: [
+      { key: 'courseTitle', label: 'Course', format: 'text' },
+      { key: 'studentCount', label: 'Students', format: 'number', decimals: 0 },
+      { key: 'avgProgress', label: 'Avg Progress %', format: 'percentage', decimals: 1 },
+      { key: 'avgScore', label: 'Avg Score %', format: 'percentage', decimals: 1 },
+      { key: 'completionRate', label: 'Completion Rate %', format: 'percentage', decimals: 1 },
+      { key: 'avgEngagement', label: 'Avg Engagement', format: 'number', decimals: 0 },
+      { key: 'avgTimeSpent', label: 'Avg Time (hours)', format: 'number', decimals: 1 },
+      { key: 'atRiskCount', label: 'At-Risk Students', format: 'number', decimals: 0 },
+    ],
+    includeMetadata: true,
+    includeSummaryRow: true,
+    dateFormat: 'iso',
+  },
 };
 
 export class EnhancedCSVExportService {
