@@ -1,8 +1,9 @@
 /**
  * ReportActions Component
+ *
  * Action buttons for Skills Assessment Report
  * Print, Export PDF, and Share functionality
- * Hidden when printing
+ * Hidden when printing (print:hidden)
  */
 
 import { Button } from '@/components/ui/button';
@@ -22,24 +23,22 @@ export function ReportActions({
   isExportingPDF,
 }: ReportActionsProps) {
   return (
-    <div className="print:hidden flex flex-wrap gap-4 mb-6">
-      <Button onClick={onPrint} variant="outline" className="gap-2">
-        <FileText className="h-4 w-4" />
-        Print
+    <div className="print:hidden flex flex-wrap gap-3 mb-6">
+      <Button onClick={onPrint} variant="outline" size="default">
+        <FileText className="mr-2 h-4 w-4" />
+        Print Report
       </Button>
-
-      <Button onClick={onExportPDF} variant="outline" disabled={isExportingPDF} className="gap-2">
+      <Button onClick={onExportPDF} variant="outline" size="default" disabled={isExportingPDF}>
         {isExportingPDF ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-          <Download className="h-4 w-4" />
+          <Download className="mr-2 h-4 w-4" />
         )}
-        {isExportingPDF ? 'Generating PDF...' : 'Export PDF'}
+        {isExportingPDF ? 'Exporting...' : 'Export PDF'}
       </Button>
-
-      <Button onClick={onShare} variant="outline" className="gap-2">
-        <Share2 className="h-4 w-4" />
-        Share
+      <Button onClick={onShare} variant="outline" size="default">
+        <Share2 className="mr-2 h-4 w-4" />
+        Share Link
       </Button>
     </div>
   );

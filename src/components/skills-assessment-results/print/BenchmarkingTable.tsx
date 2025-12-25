@@ -1,12 +1,20 @@
 /**
  * BenchmarkingTable Component
- * Displays peer comparison data for skills benchmarking
- * Columns: Skill, Your Score, Peer Average, Percentile, Standing
+ *
+ * Print-optimized peer comparison table
+ * Shows: Skill, Your Score, Peer Average, Percentile, Standing
  */
 
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, TrendingDown, Minus } from '@/components/ui/icons';
-import type { SkillBenchmark } from '@/types/skillsAssessment';
+
+interface SkillBenchmark {
+  skill_id: string;
+  user_score: number;
+  peer_average: number;
+  percentile: number;
+  skill_name?: string;
+}
 
 interface BenchmarkingTableProps {
   benchmarks: SkillBenchmark[];
@@ -14,158 +22,141 @@ interface BenchmarkingTableProps {
   maxRows?: number;
 }
 
+function getPercentileBadge(percentile: number) {
+  if (percentile >= 75) {
+    return { label: 'Top 25%', className: 'bg-green-200 text-green-900 border-green-900' };
+  } else if (percentile >= 50) {
+    return { label: 'Above Avg', className: 'bg-blue-200 text-blue-900 border-blue-900' };
+  } else if (percentile >= 25) {
+    return { label: 'Average', className: 'bg-yellow-200 text-yellow-900 border-yellow-900' };
+  } else {
+    return { label: 'Below Avg', className: 'bg-orange-200 text-orange-900 border-orange-900' };
+  }
+}
+
+function getStandingIcon(userScore: number, peerAverage: number) {
+  const diff = userScore - peerAverage;
+  if (diff > 5) {
+    return <TrendingUp className="h-4 w-4 text-green-600 print:text-black" />;
+  } else if (diff < -5) {
+    return <TrendingDown className="h-4 w-4 text-red-600 print:text-black" />;
+  } else {
+    return <Minus className="h-4 w-4 text-gray-400 print:text-black" />;
+  }
+}
+
 export function BenchmarkingTable({
   benchmarks,
-  showTopSkills = false,
+  showTopSkills = true,
   maxRows = 10,
 }: BenchmarkingTableProps) {
-  if (benchmarks.length === 0) {
+  if (!benchmarks || benchmarks.length === 0) {
     return (
-      <div className="space-y-4">
-        <div>
-          <h2 className="text-2xl font-bold mb-2">Peer Benchmarking</h2>
-          <p className="text-muted-foreground">Compare your skills with industry peers</p>
-        </div>
-        <div className="text-center py-8">
-          <p className="text-muted-foreground">
-            Benchmarking data not available yet. Complete more assessments to enable peer
-            comparison.
-          </p>
-        </div>
+      <div className="print:block">
+        <h2 className="text-2xl font-bold mb-4 print:text-black print:border-b-2 print:border-black print:pb-2">
+          Peer Benchmarking
+        </h2>
+        <p className="text-muted-foreground print:text-gray-700">
+          No benchmarking data available. Complete more assessments to compare with peers.
+        </p>
       </div>
     );
   }
 
-  // Sort benchmarks by percentile (descending) if showing top skills
-  // Otherwise, sort by variance from peer average (absolute delta)
+  // Sort by percentile (highest first) if showTopSkills, otherwise by skill name
   const sortedBenchmarks = [...benchmarks].sort((a, b) => {
     if (showTopSkills) {
       return b.percentile - a.percentile;
     }
-    const deltaA = Math.abs(a.user_score - a.peer_average);
-    const deltaB = Math.abs(b.user_score - b.peer_average);
-    return deltaB - deltaA;
+    return (a.skill_name || '').localeCompare(b.skill_name || '');
   });
 
-  // Limit rows if specified
-  const displayBenchmarks = sortedBenchmarks.slice(0, maxRows);
+  // Limit number of rows if specified
+  const displayBenchmarks = maxRows ? sortedBenchmarks.slice(0, maxRows) : sortedBenchmarks;
 
-  // Get percentile standing badge
-  const getPercentileStanding = (percentile: number) => {
-    if (percentile >= 75) {
-      return { variant: 'default' as const, text: 'Top 25%', color: 'text-green-600' };
-    }
-    if (percentile >= 50) {
-      return { variant: 'secondary' as const, text: 'Above Avg', color: 'text-blue-600' };
-    }
-    if (percentile >= 25) {
-      return { variant: 'outline' as const, text: 'Average', color: 'text-muted-foreground' };
-    }
-    return { variant: 'outline' as const, text: 'Below Avg', color: 'text-orange-600' };
-  };
-
-  // Get delta display
-  const getDeltaDisplay = (userScore: number, peerAverage: number) => {
-    const delta = userScore - peerAverage;
-    if (delta > 0) {
-      return (
-        <div className="flex items-center justify-center gap-1 text-green-600 print:text-black">
-          <TrendingUp className="h-4 w-4 print:text-black" />
-          <span className="font-semibold">+{delta.toFixed(0)}%</span>
-        </div>
-      );
-    }
-    if (delta < 0) {
-      return (
-        <div className="flex items-center justify-center gap-1 text-red-600 print:text-black">
-          <TrendingDown className="h-4 w-4 print:text-black" />
-          <span className="font-semibold">{delta.toFixed(0)}%</span>
-        </div>
-      );
-    }
-    return (
-      <div className="flex items-center justify-center gap-1 text-muted-foreground print:text-black">
-        <Minus className="h-4 w-4 print:text-black" />
-        <span>0%</span>
-      </div>
-    );
-  };
-
-  // Calculate summary stats
-  const avgPercentile = Math.round(
-    benchmarks.reduce((sum, b) => sum + b.percentile, 0) / benchmarks.length
-  );
-  const topQuartileCount = benchmarks.filter(b => b.percentile >= 75).length;
+  const avgPercentile = benchmarks.reduce((sum, b) => sum + b.percentile, 0) / benchmarks.length;
+  const topPerformerCount = benchmarks.filter(b => b.percentile >= 75).length;
   const aboveAverageCount = benchmarks.filter(b => b.user_score > b.peer_average).length;
 
   return (
-    <div className="space-y-4 print:break-inside-avoid">
-      <div>
-        <h2 className="text-2xl font-bold mb-2 print:text-xl">Peer Benchmarking</h2>
-        <p className="text-muted-foreground print:text-black print:text-sm">
-          {showTopSkills
-            ? `Your top ${displayBenchmarks.length} skills by percentile ranking`
-            : `Compare your skills with industry peers (${displayBenchmarks.length} skills)`}
-        </p>
-      </div>
+    <div className="print:block">
+      <h2 className="text-2xl font-bold mb-4 print:text-black print:border-b-2 print:border-black print:pb-2">
+        Peer Benchmarking
+      </h2>
+      <p className="text-sm text-muted-foreground mb-4 print:text-gray-700 print:mb-6">
+        {showTopSkills
+          ? `Top ${displayBenchmarks.length} skills compared with industry peers`
+          : `${displayBenchmarks.length} skills compared with industry peers`}
+      </p>
 
-      <div className="overflow-x-auto print:overflow-visible">
-        <table className="w-full border-collapse border border-border print:border-black print:text-sm">
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse print:border-2 print:border-black">
           <thead>
             <tr className="bg-muted print:bg-gray-200">
-              <th className="border border-border px-4 py-2 text-left font-semibold print:border-black print:px-3 print:py-1.5">
+              <th className="text-left p-3 font-semibold border print:border-black print:text-black">
+                #
+              </th>
+              <th className="text-left p-3 font-semibold border print:border-black print:text-black">
                 Skill
               </th>
-              <th className="border border-border px-4 py-2 text-center font-semibold print:border-black print:px-3 print:py-1.5">
+              <th className="text-center p-3 font-semibold border print:border-black print:text-black">
                 Your Score
               </th>
-              <th className="border border-border px-4 py-2 text-center font-semibold print:border-black print:px-3 print:py-1.5">
+              <th className="text-center p-3 font-semibold border print:border-black print:text-black">
                 Peer Avg
               </th>
-              <th className="border border-border px-4 py-2 text-center font-semibold print:border-black print:px-3 print:py-1.5">
-                Delta
+              <th className="text-center p-3 font-semibold border print:border-black print:text-black">
+                Difference
               </th>
-              <th className="border border-border px-4 py-2 text-center font-semibold print:border-black print:px-3 print:py-1.5">
+              <th className="text-center p-3 font-semibold border print:border-black print:text-black">
                 Percentile
               </th>
-              <th className="border border-border px-4 py-2 text-center font-semibold print:border-black print:px-3 print:py-1.5">
+              <th className="text-center p-3 font-semibold border print:border-black print:text-black">
                 Standing
               </th>
             </tr>
           </thead>
           <tbody>
             {displayBenchmarks.map((benchmark, index) => {
-              const standing = getPercentileStanding(benchmark.percentile);
+              const percentileBadge = getPercentileBadge(benchmark.percentile);
+              const diff = benchmark.user_score - benchmark.peer_average;
 
               return (
                 <tr
                   key={benchmark.skill_id}
-                  className={index % 2 === 0 ? 'bg-background' : 'bg-muted/30 print:bg-gray-50'}
+                  className="hover:bg-muted/50 print:hover:bg-transparent"
                 >
-                  <td className="border border-border px-4 py-2 font-medium print:border-black print:px-3 print:py-1.5 print:text-sm">
-                    {benchmark.skill_name}
+                  <td className="p-3 border print:border-black print:text-black">{index + 1}</td>
+                  <td className="p-3 border print:border-black print:text-black font-medium">
+                    {benchmark.skill_name || 'Unknown Skill'}
                   </td>
-                  <td className="border border-border px-4 py-2 text-center font-semibold print:border-black print:px-3 print:py-1.5">
-                    {benchmark.user_score}%
+                  <td className="p-3 border print:border-black text-center print:text-black font-semibold">
+                    {benchmark.user_score.toFixed(0)}%
                   </td>
-                  <td className="border border-border px-4 py-2 text-center text-muted-foreground print:border-black print:px-3 print:py-1.5 print:text-black">
+                  <td className="p-3 border print:border-black text-center print:text-black">
                     {benchmark.peer_average.toFixed(0)}%
                   </td>
-                  <td className="border border-border px-4 py-2 print:border-black print:px-3 print:py-1.5">
-                    {getDeltaDisplay(benchmark.user_score, benchmark.peer_average)}
-                  </td>
-                  <td
-                    className={`border border-border px-4 py-2 text-center font-semibold ${standing.color} print:border-black print:text-black`}
-                  >
-                    {benchmark.percentile}th
-                  </td>
-                  <td className="border border-border px-4 py-2 text-center print:border-black print:px-3 print:py-1.5">
-                    <Badge
-                      variant={standing.variant}
-                      className="print:border-black print:bg-white print:text-black print:text-xs"
+                  <td className="p-3 border print:border-black text-center print:text-black">
+                    <span
+                      className={
+                        diff > 0
+                          ? 'text-green-600 print:text-black'
+                          : diff < 0
+                            ? 'text-red-600 print:text-black'
+                            : 'text-gray-500 print:text-black'
+                      }
                     >
-                      {standing.text}
+                      {diff > 0 ? '+' : ''}
+                      {diff.toFixed(0)}%
+                    </span>
+                  </td>
+                  <td className="p-3 border print:border-black text-center">
+                    <Badge className={`print:border ${percentileBadge.className}`}>
+                      {percentileBadge.label}
                     </Badge>
+                  </td>
+                  <td className="p-3 border print:border-black text-center">
+                    {getStandingIcon(benchmark.user_score, benchmark.peer_average)}
                   </td>
                 </tr>
               );
@@ -174,21 +165,32 @@ export function BenchmarkingTable({
         </table>
       </div>
 
-      {/* Benchmarking Summary Stats */}
-      <div className="grid grid-cols-3 gap-4 mt-4 p-4 bg-muted/50 rounded-lg print:bg-gray-100">
-        <div className="text-center">
-          <div className="text-2xl font-bold text-green-600">{topQuartileCount}</div>
-          <div className="text-sm text-muted-foreground">Top 25% Skills</div>
+      <div className="mt-4 grid grid-cols-3 gap-4 print:grid-cols-3 print:mt-6">
+        <div className="text-center p-3 bg-blue-50 rounded-lg print:bg-white print:border print:border-black">
+          <div className="text-2xl font-bold text-blue-600 print:text-black">
+            {avgPercentile.toFixed(0)}th
+          </div>
+          <div className="text-xs text-muted-foreground print:text-gray-700">Avg Percentile</div>
         </div>
-        <div className="text-center">
-          <div className="text-2xl font-bold text-blue-600">{aboveAverageCount}</div>
-          <div className="text-sm text-muted-foreground">Above Peer Avg</div>
+        <div className="text-center p-3 bg-green-50 rounded-lg print:bg-white print:border print:border-black">
+          <div className="text-2xl font-bold text-green-600 print:text-black">
+            {topPerformerCount}
+          </div>
+          <div className="text-xs text-muted-foreground print:text-gray-700">Top 25% Skills</div>
         </div>
-        <div className="text-center">
-          <div className="text-2xl font-bold text-primary">{avgPercentile}th</div>
-          <div className="text-sm text-muted-foreground">Avg Percentile</div>
+        <div className="text-center p-3 bg-purple-50 rounded-lg print:bg-white print:border print:border-black">
+          <div className="text-2xl font-bold text-purple-600 print:text-black">
+            {aboveAverageCount}/{benchmarks.length}
+          </div>
+          <div className="text-xs text-muted-foreground print:text-gray-700">Above Average</div>
         </div>
       </div>
+
+      {showTopSkills && benchmarks.length > maxRows && (
+        <p className="text-xs text-muted-foreground mt-4 print:text-gray-700 print:mt-6">
+          Showing top {maxRows} of {benchmarks.length} skills
+        </p>
+      )}
     </div>
   );
 }

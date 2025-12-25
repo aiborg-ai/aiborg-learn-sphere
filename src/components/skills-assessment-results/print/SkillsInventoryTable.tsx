@@ -1,93 +1,123 @@
 /**
  * SkillsInventoryTable Component
- * Displays all user skills in tabular format for print
- * Columns: Skill, Category, Proficiency Level, Score, Verified
+ *
+ * Print-optimized table displaying all user skills
+ * Shows: Skill Name, Category, Proficiency, Score, Verified Status
  */
 
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2 } from '@/components/ui/icons';
-import type { UserSkill } from '@/services/skills/SkillExtractionService';
+
+interface UserSkill {
+  skill_id: string;
+  user_id: string;
+  proficiency_level: string;
+  assessment_score: number;
+  verified: boolean;
+  skill?: {
+    id: string;
+    name: string;
+    category: string;
+  };
+}
 
 interface SkillsInventoryTableProps {
   skills: UserSkill[];
 }
 
+const proficiencyColors: Record<string, string> = {
+  beginner: 'bg-gray-200 text-gray-800',
+  intermediate: 'bg-blue-200 text-blue-800',
+  advanced: 'bg-green-200 text-green-800',
+  expert: 'bg-purple-200 text-purple-800',
+};
+
+const proficiencyLabels: Record<string, string> = {
+  beginner: 'Beginner',
+  intermediate: 'Intermediate',
+  advanced: 'Advanced',
+  expert: 'Expert',
+};
+
 export function SkillsInventoryTable({ skills }: SkillsInventoryTableProps) {
-  if (skills.length === 0) {
+  if (!skills || skills.length === 0) {
     return (
-      <div className="text-center py-8">
-        <p className="text-muted-foreground">No skills assessed yet</p>
+      <div className="print:block">
+        <h2 className="text-2xl font-bold mb-4 print:text-black">Skills Inventory</h2>
+        <p className="text-muted-foreground print:text-gray-700">
+          No skills recorded yet. Complete assessments to build your skills inventory.
+        </p>
       </div>
     );
   }
 
-  // Sort skills by proficiency score (descending)
-  const sortedSkills = [...skills].sort((a, b) => b.proficiency_score - a.proficiency_score);
+  // Sort skills: verified first, then by score
+  const sortedSkills = [...skills].sort((a, b) => {
+    if (a.verified && !b.verified) return -1;
+    if (!a.verified && b.verified) return 1;
+    return b.assessment_score - a.assessment_score;
+  });
 
   return (
-    <div className="space-y-4 print:break-inside-avoid">
-      <div>
-        <h2 className="text-2xl font-bold mb-2 print:text-xl">Skills Inventory</h2>
-        <p className="text-muted-foreground print:text-black print:text-sm">
-          Detailed breakdown of your assessed skills ({skills.length} total)
-        </p>
-      </div>
+    <div className="print:block">
+      <h2 className="text-2xl font-bold mb-4 print:text-black print:border-b-2 print:border-black print:pb-2">
+        Skills Inventory
+      </h2>
+      <p className="text-sm text-muted-foreground mb-4 print:text-gray-700 print:mb-6">
+        Comprehensive overview of {skills.length} assessed skill{skills.length !== 1 ? 's' : ''}
+      </p>
 
-      <div className="overflow-x-auto print:overflow-visible">
-        <table className="w-full border-collapse border border-border print:border-black print:text-sm">
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse print:border-2 print:border-black">
           <thead>
             <tr className="bg-muted print:bg-gray-200">
-              <th className="border border-border px-4 py-2 text-left font-semibold print:border-black print:px-3 print:py-1.5">
-                Skill
+              <th className="text-left p-3 font-semibold border print:border-black print:text-black">
+                #
               </th>
-              <th className="border border-border px-4 py-2 text-left font-semibold print:border-black print:px-3 print:py-1.5">
+              <th className="text-left p-3 font-semibold border print:border-black print:text-black">
+                Skill Name
+              </th>
+              <th className="text-left p-3 font-semibold border print:border-black print:text-black">
                 Category
               </th>
-              <th className="border border-border px-4 py-2 text-left font-semibold print:border-black print:px-3 print:py-1.5">
+              <th className="text-left p-3 font-semibold border print:border-black print:text-black">
                 Proficiency
               </th>
-              <th className="border border-border px-4 py-2 text-center font-semibold print:border-black print:px-3 print:py-1.5">
+              <th className="text-center p-3 font-semibold border print:border-black print:text-black">
                 Score
               </th>
-              <th className="border border-border px-4 py-2 text-center font-semibold print:border-black print:px-3 print:py-1.5">
+              <th className="text-center p-3 font-semibold border print:border-black print:text-black">
                 Verified
               </th>
             </tr>
           </thead>
           <tbody>
-            {sortedSkills.map((userSkill, index) => (
-              <tr
-                key={userSkill.id}
-                className={index % 2 === 0 ? 'bg-background' : 'bg-muted/30 print:bg-gray-50'}
-              >
-                <td className="border border-border px-4 py-2 font-medium print:border-black print:px-3 print:py-1.5 print:text-sm">
-                  {userSkill.skill.name}
+            {sortedSkills.map((skill, index) => (
+              <tr key={skill.skill_id} className="hover:bg-muted/50 print:hover:bg-transparent">
+                <td className="p-3 border print:border-black print:text-black">{index + 1}</td>
+                <td className="p-3 border print:border-black print:text-black font-medium">
+                  {skill.skill?.name || 'Unknown Skill'}
                 </td>
-                <td className="border border-border px-4 py-2 text-sm print:border-black print:px-3 print:py-1.5">
-                  {userSkill.skill.category}
+                <td className="p-3 border print:border-black print:text-black">
+                  {skill.skill?.category || 'Uncategorized'}
                 </td>
-                <td className="border border-border px-4 py-2 print:border-black print:px-3 print:py-1.5">
+                <td className="p-3 border print:border-black">
                   <Badge
-                    variant={
-                      userSkill.proficiency_score >= 80
-                        ? 'default'
-                        : userSkill.proficiency_score >= 60
-                          ? 'secondary'
-                          : 'outline'
-                    }
-                    className="print:border-black print:bg-white print:text-black print:text-xs"
+                    className={`print:border print:border-black ${
+                      proficiencyColors[skill.proficiency_level] || 'bg-gray-200 text-gray-800'
+                    }`}
                   >
-                    {userSkill.proficiency_level}
+                    {proficiencyLabels[skill.proficiency_level] || skill.proficiency_level}
                   </Badge>
                 </td>
-                <td className="border border-border px-4 py-2 text-center font-semibold print:border-black print:px-3 print:py-1.5">
-                  {userSkill.proficiency_score}%
+                <td className="p-3 border print:border-black text-center print:text-black font-semibold">
+                  {skill.assessment_score.toFixed(0)}%
                 </td>
-                <td className="border border-border px-4 py-2 text-center print:border-black print:px-3 print:py-1.5">
-                  {userSkill.verified ? (
-                    <CheckCircle2 className="h-5 w-5 text-green-600 mx-auto print:text-black print:h-4 print:w-4" />
+                <td className="p-3 border print:border-black text-center">
+                  {skill.verified ? (
+                    <CheckCircle2 className="h-5 w-5 text-green-600 print:text-black mx-auto" />
                   ) : (
-                    <span className="text-muted-foreground text-sm print:text-black">-</span>
+                    <span className="text-muted-foreground print:text-gray-500 text-xs">—</span>
                   )}
                 </td>
               </tr>
@@ -96,24 +126,11 @@ export function SkillsInventoryTable({ skills }: SkillsInventoryTableProps) {
         </table>
       </div>
 
-      {/* Summary Stats */}
-      <div className="grid grid-cols-3 gap-4 mt-4 p-4 bg-muted/50 rounded-lg print:bg-gray-100">
-        <div className="text-center">
-          <div className="text-2xl font-bold">{skills.length}</div>
-          <div className="text-sm text-muted-foreground">Total Skills</div>
-        </div>
-        <div className="text-center">
-          <div className="text-2xl font-bold text-green-600">
-            {skills.filter(s => s.verified).length}
-          </div>
-          <div className="text-sm text-muted-foreground">Verified</div>
-        </div>
-        <div className="text-center">
-          <div className="text-2xl font-bold text-primary">
-            {Math.round(skills.reduce((sum, s) => sum + s.proficiency_score, 0) / skills.length)}%
-          </div>
-          <div className="text-sm text-muted-foreground">Avg Proficiency</div>
-        </div>
+      <div className="mt-4 text-sm text-muted-foreground print:text-gray-700 print:mt-6">
+        <p>
+          <strong className="print:text-black">{skills.filter(s => s.verified).length}</strong> of{' '}
+          <strong className="print:text-black">{skills.length}</strong> skills verified
+        </p>
       </div>
     </div>
   );

@@ -1,195 +1,175 @@
 /**
  * RecommendationsSection Component
- * Displays tiered learning path recommendations
- * Three tiers: Critical Path, Accelerators, Bonus Skills
+ *
+ * Print-optimized learning recommendations in three tiers
+ * Critical Path → Accelerators → Bonus Skills
  */
 
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, Rocket, Star, Clock } from '@/components/ui/icons';
-import type { SkillRecommendation } from '@/types/skillsAssessment';
+import { Clock, Target, Zap, Star } from '@/components/ui/icons';
+
+interface SkillRecommendation {
+  skill_id: string;
+  skill_name: string;
+  reason: string;
+  priority: 'critical' | 'high' | 'medium' | 'low';
+  estimated_hours: number;
+  business_impact?: string;
+}
 
 interface RecommendationsSectionProps {
   recommendations?: SkillRecommendation[];
 }
 
+const priorityTiers = {
+  critical: {
+    title: 'Critical Path',
+    description: 'Essential skills to reach your career goal',
+    icon: Target,
+    color: 'text-red-600 print:text-black',
+    bgColor: 'bg-red-50 print:bg-white',
+    borderColor: 'border-red-200 print:border-red-800',
+  },
+  high: {
+    title: 'Accelerators',
+    description: 'High-impact skills to fast-track your progress',
+    icon: Zap,
+    color: 'text-orange-600 print:text-black',
+    bgColor: 'bg-orange-50 print:bg-white',
+    borderColor: 'border-orange-200 print:border-orange-800',
+  },
+  medium: {
+    title: 'Bonus Skills',
+    description: 'Valuable additions to strengthen your profile',
+    icon: Star,
+    color: 'text-blue-600 print:text-black',
+    bgColor: 'bg-blue-50 print:bg-white',
+    borderColor: 'border-blue-200 print:border-blue-800',
+  },
+};
+
 export function RecommendationsSection({ recommendations }: RecommendationsSectionProps) {
   if (!recommendations || recommendations.length === 0) {
     return (
-      <div className="space-y-4">
-        <div>
-          <h2 className="text-2xl font-bold mb-2">Learning Path Recommendations</h2>
-          <p className="text-muted-foreground">
-            Personalized recommendations to accelerate your career
-          </p>
-        </div>
-        <div className="text-center py-8">
-          <p className="text-muted-foreground">
-            Complete a skills assessment to receive personalized learning recommendations.
-          </p>
-        </div>
+      <div className="print:block">
+        <h2 className="text-2xl font-bold mb-4 print:text-black print:border-b-2 print:border-black print:pb-2">
+          Learning Recommendations
+        </h2>
+        <p className="text-muted-foreground print:text-gray-700">
+          No recommendations available yet. Set a career goal to receive personalized learning
+          recommendations.
+        </p>
       </div>
     );
   }
 
-  // Organize recommendations by tier
-  const criticalPath = recommendations.filter(r => r.tier === 'critical');
-  const accelerators = recommendations.filter(r => r.tier === 'accelerator');
-  const bonusSkills = recommendations.filter(r => r.tier === 'bonus');
+  // Group recommendations by priority tier
+  const criticalPath = recommendations.filter(r => r.priority === 'critical');
+  const accelerators = recommendations.filter(r => r.priority === 'high');
+  const bonusSkills = recommendations.filter(r => r.priority === 'medium' || r.priority === 'low');
 
-  // Tier configuration
-  const tierConfig = {
-    critical: {
-      title: 'Critical Path',
-      description: 'Essential skills needed to reach your career goal',
-      icon: AlertCircle,
-      iconColor: 'text-red-600',
-      badgeVariant: 'destructive' as const,
-      recommendations: criticalPath,
-    },
-    accelerator: {
-      title: 'Career Accelerators',
-      description: 'High-impact skills that will fast-track your progression',
-      icon: Rocket,
-      iconColor: 'text-blue-600',
-      badgeVariant: 'default' as const,
-      recommendations: accelerators,
-    },
-    bonus: {
-      title: 'Bonus Skills',
-      description: 'Nice-to-have skills that provide competitive advantage',
-      icon: Star,
-      iconColor: 'text-yellow-600',
-      badgeVariant: 'secondary' as const,
-      recommendations: bonusSkills,
-    },
-  };
+  const totalEstimatedHours = recommendations.reduce((sum, r) => sum + r.estimated_hours, 0);
 
-  // Calculate total learning hours
-  const totalHours = recommendations.reduce((sum, r) => sum + (r.estimated_hours || 0), 0);
+  function renderTier(
+    tier: keyof typeof priorityTiers,
+    items: SkillRecommendation[],
+    showIfEmpty = false
+  ) {
+    if (items.length === 0 && !showIfEmpty) return null;
 
-  return (
-    <div className="space-y-6 print:break-inside-avoid">
-      <div>
-        <h2 className="text-2xl font-bold mb-2 print:text-xl">Learning Path Recommendations</h2>
-        <p className="text-muted-foreground print:text-black print:text-sm">
-          Personalized learning path to accelerate your career ({recommendations.length}{' '}
-          recommendations)
-        </p>
-      </div>
+    const tierConfig = priorityTiers[tier];
+    const TierIcon = tierConfig.icon;
 
-      {/* Tier Sections */}
-      {Object.values(tierConfig).map(tier => {
-        if (tier.recommendations.length === 0) return null;
+    return (
+      <div className="mb-8 print:mb-10 print:break-inside-avoid">
+        <div
+          className={`flex items-center gap-3 mb-4 pb-3 border-b-2 ${tierConfig.borderColor} print:border-black`}
+        >
+          <TierIcon className={`h-6 w-6 ${tierConfig.color}`} />
+          <div>
+            <h3 className="text-xl font-bold print:text-black">{tierConfig.title}</h3>
+            <p className="text-sm text-muted-foreground print:text-gray-700">
+              {tierConfig.description}
+            </p>
+          </div>
+        </div>
 
-        const TierIcon = tier.icon;
-
-        return (
-          <div key={tier.title} className="space-y-3 print:break-inside-avoid">
-            {/* Tier Header */}
-            <div className="flex items-center gap-3 pb-2 border-b print:border-black">
-              <TierIcon
-                className={`h-5 w-5 ${tier.iconColor} print:text-black print:h-4 print:w-4`}
-              />
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold print:text-lg">{tier.title}</h3>
-                <p className="text-sm text-muted-foreground print:text-black print:text-xs">
-                  {tier.description}
-                </p>
-              </div>
-              <Badge
-                variant={tier.badgeVariant}
-                className="print:border-black print:bg-white print:text-black print:text-xs"
+        {items.length === 0 ? (
+          <p className="text-muted-foreground italic print:text-gray-700">
+            No recommendations in this tier
+          </p>
+        ) : (
+          <div className="space-y-4 print:space-y-5">
+            {items.map((rec, index) => (
+              <div
+                key={rec.skill_id}
+                className={`p-4 rounded-lg border-2 ${tierConfig.bgColor} ${tierConfig.borderColor} print:border-black print:break-inside-avoid`}
               >
-                {tier.recommendations.length} Skills
-              </Badge>
-            </div>
-
-            {/* Recommendations List */}
-            <div className="space-y-3">
-              {tier.recommendations.map((rec, index) => (
-                <div
-                  key={rec.skill_id}
-                  className={`p-4 rounded-lg border print:border-black ${
-                    index % 2 === 0 ? 'bg-background' : 'bg-muted/30 print:bg-gray-50'
-                  } print:p-3`}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-base mb-1 print:text-sm">
-                        {rec.skill_name}
-                      </h4>
-                      <p className="text-sm text-muted-foreground mb-2 print:text-black print:text-xs">
-                        {rec.reason}
-                      </p>
-                      {rec.business_impact && (
-                        <p className="text-sm text-primary print:text-black print:text-xs">
-                          <span className="font-medium">Impact:</span> {rec.business_impact}
-                        </p>
+                <div className="flex items-start justify-between gap-4 mb-2">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-bold print:text-black">
+                        {index + 1}. {rec.skill_name}
+                      </span>
+                      {rec.estimated_hours > 0 && (
+                        <Badge
+                          variant="secondary"
+                          className="gap-1 print:bg-white print:border print:border-black"
+                        >
+                          <Clock className="h-3 w-3" />
+                          {rec.estimated_hours}h
+                        </Badge>
                       )}
                     </div>
-
-                    {rec.estimated_hours && (
-                      <div className="flex items-center gap-1 text-muted-foreground shrink-0 print:text-black">
-                        <Clock className="h-4 w-4 print:h-3 print:w-3 print:text-black" />
-                        <span className="text-sm font-medium print:text-xs">
-                          {rec.estimated_hours}h
-                        </span>
-                      </div>
-                    )}
+                    <p className="text-sm text-muted-foreground print:text-gray-700">
+                      {rec.reason}
+                    </p>
                   </div>
-
-                  {/* Priority indicator for critical path */}
-                  {rec.tier === 'critical' && rec.priority && (
-                    <div className="mt-2 pt-2 border-t print:border-black">
-                      <Badge
-                        variant="outline"
-                        className="text-xs print:border-black print:text-black"
-                      >
-                        Priority: {rec.priority}
-                      </Badge>
-                    </div>
-                  )}
                 </div>
-              ))}
-            </div>
+                {rec.business_impact && (
+                  <div className="mt-2 pt-2 border-t border-gray-200 print:border-black">
+                    <p className="text-xs text-muted-foreground print:text-gray-700">
+                      <strong className="print:text-black">Impact:</strong> {rec.business_impact}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
-        );
-      })}
+        )}
+      </div>
+    );
+  }
 
-      {/* Learning Path Summary */}
-      <div className="grid grid-cols-3 gap-4 mt-6 p-4 bg-muted/50 rounded-lg print:bg-gray-100 print:border print:border-black">
-        <div className="text-center">
-          <div className="text-2xl font-bold text-red-600 print:text-black print:text-xl">
-            {criticalPath.length}
-          </div>
-          <div className="text-sm text-muted-foreground print:text-black print:text-xs">
-            Critical Skills
-          </div>
-        </div>
-        <div className="text-center">
-          <div className="text-2xl font-bold text-blue-600 print:text-black print:text-xl">
-            {accelerators.length}
-          </div>
-          <div className="text-sm text-muted-foreground print:text-black print:text-xs">
-            Accelerators
-          </div>
-        </div>
-        <div className="text-center">
-          <div className="text-2xl font-bold text-primary print:text-black print:text-xl">
-            {totalHours}h
-          </div>
-          <div className="text-sm text-muted-foreground print:text-black print:text-xs">
-            Total Learning Time
+  return (
+    <div className="print:block">
+      <h2 className="text-2xl font-bold mb-6 print:text-black print:border-b-2 print:border-black print:pb-2">
+        Learning Recommendations
+      </h2>
+
+      <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-4 mb-8 print:bg-white print:border-black print:mb-10">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="font-semibold text-purple-900 print:text-black">
+              {recommendations.length} Skills Recommended
+            </p>
+            <p className="text-sm text-purple-700 print:text-gray-700">
+              Estimated total learning time: {totalEstimatedHours} hours (
+              {(totalEstimatedHours / 40).toFixed(1)} weeks at 40h/week)
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Action Plan Note */}
-      <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg print:bg-gray-100 print:border-black print:p-3">
-        <p className="text-sm text-blue-900 print:text-black print:text-xs">
-          <span className="font-semibold">Next Steps:</span> Start with the Critical Path skills to
-          close the most important gaps first. Once you've made progress on critical skills, add
-          Accelerators to fast-track your career growth.
+      {renderTier('critical', criticalPath, true)}
+      {renderTier('high', accelerators, true)}
+      {renderTier('medium', bonusSkills, true)}
+
+      <div className="mt-8 p-4 bg-muted/50 rounded-lg print:bg-white print:border-2 print:border-black print:mt-10">
+        <p className="text-sm text-muted-foreground print:text-gray-700">
+          <strong className="print:text-black">Pro Tip:</strong> Focus on completing Critical Path
+          skills first for maximum impact on your career readiness. Consider taking courses in
+          priority order to build a strong foundation before advancing to accelerators.
         </p>
       </div>
     </div>
