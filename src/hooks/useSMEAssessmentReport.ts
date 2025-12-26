@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
-import type { AssessmentReport } from '@/types/aiAssessment';
+import type { ExtendedAssessmentReport } from '@/types/aiAssessment';
 
 export const useSMEAssessmentReport = (assessmentId: string | undefined) => {
   return useQuery({
     queryKey: ['sme-assessment-report', assessmentId],
-    queryFn: async (): Promise<AssessmentReport | null> => {
+    queryFn: async (): Promise<ExtendedAssessmentReport | null> => {
       if (!assessmentId) {
         throw new Error('Assessment ID is required');
       }
@@ -31,6 +31,13 @@ export const useSMEAssessmentReport = (assessmentId: string | undefined) => {
           resourcesResult,
           competitorsResult,
           actionPlanResult,
+          roadmapItemsResult,
+          roadmapPhasesResult,
+          roadmapMilestonesResult,
+          roiSummaryResult,
+          roiCostsResult,
+          roiBenefitsResult,
+          nurturingCampaignResult,
         ] = await Promise.all([
           supabase.from('assessment_pain_points').select('*').eq('assessment_id', assessmentId),
           supabase.from('assessment_user_impacts').select('*').eq('assessment_id', assessmentId),
@@ -43,15 +50,54 @@ export const useSMEAssessmentReport = (assessmentId: string | undefined) => {
             .select('*')
             .eq('assessment_id', assessmentId)
             .single(),
+          // New: Roadmap data
+          supabase
+            .from('sme_roadmap_items')
+            .select('*')
+            .eq('assessment_id', assessmentId)
+            .order('phase_order'),
+          supabase.from('sme_roadmap_phases').select('*').eq('assessment_id', assessmentId),
+          supabase
+            .from('sme_roadmap_milestones')
+            .select('*')
+            .eq('assessment_id', assessmentId)
+            .order('target_week'),
+          // New: ROI data
+          supabase.from('sme_roi_summary').select('*').eq('assessment_id', assessmentId).single(),
+          supabase.from('sme_roi_cost_breakdown').select('*').eq('assessment_id', assessmentId),
+          supabase.from('sme_roi_benefit_breakdown').select('*').eq('assessment_id', assessmentId),
+          // New: Nurturing campaign data
+          supabase
+            .from('sme_nurturing_campaigns')
+            .select('*, sme_nurturing_emails(*)')
+            .eq('assessment_id', assessmentId)
+            .single(),
         ]);
 
-        // Check for errors
+        // Check for errors (basic data)
         if (painPointsResult.error) throw painPointsResult.error;
         if (userImpactsResult.error) throw userImpactsResult.error;
         if (benefitsResult.error) throw benefitsResult.error;
         if (risksResult.error) throw risksResult.error;
         if (resourcesResult.error) throw resourcesResult.error;
         if (competitorsResult.error) throw competitorsResult.error;
+
+        // Check for errors (new data) - but don't fail if optional data is missing
+        if (roadmapItemsResult.error && roadmapItemsResult.error.code !== 'PGRST116') {
+          logger.warn('Error fetching roadmap items:', roadmapItemsResult.error);
+        }
+        if (roadmapPhasesResult.error && roadmapPhasesResult.error.code !== 'PGRST116') {
+          logger.warn('Error fetching roadmap phases:', roadmapPhasesResult.error);
+        }
+        if (roadmapMilestonesResult.error && roadmapMilestonesResult.error.code !== 'PGRST116') {
+          logger.warn('Error fetching roadmap milestones:', roadmapMilestonesResult.error);
+        }
+        if (roiCostsResult.error && roiCostsResult.error.code !== 'PGRST116') {
+          logger.warn('Error fetching ROI costs:', roiCostsResult.error);
+        }
+        if (roiBenefitsResult.error && roiBenefitsResult.error.code !== 'PGRST116') {
+          logger.warn('Error fetching ROI benefits:', roiBenefitsResult.error);
+        }
 
         return {
           assessment,
@@ -63,6 +109,16 @@ export const useSMEAssessmentReport = (assessmentId: string | undefined) => {
           competitors: competitorsResult.data || [],
           actionPlan: actionPlanResult.data || undefined,
           stakeholders: [], // Not implemented yet
+          // New: Roadmap data
+          roadmapItems: roadmapItemsResult.data || undefined,
+          roadmapPhases: roadmapPhasesResult.data || undefined,
+          roadmapMilestones: roadmapMilestonesResult.data || undefined,
+          // New: ROI data
+          roiSummary: roiSummaryResult.data || undefined,
+          roiCosts: roiCostsResult.data || undefined,
+          roiBenefits: roiBenefitsResult.data || undefined,
+          // New: Nurturing campaign data
+          nurturingCampaign: nurturingCampaignResult.data || undefined,
         };
       } catch (error) {
         logger.error('Error fetching SME assessment report:', error);

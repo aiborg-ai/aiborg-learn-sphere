@@ -4,6 +4,9 @@ import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import type { AssessmentFormData } from '@/types/aiAssessment';
+import { RoadmapGenerator } from '@/services/sme-assessment/RoadmapGenerator';
+import { ROICalculator } from '@/services/sme-assessment/ROICalculator';
+import { NurturingCampaignService } from '@/services/sme-assessment/NurturingCampaignService';
 
 interface UseSMEAssessmentSubmitProps {
   user: User | null;
@@ -244,6 +247,28 @@ export const useSMEAssessmentSubmit = ({
       if (error) throw error;
 
       logger.log('Assessment submitted successfully:', finalAssessmentId);
+
+      // Generate roadmap, ROI, and nurturing campaign in parallel
+      try {
+        logger.log('Generating roadmap, ROI, and nurturing campaign...');
+
+        await Promise.all([
+          RoadmapGenerator.generateRoadmap(finalAssessmentId, formData as AssessmentFormData),
+          ROICalculator.calculateROI(finalAssessmentId, formData as AssessmentFormData),
+          NurturingCampaignService.createCampaign(
+            finalAssessmentId,
+            user?.id || '',
+            user?.email || ''
+          ),
+        ]);
+
+        logger.log('✓ Successfully generated roadmap, ROI, and nurturing campaign');
+      } catch (generationError) {
+        // Log error but don't block submission - user can still view basic report
+        logger.error('Error generating assessment outputs:', generationError);
+        console.error('Generation error details:', generationError);
+        // Continue to navigate even if generation fails
+      }
 
       // Call success callback if provided
       if (onSuccess) {

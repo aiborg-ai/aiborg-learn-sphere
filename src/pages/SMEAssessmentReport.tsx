@@ -23,6 +23,9 @@ import {
   MetadataSection,
   CallToAction,
 } from './sme-report';
+import { RoadmapSection } from '@/components/sme-report/RoadmapSection';
+import { ROISection } from '@/components/sme-report/ROISection';
+import { NurturingSection } from '@/components/sme-report/NurturingSection';
 
 export default function SMEAssessmentReport() {
   const { assessmentId } = useParams<{ assessmentId: string }>();
@@ -82,6 +85,14 @@ export default function SMEAssessmentReport() {
     resources,
     competitors,
     actionPlan,
+    // New: Enhancement data
+    roadmapItems,
+    roadmapPhases,
+    roadmapMilestones,
+    roiSummary,
+    roiCosts,
+    roiBenefits,
+    nurturingCampaign,
   } = report;
 
   return (
@@ -129,6 +140,25 @@ export default function SMEAssessmentReport() {
           <CompetitorsSection competitors={competitors} />
 
           <ActionPlanSection actionPlan={actionPlan} />
+
+          {/* New: Implementation Roadmap */}
+          <div className="mt-12">
+            <RoadmapSection
+              roadmapItems={roadmapItems}
+              roadmapPhases={roadmapPhases}
+              roadmapMilestones={roadmapMilestones}
+            />
+          </div>
+
+          {/* New: ROI Analysis */}
+          <div className="mt-12">
+            <ROISection roiSummary={roiSummary} roiCosts={roiCosts} roiBenefits={roiBenefits} />
+          </div>
+
+          {/* New: Lead Nurturing Campaign (Admin Only) */}
+          <div className="mt-12">
+            <NurturingSection nurturingCampaign={nurturingCampaign} isAdmin={false} />
+          </div>
 
           <MetadataSection
             completedBy={assessment.completed_by}

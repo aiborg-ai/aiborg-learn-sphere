@@ -184,3 +184,181 @@ export interface AssessmentReport {
   actionPlan?: AssessmentActionPlan;
   stakeholders: AssessmentStakeholder[];
 }
+
+// ============================================================================
+// SME Assessment Enhancements - Roadmap Types
+// ============================================================================
+
+export type RoadmapPhase = 'quick_wins' | 'short_term' | 'medium_term' | 'long_term';
+export type RoadmapPriority = 'critical' | 'high' | 'medium' | 'low';
+
+export interface SMERoadmapItem {
+  id: string;
+  assessment_id: string;
+  phase: RoadmapPhase;
+  phase_order: number;
+  title: string;
+  description: string;
+  priority: RoadmapPriority;
+  estimated_weeks: number;
+  estimated_cost_usd?: number;
+  required_resources: string[];
+  dependencies: string[];
+  success_metrics: string[];
+  created_at: string;
+}
+
+export interface SMERoadmapPhase {
+  id: string;
+  assessment_id: string;
+  phase: RoadmapPhase;
+  start_week: number;
+  duration_weeks: number;
+  total_cost_usd?: number;
+  completion_criteria: string[];
+  created_at: string;
+}
+
+export interface SMERoadmapMilestone {
+  id: string;
+  assessment_id: string;
+  milestone_name: string;
+  target_week: number;
+  deliverables: string[];
+  validation_criteria: string[];
+  created_at: string;
+}
+
+// ============================================================================
+// SME Assessment Enhancements - ROI Types
+// ============================================================================
+
+export type ROICostCategory =
+  | 'implementation'
+  | 'licensing'
+  | 'training'
+  | 'infrastructure'
+  | 'ongoing_maintenance';
+
+export type ROIBenefitCategory =
+  | 'efficiency_gains'
+  | 'cost_savings'
+  | 'revenue_growth'
+  | 'risk_mitigation'
+  | 'quality_improvement';
+
+export type ConfidenceLevel = 'high' | 'medium' | 'low';
+
+export interface SMEROISummary {
+  id: string;
+  assessment_id: string;
+  total_investment_usd: number;
+  total_annual_benefit_usd: number;
+  payback_months: number;
+  three_year_roi_percent: number;
+  net_present_value_usd?: number;
+  risk_adjusted_roi_percent?: number;
+  created_at: string;
+}
+
+export interface SMEROICostBreakdown {
+  id: string;
+  assessment_id: string;
+  category: ROICostCategory;
+  item_name: string;
+  one_time_cost_usd: number;
+  annual_cost_usd: number;
+  notes?: string;
+  created_at: string;
+}
+
+export interface SMEROIBenefitBreakdown {
+  id: string;
+  assessment_id: string;
+  category: ROIBenefitCategory;
+  benefit_name: string;
+  annual_value_usd: number;
+  confidence_level: ConfidenceLevel;
+  assumptions: string[];
+  created_at: string;
+}
+
+// ============================================================================
+// SME Assessment Enhancements - Lead Nurturing Types
+// ============================================================================
+
+export type CampaignStatus = 'active' | 'paused' | 'completed' | 'cancelled';
+
+export type EmailType =
+  | 'welcome'
+  | 'education'
+  | 'roadmap'
+  | 'roi'
+  | 'case_study'
+  | 'resources'
+  | 'consultation';
+
+export type EmailStatus = 'pending' | 'sent' | 'opened' | 'clicked' | 'bounced' | 'unsubscribed';
+
+export type AnalyticsEventType = 'sent' | 'opened' | 'clicked' | 'bounced' | 'unsubscribed';
+
+export interface SMENurturingCampaign {
+  id: string;
+  assessment_id: string;
+  user_id: string;
+  company_email: string;
+  campaign_status: CampaignStatus;
+  start_date: string;
+  next_email_scheduled_at?: string;
+  emails_sent: number;
+  emails_opened: number;
+  links_clicked: number;
+  created_at: string;
+  updated_at: string;
+  sme_nurturing_emails?: SMENurturingEmail[];
+}
+
+export interface SMENurturingEmail {
+  id: string;
+  campaign_id: string;
+  sequence_number: number;
+  email_type: EmailType;
+  subject_line: string;
+  email_body: string;
+  scheduled_days_after_start: number;
+  status: EmailStatus;
+  sent_at?: string;
+  opened_at?: string;
+  clicked_at?: string;
+  created_at: string;
+}
+
+export interface SMENurturingAnalytics {
+  id: string;
+  email_id: string;
+  event_type: AnalyticsEventType;
+  event_timestamp: string;
+  user_agent?: string;
+  ip_address?: string;
+  link_clicked?: string;
+  created_at: string;
+}
+
+// ============================================================================
+// Extended Assessment Report with Enhancements
+// ============================================================================
+
+export interface ExtendedAssessmentReport extends AssessmentReport {
+  // Roadmap data
+  roadmapItems?: SMERoadmapItem[];
+  roadmapPhases?: SMERoadmapPhase[];
+  roadmapMilestones?: SMERoadmapMilestone[];
+
+  // ROI data
+  roiSummary?: SMEROISummary;
+  roiCosts?: SMEROICostBreakdown[];
+  roiBenefits?: SMEROIBenefitBreakdown[];
+
+  // Nurturing campaign data
+  nurturingCampaign?: SMENurturingCampaign;
+}

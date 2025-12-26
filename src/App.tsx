@@ -62,6 +62,7 @@ const HomeworkSubmission = lazy(() => import('./pages/HomeworkSubmissionRefactor
 const PublicProfile = lazy(() => import('./pages/PublicProfile'));
 const TemplateImport = lazy(() => import('./pages/admin/TemplateImport'));
 const AIBlogWorkflow = lazy(() => import('./pages/Admin/AIBlogWorkflow'));
+const BatchBlogScheduler = lazy(() => import('./pages/Admin/BatchBlogScheduler'));
 const AIAssessment = lazy(() => import('./pages/AIAssessment'));
 const AIAssessmentResults = lazy(() => import('./pages/AIAssessmentResults'));
 const SMEAssessment = lazy(() => import('./pages/SMEAssessment'));
@@ -171,6 +172,9 @@ const WhiteLabelSettings = lazy(() => import('./pages/settings/WhiteLabelSetting
 // AIBORGLingo Admin
 const LingoAdmin = lazy(() => import('./pages/admin/lingo/LingoAdmin'));
 const DomainManagement = lazy(() => import('./pages/settings/DomainManagement'));
+
+// SME Admin
+const SMEAdminDashboard = lazy(() => import('./pages/admin/SMEAdminDashboard'));
 
 // AIBORGLingo User Pages
 const LingoHome = lazy(() => import('./pages/lingo/LingoHome'));
@@ -305,6 +309,26 @@ const AppWithShortcuts = () => {
                 <RouteWrapper routeName="AI Blog Generator">
                   <AIBlogWorkflow />
                 </RouteWrapper>
+              }
+            />
+            <Route
+              path="/admin/batch-blog-scheduler"
+              element={
+                <RouteWrapper routeName="Batch Blog Scheduler">
+                  <Suspense fallback={<AdminSkeleton />}>
+                    <BatchBlogScheduler />
+                  </Suspense>
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/admin/sme"
+              element={
+                <Suspense fallback={<AdminSkeleton />}>
+                  <RouteWrapper routeName="SME Admin Dashboard">
+                    <SMEAdminDashboard />
+                  </RouteWrapper>
+                </Suspense>
               }
             />
             <Route
