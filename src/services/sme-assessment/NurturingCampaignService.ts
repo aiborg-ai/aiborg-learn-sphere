@@ -29,10 +29,7 @@ export class NurturingCampaignService {
       const emails = this.generateEmailSequence(campaign.id, assessmentId);
 
       await this.saveEmailsToDatabase(emails);
-
-      console.log(`✓ Nurturing campaign created: ${emails.length} emails scheduled`);
     } catch (error) {
-      console.error('Error creating nurturing campaign:', error);
       throw error;
     }
   }
@@ -68,7 +65,6 @@ export class NurturingCampaignService {
       .single();
 
     if (error) {
-      console.error('Error creating campaign:', error);
       throw error;
     }
 
@@ -82,7 +78,9 @@ export class NurturingCampaignService {
     campaignId: string,
     assessmentId: string
   ): Omit<SMENurturingEmail, 'id' | 'created_at'>[] {
-    const reportUrl = `${import.meta.env.VITE_APP_URL}/sme-assessment/report/${assessmentId}`;
+    // Use environment variable with fallback to production URL
+    const baseUrl = import.meta.env.VITE_APP_URL || 'https://aiborg-ai-web.vercel.app';
+    const reportUrl = `${baseUrl}/sme-assessment/report/${assessmentId}`;
 
     return [
       {
@@ -677,7 +675,6 @@ export class NurturingCampaignService {
     const { error } = await supabase.from('sme_nurturing_emails').insert(emails);
 
     if (error) {
-      console.error('Error inserting nurturing emails:', error);
       throw error;
     }
   }
@@ -695,7 +692,6 @@ export class NurturingCampaignService {
       .single();
 
     if (error) {
-      console.error('Error fetching nurturing campaign:', error);
       return null;
     }
 
@@ -717,7 +713,6 @@ export class NurturingCampaignService {
       .eq('id', campaignId);
 
     if (error) {
-      console.error('Error updating campaign status:', error);
       throw error;
     }
   }
