@@ -1,8 +1,99 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
-import type { ExtendedAssessmentReport } from '@/types/aiAssessment';
+import type {
+  ExtendedAssessmentReport,
+  SMERoadmapItem,
+  SMERoadmapPhase,
+  SMERoadmapMilestone,
+  SMEROISummary,
+  SMEROICostBreakdown,
+  SMEROIBenefitBreakdown,
+  SMENurturingCampaign,
+} from '@/types/aiAssessment';
 
+/**
+ * Hook to fetch roadmap data separately for independent loading state
+ */
+export const useSMERoadmapData = (assessmentId: string | undefined) => {
+  return useQuery({
+    queryKey: ['sme-roadmap', assessmentId],
+    queryFn: async () => {
+      if (!assessmentId) return null;
+
+      const [itemsResult, phasesResult, milestonesResult] = await Promise.all([
+        supabase
+          .from('sme_roadmap_items')
+          .select('*')
+          .eq('assessment_id', assessmentId)
+          .order('phase_order'),
+        supabase.from('sme_roadmap_phases').select('*').eq('assessment_id', assessmentId),
+        supabase
+          .from('sme_roadmap_milestones')
+          .select('*')
+          .eq('assessment_id', assessmentId)
+          .order('target_week'),
+      ]);
+
+      return {
+        items: itemsResult.data as SMERoadmapItem[] | null,
+        phases: phasesResult.data as SMERoadmapPhase[] | null,
+        milestones: milestonesResult.data as SMERoadmapMilestone[] | null,
+      };
+    },
+    enabled: !!assessmentId,
+  });
+};
+
+/**
+ * Hook to fetch ROI data separately for independent loading state
+ */
+export const useSMEROIData = (assessmentId: string | undefined) => {
+  return useQuery({
+    queryKey: ['sme-roi', assessmentId],
+    queryFn: async () => {
+      if (!assessmentId) return null;
+
+      const [summaryResult, costsResult, benefitsResult] = await Promise.all([
+        supabase.from('sme_roi_summary').select('*').eq('assessment_id', assessmentId).single(),
+        supabase.from('sme_roi_cost_breakdown').select('*').eq('assessment_id', assessmentId),
+        supabase.from('sme_roi_benefit_breakdown').select('*').eq('assessment_id', assessmentId),
+      ]);
+
+      return {
+        summary: summaryResult.data as SMEROISummary | null,
+        costs: costsResult.data as SMEROICostBreakdown[] | null,
+        benefits: benefitsResult.data as SMEROIBenefitBreakdown[] | null,
+      };
+    },
+    enabled: !!assessmentId,
+  });
+};
+
+/**
+ * Hook to fetch nurturing campaign data separately for independent loading state
+ */
+export const useSMENurturingData = (assessmentId: string | undefined) => {
+  return useQuery({
+    queryKey: ['sme-nurturing', assessmentId],
+    queryFn: async () => {
+      if (!assessmentId) return null;
+
+      const { data } = await supabase
+        .from('sme_nurturing_campaigns')
+        .select('*, sme_nurturing_emails(*)')
+        .eq('assessment_id', assessmentId)
+        .single();
+
+      return data as SMENurturingCampaign | null;
+    },
+    enabled: !!assessmentId,
+  });
+};
+
+/**
+ * Main hook to fetch core assessment data
+ */
 export const useSMEAssessmentReport = (assessmentId: string | undefined) => {
   return useQuery({
     queryKey: ['sme-assessment-report', assessmentId],

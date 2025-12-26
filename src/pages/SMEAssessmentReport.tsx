@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Navbar, Footer } from '@/components/navigation';
-import { useSMEAssessmentReport } from '@/hooks/useSMEAssessmentReport';
+import {
+  useSMEAssessmentReport,
+  useSMERoadmapData,
+  useSMEROIData,
+  useSMENurturingData,
+} from '@/hooks/useSMEAssessmentReport';
 import { exportSMEAssessmentReportToPDF } from '@/utils/pdfExport';
 import { toast } from 'sonner';
 import { logger } from '@/utils/logger';
@@ -24,13 +29,19 @@ import {
   CallToAction,
 } from './sme-report';
 import { RoadmapSection } from '@/components/sme-report/RoadmapSection';
+import { RoadmapSkeleton } from '@/components/sme-report/RoadmapSkeleton';
 import { ROISection } from '@/components/sme-report/ROISection';
+import { ROISkeleton } from '@/components/sme-report/ROISkeleton';
 import { NurturingSection } from '@/components/sme-report/NurturingSection';
+import { NurturingSkeleton } from '@/components/sme-report/NurturingSkeleton';
 
 export default function SMEAssessmentReport() {
   const { assessmentId } = useParams<{ assessmentId: string }>();
   const navigate = useNavigate();
   const { data: report, isLoading, error } = useSMEAssessmentReport(assessmentId);
+  const { data: roadmapData, isLoading: isLoadingRoadmap } = useSMERoadmapData(assessmentId);
+  const { data: roiData, isLoading: isLoadingROI } = useSMEROIData(assessmentId);
+  const { data: nurturingData, isLoading: isLoadingNurturing } = useSMENurturingData(assessmentId);
   const [isExportingPDF, setIsExportingPDF] = useState(false);
 
   const handlePrint = () => {
@@ -85,14 +96,6 @@ export default function SMEAssessmentReport() {
     resources,
     competitors,
     actionPlan,
-    // New: Enhancement data
-    roadmapItems,
-    roadmapPhases,
-    roadmapMilestones,
-    roiSummary,
-    roiCosts,
-    roiBenefits,
-    nurturingCampaign,
   } = report;
 
   return (
@@ -143,21 +146,64 @@ export default function SMEAssessmentReport() {
 
           {/* New: Implementation Roadmap */}
           <div className="mt-12">
-            <RoadmapSection
-              roadmapItems={roadmapItems}
-              roadmapPhases={roadmapPhases}
-              roadmapMilestones={roadmapMilestones}
-            />
+            {isLoadingRoadmap ? (
+              <RoadmapSkeleton />
+            ) : roadmapData?.items && roadmapData?.phases ? (
+              <RoadmapSection
+                roadmapItems={roadmapData.items}
+                roadmapPhases={roadmapData.phases}
+                roadmapMilestones={roadmapData.milestones || []}
+              />
+            ) : (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2">Implementation Roadmap</h2>
+                  <p className="text-muted-foreground">
+                    Roadmap generation in progress. Please refresh the page in a moment.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* New: ROI Analysis */}
           <div className="mt-12">
-            <ROISection roiSummary={roiSummary} roiCosts={roiCosts} roiBenefits={roiBenefits} />
+            {isLoadingROI ? (
+              <ROISkeleton />
+            ) : roiData?.summary ? (
+              <ROISection
+                roiSummary={roiData.summary}
+                roiCosts={roiData.costs || []}
+                roiBenefits={roiData.benefits || []}
+              />
+            ) : (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2">ROI Analysis</h2>
+                  <p className="text-muted-foreground">
+                    ROI calculation in progress. Please refresh the page in a moment.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* New: Lead Nurturing Campaign (Admin Only) */}
           <div className="mt-12">
-            <NurturingSection nurturingCampaign={nurturingCampaign} isAdmin={false} />
+            {isLoadingNurturing ? (
+              <NurturingSkeleton />
+            ) : nurturingData ? (
+              <NurturingSection nurturingCampaign={nurturingData} isAdmin={false} />
+            ) : (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2">Lead Nurturing Campaign</h2>
+                  <p className="text-muted-foreground">
+                    Campaign setup in progress. Please refresh the page in a moment.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           <MetadataSection
