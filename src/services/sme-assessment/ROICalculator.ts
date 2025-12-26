@@ -282,14 +282,15 @@ export class ROICalculator {
   /**
    * Estimate cost savings from operational improvements
    * Conservative: $12K-$36K based on impact rating
-   * Formula simplified to remove redundant calculation
+   * Linear interpolation from rating 1 to rating 5
    */
   private static estimateCostSavings(impactRating: number): number {
-    const baseSavings = 12000; // $12K base
-    // Scale from $12K (rating=1) to $36K (rating=5)
-    // Reduced from previous $60K max to be more conservative
-    const maxMultiplier = 3;
-    return Math.round(baseSavings * (impactRating / 5) * maxMultiplier);
+    const minSavings = 12000; // $12K for rating=1
+    const maxSavings = 36000; // $36K for rating=5 (reduced from $60K to be conservative)
+
+    // Linear interpolation: scales from $12K (rating=1) to $36K (rating=5)
+    // rating=1: $12K, rating=2: $18K, rating=3: $24K, rating=4: $30K, rating=5: $36K
+    return Math.round(minSavings + ((maxSavings - minSavings) * (impactRating - 1) / 4));
   }
 
   /**
