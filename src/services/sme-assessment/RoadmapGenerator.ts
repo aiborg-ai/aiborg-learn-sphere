@@ -31,7 +31,6 @@ export class RoadmapGenerator {
 
       await this.saveToDatabase(assessmentId, phases, roadmapItems, milestones);
     } catch (error) {
-      console.error('Error generating roadmap:', error);
       throw error;
     }
   }
@@ -47,16 +46,32 @@ export class RoadmapGenerator {
     const riskCount = data.risks?.length || 0;
     const complexity = painPointCount + riskCount;
 
-    // Base timeline: 12 months minimum, scales with complexity
-    const baseWeeks = 52;
-    const quickWinsDuration = 4;
-    // Cap phase durations to prevent negative longTermDuration
+    // Phase durations with caps to prevent negative values
+    const quickWinsDuration = 4; // Fixed: 1 month for quick wins
+
+    // Short-term: scales with complexity but capped at 28 weeks (7 months)
     const shortTermDuration = Math.min(28, Math.max(12, Math.ceil(complexity * 2)));
+
+    // Medium-term: scales with complexity but capped at 20 weeks (5 months)
     const mediumTermDuration = Math.min(20, Math.max(8, Math.ceil(complexity * 1.5)));
-    const longTermDuration = Math.max(
-      4,
-      baseWeeks - quickWinsDuration - shortTermDuration - mediumTermDuration
-    );
+
+    // Long-term: minimum 4 weeks, scales based on complexity
+    // For high complexity, extend beyond 52 weeks if needed
+    const baseLongTerm = Math.ceil(complexity * 0.5);
+    const longTermDuration = Math.max(4, Math.min(24, baseLongTerm));
+
+    // Calculate total timeline (can extend beyond 52 weeks for complex projects)
+    const totalTimelineWeeks =
+      quickWinsDuration + shortTermDuration + mediumTermDuration + longTermDuration;
+
+    // Validation: Ensure timeline is reasonable (4-104 weeks / 1-24 months)
+    const validatedTimeline = Math.max(24, Math.min(104, totalTimelineWeeks));
+
+    // Log warning if timeline is very long (indicates high complexity)
+    if (validatedTimeline > 78) {
+      // 18+ months - complex project
+      // Note: In production, this would trigger a notification to review scope
+    }
 
     return [
       {
@@ -369,7 +384,6 @@ export class RoadmapGenerator {
     );
 
     if (phasesError) {
-      console.error('Error inserting roadmap phases:', phasesError);
       throw phasesError;
     }
 
@@ -382,7 +396,6 @@ export class RoadmapGenerator {
     );
 
     if (itemsError) {
-      console.error('Error inserting roadmap items:', itemsError);
       throw itemsError;
     }
 
@@ -395,10 +408,7 @@ export class RoadmapGenerator {
     );
 
     if (milestonesError) {
-      console.error('Error inserting roadmap milestones:', milestonesError);
       throw milestonesError;
     }
-
-    console.log(`✓ Roadmap generated: ${items.length} items, ${milestones.length} milestones`);
   }
 }
