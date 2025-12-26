@@ -24,14 +24,29 @@ export class NurturingCampaignService {
     userId: string,
     companyEmail: string
   ): Promise<void> {
-    try {
-      const campaign = await this.createCampaignRecord(assessmentId, userId, companyEmail);
-      const emails = this.generateEmailSequence(campaign.id, assessmentId);
+    const campaign = await this.createCampaignRecord(assessmentId, userId, companyEmail);
 
-      await this.saveEmailsToDatabase(emails);
-    } catch (error) {
-      throw error;
-    }
+    // Fetch ROI and roadmap data for personalization
+    const { data: roiData } = await supabase
+      .from('sme_roi_summary')
+      .select('*')
+      .eq('assessment_id', assessmentId)
+      .single();
+
+    const { data: roadmapPhases } = await supabase
+      .from('sme_roadmap_phases')
+      .select('*')
+      .eq('assessment_id', assessmentId)
+      .order('start_week', { ascending: true });
+
+    const emails = this.generateEmailSequence(
+      campaign.id,
+      assessmentId,
+      roiData,
+      roadmapPhases || []
+    );
+
+    await this.saveEmailsToDatabase(emails);
   }
 
   /**
@@ -72,11 +87,13 @@ export class NurturingCampaignService {
   }
 
   /**
-   * Generate 7-email sequence
+   * Generate 7-email sequence with personalized data
    */
   private static generateEmailSequence(
     campaignId: string,
-    assessmentId: string
+    assessmentId: string,
+    roiData: SMEROISummary | null,
+    roadmapPhases: SMERoadmapPhase[]
   ): Omit<SMENurturingEmail, 'id' | 'created_at'>[] {
     // Use environment variable with fallback to production URL
     const baseUrl = import.meta.env.VITE_APP_URL || 'https://aiborg-ai-web.vercel.app';
@@ -106,7 +123,7 @@ export class NurturingCampaignService {
         sequence_number: 3,
         email_type: 'roadmap' as EmailType,
         subject_line: 'Your Personalized AI Implementation Roadmap',
-        email_body: this.generateRoadmapEmail(reportUrl),
+        email_body: this.generateRoadmapEmail(reportUrl, roadmapPhases),
         scheduled_days_after_start: 7,
         status: 'pending' as EmailStatus,
       },
@@ -115,7 +132,7 @@ export class NurturingCampaignService {
         sequence_number: 4,
         email_type: 'roi' as EmailType,
         subject_line: 'The Business Case: ROI Analysis',
-        email_body: this.generateROIEmail(reportUrl),
+        email_body: this.generateROIEmail(reportUrl, roiData),
         scheduled_days_after_start: 10,
         status: 'pending' as EmailStatus,
       },
@@ -279,7 +296,79 @@ export class NurturingCampaignService {
   /**
    * Email 3: Roadmap Email (Day 7)
    */
-  private static generateRoadmapEmail(reportUrl: string): string {
+  private static generateRoadmapEmail(reportUrl: string, roadmapPhases: SMERoadmapPhase[]): string {
+    // Helper to get phase config
+    const getPhaseConfig = (phase: string) => {
+      const configs: Record<string, { emoji: string; label: string; description: string }> = {
+        quick_wins: {
+          emoji: '🚀',
+          label: 'Quick Wins',
+          description:
+            'Start seeing value immediately with these high-impact initiatives that address your most urgent pain points. These early wins build stakeholder confidence and demonstrate the value of AI.',
+        },
+        short_term: {
+          emoji: '📈',
+          label: 'Short-term',
+          description:
+            'Build on early success by implementing core AI capabilities that directly impact your key user groups. This phase focuses on measurable improvements and initial ROI demonstration.',
+        },
+        medium_term: {
+          emoji: '🎯',
+          label: 'Medium-term',
+          description:
+            'Scale successful initiatives across your organization. Integrate AI into key business processes and establish the infrastructure for long-term success.',
+        },
+        long_term: {
+          emoji: '🌟',
+          label: 'Long-term',
+          description:
+            'Complete your AI transformation with strategic initiatives that create competitive advantage and establish continuous improvement processes.',
+        },
+      };
+      return configs[phase] || configs.quick_wins;
+    };
+
+    // Generate phase boxes from actual roadmap data
+    let phaseBoxesHTML = '';
+    if (roadmapPhases && roadmapPhases.length > 0) {
+      roadmapPhases.forEach((phaseData, index) => {
+        const config = getPhaseConfig(phaseData.phase);
+        const startWeek = phaseData.start_week || 0;
+        const endWeek = startWeek + (phaseData.duration_weeks || 4);
+        const cost = phaseData.total_cost_usd
+          ? `$${phaseData.total_cost_usd.toLocaleString()}`
+          : 'See Report';
+
+        phaseBoxesHTML += `
+    <div class="phase-box">
+      <h3>${config.emoji} Phase ${index + 1}: ${config.label} (Weeks ${startWeek + 1}-${endWeek})</h3>
+      <p>${config.description}</p>
+      <p><strong>Estimated Investment:</strong> ${cost}</p>
+    </div>
+        `;
+      });
+    } else {
+      // Fallback to generic phases if no data available
+      phaseBoxesHTML = `
+    <div class="phase-box">
+      <h3>🚀 Phase 1: Quick Wins</h3>
+      <p>Start seeing value immediately with high-impact initiatives.</p>
+    </div>
+    <div class="phase-box">
+      <h3>📈 Phase 2: Short-term</h3>
+      <p>Build on early success with core AI capabilities.</p>
+    </div>
+    <div class="phase-box">
+      <h3>🎯 Phase 3: Medium-term</h3>
+      <p>Scale successful initiatives across your organization.</p>
+    </div>
+    <div class="phase-box">
+      <h3>🌟 Phase 4: Long-term</h3>
+      <p>Complete your AI transformation with strategic initiatives.</p>
+    </div>
+      `;
+    }
+
     return `
 <!DOCTYPE html>
 <html>
@@ -304,25 +393,7 @@ export class NurturingCampaignService {
 
     <p>We've created a step-by-step roadmap based on your specific needs and assessment results. This roadmap breaks down your AI journey into four manageable phases:</p>
 
-    <div class="phase-box">
-      <h3>🚀 Phase 1: Quick Wins (Weeks 1-4)</h3>
-      <p>Start seeing value immediately with these high-impact initiatives that address your most urgent pain points. These early wins build stakeholder confidence and demonstrate the value of AI.</p>
-    </div>
-
-    <div class="phase-box">
-      <h3>📈 Phase 2: Short-term (Weeks 5-16)</h3>
-      <p>Build on early success by implementing core AI capabilities that directly impact your key user groups. This phase focuses on measurable improvements and initial ROI demonstration.</p>
-    </div>
-
-    <div class="phase-box">
-      <h3>🎯 Phase 3: Medium-term (Weeks 17-40)</h3>
-      <p>Scale successful initiatives across your organization. Integrate AI into key business processes and establish the infrastructure for long-term success.</p>
-    </div>
-
-    <div class="phase-box">
-      <h3>🌟 Phase 4: Long-term (Weeks 41+)</h3>
-      <p>Complete your AI transformation with strategic initiatives that create competitive advantage and establish continuous improvement processes.</p>
-    </div>
+${phaseBoxesHTML}
 
     <p style="text-align: center;">
       <a href="${reportUrl}#roadmap" class="cta-button">View Your Detailed Roadmap →</a>
@@ -345,9 +416,23 @@ export class NurturingCampaignService {
   }
 
   /**
-   * Email 4: ROI Email (Day 10)
+   * Email 4: ROI Email (Day 10) - Personalized with actual ROI data
    */
-  private static generateROIEmail(reportUrl: string): string {
+  private static generateROIEmail(reportUrl: string, roiData: SMEROISummary | null): string {
+    // Use actual ROI data if available, otherwise show friendly message
+    const totalInvestment = roiData?.total_investment_usd
+      ? `$${roiData.total_investment_usd.toLocaleString()}`
+      : 'See Report';
+    const annualBenefit = roiData?.total_annual_benefit_usd
+      ? `$${roiData.total_annual_benefit_usd.toLocaleString()}`
+      : 'See Report';
+    const paybackPeriod = roiData?.payback_months
+      ? `${roiData.payback_months} months`
+      : 'See Report';
+    const threeYearROI = roiData?.three_year_roi_percent
+      ? `${roiData.three_year_roi_percent.toFixed(0)}%`
+      : 'See Report';
+
     return `
 <!DOCTYPE html>
 <html>
@@ -379,19 +464,19 @@ export class NurturingCampaignService {
     <div class="metric-grid">
       <div class="metric-box">
         <div style="font-size: 12px; color: #666; margin-bottom: 5px;">Total Investment</div>
-        <div class="metric-value">View Report</div>
+        <div class="metric-value">${totalInvestment}</div>
       </div>
       <div class="metric-box">
         <div style="font-size: 12px; color: #666; margin-bottom: 5px;">Annual Benefit</div>
-        <div class="metric-value">View Report</div>
+        <div class="metric-value">${annualBenefit}</div>
       </div>
       <div class="metric-box">
         <div style="font-size: 12px; color: #666; margin-bottom: 5px;">Payback Period</div>
-        <div class="metric-value">View Report</div>
+        <div class="metric-value">${paybackPeriod}</div>
       </div>
       <div class="metric-box">
         <div style="font-size: 12px; color: #666; margin-bottom: 5px;">3-Year ROI</div>
-        <div class="metric-value">View Report</div>
+        <div class="metric-value">${threeYearROI}</div>
       </div>
     </div>
 
