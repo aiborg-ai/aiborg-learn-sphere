@@ -77,9 +77,12 @@ export function ROISection({ roiSummary, roiCosts = [], roiBenefits = [] }: ROIS
 
       {/* Summary Cards */}
       <div className="grid md:grid-cols-4 gap-4">
-        <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100">
+        <Card
+          className="p-6 bg-gradient-to-br from-blue-50 to-blue-100"
+          aria-label="Total Investment"
+        >
           <div className="flex items-center gap-3 mb-2">
-            <DollarSign className="h-6 w-6 text-blue-600" />
+            <DollarSign className="h-6 w-6 text-blue-600" aria-hidden="true" />
             <p className="text-sm text-muted-foreground">Total Investment</p>
           </div>
           <p className="text-3xl font-bold text-blue-900">
@@ -87,9 +90,12 @@ export function ROISection({ roiSummary, roiCosts = [], roiBenefits = [] }: ROIS
           </p>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-green-50 to-green-100">
+        <Card
+          className="p-6 bg-gradient-to-br from-green-50 to-green-100"
+          aria-label="Annual Benefit"
+        >
           <div className="flex items-center gap-3 mb-2">
-            <TrendingUp className="h-6 w-6 text-green-600" />
+            <TrendingUp className="h-6 w-6 text-green-600" aria-hidden="true" />
             <p className="text-sm text-muted-foreground">Annual Benefit</p>
           </div>
           <p className="text-3xl font-bold text-green-900">
@@ -97,17 +103,23 @@ export function ROISection({ roiSummary, roiCosts = [], roiBenefits = [] }: ROIS
           </p>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-orange-50 to-orange-100">
+        <Card
+          className="p-6 bg-gradient-to-br from-orange-50 to-orange-100"
+          aria-label="Payback Period"
+        >
           <div className="flex items-center gap-3 mb-2">
-            <Calendar className="h-6 w-6 text-orange-600" />
+            <Calendar className="h-6 w-6 text-orange-600" aria-hidden="true" />
             <p className="text-sm text-muted-foreground">Payback Period</p>
           </div>
           <p className="text-3xl font-bold text-orange-900">{roiSummary.payback_months} months</p>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100">
+        <Card
+          className="p-6 bg-gradient-to-br from-purple-50 to-purple-100"
+          aria-label="3-Year ROI"
+        >
           <div className="flex items-center gap-3 mb-2">
-            <Target className="h-6 w-6 text-purple-600" />
+            <Target className="h-6 w-6 text-purple-600" aria-hidden="true" />
             <p className="text-sm text-muted-foreground">3-Year ROI</p>
           </div>
           <p className="text-3xl font-bold text-purple-900">
@@ -246,7 +258,10 @@ export function ROISection({ roiSummary, roiCosts = [], roiBenefits = [] }: ROIS
         roiSummary.risk_adjusted_roi_percent !== null && (
           <Card className="p-6 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-amber-200 flex items-center justify-center flex-shrink-0">
+              <div
+                className="w-12 h-12 rounded-full bg-amber-200 flex items-center justify-center flex-shrink-0"
+                aria-hidden="true"
+              >
                 <Target className="h-6 w-6 text-amber-700" />
               </div>
               <div className="flex-1">

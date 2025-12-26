@@ -127,7 +127,9 @@ export function RoadmapSection({
             <AccordionItem key={phase} value={phase} className="border rounded-lg">
               <AccordionTrigger className="px-6 py-4 hover:no-underline">
                 <div className="flex items-center gap-4 w-full">
-                  <span className="text-2xl">{config.icon}</span>
+                  <span className="text-2xl" aria-hidden="true">
+                    {config.icon}
+                  </span>
                   <div className="flex-1 text-left">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="text-xl font-bold">{config.label}</h3>
@@ -179,17 +181,20 @@ export function RoadmapSection({
 
                       <div className="grid md:grid-cols-3 gap-4 mb-3">
                         <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-muted-foreground" />
+                          <Clock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                           <span className="text-sm">{item.estimated_weeks} weeks</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <DollarSign className="h-4 w-4 text-muted-foreground" />
+                          <DollarSign
+                            className="h-4 w-4 text-muted-foreground"
+                            aria-hidden="true"
+                          />
                           <span className="text-sm">
                             ${(item.estimated_cost_usd || 0).toLocaleString()}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                          <Calendar className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                           <span className="text-sm">
                             {item.required_resources?.length || 0} resources
                           </span>
@@ -202,7 +207,10 @@ export function RoadmapSection({
                           <ul className="space-y-1">
                             {item.success_metrics.map((metric, i) => (
                               <li key={i} className="flex items-start gap-2 text-sm">
-                                <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                                <CheckCircle2
+                                  className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5"
+                                  aria-hidden="true"
+                                />
                                 <span>{metric}</span>
                               </li>
                             ))}
@@ -235,7 +243,10 @@ export function RoadmapSection({
                     <ul className="mt-2 space-y-1">
                       {milestone.deliverables.map((deliverable, i) => (
                         <li key={i} className="text-sm flex items-start gap-2">
-                          <CheckCircle2 className="h-3 w-3 text-primary flex-shrink-0 mt-1" />
+                          <CheckCircle2
+                            className="h-3 w-3 text-primary flex-shrink-0 mt-1"
+                            aria-hidden="true"
+                          />
                           <span>{deliverable}</span>
                         </li>
                       ))}
