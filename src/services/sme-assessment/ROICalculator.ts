@@ -32,7 +32,6 @@ export class ROICalculator {
 
       await this.saveToDatabase(assessmentId, summary, costs, benefits);
     } catch (error) {
-      console.error('Error calculating ROI:', error);
       throw error;
     }
   }
@@ -131,6 +130,8 @@ export class ROICalculator {
     }
 
     // Revenue growth from user impacts
+    // NOTE: Ensure user impacts don't overlap with benefits in Section 5
+    // to avoid double-counting the same improvement
     if (data.userImpacts && data.userImpacts.length > 0) {
       data.userImpacts.forEach(impact => {
         const revenueGrowth = this.estimateRevenueGrowth(
@@ -145,7 +146,7 @@ export class ROICalculator {
           assumptions: [
             `Current satisfaction: ${impact.satisfactionRating}/5`,
             `Target satisfaction: ${impact.impactRating}/5`,
-            'Conservative 10% improvement estimate',
+            'Conservative 5-10% improvement estimate',
           ],
         });
       });
@@ -255,34 +256,40 @@ export class ROICalculator {
 
   /**
    * Estimate time savings from pain point reduction
-   * Conservative: $30K-$60K per high-impact pain point based on impact reduction
+   * Conservative: $20K-$40K per high-impact pain point based on impact reduction
+   * Reduced estimates to prevent ROI inflation
    */
   private static estimateTimeSavings(currentImpact: number, impactAfterAI: number): number {
     const impactReduction = currentImpact - impactAfterAI;
-    const savingsPerPoint = 15000; // $15K per impact point reduced
+    const savingsPerPoint = 10000; // $10K per impact point reduced (reduced from $15K)
     return Math.round(impactReduction * savingsPerPoint);
   }
 
   /**
    * Estimate revenue growth from user satisfaction improvement
-   * Conservative: $10K-$40K per user group based on satisfaction gap
+   * Conservative: $6K-$24K per user group based on satisfaction gap
+   * Reduced estimates to prevent ROI inflation
    */
   private static estimateRevenueGrowth(
     currentSatisfaction: number,
     targetSatisfaction: number
   ): number {
     const satisfactionGap = targetSatisfaction - currentSatisfaction;
-    const revenuePerPoint = 10000; // $10K per satisfaction point improvement
+    const revenuePerPoint = 6000; // $6K per satisfaction point improvement (reduced from $10K)
     return Math.max(0, Math.round(satisfactionGap * revenuePerPoint));
   }
 
   /**
    * Estimate cost savings from operational improvements
-   * Conservative: $20K-$60K based on impact rating
+   * Conservative: $12K-$36K based on impact rating
+   * Formula simplified to remove redundant calculation
    */
   private static estimateCostSavings(impactRating: number): number {
     const baseSavings = 12000; // $12K base
-    return Math.round(baseSavings * (impactRating / 5) * 5);
+    // Scale from $12K (rating=1) to $36K (rating=5)
+    // Reduced from previous $60K max to be more conservative
+    const maxMultiplier = 3;
+    return Math.round(baseSavings * (impactRating / 5) * maxMultiplier);
   }
 
   /**
@@ -294,16 +301,6 @@ export class ROICalculator {
     const maxRiskValue = 100000; // $100K max
     const minRiskValue = 30000; // $30K min
     return Math.round(minRiskValue + riskValue * (maxRiskValue - minRiskValue));
-  }
-
-  /**
-   * Estimate quality improvement value
-   * Conservative: $25K-$50K based on impact rating
-   */
-  private static estimateQualityValue(impactRating: number): number {
-    const baseValue = 25000; // $25K base
-    const multiplier = impactRating / 5; // 0-1 range
-    return Math.round(baseValue + baseValue * multiplier);
   }
 
   /**
@@ -324,7 +321,6 @@ export class ROICalculator {
     });
 
     if (summaryError) {
-      console.error('Error inserting ROI summary:', summaryError);
       throw summaryError;
     }
 
@@ -334,7 +330,6 @@ export class ROICalculator {
       .insert(costs.map(c => ({ ...c, assessment_id: assessmentId })));
 
     if (costsError) {
-      console.error('Error inserting ROI costs:', costsError);
       throw costsError;
     }
 
@@ -344,12 +339,7 @@ export class ROICalculator {
       .insert(benefits.map(b => ({ ...b, assessment_id: assessmentId })));
 
     if (benefitsError) {
-      console.error('Error inserting ROI benefits:', benefitsError);
       throw benefitsError;
     }
-
-    console.log(
-      `✓ ROI calculated: ${costs.length} costs, ${benefits.length} benefits, ${summary.three_year_roi_percent.toFixed(0)}% 3-year ROI`
-    );
   }
 }
