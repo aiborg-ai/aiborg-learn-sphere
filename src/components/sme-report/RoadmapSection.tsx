@@ -114,6 +114,103 @@ export function RoadmapSection({
         </dl>
       </Card>
 
+      {/* Visual Timeline */}
+      <Card className="p-6" aria-label="Visual timeline representation">
+        <h3 className="text-lg font-semibold mb-4">Timeline Visualization</h3>
+        <div className="space-y-3">
+          {/* Timeline bar */}
+          <div className="relative h-16 bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200">
+            {roadmapPhases.map(phase => {
+              const config = phaseConfig[phase.phase];
+              const leftPercent = (phase.start_week / totalWeeks) * 100;
+              const widthPercent = (phase.duration_weeks / totalWeeks) * 100;
+
+              return (
+                <div
+                  key={phase.phase}
+                  className={`absolute h-full ${config.color} border-r border-white/50 flex items-center justify-center transition-all hover:opacity-80 cursor-pointer group`}
+                  style={{
+                    left: `${leftPercent}%`,
+                    width: `${widthPercent}%`,
+                  }}
+                  title={`${config.label}: Weeks ${phase.start_week}-${phase.start_week + phase.duration_weeks} (${phase.duration_weeks} weeks)`}
+                >
+                  <span className="text-xs font-semibold px-2 text-center truncate">
+                    {widthPercent > 15 ? config.label : config.icon}
+                  </span>
+                  {/* Tooltip on hover */}
+                  <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-2 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
+                    {config.label}: {phase.duration_weeks} weeks
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* Milestone markers */}
+            {roadmapMilestones.map(milestone => {
+              const leftPercent = (milestone.target_week / totalWeeks) * 100;
+
+              return (
+                <div
+                  key={milestone.id}
+                  className="absolute top-0 bottom-0 w-1 bg-red-500 hover:bg-red-600 cursor-pointer group z-10"
+                  style={{ left: `${leftPercent}%` }}
+                  title={milestone.milestone_name}
+                >
+                  {/* Milestone marker triangle */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full border-8 border-transparent border-t-red-500" />
+                  {/* Tooltip on hover */}
+                  <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-2 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-20">
+                    {milestone.milestone_name}
+                    <div className="text-[10px] text-gray-300">Week {milestone.target_week}</div>
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Week labels */}
+          <div className="relative h-6 text-xs text-muted-foreground">
+            <div className="absolute left-0">Week 0</div>
+            <div className="absolute left-1/4 -translate-x-1/2">
+              Week {Math.round(totalWeeks * 0.25)}
+            </div>
+            <div className="absolute left-1/2 -translate-x-1/2">
+              Week {Math.round(totalWeeks * 0.5)}
+            </div>
+            <div className="absolute left-3/4 -translate-x-1/2">
+              Week {Math.round(totalWeeks * 0.75)}
+            </div>
+            <div className="absolute right-0">Week {totalWeeks}</div>
+          </div>
+
+          {/* Legend */}
+          <div className="pt-4 border-t">
+            <div className="flex flex-wrap gap-4 items-center justify-between">
+              <div className="flex flex-wrap gap-3">
+                {roadmapPhases.map(phase => {
+                  const config = phaseConfig[phase.phase];
+                  return (
+                    <div key={phase.phase} className="flex items-center gap-2">
+                      <div className={`w-4 h-4 rounded ${config.color}`} />
+                      <span className="text-sm">
+                        {config.label} ({phase.duration_weeks}w)
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-4 bg-red-500" />
+                <span className="text-sm">Milestones</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
       {/* Phased Accordion */}
       <Accordion type="multiple" className="space-y-4" aria-label="Roadmap phases by timeline">
         {(Object.keys(phaseConfig) as RoadmapPhase[]).map(phase => {
