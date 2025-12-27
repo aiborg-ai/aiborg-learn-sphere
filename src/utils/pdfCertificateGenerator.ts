@@ -135,7 +135,7 @@ export async function generateCertificatePDF(data: CertificateData): Promise<Blo
     pdf.setFontSize(7);
     pdf.text(verificationCode, pageWidth - 45, signatureY + 24, { align: 'center' });
   } catch (error) {
-    console.error('Error generating QR code:', error);
+    // QR code generation failed - certificate will still be valid without it
   }
 
   // Add footer with verification code

@@ -28,7 +28,6 @@ export function SMEAdminDashboard() {
 
   const handleEnrollmentSuccess = () => {
     // Refresh data or show success message
-    console.log('Enrollment completed successfully');
   };
 
   const quickStats = [

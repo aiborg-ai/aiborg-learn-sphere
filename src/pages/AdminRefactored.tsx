@@ -28,6 +28,7 @@ import {
   ShieldCheck,
   Gift,
   GraduationCap,
+  Sparkles,
 } from '@/components/ui/icons';
 
 // Only import AccessDenied eagerly (used before tabs render)
@@ -113,6 +114,12 @@ export default function AdminRefactored() {
             <h1 className="text-3xl font-display font-bold text-white">Admin Dashboard</h1>
           </div>
           <div className="flex gap-2">
+            <Link to="/admin/batch-blog-scheduler">
+              <Button variant="outline" className="btn-outline-ai flex items-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                Batch Blog Scheduler
+              </Button>
+            </Link>
             <Link to="/admin/template-import">
               <Button variant="outline" className="btn-outline-ai flex items-center gap-2">
                 <FileJson className="h-4 w-4" />

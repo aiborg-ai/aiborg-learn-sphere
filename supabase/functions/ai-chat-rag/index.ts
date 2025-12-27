@@ -271,6 +271,12 @@ Provide general guidance and suggest contacting support if specific information 
           type: r.content_type,
           title: r.title,
           similarity: r.weighted_similarity || r.similarity,
+          content_id: r.content_id,
+          slug: r.metadata?.slug || null,
+          metadata: {
+            category: r.metadata?.category || r.metadata?.kb_category || null,
+            difficulty: r.metadata?.difficulty || r.metadata?.kb_difficulty || null,
+          },
         })),
         classification: {
           category: classification.category,

@@ -156,13 +156,13 @@ CREATE TABLE IF NOT EXISTS user_assessment_achievements (
 );
 
 -- Create indexes for performance
-CREATE INDEX idx_user_assessments_user_id ON user_ai_assessments(user_id);
-CREATE INDEX idx_user_assessments_completed ON user_ai_assessments(is_complete, completed_at DESC);
-CREATE INDEX idx_assessment_answers_assessment_id ON user_assessment_answers(assessment_id);
-CREATE INDEX idx_user_tool_stack_user_id ON user_ai_tool_stack(user_id);
-CREATE INDEX idx_assessment_insights_assessment_id ON assessment_insights(assessment_id);
-CREATE INDEX idx_questions_category ON assessment_questions(category_id);
-CREATE INDEX idx_questions_active ON assessment_questions(is_active);
+CREATE INDEX IF NOT EXISTS idx_user_assessments_user_id ON user_ai_assessments(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_assessments_completed ON user_ai_assessments(is_complete, completed_at DESC);
+CREATE INDEX IF NOT EXISTS idx_assessment_answers_assessment_id ON user_assessment_answers(assessment_id);
+CREATE INDEX IF NOT EXISTS idx_user_tool_stack_user_id ON user_ai_tool_stack(user_id);
+CREATE INDEX IF NOT EXISTS idx_assessment_insights_assessment_id ON assessment_insights(assessment_id);
+CREATE INDEX IF NOT EXISTS idx_questions_category ON assessment_questions(category_id);
+CREATE INDEX IF NOT EXISTS idx_questions_active ON assessment_questions(is_active);
 
 -- Create updated_at trigger function if not exists
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -174,15 +174,19 @@ END;
 $$ language 'plpgsql';
 
 -- Apply updated_at triggers
+DROP TRIGGER IF EXISTS update_assessment_categories_updated_at ON assessment_categories;
 CREATE TRIGGER update_assessment_categories_updated_at BEFORE UPDATE ON assessment_categories
 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_assessment_questions_updated_at ON assessment_questions;
 CREATE TRIGGER update_assessment_questions_updated_at BEFORE UPDATE ON assessment_questions
 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_ai_tools_updated_at ON ai_tools;
 CREATE TRIGGER update_ai_tools_updated_at BEFORE UPDATE ON ai_tools
 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_user_tool_stack_updated_at ON user_ai_tool_stack;
 CREATE TRIGGER update_user_tool_stack_updated_at BEFORE UPDATE ON user_ai_tool_stack
 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 

@@ -1,0 +1,55 @@
+name: Auto-Publish Scheduled Blogs
+
+# This workflow automatically publishes blog posts that are scheduled
+# Runs every 15 minutes to check for posts ready to be published
+
+on:
+  schedule:
+    # Run every 15 minutes: */15 * * * *
+    # This is a standard cron expression: minute hour day month weekday
+    - cron: '*/15 * * * *'
+
+  # Allow manual triggering from GitHub Actions UI
+  workflow_dispatch:
+
+jobs:
+  publish-scheduled-posts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call Auto-Publisher Edge Function
+        run: |
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            https://${{ secrets.SUPABASE_PROJECT_REF }}.supabase.co/functions/v1/publish-scheduled-blogs \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Content-Type: application/json")
+
+          http_code=$(echo "$response" | tail -n 1)
+          body=$(echo "$response" | head -n -1)
+
+          echo "Response: $body"
+          echo "HTTP Status: $http_code"
+
+          if [ "$http_code" != "200" ]; then
+            echo "Error: Auto-publisher returned status $http_code"
+            exit 1
+          fi
+
+      - name: Log Results
+        if: always()
+        run: |
+          echo "Auto-publish cron job completed at $(date)"
+          echo "Next run scheduled for: $(date -d '+15 minutes')"
+
+  # Optional: Send notification on failure
+  notify-on-failure:
+    needs: publish-scheduled-posts
+    if: failure()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Failure Notification
+        run: |
+          echo "Auto-publish job failed at $(date)"
+          # Add your notification logic here (email, Slack, etc.)
+          # Example: curl -X POST your-webhook-url -d "Auto-publish failed"

@@ -33,6 +33,7 @@ import {
   Minimize,
 } from '@/components/ui/icons';
 import { supabase } from '@/integrations/supabase/client';
+import { KBSourceCitations, KBSource } from '@/components/chatbot/KBSourceCitations';
 
 interface ConversationContext {
   askedAboutExperience: boolean;
@@ -51,6 +52,8 @@ interface MessageMetadata {
   cache_hit?: boolean;
   cache_source?: 'memory' | 'database-exact' | 'database-fuzzy';
   response_time_ms?: number;
+  sources?: KBSource[];
+  sources_used?: number;
 }
 
 interface MessageRating {
@@ -420,15 +423,25 @@ Keep responses concise but helpful. If asked about pricing, enrollment, or speci
       }
     }
 
-    // Fallback to cloud API (Supabase Edge Function)
+    // Fallback to cloud API with RAG (Supabase Edge Function)
     try {
-      const { data, error } = await supabase.functions.invoke('ai-chat-with-analytics-cached', {
+      // Build conversation history for RAG
+      const conversationMessages = messages.slice(-6).map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'assistant',
+        content: msg.content,
+      }));
+
+      conversationMessages.push({
+        role: 'user',
+        content: userMessage,
+      });
+
+      const { data, error } = await supabase.functions.invoke('ai-chat-rag', {
         body: {
-          messages: [{ role: 'user', content: userMessage }],
+          messages: conversationMessages,
           audience: selectedAudience,
-          coursesData: coursesData,
-          sessionId: currentConversation?.sessionId,
-          conversationId: currentConversation?.id,
+          enable_rag: true, // Enable RAG for KB search
+          include_user_context: true, // Include user personalization
         },
       });
 
@@ -437,12 +450,23 @@ Keep responses concise but helpful. If asked about pricing, enrollment, or speci
       const responseTime = Date.now() - startTime;
 
       if (data && data.response) {
+        // Map sources to include slug for KB articles
+        const kbSources: KBSource[] = (data.sources || []).map((source: any) => ({
+          type: source.type,
+          title: source.title,
+          similarity: source.similarity,
+          content_id: source.content_id,
+          slug: source.slug,
+          metadata: source.metadata,
+        }));
+
         const metadata: MessageMetadata = {
-          model: data.model || (data.cache_hit ? 'cached' : 'gpt-4-turbo-preview'),
+          model: data.model || 'gpt-4-turbo-preview',
           cost: data.cost || { usd: 0 },
-          cache_hit: data.cache_hit || false,
-          cache_source: data.cache_source,
+          cache_hit: false,
           response_time_ms: responseTime,
+          sources: kbSources,
+          sources_used: kbSources.length,
         };
 
         setMessageMetadata(prev => ({
@@ -450,10 +474,10 @@ Keep responses concise but helpful. If asked about pricing, enrollment, or speci
           [messageId]: metadata,
         }));
 
-        logger.log('Cloud AI response generated successfully', {
+        logger.log('RAG AI response generated successfully', {
           tokens: data.usage?.total_tokens,
-          cost: metadata.cost.usd,
-          cache_hit: metadata.cache_hit,
+          sources_used: kbSources.length,
+          kb_articles: kbSources.filter(s => s.type === 'knowledge_base').length,
           response_time: responseTime,
         });
 
@@ -1023,6 +1047,15 @@ Keep responses concise but helpful. If asked about pricing, enrollment, or speci
                         </Button>
                       </div>
                     )}
+
+                    {/* KB Source Citations */}
+                    {message.sender === 'ai' &&
+                      metadata?.sources &&
+                      metadata.sources.length > 0 && (
+                        <div className="px-2 max-w-md">
+                          <KBSourceCitations sources={metadata.sources} compact />
+                        </div>
+                      )}
                   </div>
 
                   {message.sender === 'user' && (

@@ -35,7 +35,7 @@ export function Footer() {
 
   const resources = [
     { label: 'FAQ', href: '#', isModal: true },
-    { label: 'Terms & Conditions', href: '#', isModal: true },
+    { label: 'Terms & Conditions', href: '/terms' },
     { label: 'Privacy Policy', href: '/privacy' },
     { label: 'Contact Us', href: '/#contact' },
     { label: 'Support', href: '/support' },

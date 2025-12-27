@@ -266,7 +266,6 @@ export const useSMEAssessmentSubmit = ({
       } catch (generationError) {
         // Log error but don't block submission - user can still view basic report
         logger.error('Error generating assessment outputs:', generationError);
-        console.error('Generation error details:', generationError);
         // Continue to navigate even if generation fails
       }
 

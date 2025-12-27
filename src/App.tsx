@@ -176,6 +176,13 @@ const DomainManagement = lazy(() => import('./pages/settings/DomainManagement'))
 // SME Admin
 const SMEAdminDashboard = lazy(() => import('./pages/admin/SMEAdminDashboard'));
 
+// Knowledge Base Admin
+const KBArticleGenerator = lazy(() => import('./pages/admin/KBArticleGenerator'));
+
+// Knowledge Base Public Pages
+const KnowledgeBase = lazy(() => import('./pages/KnowledgeBase'));
+const KBArticle = lazy(() => import('./pages/KBArticle'));
+
 // AIBORGLingo User Pages
 const LingoHome = lazy(() => import('./pages/lingo/LingoHome'));
 const LingoLessonPlayer = lazy(() => import('./pages/lingo/LingoLessonPlayer'));
@@ -194,6 +201,10 @@ const OfflineContentPage = lazy(() => import('./pages/OfflineContent'));
 const SurveysPage = lazy(() => import('./pages/surveys/SurveysPage'));
 const PublicSurvey = lazy(() => import('./pages/surveys/PublicSurvey'));
 const AdminSurveys = lazy(() => import('./pages/admin/AdminSurveys'));
+
+// Legal pages
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsPage = lazy(() => import('./pages/TermsPage'));
 
 // Aggregated Reports
 // TEMPORARY: Commented out until page is ready
@@ -348,6 +359,14 @@ const AppWithShortcuts = () => {
               }
             />
             <Route
+              path="/admin/kb/generate"
+              element={
+                <RouteWrapper routeName="KB Article Generator">
+                  <KBArticleGenerator />
+                </RouteWrapper>
+              }
+            />
+            <Route
               path="/admin/tenants"
               element={
                 <RouteWrapper routeName="Tenant Management">
@@ -465,7 +484,16 @@ const AppWithShortcuts = () => {
             <Route path="/claim-free-pass" element={<ClaimFreePass />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
+
+            {/* Knowledge Base */}
+            <Route path="/kb" element={<KnowledgeBase />} />
+            <Route path="/kb/:slug" element={<KBArticle />} />
+
             <Route path="/search" element={<SearchPage />} />
+
+            {/* Legal pages */}
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
 
             {/* Flashcard routes */}
             <Route
