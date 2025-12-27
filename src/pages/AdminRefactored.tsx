@@ -29,6 +29,11 @@ import {
   Gift,
   GraduationCap,
   Sparkles,
+  Activity,
+  Cpu,
+  ClipboardCheck,
+  Zap,
+  Settings,
 } from '@/components/ui/icons';
 
 // Only import AccessDenied eagerly (used before tabs render)
@@ -61,6 +66,13 @@ import { ModeratorDashboard } from '@/components/admin/ModeratorDashboard';
 import { RegistrantsManagement } from '@/components/admin/RegistrantsManagement';
 import { VaultClaimsManagement } from '@/components/admin/VaultClaimsManagement';
 import { UserProgressDashboard } from '@/components/admin/user-progress';
+
+// New Admin Dashboard Components
+import { SystemHealthDashboard } from '@/components/admin/system-health';
+import { BackgroundJobsDashboard } from '@/components/admin/background-jobs';
+import { ComplianceDashboard } from '@/components/admin/compliance';
+import { LiveActivityFeed } from '@/components/admin/activity';
+import { AdminSettingsPanel } from '@/components/admin/settings';
 
 export default function AdminRefactored() {
   const { user } = useAuth();
@@ -232,6 +244,35 @@ export default function AdminRefactored() {
               <GraduationCap className="h-4 w-4 mr-2" />
               User Progress
             </TabsTrigger>
+            <TabsTrigger
+              value="system-health"
+              className="text-white data-[state=active]:bg-white/20"
+            >
+              <Activity className="h-4 w-4 mr-2" />
+              Health
+            </TabsTrigger>
+            <TabsTrigger
+              value="background-jobs"
+              className="text-white data-[state=active]:bg-white/20"
+            >
+              <Cpu className="h-4 w-4 mr-2" />
+              Jobs
+            </TabsTrigger>
+            <TabsTrigger value="compliance" className="text-white data-[state=active]:bg-white/20">
+              <ClipboardCheck className="h-4 w-4 mr-2" />
+              Compliance
+            </TabsTrigger>
+            <TabsTrigger
+              value="activity-feed"
+              className="text-white data-[state=active]:bg-white/20"
+            >
+              <Zap className="h-4 w-4 mr-2" />
+              Activity
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="text-white data-[state=active]:bg-white/20">
+              <Settings className="h-4 w-4 mr-2" />
+              Settings
+            </TabsTrigger>
           </TabsList>
 
           {/* Tab Content */}
@@ -333,6 +374,26 @@ export default function AdminRefactored() {
 
           <TabsContent value="user-progress">
             <UserProgressDashboard />
+          </TabsContent>
+
+          <TabsContent value="system-health">
+            <SystemHealthDashboard />
+          </TabsContent>
+
+          <TabsContent value="background-jobs">
+            <BackgroundJobsDashboard />
+          </TabsContent>
+
+          <TabsContent value="compliance">
+            <ComplianceDashboard />
+          </TabsContent>
+
+          <TabsContent value="activity-feed">
+            <LiveActivityFeed />
+          </TabsContent>
+
+          <TabsContent value="settings">
+            <AdminSettingsPanel />
           </TabsContent>
         </Tabs>
       </div>
