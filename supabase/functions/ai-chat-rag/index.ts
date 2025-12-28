@@ -18,6 +18,11 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { classifyQuestion, type QuestionCategory } from './question-classifier.ts';
 import { generateSystemPrompt, calculateContextualWeight, type UserContext } from './prompts.ts';
+import {
+  generateDomainKnowledgePrompt,
+  getCourseDetails,
+  getRecommendedPath,
+} from './domain-knowledge.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -181,10 +186,29 @@ serve(async req => {
       searchLatency = Date.now() - searchStart;
     }
 
-    // STEP 4: Build enhanced system prompt
+    // STEP 4: Build enhanced system prompt with domain knowledge
     let systemPrompt = generateSystemPrompt(classification.category, userContext, audience);
 
-    // Add RAG context
+    // Add static domain knowledge (curriculum, courses, learning paths)
+    const userLevel =
+      userContext?.preferredDifficulty ||
+      (userContext?.abilityEstimate !== undefined
+        ? userContext.abilityEstimate < 0
+          ? 'beginner'
+          : userContext.abilityEstimate < 1
+            ? 'intermediate'
+            : 'advanced'
+        : undefined);
+
+    systemPrompt += '\n\n' + generateDomainKnowledgePrompt(classification.category, userLevel);
+
+    // Add live course catalog from database
+    const liveCourseData = await enrichDomainKnowledge(supabase);
+    if (liveCourseData) {
+      systemPrompt += '\n\n' + liveCourseData;
+    }
+
+    // Add RAG context (dynamic retrieved knowledge)
     if (ragContext) {
       systemPrompt += `\n\n---\n## RETRIEVED KNOWLEDGE BASE\n
 The following content from our knowledge base is relevant to the user's question.
@@ -195,16 +219,17 @@ ${ragContext}
 ---
 
 **IMPORTANT INSTRUCTIONS:**
-1. Use the retrieved content above to answer accurately
-2. Cite sources using [Source X] format
-3. If content doesn't fully answer, acknowledge limitations
-4. Combine multiple sources when relevant
-5. Do NOT make up information not present in retrieved content
-6. If none is relevant, say so and provide general guidance`;
+1. Use BOTH the domain knowledge and retrieved content to answer
+2. Cite sources using [Source X] format when referencing retrieved content
+3. Reference specific courses, learning paths, or concepts from domain knowledge
+4. If content doesn't fully answer, acknowledge limitations
+5. Combine domain knowledge + retrieved sources for comprehensive answers
+6. Do NOT make up information not present in domain knowledge or retrieved content
+7. If recommending courses, use actual course names from the platform`;
     } else {
       systemPrompt += `\n\n---
 Note: No specific content was retrieved from the knowledge base for this query.
-Provide general guidance and suggest contacting support if specific information is needed.`;
+Use the domain knowledge above to provide guidance based on our platform's curriculum and courses.`;
     }
 
     // Add security guidelines
@@ -311,6 +336,40 @@ Provide general guidance and suggest contacting support if specific information 
     );
   }
 });
+
+/**
+ * Fetch actual platform courses and enrich domain knowledge
+ */
+async function enrichDomainKnowledge(supabase: any): Promise<string> {
+  try {
+    // Fetch top courses from database
+    const { data: courses } = await supabase
+      .from('courses')
+      .select('id, title, description, difficulty, category, duration')
+      .eq('is_published', true)
+      .order('popularity_score', { ascending: false })
+      .limit(10);
+
+    if (!courses || courses.length === 0) {
+      return '';
+    }
+
+    let enrichment = '\n### Currently Available Courses on Platform:\n';
+    courses.forEach((course: any) => {
+      enrichment += `
+**${course.title}** (${course.difficulty || 'All levels'})
+- Category: ${course.category || 'AI/ML'}
+- Duration: ${course.duration || 'Self-paced'}
+${course.description ? `- ${course.description.slice(0, 150)}...` : ''}
+`;
+    });
+
+    return enrichment;
+  } catch (error) {
+    console.error('Error enriching domain knowledge:', error);
+    return '';
+  }
+}
 
 /**
  * Fetch comprehensive user context for personalization
