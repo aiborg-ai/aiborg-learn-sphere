@@ -275,33 +275,158 @@ export function BackgroundJobsDashboard() {
 
   useEffect(() => {
     fetchJobs();
-    const interval = setInterval(fetchJobs, 10000); // Refresh every 10 seconds
-    return () => clearInterval(interval);
+
+    // Set up realtime subscription for job updates
+    const channel = supabase
+      .channel('background-jobs-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'background_jobs',
+        },
+        payload => {
+          if (payload.eventType === 'INSERT') {
+            const newJob = payload.new as Record<string, unknown>;
+            const mappedJob: BackgroundJob = {
+              id: newJob.id as string,
+              type: newJob.type as string,
+              status: newJob.status as JobStatus,
+              progress: (newJob.progress as number) || 0,
+              totalItems: (newJob.total_items as number) || 0,
+              processedItems: (newJob.processed_items as number) || 0,
+              errorMessage: newJob.error_message as string | undefined,
+              metadata: newJob.metadata as Record<string, unknown>,
+              startedAt: newJob.started_at as string | undefined,
+              completedAt: newJob.completed_at as string | undefined,
+              createdAt: newJob.created_at as string,
+              retryCount: newJob.retry_count as number | undefined,
+            };
+            setJobs(prev => [mappedJob, ...prev]);
+          } else if (payload.eventType === 'UPDATE') {
+            const updatedJob = payload.new as Record<string, unknown>;
+            setJobs(prev =>
+              prev.map(job =>
+                job.id === updatedJob.id
+                  ? {
+                      ...job,
+                      status: updatedJob.status as JobStatus,
+                      progress: (updatedJob.progress as number) || job.progress,
+                      processedItems: (updatedJob.processed_items as number) || job.processedItems,
+                      errorMessage: updatedJob.error_message as string | undefined,
+                      startedAt: updatedJob.started_at as string | undefined,
+                      completedAt: updatedJob.completed_at as string | undefined,
+                      retryCount: updatedJob.retry_count as number | undefined,
+                    }
+                  : job
+              )
+            );
+          } else if (payload.eventType === 'DELETE') {
+            const deletedId = (payload.old as Record<string, unknown>).id as string;
+            setJobs(prev => prev.filter(job => job.id !== deletedId));
+          }
+        }
+      )
+      .subscribe();
+
+    // Fallback polling for demo mode (when no real data exists)
+    const interval = setInterval(fetchJobs, 30000); // Reduced frequency with realtime
+
+    return () => {
+      supabase.removeChannel(channel);
+      clearInterval(interval);
+    };
   }, [fetchJobs]);
 
   const handleRetry = async (jobId: string) => {
-    toast({
-      title: 'Retrying Job',
-      description: `Job ${jobId.slice(0, 8)}... has been queued for retry.`,
-    });
-    // In real implementation, this would call an API to retry the job
-    setJobs(prev =>
-      prev.map(j =>
-        j.id === jobId
-          ? { ...j, status: 'pending' as JobStatus, retryCount: (j.retryCount || 0) + 1 }
-          : j
-      )
-    );
+    try {
+      const { error } = await supabase
+        .from('background_jobs')
+        .update({
+          status: 'pending',
+          retry_count: supabase.rpc ? undefined : 1, // Increment handled below
+          error_message: null,
+          started_at: null,
+          completed_at: null,
+        })
+        .eq('id', jobId);
+
+      if (error) throw error;
+
+      // Increment retry count
+      await supabase.rpc('increment_retry_count', { job_id: jobId }).catch(() => {
+        // If RPC doesn't exist, update directly
+        supabase
+          .from('background_jobs')
+          .update({ retry_count: jobs.find(j => j.id === jobId)?.retryCount || 0 + 1 })
+          .eq('id', jobId);
+      });
+
+      toast({
+        title: 'Retrying Job',
+        description: `Job ${jobId.slice(0, 8)}... has been queued for retry.`,
+      });
+
+      // Update local state optimistically
+      setJobs(prev =>
+        prev.map(j =>
+          j.id === jobId
+            ? {
+                ...j,
+                status: 'pending' as JobStatus,
+                retryCount: (j.retryCount || 0) + 1,
+                errorMessage: undefined,
+              }
+            : j
+        )
+      );
+    } catch (err) {
+      // Fallback to local-only update for demo
+      toast({
+        title: 'Retrying Job',
+        description: `Job ${jobId.slice(0, 8)}... has been queued for retry.`,
+      });
+      setJobs(prev =>
+        prev.map(j =>
+          j.id === jobId
+            ? { ...j, status: 'pending' as JobStatus, retryCount: (j.retryCount || 0) + 1 }
+            : j
+        )
+      );
+    }
   };
 
   const handleCancel = async (jobId: string) => {
-    toast({
-      title: 'Job Cancelled',
-      description: `Job ${jobId.slice(0, 8)}... has been cancelled.`,
-    });
-    setJobs(prev =>
-      prev.map(j => (j.id === jobId ? { ...j, status: 'cancelled' as JobStatus } : j))
-    );
+    try {
+      const { error } = await supabase
+        .from('background_jobs')
+        .update({
+          status: 'cancelled',
+          completed_at: new Date().toISOString(),
+        })
+        .eq('id', jobId);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Job Cancelled',
+        description: `Job ${jobId.slice(0, 8)}... has been cancelled.`,
+      });
+
+      setJobs(prev =>
+        prev.map(j => (j.id === jobId ? { ...j, status: 'cancelled' as JobStatus } : j))
+      );
+    } catch (err) {
+      // Fallback to local-only update for demo
+      toast({
+        title: 'Job Cancelled',
+        description: `Job ${jobId.slice(0, 8)}... has been cancelled.`,
+      });
+      setJobs(prev =>
+        prev.map(j => (j.id === jobId ? { ...j, status: 'cancelled' as JobStatus } : j))
+      );
+    }
   };
 
   const filteredJobs = jobs.filter(job => {

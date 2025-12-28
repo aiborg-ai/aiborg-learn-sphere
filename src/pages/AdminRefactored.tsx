@@ -34,6 +34,11 @@ import {
   ClipboardCheck,
   Zap,
   Settings,
+  Send,
+  FileSearch,
+  Layers,
+  Key,
+  Webhook,
 } from '@/components/ui/icons';
 
 // Only import AccessDenied eagerly (used before tabs render)
@@ -73,6 +78,13 @@ import { BackgroundJobsDashboard } from '@/components/admin/background-jobs';
 import { ComplianceDashboard } from '@/components/admin/compliance';
 import { LiveActivityFeed } from '@/components/admin/activity';
 import { AdminSettingsPanel } from '@/components/admin/settings';
+
+// Advanced Admin Features
+import { EmailCampaignManager } from '@/components/admin/email-campaigns';
+import { AuditLogViewer } from '@/components/admin/audit-logs';
+import { BulkOperationsDashboard } from '@/components/admin/bulk-operations';
+import { ApiKeyManager } from '@/components/admin/api-keys';
+import { WebhookManager } from '@/components/admin/webhooks';
 
 export default function AdminRefactored() {
   const { user } = useAuth();
@@ -273,6 +285,32 @@ export default function AdminRefactored() {
               <Settings className="h-4 w-4 mr-2" />
               Settings
             </TabsTrigger>
+            <TabsTrigger
+              value="email-campaigns"
+              className="text-white data-[state=active]:bg-white/20"
+            >
+              <Send className="h-4 w-4 mr-2" />
+              Email Campaigns
+            </TabsTrigger>
+            <TabsTrigger value="audit-logs" className="text-white data-[state=active]:bg-white/20">
+              <FileSearch className="h-4 w-4 mr-2" />
+              Audit Logs
+            </TabsTrigger>
+            <TabsTrigger
+              value="bulk-operations"
+              className="text-white data-[state=active]:bg-white/20"
+            >
+              <Layers className="h-4 w-4 mr-2" />
+              Bulk Ops
+            </TabsTrigger>
+            <TabsTrigger value="api-keys" className="text-white data-[state=active]:bg-white/20">
+              <Key className="h-4 w-4 mr-2" />
+              API Keys
+            </TabsTrigger>
+            <TabsTrigger value="webhooks" className="text-white data-[state=active]:bg-white/20">
+              <Webhook className="h-4 w-4 mr-2" />
+              Webhooks
+            </TabsTrigger>
           </TabsList>
 
           {/* Tab Content */}
@@ -394,6 +432,26 @@ export default function AdminRefactored() {
 
           <TabsContent value="settings">
             <AdminSettingsPanel />
+          </TabsContent>
+
+          <TabsContent value="email-campaigns">
+            <EmailCampaignManager />
+          </TabsContent>
+
+          <TabsContent value="audit-logs">
+            <AuditLogViewer />
+          </TabsContent>
+
+          <TabsContent value="bulk-operations">
+            <BulkOperationsDashboard />
+          </TabsContent>
+
+          <TabsContent value="api-keys">
+            <ApiKeyManager />
+          </TabsContent>
+
+          <TabsContent value="webhooks">
+            <WebhookManager />
           </TabsContent>
         </Tabs>
       </div>

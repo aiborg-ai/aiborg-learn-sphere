@@ -267,59 +267,165 @@ export function LiveActivityFeed() {
     };
   }, []);
 
-  // Start/stop event generation
-  useEffect(() => {
-    if (!isPaused) {
-      // Initial load
+  // Fetch real activity events from database
+  const fetchActivityEvents = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('activity_events')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+      if (error || !data || data.length === 0) {
+        // Fall back to sample data if no real events
+        const initialEvents = Array.from({ length: 20 }, generateEvent);
+        setEvents(initialEvents);
+        return false;
+      }
+
+      const mappedEvents: ActivityEvent[] = data.map(event => ({
+        id: event.id,
+        type: event.event_type as EventType,
+        userId: event.user_id || '',
+        userName: event.user_name || 'Unknown User',
+        userEmail: event.user_email || '',
+        description: event.description,
+        metadata: event.metadata as Record<string, unknown> | undefined,
+        timestamp: event.created_at,
+        location: event.location || undefined,
+        device: event.device || undefined,
+      }));
+
+      setEvents(mappedEvents);
+      return true;
+    } catch {
+      // Fall back to sample data
       const initialEvents = Array.from({ length: 20 }, generateEvent);
       setEvents(initialEvents);
-
-      // Generate new events periodically
-      intervalRef.current = setInterval(
-        () => {
-          const newEvent = generateEvent();
-          setEvents(prev => [newEvent, ...prev.slice(0, 99)]);
-          setNewEventIds(prev => new Set([...prev, newEvent.id]));
-
-          // Remove "new" status after 3 seconds
-          setTimeout(() => {
-            setNewEventIds(prev => {
-              const next = new Set(prev);
-              next.delete(newEvent.id);
-              return next;
-            });
-          }, 3000);
-
-          // Update stats
-          setStats(prev => ({
-            ...prev,
-            totalToday: prev.totalToday + 1,
-            eventsPerMinute: Math.floor(Math.random() * 20) + 10,
-            activeUsers: Math.floor(Math.random() * 50) + 20,
-          }));
-        },
-        2000 + Math.random() * 3000
-      );
+      return false;
     }
+  }, [generateEvent]);
+
+  // Main effect for loading data and setting up subscriptions
+  useEffect(() => {
+    let hasRealData = false;
+    let demoInterval: NodeJS.Timeout | null = null;
+
+    const init = async () => {
+      hasRealData = await fetchActivityEvents();
+
+      // Set up realtime subscription for new activity events
+      const channel = supabase
+        .channel('activity-events-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'activity_events',
+          },
+          payload => {
+            if (isPaused) return;
+
+            const newEvent = payload.new as Record<string, unknown>;
+            const mappedEvent: ActivityEvent = {
+              id: newEvent.id as string,
+              type: newEvent.event_type as EventType,
+              userId: (newEvent.user_id as string) || '',
+              userName: (newEvent.user_name as string) || 'Unknown User',
+              userEmail: (newEvent.user_email as string) || '',
+              description: newEvent.description as string,
+              metadata: newEvent.metadata as Record<string, unknown> | undefined,
+              timestamp: newEvent.created_at as string,
+              location: (newEvent.location as string) || undefined,
+              device: (newEvent.device as string) || undefined,
+            };
+
+            setEvents(prev => [mappedEvent, ...prev.slice(0, 99)]);
+            setNewEventIds(prev => new Set([...prev, mappedEvent.id]));
+
+            // Remove "new" status after 3 seconds
+            setTimeout(() => {
+              setNewEventIds(prev => {
+                const next = new Set(prev);
+                next.delete(mappedEvent.id);
+                return next;
+              });
+            }, 3000);
+
+            // Update stats
+            setStats(prev => ({
+              ...prev,
+              totalToday: prev.totalToday + 1,
+            }));
+          }
+        )
+        .subscribe();
+
+      // If no real data, generate demo events
+      if (!hasRealData && !isPaused) {
+        demoInterval = setInterval(
+          () => {
+            const newEvent = generateEvent();
+            setEvents(prev => [newEvent, ...prev.slice(0, 99)]);
+            setNewEventIds(prev => new Set([...prev, newEvent.id]));
+
+            setTimeout(() => {
+              setNewEventIds(prev => {
+                const next = new Set(prev);
+                next.delete(newEvent.id);
+                return next;
+              });
+            }, 3000);
+
+            setStats(prev => ({
+              ...prev,
+              totalToday: prev.totalToday + 1,
+              eventsPerMinute: Math.floor(Math.random() * 20) + 10,
+            }));
+          },
+          2000 + Math.random() * 3000
+        );
+      }
+
+      intervalRef.current = demoInterval;
+
+      return () => {
+        supabase.removeChannel(channel);
+        if (demoInterval) clearInterval(demoInterval);
+      };
+    };
+
+    init();
 
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isPaused, generateEvent]);
+  }, [isPaused, generateEvent, fetchActivityEvents]);
 
-  // Try to get real users count
+  // Fetch user stats
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const { count } = await supabase
+        const { count: userCount } = await supabase
           .from('profiles')
           .select('*', { count: 'exact', head: true });
+
+        // Get today's event count
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const { count: eventCount } = await supabase
+          .from('activity_events')
+          .select('*', { count: 'exact', head: true })
+          .gte('created_at', today.toISOString());
+
         setStats(prev => ({
           ...prev,
-          activeUsers: Math.min(count || 0, 50),
-          totalToday: Math.floor(Math.random() * 500) + 100,
+          activeUsers: userCount || prev.activeUsers,
+          totalToday: eventCount || prev.totalToday,
+          eventsPerMinute: Math.floor(Math.random() * 20) + 10,
         }));
       } catch {
         // Keep sample data

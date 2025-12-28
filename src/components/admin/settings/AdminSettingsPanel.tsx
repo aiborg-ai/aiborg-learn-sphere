@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,8 +24,12 @@ import {
   Save,
   RefreshCw,
   AlertTriangle,
+  Loader2,
 } from '@/components/ui/icons';
 import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
+import { useAuth } from '@/hooks/useAuth';
 
 interface GeneralSettings {
   siteName: string;
@@ -96,6 +100,8 @@ const SettingRow = ({
 
 export function AdminSettingsPanel() {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
 
@@ -149,16 +155,189 @@ export function AdminSettingsPanel() {
     enableWorkshops: true,
   });
 
+  // Fetch settings from database
+  const fetchSettings = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_settings')
+        .select('setting_key, setting_value, category');
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        // Parse and apply settings from database
+        const settingsMap = new Map(
+          data.map(s => [s.setting_key, JSON.parse(JSON.stringify(s.setting_value))])
+        );
+
+        // Update general settings
+        setGeneral(prev => ({
+          ...prev,
+          siteName: settingsMap.get('site_name') || prev.siteName,
+          siteDescription: settingsMap.get('site_description') || prev.siteDescription,
+          supportEmail: settingsMap.get('support_email') || prev.supportEmail,
+          timezone: settingsMap.get('timezone') || prev.timezone,
+          language: settingsMap.get('language') || prev.language,
+          maintenanceMode: settingsMap.get('maintenance_mode') === true,
+          registrationEnabled: settingsMap.get('registration_enabled') !== false,
+        }));
+
+        // Update security settings
+        setSecurity(prev => ({
+          ...prev,
+          sessionTimeout: String(settingsMap.get('session_timeout') || prev.sessionTimeout),
+          passwordMinLength: String(
+            settingsMap.get('password_min_length') || prev.passwordMinLength
+          ),
+          maxLoginAttempts: String(settingsMap.get('max_login_attempts') || prev.maxLoginAttempts),
+          auditLogRetention: String(
+            settingsMap.get('audit_log_retention') || prev.auditLogRetention
+          ),
+        }));
+
+        // Update feature flags
+        setFeatures(prev => ({
+          ...prev,
+          enableBlog: settingsMap.get('enable_blog') !== false,
+          enableForum: settingsMap.get('enable_forum') !== false,
+          enableChatbot: settingsMap.get('enable_chatbot') !== false,
+          enableGamification: settingsMap.get('enable_gamification') !== false,
+          enableFamilyPass: settingsMap.get('enable_family_pass') !== false,
+          enableAssessments: settingsMap.get('enable_assessments') !== false,
+          enableLingo: settingsMap.get('enable_lingo') !== false,
+          enableWorkshops: settingsMap.get('enable_workshops') !== false,
+        }));
+      }
+    } catch (err) {
+      logger.error('Failed to fetch settings:', err);
+      // Keep default values on error
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
+
+  // Save settings to database
   const handleSave = async () => {
     setSaving(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setSaving(false);
-    toast({
-      title: 'Settings Saved',
-      description: 'Your changes have been saved successfully.',
-    });
+
+    try {
+      // Prepare settings to upsert
+      const settingsToSave = [
+        // General settings
+        { setting_key: 'site_name', setting_value: general.siteName, category: 'general' },
+        {
+          setting_key: 'site_description',
+          setting_value: general.siteDescription,
+          category: 'general',
+        },
+        { setting_key: 'support_email', setting_value: general.supportEmail, category: 'general' },
+        { setting_key: 'timezone', setting_value: general.timezone, category: 'general' },
+        { setting_key: 'language', setting_value: general.language, category: 'general' },
+        {
+          setting_key: 'maintenance_mode',
+          setting_value: general.maintenanceMode,
+          category: 'general',
+        },
+        {
+          setting_key: 'registration_enabled',
+          setting_value: general.registrationEnabled,
+          category: 'general',
+        },
+        // Security settings
+        {
+          setting_key: 'session_timeout',
+          setting_value: parseInt(security.sessionTimeout),
+          category: 'security',
+        },
+        {
+          setting_key: 'password_min_length',
+          setting_value: parseInt(security.passwordMinLength),
+          category: 'security',
+        },
+        {
+          setting_key: 'max_login_attempts',
+          setting_value: parseInt(security.maxLoginAttempts),
+          category: 'security',
+        },
+        {
+          setting_key: 'audit_log_retention',
+          setting_value: parseInt(security.auditLogRetention),
+          category: 'security',
+        },
+        // Feature flags
+        { setting_key: 'enable_blog', setting_value: features.enableBlog, category: 'features' },
+        { setting_key: 'enable_forum', setting_value: features.enableForum, category: 'features' },
+        {
+          setting_key: 'enable_chatbot',
+          setting_value: features.enableChatbot,
+          category: 'features',
+        },
+        {
+          setting_key: 'enable_gamification',
+          setting_value: features.enableGamification,
+          category: 'features',
+        },
+        {
+          setting_key: 'enable_family_pass',
+          setting_value: features.enableFamilyPass,
+          category: 'features',
+        },
+        {
+          setting_key: 'enable_assessments',
+          setting_value: features.enableAssessments,
+          category: 'features',
+        },
+        { setting_key: 'enable_lingo', setting_value: features.enableLingo, category: 'features' },
+        {
+          setting_key: 'enable_workshops',
+          setting_value: features.enableWorkshops,
+          category: 'features',
+        },
+      ];
+
+      // Upsert each setting
+      for (const setting of settingsToSave) {
+        const { error } = await supabase.from('admin_settings').upsert(
+          {
+            setting_key: setting.setting_key,
+            setting_value: JSON.stringify(setting.setting_value),
+            category: setting.category,
+            updated_by: user?.id,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'setting_key' }
+        );
+
+        if (error) throw error;
+      }
+
+      toast({
+        title: 'Settings Saved',
+        description: 'Your changes have been saved successfully.',
+      });
+    } catch (err) {
+      logger.error('Failed to save settings:', err);
+      toast({
+        title: 'Error',
+        description: 'Failed to save settings. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

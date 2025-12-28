@@ -1,0 +1,1 @@
+export { EmailCampaignManager } from './EmailCampaignManager';
