@@ -94,9 +94,11 @@ DO $$
 BEGIN
   -- Check if reviews table exists
   IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'reviews') THEN
-    -- Drop existing restrictive policies
+    -- Drop ALL existing policies on reviews table
     DROP POLICY IF EXISTS "Users can view approved reviews" ON public.reviews;
     DROP POLICY IF EXISTS "Public read access to approved reviews" ON public.reviews;
+    DROP POLICY IF EXISTS "Anyone can view approved reviews" ON public.reviews;
+    DROP POLICY IF EXISTS "Enable read access for approved reviews" ON public.reviews;
 
     -- Create permissive policy for approved reviews
     CREATE POLICY "Anyone can view approved reviews"
@@ -114,9 +116,11 @@ DO $$
 BEGIN
   -- Check if events table exists
   IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'events') THEN
-    -- Drop existing restrictive policies
+    -- Drop ALL existing policies on events table
     DROP POLICY IF EXISTS "Users can view visible events" ON public.events;
     DROP POLICY IF EXISTS "Public read access to visible events" ON public.events;
+    DROP POLICY IF EXISTS "Anyone can view visible events" ON public.events;
+    DROP POLICY IF EXISTS "Enable read access for visible events" ON public.events;
 
     -- Create permissive policy for visible events
     CREATE POLICY "Anyone can view visible events"
