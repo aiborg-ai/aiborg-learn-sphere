@@ -134,8 +134,11 @@ END $$;
 -- 5. FIX get_tenant_by_domain RPC FUNCTION
 -- ============================================================================
 
--- Drop and recreate the function with proper error handling
-CREATE OR REPLACE FUNCTION public.get_tenant_by_domain(domain_name TEXT)
+-- Drop existing function first (required when changing return type)
+DROP FUNCTION IF EXISTS public.get_tenant_by_domain(TEXT);
+
+-- Create the function with proper error handling
+CREATE FUNCTION public.get_tenant_by_domain(domain_name TEXT)
 RETURNS TABLE (
   id UUID,
   name TEXT,
