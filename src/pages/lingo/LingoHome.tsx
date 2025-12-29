@@ -109,20 +109,20 @@ export default function LingoHome() {
             {/* Quick Actions */}
             <div className="flex gap-2">
               <Button variant="outline" size="sm" asChild>
-                <Link to="/lingo/leaderboard">
+                <Link to="/lingo/leaderboard" role="button" data-testid="leaderboard-btn">
                   <Trophy className="h-4 w-4 mr-2" />
                   Leaderboard
                 </Link>
               </Button>
               <Button variant="outline" size="sm" asChild>
-                <Link to="/lingo/achievements">
+                <Link to="/lingo/achievements" role="button" data-testid="achievements-btn">
                   <Award className="h-4 w-4 mr-2" />
                   Achievements
                 </Link>
               </Button>
               {!user && (
                 <Button size="sm" asChild>
-                  <Link to="/auth">
+                  <Link to="/auth" role="button" data-testid="signin-btn">
                     <User className="h-4 w-4 mr-2" />
                     Sign In
                   </Link>

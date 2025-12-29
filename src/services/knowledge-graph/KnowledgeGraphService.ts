@@ -6,6 +6,7 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 import type {
   Concept,
   ConceptRelationship,
@@ -40,7 +41,7 @@ export class KnowledgeGraphService {
       .single();
 
     if (error) {
-      console.error('Error fetching concept:', error);
+      logger.error('Error fetching concept:', error);
       return null;
     }
 
@@ -59,7 +60,7 @@ export class KnowledgeGraphService {
       .single();
 
     if (error) {
-      console.error('Error fetching concept by slug:', error);
+      logger.error('Error fetching concept by slug:', error);
       return null;
     }
 
@@ -100,7 +101,7 @@ export class KnowledgeGraphService {
     const { data, error } = await query;
 
     if (error) {
-      console.error('Error fetching concepts:', error);
+      logger.error('Error fetching concepts:', error);
       return [];
     }
 
@@ -114,7 +115,7 @@ export class KnowledgeGraphService {
     const { data, error } = await supabase.from('concepts').insert(concept).select().single();
 
     if (error) {
-      console.error('Error creating concept:', error);
+      logger.error('Error creating concept:', error);
       return null;
     }
 
@@ -133,7 +134,7 @@ export class KnowledgeGraphService {
       .single();
 
     if (error) {
-      console.error('Error updating concept:', error);
+      logger.error('Error updating concept:', error);
       return null;
     }
 
@@ -150,7 +151,7 @@ export class KnowledgeGraphService {
       .eq('id', conceptId);
 
     if (error) {
-      console.error('Error deleting concept:', error);
+      logger.error('Error deleting concept:', error);
       return false;
     }
 
@@ -183,7 +184,7 @@ export class KnowledgeGraphService {
     const { data, error } = await query;
 
     if (error) {
-      console.error('Error fetching relationships:', error);
+      logger.error('Error fetching relationships:', error);
       return [];
     }
 
@@ -202,7 +203,7 @@ export class KnowledgeGraphService {
       .eq('is_active', true);
 
     if (error) {
-      console.error('Error fetching prerequisites:', error);
+      logger.error('Error fetching prerequisites:', error);
       return [];
     }
 
@@ -221,7 +222,7 @@ export class KnowledgeGraphService {
       .eq('is_active', true);
 
     if (error) {
-      console.error('Error fetching dependents:', error);
+      logger.error('Error fetching dependents:', error);
       return [];
     }
 
@@ -238,7 +239,7 @@ export class KnowledgeGraphService {
     });
 
     if (error) {
-      console.error('Error fetching prerequisite chain:', error);
+      logger.error('Error fetching prerequisite chain:', error);
       return [];
     }
 
@@ -269,7 +270,7 @@ export class KnowledgeGraphService {
       );
 
       if (hasCircular) {
-        console.error('Circular dependency detected - relationship not created');
+        logger.error('Circular dependency detected - relationship not created');
         return null;
       }
     }
@@ -281,7 +282,7 @@ export class KnowledgeGraphService {
       .single();
 
     if (error) {
-      console.error('Error creating relationship:', error);
+      logger.error('Error creating relationship:', error);
       return null;
     }
 
@@ -303,7 +304,7 @@ export class KnowledgeGraphService {
       .single();
 
     if (error) {
-      console.error('Error updating relationship:', error);
+      logger.error('Error updating relationship:', error);
       return null;
     }
 
@@ -320,7 +321,7 @@ export class KnowledgeGraphService {
       .eq('id', relationshipId);
 
     if (error) {
-      console.error('Error deleting relationship:', error);
+      logger.error('Error deleting relationship:', error);
       return false;
     }
 
@@ -345,7 +346,7 @@ export class KnowledgeGraphService {
     });
 
     if (error) {
-      console.error('Error checking circular dependency:', error);
+      logger.error('Error checking circular dependency:', error);
       return false;
     }
 
@@ -427,7 +428,7 @@ export class KnowledgeGraphService {
   ): Promise<LearningPathStep[]> {
     // Implementation would use BFS to find shortest path
     // For now, return empty array - to be implemented
-    console.warn('findLearningPath not yet implemented');
+    logger.warn('findLearningPath not yet implemented');
     return [];
   }
 
@@ -446,7 +447,7 @@ export class KnowledgeGraphService {
       .order('order_index');
 
     if (error) {
-      console.error('Error fetching course concepts:', error);
+      logger.error('Error fetching course concepts:', error);
       return [];
     }
 
@@ -464,7 +465,7 @@ export class KnowledgeGraphService {
       .order('order_index');
 
     if (error) {
-      console.error('Error fetching concept courses:', error);
+      logger.error('Error fetching concept courses:', error);
       return [];
     }
 
@@ -496,7 +497,7 @@ export class KnowledgeGraphService {
       .single();
 
     if (error) {
-      console.error('Error linking concept to course:', error);
+      logger.error('Error linking concept to course:', error);
       return null;
     }
 
@@ -514,7 +515,7 @@ export class KnowledgeGraphService {
       .eq('concept_id', conceptId);
 
     if (error) {
-      console.error('Error unlinking concept from course:', error);
+      logger.error('Error unlinking concept from course:', error);
       return false;
     }
 

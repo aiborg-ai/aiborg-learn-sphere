@@ -30,9 +30,14 @@ export function HeartsDisplay({
   const iconSize = sizeClasses[size];
 
   return (
-    <div className={cn('flex items-center gap-1', className)}>
+    <div
+      className={cn('flex items-center gap-1', className)}
+      data-testid="hearts-display"
+      role="status"
+      aria-label={`${hearts} hearts remaining out of ${maxHearts}`}
+    >
       {showLabel && <span className="text-sm font-medium text-muted-foreground mr-1">Hearts:</span>}
-      <div className="flex items-center gap-0.5">
+      <div className="flex items-center gap-0.5" aria-hidden="true">
         {Array.from({ length: maxHearts }).map((_, i) => (
           <Heart
             key={i}

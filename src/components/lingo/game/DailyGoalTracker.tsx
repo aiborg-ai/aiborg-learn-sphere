@@ -34,14 +34,19 @@ export function DailyGoalTracker({
   const sizes = sizeClasses[size];
 
   return (
-    <div className={cn('flex flex-col gap-1', className)}>
+    <div
+      className={cn('flex flex-col gap-1', className)}
+      data-testid="daily-goal-tracker"
+      role="status"
+      aria-label={`Daily goal progress: ${current} of ${goal} XP${isComplete ? ', completed' : ''}`}
+    >
       {showLabel && (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
             {isComplete ? (
-              <Check className={cn(sizes.icon, 'text-green-500')} />
+              <Check className={cn(sizes.icon, 'text-green-500')} aria-hidden="true" />
             ) : (
-              <Target className={cn(sizes.icon, 'text-muted-foreground')} />
+              <Target className={cn(sizes.icon, 'text-muted-foreground')} aria-hidden="true" />
             )}
             <span className={cn(sizes.text, 'text-muted-foreground')}>Daily Goal</span>
           </div>
@@ -53,6 +58,7 @@ export function DailyGoalTracker({
       <Progress
         value={progress}
         className={cn(sizes.bar, 'bg-muted', isComplete && '[&>div]:bg-green-500')}
+        aria-hidden="true"
       />
     </div>
   );

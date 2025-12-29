@@ -63,20 +63,25 @@ export function LessonCard({
       >
         <CardContent className="p-4">
           {/* Status badge */}
-          <div className="absolute top-2 right-2">
+          <div className="absolute top-2 right-2" data-testid="lesson-status-badge">
             {isLocked ? (
-              <div className="p-1.5 rounded-full bg-muted">
-                <Lock className="h-4 w-4 text-muted-foreground" />
+              <div className="p-1.5 rounded-full bg-muted" aria-label="Lesson locked">
+                <Lock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               </div>
             ) : isComplete ? (
               <div
                 className={cn('p-1.5 rounded-full', isPerfect ? 'bg-yellow-500' : 'bg-green-500')}
+                aria-label={isPerfect ? 'Perfect score' : 'Lesson completed'}
               >
-                <Check className="h-4 w-4 text-white" />
+                <Check className="h-4 w-4 text-white" aria-hidden="true" />
               </div>
             ) : (
-              <div className={cn('p-1.5 rounded-full', skillColors.bg)}>
-                <Play className={cn('h-4 w-4', skillColors.text)} />
+              <div
+                className={cn('p-1.5 rounded-full', skillColors.bg)}
+                aria-label="Play lesson"
+                data-testid="play-icon"
+              >
+                <Play className={cn('h-4 w-4', skillColors.text)} aria-hidden="true" />
               </div>
             )}
           </div>
@@ -90,11 +95,10 @@ export function LessonCard({
 
           {/* Footer */}
           <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-            <span>{lesson.duration}</span>
-            <div className="flex items-center gap-1">
-              <span className="font-medium text-yellow-500">+{lesson.xp_reward}</span>
-              <span>XP</span>
-            </div>
+            <span data-testid="lesson-duration">{lesson.duration}</span>
+            <span className="font-medium text-yellow-500" data-testid="lesson-xp">
+              +{lesson.xp_reward} XP
+            </span>
           </div>
 
           {/* Progress indicator for completed lessons */}
