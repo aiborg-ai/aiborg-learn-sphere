@@ -40,7 +40,7 @@ export function FillBlankQuestion({
 
   // Parse question text to highlight blank
   const renderQuestionText = () => {
-    const text = question.question_text;
+    const text = question.question_text || question.prompt || '';
     const blankPattern = /___+|\[blank\]|\{blank\}/gi;
     const parts = text.split(blankPattern);
 
@@ -126,7 +126,12 @@ export function FillBlankQuestion({
           {!result.correct && (
             <p className="text-sm text-muted-foreground mt-1">
               Correct answer:{' '}
-              <span className="font-medium text-foreground">{question.correct_answer}</span>
+              <span className="font-medium text-foreground">
+                {question.correct_answer ||
+                  question.accepted_answers?.[0] ||
+                  question.answers?.[0] ||
+                  'N/A'}
+              </span>
             </p>
           )}
           {result.feedback && (
