@@ -25,6 +25,7 @@ import {
   Brain,
   Folder,
   Ticket,
+  Users,
 } from '@/components/ui/icons';
 import { Link } from 'react-router-dom';
 import { CardSkeleton } from '@/components/skeletons';
@@ -48,6 +49,7 @@ import {
   useRecommendationFeedback,
   useRecommendationInteraction,
 } from '@/hooks/useRecommendations';
+import { DashboardAd } from '@/components/ads/AdSense';
 
 // Lazy load heavy AI/recommendation components
 const MiniCalendarWidget = lazy(() =>
@@ -71,6 +73,9 @@ const PersonalizedSection = lazy(() =>
   import('@/components/recommendations/PersonalizedSection').then(m => ({
     default: m.PersonalizedSection,
   }))
+);
+const WorkshopsWidget = lazy(() =>
+  import('@/components/dashboard/WorkshopsWidget').then(m => ({ default: m.WorkshopsWidget }))
 );
 
 // Widget skeleton for AI components
@@ -266,8 +271,8 @@ export default function DashboardRefactored() {
           enrolledCourses: enrollments.length,
         }));
       }
-    } catch (error) {
-      logger.error('Error fetching dashboard data:', error);
+    } catch (_error) {
+      logger.error('Error fetching dashboard data:', _error);
     } finally {
       setDataLoading(false);
     }
@@ -294,8 +299,8 @@ export default function DashboardRefactored() {
           unreadNotifications: Math.max(0, prev.unreadNotifications - 1),
         }));
       }
-    } catch (error) {
-      logger.error('Error marking notification as read:', error);
+    } catch (_error) {
+      logger.error('Error marking notification as read:', _error);
     }
   };
 
@@ -311,8 +316,8 @@ export default function DashboardRefactored() {
         setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
         setStats(prev => ({ ...prev, unreadNotifications: 0 }));
       }
-    } catch (error) {
-      logger.error('Error marking all notifications as read:', error);
+    } catch (_error) {
+      logger.error('Error marking all notifications as read:', _error);
     }
   };
 
@@ -444,7 +449,7 @@ export default function DashboardRefactored() {
             <DashboardStats stats={stats} />
 
             {/* Quick Access Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
               <Link to="/my-courses">
                 <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-6 text-white hover:shadow-lg transition-shadow cursor-pointer">
                   <div className="flex items-center justify-between mb-2">
@@ -499,6 +504,22 @@ export default function DashboardRefactored() {
                   <p className="text-white/80 text-sm">Levels & rewards</p>
                 </div>
               </Link>
+
+              <Link to="/workshops">
+                <div className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg p-6 text-white hover:shadow-lg transition-shadow cursor-pointer">
+                  <div className="flex items-center justify-between mb-2">
+                    <Users className="h-8 w-8" />
+                    <Award className="h-6 w-6" />
+                  </div>
+                  <h3 className="font-semibold text-lg">Workshops</h3>
+                  <p className="text-white/80 text-sm">Collaborative learning</p>
+                </div>
+              </Link>
+            </div>
+
+            {/* AdSense Ad */}
+            <div className="my-6">
+              <DashboardAd />
             </div>
 
             {/* AI-Powered Features Section */}
@@ -515,6 +536,11 @@ export default function DashboardRefactored() {
                 </Suspense>
               )}
             </div>
+
+            {/* Workshops Widget */}
+            <Suspense fallback={<WidgetSkeleton />}>
+              <WorkshopsWidget />
+            </Suspense>
 
             {/* AI-Powered Personalized Recommendations */}
             <Suspense fallback={<CardSkeleton />}>

@@ -149,6 +149,13 @@ export function Navbar() {
               {t('menu.programs')}
             </button>
             <PrefetchLink
+              to="/workshops"
+              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
+              aria-label={t('aria.goToWorkshops')}
+            >
+              {t('menu.workshops')}
+            </PrefetchLink>
+            <PrefetchLink
               to="/blog"
               className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
               aria-label={t('aria.goToBlog')}
@@ -258,6 +265,13 @@ export function Navbar() {
                     <Icon name="User" size={16} className="mr-2" aria-hidden="true" />
                     {t('user.profile')}
                   </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => navigate('/workshops')}
+                    aria-label={t('aria.goToMyWorkshops')}
+                  >
+                    <Icon name="Users" size={16} className="mr-2" aria-hidden="true" />
+                    {t('user.myWorkshops')}
+                  </DropdownMenuItem>
                   {isAdmin && (
                     <>
                       <DropdownMenuSeparator />
@@ -339,6 +353,14 @@ export function Navbar() {
             >
               {t('menu.programs')}
             </button>
+            <PrefetchLink
+              to="/workshops"
+              className="block text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
+              onClick={() => setIsOpen(false)}
+              aria-label={t('aria.goToWorkshops')}
+            >
+              {t('menu.workshops')}
+            </PrefetchLink>
             <PrefetchLink
               to="/blog"
               className="block text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
@@ -453,6 +475,16 @@ export function Navbar() {
                   >
                     <Icon name="User" size={16} className="mr-2" aria-hidden="true" />
                     {t('user.profile')}
+                  </Button>
+                </PrefetchLink>
+                <PrefetchLink to="/workshops">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-foreground hover:bg-muted/10"
+                    aria-label={t('aria.goToMyWorkshops')}
+                  >
+                    <Icon name="Users" size={16} className="mr-2" aria-hidden="true" />
+                    {t('user.myWorkshops')}
                   </Button>
                 </PrefetchLink>
                 {isAdmin && (

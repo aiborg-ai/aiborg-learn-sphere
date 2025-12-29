@@ -6,6 +6,7 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 import type {
   UserConceptMastery,
   EvidencePoint,
@@ -66,7 +67,7 @@ export class UserMasteryService {
       if (error.code === 'PGRST116') {
         return null;
       }
-      console.error('Error fetching mastery:', error);
+      logger.error('Error fetching mastery:', error);
       return null;
     }
 
@@ -106,7 +107,7 @@ export class UserMasteryService {
     const { data, error } = await query;
 
     if (error) {
-      console.error('Error fetching masteries:', error);
+      logger.error('Error fetching masteries:', error);
       return [];
     }
 
@@ -153,7 +154,7 @@ export class UserMasteryService {
         .single();
 
       if (error) {
-        console.error('Error creating mastery:', error);
+        logger.error('Error creating mastery:', error);
         return null;
       }
 
@@ -173,7 +174,7 @@ export class UserMasteryService {
         .single();
 
       if (error) {
-        console.error('Error updating evidence:', error);
+        logger.error('Error updating evidence:', error);
         return null;
       }
 
@@ -212,7 +213,7 @@ export class UserMasteryService {
       .single();
 
     if (error) {
-      console.error('Error recalculating mastery:', error);
+      logger.error('Error recalculating mastery:', error);
       return null;
     }
 

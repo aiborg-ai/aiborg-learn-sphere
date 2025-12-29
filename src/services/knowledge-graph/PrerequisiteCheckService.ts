@@ -6,6 +6,7 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 import { KnowledgeGraphService } from './KnowledgeGraphService';
 import { UserMasteryService } from './UserMasteryService';
 import type { Concept } from '@/types/knowledge-graph';
@@ -160,7 +161,7 @@ export class PrerequisiteCheckService {
       .in('coverage_level', ['covers', 'masters']); // Only courses that deeply cover the concept
 
     if (error) {
-      console.error('Error finding courses for concepts:', error);
+      logger.error('Error finding courses for concepts:', error);
       return [];
     }
 
