@@ -23,5 +23,4 @@ export {
   enhancedGoalPredictionService,
 } from './EnhancedGoalPredictionService';
 
-// Re-export legacy unified service (facade for backward compatibility)
-export { AnalyticsService } from '../AnalyticsService';
+// Note: AnalyticsService was removed - use individual services above instead
