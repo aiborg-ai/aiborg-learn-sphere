@@ -113,8 +113,8 @@ export class StudyPlanAdjustmentService {
         tasksAffected,
         changes,
       };
-    } catch (error) {
-      logger.error('Error reducing difficulty:', error);
+    } catch (_error) {
+      logger._error('Error reducing difficulty:', _error);
       return this.createFailureResult('Failed to reduce difficulty');
     }
   }
@@ -170,8 +170,8 @@ export class StudyPlanAdjustmentService {
         tasksAffected,
         changes,
       };
-    } catch (error) {
-      logger.error('Error increasing difficulty:', error);
+    } catch (_error) {
+      logger._error('Error increasing difficulty:', _error);
       return this.createFailureResult('Failed to increase difficulty');
     }
   }
@@ -257,8 +257,8 @@ export class StudyPlanAdjustmentService {
         tasksAffected,
         changes,
       };
-    } catch (error) {
-      logger.error('Error adding remedial content:', error);
+    } catch (_error) {
+      logger._error('Error adding remedial content:', _error);
       return this.createFailureResult('Failed to add remedial content');
     }
   }
@@ -344,8 +344,8 @@ export class StudyPlanAdjustmentService {
         tasksAffected,
         changes,
       };
-    } catch (error) {
-      logger.error('Error resequencing content:', error);
+    } catch (_error) {
+      logger._error('Error resequencing content:', _error);
       return this.createFailureResult('Failed to resequence content');
     }
   }
@@ -511,8 +511,8 @@ export class StudyPlanAdjustmentService {
         changes_applied: changes,
         tasks_affected: changes.length,
       });
-    } catch (error) {
-      logger.warn('Failed to log adjustment history:', error);
+    } catch (_error) {
+      logger.warn('Failed to log adjustment history:', _error);
     }
   }
 

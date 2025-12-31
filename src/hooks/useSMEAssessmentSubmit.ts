@@ -213,8 +213,8 @@ export const useSMEAssessmentSubmit = ({
 
       logger.log('Assessment draft saved successfully:', currentAssessmentId);
       return currentAssessmentId;
-    } catch (error) {
-      logger.error('Error saving assessment draft:', error);
+    } catch (_error) {
+      logger._error('Error saving assessment draft:', _error);
       throw error;
     } finally {
       setIsSaving(false);
@@ -276,8 +276,8 @@ export const useSMEAssessmentSubmit = ({
 
       // Navigate to results page
       navigate(`/sme-assessment-report/${finalAssessmentId}`);
-    } catch (error) {
-      logger.error('Error submitting assessment:', error);
+    } catch (_error) {
+      logger._error('Error submitting assessment:', _error);
       throw error;
     } finally {
       setIsSaving(false);

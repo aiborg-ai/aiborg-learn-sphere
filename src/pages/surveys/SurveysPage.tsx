@@ -48,8 +48,8 @@ export default function SurveysPage() {
         setLoading(true);
         const data = await SurveyService.getActiveSurveys();
         setSurveys(data);
-      } catch (error) {
-        logger.error('Failed to load surveys:', error);
+      } catch (_error) {
+        logger._error('Failed to load surveys:', _error);
       } finally {
         setLoading(false);
       }

@@ -78,8 +78,8 @@ export class ForumPostService {
         .ignore();
 
       return post;
-    } catch (error) {
-      logger.error('Error creating post:', error);
+    } catch (_error) {
+      logger._error('Error creating post:', _error);
       throw error;
     }
   }
@@ -165,8 +165,8 @@ export class ForumPostService {
         total_count: posts.length,
         online_users: onlineUsers || [],
       };
-    } catch (error) {
-      logger.error('Error fetching thread posts:', error);
+    } catch (_error) {
+      logger._error('Error fetching thread posts:', _error);
       throw error;
     }
   }
@@ -249,8 +249,8 @@ export class ForumPostService {
       }
 
       return { ...data, replies: [] } as ForumPostWithDetails;
-    } catch (error) {
-      logger.error('Error fetching post:', error);
+    } catch (_error) {
+      logger._error('Error fetching post:', _error);
       throw error;
     }
   }
@@ -282,8 +282,8 @@ export class ForumPostService {
 
       logger.log('Post updated:', postId);
       return data;
-    } catch (error) {
-      logger.error('Error updating post:', error);
+    } catch (_error) {
+      logger._error('Error updating post:', _error);
       throw error;
     }
   }
@@ -310,8 +310,8 @@ export class ForumPostService {
       if (error) throw error;
 
       logger.log('Post deleted:', postId);
-    } catch (error) {
-      logger.error('Error deleting post:', error);
+    } catch (_error) {
+      logger._error('Error deleting post:', _error);
       throw error;
     }
   }
@@ -367,8 +367,8 @@ export class ForumPostService {
       });
 
       logger.log('Best answer marked:', postId);
-    } catch (error) {
-      logger.error('Error marking best answer:', error);
+    } catch (_error) {
+      logger._error('Error marking best answer:', _error);
       throw error;
     }
   }
@@ -399,8 +399,8 @@ export class ForumPostService {
         .eq('id', threadId);
 
       logger.log('Best answer unmarked for thread:', threadId);
-    } catch (error) {
-      logger.error('Error unmarking best answer:', error);
+    } catch (_error) {
+      logger._error('Error unmarking best answer:', _error);
       throw error;
     }
   }
@@ -418,8 +418,8 @@ export class ForumPostService {
 
       if (error) throw error;
       return count || 0;
-    } catch (error) {
-      logger.error('Error getting post count:', error);
+    } catch (_error) {
+      logger._error('Error getting post count:', _error);
       return 0;
     }
   }
@@ -445,8 +445,8 @@ export class ForumPostService {
 
       if (error) throw error;
       return (data || []).map(post => ({ ...post, replies: [] })) as ForumPostWithDetails[];
-    } catch (error) {
-      logger.error('Error fetching user posts:', error);
+    } catch (_error) {
+      logger._error('Error fetching user posts:', _error);
       throw error;
     }
   }
@@ -471,7 +471,7 @@ export class ForumPostService {
         })
         .eq('user_id', user.id)
         .eq('thread_id', threadId);
-    } catch (error) {
+    } catch (_error) {
       // Silent fail - online status is not critical
       logger.log('Error updating online status:', error);
     }

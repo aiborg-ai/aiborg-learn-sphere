@@ -43,8 +43,8 @@ export function useEventsManagement() {
 
       if (error) throw error;
       setEvents(data || []);
-    } catch (error) {
-      logger.error('Error fetching events:', error);
+    } catch (_error) {
+      logger._error('Error fetching events:', _error);
       toast({
         title: 'Error',
         description: 'Failed to fetch events',
@@ -132,8 +132,8 @@ export function useEventsManagement() {
       fetchEvents();
       setIsDialogOpen(false);
       form.reset();
-    } catch (error) {
-      logger.error('Error saving event:', error);
+    } catch (_error) {
+      logger._error('Error saving event:', _error);
       toast({
         title: 'Error',
         description: editingEvent ? 'Failed to update event' : 'Failed to create event',
@@ -161,8 +161,8 @@ export function useEventsManagement() {
       fetchEvents();
       setIsDeleteDialogOpen(false);
       setDeletingEvent(null);
-    } catch (error) {
-      logger.error('Error deleting event:', error);
+    } catch (_error) {
+      logger._error('Error deleting event:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete event',
@@ -188,8 +188,8 @@ export function useEventsManagement() {
         title: 'Success',
         description: `Event ${field === 'is_active' ? 'status' : 'visibility'} updated`,
       });
-    } catch (error) {
-      logger.error(`Error toggling event ${field}:`, error);
+    } catch (_error) {
+      logger._error(`Error toggling event ${field}:`, _error);
       toast({
         title: 'Error',
         description: `Failed to update event ${field === 'is_active' ? 'status' : 'visibility'}`,
@@ -217,8 +217,8 @@ export function useEventsManagement() {
 
       fetchEvents();
       setPhotoUploadEvent(event);
-    } catch (error) {
-      logger.error('Error moving event to past:', error);
+    } catch (_error) {
+      logger._error('Error moving event to past:', _error);
       toast({
         title: 'Error',
         description: 'Failed to move event to past events',

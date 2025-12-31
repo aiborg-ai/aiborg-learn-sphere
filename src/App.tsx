@@ -293,7 +293,17 @@ const AppWithShortcuts = () => {
               path="/admin"
               element={
                 <Suspense fallback={<AdminSkeleton />}>
-                  <RouteWrapper routeName="Admin">
+                  <RouteWrapper routeName="Admin Dashboard">
+                    <DashboardTest />
+                  </RouteWrapper>
+                </Suspense>
+              }
+            />
+            <Route
+              path="/admin/legacy"
+              element={
+                <Suspense fallback={<AdminSkeleton />}>
+                  <RouteWrapper routeName="Admin Legacy">
                     <Admin />
                   </RouteWrapper>
                 </Suspense>

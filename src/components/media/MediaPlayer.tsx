@@ -124,8 +124,8 @@ export function MediaPlayer({
         await document.exitFullscreen();
         setState(prev => ({ ...prev, isFullscreen: false }));
       }
-    } catch (error) {
-      logger.error('Fullscreen error:', error);
+    } catch (_error) {
+      logger._error('Fullscreen _error:', _error);
     }
   }, []);
 
@@ -214,8 +214,8 @@ export function MediaPlayer({
       logger.log('✅ Media URL loaded successfully');
       updateState({ mediaUrl: data.signedUrl, error: null });
       return data.signedUrl;
-    } catch (error) {
-      const errorMessage = logError('load', error);
+    } catch (_error) {
+      const errorMessage = logError('load', _error);
       updateState({ error: errorMessage });
 
       toast({
@@ -297,8 +297,8 @@ export function MediaPlayer({
         await mediaRef.current.play();
         logger.log('▶️ Media playing');
       }
-    } catch (error) {
-      logError('toggle', error);
+    } catch (_error) {
+      logError('toggle', _error);
       toast({
         title: 'Playback Error',
         description: `Failed to ${state.isPlaying ? 'pause' : 'play'} ${type}`,

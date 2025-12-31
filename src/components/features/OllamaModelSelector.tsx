@@ -85,8 +85,8 @@ export function OllamaModelSelector({
       }
 
       setLastRefresh(new Date());
-    } catch (error) {
-      logger.error('Failed to fetch Ollama models:', error);
+    } catch (_error) {
+      logger._error('Failed to fetch Ollama models:', _error);
       setServerOnline(false);
       setModels([]);
     } finally {

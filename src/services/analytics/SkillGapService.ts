@@ -29,8 +29,8 @@ export class SkillGapService {
         recommendedAction: gap.recommended_action || '',
         businessImpact: gap.gap_size > 60 ? 'critical' : gap.gap_size > 40 ? 'high' : 'medium',
       }));
-    } catch (error) {
-      logger.error('Error analyzing skill gaps:', error);
+    } catch (_error) {
+      logger._error('Error analyzing skill gaps:', _error);
       return [];
     }
   }

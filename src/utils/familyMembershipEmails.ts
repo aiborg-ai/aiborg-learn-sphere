@@ -36,7 +36,7 @@ async function sendFamilyMembershipEmail(
     if (error) throw error;
 
     return { success: true };
-  } catch (error) {
+  } catch {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     logger.error(`Error sending ${type} email:`, error);
     return { success: false, error: errorMessage };

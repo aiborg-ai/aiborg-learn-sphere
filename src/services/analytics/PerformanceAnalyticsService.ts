@@ -172,8 +172,8 @@ export class PerformanceAnalyticsService {
           return dateB - dateA;
         })
         .slice(0, limit);
-    } catch (error) {
-      logger.error('Error in getQuestionLevelPerformance:', error);
+    } catch (_error) {
+      logger._error('Error in getQuestionLevelPerformance:', _error);
       return [];
     }
   }
@@ -235,8 +235,8 @@ export class PerformanceAnalyticsService {
       );
 
       return topicPerformance.sort((a, b) => b.averageAccuracy - a.averageAccuracy);
-    } catch (error) {
-      logger.error('Error in getTopicPerformance:', error);
+    } catch (_error) {
+      logger._error('Error in getTopicPerformance:', _error);
       return [];
     }
   }
@@ -319,8 +319,8 @@ export class PerformanceAnalyticsService {
         });
 
       return curve;
-    } catch (error) {
-      logger.error('Error in getLearningCurve:', error);
+    } catch (_error) {
+      logger._error('Error in getLearningCurve:', _error);
       return [];
     }
   }
@@ -349,8 +349,8 @@ export class PerformanceAnalyticsService {
         .slice(0, limit);
 
       return mistakes;
-    } catch (error) {
-      logger.error('Error in getCommonMistakes:', error);
+    } catch (_error) {
+      logger._error('Error in getCommonMistakes:', _error);
       return [];
     }
   }
@@ -435,8 +435,8 @@ export class PerformanceAnalyticsService {
         improvementRate: Math.round(improvementRate),
         consistencyScore: Math.round(consistencyScore),
       };
-    } catch (error) {
-      logger.error('Error in getDetailedPerformanceStats:', error);
+    } catch (_error) {
+      logger._error('Error in getDetailedPerformanceStats:', _error);
       return {
         overallAccuracy: 0,
         totalQuestionsAttempted: 0,

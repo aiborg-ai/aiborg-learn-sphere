@@ -104,8 +104,8 @@ export const ExerciseSubmission: React.FC<ExerciseSubmissionProps> = ({ exercise
         title: 'Draft saved',
         description: 'Your work has been saved automatically.',
       });
-    } catch (error) {
-      logger.error('Failed to save draft', { error });
+    } catch (_error) {
+      logger._error('Failed to save draft', { _error });
     }
   };
 
@@ -124,8 +124,8 @@ export const ExerciseSubmission: React.FC<ExerciseSubmissionProps> = ({ exercise
 
         // Now submit
         await submitExercise.mutateAsync(result.id);
-      } catch (error) {
-        logger.error('Failed to submit exercise', { error, exerciseId: exercise.id });
+      } catch (_error) {
+        logger._error('Failed to submit exercise', { _error, exerciseId: exercise.id });
         toast({
           title: 'Submission failed',
           description: 'Please try again.',
@@ -156,8 +156,8 @@ export const ExerciseSubmission: React.FC<ExerciseSubmissionProps> = ({ exercise
 
         // Navigate to results
         navigate(`/exercise/${exercise.id}/results/${existingSubmission.id}`);
-      } catch (error) {
-        logger.error('Failed to submit exercise', { error, exerciseId: exercise.id });
+      } catch (_error) {
+        logger._error('Failed to submit exercise', { _error, exerciseId: exercise.id });
         toast({
           title: 'Submission failed',
           description: 'Please try again.',

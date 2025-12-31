@@ -4,7 +4,8 @@
  */
 
 import { useParams, Navigate } from 'react-router-dom';
-import { Navbar, Footer } from '@/components/navigation';
+import { Navbar } from '@/components/navigation/Navbar';
+import { Footer } from '@/components/navigation/Footer';
 import { WorkshopSessionRoom } from '@/components/workshop/WorkshopSessionRoom';
 import { useAuth } from '@/hooks/useAuth';
 import { Icon } from '@/utils/iconLoader';

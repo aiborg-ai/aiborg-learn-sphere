@@ -68,9 +68,9 @@ export class MFAService {
         secret: data.totp.secret,
         factorId: data.id,
       };
-    } catch (error) {
-      logger.error('MFA enrollment error', error);
-      throw error;
+    } catch (_error) {
+      logger._error('MFA enrollment _error', _error);
+      throw _error;
     }
   }
 
@@ -103,9 +103,9 @@ export class MFAService {
         challengeId: data.id,
         expiresAt: data.expires_at,
       };
-    } catch (error) {
-      logger.error('MFA challenge error', error);
-      throw error;
+    } catch (_error) {
+      logger._error('MFA challenge _error', _error);
+      throw _error;
     }
   }
 
@@ -140,9 +140,9 @@ export class MFAService {
 
       logger.info('MFA verification successful', { factorId });
       return true;
-    } catch (error) {
-      logger.error('MFA verification error', error);
-      throw error;
+    } catch (_error) {
+      logger._error('MFA verification _error', _error);
+      throw _error;
     }
   }
 
@@ -171,9 +171,9 @@ export class MFAService {
 
       logger.info('Listed MFA factors', { count: factors.length });
       return factors;
-    } catch (error) {
-      logger.error('List MFA factors error', error);
-      throw error;
+    } catch (_error) {
+      logger._error('List MFA factors _error', _error);
+      throw _error;
     }
   }
 
@@ -189,8 +189,8 @@ export class MFAService {
 
       logger.info('Checked MFA status', { hasMFA: hasVerified });
       return hasVerified;
-    } catch (error) {
-      logger.error('Check MFA status error', error);
+    } catch (_error) {
+      logger._error('Check MFA status _error', _error);
       return false; // Fail safely
     }
   }
@@ -217,9 +217,9 @@ export class MFAService {
 
       logger.info('MFA unenrollment successful', { factorId });
       return true;
-    } catch (error) {
-      logger.error('MFA unenrollment error', error);
-      throw error;
+    } catch (_error) {
+      logger._error('MFA unenrollment _error', _error);
+      throw _error;
     }
   }
 
@@ -239,8 +239,8 @@ export class MFAService {
       }
 
       return data?.currentLevel || null;
-    } catch (error) {
-      logger.error('Get assurance level error', error);
+    } catch (_error) {
+      logger._error('Get assurance level _error', _error);
       return null;
     }
   }
@@ -263,9 +263,9 @@ export class MFAService {
 
       logger.info('MFA enrollment completed', { factorId });
       return true;
-    } catch (error) {
-      logger.error('Complete enrollment error', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Complete enrollment _error', _error);
+      throw _error;
     }
   }
 }

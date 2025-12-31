@@ -95,8 +95,8 @@ export class EmbeddingService {
         embedding: data.embedding,
         tokens: Math.ceil(text.length / 4), // Rough estimate: 1 token ≈ 4 chars
       };
-    } catch (error) {
-      logger.error('Failed to generate Ollama embedding:', error);
+    } catch (_error) {
+      logger._error('Failed to generate Ollama embedding:', _error);
       throw error;
     }
   }
@@ -134,8 +134,8 @@ export class EmbeddingService {
         embedding: data.data[0].embedding,
         tokens: data.usage.total_tokens,
       };
-    } catch (error) {
-      logger.error('Failed to generate OpenAI embedding:', error);
+    } catch (_error) {
+      logger._error('Failed to generate OpenAI embedding:', _error);
       throw error;
     }
   }
@@ -177,8 +177,8 @@ export class EmbeddingService {
           if (i < texts.length - 1) {
             await this.sleep(100); // 100ms delay
           }
-        } catch (error) {
-          logger.error(`Error processing item ${i}:`, error);
+        } catch (_error) {
+          logger._error(`Error processing item ${i}:`, _error);
         }
       }
     } else {
@@ -228,8 +228,8 @@ export class EmbeddingService {
           if (batchIndex < batches.length - 1) {
             await this.sleep(this.rateLimitDelay * BATCH_SIZE);
           }
-        } catch (error) {
-          logger.error(`Error processing batch ${batchIndex}:`, error);
+        } catch (_error) {
+          logger._error(`Error processing batch ${batchIndex}:`, _error);
         }
       }
     }
@@ -291,8 +291,8 @@ export class EmbeddingService {
       if (error) throw error;
 
       return data.id;
-    } catch (error) {
-      logger.error('Failed to save content embedding:', error);
+    } catch (_error) {
+      logger._error('Failed to save content embedding:', _error);
       throw error;
     }
   }
@@ -318,8 +318,8 @@ export class EmbeddingService {
       }
 
       return data as ContentEmbedding;
-    } catch (error) {
-      logger.error('Failed to get content embedding:', error);
+    } catch (_error) {
+      logger._error('Failed to get content embedding:', _error);
       return null;
     }
   }
@@ -396,16 +396,16 @@ export class EmbeddingService {
             model_version: EMBEDDING_MODEL,
           });
           stats.success++;
-        } catch (error) {
-          logger.error(`Failed to save embedding for course ${courses[i].id}:`, error);
+        } catch (_error) {
+          logger._error(`Failed to save embedding for course ${courses[i].id}:`, _error);
           stats.failed++;
         }
       }
 
       logger.info('Course embeddings update complete:', stats);
       return stats;
-    } catch (error) {
-      logger.error('Failed to update course embeddings:', error);
+    } catch (_error) {
+      logger._error('Failed to update course embeddings:', _error);
       throw error;
     }
   }
@@ -462,16 +462,16 @@ export class EmbeddingService {
             model_version: EMBEDDING_MODEL,
           });
           stats.success++;
-        } catch (error) {
-          logger.error(`Failed to save embedding for learning path ${paths[i].id}:`, error);
+        } catch (_error) {
+          logger._error(`Failed to save embedding for learning path ${paths[i].id}:`, _error);
           stats.failed++;
         }
       }
 
       logger.info('Learning path embeddings update complete:', stats);
       return stats;
-    } catch (error) {
-      logger.error('Failed to update learning path embeddings:', error);
+    } catch (_error) {
+      logger._error('Failed to update learning path embeddings:', _error);
       throw error;
     }
   }
@@ -537,16 +537,16 @@ export class EmbeddingService {
             model_version: EMBEDDING_MODEL,
           });
           stats.success++;
-        } catch (error) {
-          logger.error(`Failed to save embedding for blog post ${posts[i].id}:`, error);
+        } catch (_error) {
+          logger._error(`Failed to save embedding for blog post ${posts[i].id}:`, _error);
           stats.failed++;
         }
       }
 
       logger.info('Blog post embeddings update complete:', stats);
       return stats;
-    } catch (error) {
-      logger.error('Failed to update blog post embeddings:', error);
+    } catch (_error) {
+      logger._error('Failed to update blog post embeddings:', _error);
       throw error;
     }
   }
@@ -569,7 +569,7 @@ export class EmbeddingService {
     let learningPaths = { total: 0, success: 0, failed: 0 };
     try {
       learningPaths = await this.updateLearningPathEmbeddings();
-    } catch (error) {
+    } catch (_error) {
       logger.info(
         'Skipping learning paths:',
         error instanceof Error ? error.message : 'Unknown error'
@@ -614,8 +614,8 @@ export class EmbeddingService {
       if (error) throw error;
 
       return data || [];
-    } catch (error) {
-      logger.error('Failed to find similar content:', error);
+    } catch (_error) {
+      logger._error('Failed to find similar content:', _error);
       return [];
     }
   }

@@ -288,8 +288,8 @@ export class RBACManager {
       } else {
         this.userRole = data.role as UserRole;
       }
-    } catch (error) {
-      logger.error('Error fetching user role:', error);
+    } catch (_error) {
+      logger._error('Error fetching user role:', _error);
       this.userRole = UserRole.STUDENT;
     }
   }

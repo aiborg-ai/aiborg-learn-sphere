@@ -31,8 +31,8 @@ export const LearningVelocityCard: React.FC = () => {
     try {
       const data = await LearningVelocityService.calculateLearningVelocity(user.id);
       setMetrics(data);
-    } catch (error) {
-      logger.error('Error loading velocity metrics:', error);
+    } catch (_error) {
+      logger._error('Error loading velocity metrics:', _error);
       setMetrics(null);
     } finally {
       setLoading(false);
@@ -194,9 +194,7 @@ export const LearningVelocityCard: React.FC = () => {
             <p className="text-xs text-muted-foreground capitalize">
               {metrics.improvementTrend}
               {metrics.abilityChange > 0 && (
-                <span className="text-green-600 ml-1">
-                  +{metrics.abilityChange.toFixed(1)}%
-                </span>
+                <span className="text-green-600 ml-1">+{metrics.abilityChange.toFixed(1)}%</span>
               )}
               {metrics.abilityChange < 0 && (
                 <span className="text-red-600 ml-1">{metrics.abilityChange.toFixed(1)}%</span>
@@ -231,9 +229,7 @@ export const LearningVelocityCard: React.FC = () => {
               <Target className="h-4 w-4 text-purple-600" />
               <span>Accuracy</span>
             </div>
-            <p className="text-xs text-muted-foreground">
-              {Math.round(metrics.recentAccuracy)}%
-            </p>
+            <p className="text-xs text-muted-foreground">{Math.round(metrics.recentAccuracy)}%</p>
           </div>
         </div>
 

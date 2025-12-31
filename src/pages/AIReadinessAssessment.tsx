@@ -128,7 +128,7 @@ export default function AIReadinessAssessment() {
             section,
             responses: sectionData,
           });
-        } catch (error) {
+        } catch {
           // Continue saving other sections even if one fails
         }
       }
@@ -152,7 +152,7 @@ export default function AIReadinessAssessment() {
 
       // Navigate to results page
       navigate(`/assessment/ai-readiness/results/${assessmentId}`);
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to complete assessment. Please try again.',

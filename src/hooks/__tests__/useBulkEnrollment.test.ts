@@ -412,8 +412,8 @@ describe('useBulkEnrollment', () => {
       await act(async () => {
         try {
           await result.current.processEnrollments([mockEnrollmentRow]);
-        } catch (error) {
-          expect(error).toBeDefined();
+        } catch (_error) {
+          expect(_error).toBeDefined();
         }
       });
 

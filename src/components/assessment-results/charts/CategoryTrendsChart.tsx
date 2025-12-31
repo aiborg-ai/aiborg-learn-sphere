@@ -40,7 +40,7 @@ export function CategoryTrendsChart({
   // Assign colors to categories
   const categoryColors = useMemo(() => {
     const colors: Record<string, string> = {};
-    categoryNames.forEach((name, index) => {
+    categoryNames.forEach((name, _index) => {
       colors[name] = CHART_COLORS.categories[index % CHART_COLORS.categories.length];
     });
     return colors;
@@ -151,7 +151,7 @@ export function CategoryTrendsChart({
             />
 
             {/* Line for each category */}
-            {categoryNames.map((category, index) => (
+            {categoryNames.map((category, _index) => (
               <Line
                 key={category}
                 type="monotone"
@@ -174,7 +174,7 @@ export function CategoryTrendsChart({
                       {payload
                         .filter(p => typeof p.value === 'number')
                         .sort((a, b) => (b.value as number) - (a.value as number))
-                        .map((entry, index) => (
+                        .map((entry, _index) => (
                           <div key={index} className="flex justify-between gap-4">
                             <div className="flex items-center gap-2">
                               <div
@@ -198,7 +198,7 @@ export function CategoryTrendsChart({
               wrapperStyle={{ paddingTop: '20px' }}
               content={({ payload }) => (
                 <div className="flex flex-wrap justify-center gap-4 text-sm">
-                  {payload?.map((entry, index) => (
+                  {payload?.map((entry, _index) => (
                     <div key={index} className="flex items-center gap-2">
                       <div className="w-4 h-0.5" style={{ backgroundColor: entry.color }} />
                       <span className="text-muted-foreground text-xs truncate max-w-[100px]">

@@ -367,8 +367,8 @@ class UserMetricsTrackerClass {
       if (error) {
         logger.error(`[UserMetrics] Failed to send ${table} metric:`, error);
       }
-    } catch (error) {
-      logger.error(`[UserMetrics] Error sending ${table} metric:`, error);
+    } catch (_error) {
+      logger._error(`[UserMetrics] Error sending ${table} metric:`, _error);
     }
   }
 

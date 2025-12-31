@@ -122,7 +122,7 @@ export default function ExportModal({
         setProgress(0);
         onOpenChange(false);
       }, 1000);
-    } catch (error) {
+    } catch (_error) {
       setIsExporting(false);
       setProgress(0);
       toast({

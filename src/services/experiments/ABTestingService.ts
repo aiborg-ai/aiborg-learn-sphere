@@ -195,8 +195,8 @@ export class ABTestingService {
       if (varError) throw varError;
 
       return this.mapExperiment(experiment);
-    } catch (error) {
-      logger.error('Error creating experiment:', error);
+    } catch (_error) {
+      logger._error('Error creating experiment:', _error);
       return null;
     }
   }
@@ -218,8 +218,8 @@ export class ABTestingService {
 
       if (error) throw error;
       return true;
-    } catch (error) {
-      logger.error('Error starting experiment:', error);
+    } catch (_error) {
+      logger._error('Error starting experiment:', _error);
       return false;
     }
   }
@@ -240,8 +240,8 @@ export class ABTestingService {
 
       if (error) throw error;
       return true;
-    } catch (error) {
-      logger.error('Error pausing experiment:', error);
+    } catch (_error) {
+      logger._error('Error pausing experiment:', _error);
       return false;
     }
   }
@@ -269,8 +269,8 @@ export class ABTestingService {
 
       if (error) throw error;
       return true;
-    } catch (error) {
-      logger.error('Error completing experiment:', error);
+    } catch (_error) {
+      logger._error('Error completing experiment:', _error);
       return false;
     }
   }
@@ -377,8 +377,8 @@ export class ABTestingService {
       await this.trackEvent(experimentId, assignedVariant.id as string, userId, 'exposure');
 
       return this.mapVariant(assignedVariant);
-    } catch (error) {
-      logger.error('Error getting variant for user:', error);
+    } catch (_error) {
+      logger._error('Error getting variant for user:', _error);
       return null;
     }
   }
@@ -410,8 +410,8 @@ export class ABTestingService {
 
       if (error) throw error;
       return true;
-    } catch (error) {
-      logger.error('Error tracking event:', error);
+    } catch (_error) {
+      logger._error('Error tracking event:', _error);
       return false;
     }
   }
@@ -442,8 +442,8 @@ export class ABTestingService {
         eventValue: conversionValue,
         eventMetadata: metadata,
       });
-    } catch (error) {
-      logger.error('Error tracking conversion:', error);
+    } catch (_error) {
+      logger._error('Error tracking conversion:', _error);
       return false;
     }
   }
@@ -524,8 +524,8 @@ export class ABTestingService {
         recommendation,
         confidence: confidence * 100,
       };
-    } catch (error) {
-      logger.error('Error getting experiment results:', error);
+    } catch (_error) {
+      logger._error('Error getting experiment results:', _error);
       return null;
     }
   }
@@ -544,8 +544,8 @@ export class ABTestingService {
       if (error) throw error;
 
       return (data || []).map(this.mapExperiment);
-    } catch (error) {
-      logger.error('Error getting active experiments:', error);
+    } catch (_error) {
+      logger._error('Error getting active experiments:', _error);
       return [];
     }
   }
@@ -581,8 +581,8 @@ export class ABTestingService {
           variant: this.mapVariant(d.experiment_variants as Record<string, unknown>),
           assignment: this.mapAssignment(d),
         }));
-    } catch (error) {
-      logger.error('Error getting user assignments:', error);
+    } catch (_error) {
+      logger._error('Error getting user assignments:', _error);
       return [];
     }
   }

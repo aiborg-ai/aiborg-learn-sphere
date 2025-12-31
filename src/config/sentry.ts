@@ -124,7 +124,7 @@ export function initializeSentry(): void {
         // Ignore parsing errors
       }
     }
-  } catch (error) {
+  } catch (_error) {
     // eslint-disable-next-line no-console
     console.error('Failed to initialize Sentry:', error);
   }

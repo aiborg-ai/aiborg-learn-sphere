@@ -32,8 +32,8 @@ export class AIRecommendationService {
       }
 
       return data || [];
-    } catch (error) {
-      logger.error('Error generating recommendations:', error);
+    } catch (_error) {
+      logger._error('Error generating recommendations:', _error);
       return [];
     }
   }
@@ -56,8 +56,8 @@ export class AIRecommendationService {
       if (error) throw error;
 
       return data || [];
-    } catch (error) {
-      logger.error('Error getting active recommendations:', error);
+    } catch (_error) {
+      logger._error('Error getting active recommendations:', _error);
       return [];
     }
   }
@@ -74,8 +74,8 @@ export class AIRecommendationService {
         .is('viewed_at', null);
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error marking recommendation viewed:', error);
+    } catch (_error) {
+      logger._error('Error marking recommendation viewed:', _error);
     }
   }
 
@@ -90,8 +90,8 @@ export class AIRecommendationService {
         .eq('id', recommendationId);
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error marking recommendation clicked:', error);
+    } catch (_error) {
+      logger._error('Error marking recommendation clicked:', _error);
     }
   }
 
@@ -106,8 +106,8 @@ export class AIRecommendationService {
         .eq('id', recommendationId);
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error dismissing recommendation:', error);
+    } catch (_error) {
+      logger._error('Error dismissing recommendation:', _error);
     }
   }
 
@@ -122,8 +122,8 @@ export class AIRecommendationService {
         .eq('id', recommendationId);
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error rating recommendation:', error);
+    } catch (_error) {
+      logger._error('Error rating recommendation:', _error);
     }
   }
 }

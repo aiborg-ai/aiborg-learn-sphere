@@ -100,7 +100,7 @@ export function createBenchmarkComparison(
     industry_avg: industryAvg,
     industry_median: industryMedian,
     percentile_rank: percentileRank,
-    performance_level: performanceLevel,
+    _performance_level: performanceLevel,
     gap_to_75th,
   };
 }
@@ -197,7 +197,7 @@ export function calculateImprovementScenarios(
   pointsNeeded: number;
   description: string;
 }> {
-  const currentPercentile = calculatePercentileRank(currentScore, benchmark);
+  const _currentPercentile = calculatePercentileRank(currentScore, benchmark);
 
   const scenarios = [
     {
@@ -241,7 +241,7 @@ export function generatePositioningSummary(
   icon: string;
   color: string;
 } {
-  const { percentile_rank, performance_level, your_score } = overallComparison;
+  const { percentile_rank, _performance_level, your_score } = overallComparison;
 
   const templates = {
     below_average: {
@@ -270,7 +270,7 @@ export function generatePositioningSummary(
     },
   };
 
-  return templates[performance_level];
+  return templates[_performance_level];
 }
 
 // ============================================================================
@@ -285,7 +285,7 @@ export function generatePeerInsights(
   dimension: DimensionType
 ): string[] {
   const insights: string[] = [];
-  const { your_score, industry_avg, percentile_rank, performance_level } = comparison;
+  const { your_score, industry_avg, percentile_rank, _performance_level } = comparison;
 
   // Percentile insight
   if (percentile_rank >= 75) {

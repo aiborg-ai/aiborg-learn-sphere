@@ -101,6 +101,7 @@ export default function KBArticle() {
         .eq('id', article.id)
         .then();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [article?.id]);
 
   // Handle scroll for TOC active state
@@ -158,7 +159,7 @@ export default function KBArticle() {
           text: article?.excerpt,
           url: window.location.href,
         });
-      } catch (error) {
+      } catch {
         // User cancelled share
       }
     } else {

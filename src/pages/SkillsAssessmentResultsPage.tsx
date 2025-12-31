@@ -12,7 +12,8 @@ import { useJobRoleMatch } from '@/hooks/useJobRoleMatch';
 import { useSkillBenchmarks, useOverallPercentile } from '@/hooks/useSkillBenchmarks';
 import { useSkillRecommendations } from '@/hooks/useSkillRecommendations';
 import { useAuth } from '@/hooks/useAuth';
-import { Navbar, Footer } from '@/components/navigation';
+import { Navbar } from '@/components/navigation/Navbar';
+import { Footer } from '@/components/navigation/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -118,8 +119,8 @@ export default function SkillsAssessmentResultsPage() {
       await exportSkillsAssessmentToPDF(user.email || 'User', assessmentId);
 
       toast.success('PDF downloaded successfully!');
-    } catch (error) {
-      toast.error('Failed to generate PDF. Please try again.');
+    } catch (_error) {
+      toast._error('Failed to generate PDF. Please try again.');
       logger.error('PDF export error:', error);
     } finally {
       setIsExportingPDF(false);

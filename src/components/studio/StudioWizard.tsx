@@ -78,8 +78,8 @@ export function StudioWizard({
       try {
         await onPublish(state.data);
         // Success will be handled by parent component
-      } catch (error) {
-        logger.error('Publish failed:', error);
+      } catch (_error) {
+        logger._error('Publish failed:', _error);
       }
     }
   };

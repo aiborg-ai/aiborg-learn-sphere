@@ -88,8 +88,8 @@ export function StudyCalendar({ userId, planId, onTaskComplete, onTaskClick }: S
       });
 
       setCurrentWeekIndex(weekIndex >= 0 ? weekIndex : 0);
-    } catch (error) {
-      logger.error('Error fetching study plan:', error);
+    } catch (_error) {
+      logger._error('Error fetching study plan:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load study plan',
@@ -123,8 +123,8 @@ export function StudyCalendar({ userId, planId, onTaskComplete, onTaskClick }: S
           onTaskComplete(task.task_id);
         }
       }
-    } catch (error) {
-      logger.error('Error completing task:', error);
+    } catch (_error) {
+      logger._error('Error completing task:', _error);
       toast({
         title: 'Error',
         description: 'Failed to mark task as complete',

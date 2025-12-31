@@ -77,8 +77,8 @@ class OfflineContentServiceClass {
           downloadedAt: download?.completedAt,
         };
       }
-    } catch (error) {
-      logger.error('[OfflineContentService] Get course failed:', error);
+    } catch (_error) {
+      logger._error('[OfflineContentService] Get course failed:', _error);
       // Fallback to cached version if online request fails
       return await this.getCachedCourse(courseId);
     }
@@ -110,8 +110,8 @@ class OfflineContentServiceClass {
         isOffline: true,
         downloadedAt: download.completedAt,
       };
-    } catch (error) {
-      logger.error('[OfflineContentService] Get cached course failed:', error);
+    } catch (_error) {
+      logger._error('[OfflineContentService] Get cached course failed:', _error);
       return null;
     }
   }
@@ -148,8 +148,8 @@ class OfflineContentServiceClass {
           isOffline: isDownloaded,
         };
       }
-    } catch (error) {
-      logger.error('[OfflineContentService] Get lesson failed:', error);
+    } catch (_error) {
+      logger._error('[OfflineContentService] Get lesson failed:', _error);
       return await this.getCachedLesson(lessonId);
     }
   }
@@ -182,8 +182,8 @@ class OfflineContentServiceClass {
         order: metadata?.order || 0,
         isOffline: true,
       };
-    } catch (error) {
-      logger.error('[OfflineContentService] Get cached lesson failed:', error);
+    } catch (_error) {
+      logger._error('[OfflineContentService] Get cached lesson failed:', _error);
       return null;
     }
   }
@@ -205,8 +205,8 @@ class OfflineContentServiceClass {
       }
 
       return courses;
-    } catch (error) {
-      logger.error('[OfflineContentService] Get offline courses failed:', error);
+    } catch (_error) {
+      logger._error('[OfflineContentService] Get offline courses failed:', _error);
       return [];
     }
   }
@@ -224,8 +224,8 @@ class OfflineContentServiceClass {
       }
 
       return null;
-    } catch (error) {
-      logger.error('[OfflineContentService] Get cached video failed:', error);
+    } catch (_error) {
+      logger._error('[OfflineContentService] Get cached video failed:', _error);
       return null;
     }
   }
@@ -244,8 +244,8 @@ class OfflineContentServiceClass {
       }
 
       return null;
-    } catch (error) {
-      logger.error('[OfflineContentService] Get cached content URL failed:', error);
+    } catch (_error) {
+      logger._error('[OfflineContentService] Get cached content URL failed:', _error);
       return null;
     }
   }
@@ -257,8 +257,8 @@ class OfflineContentServiceClass {
     try {
       const download = await OfflineDownloadsDB.get(`${contentType}-${contentId}`);
       return download?.status === 'completed';
-    } catch (error) {
-      logger.error('[OfflineContentService] Check offline availability failed:', error);
+    } catch (_error) {
+      logger._error('[OfflineContentService] Check offline availability failed:', _error);
       return false;
     }
   }
@@ -286,8 +286,8 @@ class OfflineContentServiceClass {
         failedDownloads: failed.length,
         totalSize,
       };
-    } catch (error) {
-      logger.error('[OfflineContentService] Get storage stats failed:', error);
+    } catch (_error) {
+      logger._error('[OfflineContentService] Get storage stats failed:', _error);
       return {
         totalDownloads: 0,
         completedDownloads: 0,
@@ -309,8 +309,8 @@ class OfflineContentServiceClass {
       await caches.delete(this.CACHE_NAME);
 
       logger.info('[OfflineContentService] All cache cleared');
-    } catch (error) {
-      logger.error('[OfflineContentService] Clear cache failed:', error);
+    } catch (_error) {
+      logger._error('[OfflineContentService] Clear cache failed:', _error);
       throw error;
     }
   }

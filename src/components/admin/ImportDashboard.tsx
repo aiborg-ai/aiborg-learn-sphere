@@ -174,8 +174,8 @@ export function ImportDashboard() {
 
       // Set recent imports
       setRecentImports(logs?.slice(0, 5) || []);
-    } catch (error) {
-      logger.error('Error fetching dashboard data:', error);
+    } catch (_error) {
+      logger._error('Error fetching dashboard data:', _error);
     } finally {
       setIsLoading(false);
     }

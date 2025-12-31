@@ -192,8 +192,8 @@ export class EnhancedCSVExportService {
       this.downloadCSV(csvContent, config.filename);
 
       logger.info('Enhanced CSV export completed', { filename: config.filename });
-    } catch (error) {
-      logger.error('Error in enhanced CSV export:', error);
+    } catch (_error) {
+      logger._error('Error in enhanced CSV export:', _error);
       throw error;
     }
   }
@@ -271,8 +271,8 @@ export class EnhancedCSVExportService {
       URL.revokeObjectURL(url);
 
       logger.info('Bulk CSV export completed', { zipFilename: config.zipFilename });
-    } catch (error) {
-      logger.error('Error in bulk CSV export:', error);
+    } catch (_error) {
+      logger._error('Error in bulk CSV export:', _error);
       throw error;
     }
   }

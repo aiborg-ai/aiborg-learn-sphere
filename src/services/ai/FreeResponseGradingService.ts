@@ -9,6 +9,7 @@ import { logger } from '@/utils/logger';
 import { OllamaService, type ChatMessage as OllamaChatMessage } from './OllamaService';
 import { OpenRouterService } from '@/services/llm/OpenRouterService';
 import { type ChatMessage, OPENROUTER_MODELS } from '@/services/llm/types';
+import { AIContentService } from './AIContentService';
 
 // Configuration
 const DEFAULT_PROVIDER = import.meta.env.VITE_GRADING_PROVIDER || 'auto'; // 'ollama', 'openrouter', 'auto'
@@ -72,9 +73,21 @@ export interface GradingOptions {
 
 /**
  * Parse rubric into structured format
+ * Now fetches from database if no rubric provided
  */
-function parseRubric(rubric: string | RubricCriterion[] | undefined): RubricCriterion[] {
+async function parseRubric(
+  rubric: string | RubricCriterion[] | undefined,
+  subjectArea?: string
+): Promise<RubricCriterion[]> {
+  // If no rubric provided, fetch from database
   if (!rubric) {
+    const dbRubric = await AIContentService.getDefaultRubric(subjectArea);
+    if (dbRubric && dbRubric.criteria) {
+      return dbRubric.criteria as RubricCriterion[];
+    }
+
+    // Fallback to hardcoded if database unavailable
+    logger.warn('[Grading] Using fallback rubric - database rubric not found');
     return [
       { name: 'Accuracy', description: 'Correctness of information', weight: 0.4 },
       { name: 'Completeness', description: 'Coverage of key points', weight: 0.3 },
@@ -102,7 +115,7 @@ function parseRubric(rubric: string | RubricCriterion[] | undefined): RubricCrit
     }
   }
 
-  return criteria.length > 0 ? criteria : parseRubric(undefined);
+  return criteria.length > 0 ? criteria : await parseRubric(undefined, subjectArea);
 }
 
 /**
@@ -210,8 +223,8 @@ function parseGradingResponse(
       provider,
       processingTimeMs,
     };
-  } catch (error) {
-    logger.error('Failed to parse grading response:', error, responseText);
+  } catch (_error) {
+    logger._error('Failed to parse grading response:', _error, responseText);
 
     // Return a fallback result
     return {
@@ -260,7 +273,7 @@ export class FreeResponseGradingService {
     const startTime = Date.now();
     const passScore = options.passScore ?? 0.65;
     const provider = options.provider || DEFAULT_PROVIDER;
-    const rubricCriteria = parseRubric(options.rubric);
+    const rubricCriteria = await parseRubric(options.rubric, options.context);
     const prompt = buildGradingPrompt(options, rubricCriteria);
 
     // Determine which provider to use
@@ -270,8 +283,8 @@ export class FreeResponseGradingService {
       if (ollamaAvailable || provider === 'ollama') {
         try {
           return await this.gradeWithOllama(prompt, passScore, startTime);
-        } catch (error) {
-          logger.error('Ollama grading failed:', error);
+        } catch (_error) {
+          logger._error('Ollama grading failed:', _error);
           if (provider === 'ollama') {
             throw error;
           }
@@ -284,8 +297,8 @@ export class FreeResponseGradingService {
     if (OpenRouterService.isConfigured()) {
       try {
         return await this.gradeWithOpenRouter(prompt, passScore, startTime);
-      } catch (error) {
-        logger.error('OpenRouter grading failed:', error);
+      } catch (_error) {
+        logger._error('OpenRouter grading failed:', _error);
         throw error;
       }
     }
@@ -528,8 +541,8 @@ export class FreeResponseGradingService {
           try {
             const result = await this.grade(q.options);
             return { id: q.id, result };
-          } catch (error) {
-            logger.error(`Failed to grade question ${q.id}:`, error);
+          } catch (_error) {
+            logger._error(`Failed to grade question ${q.id}:`, _error);
             return {
               id: q.id,
               result: {

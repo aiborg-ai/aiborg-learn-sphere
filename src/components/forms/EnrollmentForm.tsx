@@ -14,8 +14,12 @@ import { CreditCard, User, Mail, CheckCircle } from '@/components/ui/icons';
 import { format } from 'date-fns';
 import { SimpleDatePicker } from '@/components/ui/simple-date-picker';
 import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 import { logger } from '@/utils/logger';
+import { USE_KNOWLEDGE_GRAPH } from '@/utils/featureFlags';
+import { PrerequisiteCheckService } from '@/services/knowledge-graph/PrerequisiteCheckService';
 interface EnrollmentFormProps {
   isOpen: boolean;
   onClose: () => void;
@@ -50,6 +54,8 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
   });
 
   const [showGuardianField, setShowGuardianField] = useState(false);
+  const [prerequisiteCheck, setPrerequisiteCheck] = useState<any>(null);
+  const [_checkingPrerequisites, setCheckingPrerequisites] = useState(false);
 
   const calculateAge = (birthDate: Date) => {
     const today = new Date();
@@ -126,6 +132,37 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
             variant: 'destructive',
           });
           return;
+        }
+
+        // Check prerequisites if knowledge graph is enabled
+        if (USE_KNOWLEDGE_GRAPH) {
+          logger.log('Checking course prerequisites...');
+          setCheckingPrerequisites(true);
+
+          try {
+            const prereqResult = await PrerequisiteCheckService.checkCoursePrerequisites(
+              user.id,
+              courseId
+            );
+            setPrerequisiteCheck(prereqResult);
+            setCheckingPrerequisites(false);
+
+            if (!prereqResult.can_enroll) {
+              logger.log('Prerequisites not met:', prereqResult.missing_prerequisites);
+              toast({
+                title: 'Prerequisites Not Met',
+                description: `You need to complete ${prereqResult.missing_prerequisites.length} prerequisite concept(s) before enrolling in this course.`,
+                variant: 'destructive',
+              });
+              setIsProcessing(false);
+              return; // Don't proceed with enrollment
+            }
+          } catch (_error) {
+            logger._error('Error checking prerequisites:', _error);
+            // Don't block enrollment on prerequisite check errors
+            // Just log the error and continue
+            setCheckingPrerequisites(false);
+          }
         }
 
         // Check if already enrolled
@@ -234,8 +271,8 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
       });
 
       onClose();
-    } catch (error) {
-      logger.error('Enrollment/Payment error:', error);
+    } catch (_error) {
+      logger._error('Enrollment/Payment _error:', _error);
       toast({
         title: isFree ? 'Enrollment Error' : 'Payment Error',
         description: `Failed to ${isFree ? 'enroll' : 'create payment session'}: ${error.message}`,
@@ -403,6 +440,43 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               </div>
             )}
           </div>
+
+          {/* Prerequisites Warning (if feature enabled and prerequisites not met) */}
+          {USE_KNOWLEDGE_GRAPH && prerequisiteCheck && !prerequisiteCheck.can_enroll && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                <div className="space-y-2">
+                  <p className="font-semibold">Missing Prerequisites</p>
+                  <p className="text-sm">
+                    You need to complete the following concepts before enrolling in this course:
+                  </p>
+                  <ul className="list-disc list-inside text-sm space-y-1">
+                    {prerequisiteCheck.missing_prerequisites.map((prereq: any, index: number) => (
+                      <li key={index}>
+                        <strong>{prereq.concept.name}</strong> - Required mastery:{' '}
+                        {(prereq.required_mastery * 100).toFixed(0)}%, Your mastery:{' '}
+                        {(prereq.current_mastery * 100).toFixed(0)}%
+                      </li>
+                    ))}
+                  </ul>
+                  {prerequisiteCheck.suggested_courses &&
+                    prerequisiteCheck.suggested_courses.length > 0 && (
+                      <>
+                        <p className="text-sm font-semibold mt-3">Suggested Courses:</p>
+                        <ul className="list-disc list-inside text-sm space-y-1">
+                          {prerequisiteCheck.suggested_courses.map((course: any, index: number) => (
+                            <li key={index}>
+                              {course.course_title} (teaches: {course.concepts_covered.join(', ')})
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
 
           <div className="flex gap-3 pt-4">
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">

@@ -218,7 +218,7 @@ class RUMService {
         });
 
         return response;
-      } catch (error) {
+      } catch (_error) {
         const duration = performance.now() - startTime;
 
         this.trackAPICall({
@@ -413,8 +413,8 @@ class RUMService {
       // Clear sent data
       this.interactions = [];
       this.apiCalls = [];
-    } catch (error) {
-      logger.error('Failed to send RUM report:', error);
+    } catch (_error) {
+      logger._error('Failed to send RUM report:', _error);
     }
   }
 

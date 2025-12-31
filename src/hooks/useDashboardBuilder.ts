@@ -364,8 +364,9 @@ export function useDashboardBuilder(options: UseDashboardBuilderOptions) {
         queryClient.invalidateQueries({ queryKey: queryKeys.views });
         queryClient.invalidateQueries({ queryKey: queryKeys.defaultView });
         toast({ title: 'Success', description: 'Default view updated' });
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to set default view';
+      } catch (_error) {
+        const errorMessage =
+          _error instanceof Error ? _error.message : 'Failed to set default view';
         toast({
           title: 'Error',
           description: errorMessage,

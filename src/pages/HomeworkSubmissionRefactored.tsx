@@ -98,7 +98,7 @@ export default function HomeworkSubmissionRefactored() {
       if (historyData) {
         setPreviousSubmissions(historyData);
       }
-    } catch (error) {
+    } catch {
       logger.error('Error fetching assignment:', error);
       toast({
         title: 'Error',
@@ -248,7 +248,7 @@ export default function HomeworkSubmissionRefactored() {
         title: 'Draft Saved',
         description: 'Your homework draft has been saved successfully',
       });
-    } catch (error) {
+    } catch {
       logger.error('Error saving draft:', error);
       toast({
         title: 'Error',
@@ -314,7 +314,7 @@ export default function HomeworkSubmissionRefactored() {
       });
 
       navigate('/dashboard');
-    } catch (error) {
+    } catch {
       logger.error('Error submitting homework:', error);
       toast({
         title: 'Error',

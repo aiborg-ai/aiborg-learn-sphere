@@ -81,8 +81,8 @@ export function ResourceAllocationDialog({
 
       logger.log(`✅ Fetched ${data?.length || 0} users`);
       setUsers(data || []);
-    } catch (error) {
-      logger.error('❌ Error fetching users:', error);
+    } catch (_error) {
+      logger._error('❌ Error fetching users:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load users',
@@ -142,8 +142,8 @@ export function ResourceAllocationDialog({
       });
 
       onOpenChange(false);
-    } catch (error) {
-      logger.error('Error allocating resource:', error);
+    } catch (_error) {
+      logger._error('Error allocating resource:', _error);
       toast({
         title: 'Allocation Failed',
         description: 'Failed to allocate resource',

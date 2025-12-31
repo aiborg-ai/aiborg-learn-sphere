@@ -104,8 +104,8 @@ export default function LearningPathWizard() {
       const weakCategories = enrichedCategories.filter(c => c.percentage < 60).map(c => c.id);
 
       setFormData(prev => ({ ...prev, focusCategoryIds: weakCategories }));
-    } catch (error) {
-      logger.error('Error fetching assessment data:', error);
+    } catch (_error) {
+      logger._error('Error fetching assessment data:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load assessment data',
@@ -239,8 +239,8 @@ export default function LearningPathWizard() {
       });
 
       navigate(`/learning-paths/${pathData.id}`);
-    } catch (error) {
-      logger.error('Error generating path:', error);
+    } catch (_error) {
+      logger._error('Error generating path:', _error);
       toast({
         title: 'Error',
         description: 'Failed to generate learning path',

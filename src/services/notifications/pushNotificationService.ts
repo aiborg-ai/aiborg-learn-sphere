@@ -48,8 +48,8 @@ class PushNotificationServiceClass {
     try {
       this.swRegistration = await navigator.serviceWorker.ready;
       logger.info('Push notification service initialized');
-    } catch (error) {
-      logger.error('Failed to initialize push notification service:', error);
+    } catch (_error) {
+      logger._error('Failed to initialize push notification service:', _error);
     }
   }
 
@@ -83,8 +83,8 @@ class PushNotificationServiceClass {
       const permission = await Notification.requestPermission();
       logger.info('Notification permission:', permission);
       return permission;
-    } catch (error) {
-      logger.error('Error requesting notification permission:', error);
+    } catch (_error) {
+      logger._error('Error requesting notification permission:', _error);
       return 'denied';
     }
   }
@@ -126,8 +126,8 @@ class PushNotificationServiceClass {
       await this.saveSubscription(subscription);
 
       return subscription;
-    } catch (error) {
-      logger.error('Failed to subscribe to push notifications:', error);
+    } catch (_error) {
+      logger._error('Failed to subscribe to push notifications:', _error);
       return null;
     }
   }
@@ -151,8 +151,8 @@ class PushNotificationServiceClass {
       }
 
       return false;
-    } catch (error) {
-      logger.error('Failed to unsubscribe from push notifications:', error);
+    } catch (_error) {
+      logger._error('Failed to unsubscribe from push notifications:', _error);
       return false;
     }
   }
@@ -171,8 +171,8 @@ class PushNotificationServiceClass {
 
     try {
       return await this.swRegistration.pushManager.getSubscription();
-    } catch (error) {
-      logger.error('Failed to get push subscription:', error);
+    } catch (_error) {
+      logger._error('Failed to get push subscription:', _error);
       return null;
     }
   }

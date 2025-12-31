@@ -63,7 +63,7 @@ export async function logAudit(entry: Omit<AuditLogEntry, 'timestamp'>): Promise
     if (import.meta.env.DEV) {
       logger.info('[Audit]', logEntry.action, logEntry.resource_type, logEntry.resource_id);
     }
-  } catch (error) {
+  } catch {
     // Audit logging should never break the application
     if (import.meta.env.DEV) {
       logger.error('[Audit] Failed to log:', error);

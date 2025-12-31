@@ -143,8 +143,8 @@ export class PrePostAssessmentService {
       if (error) throw error;
 
       return this.mapPair(data);
-    } catch (error) {
-      logger.error('Error creating assessment pair:', error);
+    } catch (_error) {
+      logger._error('Error creating assessment pair:', _error);
       return null;
     }
   }
@@ -174,8 +174,8 @@ export class PrePostAssessmentService {
       await this.calculateImprovementMetrics(pair);
 
       return pair;
-    } catch (error) {
-      logger.error('Error completing assessment pair:', error);
+    } catch (_error) {
+      logger._error('Error completing assessment pair:', _error);
       return null;
     }
   }
@@ -194,8 +194,8 @@ export class PrePostAssessmentService {
       if (error) throw error;
 
       return this.mapMetrics(data);
-    } catch (error) {
-      logger.error('Error getting improvement metrics:', error);
+    } catch (_error) {
+      logger._error('Error getting improvement metrics:', _error);
       return null;
     }
   }
@@ -244,8 +244,8 @@ export class PrePostAssessmentService {
         interpretation,
         recommendations,
       };
-    } catch (error) {
-      logger.error('Error getting comparison:', error);
+    } catch (_error) {
+      logger._error('Error getting comparison:', _error);
       return null;
     }
   }
@@ -268,8 +268,8 @@ export class PrePostAssessmentService {
       if (error) throw error;
 
       return (data || []).map(this.mapMetrics);
-    } catch (error) {
-      logger.error('Error getting improvement history:', error);
+    } catch (_error) {
+      logger._error('Error getting improvement history:', _error);
       return [];
     }
   }
@@ -309,8 +309,8 @@ export class PrePostAssessmentService {
           score: h.score,
         })),
       }));
-    } catch (error) {
-      logger.error('Error getting mastery progression:', error);
+    } catch (_error) {
+      logger._error('Error getting mastery progression:', _error);
       return [];
     }
   }
@@ -387,8 +387,8 @@ export class PrePostAssessmentService {
           last_assessment_at: new Date().toISOString(),
         });
       }
-    } catch (error) {
-      logger.error('Error updating mastery progression:', error);
+    } catch (_error) {
+      logger._error('Error updating mastery progression:', _error);
     }
   }
 
@@ -446,8 +446,8 @@ export class PrePostAssessmentService {
         percentileRank,
         aboveAverage: userImprovement > cohortAvg,
       };
-    } catch (error) {
-      logger.error('Error getting cohort comparison:', error);
+    } catch (_error) {
+      logger._error('Error getting cohort comparison:', _error);
       return null;
     }
   }
@@ -486,8 +486,8 @@ export class PrePostAssessmentService {
         skillsMastered: data.skills_mastered,
         percentileRank: data.percentile_rank,
       };
-    } catch (error) {
-      logger.error('Error getting learning outcomes summary:', error);
+    } catch (_error) {
+      logger._error('Error getting learning outcomes summary:', _error);
       return null;
     }
   }
@@ -565,8 +565,8 @@ export class PrePostAssessmentService {
         study_hours_between: 0, // Would need to calculate from learning sessions
         category_improvements: categoryImprovements,
       });
-    } catch (error) {
-      logger.error('Error calculating improvement metrics:', error);
+    } catch (_error) {
+      logger._error('Error calculating improvement metrics:', _error);
     }
   }
 
@@ -618,8 +618,8 @@ export class PrePostAssessmentService {
         completedAt: new Date(data.completed_at),
         categoryScores,
       };
-    } catch (error) {
-      logger.error('Error getting assessment summary:', error);
+    } catch (_error) {
+      logger._error('Error getting assessment summary:', _error);
       return null;
     }
   }

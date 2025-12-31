@@ -35,8 +35,8 @@ export function LoggerExample() {
   const handleErrorLogging = () => {
     try {
       throw new Error('Example error for demonstration');
-    } catch (error) {
-      logger.error('An error occurred', error, {
+    } catch (_error) {
+      logger._error('An _error occurred', _error, {
         operation: 'handleErrorLogging',
         component: 'LoggerExample',
       });

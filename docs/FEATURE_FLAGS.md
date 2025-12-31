@@ -83,6 +83,74 @@ Both assessment variants support automatic routing to the company assessment:
 
 ---
 
+### `VITE_USE_KNOWLEDGE_GRAPH`
+
+**Type**: Boolean (string) **Default**: `true` **Location**: `.env.local`, `.env.example`
+
+Controls whether knowledge graph features are enabled for prerequisite checking, skill tracking, and
+personalized recommendations.
+
+#### Values:
+
+- `true` - **Knowledge Graph Enabled**
+  - Prerequisite checks before course enrollment
+  - Concept mastery tracking from course completion and assessments
+  - Personalized learning recommendations based on skill gaps
+  - User skill dashboard showing mastery levels
+  - Requires knowledge graph to be populated (via AI Suggestions or seeding)
+
+- `false` - **Knowledge Graph Disabled**
+  - No prerequisite checking (all courses accessible)
+  - No automatic skill tracking
+  - No personalized recommendations
+  - Standard course enrollment flow
+
+#### Configuration:
+
+**Local Development:**
+
+```bash
+# .env.local
+VITE_USE_KNOWLEDGE_GRAPH=true
+```
+
+**Production (Vercel):**
+
+1. Go to Vercel Dashboard → Project Settings → Environment Variables
+2. Add: `VITE_USE_KNOWLEDGE_GRAPH` = `true`
+3. Redeploy for changes to take effect
+
+#### Implementation Details:
+
+**Utility**: `src/utils/featureFlags.ts`
+
+```typescript
+// Feature flag check
+const USE_KNOWLEDGE_GRAPH = import.meta.env.VITE_USE_KNOWLEDGE_GRAPH !== 'false';
+```
+
+**Integration Points**:
+
+- Enrollment flow: Checks prerequisites before allowing enrollment
+- Course completion: Updates concept mastery levels
+- Assessment results: Updates mastery from quiz scores
+- User dashboard: Shows skill levels and recommendations
+
+#### Feature Comparison:
+
+| Feature                 | Enabled (true)            | Disabled (false) |
+| ----------------------- | ------------------------- | ---------------- |
+| **Prerequisite Checks** | ✅ Enforced               | ❌ No checks     |
+| **Skill Tracking**      | ✅ Automatic              | ❌ None          |
+| **Recommendations**     | ✅ Personalized           | ❌ None          |
+| **User Dashboard**      | Skill tree view           | Standard view    |
+| **Enrollment**          | May require prerequisites | Always allowed   |
+
+**Note**: When enabled, the knowledge graph must be populated with concepts and course mappings for
+prerequisites to work. Use the AI Suggestions admin tool or seeding script to populate the graph.
+
+---
+
 ## Adding New Feature Flags
 
 When adding a new feature flag:

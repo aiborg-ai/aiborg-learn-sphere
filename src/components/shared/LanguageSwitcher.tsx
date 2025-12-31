@@ -45,8 +45,8 @@ export function LanguageSwitcher({
 
       // Optionally reload the page to ensure all content is updated
       // window.location.reload();
-    } catch (error) {
-      logger.error('Error changing language:', error);
+    } catch (_error) {
+      logger._error('Error changing language:', _error);
     } finally {
       setIsChanging(false);
     }

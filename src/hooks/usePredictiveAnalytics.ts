@@ -158,8 +158,8 @@ export function usePredictiveAnalytics(): UsePredictiveAnalyticsReturn {
           confidence: result.confidence,
           quality: result.quality,
         });
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      } catch (_error) {
+        const errorMessage = _error instanceof Error ? _error.message : 'Unknown _error occurred';
         logger.error('Revenue forecast failed:', error);
 
         setState(prev => ({
@@ -207,8 +207,8 @@ export function usePredictiveAnalytics(): UsePredictiveAnalyticsReturn {
           confidence: result.confidence,
           quality: result.quality,
         });
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      } catch (_error) {
+        const errorMessage = _error instanceof Error ? _error.message : 'Unknown _error occurred';
         logger.error('User growth forecast failed:', error);
 
         setState(prev => ({
@@ -256,8 +256,8 @@ export function usePredictiveAnalytics(): UsePredictiveAnalyticsReturn {
           confidence: result.confidence,
           quality: result.quality,
         });
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      } catch (_error) {
+        const errorMessage = _error instanceof Error ? _error.message : 'Unknown _error occurred';
         logger.error('Enrollments forecast failed:', error);
 
         setState(prev => ({

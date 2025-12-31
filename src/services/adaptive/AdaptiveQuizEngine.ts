@@ -136,9 +136,9 @@ export class AdaptiveQuizEngine extends AdaptiveAssessmentEngine {
       };
 
       return quizQuestion;
-    } catch (error) {
-      logger.error('Error getting next quiz question:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error getting next quiz question:', _error);
+      throw _error;
     }
   }
 
@@ -208,9 +208,9 @@ export class AdaptiveQuizEngine extends AdaptiveAssessmentEngine {
       await this.saveQuizAnswer(questionId, selectedOptions, quizResult, timeSpent, hintsUsed);
 
       return quizResult;
-    } catch (error) {
-      logger.error('Error processing quiz answer:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error processing quiz answer:', _error);
+      throw _error;
     }
   }
 
@@ -317,8 +317,8 @@ export class AdaptiveQuizEngine extends AdaptiveAssessmentEngine {
       if (error) {
         logger.error('Failed to save quiz answer:', error);
       }
-    } catch (error) {
-      logger.error('Error saving quiz answer:', error);
+    } catch (_error) {
+      logger._error('Error saving quiz answer:', _error);
     }
   }
 
@@ -439,9 +439,9 @@ export class AdaptiveQuizEngine extends AdaptiveAssessmentEngine {
         user_id: userId,
         accuracy: summary.accuracy,
       });
-    } catch (error) {
-      logger.error('Error saving quiz session:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error saving quiz session:', _error);
+      throw _error;
     }
   }
 }

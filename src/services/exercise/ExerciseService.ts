@@ -25,11 +25,31 @@ export class ExerciseService {
       const sanitizedInstructions = input.instructions
         ? DOMPurify.sanitize(input.instructions, {
             ALLOWED_TAGS: [
-              'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-              'p', 'br', 'strong', 'em', 'u',
-              'ul', 'ol', 'li',
-              'a', 'code', 'pre', 'blockquote',
-              'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
+              'h1',
+              'h2',
+              'h3',
+              'h4',
+              'h5',
+              'h6',
+              'p',
+              'br',
+              'strong',
+              'em',
+              'u',
+              'ul',
+              'ol',
+              'li',
+              'a',
+              'code',
+              'pre',
+              'blockquote',
+              'img',
+              'table',
+              'thead',
+              'tbody',
+              'tr',
+              'th',
+              'td',
             ],
             ALLOWED_ATTR: ['href', 'title', 'src', 'alt', 'class'],
             ALLOW_DATA_ATTR: false,
@@ -57,8 +77,8 @@ export class ExerciseService {
 
       logger.info('Exercise created', { exerciseId: data.id, courseId: input.course_id });
       return data as Exercise;
-    } catch (error) {
-      logger.error('Failed to create exercise', { error, input });
+    } catch (_error) {
+      logger._error('Failed to create exercise', { _error, input });
       throw error;
     }
   }
@@ -76,11 +96,31 @@ export class ExerciseService {
         ...(updates.instructions && {
           instructions: DOMPurify.sanitize(updates.instructions, {
             ALLOWED_TAGS: [
-              'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-              'p', 'br', 'strong', 'em', 'u',
-              'ul', 'ol', 'li',
-              'a', 'code', 'pre', 'blockquote',
-              'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
+              'h1',
+              'h2',
+              'h3',
+              'h4',
+              'h5',
+              'h6',
+              'p',
+              'br',
+              'strong',
+              'em',
+              'u',
+              'ul',
+              'ol',
+              'li',
+              'a',
+              'code',
+              'pre',
+              'blockquote',
+              'img',
+              'table',
+              'thead',
+              'tbody',
+              'tr',
+              'th',
+              'td',
             ],
             ALLOWED_ATTR: ['href', 'title', 'src', 'alt', 'class'],
             ALLOW_DATA_ATTR: false,
@@ -100,8 +140,8 @@ export class ExerciseService {
 
       logger.info('Exercise updated', { exerciseId: id });
       return data as Exercise;
-    } catch (error) {
-      logger.error('Failed to update exercise', { error, input });
+    } catch (_error) {
+      logger._error('Failed to update exercise', { _error, input });
       throw error;
     }
   }
@@ -116,8 +156,8 @@ export class ExerciseService {
       if (error) throw error;
 
       logger.info('Exercise deleted', { exerciseId });
-    } catch (error) {
-      logger.error('Failed to delete exercise', { error, exerciseId });
+    } catch (_error) {
+      logger._error('Failed to delete exercise', { _error, exerciseId });
       throw error;
     }
   }
@@ -136,8 +176,8 @@ export class ExerciseService {
       if (error) throw error;
 
       return data as Exercise;
-    } catch (error) {
-      logger.error('Failed to get exercise', { error, exerciseId });
+    } catch (_error) {
+      logger._error('Failed to get exercise', { _error, exerciseId });
       throw error;
     }
   }
@@ -167,8 +207,8 @@ export class ExerciseService {
         ...exercise,
         user_submission: submission || undefined,
       };
-    } catch (error) {
-      logger.error('Failed to get exercise with submission', { error, exerciseId, userId });
+    } catch (_error) {
+      logger._error('Failed to get exercise with submission', { _error, exerciseId, userId });
       throw error;
     }
   }
@@ -189,8 +229,8 @@ export class ExerciseService {
       if (error) throw error;
 
       return data as Exercise[];
-    } catch (error) {
-      logger.error('Failed to get exercises by course', { error, courseId });
+    } catch (_error) {
+      logger._error('Failed to get exercises by course', { _error, courseId });
       throw error;
     }
   }
@@ -232,8 +272,8 @@ export class ExerciseService {
         last_submission_date: latestSubmission.created_at,
         completed: latestSubmission.status === 'completed' || latestSubmission.status === 'passed',
       };
-    } catch (error) {
-      logger.error('Failed to get student progress', { error, userId, exerciseId });
+    } catch (_error) {
+      logger._error('Failed to get student progress', { _error, userId, exerciseId });
       throw error;
     }
   }
@@ -291,8 +331,8 @@ export class ExerciseService {
         average_score: averageScore,
         average_attempts: Math.round(averageAttempts * 10) / 10,
       };
-    } catch (error) {
-      logger.error('Failed to get exercise statistics', { error, exerciseId });
+    } catch (_error) {
+      logger._error('Failed to get exercise statistics', { _error, exerciseId });
       throw error;
     }
   }
@@ -313,8 +353,8 @@ export class ExerciseService {
 
       logger.info('Exercise publish status updated', { exerciseId, isPublished });
       return data as Exercise;
-    } catch (error) {
-      logger.error('Failed to toggle exercise publish status', { error, exerciseId });
+    } catch (_error) {
+      logger._error('Failed to toggle exercise publish status', { _error, exerciseId });
       throw error;
     }
   }
@@ -343,8 +383,8 @@ export class ExerciseService {
         },
         userId
       );
-    } catch (error) {
-      logger.error('Failed to duplicate exercise', { error, exerciseId });
+    } catch (_error) {
+      logger._error('Failed to duplicate exercise', { _error, exerciseId });
       throw error;
     }
   }

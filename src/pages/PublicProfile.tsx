@@ -192,7 +192,7 @@ export default function PublicProfile() {
       };
 
       setProfile(profileInfo);
-    } catch (error) {
+    } catch {
       logger.error('Error fetching public profile:', error);
     } finally {
       setLoading(false);

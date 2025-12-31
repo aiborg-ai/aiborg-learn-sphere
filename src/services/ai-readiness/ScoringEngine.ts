@@ -175,7 +175,7 @@ export function getNextLevelInfo(currentScore: number): {
  * Get maturity level progress percentage within current level
  */
 export function getLevelProgress(score: number): number {
-  const level = getMaturityLevel(score);
+  const level = getMaturityLevel(_score);
   const { min, max } = MATURITY_THRESHOLDS[level];
 
   if (max === min) return 100;

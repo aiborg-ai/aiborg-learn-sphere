@@ -6,6 +6,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 import { OpenRouterService } from '@/services/llm';
+import { AIContentService } from './AIContentService';
 
 // Question types supported
 export type QuestionType =
@@ -42,8 +43,8 @@ export interface ExplanationResponse {
   tokensUsed?: number;
 }
 
-// System prompts for different question types
-const SYSTEM_PROMPTS: Record<QuestionType, string> = {
+// System prompts for different question types (FALLBACK ONLY - database is primary source)
+const FALLBACK_SYSTEM_PROMPTS: Record<QuestionType, string> = {
   multiple_choice: `You are an encouraging AI tutor helping students understand why their answer was incorrect.
 
 For multiple choice questions, you should:
@@ -122,6 +123,24 @@ Format your response as JSON:
 }`,
 };
 
+// Get system prompt for question type from database (with fallback)
+async function getExplanationPrompt(questionType: QuestionType): Promise<string> {
+  try {
+    const promptKey = `explanation_${questionType}`;
+    const prompt = await AIContentService.getSystemPrompt(promptKey);
+
+    if (prompt && prompt.prompt_template) {
+      return prompt.prompt_template;
+    }
+
+    logger.warn(`[Explanation] No database prompt for ${questionType}, using fallback`);
+    return FALLBACK_SYSTEM_PROMPTS[questionType];
+  } catch (_error) {
+    logger._error(`[Explanation] Error fetching prompt for ${questionType}:`, _error);
+    return FALLBACK_SYSTEM_PROMPTS[questionType];
+  }
+}
+
 // Build user prompt based on question type
 function buildUserPrompt(request: ExplanationRequest): string {
   const base = `Question: ${request.questionText}
@@ -188,7 +207,7 @@ export class WrongAnswerExplanationService {
       }
 
       // Build messages
-      const systemPrompt = SYSTEM_PROMPTS[request.questionType];
+      const systemPrompt = await getExplanationPrompt(request.questionType);
       const userPrompt = buildUserPrompt(request);
 
       // Call OpenRouter
@@ -250,8 +269,8 @@ export class WrongAnswerExplanationService {
         model: response.model,
         tokensUsed: response.tokensUsed?.total,
       };
-    } catch (error) {
-      logger.error('Error generating explanation:', error);
+    } catch (_error) {
+      logger._error('Error generating explanation:', _error);
       return this.getFallbackExplanation(request);
     }
   }
@@ -289,8 +308,8 @@ export class WrongAnswerExplanationService {
             .eq('cache_key', explanation.cache_key);
         }
       }
-    } catch (error) {
-      logger.error('Error rating explanation:', error);
+    } catch (_error) {
+      logger._error('Error rating explanation:', _error);
     }
   }
 
@@ -326,8 +345,8 @@ export class WrongAnswerExplanationService {
         rating: e.rating,
         createdAt: e.created_at,
       }));
-    } catch (error) {
-      logger.error('Error getting explanation history:', error);
+    } catch (_error) {
+      logger._error('Error getting explanation history:', _error);
       return [];
     }
   }
@@ -394,8 +413,8 @@ export class WrongAnswerExplanationService {
         },
         { onConflict: 'question_id,wrong_answer_pattern,learning_style' }
       );
-    } catch (error) {
-      logger.error('Error saving to explanation cache:', error);
+    } catch (_error) {
+      logger._error('Error saving to explanation cache:', _error);
     }
   }
 
@@ -421,8 +440,8 @@ export class WrongAnswerExplanationService {
         tokens_used: tokensUsed,
         cache_key: generateExplanationCacheKey(request),
       });
-    } catch (error) {
-      logger.error('Error logging explanation:', error);
+    } catch (_error) {
+      logger._error('Error logging explanation:', _error);
     }
   }
 

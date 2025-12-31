@@ -39,8 +39,8 @@ export class LingoService {
         ...lesson,
         question_count: lesson.lingo_questions?.[0]?.count || 0,
       })) as LingoLesson[];
-    } catch (error) {
-      logger.error('Error fetching Lingo lessons:', error);
+    } catch (_error) {
+      logger._error('Error fetching Lingo lessons:', _error);
       return [];
     }
   }
@@ -59,8 +59,8 @@ export class LingoService {
 
       if (error) throw error;
       return data as LingoLesson;
-    } catch (error) {
-      logger.error('Error fetching Lingo lesson:', error);
+    } catch (_error) {
+      logger._error('Error fetching Lingo lesson:', _error);
       return null;
     }
   }
@@ -79,8 +79,8 @@ export class LingoService {
 
       if (error) throw error;
       return data as LingoLesson;
-    } catch (error) {
-      logger.error('Error fetching Lingo lesson by lesson_id:', error);
+    } catch (_error) {
+      logger._error('Error fetching Lingo lesson by lesson_id:', _error);
       return null;
     }
   }
@@ -98,8 +98,8 @@ export class LingoService {
 
       if (error) throw error;
       return (data || []) as LingoQuestion[];
-    } catch (error) {
-      logger.error('Error fetching Lingo questions:', error);
+    } catch (_error) {
+      logger._error('Error fetching Lingo questions:', _error);
       return [];
     }
   }
@@ -124,8 +124,8 @@ export class LingoService {
       }
 
       return data as LingoUserProgress;
-    } catch (error) {
-      logger.error('Error fetching Lingo user progress:', error);
+    } catch (_error) {
+      logger._error('Error fetching Lingo user progress:', _error);
       return null;
     }
   }
@@ -154,8 +154,8 @@ export class LingoService {
 
       if (error) throw error;
       return data as LingoUserProgress;
-    } catch (error) {
-      logger.error('Error initializing Lingo user progress:', error);
+    } catch (_error) {
+      logger._error('Error initializing Lingo user progress:', _error);
       return null;
     }
   }
@@ -267,8 +267,8 @@ export class LingoService {
       }
 
       return data as LingoUserProgress;
-    } catch (error) {
-      logger.error('Error completing Lingo lesson:', error);
+    } catch (_error) {
+      logger._error('Error completing Lingo lesson:', _error);
       return null;
     }
   }
@@ -301,8 +301,8 @@ export class LingoService {
       });
 
       return newHearts;
-    } catch (error) {
-      logger.error('Error losing heart:', error);
+    } catch (_error) {
+      logger._error('Error losing heart:', _error);
       return 0;
     }
   }
@@ -320,8 +320,8 @@ export class LingoService {
         .eq('user_id', userId);
 
       return newHearts;
-    } catch (error) {
-      logger.error('Error restoring hearts:', error);
+    } catch (_error) {
+      logger._error('Error restoring hearts:', _error);
       return 5;
     }
   }
@@ -339,8 +339,8 @@ export class LingoService {
         event_type: event.event_type,
         event_data: event.event_data || {},
       });
-    } catch (error) {
-      logger.error('Error logging Lingo analytics event:', error);
+    } catch (_error) {
+      logger._error('Error logging Lingo analytics event:', _error);
     }
   }
 
@@ -353,8 +353,8 @@ export class LingoService {
       if (!progress) return 0;
 
       return Object.values(progress.lesson_progress).filter(p => p.completed).length;
-    } catch (error) {
-      logger.error('Error getting lessons completed count:', error);
+    } catch (_error) {
+      logger._error('Error getting lessons completed count:', _error);
       return 0;
     }
   }
@@ -380,8 +380,8 @@ export class LingoService {
 
       // Check if all lessons in skill are completed
       return lessons.every(lesson => progress.lesson_progress[lesson.id]?.completed);
-    } catch (error) {
-      logger.error('Error checking skill completion:', error);
+    } catch (_error) {
+      logger._error('Error checking skill completion:', _error);
       return false;
     }
   }
@@ -438,8 +438,8 @@ export class LingoService {
         score: entry.total_xp,
         streak: entry.streak,
       }));
-    } catch (error) {
-      logger.error('Error fetching Lingo leaderboard:', error);
+    } catch (_error) {
+      logger._error('Error fetching Lingo leaderboard:', _error);
       return [];
     }
   }
@@ -452,8 +452,8 @@ export class LingoService {
       const leaderboard = await this.getLeaderboard('all_time', 1000);
       const userEntry = leaderboard.find(e => e.user_id === userId);
       return userEntry?.rank || null;
-    } catch (error) {
-      logger.error('Error getting user rank:', error);
+    } catch (_error) {
+      logger._error('Error getting user rank:', _error);
       return null;
     }
   }
@@ -483,8 +483,8 @@ export class LingoService {
       const existing = this.getAnonymousProgress();
       const updated = { ...existing, ...progress };
       localStorage.setItem(ANONYMOUS_PROGRESS_KEY, JSON.stringify(updated));
-    } catch (error) {
-      logger.error('Error saving anonymous progress:', error);
+    } catch (_error) {
+      logger._error('Error saving anonymous progress:', _error);
     }
   }
 
@@ -494,8 +494,8 @@ export class LingoService {
   static clearAnonymousProgress(): void {
     try {
       localStorage.removeItem(ANONYMOUS_PROGRESS_KEY);
-    } catch (error) {
-      logger.error('Error clearing anonymous progress:', error);
+    } catch (_error) {
+      logger._error('Error clearing anonymous progress:', _error);
     }
   }
 
@@ -548,8 +548,8 @@ export class LingoService {
       this.clearAnonymousProgress();
 
       logger.info('Merged anonymous Lingo progress for user:', userId);
-    } catch (error) {
-      logger.error('Error merging anonymous progress:', error);
+    } catch (_error) {
+      logger._error('Error merging anonymous progress:', _error);
     }
   }
 }

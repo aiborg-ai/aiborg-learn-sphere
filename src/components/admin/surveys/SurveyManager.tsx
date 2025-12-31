@@ -98,8 +98,8 @@ export function SurveyManager({ className }: SurveyManagerProps) {
         ]);
         setSurveys(surveysData);
         setTemplates(templatesData);
-      } catch (error) {
-        logger.error('Failed to load data:', error);
+      } catch (_error) {
+        logger._error('Failed to load data:', _error);
         toast({
           title: 'Error',
           description: 'Failed to load surveys',
@@ -143,8 +143,8 @@ export function SurveyManager({ className }: SurveyManagerProps) {
         title: 'Survey Created',
         description: 'Add questions to your survey to get started.',
       });
-    } catch (error) {
-      logger.error('Failed to create survey:', error);
+    } catch (_error) {
+      logger._error('Failed to create survey:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create survey',
@@ -174,8 +174,8 @@ export function SurveyManager({ className }: SurveyManagerProps) {
         title: 'Survey Created',
         description: `Created survey from "${template.name}" template.`,
       });
-    } catch (error) {
-      logger.error('Failed to create survey from template:', error);
+    } catch (_error) {
+      logger._error('Failed to create survey from template:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create survey from template',
@@ -195,8 +195,8 @@ export function SurveyManager({ className }: SurveyManagerProps) {
         title: 'Status Updated',
         description: `Survey is now ${status}.`,
       });
-    } catch (error) {
-      logger.error('Failed to update survey status:', error);
+    } catch (_error) {
+      logger._error('Failed to update survey status:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update survey status',
@@ -218,8 +218,8 @@ export function SurveyManager({ className }: SurveyManagerProps) {
         title: 'Survey Deleted',
         description: 'The survey has been permanently deleted.',
       });
-    } catch (error) {
-      logger.error('Failed to delete survey:', error);
+    } catch (_error) {
+      logger._error('Failed to delete survey:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete survey',

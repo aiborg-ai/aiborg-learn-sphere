@@ -381,7 +381,7 @@ export function BackgroundJobsDashboard() {
             : j
         )
       );
-    } catch (err) {
+    } catch (_err) {
       // Fallback to local-only update for demo
       toast({
         title: 'Retrying Job',
@@ -417,7 +417,7 @@ export function BackgroundJobsDashboard() {
       setJobs(prev =>
         prev.map(j => (j.id === jobId ? { ...j, status: 'cancelled' as JobStatus } : j))
       );
-    } catch (err) {
+    } catch (_err) {
       // Fallback to local-only update for demo
       toast({
         title: 'Job Cancelled',

@@ -88,8 +88,8 @@ export class ResponseCache {
       this.setMemoryCache(cacheKey, data.response);
 
       return data.response;
-    } catch (error) {
-      logger.error('Error getting cache entry:', error);
+    } catch (_error) {
+      logger._error('Error getting cache entry:', _error);
       return null;
     }
   }
@@ -130,8 +130,8 @@ export class ResponseCache {
 
       // Store in memory cache
       this.setMemoryCache(cacheKey, response);
-    } catch (error) {
-      logger.error('Error setting cache entry:', error);
+    } catch (_error) {
+      logger._error('Error setting cache entry:', _error);
     }
   }
 
@@ -143,8 +143,8 @@ export class ResponseCache {
       memoryCache.delete(cacheKey);
 
       await supabase.from(CACHE_TABLE).delete().eq('cache_key', cacheKey);
-    } catch (error) {
-      logger.error('Error deleting cache entry:', error);
+    } catch (_error) {
+      logger._error('Error deleting cache entry:', _error);
     }
   }
 
@@ -164,8 +164,8 @@ export class ResponseCache {
       }
 
       return data?.length || 0;
-    } catch (error) {
-      logger.error('Error clearing expired cache:', error);
+    } catch (_error) {
+      logger._error('Error clearing expired cache:', _error);
       return 0;
     }
   }
@@ -214,8 +214,8 @@ export class ResponseCache {
         oldestEntry: new Date(Math.min(...dates)).toISOString(),
         newestEntry: new Date(Math.max(...dates)).toISOString(),
       };
-    } catch (error) {
-      logger.error('Error getting cache stats:', error);
+    } catch (_error) {
+      logger._error('Error getting cache stats:', _error);
       return {
         totalEntries: 0,
         totalHits: 0,
@@ -254,8 +254,8 @@ export class ResponseCache {
         expiresAt: data.expires_at,
         hitCount: data.hit_count,
       };
-    } catch (error) {
-      logger.error('Error getting cache entry:', error);
+    } catch (_error) {
+      logger._error('Error getting cache entry:', _error);
       return null;
     }
   }

@@ -117,7 +117,7 @@ export function safeParseJSON<T>(json: string): { success: boolean; data?: T; er
   try {
     const data = JSON.parse(json) as T;
     return { success: true, data };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Invalid JSON',

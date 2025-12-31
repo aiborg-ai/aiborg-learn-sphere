@@ -69,7 +69,7 @@ export default function DownloadsPage() {
     try {
       await deleteDownload(id);
       setDeleteId(null);
-    } catch (error) {
+    } catch {
       logger.error('Error deleting download:', error);
     }
   };
@@ -78,7 +78,7 @@ export default function DownloadsPage() {
     try {
       await clearAllDownloads();
       setClearAllDialog(false);
-    } catch (error) {
+    } catch {
       logger.error('Error clearing downloads:', error);
     }
   };

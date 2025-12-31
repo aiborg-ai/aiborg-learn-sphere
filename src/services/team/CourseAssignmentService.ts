@@ -382,8 +382,8 @@ export class CourseAssignmentService {
           priority: assignment.priority,
         },
       });
-    } catch (error) {
-      logger.error('Failed to send assignment reminder email', error);
+    } catch (_error) {
+      logger._error('Failed to send assignment reminder email', _error);
       // Don't throw - we still want to update reminder_sent_at even if email fails
     }
 

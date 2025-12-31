@@ -1,4 +1,5 @@
-import { Navbar, Footer } from '@/components/navigation';
+import { Navbar } from '@/components/navigation/Navbar';
+import { Footer } from '@/components/navigation/Footer';
 import { Loader2 } from '@/components/ui/icons';
 
 export function LoadingState() {

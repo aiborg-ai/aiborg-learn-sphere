@@ -149,8 +149,8 @@ export class OpenRouterService {
           costUsd,
           finishReason: response.choices[0]?.finish_reason,
         };
-      } catch (error) {
-        lastError = error as Error;
+      } catch (_error) {
+        lastError = _error as Error;
 
         // Check if retryable
         if (error instanceof RateLimitError) {
@@ -284,9 +284,9 @@ export class OpenRouterService {
 
       const data = (await response.json()) as OpenRouterAPIResponse;
       return data;
-    } catch (error) {
-      if (error instanceof LLMError) {
-        throw error;
+    } catch (_error) {
+      if (_error instanceof LLMError) {
+        throw _error;
       }
       throw new LLMError(
         error instanceof Error ? error.message : 'Network error',

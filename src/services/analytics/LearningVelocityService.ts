@@ -49,8 +49,8 @@ export class LearningVelocityService {
         engagementScore: recentAccuracy,
         recentAccuracy,
       };
-    } catch (error) {
-      logger.error('Error calculating learning velocity:', error);
+    } catch (_error) {
+      logger._error('Error calculating learning velocity:', _error);
       return null;
     }
   }

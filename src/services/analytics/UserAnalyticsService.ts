@@ -138,8 +138,8 @@ export class UserAnalyticsService {
       }
 
       return weeklyData;
-    } catch (error) {
-      logger.error('Error in getUserWeeklyActivity:', error);
+    } catch (_error) {
+      logger._error('Error in getUserWeeklyActivity:', _error);
       return [];
     }
   }
@@ -201,8 +201,8 @@ export class UserAnalyticsService {
       }));
 
       return distribution.sort((a, b) => b.value - a.value);
-    } catch (error) {
-      logger.error('Error in getUserCategoryDistribution:', error);
+    } catch (_error) {
+      logger._error('Error in getUserCategoryDistribution:', _error);
       return [];
     }
   }
@@ -263,8 +263,8 @@ export class UserAnalyticsService {
       }
 
       return trends;
-    } catch (error) {
-      logger.error('Error in getUserProgressTrends:', error);
+    } catch (_error) {
+      logger._error('Error in getUserProgressTrends:', _error);
       return [];
     }
   }
@@ -317,8 +317,8 @@ export class UserAnalyticsService {
       });
 
       return skillData;
-    } catch (error) {
-      logger.error('Error in getUserSkillsRadar:', error);
+    } catch (_error) {
+      logger._error('Error in getUserSkillsRadar:', _error);
       return [];
     }
   }
@@ -371,8 +371,8 @@ export class UserAnalyticsService {
         hours: parseFloat((dayData[day].totalMinutes / 60).toFixed(2)),
         sessions: dayData[day].sessions,
       }));
-    } catch (error) {
-      logger.error('Error in getUserStudyTimeByDay:', error);
+    } catch (_error) {
+      logger._error('Error in getUserStudyTimeByDay:', _error);
       return [];
     }
   }
@@ -450,8 +450,8 @@ export class UserAnalyticsService {
         certificatesEarned,
         achievementsCount,
       };
-    } catch (error) {
-      logger.error('Error in getUserDashboardStats:', error);
+    } catch (_error) {
+      logger._error('Error in getUserDashboardStats:', _error);
       return {
         totalStudyTime: 0,
         completedCourses: 0,

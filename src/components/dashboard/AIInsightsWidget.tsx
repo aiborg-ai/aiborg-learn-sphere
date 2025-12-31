@@ -61,8 +61,8 @@ export function AIInsightsWidget() {
       if (error) throw error;
 
       setInsights(data || []);
-    } catch (error) {
-      logger.error('Error fetching AI insights:', error);
+    } catch (_error) {
+      logger._error('Error fetching AI insights:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load learning insights',

@@ -38,8 +38,8 @@ export function AnnouncementTicker() {
 
       if (error) throw error;
       setAnnouncements(data || []);
-    } catch (error) {
-      logger.error('Error fetching announcements:', error);
+    } catch (_error) {
+      logger._error('Error fetching announcements:', _error);
     }
   };
 

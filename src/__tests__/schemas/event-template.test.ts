@@ -7,11 +7,11 @@ const validateEventTemplate = (data: Record<string, unknown>) => {
   try {
     const result = EventTemplateSchema.parse(data);
     return { success: true, data: result };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
+  } catch (_error) {
+    if (_error instanceof z.ZodError) {
       return {
         success: false,
-        errors: error.errors.map(err => ({
+        errors: _error.errors.map(err => ({
           field: err.path.join('.'),
           message: err.message,
           code: err.code,

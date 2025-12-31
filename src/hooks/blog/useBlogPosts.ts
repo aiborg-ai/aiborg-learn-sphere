@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { BlogService } from '@/services/blog/BlogService';
+import { BlogPostService } from '@/services/blog/BlogPostService';
 import type { BlogPost, BlogFilters } from '@/types/blog';
 import { useToast } from '@/components/ui/use-toast';
-
 import { logger } from '@/utils/logger';
 export const useBlogPosts = (initialFilters: BlogFilters = {}) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -16,7 +15,7 @@ export const useBlogPosts = (initialFilters: BlogFilters = {}) => {
     try {
       setLoading(true);
       setError(null);
-      const { posts: fetchedPosts, count } = await BlogService.getPosts(filters);
+      const { posts: fetchedPosts, count } = await BlogPostService.getPosts(filters);
       setPosts(fetchedPosts);
       setTotalCount(count || 0);
     } catch (err) {
@@ -69,7 +68,7 @@ export const useBlogPost = (slug: string) => {
       try {
         setLoading(true);
         setError(null);
-        const fetchedPost = await BlogService.getPostBySlug(slug);
+        const fetchedPost = await BlogPostService.getPostBySlug(slug);
         setPost(fetchedPost);
       } catch (err) {
         logger.error('Error fetching blog post:', err);

@@ -137,8 +137,8 @@ export function LingoAnalyticsDashboard({ showOverviewOnly = false }: Props) {
       }));
 
       setLessonStats(lessonStatsData);
-    } catch (error) {
-      logger.error('Failed to load analytics', error);
+    } catch (_error) {
+      logger._error('Failed to load analytics', _error);
       toast({ title: 'Error', description: 'Failed to load analytics', variant: 'destructive' });
     } finally {
       setIsLoading(false);

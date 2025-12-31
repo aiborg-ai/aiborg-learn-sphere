@@ -45,8 +45,8 @@ export function CompactLearningPathRecommendations({
       if (recs.length > 0) {
         setTopRecommendation(recs[0]);
       }
-    } catch (error) {
-      logger.error('Error fetching recommendation:', error);
+    } catch (_error) {
+      logger._error('Error fetching recommendation:', _error);
     } finally {
       setLoading(false);
     }

@@ -89,8 +89,8 @@ class GoalsAnalyticsServiceClass {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching learning goals:', error);
+    } catch (_error) {
+      logger._error('Error fetching learning goals:', _error);
       return [];
     }
   }
@@ -123,8 +123,8 @@ class GoalsAnalyticsServiceClass {
             (goal as { job_role?: { title?: string } }).job_role?.title || 'Unknown Role',
         })) || []
       );
-    } catch (error) {
-      logger.error('Error fetching career goals:', error);
+    } catch (_error) {
+      logger._error('Error fetching career goals:', _error);
       return [];
     }
   }
@@ -142,8 +142,8 @@ class GoalsAnalyticsServiceClass {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching study plans:', error);
+    } catch (_error) {
+      logger._error('Error fetching study plans:', _error);
       return [];
     }
   }
@@ -200,8 +200,8 @@ class GoalsAnalyticsServiceClass {
         goalsAtRisk,
         averageCompletionRate: Math.round(averageCompletionRate),
       };
-    } catch (error) {
-      logger.error('Error fetching goals summary:', error);
+    } catch (_error) {
+      logger._error('Error fetching goals summary:', _error);
       return {
         totalGoals: 0,
         activeGoals: 0,
@@ -323,8 +323,8 @@ class GoalsAnalyticsServiceClass {
         if (b.deadline === null) return -1;
         return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
       });
-    } catch (error) {
-      logger.error('Error fetching goal milestones:', error);
+    } catch (_error) {
+      logger._error('Error fetching goal milestones:', _error);
       return [];
     }
   }
@@ -356,8 +356,8 @@ class GoalsAnalyticsServiceClass {
         .eq('id', goalId);
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error updating learning goal progress:', error);
+    } catch (_error) {
+      logger._error('Error updating learning goal progress:', _error);
       throw error;
     }
   }
@@ -383,8 +383,8 @@ class GoalsAnalyticsServiceClass {
           .update({ status: 'completed', completion_percentage: 100 })
           .eq('id', goalId);
       }
-    } catch (error) {
-      logger.error('Error completing goal:', error);
+    } catch (_error) {
+      logger._error('Error completing goal:', _error);
       throw error;
     }
   }

@@ -75,8 +75,8 @@ export const useAssessmentLogic = (state: Record<string, unknown>) => {
             });
           }
         }
-      } catch (error) {
-        logger.error('Error updating streak:', error);
+      } catch (_error) {
+        logger._error('Error updating streak:', _error);
       }
 
       // Initialize adaptive engine
@@ -87,8 +87,8 @@ export const useAssessmentLogic = (state: Record<string, unknown>) => {
       state.setCurrentAbility(engineState.currentAbility);
       state.setConfidenceLevel(engineState.confidenceLevel);
       state.setQuestionsAnswered(engineState.questionsAnswered);
-    } catch (error) {
-      logger.error('Error initializing adaptive assessment:', error);
+    } catch (_error) {
+      logger._error('Error initializing adaptive assessment:', _error);
       toast({
         title: 'Error',
         description: 'Failed to initialize assessment. Please try again.',
@@ -122,8 +122,8 @@ export const useAssessmentLogic = (state: Record<string, unknown>) => {
       state.setSelectedOptions([]);
       state.setVoiceAnswer(null);
       state.questionStartTime.current = new Date();
-    } catch (error) {
-      logger.error('Error fetching next question:', error);
+    } catch (_error) {
+      logger._error('Error fetching next question:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load next question. Please try again.',
@@ -257,8 +257,8 @@ export const useAssessmentLogic = (state: Record<string, unknown>) => {
               duration: 4000,
             });
           }
-        } catch (error) {
-          logger.error('Error awarding points/achievements:', error);
+        } catch (_error) {
+          logger._error('Error awarding points/achievements:', _error);
         }
       }
 
@@ -274,8 +274,8 @@ export const useAssessmentLogic = (state: Record<string, unknown>) => {
       // }
 
       await fetchNextQuestion();
-    } catch (error) {
-      logger.error('Error processing answer:', error);
+    } catch (_error) {
+      logger._error('Error processing answer:', _error);
       toast({
         title: 'Error',
         description: 'Failed to process your answer. Please try again.',
@@ -374,8 +374,8 @@ export const useAssessmentLogic = (state: Record<string, unknown>) => {
             description: `You earned ${completionBonus} bonus points! Your results have been saved.`,
             duration: 5000,
           });
-        } catch (error) {
-          logger.error('Error awarding completion rewards:', error);
+        } catch (_error) {
+          logger._error('Error awarding completion rewards:', _error);
           toast({
             title: 'Assessment Complete!',
             description: 'Your results have been saved to your profile.',
@@ -391,8 +391,8 @@ export const useAssessmentLogic = (state: Record<string, unknown>) => {
       setTimeout(() => {
         navigate(`/ai-assessment/results/${state.assessmentId}`);
       }, 2000);
-    } catch (error) {
-      logger.error('Error submitting adaptive assessment:', error);
+    } catch (_error) {
+      logger._error('Error submitting adaptive assessment:', _error);
       toast({
         title: 'Error',
         description: 'Failed to submit assessment. Please try again.',

@@ -65,8 +65,8 @@ export class CustomViewsService {
       logger.info('Fetched custom views', { userId, count: views.length });
 
       return views;
-    } catch (error) {
-      logger.error('Error fetching custom views:', error);
+    } catch (_error) {
+      logger._error('Error fetching custom views:', _error);
       throw new Error(
         `Failed to fetch custom views: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -106,8 +106,8 @@ export class CustomViewsService {
       logger.info('Fetched custom view', { viewId, name: view.name });
 
       return view;
-    } catch (error) {
-      logger.error('Error fetching custom view:', error);
+    } catch (_error) {
+      logger._error('Error fetching custom view:', _error);
       throw new Error(
         `Failed to fetch custom view: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -183,8 +183,8 @@ export class CustomViewsService {
       logger.info('Created custom view', { viewId: view.id, name: view.name, userId });
 
       return view;
-    } catch (error) {
-      logger.error('Error creating custom view:', error);
+    } catch (_error) {
+      logger._error('Error creating custom view:', _error);
       throw error instanceof Error ? error : new Error('Failed to create custom view');
     }
   }
@@ -250,8 +250,8 @@ export class CustomViewsService {
       logger.info('Updated custom view', { viewId, name: view.name });
 
       return view;
-    } catch (error) {
-      logger.error('Error updating custom view:', error);
+    } catch (_error) {
+      logger._error('Error updating custom view:', _error);
       throw error instanceof Error ? error : new Error('Failed to update custom view');
     }
   }
@@ -270,8 +270,8 @@ export class CustomViewsService {
       }
 
       logger.info('Deleted custom view', { viewId });
-    } catch (error) {
-      logger.error('Error deleting custom view:', error);
+    } catch (_error) {
+      logger._error('Error deleting custom view:', _error);
       throw new Error(
         `Failed to delete custom view: ${error instanceof Error ? error.message : 'Unknown error'}`
       );

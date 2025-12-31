@@ -29,8 +29,8 @@ export function CommentForm({ onSubmit, placeholder = 'Write a comment...' }: Co
     try {
       await onSubmit(data.content);
       reset();
-    } catch (error) {
-      logger.error('Failed to post comment:', error);
+    } catch (_error) {
+      logger._error('Failed to post comment:', _error);
     }
   };
 

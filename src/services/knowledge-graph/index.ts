@@ -5,12 +5,21 @@
  *
  * Usage:
  * ```typescript
- * import { KnowledgeGraphService, UserMasteryService, LearningRecommendationService } from '@/services/knowledge-graph';
+ * import {
+ *   KnowledgeGraphService,
+ *   UserMasteryService,
+ *   ConceptProgressService,
+ *   LearningRecommendationService
+ * } from '@/services/knowledge-graph';
  * ```
+ *
+ * Note: ConceptProgressService was introduced to break circular dependencies
+ * between KnowledgeGraphService and UserMasteryService.
  */
 
 export { KnowledgeGraphService } from './KnowledgeGraphService';
 export { UserMasteryService } from './UserMasteryService';
+export { ConceptProgressService } from './ConceptProgressService';
 export { LearningRecommendationService } from './LearningRecommendationService';
 
 // Re-export types for convenience

@@ -127,8 +127,8 @@ export function BatchMessageDialog({
           handleClose();
         }, 3000);
       }
-    } catch (error) {
-      logger.error('Error sending batch emails:', error);
+    } catch (_error) {
+      logger._error('Error sending batch emails:', _error);
       toast({
         title: 'Failed to Send Messages',
         description: error instanceof Error ? error.message : 'An error occurred',

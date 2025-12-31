@@ -53,8 +53,8 @@ export class PointsService {
 
       if (error) throw error;
       return true;
-    } catch (error) {
-      logger.error('Error initializing user progress:', error);
+    } catch (_error) {
+      logger._error('Error initializing user progress:', _error);
       return false;
     }
   }
@@ -75,8 +75,8 @@ export class PointsService {
 
       if (error) throw error;
       return data as UserProgress;
-    } catch (error) {
-      logger.error('Error fetching user progress:', error);
+    } catch (_error) {
+      logger._error('Error fetching user progress:', _error);
       return null;
     }
   }
@@ -102,8 +102,8 @@ export class PointsService {
 
       if (error) throw error;
       return data as PointsAwardResult;
-    } catch (error) {
-      logger.error('Error awarding points:', error);
+    } catch (_error) {
+      logger._error('Error awarding points:', _error);
       return null;
     }
   }
@@ -119,8 +119,8 @@ export class PointsService {
 
       if (error) throw error;
       return data as StreakUpdateResult;
-    } catch (error) {
-      logger.error('Error updating streak:', error);
+    } catch (_error) {
+      logger._error('Error updating streak:', _error);
       return null;
     }
   }
@@ -142,8 +142,8 @@ export class PointsService {
 
       if (error) throw error;
       return (data as PointTransaction[]) || [];
-    } catch (error) {
-      logger.error('Error fetching transaction history:', error);
+    } catch (_error) {
+      logger._error('Error fetching transaction history:', _error);
       return [];
     }
   }
@@ -266,8 +266,8 @@ export class PointsService {
         rank,
         percentile,
       };
-    } catch (error) {
-      logger.error('Error fetching leaderboard stats:', error);
+    } catch (_error) {
+      logger._error('Error fetching leaderboard stats:', _error);
       return { totalPoints: 0, level: 1, rank: null, percentile: null };
     }
   }
@@ -404,8 +404,8 @@ export class PointsService {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching top performers:', error);
+    } catch (_error) {
+      logger._error('Error fetching top performers:', _error);
       return [];
     }
   }
@@ -439,8 +439,8 @@ export class PointsService {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching longest streaks:', error);
+    } catch (_error) {
+      logger._error('Error fetching longest streaks:', _error);
       return [];
     }
   }

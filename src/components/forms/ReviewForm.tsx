@@ -53,7 +53,7 @@ interface ReviewFormProps {
 }
 
 export function ReviewForm({
-  requestId,
+  _requestId,
   _sessionId,
   _sessionType,
   onSuccess,
@@ -172,7 +172,7 @@ export function ReviewForm({
         videoReviewUrl = fileName;
       }
 
-      const reviewData = await submitReview({
+      const _reviewData = await submitReview({
         user_id: user.id,
         course_id: parseInt(formData.courseId),
         display_name_option: formData.displayNameOption,
@@ -189,9 +189,9 @@ export function ReviewForm({
       // If this review was submitted from a review request, mark it as completed
       // if (requestId && reviewData?.id) {
       //   try {
-      //     await markRequestCompleted({ requestId, reviewId: reviewData.id });
-      //   } catch (error) {
-      //     logger.error('Failed to mark review request as completed:', error);
+      //     await markRequestCompleted({ _requestId, reviewId: reviewData.id });
+      //   } catch (_error) {
+      //     logger._error('Failed to mark review request as completed:', _error);
       //     // Don't fail the whole submission if this fails
       //   }
       // }
@@ -221,8 +221,8 @@ export function ReviewForm({
       // Reset media blobs
       setVoiceBlob(null);
       setVideoBlob(null);
-    } catch (error) {
-      logger.error('Review submission error:', error);
+    } catch (_error) {
+      logger._error('Review submission _error:', _error);
 
       let errorMessage = 'Failed to submit review';
       if (error instanceof Error) {

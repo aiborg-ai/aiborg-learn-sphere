@@ -76,8 +76,8 @@ async function fetchRecommendations(
       quizzes,
       learningPath,
     };
-  } catch (error) {
-    logger.error('Error fetching recommendations:', error);
+  } catch (_error) {
+    logger._error('Error fetching recommendations:', _error);
     throw error;
   }
 }
@@ -143,8 +143,8 @@ async function fetchRecommendedCourses(
     }
 
     return courses.slice(0, 4);
-  } catch (error) {
-    logger.error('Error fetching recommended courses:', error);
+  } catch (_error) {
+    logger._error('Error fetching recommended courses:', _error);
     return [];
   }
 }
@@ -205,8 +205,8 @@ async function fetchRecommendedBlogPosts(weakCategories: string[]): Promise<Blog
       .sort((a, b) => b.relevanceScore - a.relevanceScore)
       .slice(0, 6)
       .map(item => item.post);
-  } catch (error) {
-    logger.error('Error fetching recommended blog posts:', error);
+  } catch (_error) {
+    logger._error('Error fetching recommended blog posts:', _error);
     return [];
   }
 }

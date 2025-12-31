@@ -6,7 +6,8 @@
 
 import { useCallback, useRef } from 'react';
 
-type Key =
+// Supported keyboard keys (for documentation)
+type _Key =
   | 'Enter'
   | 'Space'
   | 'Escape'

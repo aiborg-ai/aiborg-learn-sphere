@@ -56,8 +56,8 @@ export class StudyEffectivenessService {
       if (error) {
         logger.error('Failed to record study session:', error);
       }
-    } catch (error) {
-      logger.error('Error recording study session:', error);
+    } catch (_error) {
+      logger._error('Error recording study session:', _error);
     }
   }
 
@@ -114,8 +114,8 @@ export class StudyEffectivenessService {
         worstHours,
         hourlyPerformance: hourlyPerformance.sort((a, b) => a.hour - b.hour),
       };
-    } catch (error) {
-      logger.error('Error analyzing time-of-day performance:', error);
+    } catch (_error) {
+      logger._error('Error analyzing time-of-day performance:', _error);
       return null;
     }
   }
@@ -214,8 +214,8 @@ export class StudyEffectivenessService {
         fatiguePoint,
         performanceByDuration,
       };
-    } catch (error) {
-      logger.error('Error analyzing session length:', error);
+    } catch (_error) {
+      logger._error('Error analyzing session length:', _error);
       return null;
     }
   }
@@ -263,8 +263,8 @@ export class StudyEffectivenessService {
         worstDays,
         dailyPerformance: dailyPerformance.sort((a, b) => a.day - b.day),
       };
-    } catch (error) {
-      logger.error('Error analyzing weekly pattern:', error);
+    } catch (_error) {
+      logger._error('Error analyzing weekly pattern:', _error);
       return null;
     }
   }
@@ -358,8 +358,8 @@ export class StudyEffectivenessService {
           metadata: { bestDays: weeklyPattern.bestDays },
         });
       }
-    } catch (error) {
-      logger.error('Error generating study insights:', error);
+    } catch (_error) {
+      logger._error('Error generating study insights:', _error);
     }
 
     return insights;
@@ -405,8 +405,8 @@ export class StudyEffectivenessService {
           sessionTypes.length > 0 ? sessionTypes : ['course', 'quiz', 'flashcard'],
         generatedAt: new Date(),
       };
-    } catch (error) {
-      logger.error('Error generating optimal schedule:', error);
+    } catch (_error) {
+      logger._error('Error generating optimal schedule:', _error);
       return null;
     }
   }
@@ -476,8 +476,8 @@ export class StudyEffectivenessService {
         abilityGain,
         studyStreak,
       };
-    } catch (error) {
-      logger.error('Error getting study stats summary:', error);
+    } catch (_error) {
+      logger._error('Error getting study stats summary:', _error);
       return null;
     }
   }

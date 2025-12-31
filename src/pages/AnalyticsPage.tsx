@@ -145,8 +145,8 @@ export default function AnalyticsPage() {
         current: currentStats,
         previous: previousStats,
       });
-    } catch (error) {
-      logger.error('Error fetching comparison data:', error);
+    } catch (_error) {
+      logger._error('Error fetching comparison data:', _error);
     }
   }, [user, dateRange]);
 
@@ -184,8 +184,8 @@ export default function AnalyticsPage() {
 
       // Fetch comparison data for current vs previous period
       await fetchComparisonData();
-    } catch (error) {
-      logger.error('Error fetching analytics:', error);
+    } catch (_error) {
+      logger._error('Error fetching analytics:', _error);
     } finally {
       setLoading(false);
     }

@@ -130,10 +130,10 @@ export const PrivacyControls = () => {
         title: 'Consent Updated',
         description: `${getConsentLabel(consentType)} ${granted ? 'granted' : 'revoked'}`,
       });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Failed to Update Consent',
-        description: error.message,
+        description: _error.message,
         variant: 'destructive',
       });
     }
@@ -162,10 +162,10 @@ export const PrivacyControls = () => {
         description:
           "Your data export will be ready shortly. You will receive an email when it's available.",
       });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Export Failed',
-        description: error.message,
+        description: _error.message,
         variant: 'destructive',
       });
     } finally {
@@ -193,10 +193,10 @@ export const PrivacyControls = () => {
         title: 'PII Access Logged',
         description: 'Access to your personal information has been recorded for security.',
       });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Failed to Load PII',
-        description: error.message,
+        description: _error.message,
         variant: 'destructive',
       });
     } finally {
@@ -230,10 +230,10 @@ export const PrivacyControls = () => {
 
       setDeletionDialogOpen(false);
       setDeletionReason('');
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Deletion Request Failed',
-        description: error.message,
+        description: _error.message,
         variant: 'destructive',
       });
     } finally {

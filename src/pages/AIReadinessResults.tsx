@@ -64,7 +64,7 @@ export default function AIReadinessResults() {
         if (error) throw error;
 
         setRecommendations((data as ReadinessRecommendation[]) || []);
-      } catch (error) {
+      } catch (_error) {
         toast({
           title: 'Error',
           description: 'Failed to load recommendations.',
@@ -181,7 +181,7 @@ export default function AIReadinessResults() {
         title: 'PDF Downloaded',
         description: 'Your AI-Readiness report has been downloaded successfully!',
       });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Download Failed',
         description: 'Failed to generate PDF. Please try again.',

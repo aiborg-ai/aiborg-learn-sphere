@@ -126,8 +126,8 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
 
       if (error) throw error;
       setUsers(data || []);
-    } catch (error) {
-      logger.error('Error fetching users:', error);
+    } catch (_error) {
+      logger._error('Error fetching users:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load users',
@@ -149,8 +149,8 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
 
       if (error) throw error;
       setEvents(data || []);
-    } catch (error) {
-      logger.error('Error fetching events:', error);
+    } catch (_error) {
+      logger._error('Error fetching events:', _error);
     }
   };
 
@@ -165,8 +165,8 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
 
       if (error) throw error;
       setCourses(data || []);
-    } catch (error) {
-      logger.error('Error fetching courses:', error);
+    } catch (_error) {
+      logger._error('Error fetching courses:', _error);
     }
   };
 
@@ -241,8 +241,8 @@ export function IssueTicketDialog({ open, onOpenChange, onIssueTickets }: IssueT
       });
 
       onOpenChange(false);
-    } catch (error) {
-      logger.error('Error issuing tickets:', error);
+    } catch (_error) {
+      logger._error('Error issuing tickets:', _error);
       toast({
         title: 'Error',
         description: 'Failed to issue tickets',

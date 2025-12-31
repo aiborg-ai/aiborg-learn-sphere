@@ -254,8 +254,8 @@ export class LTIService {
       }
 
       return payload as LTIClaims;
-    } catch (error) {
-      logger.error('Failed to verify ID token:', error);
+    } catch (_error) {
+      logger._error('Failed to verify ID token:', _error);
       throw new Error('Invalid ID token');
     }
   }

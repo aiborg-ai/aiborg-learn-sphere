@@ -111,10 +111,7 @@ class ComplianceServiceClass {
     active_only?: boolean;
   }): Promise<ComplianceRequirement[]> {
     try {
-      let query = supabase
-        .from('compliance_requirements')
-        .select('*')
-        .order('title');
+      let query = supabase.from('compliance_requirements').select('*').order('title');
 
       if (options?.active_only !== false) {
         query = query.eq('is_active', true);
@@ -127,9 +124,9 @@ class ComplianceServiceClass {
       const { data, error } = await query;
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching requirements:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error fetching requirements:', _error);
+      throw _error;
     }
   }
 
@@ -146,9 +143,9 @@ class ComplianceServiceClass {
 
       if (error) throw error;
       return data;
-    } catch (error) {
-      logger.error('Error fetching requirement:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error fetching requirement:', _error);
+      throw _error;
     }
   }
 
@@ -183,9 +180,9 @@ class ComplianceServiceClass {
 
       if (error) throw error;
       return data;
-    } catch (error) {
-      logger.error('Error creating requirement:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error creating requirement:', _error);
+      throw _error;
     }
   }
 
@@ -206,9 +203,9 @@ class ComplianceServiceClass {
         .eq('id', requirementId);
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error updating requirement:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error updating requirement:', _error);
+      throw _error;
     }
   }
 
@@ -226,9 +223,9 @@ class ComplianceServiceClass {
         .eq('id', requirementId);
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error archiving requirement:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error archiving requirement:', _error);
+      throw _error;
     }
   }
 
@@ -245,45 +242,41 @@ class ComplianceServiceClass {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching user compliance:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error fetching user compliance:', _error);
+      throw _error;
     }
   }
 
   /**
    * Get all user statuses for a requirement
    */
-  async getRequirementStatuses(
-    requirementId: string
-  ): Promise<UserComplianceStatus[]> {
+  async getRequirementStatuses(requirementId: string): Promise<UserComplianceStatus[]> {
     try {
       const { data, error } = await supabase
         .from('user_compliance_status')
-        .select(`
+        .select(
+          `
           *,
           requirement:compliance_requirements(*)
-        `)
+        `
+        )
         .eq('requirement_id', requirementId)
         .order('status')
         .order('due_date');
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching requirement statuses:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error fetching requirement statuses:', _error);
+      throw _error;
     }
   }
 
   /**
    * Assign requirement to user
    */
-  async assignToUser(
-    userId: string,
-    requirementId: string,
-    dueDate?: Date
-  ): Promise<string> {
+  async assignToUser(userId: string, requirementId: string, dueDate?: Date): Promise<string> {
     try {
       const { data, error } = await supabase.rpc('assign_compliance_requirement', {
         p_user_id: userId,
@@ -293,20 +286,16 @@ class ComplianceServiceClass {
 
       if (error) throw error;
       return data;
-    } catch (error) {
-      logger.error('Error assigning requirement:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error assigning requirement:', _error);
+      throw _error;
     }
   }
 
   /**
    * Bulk assign requirement to multiple users
    */
-  async bulkAssign(
-    userIds: string[],
-    requirementId: string,
-    dueDate?: Date
-  ): Promise<number> {
+  async bulkAssign(userIds: string[], requirementId: string, dueDate?: Date): Promise<number> {
     try {
       let count = 0;
       for (const userId of userIds) {
@@ -314,9 +303,9 @@ class ComplianceServiceClass {
         count++;
       }
       return count;
-    } catch (error) {
-      logger.error('Error bulk assigning:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error bulk assigning:', _error);
+      throw _error;
     }
   }
 
@@ -332,9 +321,9 @@ class ComplianceServiceClass {
 
       if (error) throw error;
       return data || 0;
-    } catch (error) {
-      logger.error('Error auto-assigning by role:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error auto-assigning by role:', _error);
+      throw _error;
     }
   }
 
@@ -370,9 +359,9 @@ class ComplianceServiceClass {
         .eq('id', statusId);
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error updating status:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error updating status:', _error);
+      throw _error;
     }
   }
 
@@ -388,10 +377,12 @@ class ComplianceServiceClass {
       // Get the requirement to calculate expiry
       const { data: status, error: fetchError } = await supabase
         .from('user_compliance_status')
-        .select(`
+        .select(
+          `
           *,
           requirement:compliance_requirements(renewal_period_days)
-        `)
+        `
+        )
         .eq('id', statusId)
         .single();
 
@@ -415,20 +406,16 @@ class ComplianceServiceClass {
         .eq('id', statusId);
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error completing requirement:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error completing requirement:', _error);
+      throw _error;
     }
   }
 
   /**
    * Grant exemption
    */
-  async grantExemption(
-    statusId: string,
-    reason: string,
-    exemptedBy: string
-  ): Promise<void> {
+  async grantExemption(statusId: string, reason: string, exemptedBy: string): Promise<void> {
     try {
       const { error } = await supabase
         .from('user_compliance_status')
@@ -442,9 +429,9 @@ class ComplianceServiceClass {
         .eq('id', statusId);
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error granting exemption:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error granting exemption:', _error);
+      throw _error;
     }
   }
 
@@ -453,15 +440,17 @@ class ComplianceServiceClass {
   /**
    * Get users due for reminders
    */
-  async getReminders(daysAhead: number = 30): Promise<Array<{
-    status_id: string;
-    user_id: string;
-    requirement_id: string;
-    requirement_title: string;
-    due_date: string;
-    days_until_due: number;
-    reminder_type: string;
-  }>> {
+  async getReminders(daysAhead: number = 30): Promise<
+    Array<{
+      status_id: string;
+      user_id: string;
+      requirement_id: string;
+      requirement_title: string;
+      due_date: string;
+      days_until_due: number;
+      reminder_type: string;
+    }>
+  > {
     try {
       const { data, error } = await supabase.rpc('get_compliance_reminders', {
         p_days_ahead: daysAhead,
@@ -469,9 +458,9 @@ class ComplianceServiceClass {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching reminders:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error fetching reminders:', _error);
+      throw _error;
     }
   }
 
@@ -490,9 +479,9 @@ class ComplianceServiceClass {
         .eq('id', statusId);
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error marking reminder sent:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error marking reminder sent:', _error);
+      throw _error;
     }
   }
 
@@ -508,14 +497,16 @@ class ComplianceServiceClass {
       const { data, error } = await supabase.rpc('process_compliance_expiries');
       if (error) throw error;
 
-      return data?.[0] || {
-        expired_count: 0,
-        renewals_created: 0,
-        escalations_sent: 0,
-      };
-    } catch (error) {
-      logger.error('Error processing expiries:', error);
-      throw error;
+      return (
+        data?.[0] || {
+          expired_count: 0,
+          renewals_created: 0,
+          escalations_sent: 0,
+        }
+      );
+    } catch (_error) {
+      logger._error('Error processing expiries:', _error);
+      throw _error;
     }
   }
 
@@ -529,28 +520,27 @@ class ComplianceServiceClass {
       const { data, error } = await supabase.rpc('get_compliance_summary');
       if (error) throw error;
 
-      return data?.[0] || {
-        total_requirements: 0,
-        total_users: 0,
-        compliant_count: 0,
-        non_compliant_count: 0,
-        overdue_count: 0,
-        expiring_soon_count: 0,
-        compliance_rate: 0,
-      };
-    } catch (error) {
-      logger.error('Error fetching summary:', error);
-      throw error;
+      return (
+        data?.[0] || {
+          total_requirements: 0,
+          total_users: 0,
+          compliant_count: 0,
+          non_compliant_count: 0,
+          overdue_count: 0,
+          expiring_soon_count: 0,
+          compliance_rate: 0,
+        }
+      );
+    } catch (_error) {
+      logger._error('Error fetching summary:', _error);
+      throw _error;
     }
   }
 
   /**
    * Generate compliance report
    */
-  async generateReport(
-    startDate?: Date,
-    endDate?: Date
-  ): Promise<ComplianceReport[]> {
+  async generateReport(startDate?: Date, endDate?: Date): Promise<ComplianceReport[]> {
     try {
       const { data, error } = await supabase.rpc('generate_compliance_report', {
         p_start_date: startDate?.toISOString().split('T')[0] || null,
@@ -559,9 +549,9 @@ class ComplianceServiceClass {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error generating report:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error generating report:', _error);
+      throw _error;
     }
   }
 
@@ -599,9 +589,9 @@ class ComplianceServiceClass {
       const { data, error } = await query;
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching audit log:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error fetching audit log:', _error);
+      throw _error;
     }
   }
 
@@ -631,9 +621,9 @@ class ComplianceServiceClass {
       }
 
       return JSON.stringify(exportData, null, 2);
-    } catch (error) {
-      logger.error('Error exporting data:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error exporting data:', _error);
+      throw _error;
     }
   }
 
@@ -665,9 +655,9 @@ class ComplianceServiceClass {
         recentAudit: auditLog,
         upcomingReminders: reminders.length,
       };
-    } catch (error) {
-      logger.error('Error fetching dashboard data:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error fetching dashboard data:', _error);
+      throw _error;
     }
   }
 }

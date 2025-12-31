@@ -68,8 +68,8 @@ export function usePushNotifications(): UsePushNotificationsReturn {
           const prefs = await PushNotificationService.getPreferences();
           setPreferences(prefs);
         }
-      } catch (error) {
-        logger.error('Error initializing push notifications:', error);
+      } catch (_error) {
+        logger._error('Error initializing push notifications:', _error);
       } finally {
         setIsLoading(false);
       }
@@ -120,8 +120,8 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       }
 
       return success;
-    } catch (error) {
-      logger.error('Error subscribing to push notifications:', error);
+    } catch (_error) {
+      logger._error('Error subscribing to push notifications:', _error);
       return false;
     } finally {
       setIsLoading(false);
@@ -142,8 +142,8 @@ export function usePushNotifications(): UsePushNotificationsReturn {
         logger.info('Successfully unsubscribed from push notifications');
       }
       return success;
-    } catch (error) {
-      logger.error('Error unsubscribing from push notifications:', error);
+    } catch (_error) {
+      logger._error('Error unsubscribing from push notifications:', _error);
       return false;
     } finally {
       setIsLoading(false);
@@ -168,8 +168,8 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       try {
         await PushNotificationService.updatePreferences(newPreferences);
         logger.info(`Notification preference updated: ${type} = ${enabled}`);
-      } catch (error) {
-        // Revert on error
+      } catch (_error) {
+        // Revert on _error
         setPreferences(preferences);
         logger.error('Error updating notification preference:', error);
         throw error;

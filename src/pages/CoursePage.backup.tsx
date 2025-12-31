@@ -119,8 +119,8 @@ export default function CoursePage() {
         .order('due_date', { ascending: true });
 
       setAssignments(assignmentsData || []);
-    } catch (error) {
-      logger.error('Error fetching course data:', error);
+    } catch (_error) {
+      logger._error('Error fetching course data:', _error);
     } finally {
       setLoading(false);
     }
@@ -144,8 +144,8 @@ export default function CoursePage() {
           last_accessed: new Date().toISOString(),
         }));
       }
-    } catch (error) {
-      logger.error('Error updating progress:', error);
+    } catch (_error) {
+      logger._error('Error updating progress:', _error);
     }
   };
 

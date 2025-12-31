@@ -250,9 +250,9 @@ export const contactSchemas = {
  * @example
  * try {
  *   schema.parse(data);
- * } catch (error) {
- *   if (error instanceof z.ZodError) {
- *     const errors = getValidationErrors(error);
+ * } catch (_error) {
+ *   if (_error instanceof z.ZodError) {
+ *     const errors = getValidationErrors(_error);
  *     // { "email": "Invalid email address", "password": "Password is required" }
  *   }
  * }
@@ -291,9 +291,9 @@ export async function validateData<T>(
   try {
     const validatedData = await schema.parseAsync(data);
     return { success: true, data: validatedData };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return { success: false, errors: getValidationErrors(error) };
+  } catch (_error) {
+    if (_error instanceof z.ZodError) {
+      return { success: false, errors: getValidationErrors(_error) };
     }
     throw error;
   }

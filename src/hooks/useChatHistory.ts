@@ -64,8 +64,8 @@ export function useChatHistory() {
           })),
         }));
       }
-    } catch (error) {
-      logger.error('Failed to load chat history from localStorage:', error);
+    } catch (_error) {
+      logger._error('Failed to load chat history from localStorage:', _error);
     }
     return [];
   }, []);
@@ -76,8 +76,8 @@ export function useChatHistory() {
       // Keep only the most recent conversations
       const limited = conversations.slice(0, MAX_STORED_CONVERSATIONS);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(limited));
-    } catch (error) {
-      logger.error('Failed to save chat history to localStorage:', error);
+    } catch (_error) {
+      logger._error('Failed to save chat history to localStorage:', _error);
     }
   }, []);
 
@@ -136,8 +136,8 @@ export function useChatHistory() {
       );
 
       return conversationsWithMessages;
-    } catch (error) {
-      logger.error('Failed to load chat history from database:', error);
+    } catch (_error) {
+      logger._error('Failed to load chat history from database:', _error);
       return [];
     }
   }, [user?.id]);
@@ -196,8 +196,8 @@ export function useChatHistory() {
 
           if (error) throw error;
           newConversation.id = data.id;
-        } catch (error) {
-          logger.error('Failed to create conversation in database:', error);
+        } catch (_error) {
+          logger._error('Failed to create conversation in database:', _error);
           // Continue with local-only conversation
           newConversation.id = sessionId;
         }
@@ -264,8 +264,8 @@ export function useChatHistory() {
       if (user?.id) {
         try {
           await supabase.from('chatbot_conversations').delete().eq('id', conversationId);
-        } catch (error) {
-          logger.error('Failed to delete conversation from database:', error);
+        } catch (_error) {
+          logger._error('Failed to delete conversation from database:', _error);
         }
       }
 
@@ -288,8 +288,8 @@ export function useChatHistory() {
     if (user?.id) {
       try {
         await supabase.from('chatbot_conversations').delete().eq('user_id', user.id);
-      } catch (error) {
-        logger.error('Failed to clear conversations from database:', error);
+      } catch (_error) {
+        logger._error('Failed to clear conversations from database:', _error);
       }
     }
 

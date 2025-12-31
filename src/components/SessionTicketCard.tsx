@@ -81,10 +81,10 @@ export function SessionTicketCard({ ticket, courseId }: SessionTicketCardProps) 
         title: 'Success',
         description: 'Checked in successfully!',
       });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Check-in Failed',
-        description: error instanceof Error ? error.message : 'Unable to check in at this time',
+        description: _error instanceof Error ? _error.message : 'Unable to check in at this time',
         variant: 'destructive',
       });
     }
@@ -97,10 +97,10 @@ export function SessionTicketCard({ ticket, courseId }: SessionTicketCardProps) 
         title: 'Ticket Cancelled',
         description: 'Your ticket has been cancelled',
       });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to cancel ticket',
+        description: _error instanceof Error ? _error.message : 'Failed to cancel ticket',
         variant: 'destructive',
       });
     }
@@ -113,10 +113,10 @@ export function SessionTicketCard({ ticket, courseId }: SessionTicketCardProps) 
         title: 'Ticket Reactivated',
         description: 'Your ticket has been reactivated',
       });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to reactivate ticket',
+        description: _error instanceof Error ? _error.message : 'Failed to reactivate ticket',
         variant: 'destructive',
       });
     }

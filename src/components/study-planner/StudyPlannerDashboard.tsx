@@ -143,8 +143,8 @@ export function StudyPlannerDashboard() {
       setRecentSessions(data.recentSessions);
       setRecommendations(data.recommendations);
       setStats(data.stats);
-    } catch (error) {
-      logger.error('Error loading study planner dashboard:', error);
+    } catch (_error) {
+      logger._error('Error loading study planner dashboard:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load study planner data',
@@ -170,8 +170,8 @@ export function StudyPlannerDashboard() {
         toast({
           description: 'Study session started! Stay focused.',
         });
-      } catch (error) {
-        logger.error('Error starting session:', error);
+      } catch (_error) {
+        logger._error('Error starting session:', _error);
         toast({
           title: 'Error',
           description: 'Failed to start session',
@@ -199,8 +199,8 @@ export function StudyPlannerDashboard() {
         description: `Session completed! ${result.duration_minutes} minutes of focused study.`,
       });
       loadDashboardData();
-    } catch (error) {
-      logger.error('Error ending session:', error);
+    } catch (_error) {
+      logger._error('Error ending session:', _error);
       toast({
         title: 'Error',
         description: 'Failed to complete session',
@@ -223,8 +223,8 @@ export function StudyPlannerDashboard() {
         description: 'AI Study Plan created successfully!',
       });
       loadDashboardData();
-    } catch (error) {
-      logger.error('Error creating plan:', error);
+    } catch (_error) {
+      logger._error('Error creating plan:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create study plan',

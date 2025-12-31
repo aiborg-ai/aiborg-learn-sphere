@@ -84,8 +84,8 @@ class CurriculumApprovalService {
         courses: (courses || []) as CurriculumCourse[],
         modules,
       };
-    } catch (error) {
-      logger.error('Error fetching curriculum:', error);
+    } catch (_error) {
+      logger._error('Error fetching curriculum:', _error);
       return null;
     }
   }
@@ -107,8 +107,8 @@ class CurriculumApprovalService {
       if (error) throw error;
 
       logger.info(`Course ${courseId} approved in curriculum ${curriculumId}`);
-    } catch (error) {
-      logger.error('Error approving course:', error);
+    } catch (_error) {
+      logger._error('Error approving course:', _error);
       throw error;
     }
   }
@@ -130,8 +130,8 @@ class CurriculumApprovalService {
       if (error) throw error;
 
       logger.info(`Course ${courseId} rejected in curriculum ${curriculumId}`);
-    } catch (error) {
-      logger.error('Error rejecting course:', error);
+    } catch (_error) {
+      logger._error('Error rejecting course:', _error);
       throw error;
     }
   }
@@ -155,8 +155,8 @@ class CurriculumApprovalService {
       await Promise.all(updates);
 
       logger.info(`Bulk approved ${courseIds.length} courses in curriculum ${curriculumId}`);
-    } catch (error) {
-      logger.error('Error bulk approving courses:', error);
+    } catch (_error) {
+      logger._error('Error bulk approving courses:', _error);
       throw error;
     }
   }
@@ -180,8 +180,8 @@ class CurriculumApprovalService {
       await Promise.all(updates);
 
       logger.info(`Bulk rejected ${courseIds.length} courses in curriculum ${curriculumId}`);
-    } catch (error) {
-      logger.error('Error bulk rejecting courses:', error);
+    } catch (_error) {
+      logger._error('Error bulk rejecting courses:', _error);
       throw error;
     }
   }
@@ -201,8 +201,8 @@ class CurriculumApprovalService {
         .eq('course_id', courseId);
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error adding course notes:', error);
+    } catch (_error) {
+      logger._error('Error adding course notes:', _error);
       throw error;
     }
   }
@@ -262,8 +262,8 @@ class CurriculumApprovalService {
 
       logger.info(`Curriculum ${curriculumId} published with ${approvedCount} approved courses`);
       return published as Curriculum;
-    } catch (error) {
-      logger.error('Error publishing curriculum:', error);
+    } catch (_error) {
+      logger._error('Error publishing curriculum:', _error);
       throw error;
     }
   }
@@ -308,8 +308,8 @@ class CurriculumApprovalService {
       if (error) throw error;
 
       logger.info(`Custom course ${courseId} added to curriculum ${curriculumId}`);
-    } catch (error) {
-      logger.error('Error adding custom course:', error);
+    } catch (_error) {
+      logger._error('Error adding custom course:', _error);
       throw error;
     }
   }
@@ -328,8 +328,8 @@ class CurriculumApprovalService {
       if (error) throw error;
 
       logger.info(`Course ${courseId} removed from curriculum ${curriculumId}`);
-    } catch (error) {
-      logger.error('Error removing course:', error);
+    } catch (_error) {
+      logger._error('Error removing course:', _error);
       throw error;
     }
   }
@@ -353,8 +353,8 @@ class CurriculumApprovalService {
       await Promise.all(updates);
 
       logger.info(`Reordered ${courseOrders.length} courses in curriculum ${curriculumId}`);
-    } catch (error) {
-      logger.error('Error reordering courses:', error);
+    } catch (_error) {
+      logger._error('Error reordering courses:', _error);
       throw error;
     }
   }
@@ -390,8 +390,8 @@ class CurriculumApprovalService {
         pending_courses: pending,
         avg_recommendation_score: Math.round(avgScore * 100) / 100,
       };
-    } catch (error) {
-      logger.error('Error getting curriculum stats:', error);
+    } catch (_error) {
+      logger._error('Error getting curriculum stats:', _error);
       throw error;
     }
   }
@@ -432,8 +432,8 @@ class CurriculumApprovalService {
       if (error) throw error;
 
       logger.info(`Curriculum ${curriculumId} ${isActive ? 'activated' : 'deactivated'}`);
-    } catch (error) {
-      logger.error('Error toggling curriculum active status:', error);
+    } catch (_error) {
+      logger._error('Error toggling curriculum active status:', _error);
       throw error;
     }
   }
@@ -449,8 +449,8 @@ class CurriculumApprovalService {
       if (error) throw error;
 
       logger.info(`Curriculum ${curriculumId} deleted`);
-    } catch (error) {
-      logger.error('Error deleting curriculum:', error);
+    } catch (_error) {
+      logger._error('Error deleting curriculum:', _error);
       throw error;
     }
   }

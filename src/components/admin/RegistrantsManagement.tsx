@@ -111,8 +111,8 @@ export function RegistrantsManagement() {
       }
 
       setEntities(data.map(e => ({ id: e.id, name: e.title })));
-    } catch (error) {
-      logger.error('Error fetching entities:', error);
+    } catch (_error) {
+      logger._error('Error fetching entities:', _error);
     }
   }, [entityType]);
 
@@ -216,8 +216,8 @@ export function RegistrantsManagement() {
       }
 
       setRegistrants(data);
-    } catch (error) {
-      logger.error('Error fetching registrants:', error);
+    } catch (_error) {
+      logger._error('Error fetching registrants:', _error);
       toast({
         title: 'Error',
         description: 'Failed to fetch registrants',

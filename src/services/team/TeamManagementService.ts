@@ -251,10 +251,10 @@ export class TeamManagementService {
           email: invitation.email,
           invitationId: created.id,
         });
-      } catch (error) {
+      } catch (_error) {
         results.failed.push({
           email: invitation.email,
-          error: error instanceof Error ? error.message : 'Unknown error',
+          _error: _error instanceof Error ? _error.message : 'Unknown _error',
         });
       }
     }
@@ -457,8 +457,8 @@ export class TeamManagementService {
         logger.error('Failed to send invitation email', error);
         // Don't throw - we don't want to fail the invitation creation if email fails
       }
-    } catch (error) {
-      logger.error('Error in sendInvitationEmail', error);
+    } catch (_error) {
+      logger._error('Error in sendInvitationEmail', _error);
       // Don't throw - email failure shouldn't break invitation flow
     }
   }

@@ -85,8 +85,8 @@ export function useAutoRefresh({
 
       setLastRefresh(new Date());
       logger.debug('Auto-refresh completed successfully');
-    } catch (error) {
-      logger.error('Error during auto-refresh:', error);
+    } catch (_error) {
+      logger._error('Error during auto-refresh:', _error);
       // Don't throw - let the onRefresh handler manage errors
     } finally {
       setIsRefreshing(false);

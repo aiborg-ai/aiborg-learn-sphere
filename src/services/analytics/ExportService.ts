@@ -60,8 +60,8 @@ export class ExportService {
         sectionCount: sections.length,
         dateRange: config.dateRange,
       });
-    } catch (error) {
-      logger.error('Error exporting to PDF:', error);
+    } catch (_error) {
+      logger._error('Error exporting to PDF:', _error);
       throw new Error(
         `Failed to export PDF: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -98,8 +98,8 @@ export class ExportService {
         sectionTitle: section.title,
         dateRange: config.dateRange,
       });
-    } catch (error) {
-      logger.error('Error exporting single section to PDF:', error);
+    } catch (_error) {
+      logger._error('Error exporting single section to PDF:', _error);
       throw new Error(
         `Failed to export PDF: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -160,8 +160,8 @@ export class ExportService {
         rowCount: data.length,
         columnCount: headers?.length || Object.keys(data[0]).length,
       });
-    } catch (error) {
-      logger.error('Error exporting to CSV:', error);
+    } catch (_error) {
+      logger._error('Error exporting to CSV:', _error);
       throw new Error(
         `Failed to export CSV: ${error instanceof Error ? error.message : 'Unknown error'}`
       );

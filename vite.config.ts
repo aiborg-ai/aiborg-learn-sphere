@@ -212,9 +212,42 @@ export default defineConfig(({ mode }) => ({
     modulePreload: true,
     rollupOptions: {
       output: {
-        // TEMPORARILY DISABLE manual chunks to debug circular dependency issues
-        // Let Vite/Rollup handle all chunking automatically
-        // manualChunks: undefined,
+        // Manual chunks for better caching and code splitting
+        // Circular dependency fixed - safe to re-enable (2025-12-31)
+        manualChunks: {
+          // Core vendor chunk (rarely changes)
+          'vendor-react': ['react', 'react-dom', 'react/jsx-runtime'],
+          'vendor-router': ['react-router-dom'],
+
+          // State management & data fetching
+          'vendor-query': ['@tanstack/react-query'],
+          'vendor-supabase': ['@supabase/supabase-js'],
+
+          // UI component library (large, stable)
+          'vendor-radix': [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-dropdown-menu',
+            '@radix-ui/react-select',
+            '@radix-ui/react-tabs',
+            '@radix-ui/react-toast',
+            '@radix-ui/react-tooltip',
+          ],
+
+          // Charts and visualization
+          'vendor-charts': ['recharts'],
+
+          // Form handling
+          'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
+
+          // Rich text editor
+          'vendor-editor': ['@tiptap/react', '@tiptap/starter-kit', '@tiptap/extension-link'],
+
+          // PDF and document handling
+          'vendor-pdf': ['pdfjs-dist', 'react-pdf', 'jspdf', 'html2canvas'],
+
+          // Heavy utilities
+          'vendor-utils': ['date-fns', 'dompurify', 'marked'],
+        },
         // Optimize chunk naming
         chunkFileNames: chunkInfo => {
           // Use cleaner names for manual chunks

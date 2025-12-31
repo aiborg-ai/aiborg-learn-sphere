@@ -95,8 +95,8 @@ export function BaseAssessmentWizard({
         setSaveError(null);
         await onSaveDraft();
         setLastSaved(new Date());
-      } catch (error) {
-        // Auto-save failed - set error state
+      } catch (_error) {
+        // Auto-save failed - set _error state
         setSaveError('Failed to auto-save');
       } finally {
         setIsSaving(false);
@@ -115,8 +115,8 @@ export function BaseAssessmentWizard({
       setSaveError(null);
       await onSaveDraft();
       setLastSaved(new Date());
-    } catch (error) {
-      // Save failed - set error state
+    } catch (_error) {
+      // Save failed - set _error state
       setSaveError('Failed to save draft');
     } finally {
       setIsSaving(false);
@@ -148,8 +148,8 @@ export function BaseAssessmentWizard({
       setIsSaving(true);
       setSaveError(null);
       await onComplete();
-    } catch (error) {
-      // Completion failed - set error state
+    } catch (_error) {
+      // Completion failed - set _error state
       setSaveError('Failed to complete assessment');
       setIsSaving(false);
     }

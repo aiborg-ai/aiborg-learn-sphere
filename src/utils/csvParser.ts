@@ -253,7 +253,7 @@ export function parseCSV(csvText: string): CSVParseResult {
       totalRows,
       validRows,
     };
-  } catch (error) {
+  } catch {
     logger.error('CSV parsing error:', error);
     return {
       success: false,

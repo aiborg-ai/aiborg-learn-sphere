@@ -145,8 +145,8 @@ export function ResourcesSection({ resources, loading, onResourceView }: Resourc
         title: 'Download Started',
         description: 'Your resource is being downloaded',
       });
-    } catch (error) {
-      logger.error('Error downloading resource:', error);
+    } catch (_error) {
+      logger._error('Error downloading resource:', _error);
       toast({
         title: 'Download Failed',
         description: 'Failed to download the resource',

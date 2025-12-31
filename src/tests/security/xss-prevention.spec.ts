@@ -10,7 +10,6 @@
 
 import { describe, it, expect } from 'vitest';
 import { parseMarkdown } from '@/utils/markdown';
-import { parseMarkdownSimple } from '@/utils/markdownSimple';
 import DOMPurify from 'isomorphic-dompurify';
 
 describe('XSS Prevention - Markdown Parsing', () => {
@@ -72,7 +71,8 @@ describe('XSS Prevention - Markdown Parsing', () => {
     });
 
     it('should strip event handlers from multiple attributes', () => {
-      const malicious = '<div onclick="alert(1)" onmouseover="alert(2)" onfocus="alert(3)">Text</div>';
+      const malicious =
+        '<div onclick="alert(1)" onmouseover="alert(2)" onfocus="alert(3)">Text</div>';
       const result = parseMarkdown(malicious);
 
       expect(result).not.toContain('onclick');
@@ -110,32 +110,6 @@ describe('XSS Prevention - Markdown Parsing', () => {
       expect(parseMarkdown('')).toBe('');
       expect(parseMarkdown(null as any)).toBe('');
       expect(parseMarkdown(undefined as any)).toBe('');
-    });
-  });
-
-  describe('parseMarkdownSimple (Legacy Parser)', () => {
-    it('should block script tags', () => {
-      const malicious = '<script>alert("XSS")</script>';
-      const result = parseMarkdownSimple(malicious);
-
-      expect(result).not.toContain('<script');
-      expect(result).not.toContain('alert');
-    });
-
-    it('should remove event handlers', () => {
-      const malicious = '<img src=x onerror="alert(\'XSS\')">';
-      const result = parseMarkdownSimple(malicious);
-
-      expect(result).not.toContain('onerror');
-      expect(result).not.toContain('alert');
-    });
-
-    it('should block javascript: URLs', () => {
-      const malicious = '[link](javascript:alert("XSS"))';
-      const result = parseMarkdownSimple(malicious);
-
-      expect(result).not.toContain('javascript:');
-      expect(result).not.toContain('alert');
     });
   });
 });
@@ -241,10 +215,7 @@ describe('XSS Prevention - Content Types', () => {
     it('should handle plain text comments safely', () => {
       const comment = 'This is a safe comment with <script>tags</script>';
       // Comments should be plain text, no HTML parsing
-      const escaped = comment
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+      const escaped = comment.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
       expect(escaped).not.toContain('<script');
       expect(escaped).toContain('&lt;script&gt;');
@@ -388,18 +359,39 @@ describe('XSS Prevention - Sanitization Configuration', () => {
   it('should use consistent DOMPurify config across app', () => {
     const testConfig = {
       ALLOWED_TAGS: [
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'p', 'br', 'strong', 'em', 'u',
-        'ul', 'ol', 'li',
-        'a', 'code', 'pre', 'blockquote',
-        'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'p',
+        'br',
+        'strong',
+        'em',
+        'u',
+        'ul',
+        'ol',
+        'li',
+        'a',
+        'code',
+        'pre',
+        'blockquote',
+        'img',
+        'table',
+        'thead',
+        'tbody',
+        'tr',
+        'th',
+        'td',
       ],
       ALLOWED_ATTR: ['href', 'title', 'src', 'alt', 'class'],
       ALLOW_DATA_ATTR: false,
       ALLOWED_URI_REGEXP: /^(?:https?:)/i,
     };
 
-    const malicious = '<script>alert(1)</script><p>Safe</p><img src="http://example.com/img.jpg" alt="Test">';
+    const malicious =
+      '<script>alert(1)</script><p>Safe</p><img src="http://example.com/img.jpg" alt="Test">';
     const result = DOMPurify.sanitize(malicious, testConfig);
 
     expect(result).not.toContain('<script');

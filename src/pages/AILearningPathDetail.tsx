@@ -177,8 +177,8 @@ export default function AILearningPathDetail() {
 
       if (milestonesError) throw milestonesError;
       setMilestones(milestonesData || []);
-    } catch (error) {
-      logger.error('Error fetching path data:', error);
+    } catch (_error) {
+      logger._error('Error fetching path data:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load learning path',
@@ -233,8 +233,8 @@ export default function AILearningPathDetail() {
       });
 
       fetchPathData();
-    } catch (error) {
-      logger.error('Error completing item:', error);
+    } catch (_error) {
+      logger._error('Error completing item:', _error);
     }
   };
 

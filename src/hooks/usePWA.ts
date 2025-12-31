@@ -78,8 +78,8 @@ export function usePWA() {
         logger.info('User dismissed PWA install');
         return false;
       }
-    } catch (error) {
-      logger.error('Error showing install prompt:', error);
+    } catch (_error) {
+      logger._error('Error showing install prompt:', _error);
       return false;
     }
   };

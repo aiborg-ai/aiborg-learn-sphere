@@ -275,8 +275,8 @@ export function useAbilityTrajectory(categoryId?: string) {
         ]);
         setTrajectory(trajectoryData);
         setVelocity(velocityData);
-      } catch (error) {
-        logger.error('Error fetching ability trajectory:', error);
+      } catch (_error) {
+        logger._error('Error fetching ability trajectory:', _error);
       } finally {
         setIsLoading(false);
       }
@@ -314,8 +314,8 @@ export function useStudyEffectiveness() {
         setInsights(insightsData);
         setSchedule(scheduleData);
         setStats(statsData);
-      } catch (error) {
-        logger.error('Error fetching study effectiveness:', error);
+      } catch (_error) {
+        logger._error('Error fetching study effectiveness:', _error);
       } finally {
         setIsLoading(false);
       }
@@ -350,8 +350,8 @@ export function useGoalPredictions() {
         ]);
         setPredictions(predictionsData);
         setAtRisk(atRiskData);
-      } catch (error) {
-        logger.error('Error fetching goal predictions:', error);
+      } catch (_error) {
+        logger._error('Error fetching goal predictions:', _error);
       } finally {
         setIsLoading(false);
       }
@@ -401,8 +401,8 @@ export function useFeedbackLoop() {
         if (!error) {
           setFeedbackEvents(data || []);
         }
-      } catch (error) {
-        logger.error('Error fetching feedback events:', error);
+      } catch (_error) {
+        logger._error('Error fetching feedback events:', _error);
       } finally {
         setIsLoading(false);
       }

@@ -525,52 +525,6 @@ export class KnowledgeGraphService {
   // =====================================================================
   // Prerequisite Validation
   // =====================================================================
-
-  /**
-   * Check if user meets prerequisites for a concept
-   */
-  static async validatePrerequisites(
-    userId: string,
-    conceptId: string,
-    minimumMasteryLevel: 'beginner' | 'intermediate' | 'advanced' = 'beginner'
-  ): Promise<{
-    allowed: boolean;
-    missingPrerequisites: Concept[];
-    masteredPrerequisites: Concept[];
-  }> {
-    // Get all prerequisites
-    const prerequisites = await this.getPrerequisites(conceptId);
-
-    // Import UserMasteryService (circular dependency handled by TypeScript)
-    const { UserMasteryService } = await import('./UserMasteryService');
-
-    const missingPrerequisites: Concept[] = [];
-    const masteredPrerequisites: Concept[] = [];
-
-    // Check user's mastery of each prerequisite
-    for (const prereq of prerequisites) {
-      const mastery = await UserMasteryService.getMastery(userId, prereq.id);
-
-      if (!mastery || mastery.mastery_level === 'none') {
-        missingPrerequisites.push(prereq);
-      } else {
-        // Check if mastery level is sufficient
-        const masteryLevels = ['none', 'beginner', 'intermediate', 'advanced', 'mastered'];
-        const userLevel = masteryLevels.indexOf(mastery.mastery_level);
-        const requiredLevel = masteryLevels.indexOf(minimumMasteryLevel);
-
-        if (userLevel >= requiredLevel) {
-          masteredPrerequisites.push(prereq);
-        } else {
-          missingPrerequisites.push(prereq);
-        }
-      }
-    }
-
-    return {
-      allowed: missingPrerequisites.length === 0,
-      missingPrerequisites,
-      masteredPrerequisites,
-    };
-  }
+  // Note: validatePrerequisites() has been moved to ConceptProgressService
+  // to break circular dependency. Import ConceptProgressService instead.
 }

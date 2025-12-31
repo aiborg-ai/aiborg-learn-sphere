@@ -81,8 +81,8 @@ export function useBulkItems({ filterCategory, filterStatus, filterType }: UseBu
         filterStatus === 'all' ? allItems : allItems.filter(item => item.status === filterStatus);
 
       setItems(filteredItems);
-    } catch (error) {
-      logger.error('Error fetching items:', error);
+    } catch (_error) {
+      logger._error('Error fetching items:', _error);
       toast({
         title: 'Error',
         description: 'Failed to fetch items',

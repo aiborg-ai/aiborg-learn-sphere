@@ -74,8 +74,8 @@ export function StudyRecommendations() {
       if (error) throw error;
 
       setRecommendations(data || []);
-    } catch (error) {
-      logger.error('Error fetching study recommendations:', error);
+    } catch (_error) {
+      logger._error('Error fetching study recommendations:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load study recommendations',
@@ -107,8 +107,8 @@ export function StudyRecommendations() {
         title: 'Great job!',
         description: 'Recommendation marked as completed',
       });
-    } catch (error) {
-      logger.error('Error completing recommendation:', error);
+    } catch (_error) {
+      logger._error('Error completing recommendation:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update recommendation',
@@ -132,8 +132,8 @@ export function StudyRecommendations() {
         title: 'Dismissed',
         description: 'Recommendation has been dismissed',
       });
-    } catch (error) {
-      logger.error('Error dismissing recommendation:', error);
+    } catch (_error) {
+      logger._error('Error dismissing recommendation:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update recommendation',

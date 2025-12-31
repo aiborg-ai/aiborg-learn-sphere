@@ -146,8 +146,8 @@ export function SecureFileUpload({
 
       // Start upload process
       uploadFiles(newUploads);
-    } catch (error) {
-      logger.error('File selection error:', error);
+    } catch (_error) {
+      logger._error('File selection _error:', _error);
       toast({
         title: 'Upload Error',
         description: 'Failed to process selected files',
@@ -185,8 +185,8 @@ export function SecureFileUpload({
       if (failures.length > 0 && onUploadError) {
         onUploadError(new Error(`${failures.length} files failed to upload`));
       }
-    } catch (error) {
-      logger.error('Upload error:', error);
+    } catch (_error) {
+      logger._error('Upload _error:', _error);
       if (onUploadError) {
         onUploadError(error as Error);
       }
@@ -226,8 +226,8 @@ export function SecureFileUpload({
       updateUploadStatus(item, 'success', url);
 
       return url;
-    } catch (error) {
-      logger.error('File upload failed:', error);
+    } catch (_error) {
+      logger._error('File upload failed:', _error);
       updateUploadStatus(item, 'error', undefined, error?.message || 'Upload failed');
       throw error;
     }

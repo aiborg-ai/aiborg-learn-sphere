@@ -57,6 +57,7 @@ export function BatchJobsHistory() {
   useEffect(() => {
     loadJobs();
     loadStatistics();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadJobs = async () => {
@@ -64,8 +65,8 @@ export function BatchJobsHistory() {
       setIsLoading(true);
       const data = await BatchGenerationService.getJobHistory(50);
       setJobs(data);
-    } catch (error) {
-      logger.error('Error loading jobs:', error);
+    } catch (_error) {
+      logger._error('Error loading jobs:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load batch job history',
@@ -80,8 +81,8 @@ export function BatchJobsHistory() {
     try {
       const stats = await BatchGenerationService.getBatchStatistics();
       setStatistics(stats);
-    } catch (error) {
-      logger.error('Error loading statistics:', error);
+    } catch (_error) {
+      logger._error('Error loading statistics:', _error);
     }
   };
 
@@ -94,10 +95,10 @@ export function BatchJobsHistory() {
       });
       // Reload jobs after a delay
       setTimeout(loadJobs, 2000);
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Retry failed',
-        description: error instanceof Error ? error.message : 'Unknown error',
+        description: _error instanceof Error ? _error.message : 'Unknown _error',
         variant: 'destructive',
       });
     }

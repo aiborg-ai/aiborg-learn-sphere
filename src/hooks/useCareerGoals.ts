@@ -26,8 +26,8 @@ export function useCareerGoals(userId?: string) {
       try {
         const goals = await SkillExtractionService.getCareerGoals(effectiveUserId);
         return goals as UserCareerGoal[];
-      } catch (error) {
-        logger.error('Error fetching career goals:', error);
+      } catch (_error) {
+        logger._error('Error fetching career goals:', _error);
         throw error;
       }
     },
@@ -57,8 +57,8 @@ export function useSetCareerGoal() {
 
       try {
         await SkillExtractionService.setCareerGoal(user.id, jobRoleId, targetDate);
-      } catch (error) {
-        logger.error('Error setting career goal:', error);
+      } catch (_error) {
+        logger._error('Error setting career goal:', _error);
         throw error;
       }
     },

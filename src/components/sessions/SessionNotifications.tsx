@@ -69,8 +69,8 @@ export const SessionNotifications: React.FC<SessionNotificationsProps> = ({
       try {
         const data = await getUserRegistrations(user.email);
         setRegistrations(data as RegistrationWithDetails[]);
-      } catch (error) {
-        logger.error('Error fetching registrations:', error);
+      } catch (_error) {
+        logger._error('Error fetching registrations:', _error);
       } finally {
         setLoading(false);
       }

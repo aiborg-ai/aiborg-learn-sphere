@@ -39,8 +39,8 @@ export function DownloadManagerUI() {
       setIsLoading(true);
       const userDownloads = await DownloadManager.getUserDownloads();
       setDownloads(userDownloads);
-    } catch (error) {
-      logger.error('Failed to load downloads:', error);
+    } catch (_error) {
+      logger._error('Failed to load downloads:', _error);
       toast.error('Failed to load downloads');
     } finally {
       setIsLoading(false);
@@ -51,8 +51,8 @@ export function DownloadManagerUI() {
     try {
       const stats = await getStorageUsage();
       setStorageStats(stats);
-    } catch (error) {
-      logger.error('Failed to load storage stats:', error);
+    } catch (_error) {
+      logger._error('Failed to load storage stats:', _error);
     }
   }
 
@@ -62,8 +62,8 @@ export function DownloadManagerUI() {
       toast.success('Download removed');
       loadDownloads();
       loadStorageStats();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
+    } catch (_error) {
+      const message = _error instanceof Error ? _error.message : 'Unknown _error';
       toast.error(`Failed to delete: ${message}`);
     }
   }
@@ -73,8 +73,8 @@ export function DownloadManagerUI() {
       setIsSyncing(true);
       const result = await DownloadManager.syncProgress();
       toast.success(`Synced ${result.synced} items, ${result.failed} failed`);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
+    } catch (_error) {
+      const message = _error instanceof Error ? _error.message : 'Unknown _error';
       toast.error(`Sync failed: ${message}`);
     } finally {
       setIsSyncing(false);
@@ -91,8 +91,8 @@ export function DownloadManagerUI() {
       toast.success('All offline content cleared');
       loadDownloads();
       loadStorageStats();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
+    } catch (_error) {
+      const message = _error instanceof Error ? _error.message : 'Unknown _error';
       toast.error(`Failed to clear cache: ${message}`);
     }
   }

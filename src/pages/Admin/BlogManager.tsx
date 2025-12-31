@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { BlogService } from '@/services/blog/BlogService';
+import { BlogPostService } from '@/services/blog/BlogPostService';
+import { BlogCategoryService } from '@/services/blog/BlogCategoryService';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/components/ui/use-toast';
 import type { BlogPost, BlogCategory } from '@/types/blog';
@@ -52,12 +53,12 @@ export default function BlogManager() {
     try {
       setLoading(true);
       const [postsData, categoriesData] = await Promise.all([
-        BlogService.getPosts({
+        BlogPostService.getPosts({
           status: undefined,
           page: currentPage,
           limit: pageSize,
         }),
-        BlogService.getCategories(),
+        BlogCategoryService.getCategories(),
       ]);
       setPosts(postsData.posts);
       setTotalCount(postsData.count || 0);
@@ -119,13 +120,13 @@ export default function BlogManager() {
   const handleSavePost = async () => {
     try {
       if (editingPost) {
-        await BlogService.updatePost(editingPost.id, postForm);
+        await BlogPostService.updatePost(editingPost.id, postForm);
         toast({
           title: 'Success',
           description: 'Post updated successfully',
         });
       } else {
-        await BlogService.createPost(postForm);
+        await BlogPostService.createPost(postForm);
         toast({
           title: 'Success',
           description: 'Post created successfully',
@@ -147,7 +148,7 @@ export default function BlogManager() {
     if (!confirm('Are you sure you want to delete this post?')) return;
 
     try {
-      await BlogService.deletePost(postId);
+      await BlogPostService.deletePost(postId);
       toast({
         title: 'Success',
         description: 'Post deleted successfully',
@@ -166,7 +167,7 @@ export default function BlogManager() {
   const handleTogglePostStatus = async (post: BlogPost) => {
     try {
       const newStatus = post.status === 'published' ? 'draft' : 'published';
-      await BlogService.updatePost(post.id, { status: newStatus });
+      await BlogPostService.updatePost(post.id, { status: newStatus });
       toast({
         title: 'Success',
         description: `Post ${newStatus === 'published' ? 'published' : 'unpublished'} successfully`,
@@ -184,7 +185,7 @@ export default function BlogManager() {
 
   const handleCreateCategory = async () => {
     try {
-      await BlogService.createCategory(categoryForm);
+      await BlogCategoryService.createCategory(categoryForm);
       toast({
         title: 'Success',
         description: 'Category created successfully',
@@ -197,8 +198,8 @@ export default function BlogManager() {
         color: '#6B46C1',
       });
       fetchData();
-    } catch (error) {
-      logger.error('Error creating category:', error);
+    } catch (_error) {
+      logger._error('Error creating category:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create category',

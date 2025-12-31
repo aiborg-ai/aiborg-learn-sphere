@@ -133,8 +133,8 @@ export class ForecastingService {
         confidence: regression.r2,
         quality,
       };
-    } catch (error) {
-      logger.error('Error forecasting revenue:', error);
+    } catch (_error) {
+      logger._error('Error forecasting revenue:', _error);
       throw error;
     }
   }
@@ -207,8 +207,8 @@ export class ForecastingService {
         confidence: regression.r2,
         quality,
       };
-    } catch (error) {
-      logger.error('Error forecasting user growth:', error);
+    } catch (_error) {
+      logger._error('Error forecasting user growth:', _error);
       throw error;
     }
   }
@@ -281,8 +281,8 @@ export class ForecastingService {
         confidence: regression.r2,
         quality,
       };
-    } catch (error) {
-      logger.error('Error forecasting enrollments:', error);
+    } catch (_error) {
+      logger._error('Error forecasting enrollments:', _error);
       throw error;
     }
   }

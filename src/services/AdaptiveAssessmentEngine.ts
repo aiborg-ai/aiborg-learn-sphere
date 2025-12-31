@@ -133,8 +133,8 @@ export class AdaptiveAssessmentEngine {
         // Update confidence and continuation status
         this.updateState();
       }
-    } catch (error) {
-      logger.error('Error initializing adaptive assessment state:', error);
+    } catch (_error) {
+      logger._error('Error initializing adaptive assessment state:', _error);
       throw error;
     }
   }
@@ -183,8 +183,8 @@ export class AdaptiveAssessmentEngine {
         category_name: questionData.category_name || '',
         options,
       };
-    } catch (error) {
-      logger.error('Error in getNextQuestion:', error);
+    } catch (_error) {
+      logger._error('Error in getNextQuestion:', _error);
       throw error;
     }
   }
@@ -332,8 +332,8 @@ export class AdaptiveAssessmentEngine {
           };
         }),
       };
-    } catch (error) {
-      logger.error('Error fetching next question for tool:', error);
+    } catch (_error) {
+      logger._error('Error fetching next question for tool:', _error);
       throw error;
     }
   }
@@ -408,8 +408,8 @@ export class AdaptiveAssessmentEngine {
         newStandardError: result.new_standard_error,
         correctOptions,
       };
-    } catch (error) {
-      logger.error('Error in recordAnswer:', error);
+    } catch (_error) {
+      logger._error('Error in recordAnswer:', _error);
       throw error;
     }
   }
@@ -482,8 +482,8 @@ export class AdaptiveAssessmentEngine {
         averageDifficulty,
         abilityProgression,
       };
-    } catch (error) {
-      logger.error('Error fetching performance summary:', error);
+    } catch (_error) {
+      logger._error('Error fetching performance summary:', _error);
       throw error;
     }
   }

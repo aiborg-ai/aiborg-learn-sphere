@@ -57,8 +57,8 @@ export const GoalProgressDashboard: React.FC = () => {
       setCareerGoals(career);
       setStudyPlans(plans);
       setMilestones(milestonesData);
-    } catch (error) {
-      logger.error('Error loading goals data:', error);
+    } catch (_error) {
+      logger._error('Error loading goals data:', _error);
     } finally {
       setLoading(false);
     }

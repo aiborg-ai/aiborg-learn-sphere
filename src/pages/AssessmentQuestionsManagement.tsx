@@ -4,7 +4,8 @@
  */
 
 import { useState } from 'react';
-import { Navbar, Footer } from '@/components/navigation';
+import { Navbar } from '@/components/navigation/Navbar';
+import { Footer } from '@/components/navigation/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {

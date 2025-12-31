@@ -98,8 +98,8 @@ export class AssessmentFeedbackController {
       this.userStates.set(event.userId, userState);
 
       return result;
-    } catch (error) {
-      logger.error('Error processing answer event:', error);
+    } catch (_error) {
+      logger._error('Error processing answer event:', _error);
       throw error;
     }
   }
@@ -492,8 +492,8 @@ export class AssessmentFeedbackController {
         actionCount: appliedActions.length,
         actions: appliedActions.map(a => a.action),
       });
-    } catch (error) {
-      logger.error('Error applying recommended actions:', error);
+    } catch (_error) {
+      logger._error('Error applying recommended actions:', _error);
     }
 
     return appliedActions;
@@ -542,8 +542,8 @@ export class AssessmentFeedbackController {
           triggers: triggers.length,
         });
       }
-    } catch (error) {
-      logger.error('Error logging feedback event:', error);
+    } catch (_error) {
+      logger._error('Error logging feedback event:', _error);
     }
   }
 

@@ -8,13 +8,15 @@ import { useAssessmentAttempt, useAssessmentAttemptHistory } from '@/hooks/useAs
 import { useAssessmentTool } from '@/hooks/useAssessmentTools';
 import { useAssessmentRecommendations } from '@/hooks/useAssessmentRecommendations';
 import { AssessmentToolService } from '@/services/assessment-tools/AssessmentToolService';
-import { Navbar, Footer } from '@/components/navigation';
+import { Navbar } from '@/components/navigation/Navbar';
+import { Footer } from '@/components/navigation/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AssessmentAd } from '@/components/ads/AdSense';
 import {
   Trophy,
   Clock,
@@ -72,8 +74,8 @@ export default function AssessmentResultsPage() {
         try {
           const res = await AssessmentToolService.generateAssessmentResults(attempt, tool);
           setResults(res);
-        } catch (error) {
-          logger.error('Error generating results:', error);
+        } catch (_error) {
+          logger._error('Error generating results:', _error);
         } finally {
           setIsLoadingResults(false);
         }
@@ -285,6 +287,11 @@ export default function AssessmentResultsPage() {
             />
           </TabsContent>
         </Tabs>
+
+        {/* AdSense Ad */}
+        <div className="my-8">
+          <AssessmentAd className="max-w-4xl mx-auto" />
+        </div>
 
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-4 justify-center">

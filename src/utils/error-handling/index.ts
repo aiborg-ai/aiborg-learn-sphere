@@ -9,7 +9,7 @@
  *
  * try {
  *   await someRiskyOperation();
- * } catch (error) {
+  } catch {
  *   handleError(error, { context: { operation: 'someRiskyOperation' } });
  * }
  * ```

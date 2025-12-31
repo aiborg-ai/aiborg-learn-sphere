@@ -102,7 +102,7 @@ export default function ClaimFreePass() {
         setSubmittedClaimId(result.claimId);
         setShowSuccessModal(true);
       }
-    } catch (error) {
+    } catch {
       // Error is handled in the hook with toast
       logger.error('Claim submission error:', error);
     }

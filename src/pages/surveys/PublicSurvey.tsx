@@ -61,7 +61,7 @@ export default function PublicSurvey() {
   const { surveyId } = useParams<{ surveyId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t: _t } = useTranslation();
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -83,8 +83,8 @@ export default function PublicSurvey() {
         const data = await SurveyService.getSurveyWithQuestions(surveyId);
         setSurvey(data.survey);
         setQuestions(data.questions);
-      } catch (error) {
-        logger.error('Failed to load survey:', error);
+      } catch (_error) {
+        logger._error('Failed to load survey:', _error);
         toast({
           title: 'Survey Not Found',
           description: 'This survey may have ended or been removed.',
@@ -173,8 +173,8 @@ export default function PublicSurvey() {
         title: 'Thank You!',
         description: 'Your response has been submitted successfully.',
       });
-    } catch (error) {
-      logger.error('Failed to submit survey:', error);
+    } catch (_error) {
+      logger._error('Failed to submit survey:', _error);
       toast({
         title: 'Submission Failed',
         description: 'Please try again.',

@@ -144,7 +144,7 @@ export async function withErrorHandling<T>(
 ): Promise<T> {
   try {
     return await fn();
-  } catch (error) {
+  } catch {
     logError(error, { context: errorContext });
     throw handleError(error);
   }
@@ -154,7 +154,7 @@ export async function withErrorHandling<T>(
 export function withErrorHandlingSync<T>(fn: () => T, errorContext?: string): T {
   try {
     return fn();
-  } catch (error) {
+  } catch {
     logError(error, { context: errorContext });
     throw handleError(error);
   }

@@ -124,14 +124,15 @@ export function BatchCreator() {
     if (inputMethod === 'template' && selectedTemplateId) {
       loadTemplateData(selectedTemplateId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputMethod, selectedTemplateId]);
 
   const loadTemplates = async () => {
     try {
       const data = await BlogTemplateService.getTemplates({ is_active: true });
       setTemplates(data);
-    } catch (error) {
-      logger.error('Error loading templates:', error);
+    } catch (_error) {
+      logger._error('Error loading templates:', _error);
     }
   };
 
@@ -139,8 +140,8 @@ export function BatchCreator() {
     try {
       const data = await BlogCampaignService.getActiveCampaigns();
       setCampaigns(data);
-    } catch (error) {
-      logger.error('Error loading campaigns:', error);
+    } catch (_error) {
+      logger._error('Error loading campaigns:', _error);
     }
   };
 
@@ -148,8 +149,8 @@ export function BatchCreator() {
     try {
       const { data } = await supabase.from('blog_categories').select('*').order('name');
       setCategories(data || []);
-    } catch (error) {
-      logger.error('Error loading categories:', error);
+    } catch (_error) {
+      logger._error('Error loading categories:', _error);
     }
   };
 
@@ -162,8 +163,8 @@ export function BatchCreator() {
       form.setValue('keywords', template.keywords || '');
       form.setValue('category_id', template.category_id || undefined);
       form.setValue('tags', template.default_tags?.join(', ') || '');
-    } catch (error) {
-      logger.error('Error loading template data:', error);
+    } catch (_error) {
+      logger._error('Error loading template data:', _error);
     }
   };
 
@@ -247,8 +248,8 @@ export function BatchCreator() {
           description: `Generating ${response.total_posts} blog posts...`,
         });
       }
-    } catch (error) {
-      logger.error('Error creating batch:', error);
+    } catch (_error) {
+      logger._error('Error creating batch:', _error);
       toast({
         title: 'Batch generation failed',
         description: error instanceof Error ? error.message : 'Unknown error',

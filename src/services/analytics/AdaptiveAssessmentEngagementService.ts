@@ -200,8 +200,8 @@ export class AdaptiveAssessmentEngagementService {
         engagementScore,
         returnRate: returningUsers / uniqueUsers,
       };
-    } catch (error) {
-      logger.error('Error calculating engagement metrics:', error);
+    } catch (_error) {
+      logger._error('Error calculating engagement metrics:', _error);
       return null;
     }
   }
@@ -308,8 +308,8 @@ export class AdaptiveAssessmentEngagementService {
         .slice(0, limit);
 
       return result;
-    } catch (error) {
-      logger.error('Error fetching user engagement data:', error);
+    } catch (_error) {
+      logger._error('Error fetching user engagement data:', _error);
       return [];
     }
   }
@@ -383,8 +383,8 @@ export class AdaptiveAssessmentEngagementService {
         .sort((a, b) => a.date.localeCompare(b.date));
 
       return result;
-    } catch (error) {
-      logger.error('Error fetching time series data:', error);
+    } catch (_error) {
+      logger._error('Error fetching time series data:', _error);
       return [];
     }
   }
@@ -410,8 +410,8 @@ export class AdaptiveAssessmentEngagementService {
         metadata,
         created_at: new Date().toISOString(),
       });
-    } catch (error) {
-      logger.error('Error tracking engagement event:', error);
+    } catch (_error) {
+      logger._error('Error tracking engagement event:', _error);
     }
   }
 

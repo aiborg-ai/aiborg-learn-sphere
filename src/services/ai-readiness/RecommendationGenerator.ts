@@ -290,7 +290,7 @@ const RECOMMENDATION_TEMPLATES: RecommendationTemplate[] = [
  */
 export function generateRecommendations(
   dimensionScores: DimensionScore[],
-  benchmarkComparisons: Record<DimensionType, BenchmarkComparison>
+  _benchmarkComparisons: Record<DimensionType, BenchmarkComparison>
 ): ReadinessRecommendation[] {
   const recommendations: ReadinessRecommendation[] = [];
   let order = 0;

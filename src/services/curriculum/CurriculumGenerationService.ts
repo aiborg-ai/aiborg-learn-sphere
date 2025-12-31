@@ -122,8 +122,8 @@ class CurriculumGenerationService {
       });
 
       return job;
-    } catch (error) {
-      logger.error('Error creating generation job:', error);
+    } catch (_error) {
+      logger._error('Error creating generation job:', _error);
       throw error;
     }
   }
@@ -186,8 +186,8 @@ class CurriculumGenerationService {
         .eq('id', jobId);
 
       logger.info(`Curriculum generated successfully in ${generationTime}ms`);
-    } catch (error) {
-      logger.error('Generation job failed:', error);
+    } catch (_error) {
+      logger._error('Generation job failed:', _error);
 
       await supabase
         .from('curriculum_generation_jobs')

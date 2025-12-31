@@ -258,8 +258,8 @@ export function useTriggerDetection() {
         const result = await feedbackController.checkTriggers(user.id, assessmentId);
         setDetectionResult(result);
         return result;
-      } catch (error) {
-        logger.error('Failed to check triggers:', error);
+      } catch (_error) {
+        logger._error('Failed to check triggers:', _error);
         return null;
       }
     },

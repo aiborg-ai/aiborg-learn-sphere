@@ -32,8 +32,8 @@ export class AnalyticsPreferencesService {
       }
 
       return data;
-    } catch (error) {
-      logger.error('Error fetching analytics preferences:', error);
+    } catch (_error) {
+      logger._error('Error fetching analytics preferences:', _error);
       throw error;
     }
   }
@@ -75,8 +75,8 @@ export class AnalyticsPreferencesService {
 
       logger.info('Analytics preferences updated successfully', { userId });
       return data;
-    } catch (error) {
-      logger.error('Error updating analytics preferences:', error);
+    } catch (_error) {
+      logger._error('Error updating analytics preferences:', _error);
       throw error;
     }
   }
@@ -113,8 +113,8 @@ export class AnalyticsPreferencesService {
 
       logger.info('Default analytics preferences created', { userId });
       return data;
-    } catch (error) {
-      logger.error('Error creating default analytics preferences:', error);
+    } catch (_error) {
+      logger._error('Error creating default analytics preferences:', _error);
       throw error;
     }
   }
@@ -157,8 +157,8 @@ export class AnalyticsPreferencesService {
 
       logger.info('Analytics preferences reset to defaults', { userId });
       return data;
-    } catch (error) {
-      logger.error('Error resetting analytics preferences:', error);
+    } catch (_error) {
+      logger._error('Error resetting analytics preferences:', _error);
       throw error;
     }
   }
@@ -175,8 +175,8 @@ export class AnalyticsPreferencesService {
       if (error) throw error;
 
       logger.info('Analytics preferences deleted', { userId });
-    } catch (error) {
-      logger.error('Error deleting analytics preferences:', error);
+    } catch (_error) {
+      logger._error('Error deleting analytics preferences:', _error);
       throw error;
     }
   }

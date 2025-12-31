@@ -126,8 +126,8 @@ export class ApiClient {
       }
 
       return { data: data as T };
-    } catch (error) {
-      return { error: this.handleError(error) };
+    } catch (_error) {
+      return { _error: this.handleError(_error) };
     }
   }
 
@@ -156,8 +156,8 @@ export class ApiClient {
 
       const data = results.map(r => r.data);
       return { data: data as T[] };
-    } catch (error) {
-      return { error: this.handleError(error) };
+    } catch (_error) {
+      return { _error: this.handleError(_error) };
     }
   }
 

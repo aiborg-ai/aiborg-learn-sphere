@@ -65,8 +65,8 @@ export class ForumThreadService {
       });
 
       return thread;
-    } catch (error) {
-      logger.error('Error creating thread:', error);
+    } catch (_error) {
+      logger._error('Error creating thread:', _error);
       throw error;
     }
   }
@@ -201,8 +201,8 @@ export class ForumThreadService {
         has_more: (count || 0) > offset + limit,
         pinned_threads: pinnedThreads,
       };
-    } catch (error) {
-      logger.error('Error fetching threads:', error);
+    } catch (_error) {
+      logger._error('Error fetching threads:', _error);
       throw error;
     }
   }
@@ -270,8 +270,8 @@ export class ForumThreadService {
       }
 
       return data as ForumThreadWithDetails;
-    } catch (error) {
-      logger.error('Error fetching thread:', error);
+    } catch (_error) {
+      logger._error('Error fetching thread:', _error);
       throw error;
     }
   }
@@ -304,8 +304,8 @@ export class ForumThreadService {
       }
 
       return this.getThreadById(data.id);
-    } catch (error) {
-      logger.error('Error fetching thread by slug:', error);
+    } catch (_error) {
+      logger._error('Error fetching thread by slug:', _error);
       throw error;
     }
   }
@@ -349,8 +349,8 @@ export class ForumThreadService {
 
       logger.log('Thread updated:', threadId);
       return data;
-    } catch (error) {
-      logger.error('Error updating thread:', error);
+    } catch (_error) {
+      logger._error('Error updating thread:', _error);
       throw error;
     }
   }
@@ -377,8 +377,8 @@ export class ForumThreadService {
       if (error) throw error;
 
       logger.log('Thread deleted:', threadId);
-    } catch (error) {
-      logger.error('Error deleting thread:', error);
+    } catch (_error) {
+      logger._error('Error deleting thread:', _error);
       throw error;
     }
   }
@@ -394,8 +394,8 @@ export class ForumThreadService {
       return this.updateThread(threadId, {
         is_pinned: !thread.is_pinned,
       });
-    } catch (error) {
-      logger.error('Error toggling pin:', error);
+    } catch (_error) {
+      logger._error('Error toggling pin:', _error);
       throw error;
     }
   }
@@ -411,8 +411,8 @@ export class ForumThreadService {
       return this.updateThread(threadId, {
         is_locked: !thread.is_locked,
       });
-    } catch (error) {
-      logger.error('Error toggling lock:', error);
+    } catch (_error) {
+      logger._error('Error toggling lock:', _error);
       throw error;
     }
   }
@@ -425,8 +425,8 @@ export class ForumThreadService {
       return this.updateThread(threadId, {
         ...({ category_id: newCategoryId } as UpdateThreadRequest),
       });
-    } catch (error) {
-      logger.error('Error moving thread:', error);
+    } catch (_error) {
+      logger._error('Error moving thread:', _error);
       throw error;
     }
   }
@@ -449,7 +449,7 @@ export class ForumThreadService {
           .update({ view_count: supabase.sql`view_count + 1` })
           .eq('id', threadId);
       }
-    } catch (error) {
+    } catch (_error) {
       // Silent fail - view count is not critical
       logger.log('Error incrementing view count:', error);
     }
@@ -480,8 +480,8 @@ export class ForumThreadService {
 
       if (error) throw error;
       return (data || []) as ForumThreadWithDetails[];
-    } catch (error) {
-      logger.error('Error fetching trending threads:', error);
+    } catch (_error) {
+      logger._error('Error fetching trending threads:', _error);
       throw error;
     }
   }
@@ -507,8 +507,8 @@ export class ForumThreadService {
 
       if (error) throw error;
       return (data || []) as ForumThreadWithDetails[];
-    } catch (error) {
-      logger.error('Error fetching hot threads:', error);
+    } catch (_error) {
+      logger._error('Error fetching hot threads:', _error);
       throw error;
     }
   }
@@ -558,8 +558,8 @@ export class ForumThreadService {
       const { count, error } = await query;
       if (error) throw error;
       return count || 0;
-    } catch (error) {
-      logger.error('Error getting thread count:', error);
+    } catch (_error) {
+      logger._error('Error getting thread count:', _error);
       return 0;
     }
   }

@@ -79,7 +79,7 @@ export function useOfflineContent(contentId?: string, contentType?: string) {
       } else if (contentType === 'lesson') {
         await DownloadManager.downloadLesson(contentId);
       }
-    } catch (error) {
+    } catch (_error) {
       setIsDownloading(false);
       throw error;
     }
@@ -122,8 +122,8 @@ export function useOfflineDownloads() {
       setIsLoading(true);
       const userDownloads = await DownloadManager.getUserDownloads();
       setDownloads(userDownloads);
-    } catch (error) {
-      logger.error('Failed to load downloads:', error);
+    } catch (_error) {
+      logger._error('Failed to load downloads:', _error);
     } finally {
       setIsLoading(false);
     }
@@ -158,8 +158,8 @@ export function useStorageStats() {
       setIsLoading(true);
       const storageStats = await OfflineContentService.getStorageStats();
       setStats(storageStats);
-    } catch (error) {
-      logger.error('Failed to load storage stats:', error);
+    } catch (_error) {
+      logger._error('Failed to load storage stats:', _error);
     } finally {
       setIsLoading(false);
     }

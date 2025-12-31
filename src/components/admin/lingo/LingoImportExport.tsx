@@ -98,10 +98,10 @@ export function LingoImportExport({ onImportComplete }: LingoImportExportProps) 
           variant: 'destructive',
         });
       }
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Invalid File',
-        description: error instanceof Error ? error.message : 'Failed to parse file',
+        description: _error instanceof Error ? _error.message : 'Failed to parse file',
         variant: 'destructive',
       });
     } finally {

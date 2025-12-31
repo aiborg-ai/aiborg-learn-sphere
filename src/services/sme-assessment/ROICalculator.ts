@@ -25,15 +25,11 @@ export class ROICalculator {
     assessmentId: string,
     assessmentData: AssessmentFormData
   ): Promise<void> {
-    try {
-      const costs = this.calculateCosts(assessmentData);
-      const benefits = this.calculateBenefits(assessmentData);
-      const summary = this.calculateSummaryMetrics(costs, benefits);
+    const costs = this.calculateCosts(assessmentData);
+    const benefits = this.calculateBenefits(assessmentData);
+    const summary = this.calculateSummaryMetrics(costs, benefits);
 
-      await this.saveToDatabase(assessmentId, summary, costs, benefits);
-    } catch (error) {
-      throw error;
-    }
+    await this.saveToDatabase(assessmentId, summary, costs, benefits);
   }
 
   /**
@@ -290,7 +286,7 @@ export class ROICalculator {
 
     // Linear interpolation: scales from $12K (rating=1) to $36K (rating=5)
     // rating=1: $12K, rating=2: $18K, rating=3: $24K, rating=4: $30K, rating=5: $36K
-    return Math.round(minSavings + ((maxSavings - minSavings) * (impactRating - 1) / 4));
+    return Math.round(minSavings + ((maxSavings - minSavings) * (impactRating - 1)) / 4);
   }
 
   /**

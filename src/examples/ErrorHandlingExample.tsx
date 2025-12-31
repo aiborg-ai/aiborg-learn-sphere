@@ -40,8 +40,8 @@ function DataFetchingComponent() {
       }
 
       setData('Data loaded successfully!');
-    } catch (error) {
-      // Use centralized error handler
+    } catch (_error) {
+      // Use centralized _error handler
       handleError(error, {
         showToast: true,
         logError: true,
@@ -136,7 +136,7 @@ function RetryComponent() {
       );
 
       setStatus(`✅ ${result}`);
-    } catch (error) {
+    } catch (_error) {
       setStatus('❌ Failed after 3 retries');
       handleError(error);
     }

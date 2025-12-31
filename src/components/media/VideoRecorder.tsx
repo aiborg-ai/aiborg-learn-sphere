@@ -172,10 +172,10 @@ export function VideoRecorder({
       };
 
       reader.readAsDataURL(videoBlob);
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Transcription Failed',
-        description: error instanceof Error ? error.message : 'Failed to transcribe video audio',
+        description: _error instanceof Error ? _error.message : 'Failed to transcribe video audio',
         variant: 'destructive',
       });
     } finally {

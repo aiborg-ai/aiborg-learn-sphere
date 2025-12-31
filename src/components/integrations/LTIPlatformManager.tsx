@@ -105,6 +105,7 @@ export function LTIPlatformManager() {
 
   useEffect(() => {
     loadPlatforms();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadPlatforms = async () => {
@@ -112,8 +113,8 @@ export function LTIPlatformManager() {
     try {
       const data = await LTIService.listPlatforms();
       setPlatforms(data);
-    } catch (error) {
-      logger.error('Failed to load LTI platforms:', error);
+    } catch (_error) {
+      logger._error('Failed to load LTI platforms:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load LTI platforms',
@@ -190,8 +191,8 @@ export function LTIPlatformManager() {
       }
       handleCloseDialog();
       loadPlatforms();
-    } catch (error) {
-      logger.error('Failed to save platform:', error);
+    } catch (_error) {
+      logger._error('Failed to save platform:', _error);
       toast({
         title: 'Error',
         description: 'Failed to save platform',
@@ -207,8 +208,8 @@ export function LTIPlatformManager() {
       await navigator.clipboard.writeText(value);
       setCopiedField(field);
       setTimeout(() => setCopiedField(null), 2000);
-    } catch (error) {
-      logger.error('Failed to copy:', error);
+    } catch (_error) {
+      logger._error('Failed to copy:', _error);
     }
   };
 

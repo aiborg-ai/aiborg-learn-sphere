@@ -152,8 +152,8 @@ export function ContactSection() {
           message: '',
         });
       }, 3000);
-    } catch (error) {
-      logger.error('Error submitting contact form:', error);
+    } catch (_error) {
+      logger._error('Error submitting contact form:', _error);
       setIsSubmitting(false);
 
       toast({

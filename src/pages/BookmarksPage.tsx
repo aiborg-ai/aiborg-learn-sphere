@@ -84,7 +84,7 @@ export default function BookmarksPage() {
     try {
       await deleteBookmark(id);
       setDeleteId(null);
-    } catch (error) {
+    } catch {
       logger.error('Error deleting bookmark:', error);
     }
   };

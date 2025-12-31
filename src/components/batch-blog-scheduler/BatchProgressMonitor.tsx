@@ -59,8 +59,8 @@ export function BatchProgressMonitor({
           setIsPolling(false);
           onComplete(jobId);
         }
-      } catch (error) {
-        logger.error('Error polling batch status:', error);
+      } catch (_error) {
+        logger._error('Error polling batch status:', _error);
       }
     };
 

@@ -251,8 +251,8 @@ export class EnhancedPDFExportService {
       pdf.save(filename);
 
       logger.info('Enhanced PDF export completed', { filename });
-    } catch (error) {
-      logger.error('Error in enhanced PDF export:', error);
+    } catch (_error) {
+      logger._error('Error in enhanced PDF export:', _error);
       throw error;
     }
   }

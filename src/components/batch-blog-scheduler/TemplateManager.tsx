@@ -95,6 +95,7 @@ export function TemplateManager() {
   useEffect(() => {
     loadTemplates();
     loadCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadTemplates = async () => {
@@ -110,8 +111,8 @@ export function TemplateManager() {
         usageCounts[template.id] = count;
       }
       setTemplateUsage(usageCounts);
-    } catch (error) {
-      logger.error('Error loading templates:', error);
+    } catch (_error) {
+      logger._error('Error loading templates:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load templates',
@@ -126,8 +127,8 @@ export function TemplateManager() {
     try {
       const { data } = await supabase.from('blog_categories').select('*').order('name');
       setCategories(data || []);
-    } catch (error) {
-      logger.error('Error loading categories:', error);
+    } catch (_error) {
+      logger._error('Error loading categories:', _error);
     }
   };
 
@@ -170,8 +171,8 @@ export function TemplateManager() {
       setEditingTemplate(null);
       form.reset();
       loadTemplates();
-    } catch (error) {
-      logger.error('Error saving template:', error);
+    } catch (_error) {
+      logger._error('Error saving template:', _error);
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to save template',
@@ -207,7 +208,7 @@ export function TemplateManager() {
         description: `Created ${newName}`,
       });
       loadTemplates();
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: 'Failed to duplicate template',
@@ -228,7 +229,7 @@ export function TemplateManager() {
         description: `${template.name} has been deleted`,
       });
       loadTemplates();
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: 'Failed to delete template',

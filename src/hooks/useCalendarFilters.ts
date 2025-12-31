@@ -90,8 +90,8 @@ export function useCalendarFilters(persistToLocalStorage = true): UseCalendarFil
           dateRangeEnd: parsed.dateRangeEnd ? new Date(parsed.dateRangeEnd) : null,
         };
       }
-    } catch (error) {
-      logger.error('Error loading calendar filters from localStorage:', error);
+    } catch (_error) {
+      logger._error('Error loading calendar filters from localStorage:', _error);
     }
     return DEFAULT_FILTERS;
   }, [persistToLocalStorage]);
@@ -103,8 +103,8 @@ export function useCalendarFilters(persistToLocalStorage = true): UseCalendarFil
     if (persistToLocalStorage) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(filters));
-      } catch (error) {
-        logger.error('Error saving calendar filters to localStorage:', error);
+      } catch (_error) {
+        logger._error('Error saving calendar filters to localStorage:', _error);
       }
     }
   }, [filters, persistToLocalStorage]);
@@ -191,8 +191,8 @@ export function useCalendarFilters(persistToLocalStorage = true): UseCalendarFil
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(filters));
         logger.info('Calendar filters saved');
-      } catch (error) {
-        logger.error('Error saving calendar filters:', error);
+      } catch (_error) {
+        logger._error('Error saving calendar filters:', _error);
       }
     }
   }, [filters, persistToLocalStorage]);

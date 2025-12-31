@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { BlogService } from '@/services/blog/BlogService';
+import { BlogCommentService } from '@/services/blog/BlogCommentService';
 import type { BlogComment } from '@/types/blog';
 import { RequireAuth } from './RequireAuth';
 import { CommentForm } from './CommentForm';
@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-
 import { logger } from '@/utils/logger';
 interface CommentSectionProps {
   postId: string;
@@ -28,7 +27,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
   const loadComments = async () => {
     try {
       setLoading(true);
-      const data = await BlogService.getPostComments(postId);
+      const data = await BlogCommentService.getPostComments(postId);
       // Count all comments including nested replies
       const countAllComments = (comments: BlogComment[]): number => {
         let total = 0;
@@ -49,8 +48,8 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
       if (onCommentCountChange) {
         onCommentCountChange(totalCount);
       }
-    } catch (error) {
-      logger.error('Failed to load comments:', error);
+    } catch (_error) {
+      logger._error('Failed to load comments:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load comments. Please try again.',
@@ -113,7 +112,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
 
   const handleAddComment = async (content: string) => {
     try {
-      const newComment = await BlogService.createComment(postId, content);
+      const newComment = await BlogCommentService.createComment(postId, content);
 
       // Optimistically add to UI
       setComments([...comments, { ...newComment, replies: [] }]);
@@ -129,8 +128,8 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
         title: 'Success',
         description: 'Your comment has been posted.',
       });
-    } catch (error) {
-      logger.error('Failed to add comment:', error);
+    } catch (_error) {
+      logger._error('Failed to add comment:', _error);
       toast({
         title: 'Error',
         description: 'Failed to post comment. Please try again.',
@@ -143,7 +142,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
 
   const handleReply = async (parentId: string, content: string) => {
     try {
-      await BlogService.createComment(postId, content, parentId);
+      await BlogCommentService.createComment(postId, content, parentId);
 
       toast({
         title: 'Success',
@@ -152,8 +151,8 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
 
       // Reload comments to show the new reply
       loadComments();
-    } catch (error) {
-      logger.error('Failed to add reply:', error);
+    } catch (_error) {
+      logger._error('Failed to add reply:', _error);
       toast({
         title: 'Error',
         description: 'Failed to post reply. Please try again.',
@@ -164,7 +163,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
 
   const handleEditComment = async (commentId: string, content: string) => {
     try {
-      await BlogService.updateComment(commentId, content);
+      await BlogCommentService.updateComment(commentId, content);
 
       toast({
         title: 'Success',
@@ -173,8 +172,8 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
 
       // Reload comments to show the update
       loadComments();
-    } catch (error) {
-      logger.error('Failed to edit comment:', error);
+    } catch (_error) {
+      logger._error('Failed to edit comment:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update comment. Please try again.',
@@ -185,7 +184,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
 
   const handleDeleteComment = async (commentId: string) => {
     try {
-      await BlogService.deleteComment(commentId);
+      await BlogCommentService.deleteComment(commentId);
 
       toast({
         title: 'Success',
@@ -210,8 +209,8 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
       if (onCommentCountChange) {
         onCommentCountChange(newCount);
       }
-    } catch (error) {
-      logger.error('Failed to delete comment:', error);
+    } catch (_error) {
+      logger._error('Failed to delete comment:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete comment. Please try again.',

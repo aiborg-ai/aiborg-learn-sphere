@@ -100,7 +100,7 @@ export const EventSeriesCard = memo(function EventSeriesCard({ series }: EventSe
         title: 'Registration Successful!',
         description: `You've been registered for ${series.title}. Check your tickets page for session details.`,
       });
-    } catch (error) {
+    } catch (_error) {
       // Error handled by mutation
       logger.error('Event series registration error:', error);
     }

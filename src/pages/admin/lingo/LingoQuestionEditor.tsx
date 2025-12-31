@@ -109,8 +109,8 @@ export function LingoQuestionEditor() {
 
       if (error) throw error;
       setLessons(data || []);
-    } catch (error) {
-      logger.error('Failed to load lessons', error);
+    } catch (_error) {
+      logger._error('Failed to load lessons', _error);
       toast({ title: 'Error', description: 'Failed to load lessons', variant: 'destructive' });
     }
   }, [toast]);
@@ -127,8 +127,8 @@ export function LingoQuestionEditor() {
 
         if (error) throw error;
         setQuestions(data || []);
-      } catch (error) {
-        logger.error('Failed to load questions', error);
+      } catch (_error) {
+        logger._error('Failed to load questions', _error);
         toast({ title: 'Error', description: 'Failed to load questions', variant: 'destructive' });
       } finally {
         setIsLoading(false);
@@ -242,8 +242,8 @@ export function LingoQuestionEditor() {
 
       setIsDialogOpen(false);
       loadQuestions(selectedLessonId);
-    } catch (error) {
-      logger.error('Failed to save question', error);
+    } catch (_error) {
+      logger._error('Failed to save question', _error);
       toast({ title: 'Error', description: 'Failed to save question', variant: 'destructive' });
     }
   }
@@ -257,8 +257,8 @@ export function LingoQuestionEditor() {
       if (error) throw error;
       toast({ title: 'Success', description: 'Question deleted' });
       loadQuestions(selectedLessonId);
-    } catch (error) {
-      logger.error('Failed to delete question', error);
+    } catch (_error) {
+      logger._error('Failed to delete question', _error);
       toast({ title: 'Error', description: 'Failed to delete question', variant: 'destructive' });
     }
   }
@@ -277,8 +277,8 @@ export function LingoQuestionEditor() {
       // Update local state with new order
       setQuestions(reorderedQuestions);
       toast({ title: 'Success', description: 'Questions reordered successfully' });
-    } catch (error) {
-      logger.error('Failed to reorder questions', error);
+    } catch (_error) {
+      logger._error('Failed to reorder questions', _error);
       toast({
         title: 'Error',
         description: 'Failed to reorder questions. Please try again.',

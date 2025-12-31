@@ -227,8 +227,8 @@ export function useCustomViews(userId: string): UseCustomViewsReturn {
         }
 
         return await createMutation.mutateAsync({ name, config });
-      } catch (error) {
-        logger.error('Error in createView:', error);
+      } catch (_error) {
+        logger._error('Error in createView:', _error);
         return undefined;
       }
     },
@@ -257,8 +257,8 @@ export function useCustomViews(userId: string): UseCustomViewsReturn {
         }
 
         return await updateMutation.mutateAsync({ viewId, name, config });
-      } catch (error) {
-        logger.error('Error in updateView:', error);
+      } catch (_error) {
+        logger._error('Error in updateView:', _error);
         return undefined;
       }
     },
@@ -272,8 +272,8 @@ export function useCustomViews(userId: string): UseCustomViewsReturn {
     async (viewId: string): Promise<void> => {
       try {
         await deleteMutation.mutateAsync(viewId);
-      } catch (error) {
-        logger.error('Error in deleteView:', error);
+      } catch (_error) {
+        logger._error('Error in deleteView:', _error);
       }
     },
     [deleteMutation]
@@ -295,8 +295,8 @@ export function useCustomViews(userId: string): UseCustomViewsReturn {
           description: 'The requested view could not be found.',
         });
       }
-    } catch (error) {
-      logger.error('Error loading view:', error);
+    } catch (_error) {
+      logger._error('Error loading view:', _error);
       toast({
         variant: 'destructive',
         title: 'Failed to Load View',

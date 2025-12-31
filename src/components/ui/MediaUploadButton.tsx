@@ -78,8 +78,8 @@ export function MediaUploadButton({
           title: 'Success',
           description: 'Image uploaded successfully',
         });
-      } catch (error) {
-        logger.error('Error uploading image:', error);
+      } catch (_error) {
+        logger._error('Error uploading image:', _error);
         toast({
           title: 'Upload failed',
           description: error instanceof Error ? error.message : 'Failed to upload image',

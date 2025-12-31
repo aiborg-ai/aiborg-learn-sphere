@@ -22,7 +22,7 @@ import {
  * ```typescript
  * try {
  *   await someApiCall();
- * } catch (error) {
+  } catch {
  *   handleApiError(error, { action: 'load courses', resource: 'courses' });
  * }
  * ```
@@ -94,7 +94,7 @@ export const handleApiErrorWithRetry = async <T>(
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       return await fn();
-    } catch (error) {
+    } catch {
       lastError = error;
 
       // Check if error is retryable
@@ -129,7 +129,7 @@ export const withErrorHandling = <T extends unknown[], R>(
   return async (...args: T): Promise<R | undefined> => {
     try {
       return await fn(...args);
-    } catch (error) {
+    } catch {
       handleApiError(error, options);
       return undefined;
     }

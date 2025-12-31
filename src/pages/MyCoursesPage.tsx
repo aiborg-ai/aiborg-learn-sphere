@@ -93,7 +93,7 @@ export default function MyCoursesPage() {
       }
 
       setEnrichedEnrollments(enriched);
-    } catch (error) {
+    } catch {
       logger.error('Failed to fetch enriched enrollments', { error });
     } finally {
       setLoading(false);

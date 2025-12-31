@@ -71,7 +71,7 @@ export default function PlaylistsPage() {
 
       setCreateDialog(false);
       resetForm();
-    } catch (error) {
+    } catch {
       logger.error('Error creating playlist:', error);
     }
   };
@@ -88,7 +88,7 @@ export default function PlaylistsPage() {
 
       setEditingPlaylist(null);
       resetForm();
-    } catch (error) {
+    } catch {
       logger.error('Error updating playlist:', error);
     }
   };
@@ -97,7 +97,7 @@ export default function PlaylistsPage() {
     try {
       await deletePlaylist(id);
       setDeleteId(null);
-    } catch (error) {
+    } catch {
       logger.error('Error deleting playlist:', error);
     }
   };
@@ -105,7 +105,7 @@ export default function PlaylistsPage() {
   const handleClone = async (playlistId: string, playlistTitle: string) => {
     try {
       await clonePlaylist(playlistId, `${playlistTitle} (Copy)`);
-    } catch (error) {
+    } catch {
       logger.error('Error cloning playlist:', error);
     }
   };

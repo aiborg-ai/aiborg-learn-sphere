@@ -86,9 +86,9 @@ export class ForumVoteService {
       }
 
       return data;
-    } catch (error) {
-      logger.error('Error voting:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error voting:', _error);
+      throw _error;
     }
   }
 
@@ -126,9 +126,9 @@ export class ForumVoteService {
       if (error) throw error;
 
       logger.log('Vote removed:', votableType, votableId);
-    } catch (error) {
-      logger.error('Error removing vote:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Error removing vote:', _error);
+      throw _error;
     }
   }
 
@@ -152,8 +152,8 @@ export class ForumVoteService {
 
       if (error) throw error;
       return data?.vote_type || null;
-    } catch (error) {
-      logger.error('Error getting user vote:', error);
+    } catch (_error) {
+      logger._error('Error getting user vote:', _error);
       return null;
     }
   }
@@ -187,8 +187,8 @@ export class ForumVoteService {
         downvotes: downvotes || 0,
         score,
       };
-    } catch (error) {
-      logger.error('Error getting vote counts:', error);
+    } catch (_error) {
+      logger._error('Error getting vote counts:', _error);
       return { upvotes: 0, downvotes: 0, score: 0 };
     }
   }
@@ -256,9 +256,9 @@ export class ForumVoteService {
           p_amount: amount,
         });
       }
-    } catch (error) {
+    } catch (_error) {
       // Silent fail - karma points are not critical
-      logger.log('Error awarding karma:', error);
+      logger.log('Error awarding karma:', _error);
     }
   }
 
@@ -282,8 +282,8 @@ export class ForumVoteService {
       if (error) throw error;
 
       return (data || []).map(t => t.id);
-    } catch (error) {
-      logger.error('Error getting top voted threads:', error);
+    } catch (_error) {
+      logger._error('Error getting top voted threads:', _error);
       return [];
     }
   }
@@ -348,8 +348,8 @@ export class ForumVoteService {
         downvotes_received: downvotesReceived,
         karma,
       };
-    } catch (error) {
-      logger.error('Error getting voting stats:', error);
+    } catch (_error) {
+      logger._error('Error getting voting stats:', _error);
       return {
         votes_given: 0,
         upvotes_given: 0,

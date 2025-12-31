@@ -15,6 +15,7 @@ import type {
   CoverageLevel,
 } from '@/types/knowledge-graph';
 import { KnowledgeGraphService } from './KnowledgeGraphService';
+import { logger } from '@/utils/logger';
 
 // Types for AI suggestions
 export interface ConceptSuggestion {
@@ -106,7 +107,7 @@ export class ConceptSuggestionService {
     );
 
     if (error) {
-      console.error('Error generating suggestions:', error);
+      logger.error('Error generating suggestions:', error);
       throw new Error(`Failed to generate suggestions: ${error.message}`);
     }
 
@@ -163,7 +164,7 @@ export class ConceptSuggestionService {
     );
 
     if (error) {
-      console.error('Error generating suggestions:', error);
+      logger.error('Error generating suggestions:', error);
       throw new Error(`Failed to generate suggestions: ${error.message}`);
     }
 
@@ -225,7 +226,7 @@ export class ConceptSuggestionService {
     const targetId = conceptNameToIdMap.get(suggestion.target_concept);
 
     if (!sourceId || !targetId) {
-      console.warn(
+      logger.warn(
         `Cannot create relationship: concepts not found (${suggestion.source_concept} -> ${suggestion.target_concept})`
       );
       return null;
@@ -254,7 +255,7 @@ export class ConceptSuggestionService {
     const conceptId = conceptNameToIdMap.get(suggestion.concept_name);
 
     if (!conceptId) {
-      console.warn(`Cannot create course mapping: concept not found (${suggestion.concept_name})`);
+      logger.warn(`Cannot create course mapping: concept not found (${suggestion.concept_name})`);
       return null;
     }
 
@@ -285,8 +286,8 @@ export class ConceptSuggestionService {
         conceptNameToIdMap.set(suggestion.name, concept.id);
         suggestion.status = 'approved';
         suggestion.created_concept_id = concept.id;
-      } catch (error) {
-        console.error(`Failed to approve concept ${suggestion.name}:`, error);
+      } catch (_error) {
+        logger._error(`Failed to approve concept ${suggestion.name}:`, _error);
         suggestion.status = 'rejected';
       }
     }
@@ -313,8 +314,8 @@ export class ConceptSuggestionService {
         } else {
           suggestion.status = 'rejected';
         }
-      } catch (error) {
-        console.error(
+      } catch (_error) {
+        logger._error(
           `Failed to approve relationship ${suggestion.source_concept} -> ${suggestion.target_concept}:`,
           error
         );
@@ -346,8 +347,8 @@ export class ConceptSuggestionService {
         } else {
           suggestion.status = 'rejected';
         }
-      } catch (error) {
-        console.error(`Failed to approve course mapping ${suggestion.concept_name}:`, error);
+      } catch (_error) {
+        logger._error(`Failed to approve course mapping ${suggestion.concept_name}:`, _error);
         suggestion.status = 'rejected';
       }
     }
@@ -394,8 +395,8 @@ export class ConceptSuggestionService {
         mappings_created,
         errors,
       };
-    } catch (error) {
-      errors.push(`Batch approval failed: ${error.message}`);
+    } catch (_error) {
+      errors.push(`Batch approval failed: ${_error.message}`);
       return {
         concepts_created: 0,
         relationships_created: 0,

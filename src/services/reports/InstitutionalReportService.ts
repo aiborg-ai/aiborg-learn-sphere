@@ -129,8 +129,8 @@ export class InstitutionalReportService {
       });
 
       return this.mapReportRequest(data);
-    } catch (error) {
-      logger.error('Error requesting report:', error);
+    } catch (_error) {
+      logger._error('Error requesting report:', _error);
       return null;
     }
   }
@@ -149,8 +149,8 @@ export class InstitutionalReportService {
       if (error) throw error;
 
       return this.mapReportRequest(data);
-    } catch (error) {
-      logger.error('Error getting report status:', error);
+    } catch (_error) {
+      logger._error('Error getting report status:', _error);
       return null;
     }
   }
@@ -170,8 +170,8 @@ export class InstitutionalReportService {
       if (error) throw error;
 
       return (data || []).map(this.mapReportRequest);
-    } catch (error) {
-      logger.error('Error getting user reports:', error);
+    } catch (_error) {
+      logger._error('Error getting user reports:', _error);
       return [];
     }
   }
@@ -237,8 +237,8 @@ export class InstitutionalReportService {
       ]);
 
       return { headers, rows };
-    } catch (error) {
-      logger.error('Error generating CSV:', error);
+    } catch (_error) {
+      logger._error('Error generating CSV:', _error);
       return { headers: [], rows: [] };
     }
   }
@@ -285,8 +285,8 @@ export class InstitutionalReportService {
       ]);
 
       return { headers, rows };
-    } catch (error) {
-      logger.error('Error generating mastery CSV:', error);
+    } catch (_error) {
+      logger._error('Error generating mastery CSV:', _error);
       return { headers: [], rows: [] };
     }
   }
@@ -507,8 +507,8 @@ export class InstitutionalReportService {
         skillBreakdown,
         individualData,
       };
-    } catch (error) {
-      logger.error('Error getting aggregate outcomes data:', error);
+    } catch (_error) {
+      logger._error('Error getting aggregate outcomes data:', _error);
       return {
         summary: {
           totalStudents: 0,
@@ -853,8 +853,8 @@ export class InstitutionalReportService {
           completed_at: new Date().toISOString(),
         })
         .eq('id', reportId);
-    } catch (error) {
-      logger.error('Error generating report:', error);
+    } catch (_error) {
+      logger._error('Error generating report:', _error);
 
       await supabase
         .from('institutional_reports')

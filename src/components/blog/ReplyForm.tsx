@@ -21,8 +21,8 @@ export function ReplyForm({ onSubmit, onCancel }: ReplyFormProps) {
     try {
       await onSubmit(content);
       setContent('');
-    } catch (error) {
-      logger.error('Failed to post reply:', error);
+    } catch (_error) {
+      logger._error('Failed to post reply:', _error);
     } finally {
       setIsSubmitting(false);
     }

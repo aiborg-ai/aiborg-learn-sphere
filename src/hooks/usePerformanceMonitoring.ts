@@ -46,8 +46,8 @@ export function usePerformanceMonitoring(): UsePerformanceMonitoringReturn {
       const report = await PerformanceMonitoringService.getPerformanceReport();
       setPerformanceReport(report);
       setWebVitals(report.webVitals);
-    } catch (error) {
-      logger.error('Failed to fetch performance report:', error);
+    } catch (_error) {
+      logger._error('Failed to fetch performance report:', _error);
     } finally {
       setLoading(false);
     }

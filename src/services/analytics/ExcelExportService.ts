@@ -61,8 +61,8 @@ export class ExcelExportService {
       XLSX.writeFile(workbook, `${fileName}.xlsx`);
 
       logger.info('Analytics exported successfully', { userId, fileName });
-    } catch (error) {
-      logger.error('Error exporting analytics:', error);
+    } catch (_error) {
+      logger._error('Error exporting analytics:', _error);
       throw new Error('Failed to export analytics data');
     }
   }
@@ -118,8 +118,8 @@ export class ExcelExportService {
       worksheet['!cols'] = [{ wch: 30 }, { wch: 20 }, { wch: 15 }];
 
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Overview');
-    } catch (error) {
-      logger.error('Error creating overview sheet:', error);
+    } catch (_error) {
+      logger._error('Error creating overview sheet:', _error);
     }
   }
 
@@ -212,8 +212,8 @@ export class ExcelExportService {
       ];
 
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Performance');
-    } catch (error) {
-      logger.error('Error creating performance sheet:', error);
+    } catch (_error) {
+      logger._error('Error creating performance sheet:', _error);
     }
   }
 
@@ -314,8 +314,8 @@ export class ExcelExportService {
       worksheet['!cols'] = [{ wch: 40 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
 
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Goals');
-    } catch (error) {
-      logger.error('Error creating goals sheet:', error);
+    } catch (_error) {
+      logger._error('Error creating goals sheet:', _error);
     }
   }
 
@@ -359,8 +359,8 @@ export class ExcelExportService {
       link.click();
 
       logger.info('CSV exported successfully', { fileName });
-    } catch (error) {
-      logger.error('Error exporting CSV:', error);
+    } catch (_error) {
+      logger._error('Error exporting CSV:', _error);
       throw new Error('Failed to export CSV');
     }
   }
@@ -405,8 +405,8 @@ export class ExcelExportService {
       ];
 
       await this.exportToCSV(csvData, `performance-summary-${format(new Date(), 'yyyy-MM-dd')}`);
-    } catch (error) {
-      logger.error('Error exporting performance summary:', error);
+    } catch (_error) {
+      logger._error('Error exporting performance summary:', _error);
       throw error;
     }
   }
@@ -433,8 +433,8 @@ export class ExcelExportService {
       ];
 
       await this.exportToCSV(csvData, `goals-summary-${format(new Date(), 'yyyy-MM-dd')}`);
-    } catch (error) {
-      logger.error('Error exporting goals summary:', error);
+    } catch (_error) {
+      logger._error('Error exporting goals summary:', _error);
       throw error;
     }
   }

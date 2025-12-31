@@ -178,8 +178,8 @@ export class AdminAnalyticsService {
         activeUsersWeek: activeWeek || 0,
         activeUsersMonth: activeMonth || 0,
       };
-    } catch (error) {
-      logger.error('Error fetching platform metrics:', error);
+    } catch (_error) {
+      logger._error('Error fetching platform metrics:', _error);
       return null;
     }
   }
@@ -231,8 +231,8 @@ export class AdminAnalyticsService {
       }
 
       return Array.from(growthMap.values());
-    } catch (error) {
-      logger.error('Error fetching user growth:', error);
+    } catch (_error) {
+      logger._error('Error fetching user growth:', _error);
       return [];
     }
   }
@@ -291,8 +291,8 @@ export class AdminAnalyticsService {
       }
 
       return analytics.sort((a, b) => b.enrollments - a.enrollments);
-    } catch (error) {
-      logger.error('Error fetching course analytics:', error);
+    } catch (_error) {
+      logger._error('Error fetching course analytics:', _error);
       return [];
     }
   }
@@ -359,8 +359,8 @@ export class AdminAnalyticsService {
         revenueByDay,
         revenueByCourse,
       };
-    } catch (error) {
-      logger.error('Error fetching revenue metrics:', error);
+    } catch (_error) {
+      logger._error('Error fetching revenue metrics:', _error);
       return null;
     }
   }
@@ -435,8 +435,8 @@ export class AdminAnalyticsService {
         contentCompletionRate: completionRate * 100,
         assessmentTakeRate: assessmentTakeRate * 100,
       };
-    } catch (error) {
-      logger.error('Error fetching engagement metrics:', error);
+    } catch (_error) {
+      logger._error('Error fetching engagement metrics:', _error);
       return null;
     }
   }
@@ -513,8 +513,8 @@ export class AdminAnalyticsService {
         assessmentsByType,
         performanceTrend,
       };
-    } catch (error) {
-      logger.error('Error fetching assessment analytics:', error);
+    } catch (_error) {
+      logger._error('Error fetching assessment analytics:', _error);
       return null;
     }
   }
@@ -577,7 +577,8 @@ export class AdminAnalyticsService {
       });
 
       const avgSatisfaction = satisfactionCount > 0 ? totalSatisfaction / satisfactionCount : 0;
-      const resolutionRate = totalConversations > 0 ? (totalResolved / totalConversations) * 100 : 0;
+      const resolutionRate =
+        totalConversations > 0 ? (totalResolved / totalConversations) * 100 : 0;
       const avgDurationMinutes = totalConversations > 0 ? totalDuration / totalConversations : 0;
 
       logger.info('Fetched chatbot analytics', { dateRange, totalConversations });
@@ -589,8 +590,8 @@ export class AdminAnalyticsService {
         resolutionRate: Math.round(resolutionRate * 10) / 10, // Round to 1 decimal
         avgDurationMinutes: Math.round(avgDurationMinutes * 10) / 10, // Round to 1 decimal
       };
-    } catch (error) {
-      logger.error('Error fetching chatbot analytics:', error);
+    } catch (_error) {
+      logger._error('Error fetching chatbot analytics:', _error);
       return null;
     }
   }
@@ -629,8 +630,8 @@ export class AdminAnalyticsService {
       logger.info('Fetched chatbot trends', { dateRange, dataPoints: trends.length });
 
       return trends;
-    } catch (error) {
-      logger.error('Error fetching chatbot trends:', error);
+    } catch (_error) {
+      logger._error('Error fetching chatbot trends:', _error);
       return [];
     }
   }
@@ -671,8 +672,8 @@ export class AdminAnalyticsService {
       logger.info('Fetched top queries', { dateRange, count: topQueries.length });
 
       return topQueries;
-    } catch (error) {
-      logger.error('Error fetching top queries:', error);
+    } catch (_error) {
+      logger._error('Error fetching top queries:', _error);
       return [];
     }
   }
@@ -685,9 +686,7 @@ export class AdminAnalyticsService {
   static async getTeamAnalytics(dateRange: DateRange): Promise<TeamMetrics | null> {
     try {
       // Query team_analytics_summary view
-      const { data, error } = await supabase
-        .from('team_analytics_summary')
-        .select('*');
+      const { data, error } = await supabase.from('team_analytics_summary').select('*');
 
       if (error) {
         throw error;
@@ -731,8 +730,8 @@ export class AdminAnalyticsService {
         avgCompletionRate: Math.round(avgCompletionRate * 10) / 10, // Round to 1 decimal
         activeTeamsWeek,
       };
-    } catch (error) {
-      logger.error('Error fetching team analytics:', error);
+    } catch (_error) {
+      logger._error('Error fetching team analytics:', _error);
       return null;
     }
   }
@@ -770,8 +769,8 @@ export class AdminAnalyticsService {
       logger.info('Fetched team performance', { dateRange, count: teamPerformance.length });
 
       return teamPerformance;
-    } catch (error) {
-      logger.error('Error fetching team performance:', error);
+    } catch (_error) {
+      logger._error('Error fetching team performance:', _error);
       return [];
     }
   }

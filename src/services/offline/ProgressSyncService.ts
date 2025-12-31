@@ -93,8 +93,8 @@ class ProgressSyncServiceClass {
           await this.syncItem(item);
           synced++;
           this.emit({ type: 'item-synced', data: item });
-        } catch (error) {
-          logger.error('[ProgressSyncService] Failed to sync item:', item.id, error);
+        } catch (_error) {
+          logger._error('[ProgressSyncService] Failed to sync item:', item.id, _error);
           failed++;
           this.emit({ type: 'item-failed', data: { item, error } });
         }
@@ -104,8 +104,8 @@ class ProgressSyncServiceClass {
       this.emit({ type: 'sync-completed', data: { synced, failed } });
 
       return { synced, failed };
-    } catch (error) {
-      logger.error('[ProgressSyncService] Sync all failed:', error);
+    } catch (_error) {
+      logger._error('[ProgressSyncService] Sync all failed:', _error);
       this.emit({ type: 'sync-failed', data: error });
       throw error;
     } finally {
@@ -139,7 +139,7 @@ class ProgressSyncServiceClass {
       item.syncStatus = 'synced';
       item.syncedAt = new Date().toISOString();
       await OfflineProgressDB.update(item);
-    } catch (error) {
+    } catch (_error) {
       // Mark as failed
       item.syncStatus = 'failed';
       item.error = error instanceof Error ? error.message : 'Unknown error';
@@ -333,8 +333,8 @@ class ProgressSyncServiceClass {
     this.listeners.forEach(listener => {
       try {
         listener(event);
-      } catch (error) {
-        logger.error('[ProgressSyncService] Listener error:', error);
+      } catch (_error) {
+        logger._error('[ProgressSyncService] Listener _error:', _error);
       }
     });
   }

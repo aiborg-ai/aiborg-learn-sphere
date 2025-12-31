@@ -123,7 +123,7 @@ function logError(error: unknown, context?: Record<string, unknown>): void {
  * @example
  * try {
  *   await someAsyncOperation();
- * } catch (error) {
+  } catch {
  *   handleError(error, { context: { operation: 'someAsyncOperation' } });
  * }
  */
@@ -165,7 +165,7 @@ export function withErrorHandler<T extends (...args: unknown[]) => Promise<unkno
   return (async (...args: Parameters<T>) => {
     try {
       return await fn(...args);
-    } catch (error) {
+    } catch {
       handleError(error, options);
       return undefined;
     }
@@ -277,7 +277,7 @@ export async function withRetry<T>(
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
-    } catch (error) {
+    } catch {
       lastError = error;
 
       // Don't retry on operational errors (like validation errors)

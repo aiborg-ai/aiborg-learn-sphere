@@ -68,8 +68,8 @@ export const CompetencyHeatMap: React.FC = () => {
       });
 
       setHeatMapData(heatMap);
-    } catch (error) {
-      logger.error('Error loading competency data:', error);
+    } catch (_error) {
+      logger._error('Error loading competency data:', _error);
       setSnapshot(null);
       setTimeSeries([]);
     } finally {

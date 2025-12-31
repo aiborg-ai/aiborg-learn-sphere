@@ -254,11 +254,11 @@ export function validateEventTemplate(data: unknown): {
       success: true,
       data: validated,
     };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
+  } catch (_error) {
+    if (_error instanceof z.ZodError) {
       return {
         success: false,
-        errors: error.errors.map(err => ({
+        errors: _error.errors.map(err => ({
           field: err.path.join('.'),
           message: err.message,
           code: err.code,
@@ -304,9 +304,9 @@ export function validateEventBatch(data: unknown): {
         invalid: 0,
       },
     };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      const errors = error.errors.map(err => {
+  } catch (_error) {
+    if (_error instanceof z.ZodError) {
+      const errors = _error.errors.map(err => {
         const path = err.path.join('.');
         const match = path.match(/events\[(\d+)\]\.(.*)/);
         if (match) {

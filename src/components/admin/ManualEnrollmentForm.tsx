@@ -66,8 +66,8 @@ export function ManualEnrollmentForm({ open, onOpenChange, onSuccess }: ManualEn
 
       if (error) throw error;
       setCourses(data || []);
-    } catch (error) {
-      logger.error('Error fetching courses:', error);
+    } catch (_error) {
+      logger._error('Error fetching courses:', _error);
       toast({
         title: 'Error',
         description: 'Failed to fetch courses',
@@ -98,8 +98,8 @@ export function ManualEnrollmentForm({ open, onOpenChange, onSuccess }: ManualEn
 
       if (error) throw error;
       setUsers(data || []);
-    } catch (error) {
-      logger.error('Error searching users:', error);
+    } catch (_error) {
+      logger._error('Error searching users:', _error);
       toast({
         title: 'Error',
         description: 'Failed to search users',
@@ -217,8 +217,8 @@ export function ManualEnrollmentForm({ open, onOpenChange, onSuccess }: ManualEn
 
       onSuccess();
       onOpenChange(false);
-    } catch (error) {
-      logger.error('Error creating manual enrollment:', error);
+    } catch (_error) {
+      logger._error('Error creating manual enrollment:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create enrollment',

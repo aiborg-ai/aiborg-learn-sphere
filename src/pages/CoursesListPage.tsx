@@ -3,7 +3,8 @@
  * Displays all available courses with filtering and search
  */
 
-import { Navbar, Footer } from '@/components/navigation';
+import { Navbar } from '@/components/navigation/Navbar';
+import { Footer } from '@/components/navigation/Footer';
 import { TrainingPrograms } from '@/components/TrainingPrograms';
 import { LazyAIChatbot } from '@/components/features';
 

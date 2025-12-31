@@ -218,7 +218,7 @@ function Form() {
     try {
       await submitForm();
       announce('Form submitted successfully', 'polite');
-    } catch (error) {
+    } catch (_error) {
       // Assertive for errors - interrupts user
       announce('Error submitting form. Please try again.', 'assertive');
     }

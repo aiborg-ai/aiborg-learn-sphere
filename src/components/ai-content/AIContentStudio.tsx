@@ -124,8 +124,8 @@ export function AIContentStudio() {
       setJobs(jobsData);
       setGeneratedCourses(coursesData);
       setLanguages(languagesData);
-    } catch (error) {
-      logger.error('Error loading AI content data:', error);
+    } catch (_error) {
+      logger._error('Error loading AI content data:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load AI content data',
@@ -164,10 +164,10 @@ export function AIContentStudio() {
         template_id: '',
       });
       await loadData();
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Generation Failed',
-        description: (error as Error).message,
+        description: (_error as Error).message,
         variant: 'destructive',
       });
     } finally {
@@ -199,10 +199,10 @@ export function AIContentStudio() {
         include_explanations: true,
       });
       await loadData();
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Generation Failed',
-        description: (error as Error).message,
+        description: (_error as Error).message,
         variant: 'destructive',
       });
     } finally {
@@ -228,10 +228,10 @@ export function AIContentStudio() {
         description: `Job ${jobId.slice(0, 8)}... is processing`,
       });
       await loadData();
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Translation Failed',
-        description: (error as Error).message,
+        description: (_error as Error).message,
         variant: 'destructive',
       });
     } finally {

@@ -39,6 +39,7 @@ import {
   Layers,
   Key,
   Webhook,
+  Brain,
 } from '@/components/ui/icons';
 
 // Only import AccessDenied eagerly (used before tabs render)
@@ -85,6 +86,8 @@ import { AuditLogViewer } from '@/components/admin/audit-logs';
 import { BulkOperationsDashboard } from '@/components/admin/bulk-operations';
 import { ApiKeyManager } from '@/components/admin/api-keys';
 import { WebhookManager } from '@/components/admin/webhooks';
+import AIContentManager from '@/components/admin/AIContentManager';
+import { KnowledgeGraphAdmin } from '@/components/admin/KnowledgeGraphAdmin';
 
 export default function AdminRefactored() {
   const { user } = useAuth();
@@ -213,6 +216,17 @@ export default function AdminRefactored() {
             <TabsTrigger value="blog" className="text-white data-[state=active]:bg-white/20">
               <BookOpen className="h-4 w-4 mr-2" />
               Blog
+            </TabsTrigger>
+            <TabsTrigger value="ai-content" className="text-white data-[state=active]:bg-white/20">
+              <Brain className="h-4 w-4 mr-2" />
+              AI Content
+            </TabsTrigger>
+            <TabsTrigger
+              value="knowledge-graph"
+              className="text-white data-[state=active]:bg-white/20"
+            >
+              <Network className="h-4 w-4 mr-2" />
+              Knowledge Graph
             </TabsTrigger>
             <TabsTrigger
               value="achievements"
@@ -376,6 +390,14 @@ export default function AdminRefactored() {
 
           <TabsContent value="blog">
             <BlogManager />
+          </TabsContent>
+
+          <TabsContent value="ai-content">
+            <AIContentManager />
+          </TabsContent>
+
+          <TabsContent value="knowledge-graph">
+            <KnowledgeGraphAdmin />
           </TabsContent>
 
           <TabsContent value="achievements">

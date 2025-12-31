@@ -167,8 +167,8 @@ async function fetchAssignments(
         detailUrl: `/assignment/${assignment.id}`,
       };
     });
-  } catch (error) {
-    logger.error('Error fetching assignments for calendar:', error);
+  } catch (_error) {
+    logger._error('Error fetching assignments for calendar:', _error);
     return [];
   }
 }
@@ -235,8 +235,8 @@ async function fetchEvents(dateRange: DateRange): Promise<CalendarEvent[]> {
         detailUrl: `/event/${event.id}`,
       };
     });
-  } catch (error) {
-    logger.error('Error fetching events for calendar:', error);
+  } catch (_error) {
+    logger._error('Error fetching events for calendar:', _error);
     return [];
   }
 }
@@ -340,8 +340,8 @@ async function fetchWorkshopSessions(
         detailUrl: `/workshop/session/${session.id}`,
       };
     });
-  } catch (error) {
-    logger.error('Error fetching workshop sessions for calendar:', error);
+  } catch (_error) {
+    logger._error('Error fetching workshop sessions for calendar:', _error);
     return [];
   }
 }
@@ -428,8 +428,8 @@ async function fetchFreeSessions(
         detailUrl: `/session/${session.id}`,
       };
     });
-  } catch (error) {
-    logger.error('Error fetching free sessions for calendar:', error);
+  } catch (_error) {
+    logger._error('Error fetching free sessions for calendar:', _error);
     return [];
   }
 }
@@ -523,8 +523,8 @@ async function fetchClassroomSessions(
         detailUrl: `/classroom/${session.id}`,
       };
     });
-  } catch (error) {
-    logger.error('Error fetching classroom sessions for calendar:', error);
+  } catch (_error) {
+    logger._error('Error fetching classroom sessions for calendar:', _error);
     return [];
   }
 }
@@ -578,8 +578,8 @@ export async function fetchCalendarEvents(
     const allEvents = results.flat().sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
 
     return allEvents;
-  } catch (error) {
-    logger.error('Error fetching calendar events:', error);
+  } catch (_error) {
+    logger._error('Error fetching calendar events:', _error);
     return [];
   }
 }

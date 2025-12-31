@@ -296,8 +296,8 @@ export function JitsiMeetRoom({
           });
         }
       });
-    } catch (error) {
-      logger.error('Failed to initialize Jitsi:', error);
+    } catch (_error) {
+      logger._error('Failed to initialize Jitsi:', _error);
       toast({
         title: 'Connection Error',
         description: 'Failed to start video conference.',

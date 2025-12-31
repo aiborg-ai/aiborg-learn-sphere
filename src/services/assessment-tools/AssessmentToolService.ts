@@ -69,8 +69,8 @@ export class AssessmentToolService {
           weight: poolItem.weight,
         } as PooledQuestion;
       });
-    } catch (error) {
-      logger.error('Error fetching questions for tool:', error);
+    } catch (_error) {
+      logger._error('Error fetching questions for tool:', _error);
       throw error;
     }
   }
@@ -113,8 +113,8 @@ export class AssessmentToolService {
         recommendations,
         badges_earned: badgesEarned,
       };
-    } catch (error) {
-      logger.error('Error generating assessment results:', error);
+    } catch (_error) {
+      logger._error('Error generating assessment results:', _error);
       throw error;
     }
   }
@@ -209,8 +209,8 @@ export class AssessmentToolService {
 
       logger.log(`Awarded ${badgesEarned.filter(b => b.isNew).length} new badges for assessment`);
       return badgesEarned;
-    } catch (error) {
-      logger.error('Error determining assessment badges:', error);
+    } catch (_error) {
+      logger._error('Error determining assessment badges:', _error);
       return [];
     }
   }
@@ -266,8 +266,8 @@ export class AssessmentToolService {
       if (awardError && awardError.code !== '23505') {
         logger.error('Error awarding badge:', awardError);
       }
-    } catch (error) {
-      logger.error('Error in awardBadgeToUser:', error);
+    } catch (_error) {
+      logger._error('Error in awardBadgeToUser:', _error);
     }
   }
 
@@ -293,8 +293,8 @@ export class AssessmentToolService {
 
       const percentile = (scoresBelow / data.length) * 100;
       return Math.round(percentile);
-    } catch (error) {
-      logger.error('Error calculating percentile rank:', error);
+    } catch (_error) {
+      logger._error('Error calculating percentile rank:', _error);
       return 50; // Default fallback
     }
   }
@@ -387,8 +387,8 @@ export class AssessmentToolService {
       if (error) throw error;
 
       logger.log(`Linked assessment ${assessmentId} to attempt ${attemptId}`);
-    } catch (error) {
-      logger.error('Error linking assessment to attempt:', error);
+    } catch (_error) {
+      logger._error('Error linking assessment to attempt:', _error);
       throw error;
     }
   }

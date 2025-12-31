@@ -17,7 +17,8 @@ import {
 import { createAdaptiveEngine } from '@/services/AdaptiveAssessmentEngine';
 import type { AdaptiveAssessmentEngine } from '@/services/AdaptiveAssessmentEngine';
 import { supabase } from '@/integrations/supabase/client';
-import { Navbar, Footer } from '@/components/navigation';
+import { Navbar } from '@/components/navigation/Navbar';
+import { Footer } from '@/components/navigation/Footer';
 import { AIAssessmentWizardAdaptive } from '@/components/ai-assessment';
 import { Loader2 } from '@/components/ui/icons';
 import { logger } from '@/utils/logger';
@@ -104,8 +105,8 @@ export default function AIAwarenessAssessment() {
 
         // Start the timer
         stableStartTimer();
-      } catch (error) {
-        logger.error('Error initializing assessment:', error);
+      } catch (_error) {
+        logger._error('Error initializing assessment:', _error);
         toast({
           title: 'Error',
           description: 'Failed to start assessment. Please try again.',
@@ -152,8 +153,8 @@ export default function AIAwarenessAssessment() {
 
       // Navigate to results
       navigate(`/assessment/ai-awareness/results/${attemptId}`);
-    } catch (error) {
-      logger.error('Error completing assessment:', error);
+    } catch (_error) {
+      logger._error('Error completing assessment:', _error);
       toast({
         title: 'Error',
         description: 'Failed to save results. Please try again.',

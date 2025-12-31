@@ -184,8 +184,8 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
     try {
       await save();
       toast.success('Dashboard saved successfully');
-    } catch (error) {
-      toast.error('Failed to save dashboard');
+    } catch (_error) {
+      toast._error('Failed to save dashboard');
       logger.error('Save error:', error);
     }
   }, [save]);
@@ -236,8 +236,8 @@ export function DashboardBuilder({ initialViewId, className }: DashboardBuilderP
 
         toast.success('Dashboard configuration imported');
         setMode('edit');
-      } catch (error) {
-        toast.error('Failed to import configuration');
+      } catch (_error) {
+        toast._error('Failed to import configuration');
         logger.error('Import error:', error);
       }
     };

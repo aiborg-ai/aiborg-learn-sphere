@@ -249,7 +249,7 @@ export function withRateLimit(config: RateLimitConfig) {
       try {
         const result = await originalMethod.apply(this, args);
         return result;
-      } catch (error) {
+      } catch (_error) {
         // Optionally don't count failed requests
         if (config.skipFailedRequests) {
           rateLimiter.reset(config.key);

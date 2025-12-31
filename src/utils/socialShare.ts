@@ -175,7 +175,7 @@ export async function nativeShare(data: ShareData): Promise<boolean> {
       url: data.url,
     });
     return true;
-  } catch (error) {
+  } catch {
     // User cancelled or error occurred (not necessarily an error - user may have cancelled)
     logger.debug('Native share dismissed or failed', { error });
     return false;

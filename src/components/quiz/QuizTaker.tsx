@@ -81,8 +81,8 @@ export function QuizTaker() {
       setAttemptId(attempt.id);
       setAttemptStartTime(new Date(attempt.started_at));
       logger.info('Quiz attempt started', { attemptId: attempt.id });
-    } catch (error) {
-      logger.error('Failed to start quiz', { error });
+    } catch (_error) {
+      logger._error('Failed to start quiz', { _error });
       navigate('/courses');
     }
   };
@@ -113,8 +113,8 @@ export function QuizTaker() {
         answer_text: typeof answer === 'string' ? answer : undefined,
         time_spent_seconds: timeSpent,
       });
-    } catch (error) {
-      logger.error('Failed to submit answer', { error });
+    } catch (_error) {
+      logger._error('Failed to submit answer', { _error });
     }
   };
 
@@ -140,8 +140,8 @@ export function QuizTaker() {
       navigate(`/quiz/${quizId}/results/${attemptId}`, {
         state: { result },
       });
-    } catch (error) {
-      logger.error('Failed to submit quiz', { error });
+    } catch (_error) {
+      logger._error('Failed to submit quiz', { _error });
     }
   };
 

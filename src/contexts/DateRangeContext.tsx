@@ -104,8 +104,8 @@ const loadFromStorage = (): DateRangeState => {
         preset: parsed.preset || null,
       };
     }
-  } catch (error) {
-    logger.error('Error loading date range from storage:', error);
+  } catch (_error) {
+    logger._error('Error loading date range from storage:', _error);
   }
 
   // Default: last 30 days
@@ -133,8 +133,8 @@ const saveToStorage = (state: DateRangeState): void => {
         preset: state.preset,
       })
     );
-  } catch (error) {
-    logger.error('Error saving date range to storage:', error);
+  } catch (_error) {
+    logger._error('Error saving date range to storage:', _error);
   }
 };
 
@@ -207,8 +207,8 @@ export const deserializeDateRangeFromURL = (
       endDate,
       preset: presetStr || 'custom',
     };
-  } catch (error) {
-    logger.error('Error deserializing date range from URL:', error);
+  } catch (_error) {
+    logger._error('Error deserializing date range from URL:', _error);
     return null;
   }
 };
@@ -469,8 +469,8 @@ export const DateRangeProvider: React.FC<DateRangeProviderProps> = ({ children }
       }
 
       logger.info('Date range preferences saved successfully');
-    } catch (error) {
-      logger.error('Failed to save date range preferences:', error);
+    } catch (_error) {
+      logger._error('Failed to save date range preferences:', _error);
     } finally {
       setIsSavingPreferences(false);
     }
@@ -511,8 +511,8 @@ export const DateRangeProvider: React.FC<DateRangeProviderProps> = ({ children }
 
         logger.info('Date range preferences loaded successfully');
       }
-    } catch (error) {
-      logger.error('Failed to load date range preferences:', error);
+    } catch (_error) {
+      logger._error('Failed to load date range preferences:', _error);
     } finally {
       setIsLoadingPreferences(false);
     }

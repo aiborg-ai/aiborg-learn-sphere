@@ -29,7 +29,12 @@ interface ExportButtonProps {
   size?: 'default' | 'sm' | 'lg' | 'icon';
 }
 
-export function ExportButton({ userId, dateRange, variant = 'outline', size = 'default' }: ExportButtonProps) {
+export function ExportButton({
+  userId,
+  dateRange,
+  variant = 'outline',
+  size = 'default',
+}: ExportButtonProps) {
   const { toast } = useToast();
   const [isExporting, setIsExporting] = useState(false);
   const [includeOverview, setIncludeOverview] = useState(true);
@@ -54,8 +59,8 @@ export function ExportButton({ userId, dateRange, variant = 'outline', size = 'd
         title: 'Export Successful',
         description: 'Your analytics have been exported to Excel.',
       });
-    } catch (error) {
-      logger.error('Error exporting to Excel:', error);
+    } catch (_error) {
+      logger._error('Error exporting to Excel:', _error);
       toast({
         title: 'Export Failed',
         description: 'Failed to export analytics. Please try again.',
@@ -75,8 +80,8 @@ export function ExportButton({ userId, dateRange, variant = 'outline', size = 'd
         title: 'Export Successful',
         description: 'Performance summary exported to CSV.',
       });
-    } catch (error) {
-      logger.error('Error exporting performance CSV:', error);
+    } catch (_error) {
+      logger._error('Error exporting performance CSV:', _error);
       toast({
         title: 'Export Failed',
         description: 'Failed to export performance data. Please try again.',
@@ -96,8 +101,8 @@ export function ExportButton({ userId, dateRange, variant = 'outline', size = 'd
         title: 'Export Successful',
         description: 'Goals summary exported to CSV.',
       });
-    } catch (error) {
-      logger.error('Error exporting goals CSV:', error);
+    } catch (_error) {
+      logger._error('Error exporting goals CSV:', _error);
       toast({
         title: 'Export Failed',
         description: 'Failed to export goals data. Please try again.',

@@ -162,8 +162,8 @@ export function ResourcesManagement() {
         title: 'File Uploaded',
         description: 'Your file has been uploaded successfully',
       });
-    } catch (error) {
-      logger.error('Error uploading file:', error);
+    } catch (_error) {
+      logger._error('Error uploading file:', _error);
       toast({
         title: 'Upload Failed',
         description: 'Failed to upload file',
@@ -208,8 +208,8 @@ export function ResourcesManagement() {
       }
 
       setDialogOpen(false);
-    } catch (error) {
-      logger.error('Error saving resource:', error);
+    } catch (_error) {
+      logger._error('Error saving resource:', _error);
       toast({
         title: 'Error',
         description: 'Failed to save resource',
@@ -229,8 +229,8 @@ export function ResourcesManagement() {
       });
       setDeleteDialogOpen(false);
       setResourceToDelete(null);
-    } catch (error) {
-      logger.error('Error deleting resource:', error);
+    } catch (_error) {
+      logger._error('Error deleting resource:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete resource',

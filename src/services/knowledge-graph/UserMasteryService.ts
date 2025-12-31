@@ -427,43 +427,8 @@ export class UserMasteryService {
   // =====================================================================
   // Bulk Operations
   // =====================================================================
-
-  /**
-   * Record course completion (adds evidence for all concepts in course)
-   */
-  static async recordCourseCompletion(
-    userId: string,
-    courseId: number,
-    score: number
-  ): Promise<void> {
-    // Import KnowledgeGraphService to avoid circular dependency
-    const { KnowledgeGraphService } = await import('./KnowledgeGraphService');
-
-    // Get all concepts taught in the course
-    const courseConcepts = await KnowledgeGraphService.getCourseConcepts(courseId);
-
-    // Add evidence for each concept
-    const date = new Date().toISOString();
-
-    for (const cc of courseConcepts) {
-      // Weight score by coverage level
-      const coverageWeights = {
-        introduces: 0.5,
-        covers: 0.75,
-        masters: 1.0,
-      };
-
-      const weight = coverageWeights[cc.coverage_level] || 0.5;
-      const weightedScore = score * weight;
-
-      await this.addEvidence(userId, cc.concept_id, {
-        type: 'course_completion',
-        course_id: courseId,
-        score: weightedScore,
-        date,
-      });
-    }
-  }
+  // Note: recordCourseCompletion() has been moved to ConceptProgressService
+  // to break circular dependency. Import ConceptProgressService instead.
 
   /**
    * Record assessment completion (adds evidence for concept)

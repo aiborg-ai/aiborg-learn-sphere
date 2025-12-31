@@ -89,8 +89,8 @@ export const useAssessmentNavigation = ({
           selected_options: currentAnswer.selected_options,
           score_earned: currentAnswer.score_earned,
         });
-      } catch (error) {
-        logger.error('Error saving answer:', error);
+      } catch (_error) {
+        logger._error('Error saving answer:', _error);
       }
     }
 

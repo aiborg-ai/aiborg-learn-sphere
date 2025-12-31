@@ -98,7 +98,8 @@ export class ContentSequencingService {
     let hours = weeklyHours;
 
     itemsToAdd.forEach(item => {
-      if (hours + item.estimated_hours > maxHoursPerWeek) {
+      // Only move to next week if current week already has items and would exceed limit
+      if (hours > 0 && hours + item.estimated_hours > maxHoursPerWeek) {
         week++;
         hours = 0;
       }

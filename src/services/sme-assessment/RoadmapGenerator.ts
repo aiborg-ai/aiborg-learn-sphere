@@ -24,15 +24,11 @@ export class RoadmapGenerator {
     assessmentId: string,
     assessmentData: AssessmentFormData
   ): Promise<void> {
-    try {
-      const phases = this.determinePhases(assessmentData);
-      const roadmapItems = this.generateRoadmapItems(phases, assessmentData);
-      const milestones = this.generateMilestones(roadmapItems, phases);
+    const phases = this.determinePhases(assessmentData);
+    const roadmapItems = this.generateRoadmapItems(phases, assessmentData);
+    const milestones = this.generateMilestones(roadmapItems, phases);
 
-      await this.saveToDatabase(assessmentId, phases, roadmapItems, milestones);
-    } catch (error) {
-      throw error;
-    }
+    await this.saveToDatabase(assessmentId, phases, roadmapItems, milestones);
   }
 
   /**

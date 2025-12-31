@@ -69,8 +69,8 @@ export function ReviewsManagement() {
       }
 
       setReviews(reviewsWithRelations);
-    } catch (error) {
-      logger.error('Error fetching reviews:', error);
+    } catch (_error) {
+      logger._error('Error fetching reviews:', _error);
       toast({
         title: 'Error',
         description: 'Failed to fetch reviews',
@@ -100,8 +100,8 @@ export function ReviewsManagement() {
       });
 
       fetchReviews();
-    } catch (error) {
-      logger.error('Error approving review:', error);
+    } catch (_error) {
+      logger._error('Error approving review:', _error);
       toast({
         title: 'Error',
         description: 'Failed to approve review',
@@ -122,8 +122,8 @@ export function ReviewsManagement() {
       });
 
       fetchReviews();
-    } catch (error) {
-      logger.error('Error rejecting review:', error);
+    } catch (_error) {
+      logger._error('Error rejecting review:', _error);
       toast({
         title: 'Error',
         description: 'Failed to reject review',
@@ -147,8 +147,8 @@ export function ReviewsManagement() {
       });
 
       fetchReviews();
-    } catch (error) {
-      logger.error('Error toggling review display:', error);
+    } catch (_error) {
+      logger._error('Error toggling review display:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update review visibility',

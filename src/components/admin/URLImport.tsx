@@ -132,8 +132,8 @@ export function URLImport({
       // Clear form on success
       setUrl('');
       setAuthValue('');
-    } catch (error) {
-      logger.error('URL import error:', error);
+    } catch (_error) {
+      logger._error('URL import _error:', _error);
       toast({
         title: 'Import Failed',
         description: error.message || 'Failed to import from URL',

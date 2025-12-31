@@ -97,8 +97,8 @@ export function DailyTaskList({
       } else {
         setTodayTasks([]);
       }
-    } catch (error) {
-      logger.error('Error fetching today tasks:', error);
+    } catch (_error) {
+      logger._error('Error fetching today tasks:', _error);
       toast({
         title: 'Error',
         description: "Failed to load today's tasks",
@@ -150,8 +150,8 @@ export function DailyTaskList({
           });
         }
       }
-    } catch (error) {
-      logger.error('Error completing task:', error);
+    } catch (_error) {
+      logger._error('Error completing task:', _error);
       toast({
         title: 'Error',
         description: 'Failed to mark task as complete',

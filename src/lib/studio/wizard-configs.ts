@@ -21,6 +21,29 @@ import { CoursePricingStep } from '@/components/studio/steps/course/CoursePricin
 import { CourseTagsStep } from '@/components/studio/steps/course/CourseTagsStep';
 import { CourseReviewStep } from '@/components/studio/steps/course/CourseReviewStep';
 
+// Import Event Step Components
+import { EventBasicInfoStep } from '@/components/studio/steps/event/EventBasicInfoStep';
+import { EventDetailsStep } from '@/components/studio/steps/event/EventDetailsStep';
+import { EventSchedulingStep } from '@/components/studio/steps/event/EventSchedulingStep';
+import { EventLocationStep } from '@/components/studio/steps/event/EventLocationStep';
+import { EventCapacityStep } from '@/components/studio/steps/event/EventCapacityStep';
+import { EventTagsStep } from '@/components/studio/steps/event/EventTagsStep';
+import { EventReviewStep } from '@/components/studio/steps/event/EventReviewStep';
+
+// Import Blog Step Components
+import { BlogBasicInfoStep } from '@/components/studio/steps/blog/BlogBasicInfoStep';
+import { BlogContentStep } from '@/components/studio/steps/blog/BlogContentStep';
+import { BlogSeoStep } from '@/components/studio/steps/blog/BlogSeoStep';
+import { BlogSchedulingStep } from '@/components/studio/steps/blog/BlogSchedulingStep';
+import { BlogTagsStep } from '@/components/studio/steps/blog/BlogTagsStep';
+import { BlogReviewStep } from '@/components/studio/steps/blog/BlogReviewStep';
+
+// Import Announcement Step Components
+import { AnnouncementBasicInfoStep } from '@/components/studio/steps/announcement/AnnouncementBasicInfoStep';
+import { AnnouncementAudienceStep } from '@/components/studio/steps/announcement/AnnouncementAudienceStep';
+import { AnnouncementSchedulingStep } from '@/components/studio/steps/announcement/AnnouncementSchedulingStep';
+import { AnnouncementReviewStep } from '@/components/studio/steps/announcement/AnnouncementReviewStep';
+
 // ========== Default Data ==========
 
 export const defaultCourseData: CourseWizardData = {
@@ -171,49 +194,49 @@ export const eventSteps: WizardConfig<EventWizardData>['steps'] = [
     title: 'Basic Information',
     description: 'Event title, description, and type',
     icon: 'info',
-    component: null!, // TODO: Implement component
+    component: EventBasicInfoStep,
   },
   {
     id: 'details',
     title: 'Event Details',
     description: 'Format and special requirements',
     icon: 'settings',
-    component: null!, // TODO: Implement component
+    component: EventDetailsStep,
   },
   {
     id: 'scheduling',
     title: 'Scheduling',
     description: 'Date, time, and recurring pattern',
     icon: 'calendar',
-    component: null!, // TODO: Implement component
+    component: EventSchedulingStep,
   },
   {
     id: 'location',
     title: 'Location',
     description: 'Venue or online meeting details',
     icon: 'map-pin',
-    component: null!, // TODO: Implement component
+    component: EventLocationStep,
   },
   {
     id: 'capacity',
     title: 'Capacity',
     description: 'Attendee limits and registration',
     icon: 'users',
-    component: null!, // TODO: Implement component
+    component: EventCapacityStep,
   },
   {
     id: 'tags',
     title: 'Tags',
     description: 'Categorize your event',
     icon: 'tag',
-    component: null!, // TODO: Implement component
+    component: EventTagsStep,
   },
   {
     id: 'review',
     title: 'Review & Publish',
     description: 'Preview and finalize your event',
     icon: 'check',
-    component: null!, // TODO: Implement component
+    component: EventReviewStep,
   },
 ];
 
@@ -223,42 +246,42 @@ export const blogSteps: WizardConfig<BlogWizardData>['steps'] = [
     title: 'Basic Information',
     description: 'Title, slug, and excerpt',
     icon: 'info',
-    component: null!, // TODO: Implement component
+    component: BlogBasicInfoStep,
   },
   {
     id: 'content',
     title: 'Content',
     description: 'Write your blog post content',
     icon: 'edit',
-    component: null!, // TODO: Implement component
+    component: BlogContentStep,
   },
   {
     id: 'seo',
     title: 'SEO',
     description: 'Meta information and keywords',
     icon: 'search',
-    component: null!, // TODO: Implement component
+    component: BlogSeoStep,
   },
   {
     id: 'scheduling',
     title: 'Scheduling',
     description: 'Publish and expiry dates',
     icon: 'calendar',
-    component: null!, // TODO: Implement component
+    component: BlogSchedulingStep,
   },
   {
     id: 'tags',
     title: 'Tags & Categories',
     description: 'Organize your content',
     icon: 'tag',
-    component: null!, // TODO: Implement component
+    component: BlogTagsStep,
   },
   {
     id: 'review',
     title: 'Review & Publish',
     description: 'Preview and finalize your post',
     icon: 'check',
-    component: null!, // TODO: Implement component
+    component: BlogReviewStep,
   },
 ];
 
@@ -268,28 +291,28 @@ export const announcementSteps: WizardConfig<AnnouncementWizardData>['steps'] = 
     title: 'Basic Information',
     description: 'Announcement title and content',
     icon: 'info',
-    component: null!, // TODO: Implement component
+    component: AnnouncementBasicInfoStep,
   },
   {
     id: 'audience',
     title: 'Audience & Priority',
     description: 'Who should see this announcement',
     icon: 'users',
-    component: null!, // TODO: Implement component
+    component: AnnouncementAudienceStep,
   },
   {
     id: 'scheduling',
     title: 'Scheduling',
     description: 'When to display the announcement',
     icon: 'calendar',
-    component: null!, // TODO: Implement component
+    component: AnnouncementSchedulingStep,
   },
   {
     id: 'review',
     title: 'Review & Publish',
     description: 'Preview and finalize',
     icon: 'check',
-    component: null!, // TODO: Implement component
+    component: AnnouncementReviewStep,
   },
 ];
 

@@ -91,8 +91,8 @@ export class EnhancedGoalPredictionService {
         requiredDailyProgress,
         currentDailyProgress: factors.velocity,
       };
-    } catch (error) {
-      logger.error('Error predicting goal completion:', error);
+    } catch (_error) {
+      logger._error('Error predicting goal completion:', _error);
       return null;
     }
   }
@@ -117,8 +117,8 @@ export class EnhancedGoalPredictionService {
       );
 
       return predictions.filter((p): p is EnhancedGoalPrediction => p !== null);
-    } catch (error) {
-      logger.error('Error predicting all goals:', error);
+    } catch (_error) {
+      logger._error('Error predicting all goals:', _error);
       return [];
     }
   }

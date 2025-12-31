@@ -87,7 +87,7 @@ export function AISuggestionsReview() {
 
       setCourses((data as Course[]) || []);
     } catch (_error) {
-      logger.error('Error loading courses:', error);
+      logger._error('Error loading courses:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load courses',
@@ -144,7 +144,7 @@ export function AISuggestionsReview() {
         description: `Generated ${newBatch.concepts.length} concept suggestions`,
       });
     } catch (_error) {
-      logger.error('Error generating suggestions:', error);
+      logger._error('Error generating suggestions:', _error);
       toast({
         title: 'Error',
         description: error.message || 'Failed to generate suggestions',
@@ -215,7 +215,7 @@ export function AISuggestionsReview() {
       // Refresh the batch to show updated statuses
       setBatch({ ...batch });
     } catch (_error) {
-      logger.error('Error approving batch:', error);
+      logger._error('Error approving batch:', _error);
       toast({
         title: 'Error',
         description: 'Failed to approve batch',

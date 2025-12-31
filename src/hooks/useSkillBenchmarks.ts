@@ -59,8 +59,8 @@ export function useSkillBenchmarks(
 
         // Filter out null values and return
         return percentiles.filter((p): p is SkillPercentile => p !== null);
-      } catch (error) {
-        logger.error('Error fetching skill benchmarks:', error);
+      } catch (_error) {
+        logger._error('Error fetching skill benchmarks:', _error);
         throw error;
       }
     },
@@ -106,8 +106,8 @@ export function useOverallPercentile(userId?: string, benchmarkGroup: BenchmarkG
         // Calculate average percentile
         const sum = percentiles.reduce((acc, p) => acc + p, 0);
         return Math.round(sum / percentiles.length);
-      } catch (error) {
-        logger.error('Error fetching overall percentile:', error);
+      } catch (_error) {
+        logger._error('Error fetching overall percentile:', _error);
         throw error;
       }
     },

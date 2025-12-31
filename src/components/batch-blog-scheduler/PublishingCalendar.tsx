@@ -63,6 +63,7 @@ export function PublishingCalendar() {
   useEffect(() => {
     loadPosts();
     loadCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMonth]);
 
   useEffect(() => {
@@ -88,8 +89,8 @@ export function PublishingCalendar() {
 
       if (error) throw error;
       setPosts(data || []);
-    } catch (error) {
-      logger.error('Error loading posts:', error);
+    } catch (_error) {
+      logger._error('Error loading posts:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load scheduled posts',
@@ -104,8 +105,8 @@ export function PublishingCalendar() {
     try {
       const { data } = await supabase.from('blog_categories').select('*').order('name');
       setCategories(data || []);
-    } catch (error) {
-      logger.error('Error loading categories:', error);
+    } catch (_error) {
+      logger._error('Error loading categories:', _error);
     }
   };
 
@@ -149,7 +150,7 @@ export function PublishingCalendar() {
       setShowRescheduleDialog(false);
       setSelectedPost(null);
       loadPosts();
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: 'Failed to reschedule post',
@@ -178,7 +179,7 @@ export function PublishingCalendar() {
       });
 
       loadPosts();
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: 'Failed to publish post',
@@ -201,7 +202,7 @@ export function PublishingCalendar() {
       });
 
       loadPosts();
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: 'Failed to delete post',

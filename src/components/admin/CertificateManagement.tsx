@@ -185,8 +185,8 @@ export function CertificateManagement({ organizationId }: CertificateManagementP
       a.download = `certificate_${certificate.verification_code}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
-    } catch (error) {
-      toast.error('Failed to download certificate');
+    } catch (_error) {
+      toast._error('Failed to download certificate');
     }
   };
 

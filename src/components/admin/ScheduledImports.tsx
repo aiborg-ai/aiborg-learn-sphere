@@ -90,8 +90,8 @@ export function ScheduledImports() {
 
       if (error) throw error;
       setSchedules(data || []);
-    } catch (error) {
-      logger.error('Error fetching schedules:', error);
+    } catch (_error) {
+      logger._error('Error fetching schedules:', _error);
       toast({
         title: 'Error',
         description: 'Failed to fetch scheduled imports',
@@ -136,8 +136,8 @@ export function ScheduledImports() {
         title: 'Success',
         description: 'Scheduled import created successfully',
       });
-    } catch (error) {
-      logger.error('Error creating schedule:', error);
+    } catch (_error) {
+      logger._error('Error creating schedule:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create scheduled import',
@@ -161,8 +161,8 @@ export function ScheduledImports() {
         title: 'Success',
         description: `Schedule ${!isActive ? 'activated' : 'paused'}`,
       });
-    } catch (error) {
-      logger.error('Error toggling schedule:', error);
+    } catch (_error) {
+      logger._error('Error toggling schedule:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update schedule',
@@ -185,8 +185,8 @@ export function ScheduledImports() {
         title: 'Success',
         description: 'Scheduled import deleted',
       });
-    } catch (error) {
-      logger.error('Error deleting schedule:', error);
+    } catch (_error) {
+      logger._error('Error deleting schedule:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete schedule',
@@ -203,8 +203,8 @@ export function ScheduledImports() {
         title: 'Import Started',
         description: 'The import has been triggered and will run shortly',
       });
-    } catch (error) {
-      logger.error('Error running import:', error);
+    } catch (_error) {
+      logger._error('Error running import:', _error);
       toast({
         title: 'Error',
         description: 'Failed to trigger import',

@@ -152,7 +152,7 @@ export default function AchievementsPage() {
       const earnedIds = new Set(earnedData?.map(a => a.achievement_id) || []);
       const notEarned = availableData?.filter(a => !earnedIds.has(a.id)) || [];
       setAvailableAchievements(notEarned);
-    } catch (error) {
+    } catch {
       logger.error('Error fetching achievements:', error);
       toast({
         title: 'Error',
@@ -203,7 +203,7 @@ export default function AchievementsPage() {
           ? 'Achievement removed from featured display'
           : 'This achievement will be shown on your profile',
       });
-    } catch (error) {
+    } catch {
       logger.error('Error featuring achievement:', error);
       toast({
         title: 'Error',

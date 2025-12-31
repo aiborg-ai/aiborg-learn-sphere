@@ -134,7 +134,7 @@ export async function generateCertificatePDF(data: CertificateData): Promise<Blo
     pdf.text('Scan to verify', pageWidth - 45, signatureY + 20, { align: 'center' });
     pdf.setFontSize(7);
     pdf.text(verificationCode, pageWidth - 45, signatureY + 24, { align: 'center' });
-  } catch (error) {
+  } catch {
     // QR code generation failed - certificate will still be valid without it
   }
 

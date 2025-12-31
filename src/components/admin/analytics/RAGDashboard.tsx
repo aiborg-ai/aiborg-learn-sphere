@@ -102,8 +102,8 @@ export function RAGDashboard() {
     setIsLoading(true);
     try {
       await Promise.all([fetchEmbeddingStats(), fetchQueueStatus(), fetchQueryAnalytics()]);
-    } catch (error) {
-      logger.error('Error fetching RAG dashboard data:', error);
+    } catch (_error) {
+      logger._error('Error fetching RAG dashboard data:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load dashboard data',
@@ -118,8 +118,8 @@ export function RAGDashboard() {
     try {
       const stats = await RAGService.getEmbeddingStats();
       setEmbeddingStats(stats);
-    } catch (error) {
-      logger.error('Error fetching embedding stats:', error);
+    } catch (_error) {
+      logger._error('Error fetching embedding stats:', _error);
     }
   };
 
@@ -130,8 +130,8 @@ export function RAGDashboard() {
       if (data && data.length > 0) {
         setQueueStatus(data[0]);
       }
-    } catch (error) {
-      logger.error('Error fetching queue status:', error);
+    } catch (_error) {
+      logger._error('Error fetching queue status:', _error);
     }
   };
 
@@ -147,8 +147,8 @@ export function RAGDashboard() {
         limit: 100,
       });
       setQueryAnalytics(analytics || []);
-    } catch (error) {
-      logger.error('Error fetching query analytics:', error);
+    } catch (_error) {
+      logger._error('Error fetching query analytics:', _error);
     }
   };
 
@@ -169,8 +169,8 @@ export function RAGDashboard() {
 
       // Refresh stats
       await fetchEmbeddingStats();
-    } catch (error) {
-      logger.error('Error generating embeddings:', error);
+    } catch (_error) {
+      logger._error('Error generating embeddings:', _error);
       toast({
         title: 'Error',
         description: 'Failed to generate embeddings',

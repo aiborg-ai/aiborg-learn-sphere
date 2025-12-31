@@ -2,16 +2,18 @@ import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useBlogPost } from '@/hooks/blog/useBlogPosts';
 import { useBlogLike, useBlogBookmark, useBlogShare } from '@/hooks/blog/useBlogEngagement';
-import { Navbar, Footer, Breadcrumbs } from '@/components/navigation';
+import { Navbar } from '@/components/navigation/Navbar';
+import { Footer } from '@/components/navigation/Footer';
+import { Breadcrumbs } from '@/components/navigation/Breadcrumbs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { CardImage } from '@/components/shared/OptimizedImage';
-import { parseMarkdown } from '@/utils/markdown';
-import { extractHeadings } from '@/utils/markdownSimple';
+import { parseMarkdown, extractTableOfContents } from '@/utils/markdown';
 import { CommentSection } from '@/components/blog/CommentSection';
+import { BlogAd } from '@/components/ads/AdSense';
 import {
   ArrowLeft,
   CalendarDays,
@@ -69,7 +71,7 @@ export default function BlogPostPage() {
       const htmlContent = parseMarkdown(post.content);
       setParsedContent(htmlContent);
 
-      const toc = extractHeadings(post.content);
+      const toc = extractTableOfContents(post.content);
       setTableOfContents(toc);
       setShowTOC(toc.length > 3); // Show TOC if more than 3 headings
     }
@@ -329,6 +331,11 @@ export default function BlogPostPage() {
           className="article-content mb-12"
           dangerouslySetInnerHTML={{ __html: parsedContent }}
         />
+
+        {/* AdSense Ad */}
+        <div className="my-8">
+          <BlogAd className="max-w-3xl mx-auto" />
+        </div>
 
         <Separator className="mb-8" />
 

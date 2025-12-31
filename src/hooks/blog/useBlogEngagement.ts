@@ -1,9 +1,8 @@
 import { useState, useCallback } from 'react';
-import { BlogService } from '@/services/blog/BlogService';
+import { BlogInteractionService } from '@/services/blog/BlogInteractionService';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
-
 import { logger } from '@/utils/logger';
 export const useBlogLike = (postId: string, initialLiked = false, initialCount = 0) => {
   const [isLiked, setIsLiked] = useState(initialLiked);
@@ -27,11 +26,11 @@ export const useBlogLike = (postId: string, initialLiked = false, initialCount =
     try {
       setLoading(true);
       if (isLiked) {
-        await BlogService.unlikePost(postId);
+        await BlogInteractionService.unlikePost(postId);
         setIsLiked(false);
         setLikeCount(prev => Math.max(0, prev - 1));
       } else {
-        await BlogService.likePost(postId);
+        await BlogInteractionService.likePost(postId);
         setIsLiked(true);
         setLikeCount(prev => prev + 1);
       }
@@ -71,14 +70,14 @@ export const useBlogBookmark = (postId: string, initialBookmarked = false) => {
     try {
       setLoading(true);
       if (isBookmarked) {
-        await BlogService.unbookmarkPost(postId);
+        await BlogInteractionService.unbookmarkPost(postId);
         setIsBookmarked(false);
         toast({
           title: 'Removed',
           description: 'Post removed from bookmarks',
         });
       } else {
-        await BlogService.bookmarkPost(postId);
+        await BlogInteractionService.bookmarkPost(postId);
         setIsBookmarked(true);
         toast({
           title: 'Saved',
@@ -107,7 +106,7 @@ export const useBlogShare = (postId: string, postTitle: string, postUrl: string)
     async (platform: string) => {
       try {
         // Track the share
-        await BlogService.sharePost(postId, platform);
+        await BlogInteractionService.sharePost(postId, platform);
 
         // Perform the actual share
         const shareText = `Check out this article: ${postTitle}`;

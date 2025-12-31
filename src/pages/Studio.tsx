@@ -90,7 +90,7 @@ export default function Studio() {
     try {
       await publish(data);
       // Success dialog will be shown via onSuccess callback
-    } catch (error) {
+    } catch {
       logger.error('Publish failed:', error);
       // Error toast already shown by useStudioPublish
     }

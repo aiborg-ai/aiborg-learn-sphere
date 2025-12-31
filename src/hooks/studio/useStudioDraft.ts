@@ -100,8 +100,8 @@ export function useStudioDraft({
       }
 
       return result?.id || null;
-    } catch (error) {
-      logger.error('Failed to save draft:', error);
+    } catch (_error) {
+      logger._error('Failed to save draft:', _error);
       toast({
         title: 'Auto-save failed',
         description: 'Your changes could not be saved. Please try again.',
@@ -166,8 +166,8 @@ export function useStudioDraft({
       }
 
       return null;
-    } catch (error) {
-      logger.error('Failed to load draft:', error);
+    } catch (_error) {
+      logger._error('Failed to load draft:', _error);
       return null;
     }
   }, [userId, assetType, assetId]);
@@ -187,8 +187,8 @@ export function useStudioDraft({
 
       draftIdRef.current = null;
       lastSavedDataRef.current = '';
-    } catch (error) {
-      logger.error('Failed to delete draft:', error);
+    } catch (_error) {
+      logger._error('Failed to delete draft:', _error);
     }
   }, [assetType, assetId]);
 

@@ -174,8 +174,8 @@ export function OfflineLessonPlayer({
               expiresInDays: 30,
             });
             downloadedCount++;
-          } catch (error) {
-            logger.error(`Failed to download lesson ${lesson.id}:`, error);
+          } catch (_error) {
+            logger._error(`Failed to download lesson ${lesson.id}:`, _error);
           }
         }
       }
@@ -187,8 +187,8 @@ export function OfflineLessonPlayer({
         title: 'Download Complete',
         description: `${downloadedCount} of ${lessons.filter(l => l.video_url).length} videos saved for offline.`,
       });
-    } catch (error) {
-      logger.error('Download all failed:', error);
+    } catch (_error) {
+      logger._error('Download all failed:', _error);
       toast({
         title: 'Download Failed',
         description: 'Some videos could not be downloaded.',

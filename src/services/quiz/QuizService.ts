@@ -40,9 +40,9 @@ export class QuizService {
 
       logger.info('Quiz bank created', { quizBankId: data.id, courseId: input.course_id });
       return data as QuizBank;
-    } catch (error) {
-      logger.error('Failed to create quiz bank', { error, input });
-      throw error;
+    } catch (_error) {
+      logger._error('Failed to create quiz bank', { _error: _error, input });
+      throw _error;
     }
   }
 
@@ -64,9 +64,9 @@ export class QuizService {
 
       logger.info('Quiz bank updated', { quizBankId: id });
       return data as QuizBank;
-    } catch (error) {
-      logger.error('Failed to update quiz bank', { error, input });
-      throw error;
+    } catch (_error) {
+      logger._error('Failed to update quiz bank', { _error: _error, input });
+      throw _error;
     }
   }
 
@@ -80,9 +80,9 @@ export class QuizService {
       if (error) throw error;
 
       logger.info('Quiz bank deleted', { quizBankId });
-    } catch (error) {
-      logger.error('Failed to delete quiz bank', { error, quizBankId });
-      throw error;
+    } catch (_error) {
+      logger._error('Failed to delete quiz bank', { _error: _error, quizBankId });
+      throw _error;
     }
   }
 
@@ -135,9 +135,9 @@ export class QuizService {
         ...(quizBank as QuizBank),
         questions: questionsWithOptions,
       };
-    } catch (error) {
-      logger.error('Failed to get quiz bank', { error, quizBankId });
-      throw error;
+    } catch (_error) {
+      logger._error('Failed to get quiz bank', { _error: _error, quizBankId });
+      throw _error;
     }
   }
 
@@ -157,9 +157,9 @@ export class QuizService {
       if (error) throw error;
 
       return data as QuizBank[];
-    } catch (error) {
-      logger.error('Failed to get quiz banks by course', { error, courseId });
-      throw error;
+    } catch (_error) {
+      logger._error('Failed to get quiz banks by course', { _error: _error, courseId });
+      throw _error;
     }
   }
 
@@ -202,9 +202,9 @@ export class QuizService {
         quizBankId: input.quiz_bank_id,
       });
       return question as QuizQuestion;
-    } catch (error) {
-      logger.error('Failed to create quiz question', { error, input });
-      throw error;
+    } catch (_error) {
+      logger._error('Failed to create quiz question', { _error: _error, input });
+      throw _error;
     }
   }
 
@@ -245,9 +245,9 @@ export class QuizService {
 
       logger.info('Quiz question updated', { questionId: id });
       return data as QuizQuestion;
-    } catch (error) {
-      logger.error('Failed to update quiz question', { error, input });
-      throw error;
+    } catch (_error) {
+      logger._error('Failed to update quiz question', { _error: _error, input });
+      throw _error;
     }
   }
 
@@ -261,9 +261,9 @@ export class QuizService {
       if (error) throw error;
 
       logger.info('Quiz question deleted', { questionId });
-    } catch (error) {
-      logger.error('Failed to delete quiz question', { error, questionId });
-      throw error;
+    } catch (_error) {
+      logger._error('Failed to delete quiz question', { _error: _error, questionId });
+      throw _error;
     }
   }
 
@@ -287,9 +287,9 @@ export class QuizService {
       }
 
       logger.info('Quiz questions reordered', { quizBankId, count: questionIds.length });
-    } catch (error) {
-      logger.error('Failed to reorder questions', { error, quizBankId });
-      throw error;
+    } catch (_error) {
+      logger._error('Failed to reorder questions', { _error: _error, quizBankId });
+      throw _error;
     }
   }
 
@@ -305,8 +305,8 @@ export class QuizService {
       if (error) throw error;
 
       return data as QuizStatistics;
-    } catch (error) {
-      logger.error('Failed to get quiz statistics', { error, quizBankId });
+    } catch (_error) {
+      logger._error('Failed to get quiz statistics', { _error: _error, quizBankId });
 
       // Fallback: calculate manually if RPC not available
       return await this.calculateQuizStatistics(quizBankId);
@@ -361,9 +361,9 @@ export class QuizService {
         pass_rate: Math.round(passRate * 100) / 100,
         average_time_seconds: averageTime ? Math.round(averageTime) : undefined,
       };
-    } catch (error) {
-      logger.error('Failed to calculate quiz statistics', { error, quizBankId });
-      throw error;
+    } catch (_error) {
+      logger._error('Failed to calculate quiz statistics', { _error: _error, quizBankId });
+      throw _error;
     }
   }
 
@@ -402,9 +402,9 @@ export class QuizService {
         passed: bestAttempt.passed || false,
         last_attempt_date: attempts[0].created_at,
       };
-    } catch (error) {
-      logger.error('Failed to get student progress', { error, userId, quizBankId });
-      throw error;
+    } catch (_error) {
+      logger._error('Failed to get student progress', { _error: _error, userId, quizBankId });
+      throw _error;
     }
   }
 
@@ -424,9 +424,9 @@ export class QuizService {
 
       logger.info('Quiz bank publish status updated', { quizBankId, isPublished });
       return data as QuizBank;
-    } catch (error) {
-      logger.error('Failed to toggle quiz publish status', { error, quizBankId });
-      throw error;
+    } catch (_error) {
+      logger._error('Failed to toggle quiz publish status', { _error: _error, quizBankId });
+      throw _error;
     }
   }
 
@@ -468,9 +468,9 @@ export class QuizService {
 
       logger.info('Quiz bank duplicated', { originalId: quizBankId, newId: newQuizBank.id });
       return newQuizBank;
-    } catch (error) {
-      logger.error('Failed to duplicate quiz bank', { error, quizBankId });
-      throw error;
+    } catch (_error) {
+      logger._error('Failed to duplicate quiz bank', { _error: _error, quizBankId });
+      throw _error;
     }
   }
 }

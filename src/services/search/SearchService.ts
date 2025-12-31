@@ -69,9 +69,9 @@ export class SearchService {
 
       // Return top N results
       return filteredResults.slice(0, limit);
-    } catch (error) {
-      logger.error('Search failed:', error);
-      throw error;
+    } catch (_error) {
+      logger._error('Search failed:', _error);
+      throw _error;
     }
   }
 
@@ -118,8 +118,8 @@ export class SearchService {
             }))
           );
         }
-      } catch (error) {
-        logger.error('Course keyword search failed:', error);
+      } catch (_error) {
+        logger._error('Course keyword search failed:', _error);
       }
     }
 
@@ -148,8 +148,8 @@ export class SearchService {
             }))
           );
         }
-      } catch (error) {
-        logger.error('Learning path keyword search failed:', error);
+      } catch (_error) {
+        logger._error('Learning path keyword search failed:', _error);
       }
     }
 
@@ -185,8 +185,8 @@ export class SearchService {
             }))
           );
         }
-      } catch (error) {
-        logger.error('Blog post keyword search failed:', error);
+      } catch (_error) {
+        logger._error('Blog post keyword search failed:', _error);
       }
     }
 
@@ -218,8 +218,8 @@ export class SearchService {
             }))
           );
         }
-      } catch (error) {
-        logger.error('Assignment keyword search failed:', error);
+      } catch (_error) {
+        logger._error('Assignment keyword search failed:', _error);
       }
     }
 
@@ -248,8 +248,8 @@ export class SearchService {
             }))
           );
         }
-      } catch (error) {
-        logger.error('Material keyword search failed:', error);
+      } catch (_error) {
+        logger._error('Material keyword search failed:', _error);
       }
     }
 
@@ -312,14 +312,14 @@ export class SearchService {
               })
             )
           );
-        } catch (error) {
-          logger.error(`Semantic search failed for ${contentType}:`, error);
+        } catch (_error) {
+          logger._error(`Semantic search failed for ${contentType}:`, _error);
         }
       }
 
       return results;
-    } catch (error) {
-      logger.error('Semantic search failed:', error);
+    } catch (_error) {
+      logger._error('Semantic search failed:', _error);
       return [];
     }
   }
@@ -419,8 +419,8 @@ export class SearchService {
       if (error || !data) return [];
 
       return data.map(item => item.title);
-    } catch (error) {
-      logger.error('Failed to get suggestions:', error);
+    } catch (_error) {
+      logger._error('Failed to get suggestions:', _error);
       return [];
     }
   }

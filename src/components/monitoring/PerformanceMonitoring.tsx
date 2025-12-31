@@ -52,8 +52,8 @@ export function PerformanceMonitoring() {
       UserMetricsTracker.trackPageView(window.location.pathname);
 
       logger.log('[PerformanceMonitoring] All services initialized successfully');
-    } catch (error) {
-      logger.error('[PerformanceMonitoring] Failed to initialize:', error);
+    } catch (_error) {
+      logger._error('[PerformanceMonitoring] Failed to initialize:', _error);
     }
 
     // Cleanup on unmount

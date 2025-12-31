@@ -72,8 +72,8 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
       setLoading(true);
       const data = await ScheduledReportsService.getUserScheduledReports(userId);
       setReports(data);
-    } catch (error) {
-      logger.error('Error fetching scheduled reports:', error);
+    } catch (_error) {
+      logger._error('Error fetching scheduled reports:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load scheduled reports',
@@ -94,8 +94,8 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
       setDialogOpen(false);
       resetForm();
       fetchReports();
-    } catch (error) {
-      logger.error('Error creating scheduled report:', error);
+    } catch (_error) {
+      logger._error('Error creating scheduled report:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create scheduled report',
@@ -112,8 +112,8 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
         description: `Report ${!isActive ? 'activated' : 'paused'}`,
       });
       fetchReports();
-    } catch (error) {
-      logger.error('Error toggling report:', error);
+    } catch (_error) {
+      logger._error('Error toggling report:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update report status',
@@ -130,8 +130,8 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
         description: 'Scheduled report deleted',
       });
       fetchReports();
-    } catch (error) {
-      logger.error('Error deleting report:', error);
+    } catch (_error) {
+      logger._error('Error deleting report:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete report',
@@ -151,8 +151,8 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
         title: 'Success',
         description: 'Report generated successfully',
       });
-    } catch (error) {
-      logger.error('Error executing report:', error);
+    } catch (_error) {
+      logger._error('Error executing report:', _error);
       toast({
         title: 'Error',
         description: 'Failed to generate report',

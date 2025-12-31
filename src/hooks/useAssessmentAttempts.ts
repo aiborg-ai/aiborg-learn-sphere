@@ -21,8 +21,8 @@ async function fetchAttemptHistory(userId: string, toolId: string): Promise<Atte
 
     if (error) throw error;
     return data || [];
-  } catch (error) {
-    logger.error('Error fetching attempt history:', error);
+  } catch (_error) {
+    logger._error('Error fetching attempt history:', _error);
     throw error;
   }
 }
@@ -57,8 +57,8 @@ async function fetchAttempt(attemptId: string): Promise<AssessmentToolAttempt> {
     if (!data) throw new Error('Attempt not found');
 
     return data as AssessmentToolAttempt;
-  } catch (error) {
-    logger.error('Error fetching attempt:', error);
+  } catch (_error) {
+    logger._error('Error fetching attempt:', _error);
     throw error;
   }
 }
@@ -121,8 +121,8 @@ async function createAttempt({
     logger.log(`Created attempt #${nextAttemptNumber} for tool ${toolId}`, newAttempt.id);
 
     return newAttempt as AssessmentToolAttempt;
-  } catch (error) {
-    logger.error('Error creating assessment attempt:', error);
+  } catch (_error) {
+    logger._error('Error creating assessment attempt:', _error);
     throw error;
   }
 }
@@ -176,8 +176,8 @@ async function updateAttempt({
     if (!data) throw new Error('Failed to update attempt');
 
     return data as AssessmentToolAttempt;
-  } catch (error) {
-    logger.error('Error updating attempt:', error);
+  } catch (_error) {
+    logger._error('Error updating attempt:', _error);
     throw error;
   }
 }
@@ -257,8 +257,8 @@ async function completeAttempt(params: CompleteAttemptParams): Promise<Assessmen
     logger.log('Attempt completed successfully:', params.attemptId);
 
     return data as AssessmentToolAttempt;
-  } catch (error) {
-    logger.error('Error completing attempt:', error);
+  } catch (_error) {
+    logger._error('Error completing attempt:', _error);
     throw error;
   }
 }
@@ -316,8 +316,8 @@ async function fetchAllUserAttempts(userId: string): Promise<AssessmentToolAttem
 
     if (error) throw error;
     return (data || []) as AssessmentToolAttempt[];
-  } catch (error) {
-    logger.error('Error fetching all user attempts:', error);
+  } catch (_error) {
+    logger._error('Error fetching all user attempts:', _error);
     throw error;
   }
 }

@@ -28,8 +28,8 @@ export class ForumTrustLevelService {
       }
 
       return data;
-    } catch (error) {
-      logger.error('Error fetching trust level:', error);
+    } catch (_error) {
+      logger._error('Error fetching trust level:', _error);
       return null;
     }
   }
@@ -52,8 +52,8 @@ export class ForumTrustLevelService {
 
       logger.log('Trust level initialized for user:', userId);
       return data;
-    } catch (error) {
-      logger.error('Error initializing trust level:', error);
+    } catch (_error) {
+      logger._error('Error initializing trust level:', _error);
       throw error;
     }
   }
@@ -71,8 +71,8 @@ export class ForumTrustLevelService {
 
       logger.log('Trust level calculated for user:', userId, '→', data);
       return data as TrustLevel;
-    } catch (error) {
-      logger.error('Error calculating trust level:', error);
+    } catch (_error) {
+      logger._error('Error calculating trust level:', _error);
       throw error;
     }
   }
@@ -109,8 +109,8 @@ export class ForumTrustLevelService {
       if (error) throw error;
 
       logger.log('Trust level set manually:', userId, '→', level);
-    } catch (error) {
-      logger.error('Error setting trust level:', error);
+    } catch (_error) {
+      logger._error('Error setting trust level:', _error);
       throw error;
     }
   }
@@ -340,8 +340,8 @@ export class ForumTrustLevelService {
         default:
           return false;
       }
-    } catch (error) {
-      logger.error('Error checking permissions:', error);
+    } catch (_error) {
+      logger._error('Error checking permissions:', _error);
       return false;
     }
   }
@@ -416,8 +416,8 @@ export class ForumTrustLevelService {
         progress_percentage: progress,
         requirements: requirementsMet,
       };
-    } catch (error) {
-      logger.error('Error getting progress:', error);
+    } catch (_error) {
+      logger._error('Error getting progress:', _error);
       return null;
     }
   }
@@ -446,8 +446,8 @@ export class ForumTrustLevelService {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching leaderboard:', error);
+    } catch (_error) {
+      logger._error('Error fetching leaderboard:', _error);
       return [];
     }
   }

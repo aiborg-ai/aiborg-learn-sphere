@@ -87,10 +87,10 @@ export function InstructorAttendanceDashboard({ courseId }: InstructorAttendance
         title: 'Success',
         description: `Attendance marked as ${status}`,
       });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to mark attendance',
+        description: _error instanceof Error ? _error.message : 'Failed to mark attendance',
         variant: 'destructive',
       });
     }
@@ -119,10 +119,10 @@ export function InstructorAttendanceDashboard({ courseId }: InstructorAttendance
         description: 'Notes and score saved',
       });
       setShowNotesDialog(false);
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to save notes',
+        description: _error instanceof Error ? _error.message : 'Failed to save notes',
         variant: 'destructive',
       });
     }
@@ -160,10 +160,10 @@ export function InstructorAttendanceDashboard({ courseId }: InstructorAttendance
         title: 'Success',
         description: `Marked ${selectedStudents.size} students as present`,
       });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to mark attendance',
+        description: _error instanceof Error ? _error.message : 'Failed to mark attendance',
         variant: 'destructive',
       });
     }
@@ -176,10 +176,10 @@ export function InstructorAttendanceDashboard({ courseId }: InstructorAttendance
         title: 'Success',
         description: 'All students marked as present',
       });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to mark all present',
+        description: _error instanceof Error ? _error.message : 'Failed to mark all present',
         variant: 'destructive',
       });
     }

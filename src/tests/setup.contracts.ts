@@ -63,8 +63,8 @@ beforeAll(async () => {
 
     // Note: Seed data should be loaded separately via SQL files
     // This setup just verifies the connection
-  } catch (error) {
-    logger.error('❌ Contract test setup failed:', error);
+  } catch (_error) {
+    logger._error('❌ Contract test setup failed:', _error);
     throw error;
   }
 });
@@ -86,8 +86,8 @@ afterAll(async () => {
     await testClient.rpc('cleanup_test_users');
     await testClient.rpc('cleanup_test_courses');
     logger.info('✅ Test data cleaned up');
-  } catch (error) {
-    logger.warn('⚠️  Failed to cleanup test data:', error);
+  } catch (_error) {
+    logger.warn('⚠️  Failed to cleanup test data:', _error);
   }
   */
 });

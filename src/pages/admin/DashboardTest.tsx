@@ -24,47 +24,26 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
+  DollarSign,
+  FileCheck,
+  UserCheck,
+  Loader2,
 } from 'lucide-react';
+import { useAdminDashboardStats } from '@/hooks/useAdminDashboardStats';
 
 export default function DashboardTest() {
-  // Mock data for demonstration
-  const stats = {
-    totalUsers: 1247,
-    activeCourses: 156,
-    aiChatSessions: 3842,
-    ragEmbeddings: 177,
-  };
+  // Fetch real data from Supabase
+  const { stats, recentActivity, isLoading } = useAdminDashboardStats();
 
-  const recentActivity = [
-    {
-      id: 1,
-      action: 'New user registered',
-      user: 'john@example.com',
-      time: '5 minutes ago',
-      status: 'success',
-    },
-    {
-      id: 2,
-      action: 'Course completed',
-      user: 'sarah@example.com',
-      time: '12 minutes ago',
-      status: 'success',
-    },
-    {
-      id: 3,
-      action: 'AI chat session started',
-      user: 'mike@example.com',
-      time: '18 minutes ago',
-      status: 'info',
-    },
-    {
-      id: 4,
-      action: 'RAG embedding generated',
-      user: 'System',
-      time: '25 minutes ago',
-      status: 'success',
-    },
-  ];
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-full">
+          <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
@@ -72,7 +51,7 @@ export default function DashboardTest() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard Test</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
             <p className="text-gray-600 dark:text-gray-400 mt-2">
               Testing the new sidebar navigation system 🚀
             </p>
@@ -83,8 +62,11 @@ export default function DashboardTest() {
         </div>
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border-l-4 border-l-blue-500">
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          data-testid="overview-section"
+        >
+          <Card className="border-l-4 border-l-blue-500" data-testid="stats-card">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -93,7 +75,7 @@ export default function DashboardTest() {
                 <Users className="h-5 w-5 text-blue-500" />
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent data-testid="stat-total-users">
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
                 {stats.totalUsers.toLocaleString()}
               </div>
@@ -103,7 +85,7 @@ export default function DashboardTest() {
             </CardContent>
           </Card>
 
-          <Card className="border-l-4 border-l-purple-500">
+          <Card className="border-l-4 border-l-purple-500" data-testid="stats-card">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -112,7 +94,7 @@ export default function DashboardTest() {
                 <BookOpen className="h-5 w-5 text-purple-500" />
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent data-testid="stat-active-courses">
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
                 {stats.activeCourses}
               </div>
@@ -120,39 +102,79 @@ export default function DashboardTest() {
             </CardContent>
           </Card>
 
-          <Card className="border-l-4 border-l-green-500">
+          <Card className="border-l-4 border-l-green-500" data-testid="stats-card">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                  AI Chat Sessions
+                  Total Enrollments
                 </CardTitle>
-                <MessageSquare className="h-5 w-5 text-green-500" />
+                <Users className="h-5 w-5 text-green-500" />
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent data-testid="stat-total-enrollments">
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                {stats.aiChatSessions.toLocaleString()}
+                {stats.totalEnrollments.toLocaleString()}
               </div>
               <p className="text-xs text-green-600 dark:text-green-400 mt-1">
-                +24% from last month
+                +18% from last month
               </p>
             </CardContent>
           </Card>
 
-          <Card className="border-l-4 border-l-orange-500">
+          <Card className="border-l-4 border-l-orange-500" data-testid="stats-card">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                  RAG Embeddings
+                  Revenue
                 </CardTitle>
-                <Database className="h-5 w-5 text-orange-500" />
+                <DollarSign className="h-5 w-5 text-orange-500" />
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent data-testid="stat-revenue">
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                {stats.ragEmbeddings}
+                ${(stats.revenue / 1000).toFixed(1)}k
               </div>
-              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">Vector knowledge base</p>
+              <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                +15% from last month
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-l-4 border-l-yellow-500" data-testid="stats-card">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Pending Reviews
+                </CardTitle>
+                <FileCheck className="h-5 w-5 text-yellow-500" />
+              </div>
+            </CardHeader>
+            <CardContent data-testid="stat-pending-reviews">
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                {stats.pendingReviews}
+              </div>
+              <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                Awaiting moderation
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-l-4 border-l-indigo-500" data-testid="stats-card">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Active Students
+                </CardTitle>
+                <UserCheck className="h-5 w-5 text-indigo-500" />
+              </div>
+            </CardHeader>
+            <CardContent data-testid="stat-active-students">
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                {stats.activeStudents.toLocaleString()}
+              </div>
+              <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                +10% from last month
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -213,7 +235,7 @@ export default function DashboardTest() {
           </Card>
 
           {/* Recent Activity */}
-          <Card>
+          <Card data-testid="recent-activity">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5 text-blue-500" />
@@ -221,32 +243,40 @@ export default function DashboardTest() {
               </div>
               <CardDescription>Latest system events and actions</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent data-testid="activity-list">
               <div className="space-y-4">
-                {recentActivity.map(activity => (
-                  <div key={activity.id} className="flex items-start gap-3">
-                    {activity.status === 'success' ? (
-                      <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5" />
-                    ) : (
-                      <AlertCircle className="h-5 w-5 text-blue-500 mt-0.5" />
-                    )}
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">
-                            {activity.action}
-                          </p>
-                          <p className="text-xs text-gray-600 dark:text-gray-400">
-                            {activity.user}
-                          </p>
+                {recentActivity.length === 0 ? (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">No recent activity</p>
+                ) : (
+                  recentActivity.map(activity => (
+                    <div key={activity.id} className="flex items-start gap-3">
+                      {activity.status === 'success' ? (
+                        <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5" />
+                      ) : activity.status === 'error' ? (
+                        <AlertCircle className="h-5 w-5 text-red-500 mt-0.5" />
+                      ) : activity.status === 'warning' ? (
+                        <AlertCircle className="h-5 w-5 text-yellow-500 mt-0.5" />
+                      ) : (
+                        <AlertCircle className="h-5 w-5 text-blue-500 mt-0.5" />
+                      )}
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-gray-900 dark:text-white">
+                              {activity.action}
+                            </p>
+                            <p className="text-xs text-gray-600 dark:text-gray-400">
+                              {activity.user}
+                            </p>
+                          </div>
+                          <span className="text-xs text-gray-500 dark:text-gray-500">
+                            {activity.time}
+                          </span>
                         </div>
-                        <span className="text-xs text-gray-500 dark:text-gray-500">
-                          {activity.time}
-                        </span>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </CardContent>
           </Card>

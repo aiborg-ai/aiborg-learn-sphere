@@ -245,10 +245,10 @@ export function validateStep(
   try {
     schema.parse(data);
     return { success: true };
-  } catch (error) {
-    if (error instanceof z.ZodError) {
+  } catch (_error) {
+    if (_error instanceof z.ZodError) {
       const errors: Record<string, string> = {};
-      error.errors.forEach(err => {
+      _error.errors.forEach(err => {
         const path = err.path.join('.');
         errors[path] = err.message;
       });
@@ -277,10 +277,10 @@ export function validateFullAsset(
   allSchemas.forEach((schema, _index) => {
     try {
       schema.parse(data);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
+    } catch (_error) {
+      if (_error instanceof z.ZodError) {
         hasErrors = true;
-        error.errors.forEach(err => {
+        _error.errors.forEach(err => {
           const path = err.path.join('.');
           allErrors[path] = err.message;
         });

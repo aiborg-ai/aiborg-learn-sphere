@@ -212,8 +212,8 @@ export default function GamificationPage() {
       ];
 
       setDailyChallenges(challenges);
-    } catch (error) {
-      logger.error('Error fetching gamification data:', error);
+    } catch (_error) {
+      logger._error('Error fetching gamification data:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load gamification data',

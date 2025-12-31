@@ -328,8 +328,8 @@ class WebVitalsService {
         connection_type: metric.connectionType,
         created_at: new Date(metric.timestamp).toISOString(),
       });
-    } catch (error) {
-      logger.error('Failed to send metric:', error);
+    } catch (_error) {
+      logger._error('Failed to send metric:', _error);
     }
   }
 
@@ -369,8 +369,8 @@ class WebVitalsService {
 
       // Clear sent metrics
       this.customMetrics = [];
-    } catch (error) {
-      logger.error('Failed to send performance report:', error);
+    } catch (_error) {
+      logger._error('Failed to send performance report:', _error);
     }
   }
 

@@ -92,8 +92,8 @@ export class ScheduledReportsService {
       }
 
       return data || [];
-    } catch (error) {
-      logger.error('Error in getUserScheduledReports:', error);
+    } catch (_error) {
+      logger._error('Error in getUserScheduledReports:', _error);
       return [];
     }
   }
@@ -137,8 +137,8 @@ export class ScheduledReportsService {
 
       logger.info('Scheduled report created', { reportId: data.id, userId });
       return data;
-    } catch (error) {
-      logger.error('Error in createScheduledReport:', error);
+    } catch (_error) {
+      logger._error('Error in createScheduledReport:', _error);
       throw error;
     }
   }
@@ -174,8 +174,8 @@ export class ScheduledReportsService {
 
       logger.info('Scheduled report updated', { reportId, userId });
       return data;
-    } catch (error) {
-      logger.error('Error in updateScheduledReport:', error);
+    } catch (_error) {
+      logger._error('Error in updateScheduledReport:', _error);
       throw error;
     }
   }
@@ -198,8 +198,8 @@ export class ScheduledReportsService {
 
       logger.info('Scheduled report deleted', { reportId, userId });
       return true;
-    } catch (error) {
-      logger.error('Error in deleteScheduledReport:', error);
+    } catch (_error) {
+      logger._error('Error in deleteScheduledReport:', _error);
       throw error;
     }
   }
@@ -236,8 +236,8 @@ export class ScheduledReportsService {
       }
 
       return data || [];
-    } catch (error) {
-      logger.error('Error in getReportExecutions:', error);
+    } catch (_error) {
+      logger._error('Error in getReportExecutions:', _error);
       return [];
     }
   }
@@ -313,7 +313,7 @@ export class ScheduledReportsService {
         });
 
         return completedExecution;
-      } catch (error) {
+      } catch (_error) {
         // Mark execution as failed
         await supabase
           .from('report_executions')
@@ -326,8 +326,8 @@ export class ScheduledReportsService {
 
         throw error;
       }
-    } catch (error) {
-      logger.error('Error in executeScheduledReport:', error);
+    } catch (_error) {
+      logger._error('Error in executeScheduledReport:', _error);
       return null;
     }
   }
@@ -427,8 +427,8 @@ export class ScheduledReportsService {
       }
 
       return data || [];
-    } catch (error) {
-      logger.error('Error in getReportsDueForExecution:', error);
+    } catch (_error) {
+      logger._error('Error in getReportsDueForExecution:', _error);
       return [];
     }
   }

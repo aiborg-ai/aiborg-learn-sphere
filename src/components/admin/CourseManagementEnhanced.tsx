@@ -199,8 +199,8 @@ export function CourseManagementEnhanced({
       setFormAudiences([]);
       setFormFeatures([]);
       setFormKeywords([]);
-    } catch (error) {
-      logger.error('Error saving course:', error);
+    } catch (_error) {
+      logger._error('Error saving course:', _error);
       toast({
         title: 'Error',
         description: editingCourse ? 'Failed to update course' : 'Failed to create course',
@@ -228,8 +228,8 @@ export function CourseManagementEnhanced({
       onRefresh();
       setIsDeleteDialogOpen(false);
       setDeletingCourse(null);
-    } catch (error) {
-      logger.error('Error deleting course:', error);
+    } catch (_error) {
+      logger._error('Error deleting course:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete course',
@@ -255,8 +255,8 @@ export function CourseManagementEnhanced({
         title: 'Success',
         description: `Course ${field === 'is_active' ? 'status' : 'visibility'} updated`,
       });
-    } catch (error) {
-      logger.error(`Error toggling course ${field}:`, error);
+    } catch (_error) {
+      logger._error(`Error toggling course ${field}:`, _error);
       toast({
         title: 'Error',
         description: `Failed to update course ${field === 'is_active' ? 'status' : 'visibility'}`,
@@ -312,8 +312,8 @@ export function CourseManagementEnhanced({
         title: 'Success',
         description: 'Courses reordered successfully',
       });
-    } catch (error) {
-      logger.error('Failed to reorder courses', error);
+    } catch (_error) {
+      logger._error('Failed to reorder courses', _error);
       toast({
         title: 'Error',
         description: 'Failed to reorder courses. Please try again.',

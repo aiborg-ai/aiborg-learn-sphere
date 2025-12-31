@@ -121,8 +121,8 @@ export class LingoImportExportService {
       });
 
       return exportData;
-    } catch (error) {
-      logger.error('Failed to export lessons', error);
+    } catch (_error) {
+      logger._error('Failed to export lessons', _error);
       throw error;
     }
   }
@@ -404,8 +404,8 @@ export class LingoImportExportService {
         skipped: result.skipped,
         failed: result.failed,
       });
-    } catch (error) {
-      logger.error('Import failed', error);
+    } catch (_error) {
+      logger._error('Import failed', _error);
       result.success = false;
       result.errors.push(
         `Import failed: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -506,7 +506,7 @@ export class LingoImportExportService {
         if (questionsError) throw questionsError;
         result.questions_created = questionsData.length;
       }
-    } catch (error) {
+    } catch (_error) {
       result.status = 'failed';
       result.error = error instanceof Error ? error.message : 'Unknown error';
       logger.error(`Failed to import lesson ${lesson.lesson_id}`, error);

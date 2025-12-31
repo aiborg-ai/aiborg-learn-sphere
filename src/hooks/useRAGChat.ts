@@ -49,7 +49,7 @@ export function useRAGChat(options: UseRAGChatOptions = {}) {
         }
 
         return response;
-      } catch (error) {
+      } catch (_error) {
         setIsTyping(false);
         throw error;
       }

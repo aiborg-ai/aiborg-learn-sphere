@@ -128,7 +128,7 @@ export default function WhiteLabelSettings() {
 
       // Refresh branding to apply changes
       await refreshBranding();
-    } catch (error) {
+    } catch {
       logger.error('Failed to save branding', error);
       toast({
         title: 'Error',

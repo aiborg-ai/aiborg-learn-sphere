@@ -87,11 +87,11 @@ export const useAuth = () => {
 
       setProfileError(null);
       setProfile(data);
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    } catch (_error) {
+      const errorMessage = _error instanceof Error ? _error.message : 'Unknown _error';
       logger.error('[useAuth] Exception while fetching profile:', {
         userId,
-        error,
+        error: _error,
       });
       setProfileError(`Exception: ${errorMessage}`);
       setProfile(null);

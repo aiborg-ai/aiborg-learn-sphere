@@ -144,10 +144,10 @@ export function BulkEnrollmentDialog({ open, onOpenChange, onSuccess }: BulkEnro
           description: `Successfully enrolled ${successCount} out of ${enrollmentResults.length} students.`,
         });
       }
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Processing failed',
-        description: error instanceof Error ? error.message : 'Unknown error occurred',
+        description: _error instanceof Error ? _error.message : 'Unknown _error occurred',
         variant: 'destructive',
       });
       setStep('preview');

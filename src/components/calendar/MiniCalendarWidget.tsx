@@ -75,8 +75,8 @@ export function MiniCalendarWidget() {
       });
 
       setEvents(assignmentEvents);
-    } catch (error) {
-      logger.error('Error loading events:', error);
+    } catch (_error) {
+      logger._error('Error loading events:', _error);
     } finally {
       setLoading(false);
     }

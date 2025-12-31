@@ -89,8 +89,8 @@ export class GoalPredictionService {
         ),
         createdAt: goal.created_at,
       }));
-    } catch (error) {
-      logger.error('Error in getUserGoals:', error);
+    } catch (_error) {
+      logger._error('Error in getUserGoals:', _error);
       return [];
     }
   }
@@ -207,8 +207,8 @@ export class GoalPredictionService {
         recommendedDailyEffort,
         confidenceScore: Math.round(confidenceScore),
       };
-    } catch (error) {
-      logger.error('Error in predictGoalCompletion:', error);
+    } catch (_error) {
+      logger._error('Error in predictGoalCompletion:', _error);
       return null;
     }
   }
@@ -263,8 +263,8 @@ export class GoalPredictionService {
       }
 
       return trendData;
-    } catch (error) {
-      logger.error('Error in getProgressTrend:', error);
+    } catch (_error) {
+      logger._error('Error in getProgressTrend:', _error);
       return [];
     }
   }
@@ -317,8 +317,8 @@ export class GoalPredictionService {
       });
 
       return milestones;
-    } catch (error) {
-      logger.error('Error in getGoalMilestones:', error);
+    } catch (_error) {
+      logger._error('Error in getGoalMilestones:', _error);
       return [];
     }
   }
@@ -418,8 +418,8 @@ export class GoalPredictionService {
         const priorityOrder = { high: 0, medium: 1, low: 2 };
         return priorityOrder[a.priority] - priorityOrder[b.priority];
       });
-    } catch (error) {
-      logger.error('Error in getGoalRecommendations:', error);
+    } catch (_error) {
+      logger._error('Error in getGoalRecommendations:', _error);
       return [];
     }
   }
@@ -437,8 +437,8 @@ export class GoalPredictionService {
       );
 
       return predictions.filter((p): p is GoalPrediction => p !== null);
-    } catch (error) {
-      logger.error('Error in getAllGoalPredictions:', error);
+    } catch (_error) {
+      logger._error('Error in getAllGoalPredictions:', _error);
       return [];
     }
   }

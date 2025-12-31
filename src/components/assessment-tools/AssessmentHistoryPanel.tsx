@@ -6,7 +6,8 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAssessmentAttemptHistory } from '@/hooks/useAssessmentAttempts';
 import { useAssessmentTool } from '@/hooks/useAssessmentTools';
-import { Navbar, Footer } from '@/components/navigation';
+import { Navbar } from '@/components/navigation/Navbar';
+import { Footer } from '@/components/navigation/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

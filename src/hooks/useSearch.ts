@@ -111,8 +111,8 @@ export function useSearchHistory(maxItems: number = 10) {
         // Save to localStorage
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-        } catch (error) {
-          logger.error('Failed to save search history:', error);
+        } catch (_error) {
+          logger._error('Failed to save search history:', _error);
         }
 
         return updated;
@@ -127,8 +127,8 @@ export function useSearchHistory(maxItems: number = 10) {
 
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      } catch (error) {
-        logger.error('Failed to update search history:', error);
+      } catch (_error) {
+        logger._error('Failed to update search history:', _error);
       }
 
       return updated;
@@ -139,8 +139,8 @@ export function useSearchHistory(maxItems: number = 10) {
     setHistory([]);
     try {
       localStorage.removeItem(STORAGE_KEY);
-    } catch (error) {
-      logger.error('Failed to clear search history:', error);
+    } catch (_error) {
+      logger._error('Failed to clear search history:', _error);
     }
   }, []);
 

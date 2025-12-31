@@ -96,6 +96,7 @@ export function CampaignManager() {
 
   useEffect(() => {
     loadCampaigns();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadCampaigns = async () => {
@@ -103,8 +104,8 @@ export function CampaignManager() {
       setIsLoading(true);
       const data = await BlogCampaignService.getCampaigns();
       setCampaigns(data);
-    } catch (error) {
-      logger.error('Error loading campaigns:', error);
+    } catch (_error) {
+      logger._error('Error loading campaigns:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load campaigns',
@@ -119,8 +120,8 @@ export function CampaignManager() {
     try {
       const analytics = await BlogCampaignService.getCampaignAnalytics(campaignId);
       setCampaignAnalytics(analytics);
-    } catch (error) {
-      logger.error('Error loading campaign analytics:', error);
+    } catch (_error) {
+      logger._error('Error loading campaign analytics:', _error);
     }
   };
 
@@ -160,8 +161,8 @@ export function CampaignManager() {
       setEditingCampaign(null);
       form.reset();
       loadCampaigns();
-    } catch (error) {
-      logger.error('Error saving campaign:', error);
+    } catch (_error) {
+      logger._error('Error saving campaign:', _error);
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to save campaign',
@@ -201,7 +202,7 @@ export function CampaignManager() {
         description: `${campaign.name} has been deleted`,
       });
       loadCampaigns();
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: 'Failed to delete campaign',

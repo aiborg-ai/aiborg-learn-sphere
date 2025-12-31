@@ -19,8 +19,8 @@ export const useAchievements = () => {
 
       if (error) throw error;
       setAchievements(data || []);
-    } catch (error) {
-      logger.error('Error fetching achievements:', error);
+    } catch (_error) {
+      logger._error('Error fetching achievements:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load achievements',
@@ -65,8 +65,8 @@ export const useAchievements = () => {
         }) || [];
 
       setUsers(usersWithAchievements);
-    } catch (error) {
-      logger.error('Error fetching users:', error);
+    } catch (_error) {
+      logger._error('Error fetching users:', _error);
     }
   }, []);
 
@@ -100,8 +100,8 @@ export const useAchievements = () => {
 
       await fetchAchievements();
       return true;
-    } catch (error) {
-      logger.error('Error creating achievement:', error);
+    } catch (_error) {
+      logger._error('Error creating achievement:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create achievement',
@@ -143,8 +143,8 @@ export const useAchievements = () => {
 
       await fetchAchievements();
       return true;
-    } catch (error) {
-      logger.error('Error updating achievement:', error);
+    } catch (_error) {
+      logger._error('Error updating achievement:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update achievement',
@@ -169,8 +169,8 @@ export const useAchievements = () => {
 
       await fetchAchievements();
       return true;
-    } catch (error) {
-      logger.error('Error deleting achievement:', error);
+    } catch (_error) {
+      logger._error('Error deleting achievement:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete achievement',
@@ -208,15 +208,15 @@ export const useAchievements = () => {
 
       await fetchUsers();
       return true;
-    } catch (error) {
-      if (error && typeof error === 'object' && 'code' in error && error.code === '23505') {
+    } catch (_error) {
+      if (_error && typeof _error === 'object' && 'code' in _error && _error.code === '23505') {
         toast({
           title: 'Info',
           description: 'User already has this achievement',
           variant: 'default',
         });
       } else {
-        logger.error('Error allocating achievement:', error);
+        logger._error('Error allocating achievement:', _error);
         toast({
           title: 'Error',
           description: 'Failed to allocate achievement',

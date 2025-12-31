@@ -129,8 +129,8 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
       setHRIntegrations(hrData);
       setWebhooks(webhookData);
       setChannels(channelData);
-    } catch (error) {
-      logger.error('Error loading integrations:', error);
+    } catch (_error) {
+      logger._error('Error loading integrations:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load integrations',

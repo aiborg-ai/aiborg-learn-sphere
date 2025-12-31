@@ -119,11 +119,11 @@ export const EventCard = memo(function EventCard({ event, onRegister }: EventCar
       } else {
         throw new Error('No payment URL received');
       }
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Registration Failed',
         description:
-          error instanceof Error ? error.message : 'Failed to start registration process',
+          _error instanceof Error ? _error.message : 'Failed to start registration process',
         variant: 'destructive',
       });
     } finally {
@@ -171,11 +171,11 @@ export const EventCard = memo(function EventCard({ event, onRegister }: EventCar
         title: '✅ Registration Successful!',
         description: `You've registered for ${event.title} with your Family Pass.`,
       });
-    } catch (error) {
-      if (error.name === 'NoActiveMembershipError') {
+    } catch (_error) {
+      if (_error.name === 'NoActiveMembershipError') {
         toast({
           title: '❌ Active Family Pass Required',
-          description: error.message,
+          description: _error.message,
           variant: 'destructive',
           action: (
             <Link to="/family-membership" className="underline">
@@ -183,16 +183,16 @@ export const EventCard = memo(function EventCard({ event, onRegister }: EventCar
             </Link>
           ),
         });
-      } else if (error.name === 'DuplicateRegistrationError') {
+      } else if (_error.name === 'DuplicateRegistrationError') {
         toast({
           title: 'Already Registered',
-          description: error.message,
+          description: _error.message,
           variant: 'default',
         });
       } else {
         toast({
           title: 'Registration Failed',
-          description: error instanceof Error ? error.message : 'Failed to register for event',
+          description: _error instanceof Error ? _error.message : 'Failed to register for event',
           variant: 'destructive',
         });
       }

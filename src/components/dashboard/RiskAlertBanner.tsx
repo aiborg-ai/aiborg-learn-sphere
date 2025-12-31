@@ -57,8 +57,8 @@ function StudentRiskAlert({ className }: { className?: string }) {
     try {
       const score = await AtRiskDetectionService.getCurrentRiskScore(user.id);
       setRiskScore(score);
-    } catch (error) {
-      logger.error('Error fetching risk score:', error);
+    } catch (_error) {
+      logger._error('Error fetching risk score:', _error);
     } finally {
       setLoading(false);
     }
@@ -197,8 +197,8 @@ function InstructorRiskPanel({ className }: { className?: string }) {
         'moderate'
       );
       setAtRiskStudents(students);
-    } catch (error) {
-      logger.error('Error fetching at-risk students:', error);
+    } catch (_error) {
+      logger._error('Error fetching at-risk students:', _error);
     } finally {
       setLoading(false);
     }
@@ -230,7 +230,7 @@ function InstructorRiskPanel({ className }: { className?: string }) {
   };
 
   const criticalCount = atRiskStudents.filter(s => s.level === 'critical').length;
-  const highCount = atRiskStudents.filter(s => s.level === 'high').length;
+  const _highCount = atRiskStudents.filter(s => s.level === 'high').length;
 
   return (
     <Card className={cn('bg-white/5 backdrop-blur-sm border-white/10', className)}>

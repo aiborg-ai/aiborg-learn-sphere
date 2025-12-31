@@ -121,7 +121,7 @@ export function LingoLessonManager() {
       }));
 
       setLessons(lessonsWithCounts);
-    } catch (error) {
+    } catch {
       logger.error('Failed to load lessons', error);
       toast({
         title: 'Error',
@@ -215,7 +215,7 @@ export function LingoLessonManager() {
 
       setIsDialogOpen(false);
       loadLessons();
-    } catch (error) {
+    } catch {
       logger.error('Failed to save lesson', error);
       toast({
         title: 'Error',
@@ -243,7 +243,7 @@ export function LingoLessonManager() {
         title: 'Success',
         description: `Lesson ${lesson.is_active ? 'deactivated' : 'activated'}`,
       });
-    } catch (error) {
+    } catch {
       logger.error('Failed to toggle lesson status', error);
       toast({
         title: 'Error',
@@ -270,7 +270,7 @@ export function LingoLessonManager() {
 
       toast({ title: 'Success', description: 'Lesson deleted successfully' });
       loadLessons();
-    } catch (error) {
+    } catch {
       logger.error('Failed to delete lesson', error);
       toast({
         title: 'Error',
@@ -294,7 +294,7 @@ export function LingoLessonManager() {
       // Update local state with new order
       setLessons(reorderedLessons);
       toast({ title: 'Success', description: 'Lessons reordered successfully' });
-    } catch (error) {
+    } catch {
       logger.error('Failed to reorder lessons', error);
       toast({
         title: 'Error',

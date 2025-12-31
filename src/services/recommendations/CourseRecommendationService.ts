@@ -138,8 +138,8 @@ export class CourseRecommendationService {
       const response = await supabase.rpc('find_similar_users', { target_user_id: userId });
       const data = response?.data;
       return data?.map((u: SimilarUser) => u.id) || [];
-    } catch (error) {
-      logger.error('Error finding similar users', error);
+    } catch (_error) {
+      logger._error('Error finding similar users', _error);
       return [];
     }
   }

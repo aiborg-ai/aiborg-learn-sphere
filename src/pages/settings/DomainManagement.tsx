@@ -86,7 +86,7 @@ export default function DomainManagement() {
 
       if (error) throw error;
       setDomains(data || []);
-    } catch (error) {
+    } catch {
       logger.error('Failed to load domains', error);
       toast({
         title: 'Error',
@@ -124,7 +124,7 @@ export default function DomainManagement() {
       setIsAddOpen(false);
       setNewDomain('');
       loadDomains();
-    } catch (error) {
+    } catch {
       logger.error('Failed to add domain', error);
       toast({
         title: 'Error',
@@ -158,7 +158,7 @@ export default function DomainManagement() {
           variant: 'destructive',
         });
       }
-    } catch (error) {
+    } catch {
       logger.error('Failed to verify domain', error);
       toast({
         title: 'Error',
@@ -182,7 +182,7 @@ export default function DomainManagement() {
       });
 
       loadDomains();
-    } catch (error) {
+    } catch {
       logger.error('Failed to delete domain', error);
       toast({
         title: 'Error',

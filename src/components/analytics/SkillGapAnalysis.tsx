@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AnalyticsService, type SkillGap } from '@/services/AnalyticsService';
+import { SkillGapService } from '@/services/analytics/SkillGapService';
+import type { SkillGap } from '@/services/analytics/types';
 import { useAuth } from '@/hooks/useAuth';
 import { logger } from '@/utils/logger';
 import {
@@ -30,7 +31,7 @@ export const SkillGapAnalysis: React.FC = () => {
 
     setLoading(true);
     try {
-      const gaps = await AnalyticsService.analyzeSkillGaps(user.id);
+      const gaps = await SkillGapService.analyzeSkillGaps(user.id);
       setSkillGaps(gaps);
     } catch (error) {
       logger.error('Error loading skill gaps:', error);

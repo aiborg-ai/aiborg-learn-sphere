@@ -184,8 +184,8 @@ export const SessionRegistrationForm: React.FC<SessionRegistrationFormProps> = (
       setTimeout(() => {
         onClose();
       }, 3000);
-    } catch (error) {
-      logger.error('Registration error:', error);
+    } catch (_error) {
+      logger._error('Registration _error:', _error);
       toast({
         title: 'Registration Failed',
         description:

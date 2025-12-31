@@ -30,8 +30,8 @@ export function useBulkActions({ items, selectedItems, clearSelection }: UseBulk
       const selectedItemsArray = items.filter(item => selectedItems.has(item.id));
       await action.action(selectedItemsArray);
       clearSelection();
-    } catch (error) {
-      logger.error('Bulk action error:', error);
+    } catch (_error) {
+      logger._error('Bulk action _error:', _error);
       toast({
         title: 'Action Failed',
         description: 'Failed to complete bulk action',

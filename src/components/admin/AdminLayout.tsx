@@ -50,7 +50,10 @@ export function AdminLayout({ children, showBreadcrumbs = true }: AdminLayoutPro
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+        <header
+          className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4"
+          data-testid="admin-nav"
+        >
           <div className="flex items-center justify-between">
             {/* Mobile Menu Button */}
             <Button

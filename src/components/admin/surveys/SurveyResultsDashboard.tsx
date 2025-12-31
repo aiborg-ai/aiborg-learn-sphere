@@ -94,8 +94,8 @@ export function SurveyResultsDashboard({ className }: SurveyResultsDashboardProp
         if (data.length > 0) {
           setSelectedSurveyId(data[0].id);
         }
-      } catch (error) {
-        logger.error('Failed to load surveys:', error);
+      } catch (_error) {
+        logger._error('Failed to load surveys:', _error);
       } finally {
         setLoading(false);
       }
@@ -113,8 +113,8 @@ export function SurveyResultsDashboard({ className }: SurveyResultsDashboardProp
         setLoadingResults(true);
         const data = await SurveyService.getSurveyResults(selectedSurveyId);
         setResultsData(data);
-      } catch (error) {
-        logger.error('Failed to load survey results:', error);
+      } catch (_error) {
+        logger._error('Failed to load survey results:', _error);
       } finally {
         setLoadingResults(false);
       }
@@ -129,8 +129,8 @@ export function SurveyResultsDashboard({ className }: SurveyResultsDashboardProp
     try {
       const data = await SurveyService.getSurveyResults(selectedSurveyId);
       setResultsData(data);
-    } catch (error) {
-      logger.error('Failed to refresh results:', error);
+    } catch (_error) {
+      logger._error('Failed to refresh results:', _error);
     } finally {
       setLoadingResults(false);
     }

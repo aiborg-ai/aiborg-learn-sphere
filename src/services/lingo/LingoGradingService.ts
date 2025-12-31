@@ -195,8 +195,8 @@ export class LingoGradingService {
         feedback: gradingResult.feedback,
         aiGradingResult: gradingResult,
       };
-    } catch (error) {
-      logger.error('Error grading free response with AI:', error);
+    } catch (_error) {
+      logger._error('Error grading free response with AI:', _error);
 
       // Fall back to keyword matching
       return this.gradeFreeResponseFallback(userAnswer, idealAnswer, strictness, passScore);
@@ -278,8 +278,8 @@ export class LingoGradingService {
         ...baseResult,
         aiExplanation: explanation,
       };
-    } catch (error) {
-      logger.error('Error generating AI explanation:', error);
+    } catch (_error) {
+      logger._error('Error generating AI explanation:', _error);
       // Return base result without AI explanation on error
       return baseResult;
     }

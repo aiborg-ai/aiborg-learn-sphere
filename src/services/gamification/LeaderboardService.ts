@@ -29,8 +29,8 @@ export class LeaderboardService {
 
       if (error) throw error;
       return (data as Leaderboard[]) || [];
-    } catch (error) {
-      logger.error('Error fetching leaderboards:', error);
+    } catch (_error) {
+      logger._error('Error fetching leaderboards:', _error);
       return [];
     }
   }
@@ -48,8 +48,8 @@ export class LeaderboardService {
 
       if (error) throw error;
       return (data as Leaderboard[]) || [];
-    } catch (error) {
-      logger.error('Error fetching leaderboards by type:', error);
+    } catch (_error) {
+      logger._error('Error fetching leaderboards by type:', _error);
       return [];
     }
   }
@@ -67,8 +67,8 @@ export class LeaderboardService {
 
       if (error) throw error;
       return data as Leaderboard;
-    } catch (error) {
-      logger.error('Error fetching leaderboard:', error);
+    } catch (_error) {
+      logger._error('Error fetching leaderboard:', _error);
       return null;
     }
   }
@@ -105,8 +105,8 @@ export class LeaderboardService {
           avatar_url: entry.profiles?.avatar_url,
         },
       })) as LeaderboardEntry[];
-    } catch (error) {
-      logger.error('Error fetching leaderboard entries:', error);
+    } catch (_error) {
+      logger._error('Error fetching leaderboard entries:', _error);
       return [];
     }
   }
@@ -150,8 +150,8 @@ export class LeaderboardService {
         ...position,
         percentile,
       };
-    } catch (error) {
-      logger.error('Error fetching user leaderboard position:', error);
+    } catch (_error) {
+      logger._error('Error fetching user leaderboard position:', _error);
       return null;
     }
   }
@@ -207,8 +207,8 @@ export class LeaderboardService {
       const below = entries.filter(e => e.rank > position.rank);
 
       return { above, current, below };
-    } catch (error) {
-      logger.error('Error fetching nearby users:', error);
+    } catch (_error) {
+      logger._error('Error fetching nearby users:', _error);
       return { above: [], current: null, below: [] };
     }
   }
@@ -227,8 +227,8 @@ export class LeaderboardService {
       if (error && error.code !== 'PGRST116') throw error; // PGRST116 = not found
 
       return data as UserLeaderboardPreferences;
-    } catch (error) {
-      logger.error('Error fetching user preferences:', error);
+    } catch (_error) {
+      logger._error('Error fetching user preferences:', _error);
       return null;
     }
   }
@@ -249,8 +249,8 @@ export class LeaderboardService {
 
       if (error) throw error;
       return true;
-    } catch (error) {
-      logger.error('Error updating user preferences:', error);
+    } catch (_error) {
+      logger._error('Error updating user preferences:', _error);
       return false;
     }
   }
@@ -323,8 +323,8 @@ export class LeaderboardService {
       }
 
       return true;
-    } catch (error) {
-      logger.error('Error refreshing leaderboard:', error);
+    } catch (_error) {
+      logger._error('Error refreshing leaderboard:', _error);
       return false;
     }
   }
@@ -422,8 +422,8 @@ export class LeaderboardService {
           avatar_url: entry.profiles?.avatar_url,
         },
       })) as LeaderboardEntry[];
-    } catch (error) {
-      logger.error('Error searching users:', error);
+    } catch (_error) {
+      logger._error('Error searching users:', _error);
       return [];
     }
   }

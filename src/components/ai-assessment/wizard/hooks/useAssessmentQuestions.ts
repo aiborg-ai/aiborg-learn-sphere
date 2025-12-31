@@ -55,8 +55,8 @@ export const useAssessmentQuestions = ({
       if (data && onAssessmentInitialized) {
         onAssessmentInitialized(data.id);
       }
-    } catch (error) {
-      logger.error('Error initializing assessment:', error);
+    } catch (_error) {
+      logger._error('Error initializing assessment:', _error);
     }
   };
 
@@ -197,8 +197,8 @@ export const useAssessmentQuestions = ({
       if (user) {
         await initializeAssessment();
       }
-    } catch (error) {
-      logger.error('Error fetching questions:', error);
+    } catch (_error) {
+      logger._error('Error fetching questions:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load assessment questions. Please try again.',

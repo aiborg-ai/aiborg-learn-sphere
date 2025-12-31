@@ -221,8 +221,8 @@ export class EnhancedSM2Service {
 
       logger.info('Synced user ability to flashcards', { userId, updatedCount, newAbility });
       return updatedCount;
-    } catch (error) {
-      logger.error('Error syncing user ability:', error);
+    } catch (_error) {
+      logger._error('Error syncing user ability:', _error);
       return 0;
     }
   }
@@ -272,8 +272,8 @@ export class EnhancedSM2Service {
         lapseThreshold: failCount / reviewData.length > 0.3 ? 0.5 : 0.3,
         lastCalibrated: new Date(),
       };
-    } catch (error) {
-      logger.error('Error getting personalized params:', error);
+    } catch (_error) {
+      logger._error('Error getting personalized params:', _error);
       return null;
     }
   }
@@ -466,8 +466,8 @@ export class EnhancedSM2Service {
       await this.logReview(userId, flashcardId, quality, result, responseTime);
 
       return result;
-    } catch (error) {
-      logger.error('Error processing review:', error);
+    } catch (_error) {
+      logger._error('Error processing review:', _error);
       return null;
     }
   }
@@ -496,8 +496,8 @@ export class EnhancedSM2Service {
         retention_estimate: result.retentionPrediction,
         learning_status: result.learningStatus,
       });
-    } catch (error) {
-      logger.warn('Failed to log review:', error);
+    } catch (_error) {
+      logger.warn('Failed to log review:', _error);
     }
   }
 

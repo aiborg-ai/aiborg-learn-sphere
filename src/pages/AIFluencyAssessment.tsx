@@ -17,7 +17,8 @@ import {
 import { createAdaptiveEngine } from '@/services/AdaptiveAssessmentEngine';
 import type { AdaptiveAssessmentEngine } from '@/services/AdaptiveAssessmentEngine';
 import { supabase } from '@/integrations/supabase/client';
-import { Navbar, Footer } from '@/components/navigation';
+import { Navbar } from '@/components/navigation/Navbar';
+import { Footer } from '@/components/navigation/Footer';
 import { AIAssessmentWizardAdaptive } from '@/components/ai-assessment';
 import { Loader2 } from '@/components/ui/icons';
 import { logger } from '@/utils/logger';
@@ -99,7 +100,7 @@ export default function AIFluencyAssessment() {
 
         // Start the timer
         startTimer();
-      } catch (error) {
+      } catch {
         logger.error('Error initializing assessment:', error);
         toast({
           title: 'Error',
@@ -148,7 +149,7 @@ export default function AIFluencyAssessment() {
 
       // Navigate to results
       navigate(`/assessment/ai-fluency/results/${attemptId}`);
-    } catch (error) {
+    } catch {
       logger.error('Error completing assessment:', error);
       toast({
         title: 'Error',

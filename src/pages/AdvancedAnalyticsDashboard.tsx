@@ -82,8 +82,8 @@ export default function AdvancedAnalyticsDashboard() {
 
       await exportAnalyticsToPDF(sections, dateRange, filename);
       toast.success('PDF report generated successfully!');
-    } catch (error) {
-      logger.error('PDF export error:', error);
+    } catch (_error) {
+      logger._error('PDF export _error:', _error);
       toast.error('Failed to generate PDF. Please try again.');
     } finally {
       setIsExportingPDF(false);

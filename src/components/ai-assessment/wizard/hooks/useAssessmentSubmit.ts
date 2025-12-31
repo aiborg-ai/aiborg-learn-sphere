@@ -80,8 +80,8 @@ export const useAssessmentSubmit = ({
           strength_level: strengthLevel,
           recommendations: generateRecommendations(strengthLevel, categoryId, profilingData),
         });
-      } catch (error) {
-        logger.error('Error saving insights:', error);
+      } catch (_error) {
+        logger._error('Error saving insights:', _error);
       }
     }
   };
@@ -194,8 +194,8 @@ export const useAssessmentSubmit = ({
           description: `Your AI Augmentation Score: ${finalScore}/${maxPossibleScore}${bonusMessage} (${augmentationLevel})`,
         });
       }
-    } catch (error) {
-      logger.error('Error submitting assessment:', error);
+    } catch (_error) {
+      logger._error('Error submitting assessment:', _error);
       toast({
         title: 'Error',
         description: 'Failed to submit assessment. Please try again.',

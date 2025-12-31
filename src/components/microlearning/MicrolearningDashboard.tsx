@@ -119,8 +119,8 @@ export function MicrolearningDashboard() {
           daily_nuggets_goal: summary.goals.daily_nuggets_goal,
         });
       }
-    } catch (error) {
-      logger.error('Error loading microlearning dashboard:', error);
+    } catch (_error) {
+      logger._error('Error loading microlearning dashboard:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load learning data',
@@ -141,8 +141,8 @@ export function MicrolearningDashboard() {
       toast({
         description: 'Learning goals updated',
       });
-    } catch (error) {
-      logger.error('Error saving goals:', error);
+    } catch (_error) {
+      logger._error('Error saving goals:', _error);
       toast({
         title: 'Error',
         description: 'Failed to save goals',
@@ -155,8 +155,8 @@ export function MicrolearningDashboard() {
     try {
       await MicrolearningService.dismissRecommendation(recId);
       setRecommendations(prev => prev.filter(r => r.id !== recId));
-    } catch (error) {
-      logger.error('Error dismissing recommendation:', error);
+    } catch (_error) {
+      logger._error('Error dismissing recommendation:', _error);
     }
   };
 

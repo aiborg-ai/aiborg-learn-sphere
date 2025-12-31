@@ -64,7 +64,7 @@ export default function WatchLaterPage() {
     try {
       await removeFromQueue(id);
       setDeleteId(null);
-    } catch (error) {
+    } catch {
       logger.error('Error removing from queue:', error);
     }
   };
@@ -73,7 +73,7 @@ export default function WatchLaterPage() {
     try {
       await clearQueue();
       setClearDialog(false);
-    } catch (error) {
+    } catch {
       logger.error('Error clearing queue:', error);
     }
   };
@@ -88,7 +88,7 @@ export default function WatchLaterPage() {
       await updateNote(id, editNote);
       setEditingId(null);
       setEditNote('');
-    } catch (error) {
+    } catch {
       logger.error('Error updating note:', error);
     }
   };

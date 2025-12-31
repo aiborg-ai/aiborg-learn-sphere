@@ -50,8 +50,8 @@ export function EventPhotosUpload({
 
       if (error) throw error;
       setPhotos(data || []);
-    } catch (error) {
-      logger.error('Error fetching event photos:', error);
+    } catch (_error) {
+      logger._error('Error fetching event photos:', _error);
       toast({
         title: 'Error',
         description: 'Failed to fetch event photos',
@@ -140,8 +140,8 @@ export function EventPhotosUpload({
       setSelectedFile(null);
       setPhotoCaption('');
       fetchEventPhotos();
-    } catch (error) {
-      logger.error('Error uploading photo:', error);
+    } catch (_error) {
+      logger._error('Error uploading photo:', _error);
       toast({
         title: 'Error',
         description: 'Failed to upload photo',
@@ -174,8 +174,8 @@ export function EventPhotosUpload({
       });
 
       fetchEventPhotos();
-    } catch (error) {
-      logger.error('Error deleting photo:', error);
+    } catch (_error) {
+      logger._error('Error deleting photo:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete photo',

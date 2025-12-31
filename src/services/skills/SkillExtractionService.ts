@@ -105,8 +105,8 @@ class SkillExtractionServiceClass {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching industry skills:', error);
+    } catch (_error) {
+      logger._error('Error fetching industry skills:', _error);
       throw error;
     }
   }
@@ -129,8 +129,8 @@ class SkillExtractionServiceClass {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching user skills:', error);
+    } catch (_error) {
+      logger._error('Error fetching user skills:', _error);
       throw error;
     }
   }
@@ -162,8 +162,8 @@ class SkillExtractionServiceClass {
       );
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error updating user skill:', error);
+    } catch (_error) {
+      logger._error('Error updating user skill:', _error);
       throw error;
     }
   }
@@ -192,8 +192,8 @@ class SkillExtractionServiceClass {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching skill recommendations:', error);
+    } catch (_error) {
+      logger._error('Error fetching skill recommendations:', _error);
       throw error;
     }
   }
@@ -212,8 +212,8 @@ class SkillExtractionServiceClass {
         .eq('id', recommendationId);
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error dismissing recommendation:', error);
+    } catch (_error) {
+      logger._error('Error dismissing recommendation:', _error);
       throw error;
     }
   }
@@ -236,8 +236,8 @@ class SkillExtractionServiceClass {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching job roles:', error);
+    } catch (_error) {
+      logger._error('Error fetching job roles:', _error);
       throw error;
     }
   }
@@ -263,8 +263,8 @@ class SkillExtractionServiceClass {
           strengths: [],
         }
       );
-    } catch (error) {
-      logger.error('Error getting job role match:', error);
+    } catch (_error) {
+      logger._error('Error getting job role match:', _error);
       throw error;
     }
   }
@@ -288,8 +288,8 @@ class SkillExtractionServiceClass {
       );
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Error setting career goal:', error);
+    } catch (_error) {
+      logger._error('Error setting career goal:', _error);
       throw error;
     }
   }
@@ -321,8 +321,8 @@ class SkillExtractionServiceClass {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
-      logger.error('Error fetching career goals:', error);
+    } catch (_error) {
+      logger._error('Error fetching career goals:', _error);
       throw error;
     }
   }
@@ -344,8 +344,8 @@ class SkillExtractionServiceClass {
 
       if (error) throw error;
       return data || 0;
-    } catch (error) {
-      logger.error('Error getting skill percentile:', error);
+    } catch (_error) {
+      logger._error('Error getting skill percentile:', _error);
       throw error;
     }
   }
@@ -382,8 +382,8 @@ class SkillExtractionServiceClass {
         source: 'assessment',
         verified: true,
       });
-    } catch (error) {
-      logger.error('Error recording skill assessment:', error);
+    } catch (_error) {
+      logger._error('Error recording skill assessment:', _error);
       throw error;
     }
   }
@@ -433,8 +433,8 @@ class SkillExtractionServiceClass {
       }
 
       return summary;
-    } catch (error) {
-      logger.error('Error getting skills by category:', error);
+    } catch (_error) {
+      logger._error('Error getting skills by category:', _error);
       throw error;
     }
   }
@@ -450,8 +450,8 @@ class SkillExtractionServiceClass {
       const allTrending = await this.getIndustrySkills({ trending_only: true });
 
       return allTrending.filter(skill => !userSkillIds.has(skill.id)).slice(0, limit);
-    } catch (error) {
-      logger.error('Error getting trending skills to learn:', error);
+    } catch (_error) {
+      logger._error('Error getting trending skills to learn:', _error);
       throw error;
     }
   }

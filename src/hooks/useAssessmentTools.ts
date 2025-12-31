@@ -139,8 +139,8 @@ async function fetchAssessmentTools(
             best_score: bestAttempt?.score_percentage || undefined,
             is_locked: !isToolAvailableForAudience(tool, audience),
           } as AssessmentToolWithProgress;
-        } catch (error) {
-          logger.error(`Error enriching tool ${tool.id} with progress:`, error);
+        } catch (_error) {
+          logger._error(`Error enriching tool ${tool.id} with progress:`, _error);
           return {
             ...tool,
             user_attempts: 0,
@@ -151,8 +151,8 @@ async function fetchAssessmentTools(
     );
 
     return toolsWithProgress;
-  } catch (error) {
-    logger.error('Error fetching assessment tools:', error);
+  } catch (_error) {
+    logger._error('Error fetching assessment tools:', _error);
     throw error;
   }
 }
@@ -265,8 +265,8 @@ export function useAssessmentTool(slug: string) {
               : undefined,
           best_score: bestAttempt?.score_percentage || undefined,
         } as AssessmentToolWithProgress;
-      } catch (error) {
-        logger.error('Error fetching assessment tool:', error);
+      } catch (_error) {
+        logger._error('Error fetching assessment tool:', _error);
         throw error;
       }
     },

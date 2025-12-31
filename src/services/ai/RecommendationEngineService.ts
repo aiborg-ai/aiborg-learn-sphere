@@ -179,8 +179,8 @@ export class RecommendationEngineService {
       await this.recordRecommendations(userId, rankedRecommendations, context);
 
       return rankedRecommendations;
-    } catch (error) {
-      logger.error('Failed to generate course recommendations:', error);
+    } catch (_error) {
+      logger._error('Failed to generate course recommendations:', _error);
       return [];
     }
   }
@@ -272,8 +272,8 @@ export class RecommendationEngineService {
         .sort((a, b) => b.confidenceScore - a.confidenceScore)
         .slice(0, limit)
         .map((rec, index) => ({ ...rec, rank: index + 1 }));
-    } catch (error) {
-      logger.error('Failed to generate learning path recommendations:', error);
+    } catch (_error) {
+      logger._error('Failed to generate learning path recommendations:', _error);
       return [];
     }
   }
@@ -337,8 +337,8 @@ export class RecommendationEngineService {
           },
         };
       });
-    } catch (error) {
-      logger.error('Failed to find similar courses:', error);
+    } catch (_error) {
+      logger._error('Failed to find similar courses:', _error);
       return [];
     }
   }
@@ -457,8 +457,8 @@ export class RecommendationEngineService {
       }
 
       return skillGaps;
-    } catch (error) {
-      logger.error('Failed to calculate skill gaps:', error);
+    } catch (_error) {
+      logger._error('Failed to calculate skill gaps:', _error);
       return [];
     }
   }
@@ -734,8 +734,8 @@ export class RecommendationEngineService {
       if (error) {
         logger.error('Failed to record recommendations:', error);
       }
-    } catch (error) {
-      logger.error('Error recording recommendations:', error);
+    } catch (_error) {
+      logger._error('Error recording recommendations:', _error);
     }
   }
 
@@ -759,8 +759,8 @@ export class RecommendationEngineService {
       });
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Failed to submit recommendation feedback:', error);
+    } catch (_error) {
+      logger._error('Failed to submit recommendation feedback:', _error);
       throw error;
     }
   }
@@ -786,8 +786,8 @@ export class RecommendationEngineService {
         .eq('id', recommendationId);
 
       if (error) throw error;
-    } catch (error) {
-      logger.error('Failed to update recommendation interaction:', error);
+    } catch (_error) {
+      logger._error('Failed to update recommendation interaction:', _error);
     }
   }
 }

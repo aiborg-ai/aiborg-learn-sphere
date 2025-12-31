@@ -202,8 +202,8 @@ class PerformanceMonitoringServiceClass {
       });
 
       observer.observe({ entryTypes: ['resource'] });
-    } catch (error) {
-      logger.error('[PerformanceMonitoring] Failed to observe resources:', error);
+    } catch (_error) {
+      logger._error('[PerformanceMonitoring] Failed to observe resources:', _error);
     }
   }
 
@@ -390,8 +390,8 @@ class PerformanceMonitoringServiceClass {
       } else {
         logger.log('[PerformanceMonitoring] Report sent successfully');
       }
-    } catch (error) {
-      logger.error('[PerformanceMonitoring] Error sending report:', error);
+    } catch (_error) {
+      logger._error('[PerformanceMonitoring] Error sending report:', _error);
     }
   }
 
@@ -440,8 +440,8 @@ class PerformanceMonitoringServiceClass {
       } else {
         logger.log(`[PerformanceMonitoring] Flushed ${reports.length} reports`);
       }
-    } catch (error) {
-      logger.error('[PerformanceMonitoring] Error flushing reports:', error);
+    } catch (_error) {
+      logger._error('[PerformanceMonitoring] Error flushing reports:', _error);
     }
   }
 

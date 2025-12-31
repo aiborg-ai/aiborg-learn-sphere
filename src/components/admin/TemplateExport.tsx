@@ -109,8 +109,8 @@ export function TemplateExport() {
           description: `Exported ${result.count} items to ${result.filename}`,
         });
       }
-    } catch (error) {
-      logger.error('Export error:', error);
+    } catch (_error) {
+      logger._error('Export _error:', _error);
       toast({
         title: 'Export Failed',
         description: error.message || 'Failed to export templates',

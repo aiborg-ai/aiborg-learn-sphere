@@ -135,8 +135,8 @@ export function useExport(): UseExportReturn {
 
         // Reset after a brief delay
         setTimeout(reset, 1000);
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      } catch (_error) {
+        const errorMessage = _error instanceof Error ? _error.message : 'Unknown _error occurred';
         logger.error('PDF export failed:', error);
 
         setState({
@@ -201,8 +201,8 @@ export function useExport(): UseExportReturn {
 
         // Reset after a brief delay
         setTimeout(reset, 1000);
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      } catch (_error) {
+        const errorMessage = _error instanceof Error ? _error.message : 'Unknown _error occurred';
         logger.error('Single section PDF export failed:', error);
 
         setState({
@@ -279,8 +279,8 @@ export function useExport(): UseExportReturn {
 
         // Reset after a brief delay
         setTimeout(reset, 1000);
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      } catch (_error) {
+        const errorMessage = _error instanceof Error ? _error.message : 'Unknown _error occurred';
         logger.error('CSV export failed:', error);
 
         setState({

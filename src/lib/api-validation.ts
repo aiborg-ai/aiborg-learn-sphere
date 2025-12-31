@@ -149,9 +149,9 @@ export async function validateSingle<T>(
     }
 
     return { data: validationResult.data, error: null };
-  } catch (error) {
-    if (error instanceof ValidationError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ValidationError) {
+      throw _error;
     }
 
     return {
@@ -225,9 +225,9 @@ export async function validateArray<T>(
     }
 
     return { data: validationResult.data, error: null };
-  } catch (error) {
-    if (error instanceof ValidationError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ValidationError) {
+      throw _error;
     }
 
     return {

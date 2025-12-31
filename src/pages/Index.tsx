@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Navbar, Footer } from '@/components/navigation';
+import { Navbar } from '@/components/navigation/Navbar';
+import { Footer } from '@/components/navigation/Footer';
 import { HeroSection, ContactSection, AboutSection } from '@/components/sections';
 import { TrainingPrograms } from '@/components/TrainingPrograms';
 import { EventsSection } from '@/components/events';
