@@ -165,6 +165,9 @@ const ReviewSessionPage = lazy(() => import('./pages/flashcards/ReviewSessionPag
 // RAG Management (Admin)
 const RAGManagement = lazy(() => import('./pages/admin/RAGManagement'));
 
+// Dashboard Test (New Admin Navigation)
+const DashboardTest = lazy(() => import('./pages/admin/DashboardTest'));
+
 // Tenant Management (Admin)
 const TenantManagement = lazy(() => import('./pages/admin/TenantManagement'));
 const WhiteLabelSettings = lazy(() => import('./pages/settings/WhiteLabelSettings'));
@@ -356,6 +359,16 @@ const AppWithShortcuts = () => {
                 <RouteWrapper routeName="RAG System">
                   <RAGManagement />
                 </RouteWrapper>
+              }
+            />
+            <Route
+              path="/admin/dashboard-test"
+              element={
+                <Suspense fallback={<AdminSkeleton />}>
+                  <RouteWrapper routeName="Admin Dashboard Test">
+                    <DashboardTest />
+                  </RouteWrapper>
+                </Suspense>
               }
             />
             <Route
