@@ -12,15 +12,20 @@ import { TEST_USERS, type UserRole } from './test-data';
 export async function login(page: Page, email: string, password: string) {
   await page.goto('/auth');
 
+  // Wait for auth page to be fully loaded (OAuth buttons visible)
+  await page.waitForSelector('button:has-text("Continue with Google")', { timeout: 5000 });
+
   // Fill in login form
   await page.fill('input[type="email"]', email);
   await page.fill('input[type="password"]', password);
 
-  // Click login button
-  await page.click('button[type="submit"]');
+  // Wait for the submit button to be enabled before clicking
+  const submitButton = page.locator('button[type="submit"]:has-text("Sign In")');
+  await submitButton.waitFor({ state: 'visible', timeout: 5000 });
+  await submitButton.click({ force: false }); // Don't force - wait for it to be clickable
 
-  // Wait for navigation to dashboard
-  await page.waitForURL(/\/dashboard/, { timeout: 10000 });
+  // Wait for navigation to dashboard or admin (admin users redirect to /admin)
+  await page.waitForURL(/\/(dashboard|admin)/, { timeout: 10000 });
 }
 
 /**
@@ -56,7 +61,7 @@ export async function logout(page: Page) {
 export async function isAuthenticated(page: Page): Promise<boolean> {
   try {
     await page.goto('/dashboard');
-    await page.waitForURL(/\/dashboard/, { timeout: 3000 });
+    await page.waitForURL(/\/(dashboard|admin)/, { timeout: 3000 });
     return true;
   } catch {
     return false;
