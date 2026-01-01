@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { Icon } from '@/utils/iconLoader';
 import { PrefetchLink } from '@/components/navigation/PrefetchLink';
+import { OnboardingTooltip } from '@/components/onboarding';
+import { useOnboardingContext } from '@/contexts/OnboardingContext';
 import {
   prefetchDashboard,
   prefetchUserProfile,
@@ -34,6 +36,7 @@ export function Navbar() {
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const { t } = useTranslation('navigation');
   const { user, profile, signOut, isAdmin } = useAuth();
+  const { shouldShowTip } = useOnboardingContext();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -148,13 +151,30 @@ export function Navbar() {
                 </Badge>
               </Button>
             </PrefetchLink>
-            <button
-              onClick={() => handleNavClick('training-programs')}
-              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
-              aria-label={t('aria.navigateToPrograms')}
-            >
-              {t('menu.programs')}
-            </button>
+            {shouldShowTip('nav-courses') ? (
+              <OnboardingTooltip
+                tipId="nav-courses"
+                title="Browse Courses"
+                description="Find and enroll in courses that match your learning goals. Explore our wide range of training programs."
+                placement="bottom"
+              >
+                <button
+                  onClick={() => handleNavClick('training-programs')}
+                  className="navbar relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
+                  aria-label={t('aria.navigateToPrograms')}
+                >
+                  {t('menu.programs')}
+                </button>
+              </OnboardingTooltip>
+            ) : (
+              <button
+                onClick={() => handleNavClick('training-programs')}
+                className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
+                aria-label={t('aria.navigateToPrograms')}
+              >
+                {t('menu.programs')}
+              </button>
+            )}
             <PrefetchLink
               to="/workshops"
               className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
@@ -169,13 +189,30 @@ export function Navbar() {
             >
               {t('menu.blog')}
             </PrefetchLink>
-            <button
-              onClick={() => handleNavClick('events')}
-              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
-              aria-label={t('aria.navigateToEvents')}
-            >
-              {t('menu.events')}
-            </button>
+            {shouldShowTip('nav-events') ? (
+              <OnboardingTooltip
+                tipId="nav-events"
+                title="Attend Events"
+                description="Join workshops, webinars, and community events. Connect with other learners and experts."
+                placement="bottom"
+              >
+                <button
+                  onClick={() => handleNavClick('events')}
+                  className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
+                  aria-label={t('aria.navigateToEvents')}
+                >
+                  {t('menu.events')}
+                </button>
+              </OnboardingTooltip>
+            ) : (
+              <button
+                onClick={() => handleNavClick('events')}
+                className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
+                aria-label={t('aria.navigateToEvents')}
+              >
+                {t('menu.events')}
+              </button>
+            )}
             <button
               onClick={() => handleNavClick('reviews')}
               className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"

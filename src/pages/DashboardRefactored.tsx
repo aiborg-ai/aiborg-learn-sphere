@@ -50,6 +50,8 @@ import {
   useRecommendationInteraction,
 } from '@/hooks/useRecommendations';
 import { DashboardAd } from '@/components/ads/AdSense';
+import { OnboardingProgress, OnboardingTooltip } from '@/components/onboarding';
+import { useOnboardingContext } from '@/contexts/OnboardingContext';
 
 // Lazy load heavy AI/recommendation components
 const MiniCalendarWidget = lazy(() =>
@@ -117,6 +119,9 @@ export default function DashboardRefactored() {
     loading: ticketsLoading,
   } = useAttendanceTickets(user?.id);
   const navigate = useNavigate();
+
+  // Onboarding
+  const { shouldShowTip, markMilestone } = useOnboardingContext();
 
   // AI Recommendations hooks
   const {
@@ -288,6 +293,13 @@ export default function DashboardRefactored() {
     }
   }, [user, authLoading, navigate, fetchDashboardData]);
 
+  // Mark onboarding milestone for visiting dashboard
+  useEffect(() => {
+    if (user) {
+      markMilestone('has_explored_dashboard');
+    }
+  }, [user, markMilestone]);
+
   const handleMarkNotificationAsRead = async (id: string) => {
     try {
       const { error } = await supabase.from('notifications').update({ is_read: true }).eq('id', id);
@@ -388,6 +400,11 @@ export default function DashboardRefactored() {
           </Alert>
         )}
 
+        {/* Onboarding Progress Widget */}
+        <div className="mb-6">
+          <OnboardingProgress />
+        </div>
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="bg-white/10 border-white/20">
             <TabsTrigger value="overview" className="text-white data-[state=active]:bg-white/20">
@@ -446,7 +463,21 @@ export default function DashboardRefactored() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            <DashboardStats stats={stats} />
+            {/* Dashboard Stats with Onboarding Tooltip */}
+            {shouldShowTip('dashboard-progress') ? (
+              <OnboardingTooltip
+                tipId="dashboard-progress"
+                title="Track Your Progress"
+                description="See your course completion, achievements, and learning velocity. These stats update automatically as you progress through your courses."
+                placement="bottom"
+              >
+                <div className="progress-section">
+                  <DashboardStats stats={stats} />
+                </div>
+              </OnboardingTooltip>
+            ) : (
+              <DashboardStats stats={stats} />
+            )}
 
             {/* Quick Access Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
@@ -543,22 +574,50 @@ export default function DashboardRefactored() {
             </Suspense>
 
             {/* AI-Powered Personalized Recommendations */}
-            <Suspense fallback={<CardSkeleton />}>
-              <PersonalizedSection
-                title="Recommended For You"
-                description="AI-powered course recommendations based on your learning history and goals"
-                recommendations={courseRecommendations}
-                isLoading={recommendationsLoading}
-                onEnroll={handleRecommendationEnroll}
-                onFeedback={handleRecommendationFeedback}
-                onDismiss={handleRecommendationDismiss}
-                onClick={handleRecommendationClick}
-                onRefresh={() => refetchRecommendations()}
-                showExplanations={true}
-                layout="grid"
-                maxItems={6}
-              />
-            </Suspense>
+            {shouldShowTip('dashboard-recommendations') ? (
+              <OnboardingTooltip
+                tipId="dashboard-recommendations"
+                title="AI Recommendations"
+                description="Get personalized course and content recommendations based on your learning patterns, goals, and interests. Our AI learns what works best for you."
+                placement="top"
+              >
+                <div className="recommendations-section">
+                  <Suspense fallback={<CardSkeleton />}>
+                    <PersonalizedSection
+                      title="Recommended For You"
+                      description="AI-powered course recommendations based on your learning history and goals"
+                      recommendations={courseRecommendations}
+                      isLoading={recommendationsLoading}
+                      onEnroll={handleRecommendationEnroll}
+                      onFeedback={handleRecommendationFeedback}
+                      onDismiss={handleRecommendationDismiss}
+                      onClick={handleRecommendationClick}
+                      onRefresh={() => refetchRecommendations()}
+                      showExplanations={true}
+                      layout="grid"
+                      maxItems={6}
+                    />
+                  </Suspense>
+                </div>
+              </OnboardingTooltip>
+            ) : (
+              <Suspense fallback={<CardSkeleton />}>
+                <PersonalizedSection
+                  title="Recommended For You"
+                  description="AI-powered course recommendations based on your learning history and goals"
+                  recommendations={courseRecommendations}
+                  isLoading={recommendationsLoading}
+                  onEnroll={handleRecommendationEnroll}
+                  onFeedback={handleRecommendationFeedback}
+                  onDismiss={handleRecommendationDismiss}
+                  onClick={handleRecommendationClick}
+                  onRefresh={() => refetchRecommendations()}
+                  showExplanations={true}
+                  layout="grid"
+                  maxItems={6}
+                />
+              </Suspense>
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
@@ -577,11 +636,28 @@ export default function DashboardRefactored() {
           </TabsContent>
 
           <TabsContent value="courses" className="space-y-6">
-            <CourseProgress
-              userProgress={userProgress}
-              enrollments={enrollments}
-              courses={courses}
-            />
+            {shouldShowTip('courses-enroll') ? (
+              <OnboardingTooltip
+                tipId="courses-enroll"
+                title="Enroll in a Course"
+                description="Click on any course card to view details and enroll. Track your progress here as you complete lessons and assessments."
+                placement="top"
+              >
+                <div>
+                  <CourseProgress
+                    userProgress={userProgress}
+                    enrollments={enrollments}
+                    courses={courses}
+                  />
+                </div>
+              </OnboardingTooltip>
+            ) : (
+              <CourseProgress
+                userProgress={userProgress}
+                enrollments={enrollments}
+                courses={courses}
+              />
+            )}
           </TabsContent>
 
           <TabsContent value="achievements">

@@ -1,0 +1,439 @@
+{
+  "result": [
+    {
+      "scriptId": "1232",
+      "url": "file:///home/vik/aiborg_CC/aiborg-learn-sphere/src/tests/setup.ts",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 0, "endOffset": 4605, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 13, "endOffset": 4605, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 415, "endOffset": 1464, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 1869, "endOffset": 1907, "count": 11 }],
+          "isBlockCoverage": true
+        }
+      ],
+      "startOffset": 209
+    },
+    {
+      "scriptId": "1551",
+      "url": "file:///home/vik/aiborg_CC/aiborg-learn-sphere/src/components/onboarding/__tests__/OnboardingProgress.test.tsx",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 0, "endOffset": 42868, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 13, "endOffset": 42868, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 417, "endOffset": 490, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 539, "endOffset": 4187, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "X",
+          "ranges": [{ "startOffset": 557, "endOffset": 928, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "Check",
+          "ranges": [{ "startOffset": 945, "endOffset": 1324, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "LayoutDashboard",
+          "ranges": [{ "startOffset": 1351, "endOffset": 1751, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "BookOpen",
+          "ranges": [{ "startOffset": 1771, "endOffset": 2157, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "Calendar",
+          "ranges": [{ "startOffset": 2177, "endOffset": 2562, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "Target",
+          "ranges": [{ "startOffset": 2580, "endOffset": 2961, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "MessageCircle",
+          "ranges": [{ "startOffset": 2986, "endOffset": 3382, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "User",
+          "ranges": [{ "startOffset": 3398, "endOffset": 3775, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "Sparkles",
+          "ranges": [{ "startOffset": 3795, "endOffset": 4180, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 4733, "endOffset": 15949, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 5407, "endOffset": 5468, "count": 8 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 5566, "endOffset": 6904, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 6971, "endOffset": 8663, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 8745, "endOffset": 10007, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 10095, "endOffset": 11271, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 11355, "endOffset": 12490, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 12572, "endOffset": 13705, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 13773, "endOffset": 14820, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 14897, "endOffset": 15945, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 16016, "endOffset": 20346, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 16628, "endOffset": 16689, "count": 3 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 16760, "endOffset": 17900, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 17969, "endOffset": 19105, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 19189, "endOffset": 20342, "count": 1 }],
+          "isBlockCoverage": true
+        }
+      ],
+      "startOffset": 209
+    },
+    {
+      "scriptId": "1557",
+      "url": "file:///home/vik/aiborg_CC/aiborg-learn-sphere/src/components/onboarding/OnboardingProgress.tsx",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 0, "endOffset": 33327, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 13, "endOffset": 33327, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            { "startOffset": 255, "endOffset": 307, "count": 8 },
+            { "startOffset": 297, "endOffset": 305, "count": 0 }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [
+            { "startOffset": 363, "endOffset": 422, "count": 3 },
+            { "startOffset": 412, "endOffset": 420, "count": 0 }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "OnboardingProgress",
+          "ranges": [
+            { "startOffset": 2660, "endOffset": 18163, "count": 21 },
+            { "startOffset": 2870, "endOffset": 2882, "count": 20 },
+            { "startOffset": 2884, "endOffset": 2912, "count": 2 },
+            { "startOffset": 2912, "endOffset": 2992, "count": 19 },
+            { "startOffset": 2992, "endOffset": 3024, "count": 18 },
+            { "startOffset": 3026, "endOffset": 3054, "count": 2 },
+            { "startOffset": 3054, "endOffset": 16077, "count": 17 },
+            { "startOffset": 16077, "endOffset": 17703, "count": 0 }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 3166, "endOffset": 3186, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 11166, "endOffset": 15749, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "OnboardingProgressCompact",
+          "ranges": [
+            { "startOffset": 18210, "endOffset": 20715, "count": 10 },
+            { "startOffset": 18452, "endOffset": 18480, "count": 1 },
+            { "startOffset": 18480, "endOffset": 20714, "count": 9 }
+          ],
+          "isBlockCoverage": true
+        }
+      ],
+      "startOffset": 209
+    },
+    {
+      "scriptId": "1558",
+      "url": "file:///home/vik/aiborg_CC/aiborg-learn-sphere/src/components/ui/card.tsx",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 0, "endOffset": 8556, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 13, "endOffset": 8556, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 241, "endOffset": 279, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 320, "endOffset": 364, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 405, "endOffset": 449, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 489, "endOffset": 532, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 578, "endOffset": 627, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 669, "endOffset": 714, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 1102, "endOffset": 1516, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 1612, "endOffset": 2000, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 2107, "endOffset": 2553, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 2664, "endOffset": 3050, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 3169, "endOffset": 3536, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 3646, "endOffset": 4031, "count": 0 }],
+          "isBlockCoverage": false
+        }
+      ],
+      "startOffset": 209
+    },
+    {
+      "scriptId": "1562",
+      "url": "file:///home/vik/aiborg_CC/aiborg-learn-sphere/src/lib/utils.ts",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 0, "endOffset": 1309, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 13, "endOffset": 1309, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 239, "endOffset": 275, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "cn",
+          "ranges": [{ "startOffset": 541, "endOffset": 653, "count": 0 }],
+          "isBlockCoverage": false
+        }
+      ],
+      "startOffset": 209
+    },
+    {
+      "scriptId": "1565",
+      "url": "file:///home/vik/aiborg_CC/aiborg-learn-sphere/src/components/ui/button.tsx",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 0, "endOffset": 8934, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 13, "endOffset": 8934, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 243, "endOffset": 283, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 328, "endOffset": 376, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 3136, "endOffset": 3685, "count": 0 }],
+          "isBlockCoverage": false
+        }
+      ],
+      "startOffset": 209
+    },
+    {
+      "scriptId": "1574",
+      "url": "file:///home/vik/aiborg_CC/aiborg-learn-sphere/src/components/ui/progress.tsx",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 0, "endOffset": 3798, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 13, "endOffset": 3798, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 245, "endOffset": 287, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 794, "endOffset": 1717, "count": 0 }],
+          "isBlockCoverage": false
+        }
+      ],
+      "startOffset": 209
+    },
+    {
+      "scriptId": "1581",
+      "url": "file:///home/vik/aiborg_CC/aiborg-learn-sphere/src/components/ui/badge.tsx",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 0, "endOffset": 4533, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 13, "endOffset": 4533, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 242, "endOffset": 281, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 325, "endOffset": 372, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "Badge",
+          "ranges": [{ "startOffset": 1593, "endOffset": 2013, "count": 0 }],
+          "isBlockCoverage": false
+        }
+      ],
+      "startOffset": 209
+    }
+  ]
+}

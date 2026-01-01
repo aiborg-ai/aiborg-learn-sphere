@@ -13,6 +13,7 @@ import { SuccessDialog } from '@/components/studio/SuccessDialog';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useStudioPublish } from '@/hooks/studio/useStudioPublish';
+import { useOnboardingContext } from '@/contexts/OnboardingContext';
 import { logger } from '@/utils/logger';
 import type { AssetType, WizardMode } from '@/types/studio.types';
 
@@ -29,6 +30,7 @@ export default function Studio() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { markMilestone } = useOnboardingContext();
 
   const [view, setView] = useState<StudioView>('home');
   const [wizardState, setWizardState] = useState<WizardState | null>(null);
@@ -53,6 +55,10 @@ export default function Studio() {
           assetId,
           mode: wizardState.mode,
         });
+        // Mark milestone for content creation
+        if (wizardState.mode === 'create') {
+          markMilestone('has_created_content');
+        }
       }
     },
   });

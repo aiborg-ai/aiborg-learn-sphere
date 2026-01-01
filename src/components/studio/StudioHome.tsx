@@ -7,6 +7,8 @@ import React from 'react';
 import { BookOpen, Calendar, FileText, Megaphone, Plus, Edit } from '@/components/ui/icons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { OnboardingTooltip } from '@/components/onboarding';
+import { useOnboardingContext } from '@/contexts/OnboardingContext';
 import { cn } from '@/lib/utils';
 import type { AssetType } from '@/types/studio.types';
 
@@ -57,6 +59,8 @@ interface StudioHomeProps {
 }
 
 export function StudioHome({ onCreateNew, onEditExisting, className }: StudioHomeProps) {
+  const { shouldShowTip } = useOnboardingContext();
+
   return (
     <div className={cn('container max-w-7xl mx-auto p-6 space-y-8', className)}>
       {/* Header */}
@@ -66,48 +70,122 @@ export function StudioHome({ onCreateNew, onEditExisting, className }: StudioHom
       </div>
 
       {/* Asset Type Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-        {assetTypes.map(asset => (
-          <Card
-            key={asset.type}
-            className={cn(
-              'relative overflow-hidden transition-all hover:shadow-lg border-2',
-              'bg-gradient-to-br',
-              asset.gradient
-            )}
-          >
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-lg bg-background/80 backdrop-blur">{asset.icon}</div>
-                  <div>
-                    <CardTitle className="text-xl">{asset.title}</CardTitle>
-                    {asset.stats && (
-                      <p className="text-sm text-muted-foreground mt-1">{asset.stats}</p>
-                    )}
+      {shouldShowTip('studio-wizard') ? (
+        <OnboardingTooltip
+          tipId="studio-wizard"
+          title="Step-by-Step Wizards"
+          description="Our wizards guide you through creating courses, events, blogs, and announcements. Choose a content type below to get started."
+          placement="top"
+        >
+          <div className="asset-type-selector grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+            {assetTypes.map((asset, index) => (
+              <Card
+                key={asset.type}
+                className={cn(
+                  'relative overflow-hidden transition-all hover:shadow-lg border-2',
+                  'bg-gradient-to-br',
+                  asset.gradient
+                )}
+              >
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 rounded-lg bg-background/80 backdrop-blur">
+                        {asset.icon}
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl">{asset.title}</CardTitle>
+                        {asset.stats && (
+                          <p className="text-sm text-muted-foreground mt-1">{asset.stats}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <CardDescription className="text-base mt-2">{asset.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {index === 0 && shouldShowTip('studio-create') ? (
+                    <OnboardingTooltip
+                      tipId="studio-create"
+                      title="Create Content"
+                      description="Use the wizard to create professional content with AI assistance. Click here to get started!"
+                      placement="bottom"
+                    >
+                      <Button
+                        onClick={() => onCreateNew(asset.type)}
+                        className="w-full studio-create-button"
+                        size="lg"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Create New {asset.title}
+                      </Button>
+                    </OnboardingTooltip>
+                  ) : (
+                    <Button onClick={() => onCreateNew(asset.type)} className="w-full" size="lg">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create New {asset.title}
+                    </Button>
+                  )}
+                  <Button
+                    onClick={() => onEditExisting(asset.type)}
+                    variant="outline"
+                    className="w-full"
+                    size="lg"
+                  >
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit Existing
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </OnboardingTooltip>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+          {assetTypes.map(asset => (
+            <Card
+              key={asset.type}
+              className={cn(
+                'relative overflow-hidden transition-all hover:shadow-lg border-2',
+                'bg-gradient-to-br',
+                asset.gradient
+              )}
+            >
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-lg bg-background/80 backdrop-blur">
+                      {asset.icon}
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl">{asset.title}</CardTitle>
+                      {asset.stats && (
+                        <p className="text-sm text-muted-foreground mt-1">{asset.stats}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <CardDescription className="text-base mt-2">{asset.description}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button onClick={() => onCreateNew(asset.type)} className="w-full" size="lg">
-                <Plus className="w-4 h-4 mr-2" />
-                Create New {asset.title}
-              </Button>
-              <Button
-                onClick={() => onEditExisting(asset.type)}
-                variant="outline"
-                className="w-full"
-                size="lg"
-              >
-                <Edit className="w-4 h-4 mr-2" />
-                Edit Existing
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                <CardDescription className="text-base mt-2">{asset.description}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Button onClick={() => onCreateNew(asset.type)} className="w-full" size="lg">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create New {asset.title}
+                </Button>
+                <Button
+                  onClick={() => onEditExisting(asset.type)}
+                  variant="outline"
+                  className="w-full"
+                  size="lg"
+                >
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit Existing
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
 
       {/* Help Text */}
       <div className="text-center text-sm text-muted-foreground space-y-1">
