@@ -78,7 +78,7 @@ export class ExerciseService {
       logger.info('Exercise created', { exerciseId: data.id, courseId: input.course_id });
       return data as Exercise;
     } catch (_error) {
-      logger._error('Failed to create exercise', { _error, input });
+      logger.error('Failed to create exercise', { _error, input });
       throw error;
     }
   }
@@ -141,7 +141,7 @@ export class ExerciseService {
       logger.info('Exercise updated', { exerciseId: id });
       return data as Exercise;
     } catch (_error) {
-      logger._error('Failed to update exercise', { _error, input });
+      logger.error('Failed to update exercise', { _error, input });
       throw error;
     }
   }
@@ -157,7 +157,7 @@ export class ExerciseService {
 
       logger.info('Exercise deleted', { exerciseId });
     } catch (_error) {
-      logger._error('Failed to delete exercise', { _error, exerciseId });
+      logger.error('Failed to delete exercise', { _error, exerciseId });
       throw error;
     }
   }
@@ -177,7 +177,7 @@ export class ExerciseService {
 
       return data as Exercise;
     } catch (_error) {
-      logger._error('Failed to get exercise', { _error, exerciseId });
+      logger.error('Failed to get exercise', { _error, exerciseId });
       throw error;
     }
   }
@@ -208,7 +208,7 @@ export class ExerciseService {
         user_submission: submission || undefined,
       };
     } catch (_error) {
-      logger._error('Failed to get exercise with submission', { _error, exerciseId, userId });
+      logger.error('Failed to get exercise with submission', { _error, exerciseId, userId });
       throw error;
     }
   }
@@ -230,7 +230,7 @@ export class ExerciseService {
 
       return data as Exercise[];
     } catch (_error) {
-      logger._error('Failed to get exercises by course', { _error, courseId });
+      logger.error('Failed to get exercises by course', { _error, courseId });
       throw error;
     }
   }
@@ -273,7 +273,7 @@ export class ExerciseService {
         completed: latestSubmission.status === 'completed' || latestSubmission.status === 'passed',
       };
     } catch (_error) {
-      logger._error('Failed to get student progress', { _error, userId, exerciseId });
+      logger.error('Failed to get student progress', { _error, userId, exerciseId });
       throw error;
     }
   }
@@ -332,7 +332,7 @@ export class ExerciseService {
         average_attempts: Math.round(averageAttempts * 10) / 10,
       };
     } catch (_error) {
-      logger._error('Failed to get exercise statistics', { _error, exerciseId });
+      logger.error('Failed to get exercise statistics', { _error, exerciseId });
       throw error;
     }
   }
@@ -354,7 +354,7 @@ export class ExerciseService {
       logger.info('Exercise publish status updated', { exerciseId, isPublished });
       return data as Exercise;
     } catch (_error) {
-      logger._error('Failed to toggle exercise publish status', { _error, exerciseId });
+      logger.error('Failed to toggle exercise publish status', { _error, exerciseId });
       throw error;
     }
   }
@@ -384,7 +384,7 @@ export class ExerciseService {
         userId
       );
     } catch (_error) {
-      logger._error('Failed to duplicate exercise', { _error, exerciseId });
+      logger.error('Failed to duplicate exercise', { _error, exerciseId });
       throw error;
     }
   }

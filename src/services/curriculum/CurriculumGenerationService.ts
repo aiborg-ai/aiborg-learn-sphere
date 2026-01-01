@@ -123,7 +123,7 @@ class CurriculumGenerationService {
 
       return job;
     } catch (_error) {
-      logger._error('Error creating generation job:', _error);
+      logger.error('Error creating generation job:', _error);
       throw error;
     }
   }
@@ -187,7 +187,7 @@ class CurriculumGenerationService {
 
       logger.info(`Curriculum generated successfully in ${generationTime}ms`);
     } catch (_error) {
-      logger._error('Generation job failed:', _error);
+      logger.error('Generation job failed:', _error);
 
       await supabase
         .from('curriculum_generation_jobs')

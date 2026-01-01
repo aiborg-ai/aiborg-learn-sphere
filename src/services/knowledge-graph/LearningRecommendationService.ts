@@ -16,6 +16,8 @@ import type {
 } from '@/types/knowledge-graph';
 import { KnowledgeGraphService } from './KnowledgeGraphService';
 import { UserMasteryService } from './UserMasteryService';
+import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 
 export class LearningRecommendationService {
   // =====================================================================
@@ -134,8 +136,8 @@ export class LearningRecommendationService {
     const preferenceScore = this.calculatePreferenceScore(concept, options);
     totalScore += preferenceScore * 0.2;
 
-    // Factor 4: Popularity (15%) - placeholder for now
-    const popularityScore = 0.5; // TODO: Track and use actual popularity data
+    // Factor 4: Popularity (15%) - based on enrollment count
+    const popularityScore = await this.calculatePopularityScore(concept);
     totalScore += popularityScore * 0.15;
 
     // Factor 5: Skill gap filling (10%)
@@ -240,6 +242,46 @@ export class LearningRecommendationService {
   /**
    * Calculate score based on user preferences
    */
+  /**
+   * Calculate popularity score based on enrollment count and user activity
+   */
+  private static async calculatePopularityScore(concept: Concept): Promise<number> {
+    try {
+      // Get courses related to this concept
+      const conceptCourses = await KnowledgeGraphService.getConceptCourses(concept.id);
+
+      if (conceptCourses.length === 0) {
+        return 0.5; // Neutral score if no courses found
+      }
+
+      // Fetch enrollment counts for related courses
+      const courseIds = conceptCourses.map(cc => cc.course_id);
+      const { data: courses, error } = await supabase
+        .from('courses')
+        .select('id, enrollment_count')
+        .in('id', courseIds);
+
+      if (error) {
+        logger.warn('Failed to fetch course enrollment data:', error);
+        return 0.5; // Default neutral score
+      }
+
+      // Calculate average enrollment count
+      const enrollmentCounts = courses?.map(c => c.enrollment_count || 0) || [0];
+      const avgEnrollment =
+        enrollmentCounts.reduce((sum, count) => sum + count, 0) / enrollmentCounts.length;
+
+      // Normalize to 0-1 scale (using log scale for better distribution)
+      // Assume 100+ enrollments is very popular (score 1.0)
+      const normalizedScore = Math.min(1.0, Math.log10(avgEnrollment + 1) / Math.log10(101));
+
+      return normalizedScore;
+    } catch (_error) {
+      logger.warn('Error calculating popularity score:', _error);
+      return 0.5; // Default neutral score on error
+    }
+  }
+
   private static calculatePreferenceScore(
     concept: Concept,
     options?: RecommendationOptions

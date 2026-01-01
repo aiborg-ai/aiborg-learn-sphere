@@ -62,7 +62,7 @@ export function useSkillRecommendations(userId?: string) {
         // Tier them
         return tierRecommendations(recommendations);
       } catch (_error) {
-        logger._error('Error fetching skill recommendations:', _error);
+        logger.error('Error fetching skill recommendations:', _error);
         throw error;
       }
     },
@@ -84,7 +84,7 @@ export function useDismissRecommendation() {
       try {
         await SkillExtractionService.dismissRecommendation(recommendationId);
       } catch (_error) {
-        logger._error('Error dismissing recommendation:', _error);
+        logger.error('Error dismissing recommendation:', _error);
         throw error;
       }
     },

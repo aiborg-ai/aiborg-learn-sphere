@@ -99,7 +99,7 @@ export class AssessmentFeedbackController {
 
       return result;
     } catch (_error) {
-      logger._error('Error processing answer event:', _error);
+      logger.error('Error processing answer event:', _error);
       throw error;
     }
   }
@@ -493,7 +493,7 @@ export class AssessmentFeedbackController {
         actions: appliedActions.map(a => a.action),
       });
     } catch (_error) {
-      logger._error('Error applying recommended actions:', _error);
+      logger.error('Error applying recommended actions:', _error);
     }
 
     return appliedActions;
@@ -543,7 +543,7 @@ export class AssessmentFeedbackController {
         });
       }
     } catch (_error) {
-      logger._error('Error logging feedback event:', _error);
+      logger.error('Error logging feedback event:', _error);
     }
   }
 

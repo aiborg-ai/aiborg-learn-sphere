@@ -272,7 +272,7 @@ export default function DashboardRefactored() {
         }));
       }
     } catch (_error) {
-      logger._error('Error fetching dashboard data:', _error);
+      logger.error('Error fetching dashboard data:', _error);
     } finally {
       setDataLoading(false);
     }
@@ -300,7 +300,7 @@ export default function DashboardRefactored() {
         }));
       }
     } catch (_error) {
-      logger._error('Error marking notification as read:', _error);
+      logger.error('Error marking notification as read:', _error);
     }
   };
 
@@ -317,7 +317,7 @@ export default function DashboardRefactored() {
         setStats(prev => ({ ...prev, unreadNotifications: 0 }));
       }
     } catch (_error) {
-      logger._error('Error marking all notifications as read:', _error);
+      logger.error('Error marking all notifications as read:', _error);
     }
   };
 

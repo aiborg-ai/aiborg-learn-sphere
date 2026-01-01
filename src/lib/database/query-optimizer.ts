@@ -108,7 +108,7 @@ export class OptimizedQueryBuilder {
         hasPreviousPage: page > 1,
       };
     } catch (_error) {
-      logger._error('Pagination query failed:', _error);
+      logger.error('Pagination query failed:', _error);
       throw error;
     }
   }
@@ -167,7 +167,7 @@ export class OptimizedQueryBuilder {
 
       return relatedMap;
     } catch (_error) {
-      logger._error('Batch fetch failed:', _error);
+      logger.error('Batch fetch failed:', _error);
       throw error;
     }
   }
@@ -190,7 +190,7 @@ export class OptimizedQueryBuilder {
       const results = await Promise.all(queries.map(q => q()));
       return results as T;
     } catch (_error) {
-      logger._error('Parallel query execution failed:', _error);
+      logger.error('Parallel query execution failed:', _error);
       throw error;
     }
   }

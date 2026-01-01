@@ -138,7 +138,7 @@ export function LearningOutcomesDashboard({
           : null
       );
     } catch (_error) {
-      logger._error('Error fetching learning outcomes:', _error);
+      logger.error('Error fetching learning outcomes:', _error);
     } finally {
       setLoading(false);
     }

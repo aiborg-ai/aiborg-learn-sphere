@@ -112,7 +112,7 @@ export function TemplateManager() {
       }
       setTemplateUsage(usageCounts);
     } catch (_error) {
-      logger._error('Error loading templates:', _error);
+      logger.error('Error loading templates:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load templates',
@@ -128,7 +128,7 @@ export function TemplateManager() {
       const { data } = await supabase.from('blog_categories').select('*').order('name');
       setCategories(data || []);
     } catch (_error) {
-      logger._error('Error loading categories:', _error);
+      logger.error('Error loading categories:', _error);
     }
   };
 
@@ -172,7 +172,7 @@ export function TemplateManager() {
       form.reset();
       loadTemplates();
     } catch (_error) {
-      logger._error('Error saving template:', _error);
+      logger.error('Error saving template:', _error);
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to save template',

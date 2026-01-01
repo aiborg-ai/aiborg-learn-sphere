@@ -94,7 +94,7 @@ export default function TenantManagement() {
       if (error) throw error;
       setTenants(data || []);
     } catch (_error) {
-      logger._error('Failed to load tenants', _error);
+      logger.error('Failed to load tenants', _error);
       toast({
         title: 'Error',
         description: 'Failed to load tenants',
@@ -164,7 +164,7 @@ export default function TenantManagement() {
 
       loadTenants();
     } catch (_error) {
-      logger._error('Failed to update tenant status', _error);
+      logger.error('Failed to update tenant status', _error);
       toast({
         title: 'Error',
         description: 'Failed to update tenant status',

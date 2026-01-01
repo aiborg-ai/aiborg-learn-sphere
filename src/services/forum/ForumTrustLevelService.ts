@@ -29,7 +29,7 @@ export class ForumTrustLevelService {
 
       return data;
     } catch (_error) {
-      logger._error('Error fetching trust level:', _error);
+      logger.error('Error fetching trust level:', _error);
       return null;
     }
   }
@@ -53,7 +53,7 @@ export class ForumTrustLevelService {
       logger.log('Trust level initialized for user:', userId);
       return data;
     } catch (_error) {
-      logger._error('Error initializing trust level:', _error);
+      logger.error('Error initializing trust level:', _error);
       throw error;
     }
   }
@@ -72,7 +72,7 @@ export class ForumTrustLevelService {
       logger.log('Trust level calculated for user:', userId, '→', data);
       return data as TrustLevel;
     } catch (_error) {
-      logger._error('Error calculating trust level:', _error);
+      logger.error('Error calculating trust level:', _error);
       throw error;
     }
   }
@@ -110,7 +110,7 @@ export class ForumTrustLevelService {
 
       logger.log('Trust level set manually:', userId, '→', level);
     } catch (_error) {
-      logger._error('Error setting trust level:', _error);
+      logger.error('Error setting trust level:', _error);
       throw error;
     }
   }
@@ -341,7 +341,7 @@ export class ForumTrustLevelService {
           return false;
       }
     } catch (_error) {
-      logger._error('Error checking permissions:', _error);
+      logger.error('Error checking permissions:', _error);
       return false;
     }
   }
@@ -417,7 +417,7 @@ export class ForumTrustLevelService {
         requirements: requirementsMet,
       };
     } catch (_error) {
-      logger._error('Error getting progress:', _error);
+      logger.error('Error getting progress:', _error);
       return null;
     }
   }
@@ -447,7 +447,7 @@ export class ForumTrustLevelService {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching leaderboard:', _error);
+      logger.error('Error fetching leaderboard:', _error);
       return [];
     }
   }

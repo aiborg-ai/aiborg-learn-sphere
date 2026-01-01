@@ -89,7 +89,7 @@ export default function InstructorDashboard() {
       // Load instructor data
       await fetchInstructorData();
     } catch (_error) {
-      logger._error('Error checking instructor role:', _error);
+      logger.error('Error checking instructor role:', _error);
       setLoading(false);
     }
   };
@@ -142,7 +142,7 @@ export default function InstructorDashboard() {
         setStats(prev => ({ ...prev, totalMaterials: materialsData?.length || 0 }));
       }
     } catch (_error) {
-      logger._error('Error fetching instructor data:', _error);
+      logger.error('Error fetching instructor data:', _error);
     } finally {
       setLoading(false);
     }

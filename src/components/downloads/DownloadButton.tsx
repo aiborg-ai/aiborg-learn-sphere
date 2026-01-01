@@ -99,7 +99,7 @@ export function DownloadButton({
         onDownloadComplete();
       }
     } catch (_error) {
-      logger._error('Download _error:', _error);
+      logger.error('Download _error:', _error);
       toast({
         title: 'Download Failed',
         description: 'Failed to download the file',

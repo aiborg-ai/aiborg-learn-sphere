@@ -59,7 +59,7 @@ export function useVideoProgress({
         setLastSavedProgress(data.progress_percentage || 0);
       }
     } catch (_error) {
-      logger._error('Error loading progress:', _error);
+      logger.error('Error loading progress:', _error);
     }
   }, [user, contentId, videoRef, setWatchedPercentage, setLastSavedProgress]);
 
@@ -116,7 +116,7 @@ export function useVideoProgress({
         onProgressUpdate(currentProgress);
       }
     } catch (_error) {
-      logger._error('Error saving progress:', _error);
+      logger.error('Error saving progress:', _error);
     }
   }, [
     user,

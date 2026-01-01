@@ -89,7 +89,7 @@ class ProfileWorkflowService {
       if (error) throw error;
       return (data || []) as WorkflowStep[];
     } catch (_error) {
-      logger._error('Error fetching workflow steps:', _error);
+      logger.error('Error fetching workflow steps:', _error);
       throw error;
     }
   }
@@ -108,7 +108,7 @@ class ProfileWorkflowService {
       if (error) throw error;
       return data as WorkflowStep;
     } catch (_error) {
-      logger._error(`Error fetching step ${stepOrder}:`, _error);
+      logger.error(`Error fetching step ${stepOrder}:`, _error);
       return null;
     }
   }
@@ -150,7 +150,7 @@ class ProfileWorkflowService {
       if (createError) throw createError;
       return newProgress as WorkflowProgress;
     } catch (_error) {
-      logger._error('Error getting or creating workflow progress:', _error);
+      logger.error('Error getting or creating workflow progress:', _error);
       throw error;
     }
   }
@@ -169,7 +169,7 @@ class ProfileWorkflowService {
       if (error) throw error;
       return data as WorkflowProgress;
     } catch (_error) {
-      logger._error('Error fetching workflow progress:', _error);
+      logger.error('Error fetching workflow progress:', _error);
       return null;
     }
   }
@@ -204,7 +204,7 @@ class ProfileWorkflowService {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error updating step data:', _error);
+      logger.error('Error updating step data:', _error);
       throw error;
     }
   }
@@ -239,7 +239,7 @@ class ProfileWorkflowService {
       if (error) throw error;
       return data as WorkflowProgress;
     } catch (_error) {
-      logger._error('Error completing step:', _error);
+      logger.error('Error completing step:', _error);
       throw error;
     }
   }
@@ -259,7 +259,7 @@ class ProfileWorkflowService {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error navigating to step:', _error);
+      logger.error('Error navigating to step:', _error);
       throw error;
     }
   }
@@ -275,7 +275,7 @@ class ProfileWorkflowService {
       const previousStep = Math.max(1, progress.current_step_order - 1);
       await this.goToStep(progressId, previousStep);
     } catch (_error) {
-      logger._error('Error going to previous step:', _error);
+      logger.error('Error going to previous step:', _error);
       throw error;
     }
   }
@@ -307,7 +307,7 @@ class ProfileWorkflowService {
         assessment_linked: !!stepData.step_5?.latest_assessment_id,
       };
     } catch (_error) {
-      logger._error('Error getting workflow summary:', _error);
+      logger.error('Error getting workflow summary:', _error);
       throw error;
     }
   }
@@ -371,7 +371,7 @@ class ProfileWorkflowService {
       logger.info(`Profile created successfully: ${profile.profile_name}`);
       return profile as LearnerProfile;
     } catch (_error) {
-      logger._error('Error finalizing workflow:', _error);
+      logger.error('Error finalizing workflow:', _error);
       throw error;
     }
   }
@@ -405,7 +405,7 @@ class ProfileWorkflowService {
 
       if (updateError) throw updateError;
     } catch (_error) {
-      logger._error('Error linking assessment to profile:', _error);
+      logger.error('Error linking assessment to profile:', _error);
       // Don't throw - assessment linking is optional
     }
   }
@@ -425,7 +425,7 @@ class ProfileWorkflowService {
         level: this.scoreToLevel(typeof score === 'number' ? score : 0.5),
       }));
     } catch (_error) {
-      logger._error('Error extracting proficiency areas:', _error);
+      logger.error('Error extracting proficiency areas:', _error);
       return [];
     }
   }
@@ -455,7 +455,7 @@ class ProfileWorkflowService {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error abandoning workflow:', _error);
+      logger.error('Error abandoning workflow:', _error);
       throw error;
     }
   }

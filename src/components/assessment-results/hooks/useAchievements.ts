@@ -69,7 +69,7 @@ export function useAchievements(userId: string | undefined): UseAchievementsRetu
 
       setAchievements(newAchievements);
     } catch (_error) {
-      logger._error('Error checking achievements:', _error);
+      logger.error('Error checking achievements:', _error);
     }
   };
 

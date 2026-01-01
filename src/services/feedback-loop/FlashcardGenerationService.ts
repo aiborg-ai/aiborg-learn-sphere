@@ -89,7 +89,7 @@ export class FlashcardGenerationService {
 
       return null;
     } catch (_error) {
-      logger._error('Error generating flashcard:', _error);
+      logger.error('Error generating flashcard:', _error);
       return null;
     }
   }
@@ -194,7 +194,7 @@ export class FlashcardGenerationService {
 
       return result;
     } catch (_error) {
-      logger._error('Error in batch flashcard generation:', _error);
+      logger.error('Error in batch flashcard generation:', _error);
       result.errors++;
       return result;
     }

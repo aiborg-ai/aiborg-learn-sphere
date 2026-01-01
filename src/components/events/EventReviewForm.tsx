@@ -82,7 +82,7 @@ export default function EventReviewForm() {
         setEvents(allEvents);
       }
     } catch (_error) {
-      logger._error('Error fetching events:', _error);
+      logger.error('Error fetching events:', _error);
     }
   }, [user]);
 

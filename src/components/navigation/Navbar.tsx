@@ -97,6 +97,13 @@ export function Navbar() {
       }, 300)
     : null;
 
+  // Studio prefetch handler
+  const studioPrefetchHandlers = isAdmin
+    ? createPrefetchOnHoverWithDelay(async () => {
+        prefetchRouteChunk('/studio');
+      }, 300)
+    : null;
+
   return (
     <nav
       className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl backdrop-saturate-150 border-b border-border/50 shadow-soft"
@@ -283,6 +290,18 @@ export function Navbar() {
                       >
                         <Icon name="Shield" size={16} className="mr-2" aria-hidden="true" />
                         {t('user.adminDashboard')}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => navigate('/studio')}
+                        onMouseEnter={() => studioPrefetchHandlers?.onMouseEnter()}
+                        onMouseLeave={() => studioPrefetchHandlers?.onMouseLeave()}
+                        aria-label="Go to Content Studio"
+                      >
+                        <Icon name="Wand2" size={16} className="mr-2" aria-hidden="true" />
+                        Content Studio
+                        <Badge className="ml-2 bg-purple-500 text-white text-[10px] px-1.5 py-0.5">
+                          New
+                        </Badge>
                       </DropdownMenuItem>
                     </>
                   )}
@@ -488,16 +507,37 @@ export function Navbar() {
                   </Button>
                 </PrefetchLink>
                 {isAdmin && (
-                  <PrefetchLink to="/admin">
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-foreground hover:bg-muted/10"
-                      aria-label={t('aria.goToAdmin')}
+                  <>
+                    <PrefetchLink to="/admin">
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start text-foreground hover:bg-muted/10"
+                        aria-label={t('aria.goToAdmin')}
+                      >
+                        <Icon name="Shield" size={16} className="mr-2" aria-hidden="true" />
+                        {t('user.adminDashboard')}
+                      </Button>
+                    </PrefetchLink>
+                    <PrefetchLink
+                      to="/studio"
+                      onPrefetch={async () => {
+                        prefetchRouteChunk('/studio');
+                      }}
+                      prefetchDelay={300}
                     >
-                      <Icon name="Shield" size={16} className="mr-2" aria-hidden="true" />
-                      {t('user.adminDashboard')}
-                    </Button>
-                  </PrefetchLink>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start text-foreground hover:bg-muted/10"
+                        aria-label="Go to Content Studio"
+                      >
+                        <Icon name="Wand2" size={16} className="mr-2" aria-hidden="true" />
+                        Content Studio
+                        <Badge className="ml-2 bg-purple-500 text-white text-[10px] px-1.5 py-0.5">
+                          New
+                        </Badge>
+                      </Button>
+                    </PrefetchLink>
+                  </>
                 )}
                 <Button
                   variant="ghost"

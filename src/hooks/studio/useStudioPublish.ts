@@ -222,7 +222,7 @@ export function useStudioPublish({
         onSuccess?.(resultId);
         return resultId;
       } catch (_error) {
-        logger._error('Publish failed:', _error);
+        logger.error('Publish failed:', _error);
 
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 

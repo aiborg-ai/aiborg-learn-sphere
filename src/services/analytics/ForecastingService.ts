@@ -134,7 +134,7 @@ export class ForecastingService {
         quality,
       };
     } catch (_error) {
-      logger._error('Error forecasting revenue:', _error);
+      logger.error('Error forecasting revenue:', _error);
       throw error;
     }
   }
@@ -208,7 +208,7 @@ export class ForecastingService {
         quality,
       };
     } catch (_error) {
-      logger._error('Error forecasting user growth:', _error);
+      logger.error('Error forecasting user growth:', _error);
       throw error;
     }
   }
@@ -282,7 +282,7 @@ export class ForecastingService {
         quality,
       };
     } catch (_error) {
-      logger._error('Error forecasting enrollments:', _error);
+      logger.error('Error forecasting enrollments:', _error);
       throw error;
     }
   }

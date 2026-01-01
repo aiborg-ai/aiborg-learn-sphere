@@ -58,7 +58,7 @@ function StudentRiskAlert({ className }: { className?: string }) {
       const score = await AtRiskDetectionService.getCurrentRiskScore(user.id);
       setRiskScore(score);
     } catch (_error) {
-      logger._error('Error fetching risk score:', _error);
+      logger.error('Error fetching risk score:', _error);
     } finally {
       setLoading(false);
     }
@@ -198,7 +198,7 @@ function InstructorRiskPanel({ className }: { className?: string }) {
       );
       setAtRiskStudents(students);
     } catch (_error) {
-      logger._error('Error fetching at-risk students:', _error);
+      logger.error('Error fetching at-risk students:', _error);
     } finally {
       setLoading(false);
     }

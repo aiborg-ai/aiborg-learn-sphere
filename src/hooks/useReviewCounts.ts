@@ -31,7 +31,7 @@ export const useReviewCounts = () => {
 
         setReviewCounts(counts);
       } catch (_error) {
-        logger._error('Error fetching review counts:', _error);
+        logger.error('Error fetching review counts:', _error);
       } finally {
         setLoading(false);
       }

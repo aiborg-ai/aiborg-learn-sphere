@@ -38,6 +38,7 @@ export default function Studio() {
     assetId: string;
     mode: WizardMode;
   } | null>(null);
+  const [assetSelectionType, setAssetSelectionType] = useState<AssetType | null>(null);
 
   // Initialize publish hook
   const { publish } = useStudioPublish({
@@ -67,14 +68,28 @@ export default function Studio() {
 
   // Handle editing existing asset
   const handleEditExisting = (assetType: AssetType) => {
-    // TODO: Show asset selection dialog
-    toast({
-      title: 'Coming Soon',
-      description: `Edit existing ${assetType} functionality will be available soon.`,
-    });
+    setAssetSelectionType(assetType);
+    setView('select-asset');
+  };
 
-    // For now, navigate to admin panel
-    // navigate(`/admin?tab=${assetType}s`);
+  // Handle asset selection for editing
+  const handleAssetSelected = (assetId: string, assetData: Record<string, unknown>) => {
+    if (!assetSelectionType) return;
+
+    setWizardState({
+      assetType: assetSelectionType,
+      mode: 'edit',
+      assetId,
+      initialData: assetData,
+    });
+    setView('wizard');
+    setAssetSelectionType(null);
+  };
+
+  // Handle cancel asset selection
+  const handleCancelAssetSelection = () => {
+    setAssetSelectionType(null);
+    setView('home');
   };
 
   // Handle wizard exit

@@ -75,7 +75,7 @@ export default function SystemPromptsTab() {
       if (error) throw error;
       setPrompts(data || []);
     } catch (_error) {
-      logger._error('Error loading prompts:', _error);
+      logger.error('Error loading prompts:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load system prompts',
@@ -174,7 +174,7 @@ export default function SystemPromptsTab() {
       setEditDialogOpen(false);
       loadPrompts();
     } catch (_error) {
-      logger._error('Error saving prompt:', _error);
+      logger.error('Error saving prompt:', _error);
       toast({
         title: 'Error',
         description: 'Failed to save system prompt',
@@ -199,7 +199,7 @@ export default function SystemPromptsTab() {
       });
       loadPrompts();
     } catch (_error) {
-      logger._error('Error deleting prompt:', _error);
+      logger.error('Error deleting prompt:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete system prompt',

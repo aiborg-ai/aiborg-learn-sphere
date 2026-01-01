@@ -63,7 +63,7 @@ export function UserManagement({ users, setUsers, _onRefresh }: UserManagementPr
         description: 'User deleted successfully',
       });
     } catch (_error) {
-      logger._error('Error deleting user:', _error);
+      logger.error('Error deleting user:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete user',
@@ -88,7 +88,7 @@ export function UserManagement({ users, setUsers, _onRefresh }: UserManagementPr
         description: 'User role updated successfully',
       });
     } catch (_error) {
-      logger._error('Error updating user role:', _error);
+      logger.error('Error updating user role:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update user role',
@@ -107,7 +107,7 @@ export function UserManagement({ users, setUsers, _onRefresh }: UserManagementPr
       });
       setTimeout(() => setCopiedId(null), 2000);
     } catch (_error) {
-      logger._error('Error copying to clipboard:', _error);
+      logger.error('Error copying to clipboard:', _error);
       toast({
         title: 'Error',
         description: 'Failed to copy to clipboard',

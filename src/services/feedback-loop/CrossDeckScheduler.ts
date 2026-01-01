@@ -224,7 +224,7 @@ export class CrossDeckScheduler {
         topicDistribution,
       };
     } catch (_error) {
-      logger._error('Error building unified review queue:', _error);
+      logger.error('Error building unified review queue:', _error);
       return {
         cards: [],
         totalCards: 0,
@@ -304,7 +304,7 @@ export class CrossDeckScheduler {
 
       return schedules;
     } catch (_error) {
-      logger._error('Error balancing daily load:', _error);
+      logger.error('Error balancing daily load:', _error);
       return [];
     }
   }

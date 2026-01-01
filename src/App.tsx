@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { PersonalizationProvider } from '@/contexts/PersonalizationContext';
 import { TenantProvider } from '@/contexts/TenantContext';
+import { OnboardingProvider } from '@/contexts/OnboardingContext';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Icon } from '@/utils/iconLoader';
 import { useGlobalShortcuts } from '@/hooks/useKeyboardShortcuts';
@@ -208,6 +209,9 @@ const AdminSurveys = lazy(() => import('./pages/admin/AdminSurveys'));
 // Legal pages
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
+
+// Onboarding Demo
+const OnboardingDemo = lazy(() => import('./components/onboarding/OnboardingDemo'));
 
 // Aggregated Reports
 // TEMPORARY: Commented out until page is ready
@@ -675,6 +679,14 @@ const AppWithShortcuts = () => {
                 </RouteWrapper>
               }
             />
+            <Route
+              path="/onboarding-demo"
+              element={
+                <RouteWrapper routeName="Onboarding Demo">
+                  <OnboardingDemo />
+                </RouteWrapper>
+              }
+            />
             <Route path="/test-icons" element={<IconTest />} />
             <Route path="/examples/error-handling" element={<ErrorHandlingExample />} />
 
@@ -751,14 +763,16 @@ const App = () => (
     <ThemeProvider defaultTheme="system" storageKey="aiborg-ui-theme">
       <TenantProvider>
         <PersonalizationProvider>
-          {/* WCAG 4.1.3: Global announcer for screen reader status messages */}
-          <AnnouncerProvider>
-            <TooltipProvider>
-              <BrowserRouter>
-                <AppWithShortcuts />
-              </BrowserRouter>
-            </TooltipProvider>
-          </AnnouncerProvider>
+          <OnboardingProvider>
+            {/* WCAG 4.1.3: Global announcer for screen reader status messages */}
+            <AnnouncerProvider>
+              <TooltipProvider>
+                <BrowserRouter>
+                  <AppWithShortcuts />
+                </BrowserRouter>
+              </TooltipProvider>
+            </AnnouncerProvider>
+          </OnboardingProvider>
         </PersonalizationProvider>
       </TenantProvider>
     </ThemeProvider>

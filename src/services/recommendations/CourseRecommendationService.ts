@@ -139,7 +139,7 @@ export class CourseRecommendationService {
       const data = response?.data;
       return data?.map((u: SimilarUser) => u.id) || [];
     } catch (_error) {
-      logger._error('Error finding similar users', _error);
+      logger.error('Error finding similar users', _error);
       return [];
     }
   }

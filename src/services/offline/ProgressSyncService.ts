@@ -94,7 +94,7 @@ class ProgressSyncServiceClass {
           synced++;
           this.emit({ type: 'item-synced', data: item });
         } catch (_error) {
-          logger._error('[ProgressSyncService] Failed to sync item:', item.id, _error);
+          logger.error('[ProgressSyncService] Failed to sync item:', item.id, _error);
           failed++;
           this.emit({ type: 'item-failed', data: { item, error } });
         }
@@ -105,7 +105,7 @@ class ProgressSyncServiceClass {
 
       return { synced, failed };
     } catch (_error) {
-      logger._error('[ProgressSyncService] Sync all failed:', _error);
+      logger.error('[ProgressSyncService] Sync all failed:', _error);
       this.emit({ type: 'sync-failed', data: error });
       throw error;
     } finally {
@@ -334,7 +334,7 @@ class ProgressSyncServiceClass {
       try {
         listener(event);
       } catch (_error) {
-        logger._error('[ProgressSyncService] Listener _error:', _error);
+        logger.error('[ProgressSyncService] Listener _error:', _error);
       }
     });
   }

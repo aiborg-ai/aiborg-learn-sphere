@@ -116,7 +116,7 @@ export function AIStudyAssistant() {
         setMessages([welcomeMessage]);
       }
     } catch (_error) {
-      logger._error('Error initializing AI study session:', _error);
+      logger.error('Error initializing AI study session:', _error);
       toast({
         title: 'Session Error',
         description: 'Failed to initialize study assistant. Please try again.',
@@ -198,7 +198,7 @@ export function AIStudyAssistant() {
 
       logger.log('AI study assistant response generated successfully');
     } catch (_error) {
-      logger._error('Error sending message to AI:', _error);
+      logger.error('Error sending message to AI:', _error);
 
       const errorMessage: Message = {
         id: crypto.randomUUID(),
@@ -244,7 +244,7 @@ export function AIStudyAssistant() {
           .update({ ended_at: new Date().toISOString() })
           .eq('id', sessionId);
       } catch (_error) {
-        logger._error('Error ending session:', _error);
+        logger.error('Error ending session:', _error);
       }
     }
   };

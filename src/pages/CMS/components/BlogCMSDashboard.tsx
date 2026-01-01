@@ -136,7 +136,7 @@ function BlogCMSDashboard() {
         recentComments: recentComments || [],
       });
     } catch (_error) {
-      logger._error('Error fetching dashboard stats:', _error);
+      logger.error('Error fetching dashboard stats:', _error);
       toast({
         title: 'Error',
         description: 'Failed to fetch dashboard statistics',

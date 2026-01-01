@@ -81,7 +81,7 @@ export const useAssessmentSubmit = ({
           recommendations: generateRecommendations(strengthLevel, categoryId, profilingData),
         });
       } catch (_error) {
-        logger._error('Error saving insights:', _error);
+        logger.error('Error saving insights:', _error);
       }
     }
   };
@@ -195,7 +195,7 @@ export const useAssessmentSubmit = ({
         });
       }
     } catch (_error) {
-      logger._error('Error submitting assessment:', _error);
+      logger.error('Error submitting assessment:', _error);
       toast({
         title: 'Error',
         description: 'Failed to submit assessment. Please try again.',

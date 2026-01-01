@@ -110,7 +110,7 @@ export function TemplateExport() {
         });
       }
     } catch (_error) {
-      logger._error('Export _error:', _error);
+      logger.error('Export _error:', _error);
       toast({
         title: 'Export Failed',
         description: error.message || 'Failed to export templates',

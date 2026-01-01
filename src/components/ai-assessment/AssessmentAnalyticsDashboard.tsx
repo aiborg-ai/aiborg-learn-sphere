@@ -196,7 +196,7 @@ export function AssessmentAnalyticsDashboard({ assessmentId, userId, onClose }: 
 
       setRecommendations(recs.slice(0, 5));
     } catch (_error) {
-      logger._error('Error fetching analytics:', _error);
+      logger.error('Error fetching analytics:', _error);
     } finally {
       setLoading(false);
     }

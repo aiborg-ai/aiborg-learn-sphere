@@ -105,7 +105,7 @@ export default function LearningPathWizard() {
 
       setFormData(prev => ({ ...prev, focusCategoryIds: weakCategories }));
     } catch (_error) {
-      logger._error('Error fetching assessment data:', _error);
+      logger.error('Error fetching assessment data:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load assessment data',
@@ -240,7 +240,7 @@ export default function LearningPathWizard() {
 
       navigate(`/learning-paths/${pathData.id}`);
     } catch (_error) {
-      logger._error('Error generating path:', _error);
+      logger.error('Error generating path:', _error);
       toast({
         title: 'Error',
         description: 'Failed to generate learning path',

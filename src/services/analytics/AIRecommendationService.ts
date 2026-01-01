@@ -33,7 +33,7 @@ export class AIRecommendationService {
 
       return data || [];
     } catch (_error) {
-      logger._error('Error generating recommendations:', _error);
+      logger.error('Error generating recommendations:', _error);
       return [];
     }
   }
@@ -57,7 +57,7 @@ export class AIRecommendationService {
 
       return data || [];
     } catch (_error) {
-      logger._error('Error getting active recommendations:', _error);
+      logger.error('Error getting active recommendations:', _error);
       return [];
     }
   }
@@ -75,7 +75,7 @@ export class AIRecommendationService {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error marking recommendation viewed:', _error);
+      logger.error('Error marking recommendation viewed:', _error);
     }
   }
 
@@ -91,7 +91,7 @@ export class AIRecommendationService {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error marking recommendation clicked:', _error);
+      logger.error('Error marking recommendation clicked:', _error);
     }
   }
 
@@ -107,7 +107,7 @@ export class AIRecommendationService {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error dismissing recommendation:', _error);
+      logger.error('Error dismissing recommendation:', _error);
     }
   }
 
@@ -123,7 +123,7 @@ export class AIRecommendationService {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error rating recommendation:', _error);
+      logger.error('Error rating recommendation:', _error);
     }
   }
 }

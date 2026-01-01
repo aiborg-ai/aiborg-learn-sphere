@@ -131,7 +131,7 @@ export default function LearningPathsPage() {
 
       setLearningPaths(enrichedPaths);
     } catch (_error) {
-      logger._error('Error fetching learning paths:', _error);
+      logger.error('Error fetching learning paths:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load learning paths',
@@ -197,7 +197,7 @@ export default function LearningPathsPage() {
 
       fetchLearningPaths();
     } catch (_error) {
-      logger._error('Error enrolling in learning path:', _error);
+      logger.error('Error enrolling in learning path:', _error);
       toast({
         title: 'Error',
         description: 'Failed to enroll in learning path',

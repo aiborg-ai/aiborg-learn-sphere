@@ -84,7 +84,7 @@ export default function PublicSurvey() {
         setSurvey(data.survey);
         setQuestions(data.questions);
       } catch (_error) {
-        logger._error('Failed to load survey:', _error);
+        logger.error('Failed to load survey:', _error);
         toast({
           title: 'Survey Not Found',
           description: 'This survey may have ended or been removed.',
@@ -174,7 +174,7 @@ export default function PublicSurvey() {
         description: 'Your response has been submitted successfully.',
       });
     } catch (_error) {
-      logger._error('Failed to submit survey:', _error);
+      logger.error('Failed to submit survey:', _error);
       toast({
         title: 'Submission Failed',
         description: 'Please try again.',

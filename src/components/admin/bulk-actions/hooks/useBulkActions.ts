@@ -31,7 +31,7 @@ export function useBulkActions({ items, selectedItems, clearSelection }: UseBulk
       await action.action(selectedItemsArray);
       clearSelection();
     } catch (_error) {
-      logger._error('Bulk action _error:', _error);
+      logger.error('Bulk action _error:', _error);
       toast({
         title: 'Action Failed',
         description: 'Failed to complete bulk action',

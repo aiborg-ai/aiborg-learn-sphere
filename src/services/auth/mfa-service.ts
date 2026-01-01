@@ -69,7 +69,7 @@ export class MFAService {
         factorId: data.id,
       };
     } catch (_error) {
-      logger._error('MFA enrollment _error', _error);
+      logger.error('MFA enrollment _error', _error);
       throw _error;
     }
   }
@@ -104,7 +104,7 @@ export class MFAService {
         expiresAt: data.expires_at,
       };
     } catch (_error) {
-      logger._error('MFA challenge _error', _error);
+      logger.error('MFA challenge _error', _error);
       throw _error;
     }
   }
@@ -141,7 +141,7 @@ export class MFAService {
       logger.info('MFA verification successful', { factorId });
       return true;
     } catch (_error) {
-      logger._error('MFA verification _error', _error);
+      logger.error('MFA verification _error', _error);
       throw _error;
     }
   }
@@ -172,7 +172,7 @@ export class MFAService {
       logger.info('Listed MFA factors', { count: factors.length });
       return factors;
     } catch (_error) {
-      logger._error('List MFA factors _error', _error);
+      logger.error('List MFA factors _error', _error);
       throw _error;
     }
   }
@@ -190,7 +190,7 @@ export class MFAService {
       logger.info('Checked MFA status', { hasMFA: hasVerified });
       return hasVerified;
     } catch (_error) {
-      logger._error('Check MFA status _error', _error);
+      logger.error('Check MFA status _error', _error);
       return false; // Fail safely
     }
   }
@@ -218,7 +218,7 @@ export class MFAService {
       logger.info('MFA unenrollment successful', { factorId });
       return true;
     } catch (_error) {
-      logger._error('MFA unenrollment _error', _error);
+      logger.error('MFA unenrollment _error', _error);
       throw _error;
     }
   }
@@ -240,7 +240,7 @@ export class MFAService {
 
       return data?.currentLevel || null;
     } catch (_error) {
-      logger._error('Get assurance level _error', _error);
+      logger.error('Get assurance level _error', _error);
       return null;
     }
   }
@@ -264,7 +264,7 @@ export class MFAService {
       logger.info('MFA enrollment completed', { factorId });
       return true;
     } catch (_error) {
-      logger._error('Complete enrollment _error', _error);
+      logger.error('Complete enrollment _error', _error);
       throw _error;
     }
   }

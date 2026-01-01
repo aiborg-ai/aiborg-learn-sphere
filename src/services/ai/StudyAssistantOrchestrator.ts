@@ -220,7 +220,7 @@ export class StudyAssistantOrchestrator {
 
           return enhanced;
         } catch (_error) {
-          logger._error('Error getting course recommendations:', _error);
+          logger.error('Error getting course recommendations:', _error);
           return [];
         }
       },
@@ -313,7 +313,7 @@ export class StudyAssistantOrchestrator {
 
           return data || [];
         } catch (_error) {
-          logger._error('Error in getRecentInsights:', _error);
+          logger.error('Error in getRecentInsights:', _error);
           return [];
         }
       },
@@ -358,7 +358,7 @@ export class StudyAssistantOrchestrator {
         upcoming_milestones: planData?.milestones || [],
       };
     } catch (_error) {
-      logger._error('Error getting active study plan:', _error);
+      logger.error('Error getting active study plan:', _error);
       return null;
     }
   }
@@ -485,7 +485,7 @@ export class StudyAssistantOrchestrator {
               };
             }
           } catch (_error) {
-            logger._error('Error generating progress forecast:', _error);
+            logger.error('Error generating progress forecast:', _error);
           }
         }
       }
@@ -502,7 +502,7 @@ export class StudyAssistantOrchestrator {
         next_best_actions: nextBestActions,
       };
     } catch (_error) {
-      logger._error('Error getting personalized dashboard:', _error);
+      logger.error('Error getting personalized dashboard:', _error);
       throw new Error('Failed to generate personalized dashboard');
     }
   }

@@ -122,7 +122,7 @@ export class LingoImportExportService {
 
       return exportData;
     } catch (_error) {
-      logger._error('Failed to export lessons', _error);
+      logger.error('Failed to export lessons', _error);
       throw error;
     }
   }
@@ -405,7 +405,7 @@ export class LingoImportExportService {
         failed: result.failed,
       });
     } catch (_error) {
-      logger._error('Import failed', _error);
+      logger.error('Import failed', _error);
       result.success = false;
       result.errors.push(
         `Import failed: ${error instanceof Error ? error.message : 'Unknown error'}`

@@ -92,7 +92,7 @@ export function AttendanceTicketManagement() {
         description: 'The attendance ticket has been verified',
       });
     } catch (_error) {
-      logger._error('Error verifying ticket:', _error);
+      logger.error('Error verifying ticket:', _error);
       toast({
         title: 'Error',
         description: 'Failed to verify ticket',
@@ -113,7 +113,7 @@ export function AttendanceTicketManagement() {
       setDeleteDialogOpen(false);
       setTicketToDelete(null);
     } catch (_error) {
-      logger._error('Error revoking ticket:', _error);
+      logger.error('Error revoking ticket:', _error);
       toast({
         title: 'Error',
         description: 'Failed to revoke ticket',

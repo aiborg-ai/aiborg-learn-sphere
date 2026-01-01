@@ -69,7 +69,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
           setPreferences(prefs);
         }
       } catch (_error) {
-        logger._error('Error initializing push notifications:', _error);
+        logger.error('Error initializing push notifications:', _error);
       } finally {
         setIsLoading(false);
       }
@@ -121,7 +121,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
 
       return success;
     } catch (_error) {
-      logger._error('Error subscribing to push notifications:', _error);
+      logger.error('Error subscribing to push notifications:', _error);
       return false;
     } finally {
       setIsLoading(false);
@@ -143,7 +143,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       }
       return success;
     } catch (_error) {
-      logger._error('Error unsubscribing from push notifications:', _error);
+      logger.error('Error unsubscribing from push notifications:', _error);
       return false;
     } finally {
       setIsLoading(false);

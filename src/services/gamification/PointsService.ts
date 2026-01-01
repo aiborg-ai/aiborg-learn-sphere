@@ -54,7 +54,7 @@ export class PointsService {
       if (error) throw error;
       return true;
     } catch (_error) {
-      logger._error('Error initializing user progress:', _error);
+      logger.error('Error initializing user progress:', _error);
       return false;
     }
   }
@@ -76,7 +76,7 @@ export class PointsService {
       if (error) throw error;
       return data as UserProgress;
     } catch (_error) {
-      logger._error('Error fetching user progress:', _error);
+      logger.error('Error fetching user progress:', _error);
       return null;
     }
   }
@@ -103,7 +103,7 @@ export class PointsService {
       if (error) throw error;
       return data as PointsAwardResult;
     } catch (_error) {
-      logger._error('Error awarding points:', _error);
+      logger.error('Error awarding points:', _error);
       return null;
     }
   }
@@ -120,7 +120,7 @@ export class PointsService {
       if (error) throw error;
       return data as StreakUpdateResult;
     } catch (_error) {
-      logger._error('Error updating streak:', _error);
+      logger.error('Error updating streak:', _error);
       return null;
     }
   }
@@ -143,7 +143,7 @@ export class PointsService {
       if (error) throw error;
       return (data as PointTransaction[]) || [];
     } catch (_error) {
-      logger._error('Error fetching transaction history:', _error);
+      logger.error('Error fetching transaction history:', _error);
       return [];
     }
   }
@@ -267,7 +267,7 @@ export class PointsService {
         percentile,
       };
     } catch (_error) {
-      logger._error('Error fetching leaderboard stats:', _error);
+      logger.error('Error fetching leaderboard stats:', _error);
       return { totalPoints: 0, level: 1, rank: null, percentile: null };
     }
   }
@@ -405,7 +405,7 @@ export class PointsService {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching top performers:', _error);
+      logger.error('Error fetching top performers:', _error);
       return [];
     }
   }
@@ -440,7 +440,7 @@ export class PointsService {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching longest streaks:', _error);
+      logger.error('Error fetching longest streaks:', _error);
       return [];
     }
   }

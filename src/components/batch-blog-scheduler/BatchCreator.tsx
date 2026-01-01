@@ -132,7 +132,7 @@ export function BatchCreator() {
       const data = await BlogTemplateService.getTemplates({ is_active: true });
       setTemplates(data);
     } catch (_error) {
-      logger._error('Error loading templates:', _error);
+      logger.error('Error loading templates:', _error);
     }
   };
 
@@ -141,7 +141,7 @@ export function BatchCreator() {
       const data = await BlogCampaignService.getActiveCampaigns();
       setCampaigns(data);
     } catch (_error) {
-      logger._error('Error loading campaigns:', _error);
+      logger.error('Error loading campaigns:', _error);
     }
   };
 
@@ -150,7 +150,7 @@ export function BatchCreator() {
       const { data } = await supabase.from('blog_categories').select('*').order('name');
       setCategories(data || []);
     } catch (_error) {
-      logger._error('Error loading categories:', _error);
+      logger.error('Error loading categories:', _error);
     }
   };
 
@@ -164,7 +164,7 @@ export function BatchCreator() {
       form.setValue('category_id', template.category_id || undefined);
       form.setValue('tags', template.default_tags?.join(', ') || '');
     } catch (_error) {
-      logger._error('Error loading template data:', _error);
+      logger.error('Error loading template data:', _error);
     }
   };
 
@@ -249,7 +249,7 @@ export function BatchCreator() {
         });
       }
     } catch (_error) {
-      logger._error('Error creating batch:', _error);
+      logger.error('Error creating batch:', _error);
       toast({
         title: 'Batch generation failed',
         description: error instanceof Error ? error.message : 'Unknown error',

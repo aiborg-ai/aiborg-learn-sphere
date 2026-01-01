@@ -61,7 +61,7 @@ export class BatchGenerationService {
         message: result.message,
       };
     } catch (_error) {
-      logger._error('Error creating batch job:', _error);
+      logger.error('Error creating batch job:', _error);
       throw new Error(error instanceof Error ? error.message : 'Failed to create batch job');
     }
   }
@@ -100,7 +100,7 @@ export class BatchGenerationService {
       const result = await response.json();
       return result;
     } catch (_error) {
-      logger._error('Error checking job status:', _error);
+      logger.error('Error checking job status:', _error);
       throw new Error(error instanceof Error ? error.message : 'Failed to check job status');
     }
   }

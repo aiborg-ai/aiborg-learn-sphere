@@ -115,7 +115,7 @@ class MicrolearningServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching nuggets:', _error);
+      logger.error('Error fetching nuggets:', _error);
       throw error;
     }
   }
@@ -134,7 +134,7 @@ class MicrolearningServiceClass {
       if (error) throw error;
       return data;
     } catch (_error) {
-      logger._error('Error fetching nugget:', _error);
+      logger.error('Error fetching nugget:', _error);
       throw error;
     }
   }
@@ -158,7 +158,7 @@ class MicrolearningServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching user progress:', _error);
+      logger.error('Error fetching user progress:', _error);
       throw error;
     }
   }
@@ -187,7 +187,7 @@ class MicrolearningServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching due nuggets:', _error);
+      logger.error('Error fetching due nuggets:', _error);
       throw error;
     }
   }
@@ -224,7 +224,7 @@ class MicrolearningServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error updating progress:', _error);
+      logger.error('Error updating progress:', _error);
       throw error;
     }
   }
@@ -274,7 +274,7 @@ class MicrolearningServiceClass {
         }
       );
     } catch (_error) {
-      logger._error('Error completing nugget:', _error);
+      logger.error('Error completing nugget:', _error);
       throw error;
     }
   }
@@ -330,7 +330,7 @@ class MicrolearningServiceClass {
 
       if (updateError) throw updateError;
     } catch (_error) {
-      logger._error('Error submitting review:', _error);
+      logger.error('Error submitting review:', _error);
       throw error;
     }
   }
@@ -349,7 +349,7 @@ class MicrolearningServiceClass {
       if (error && error.code !== 'PGRST116') throw error;
       return data;
     } catch (_error) {
-      logger._error('Error fetching learning goals:', _error);
+      logger.error('Error fetching learning goals:', _error);
       throw error;
     }
   }
@@ -372,7 +372,7 @@ class MicrolearningServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error updating learning goals:', _error);
+      logger.error('Error updating learning goals:', _error);
       throw error;
     }
   }
@@ -392,7 +392,7 @@ class MicrolearningServiceClass {
       if (error && error.code !== 'PGRST116') throw error;
       return data;
     } catch (_error) {
-      logger._error('Error fetching today learning:', _error);
+      logger.error('Error fetching today learning:', _error);
       throw error;
     }
   }
@@ -415,7 +415,7 @@ class MicrolearningServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching learning history:', _error);
+      logger.error('Error fetching learning history:', _error);
       throw error;
     }
   }
@@ -443,7 +443,7 @@ class MicrolearningServiceClass {
         }
       );
     } catch (_error) {
-      logger._error('Error fetching streak:', _error);
+      logger.error('Error fetching streak:', _error);
       throw error;
     }
   }
@@ -474,7 +474,7 @@ class MicrolearningServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching recommendations:', _error);
+      logger.error('Error fetching recommendations:', _error);
       throw error;
     }
   }
@@ -491,7 +491,7 @@ class MicrolearningServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error dismissing recommendation:', _error);
+      logger.error('Error dismissing recommendation:', _error);
       throw error;
     }
   }
@@ -523,7 +523,7 @@ class MicrolearningServiceClass {
         recommendationCount: recommendations.length,
       };
     } catch (_error) {
-      logger._error('Error fetching dashboard summary:', _error);
+      logger.error('Error fetching dashboard summary:', _error);
       throw error;
     }
   }

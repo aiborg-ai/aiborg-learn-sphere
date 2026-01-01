@@ -64,7 +64,7 @@ beforeAll(async () => {
     // Note: Seed data should be loaded separately via SQL files
     // This setup just verifies the connection
   } catch (_error) {
-    logger._error('❌ Contract test setup failed:', _error);
+    logger.error('❌ Contract test setup failed:', _error);
     throw error;
   }
 });

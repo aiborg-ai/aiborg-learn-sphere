@@ -151,7 +151,7 @@ class StudyPlannerServiceClass {
       if (error && error.code !== 'PGRST116') throw error;
       return data;
     } catch (_error) {
-      logger._error('Error fetching learning style:', _error);
+      logger.error('Error fetching learning style:', _error);
       throw error;
     }
   }
@@ -174,7 +174,7 @@ class StudyPlannerServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error updating learning style:', _error);
+      logger.error('Error updating learning style:', _error);
       throw error;
     }
   }
@@ -209,7 +209,7 @@ class StudyPlannerServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching optimal times:', _error);
+      logger.error('Error fetching optimal times:', _error);
       throw error;
     }
   }
@@ -225,7 +225,7 @@ class StudyPlannerServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error calculating optimal times:', _error);
+      logger.error('Error calculating optimal times:', _error);
       throw error;
     }
   }
@@ -246,7 +246,7 @@ class StudyPlannerServiceClass {
       if (error && error.code !== 'PGRST116') throw error;
       return data?.peak_hour || null;
     } catch (_error) {
-      logger._error('Error fetching peak hour:', _error);
+      logger.error('Error fetching peak hour:', _error);
       return null;
     }
   }
@@ -272,7 +272,7 @@ class StudyPlannerServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching study plans:', _error);
+      logger.error('Error fetching study plans:', _error);
       throw error;
     }
   }
@@ -303,7 +303,7 @@ class StudyPlannerServiceClass {
         items: itemsResult.data || [],
       };
     } catch (_error) {
-      logger._error('Error fetching study plan:', _error);
+      logger.error('Error fetching study plan:', _error);
       throw error;
     }
   }
@@ -338,7 +338,7 @@ class StudyPlannerServiceClass {
       if (error) throw error;
       return data;
     } catch (_error) {
-      logger._error('Error creating study plan:', _error);
+      logger.error('Error creating study plan:', _error);
       throw error;
     }
   }
@@ -371,7 +371,7 @@ class StudyPlannerServiceClass {
       if (error) throw error;
       return data;
     } catch (_error) {
-      logger._error('Error generating AI study plan:', _error);
+      logger.error('Error generating AI study plan:', _error);
       throw error;
     }
   }
@@ -391,7 +391,7 @@ class StudyPlannerServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error updating study plan:', _error);
+      logger.error('Error updating study plan:', _error);
       throw error;
     }
   }
@@ -405,7 +405,7 @@ class StudyPlannerServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error deleting study plan:', _error);
+      logger.error('Error deleting study plan:', _error);
       throw error;
     }
   }
@@ -438,7 +438,7 @@ class StudyPlannerServiceClass {
       if (error) throw error;
       return data;
     } catch (_error) {
-      logger._error('Error adding plan item:', _error);
+      logger.error('Error adding plan item:', _error);
       throw error;
     }
   }
@@ -458,7 +458,7 @@ class StudyPlannerServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error updating plan item:', _error);
+      logger.error('Error updating plan item:', _error);
       throw error;
     }
   }
@@ -472,7 +472,7 @@ class StudyPlannerServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error deleting plan item:', _error);
+      logger.error('Error deleting plan item:', _error);
       throw error;
     }
   }
@@ -514,7 +514,7 @@ class StudyPlannerServiceClass {
       if (error) throw error;
       return data;
     } catch (_error) {
-      logger._error('Error starting session:', _error);
+      logger.error('Error starting session:', _error);
       throw error;
     }
   }
@@ -561,7 +561,7 @@ class StudyPlannerServiceClass {
         }
       );
     } catch (_error) {
-      logger._error('Error completing session:', _error);
+      logger.error('Error completing session:', _error);
       throw error;
     }
   }
@@ -590,7 +590,7 @@ class StudyPlannerServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error recording break:', _error);
+      logger.error('Error recording break:', _error);
       throw error;
     }
   }
@@ -610,7 +610,7 @@ class StudyPlannerServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching recent sessions:', _error);
+      logger.error('Error fetching recent sessions:', _error);
       throw error;
     }
   }
@@ -662,7 +662,7 @@ class StudyPlannerServiceClass {
         avgSessionLength,
       };
     } catch (_error) {
-      logger._error('Error fetching session stats:', _error);
+      logger.error('Error fetching session stats:', _error);
       throw error;
     }
   }
@@ -685,7 +685,7 @@ class StudyPlannerServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching study schedule:', _error);
+      logger.error('Error fetching study schedule:', _error);
       throw error;
     }
   }
@@ -714,7 +714,7 @@ class StudyPlannerServiceClass {
       if (error) throw error;
       return data;
     } catch (_error) {
-      logger._error('Error adding schedule slot:', _error);
+      logger.error('Error adding schedule slot:', _error);
       throw error;
     }
   }
@@ -728,7 +728,7 @@ class StudyPlannerServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error removing schedule slot:', _error);
+      logger.error('Error removing schedule slot:', _error);
       throw error;
     }
   }
@@ -747,7 +747,7 @@ class StudyPlannerServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching recommendations:', _error);
+      logger.error('Error fetching recommendations:', _error);
       throw error;
     }
   }
@@ -764,7 +764,7 @@ class StudyPlannerServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error("Error fetching today's schedule:", _error);
+      logger.error("Error fetching today's schedule:", _error);
       throw error;
     }
   }
@@ -817,7 +817,7 @@ class StudyPlannerServiceClass {
         stats,
       };
     } catch (_error) {
-      logger._error('Error fetching dashboard summary:', _error);
+      logger.error('Error fetching dashboard summary:', _error);
       throw error;
     }
   }

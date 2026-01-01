@@ -79,7 +79,7 @@ export class ForumPostService {
 
       return post;
     } catch (_error) {
-      logger._error('Error creating post:', _error);
+      logger.error('Error creating post:', _error);
       throw error;
     }
   }
@@ -166,7 +166,7 @@ export class ForumPostService {
         online_users: onlineUsers || [],
       };
     } catch (_error) {
-      logger._error('Error fetching thread posts:', _error);
+      logger.error('Error fetching thread posts:', _error);
       throw error;
     }
   }
@@ -250,7 +250,7 @@ export class ForumPostService {
 
       return { ...data, replies: [] } as ForumPostWithDetails;
     } catch (_error) {
-      logger._error('Error fetching post:', _error);
+      logger.error('Error fetching post:', _error);
       throw error;
     }
   }
@@ -283,7 +283,7 @@ export class ForumPostService {
       logger.log('Post updated:', postId);
       return data;
     } catch (_error) {
-      logger._error('Error updating post:', _error);
+      logger.error('Error updating post:', _error);
       throw error;
     }
   }
@@ -311,7 +311,7 @@ export class ForumPostService {
 
       logger.log('Post deleted:', postId);
     } catch (_error) {
-      logger._error('Error deleting post:', _error);
+      logger.error('Error deleting post:', _error);
       throw error;
     }
   }
@@ -368,7 +368,7 @@ export class ForumPostService {
 
       logger.log('Best answer marked:', postId);
     } catch (_error) {
-      logger._error('Error marking best answer:', _error);
+      logger.error('Error marking best answer:', _error);
       throw error;
     }
   }
@@ -400,7 +400,7 @@ export class ForumPostService {
 
       logger.log('Best answer unmarked for thread:', threadId);
     } catch (_error) {
-      logger._error('Error unmarking best answer:', _error);
+      logger.error('Error unmarking best answer:', _error);
       throw error;
     }
   }
@@ -419,7 +419,7 @@ export class ForumPostService {
       if (error) throw error;
       return count || 0;
     } catch (_error) {
-      logger._error('Error getting post count:', _error);
+      logger.error('Error getting post count:', _error);
       return 0;
     }
   }
@@ -446,7 +446,7 @@ export class ForumPostService {
       if (error) throw error;
       return (data || []).map(post => ({ ...post, replies: [] })) as ForumPostWithDetails[];
     } catch (_error) {
-      logger._error('Error fetching user posts:', _error);
+      logger.error('Error fetching user posts:', _error);
       throw error;
     }
   }

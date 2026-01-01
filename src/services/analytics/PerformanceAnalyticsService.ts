@@ -173,7 +173,7 @@ export class PerformanceAnalyticsService {
         })
         .slice(0, limit);
     } catch (_error) {
-      logger._error('Error in getQuestionLevelPerformance:', _error);
+      logger.error('Error in getQuestionLevelPerformance:', _error);
       return [];
     }
   }
@@ -236,7 +236,7 @@ export class PerformanceAnalyticsService {
 
       return topicPerformance.sort((a, b) => b.averageAccuracy - a.averageAccuracy);
     } catch (_error) {
-      logger._error('Error in getTopicPerformance:', _error);
+      logger.error('Error in getTopicPerformance:', _error);
       return [];
     }
   }
@@ -320,7 +320,7 @@ export class PerformanceAnalyticsService {
 
       return curve;
     } catch (_error) {
-      logger._error('Error in getLearningCurve:', _error);
+      logger.error('Error in getLearningCurve:', _error);
       return [];
     }
   }
@@ -350,7 +350,7 @@ export class PerformanceAnalyticsService {
 
       return mistakes;
     } catch (_error) {
-      logger._error('Error in getCommonMistakes:', _error);
+      logger.error('Error in getCommonMistakes:', _error);
       return [];
     }
   }
@@ -436,7 +436,7 @@ export class PerformanceAnalyticsService {
         consistencyScore: Math.round(consistencyScore),
       };
     } catch (_error) {
-      logger._error('Error in getDetailedPerformanceStats:', _error);
+      logger.error('Error in getDetailedPerformanceStats:', _error);
       return {
         overallAccuracy: 0,
         totalQuestionsAttempted: 0,

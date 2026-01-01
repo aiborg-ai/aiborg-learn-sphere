@@ -57,7 +57,7 @@ export class StudyEffectivenessService {
         logger.error('Failed to record study session:', error);
       }
     } catch (_error) {
-      logger._error('Error recording study session:', _error);
+      logger.error('Error recording study session:', _error);
     }
   }
 
@@ -115,7 +115,7 @@ export class StudyEffectivenessService {
         hourlyPerformance: hourlyPerformance.sort((a, b) => a.hour - b.hour),
       };
     } catch (_error) {
-      logger._error('Error analyzing time-of-day performance:', _error);
+      logger.error('Error analyzing time-of-day performance:', _error);
       return null;
     }
   }
@@ -215,7 +215,7 @@ export class StudyEffectivenessService {
         performanceByDuration,
       };
     } catch (_error) {
-      logger._error('Error analyzing session length:', _error);
+      logger.error('Error analyzing session length:', _error);
       return null;
     }
   }
@@ -264,7 +264,7 @@ export class StudyEffectivenessService {
         dailyPerformance: dailyPerformance.sort((a, b) => a.day - b.day),
       };
     } catch (_error) {
-      logger._error('Error analyzing weekly pattern:', _error);
+      logger.error('Error analyzing weekly pattern:', _error);
       return null;
     }
   }
@@ -359,7 +359,7 @@ export class StudyEffectivenessService {
         });
       }
     } catch (_error) {
-      logger._error('Error generating study insights:', _error);
+      logger.error('Error generating study insights:', _error);
     }
 
     return insights;
@@ -406,7 +406,7 @@ export class StudyEffectivenessService {
         generatedAt: new Date(),
       };
     } catch (_error) {
-      logger._error('Error generating optimal schedule:', _error);
+      logger.error('Error generating optimal schedule:', _error);
       return null;
     }
   }
@@ -477,7 +477,7 @@ export class StudyEffectivenessService {
         studyStreak,
       };
     } catch (_error) {
-      logger._error('Error getting study stats summary:', _error);
+      logger.error('Error getting study stats summary:', _error);
       return null;
     }
   }

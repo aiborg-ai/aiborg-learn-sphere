@@ -199,7 +199,7 @@ export default function BlogManager() {
       });
       fetchData();
     } catch (_error) {
-      logger._error('Error creating category:', _error);
+      logger.error('Error creating category:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create category',

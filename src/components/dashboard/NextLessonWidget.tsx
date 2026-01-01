@@ -62,7 +62,7 @@ export function NextLessonWidget({
       setRecommendation(general);
       setLingoRecommendation(lingo);
     } catch (_error) {
-      logger._error('Error fetching recommendations:', _error);
+      logger.error('Error fetching recommendations:', _error);
     } finally {
       setLoading(false);
     }

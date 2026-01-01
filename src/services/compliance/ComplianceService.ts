@@ -125,7 +125,7 @@ class ComplianceServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching requirements:', _error);
+      logger.error('Error fetching requirements:', _error);
       throw _error;
     }
   }
@@ -144,7 +144,7 @@ class ComplianceServiceClass {
       if (error) throw error;
       return data;
     } catch (_error) {
-      logger._error('Error fetching requirement:', _error);
+      logger.error('Error fetching requirement:', _error);
       throw _error;
     }
   }
@@ -181,7 +181,7 @@ class ComplianceServiceClass {
       if (error) throw error;
       return data;
     } catch (_error) {
-      logger._error('Error creating requirement:', _error);
+      logger.error('Error creating requirement:', _error);
       throw _error;
     }
   }
@@ -204,7 +204,7 @@ class ComplianceServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error updating requirement:', _error);
+      logger.error('Error updating requirement:', _error);
       throw _error;
     }
   }
@@ -224,7 +224,7 @@ class ComplianceServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error archiving requirement:', _error);
+      logger.error('Error archiving requirement:', _error);
       throw _error;
     }
   }
@@ -243,7 +243,7 @@ class ComplianceServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching user compliance:', _error);
+      logger.error('Error fetching user compliance:', _error);
       throw _error;
     }
   }
@@ -268,7 +268,7 @@ class ComplianceServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching requirement statuses:', _error);
+      logger.error('Error fetching requirement statuses:', _error);
       throw _error;
     }
   }
@@ -287,7 +287,7 @@ class ComplianceServiceClass {
       if (error) throw error;
       return data;
     } catch (_error) {
-      logger._error('Error assigning requirement:', _error);
+      logger.error('Error assigning requirement:', _error);
       throw _error;
     }
   }
@@ -304,7 +304,7 @@ class ComplianceServiceClass {
       }
       return count;
     } catch (_error) {
-      logger._error('Error bulk assigning:', _error);
+      logger.error('Error bulk assigning:', _error);
       throw _error;
     }
   }
@@ -322,7 +322,7 @@ class ComplianceServiceClass {
       if (error) throw error;
       return data || 0;
     } catch (_error) {
-      logger._error('Error auto-assigning by role:', _error);
+      logger.error('Error auto-assigning by role:', _error);
       throw _error;
     }
   }
@@ -360,7 +360,7 @@ class ComplianceServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error updating status:', _error);
+      logger.error('Error updating status:', _error);
       throw _error;
     }
   }
@@ -407,7 +407,7 @@ class ComplianceServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error completing requirement:', _error);
+      logger.error('Error completing requirement:', _error);
       throw _error;
     }
   }
@@ -430,7 +430,7 @@ class ComplianceServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error granting exemption:', _error);
+      logger.error('Error granting exemption:', _error);
       throw _error;
     }
   }
@@ -459,7 +459,7 @@ class ComplianceServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching reminders:', _error);
+      logger.error('Error fetching reminders:', _error);
       throw _error;
     }
   }
@@ -480,7 +480,7 @@ class ComplianceServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error marking reminder sent:', _error);
+      logger.error('Error marking reminder sent:', _error);
       throw _error;
     }
   }
@@ -505,7 +505,7 @@ class ComplianceServiceClass {
         }
       );
     } catch (_error) {
-      logger._error('Error processing expiries:', _error);
+      logger.error('Error processing expiries:', _error);
       throw _error;
     }
   }
@@ -532,7 +532,7 @@ class ComplianceServiceClass {
         }
       );
     } catch (_error) {
-      logger._error('Error fetching summary:', _error);
+      logger.error('Error fetching summary:', _error);
       throw _error;
     }
   }
@@ -550,7 +550,7 @@ class ComplianceServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error generating report:', _error);
+      logger.error('Error generating report:', _error);
       throw _error;
     }
   }
@@ -590,7 +590,7 @@ class ComplianceServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching audit log:', _error);
+      logger.error('Error fetching audit log:', _error);
       throw _error;
     }
   }
@@ -622,7 +622,7 @@ class ComplianceServiceClass {
 
       return JSON.stringify(exportData, null, 2);
     } catch (_error) {
-      logger._error('Error exporting data:', _error);
+      logger.error('Error exporting data:', _error);
       throw _error;
     }
   }
@@ -656,7 +656,7 @@ class ComplianceServiceClass {
         upcomingReminders: reminders.length,
       };
     } catch (_error) {
-      logger._error('Error fetching dashboard data:', _error);
+      logger.error('Error fetching dashboard data:', _error);
       throw _error;
     }
   }

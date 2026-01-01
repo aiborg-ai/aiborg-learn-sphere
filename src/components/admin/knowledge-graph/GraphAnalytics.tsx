@@ -59,7 +59,7 @@ export function GraphAnalytics() {
 
       calculateStats(conceptsData, relationshipsData);
     } catch (_error) {
-      logger._error('Error loading data:', _error);
+      logger.error('Error loading data:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load analytics data',
@@ -170,7 +170,7 @@ export function GraphAnalytics() {
         });
       }
     } catch (_error) {
-      logger._error('Error validating graph:', _error);
+      logger.error('Error validating graph:', _error);
       toast({
         title: 'Error',
         description: 'Failed to validate knowledge graph',

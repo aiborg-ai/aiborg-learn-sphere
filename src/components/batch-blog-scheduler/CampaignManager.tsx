@@ -105,7 +105,7 @@ export function CampaignManager() {
       const data = await BlogCampaignService.getCampaigns();
       setCampaigns(data);
     } catch (_error) {
-      logger._error('Error loading campaigns:', _error);
+      logger.error('Error loading campaigns:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load campaigns',
@@ -121,7 +121,7 @@ export function CampaignManager() {
       const analytics = await BlogCampaignService.getCampaignAnalytics(campaignId);
       setCampaignAnalytics(analytics);
     } catch (_error) {
-      logger._error('Error loading campaign analytics:', _error);
+      logger.error('Error loading campaign analytics:', _error);
     }
   };
 
@@ -162,7 +162,7 @@ export function CampaignManager() {
       form.reset();
       loadCampaigns();
     } catch (_error) {
-      logger._error('Error saving campaign:', _error);
+      logger.error('Error saving campaign:', _error);
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to save campaign',

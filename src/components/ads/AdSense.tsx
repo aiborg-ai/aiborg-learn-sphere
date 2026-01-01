@@ -82,7 +82,7 @@ export function AdSense({
         // Timeout after 5 seconds
         setTimeout(() => clearInterval(checkAdsbygoogle), 5000);
       } catch (_error) {
-        logger._error('AdSense _error:', _error);
+        logger.error('AdSense _error:', _error);
       }
     }
 

@@ -191,7 +191,7 @@ export function ReviewForm({
       //   try {
       //     await markRequestCompleted({ _requestId, reviewId: reviewData.id });
       //   } catch (_error) {
-      //     logger._error('Failed to mark review request as completed:', _error);
+      //     logger.error('Failed to mark review request as completed:', _error);
       //     // Don't fail the whole submission if this fails
       //   }
       // }
@@ -222,7 +222,7 @@ export function ReviewForm({
       setVoiceBlob(null);
       setVideoBlob(null);
     } catch (_error) {
-      logger._error('Review submission _error:', _error);
+      logger.error('Review submission _error:', _error);
 
       let errorMessage = 'Failed to submit review';
       if (error instanceof Error) {

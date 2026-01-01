@@ -61,7 +61,7 @@ export function WatchLaterButton({
         });
       }
     } catch (_error) {
-      logger._error('Watch later _error:', _error);
+      logger.error('Watch later _error:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update watch later queue',

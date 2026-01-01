@@ -673,3 +673,46 @@
            rounded-full animate-spin;
   }
 }
+
+/* ===============================================
+   Progressive Onboarding Styles
+   =============================================== */
+
+/* Highlight animation for onboarding elements */
+@keyframes onboarding-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px hsl(var(--primary) / 0);
+  }
+}
+
+@keyframes onboarding-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px hsl(var(--primary) / 0.5);
+  }
+}
+
+.onboarding-highlight {
+  position: relative;
+  animation: onboarding-pulse 2s ease-in-out infinite;
+  outline: 2px solid hsl(var(--primary) / 0.5);
+  outline-offset: 4px;
+  border-radius: 0.5rem;
+  z-index: 10;
+}
+
+.onboarding-highlight::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 0.5rem;
+  animation: onboarding-glow 2s ease-in-out infinite;
+  pointer-events: none;
+}

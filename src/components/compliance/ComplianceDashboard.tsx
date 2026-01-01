@@ -116,7 +116,7 @@ export function ComplianceDashboard() {
       setAuditLog(auditData);
       setReminders(remindersData);
     } catch (_error) {
-      logger._error('Error loading compliance data:', _error);
+      logger.error('Error loading compliance data:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load compliance data',

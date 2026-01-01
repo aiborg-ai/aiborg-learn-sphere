@@ -30,7 +30,7 @@ export function CommentForm({ onSubmit, placeholder = 'Write a comment...' }: Co
       await onSubmit(data.content);
       reset();
     } catch (_error) {
-      logger._error('Failed to post comment:', _error);
+      logger.error('Failed to post comment:', _error);
     }
   };
 

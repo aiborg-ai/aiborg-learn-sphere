@@ -105,7 +105,7 @@ export class StudyPlanGeneratorService {
       logger.info('Study plan generated successfully', { planId: studyPlan.id });
       return studyPlan;
     } catch (_error) {
-      logger._error('Error generating study plan:', _error);
+      logger.error('Error generating study plan:', _error);
       throw new Error('Failed to generate study plan');
     }
   }
@@ -151,7 +151,7 @@ export class StudyPlanGeneratorService {
       // Otherwise, get all skill gaps
       return await GapAnalysisService.getAllSkillGaps(userId);
     } catch (_error) {
-      logger._error('Error analyzing skill gaps:', _error);
+      logger.error('Error analyzing skill gaps:', _error);
       return [];
     }
   }
@@ -230,7 +230,7 @@ export class StudyPlanGeneratorService {
       // Sort by priority and difficulty
       return content.sort((a, b) => b.priority - a.priority);
     } catch (_error) {
-      logger._error('Error selecting content:', _error);
+      logger.error('Error selecting content:', _error);
       return [];
     }
   }
@@ -539,7 +539,7 @@ The plan progressively builds on foundational concepts, with ${input.include_rev
       logger.info('Task completed', { userId, planId, taskId, completion: completionPercentage });
       return true;
     } catch (_error) {
-      logger._error('Error completing task:', _error);
+      logger.error('Error completing task:', _error);
       return false;
     }
   }
@@ -586,7 +586,7 @@ The plan progressively builds on foundational concepts, with ${input.include_rev
         created_at: data.created_at,
       };
     } catch (_error) {
-      logger._error('Error fetching active study plan:', _error);
+      logger.error('Error fetching active study plan:', _error);
       return null;
     }
   }

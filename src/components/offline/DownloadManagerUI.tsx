@@ -40,7 +40,7 @@ export function DownloadManagerUI() {
       const userDownloads = await DownloadManager.getUserDownloads();
       setDownloads(userDownloads);
     } catch (_error) {
-      logger._error('Failed to load downloads:', _error);
+      logger.error('Failed to load downloads:', _error);
       toast.error('Failed to load downloads');
     } finally {
       setIsLoading(false);
@@ -52,7 +52,7 @@ export function DownloadManagerUI() {
       const stats = await getStorageUsage();
       setStorageStats(stats);
     } catch (_error) {
-      logger._error('Failed to load storage stats:', _error);
+      logger.error('Failed to load storage stats:', _error);
     }
   }
 

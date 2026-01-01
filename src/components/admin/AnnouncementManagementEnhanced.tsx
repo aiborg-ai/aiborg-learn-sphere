@@ -158,7 +158,7 @@ export function AnnouncementManagementEnhanced({
       setIsDialogOpen(false);
       reset();
     } catch (_error) {
-      logger._error('Error saving announcement:', _error);
+      logger.error('Error saving announcement:', _error);
       toast({
         title: 'Error',
         description: editingAnnouncement
@@ -192,7 +192,7 @@ export function AnnouncementManagementEnhanced({
       setIsDeleteDialogOpen(false);
       setDeletingAnnouncement(null);
     } catch (_error) {
-      logger._error('Error deleting announcement:', _error);
+      logger.error('Error deleting announcement:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete announcement',
@@ -221,7 +221,7 @@ export function AnnouncementManagementEnhanced({
         description: 'Announcement status updated',
       });
     } catch (_error) {
-      logger._error('Error toggling announcement status:', _error);
+      logger.error('Error toggling announcement status:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update announcement status',

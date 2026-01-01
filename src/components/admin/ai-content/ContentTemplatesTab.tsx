@@ -82,7 +82,7 @@ export default function ContentTemplatesTab() {
       if (error) throw error;
       setTemplates(data || []);
     } catch (_error) {
-      logger._error('Error loading templates:', _error);
+      logger.error('Error loading templates:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load content templates',
@@ -194,7 +194,7 @@ export default function ContentTemplatesTab() {
       setEditDialogOpen(false);
       loadTemplates();
     } catch (_error) {
-      logger._error('Error saving template:', _error);
+      logger.error('Error saving template:', _error);
       toast({
         title: 'Error',
         description: 'Failed to save content template',
@@ -224,7 +224,7 @@ export default function ContentTemplatesTab() {
       AIContentService.clearCache();
       loadTemplates();
     } catch (_error) {
-      logger._error('Error deleting template:', _error);
+      logger.error('Error deleting template:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete content template',

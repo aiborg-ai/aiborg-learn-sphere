@@ -106,7 +106,7 @@ export default function AIAwarenessAssessment() {
         // Start the timer
         stableStartTimer();
       } catch (_error) {
-        logger._error('Error initializing assessment:', _error);
+        logger.error('Error initializing assessment:', _error);
         toast({
           title: 'Error',
           description: 'Failed to start assessment. Please try again.',
@@ -154,7 +154,7 @@ export default function AIAwarenessAssessment() {
       // Navigate to results
       navigate(`/assessment/ai-awareness/results/${attemptId}`);
     } catch (_error) {
-      logger._error('Error completing assessment:', _error);
+      logger.error('Error completing assessment:', _error);
       toast({
         title: 'Error',
         description: 'Failed to save results. Please try again.',

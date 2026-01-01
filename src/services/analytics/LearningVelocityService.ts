@@ -50,7 +50,7 @@ export class LearningVelocityService {
         recentAccuracy,
       };
     } catch (_error) {
-      logger._error('Error calculating learning velocity:', _error);
+      logger.error('Error calculating learning velocity:', _error);
       return null;
     }
   }

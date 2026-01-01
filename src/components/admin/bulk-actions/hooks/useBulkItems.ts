@@ -82,7 +82,7 @@ export function useBulkItems({ filterCategory, filterStatus, filterType }: UseBu
 
       setItems(filteredItems);
     } catch (_error) {
-      logger._error('Error fetching items:', _error);
+      logger.error('Error fetching items:', _error);
       toast({
         title: 'Error',
         description: 'Failed to fetch items',

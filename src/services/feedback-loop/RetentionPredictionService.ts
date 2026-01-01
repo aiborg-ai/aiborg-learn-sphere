@@ -51,7 +51,7 @@ export class RetentionPredictionService {
       // Check if we have enough data to update forgetting curve
       await this.maybeUpdateForgettingCurve(observation.userId, observation.topicId);
     } catch (_error) {
-      logger._error('Error recording retention observation:', _error);
+      logger.error('Error recording retention observation:', _error);
     }
   }
 
@@ -106,7 +106,7 @@ export class RetentionPredictionService {
 
       return curve;
     } catch (_error) {
-      logger._error('Error building forgetting curve:', _error);
+      logger.error('Error building forgetting curve:', _error);
       return null;
     }
   }
@@ -201,7 +201,7 @@ export class RetentionPredictionService {
 
       return params;
     } catch (_error) {
-      logger._error('Error calibrating SM-2 parameters:', _error);
+      logger.error('Error calibrating SM-2 parameters:', _error);
       return null;
     }
   }
@@ -256,7 +256,7 @@ export class RetentionPredictionService {
 
       return itemsWithRetention;
     } catch (_error) {
-      logger._error('Error getting due items with retention:', _error);
+      logger.error('Error getting due items with retention:', _error);
       return [];
     }
   }
@@ -301,7 +301,7 @@ export class RetentionPredictionService {
           : null,
       };
     } catch (_error) {
-      logger._error('Error getting retention stats:', _error);
+      logger.error('Error getting retention stats:', _error);
       return null;
     }
   }

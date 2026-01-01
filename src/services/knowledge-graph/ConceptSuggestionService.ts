@@ -287,7 +287,7 @@ export class ConceptSuggestionService {
         suggestion.status = 'approved';
         suggestion.created_concept_id = concept.id;
       } catch (_error) {
-        logger._error(`Failed to approve concept ${suggestion.name}:`, _error);
+        logger.error(`Failed to approve concept ${suggestion.name}:`, _error);
         suggestion.status = 'rejected';
       }
     }
@@ -315,7 +315,7 @@ export class ConceptSuggestionService {
           suggestion.status = 'rejected';
         }
       } catch (_error) {
-        logger._error(
+        logger.error(
           `Failed to approve relationship ${suggestion.source_concept} -> ${suggestion.target_concept}:`,
           error
         );
@@ -348,7 +348,7 @@ export class ConceptSuggestionService {
           suggestion.status = 'rejected';
         }
       } catch (_error) {
-        logger._error(`Failed to approve course mapping ${suggestion.concept_name}:`, _error);
+        logger.error(`Failed to approve course mapping ${suggestion.concept_name}:`, _error);
         suggestion.status = 'rejected';
       }
     }

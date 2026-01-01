@@ -119,7 +119,7 @@ export function SkillsDashboard() {
         setSelectedJobRole(roles[0].id);
       }
     } catch (_error) {
-      logger._error('Error loading skills dashboard:', _error);
+      logger.error('Error loading skills dashboard:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load skills data',
@@ -137,7 +137,7 @@ export function SkillsDashboard() {
       const match = await SkillExtractionService.getJobRoleMatch(user.id, selectedJobRole);
       setJobMatch(match);
     } catch (_error) {
-      logger._error('Error loading job match:', _error);
+      logger.error('Error loading job match:', _error);
     }
   };
 
@@ -149,7 +149,7 @@ export function SkillsDashboard() {
         description: 'Recommendation dismissed',
       });
     } catch (_error) {
-      logger._error('Error dismissing recommendation:', _error);
+      logger.error('Error dismissing recommendation:', _error);
     }
   };
 
@@ -166,7 +166,7 @@ export function SkillsDashboard() {
       const recs = await SkillExtractionService.getRecommendations(user.id);
       setRecommendations(recs);
     } catch (_error) {
-      logger._error('Error setting career goal:', _error);
+      logger.error('Error setting career goal:', _error);
       toast({
         title: 'Error',
         description: 'Failed to set career goal',

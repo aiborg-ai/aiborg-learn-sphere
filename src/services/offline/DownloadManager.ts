@@ -44,7 +44,7 @@ class DownloadManagerClass {
         this.serviceWorkerRegistration = await navigator.serviceWorker.ready;
         logger.info('[DownloadManager] Service worker ready');
       } catch (_error) {
-        logger._error('[DownloadManager] Service worker initialization failed:', _error);
+        logger.error('[DownloadManager] Service worker initialization failed:', _error);
       }
     }
   }
@@ -173,7 +173,7 @@ class DownloadManagerClass {
 
       logger.info('[DownloadManager] Course download initiated:', courseId);
     } catch (_error) {
-      logger._error('[DownloadManager] Download course failed:', _error);
+      logger.error('[DownloadManager] Download course failed:', _error);
       throw error;
     }
   }
@@ -231,7 +231,7 @@ class DownloadManagerClass {
 
       logger.info('[DownloadManager] Lesson download initiated:', lessonId);
     } catch (_error) {
-      logger._error('[DownloadManager] Download lesson failed:', _error);
+      logger.error('[DownloadManager] Download lesson failed:', _error);
       throw error;
     }
   }
@@ -267,7 +267,7 @@ class DownloadManagerClass {
 
       logger.info('[DownloadManager] Download deleted:', contentId);
     } catch (_error) {
-      logger._error('[DownloadManager] Delete download failed:', _error);
+      logger.error('[DownloadManager] Delete download failed:', _error);
       throw error;
     }
   }
@@ -279,7 +279,7 @@ class DownloadManagerClass {
     try {
       return await OfflineDownloadsDB.get(`${contentType}-${contentId}`);
     } catch (_error) {
-      logger._error('[DownloadManager] Get download status failed:', _error);
+      logger.error('[DownloadManager] Get download status failed:', _error);
       return null;
     }
   }
@@ -294,7 +294,7 @@ class DownloadManagerClass {
 
       return await OfflineDownloadsDB.getByUser(user.user.id);
     } catch (_error) {
-      logger._error('[DownloadManager] Get user downloads failed:', _error);
+      logger.error('[DownloadManager] Get user downloads failed:', _error);
       return [];
     }
   }
@@ -341,7 +341,7 @@ class DownloadManagerClass {
 
       logger.info('[DownloadManager] Progress saved offline:', contentId);
     } catch (_error) {
-      logger._error('[DownloadManager] Save offline progress failed:', _error);
+      logger.error('[DownloadManager] Save offline progress failed:', _error);
       throw error;
     }
   }
@@ -378,7 +378,7 @@ class DownloadManagerClass {
           await OfflineProgressDB.update(record);
           synced++;
         } catch (_error) {
-          logger._error('[DownloadManager] Sync failed for record:', record.id, _error);
+          logger.error('[DownloadManager] Sync failed for record:', record.id, _error);
           record.syncStatus = 'failed';
           record.error = error instanceof Error ? error.message : 'Unknown error';
           await OfflineProgressDB.update(record);
@@ -389,7 +389,7 @@ class DownloadManagerClass {
       logger.info(`[DownloadManager] Sync complete: ${synced} synced, ${failed} failed`);
       return { synced, failed };
     } catch (_error) {
-      logger._error('[DownloadManager] Sync progress failed:', _error);
+      logger.error('[DownloadManager] Sync progress failed:', _error);
       throw error;
     }
   }

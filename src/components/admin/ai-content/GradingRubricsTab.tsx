@@ -88,7 +88,7 @@ export default function GradingRubricsTab() {
       if (error) throw error;
       setRubrics(data || []);
     } catch (_error) {
-      logger._error('Error loading rubrics:', _error);
+      logger.error('Error loading rubrics:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load grading rubrics',
@@ -243,7 +243,7 @@ export default function GradingRubricsTab() {
       setEditDialogOpen(false);
       loadRubrics();
     } catch (_error) {
-      logger._error('Error saving rubric:', _error);
+      logger.error('Error saving rubric:', _error);
       toast({
         title: 'Error',
         description: 'Failed to save grading rubric',
@@ -273,7 +273,7 @@ export default function GradingRubricsTab() {
       AIContentService.clearCache();
       loadRubrics();
     } catch (_error) {
-      logger._error('Error deleting rubric:', _error);
+      logger.error('Error deleting rubric:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete grading rubric',

@@ -79,7 +79,7 @@ export function usePWA() {
         return false;
       }
     } catch (_error) {
-      logger._error('Error showing install prompt:', _error);
+      logger.error('Error showing install prompt:', _error);
       return false;
     }
   };

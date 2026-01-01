@@ -24,7 +24,7 @@ export class AchievementService {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching achievements:', _error);
+      logger.error('Error fetching achievements:', _error);
       return [];
     }
   }
@@ -44,7 +44,7 @@ export class AchievementService {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching achievements by category:', _error);
+      logger.error('Error fetching achievements by category:', _error);
       return [];
     }
   }
@@ -64,7 +64,7 @@ export class AchievementService {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching achievements by tier:', _error);
+      logger.error('Error fetching achievements by tier:', _error);
       return [];
     }
   }
@@ -88,7 +88,7 @@ export class AchievementService {
       if (error) throw error;
       return (data as UserAchievement[]) || [];
     } catch (_error) {
-      logger._error('Error fetching user achievements:', _error);
+      logger.error('Error fetching user achievements:', _error);
       return [];
     }
   }
@@ -151,7 +151,7 @@ export class AchievementService {
         byCategory,
       };
     } catch (_error) {
-      logger._error('Error calculating user achievement progress:', _error);
+      logger.error('Error calculating user achievement progress:', _error);
       return {
         unlocked: 0,
         total: 0,
@@ -180,7 +180,7 @@ export class AchievementService {
       if (error) throw error;
       return data === true;
     } catch (_error) {
-      logger._error('Error unlocking achievement:', _error);
+      logger.error('Error unlocking achievement:', _error);
       return false;
     }
   }
@@ -200,7 +200,7 @@ export class AchievementService {
       if (error && error.code !== 'PGRST116') throw error; // PGRST116 = not found
       return !!data;
     } catch (_error) {
-      logger._error('Error checking achievement:', _error);
+      logger.error('Error checking achievement:', _error);
       return false;
     }
   }
@@ -249,7 +249,7 @@ export class AchievementService {
 
       return unlockedAchievements;
     } catch (_error) {
-      logger._error('Error checking and unlocking achievements:', _error);
+      logger.error('Error checking and unlocking achievements:', _error);
       return unlockedAchievements;
     }
   }
@@ -408,7 +408,7 @@ export class AchievementService {
       if (error) throw error;
       return (data as UserAchievement[]) || [];
     } catch (_error) {
-      logger._error('Error fetching recently unlocked achievements:', _error);
+      logger.error('Error fetching recently unlocked achievements:', _error);
       return [];
     }
   }
@@ -428,7 +428,7 @@ export class AchievementService {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching rare achievements:', _error);
+      logger.error('Error fetching rare achievements:', _error);
       return [];
     }
   }

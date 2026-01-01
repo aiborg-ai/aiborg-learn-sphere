@@ -32,7 +32,7 @@ export const LearningVelocityCard: React.FC = () => {
       const data = await LearningVelocityService.calculateLearningVelocity(user.id);
       setMetrics(data);
     } catch (_error) {
-      logger._error('Error loading velocity metrics:', _error);
+      logger.error('Error loading velocity metrics:', _error);
       setMetrics(null);
     } finally {
       setLoading(false);

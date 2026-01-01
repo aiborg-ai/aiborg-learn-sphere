@@ -56,7 +56,7 @@ export function NotificationSettings() {
         setPreferences(data.notification_preferences || preferences);
       }
     } catch (_error) {
-      logger._error('Error loading preferences:', _error);
+      logger.error('Error loading preferences:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load notification preferences',
@@ -91,7 +91,7 @@ export function NotificationSettings() {
         description: 'Notification preferences updated successfully',
       });
     } catch (_error) {
-      logger._error('Error saving preferences:', _error);
+      logger.error('Error saving preferences:', _error);
       toast({
         title: 'Error',
         description: 'Failed to save notification preferences',

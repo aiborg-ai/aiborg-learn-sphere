@@ -64,7 +64,7 @@ export class CompetencyService {
         snapshotDate: snapshot.snapshot_date,
       };
     } catch (_error) {
-      logger._error('Error getting competency matrix:', _error);
+      logger.error('Error getting competency matrix:', _error);
       return null;
     }
   }
@@ -88,7 +88,7 @@ export class CompetencyService {
 
       return data || [];
     } catch (_error) {
-      logger._error('Error getting performance time series:', _error);
+      logger.error('Error getting performance time series:', _error);
       return [];
     }
   }

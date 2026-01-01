@@ -212,7 +212,7 @@ export const useSMEAssessmentReport = (assessmentId: string | undefined) => {
           nurturingCampaign: nurturingCampaignResult.data || undefined,
         };
       } catch (_error) {
-        logger._error('Error fetching SME assessment report:', _error);
+        logger.error('Error fetching SME assessment report:', _error);
         throw error;
       }
     },

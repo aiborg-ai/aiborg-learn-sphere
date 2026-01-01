@@ -90,7 +90,7 @@ export function PublishingCalendar() {
       if (error) throw error;
       setPosts(data || []);
     } catch (_error) {
-      logger._error('Error loading posts:', _error);
+      logger.error('Error loading posts:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load scheduled posts',
@@ -106,7 +106,7 @@ export function PublishingCalendar() {
       const { data } = await supabase.from('blog_categories').select('*').order('name');
       setCategories(data || []);
     } catch (_error) {
-      logger._error('Error loading categories:', _error);
+      logger.error('Error loading categories:', _error);
     }
   };
 

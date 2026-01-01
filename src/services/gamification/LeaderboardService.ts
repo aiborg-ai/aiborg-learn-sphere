@@ -30,7 +30,7 @@ export class LeaderboardService {
       if (error) throw error;
       return (data as Leaderboard[]) || [];
     } catch (_error) {
-      logger._error('Error fetching leaderboards:', _error);
+      logger.error('Error fetching leaderboards:', _error);
       return [];
     }
   }
@@ -49,7 +49,7 @@ export class LeaderboardService {
       if (error) throw error;
       return (data as Leaderboard[]) || [];
     } catch (_error) {
-      logger._error('Error fetching leaderboards by type:', _error);
+      logger.error('Error fetching leaderboards by type:', _error);
       return [];
     }
   }
@@ -68,7 +68,7 @@ export class LeaderboardService {
       if (error) throw error;
       return data as Leaderboard;
     } catch (_error) {
-      logger._error('Error fetching leaderboard:', _error);
+      logger.error('Error fetching leaderboard:', _error);
       return null;
     }
   }
@@ -106,7 +106,7 @@ export class LeaderboardService {
         },
       })) as LeaderboardEntry[];
     } catch (_error) {
-      logger._error('Error fetching leaderboard entries:', _error);
+      logger.error('Error fetching leaderboard entries:', _error);
       return [];
     }
   }
@@ -151,7 +151,7 @@ export class LeaderboardService {
         percentile,
       };
     } catch (_error) {
-      logger._error('Error fetching user leaderboard position:', _error);
+      logger.error('Error fetching user leaderboard position:', _error);
       return null;
     }
   }
@@ -208,7 +208,7 @@ export class LeaderboardService {
 
       return { above, current, below };
     } catch (_error) {
-      logger._error('Error fetching nearby users:', _error);
+      logger.error('Error fetching nearby users:', _error);
       return { above: [], current: null, below: [] };
     }
   }
@@ -228,7 +228,7 @@ export class LeaderboardService {
 
       return data as UserLeaderboardPreferences;
     } catch (_error) {
-      logger._error('Error fetching user preferences:', _error);
+      logger.error('Error fetching user preferences:', _error);
       return null;
     }
   }
@@ -250,7 +250,7 @@ export class LeaderboardService {
       if (error) throw error;
       return true;
     } catch (_error) {
-      logger._error('Error updating user preferences:', _error);
+      logger.error('Error updating user preferences:', _error);
       return false;
     }
   }
@@ -324,7 +324,7 @@ export class LeaderboardService {
 
       return true;
     } catch (_error) {
-      logger._error('Error refreshing leaderboard:', _error);
+      logger.error('Error refreshing leaderboard:', _error);
       return false;
     }
   }
@@ -423,7 +423,7 @@ export class LeaderboardService {
         },
       })) as LeaderboardEntry[];
     } catch (_error) {
-      logger._error('Error searching users:', _error);
+      logger.error('Error searching users:', _error);
       return [];
     }
   }

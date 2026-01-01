@@ -40,7 +40,7 @@ export class ForumModerationService {
       if (error) throw error;
       return !!data;
     } catch (_error) {
-      logger._error('Error checking moderator status:', _error);
+      logger.error('Error checking moderator status:', _error);
       return false;
     }
   }
@@ -84,7 +84,7 @@ export class ForumModerationService {
       logger.log('User banned:', request.user_id);
       return data;
     } catch (_error) {
-      logger._error('Error banning user:', _error);
+      logger.error('Error banning user:', _error);
       throw error;
     }
   }
@@ -114,7 +114,7 @@ export class ForumModerationService {
 
       logger.log('User unbanned:', userId);
     } catch (_error) {
-      logger._error('Error unbanning user:', _error);
+      logger.error('Error unbanning user:', _error);
       throw error;
     }
   }
@@ -170,7 +170,7 @@ export class ForumModerationService {
       logger.log('User warned:', request.user_id);
       return warning;
     } catch (_error) {
-      logger._error('Error warning user:', _error);
+      logger.error('Error warning user:', _error);
       throw error;
     }
   }
@@ -205,7 +205,7 @@ export class ForumModerationService {
       logger.log('User content purged:', userId, data);
       return data as { threads_deleted: number; posts_deleted: number };
     } catch (_error) {
-      logger._error('Error purging user content:', _error);
+      logger.error('Error purging user content:', _error);
       throw error;
     }
   }
@@ -238,7 +238,7 @@ export class ForumModerationService {
 
       logger.log('Thread deleted by moderator:', threadId);
     } catch (_error) {
-      logger._error('Error deleting thread:', _error);
+      logger.error('Error deleting thread:', _error);
       throw error;
     }
   }
@@ -271,7 +271,7 @@ export class ForumModerationService {
 
       logger.log('Post deleted by moderator:', postId);
     } catch (_error) {
-      logger._error('Error deleting post:', _error);
+      logger.error('Error deleting post:', _error);
       throw error;
     }
   }
@@ -304,7 +304,7 @@ export class ForumModerationService {
       logger.log('Report created:', data.id);
       return data;
     } catch (_error) {
-      logger._error('Error creating report:', _error);
+      logger.error('Error creating report:', _error);
       throw error;
     }
   }
@@ -360,7 +360,7 @@ export class ForumModerationService {
 
       return reportsWithPreview as ForumReportWithDetails[];
     } catch (_error) {
-      logger._error('Error fetching reports:', _error);
+      logger.error('Error fetching reports:', _error);
       throw error;
     }
   }
@@ -399,7 +399,7 @@ export class ForumModerationService {
       logger.log('Report reviewed:', reportId, status);
       return data;
     } catch (_error) {
-      logger._error('Error reviewing report:', _error);
+      logger.error('Error reviewing report:', _error);
       throw error;
     }
   }
@@ -449,7 +449,7 @@ export class ForumModerationService {
       logger.log('Moderator assigned:', request.user_id);
       return data;
     } catch (_error) {
-      logger._error('Error assigning moderator:', _error);
+      logger.error('Error assigning moderator:', _error);
       throw error;
     }
   }
@@ -478,7 +478,7 @@ export class ForumModerationService {
 
       logger.log('Moderator removed:', userId);
     } catch (_error) {
-      logger._error('Error removing moderator:', _error);
+      logger.error('Error removing moderator:', _error);
       throw error;
     }
   }
@@ -503,7 +503,7 @@ export class ForumModerationService {
       if (error) throw error;
       return data as ForumModerator[];
     } catch (_error) {
-      logger._error('Error fetching moderators:', _error);
+      logger.error('Error fetching moderators:', _error);
       throw error;
     }
   }
@@ -535,7 +535,7 @@ export class ForumModerationService {
       if (error) throw error;
       return data as ForumModeratorAction[];
     } catch (_error) {
-      logger._error('Error fetching moderator actions:', _error);
+      logger.error('Error fetching moderator actions:', _error);
       throw error;
     }
   }
@@ -561,7 +561,7 @@ export class ForumModerationService {
         details,
       });
     } catch (_error) {
-      logger._error('Error logging moderator action:', _error);
+      logger.error('Error logging moderator action:', _error);
     }
   }
 
@@ -579,7 +579,7 @@ export class ForumModerationService {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching user bans:', _error);
+      logger.error('Error fetching user bans:', _error);
       throw error;
     }
   }
@@ -598,7 +598,7 @@ export class ForumModerationService {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching user warnings:', _error);
+      logger.error('Error fetching user warnings:', _error);
       throw error;
     }
   }
@@ -619,7 +619,7 @@ export class ForumModerationService {
       if (error) throw error;
       return !!data;
     } catch (_error) {
-      logger._error('Error checking ban status:', _error);
+      logger.error('Error checking ban status:', _error);
       return false;
     }
   }

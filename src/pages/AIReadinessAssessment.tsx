@@ -25,6 +25,8 @@ import {
 import { Loader2, Target, Database, Cpu, Users, GitBranch, RefreshCw } from 'lucide-react';
 import type { DimensionType, AIReadinessFormData } from '@/types/aiReadiness';
 import { defaultFormData } from '@/types/aiReadiness';
+import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 
 export default function AIReadinessAssessment() {
   const navigate = useNavigate();
@@ -98,11 +100,53 @@ export default function AIReadinessAssessment() {
 
   // Load existing responses into form data
   useEffect(() => {
-    if (!assessment) return;
+    if (!assessment || !assessmentId) return;
 
-    // TODO: Load responses from dimension tables
-    // For now, using defaults
-  }, [assessment]);
+    // Load responses from dimension tables
+    const loadResponses = async () => {
+      const tableMap: Record<DimensionType, string> = {
+        overall: 'ai_readiness_assessments',
+        strategic: 'readiness_strategic_alignment',
+        data: 'readiness_data_maturity',
+        tech: 'readiness_tech_infrastructure',
+        human: 'readiness_human_capital',
+        process: 'readiness_process_maturity',
+        change: 'readiness_change_readiness',
+      };
+
+      const loadedData: Partial<AIReadinessFormData> = {};
+      const sections: DimensionType[] = ['strategic', 'data', 'tech', 'human', 'process', 'change'];
+
+      for (const section of sections) {
+        try {
+          const { data, error } = await supabase
+            .from(tableMap[section])
+            .select('*')
+            .eq('assessment_id', assessmentId)
+            .single();
+
+          if (!error && data) {
+            // Remove system fields and store responses
+            const { id, assessment_id, created_at, updated_at, ...responses } = data;
+            loadedData[section] = responses;
+          }
+        } catch (_error) {
+          // Section might not exist yet, that's okay
+          logger.warn(`Could not load section ${section}:`, _error);
+        }
+      }
+
+      // Only update if we found any data
+      if (Object.keys(loadedData).length > 0) {
+        setFormData(prev => ({
+          ...prev,
+          ...loadedData,
+        }));
+      }
+    };
+
+    loadResponses();
+  }, [assessment, assessmentId]);
 
   // Handle section change
   const handleSectionChange = (sectionId: DimensionType, data: Record<string, unknown>) => {

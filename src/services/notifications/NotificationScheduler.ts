@@ -88,7 +88,7 @@ export class NotificationScheduler {
         notification_channels: data.notification_channels || ['in_app'],
       };
     } catch (_error) {
-      logger._error('Error fetching notification preferences:', _error);
+      logger.error('Error fetching notification preferences:', _error);
       throw error;
     }
   }
@@ -120,7 +120,7 @@ export class NotificationScheduler {
 
       logger.info('Notification preferences updated', { userId });
     } catch (_error) {
-      logger._error('Error updating notification preferences:', _error);
+      logger.error('Error updating notification preferences:', _error);
       throw error;
     }
   }
@@ -193,7 +193,7 @@ export class NotificationScheduler {
         taskCount: incompleteTasks.length,
       });
     } catch (_error) {
-      logger._error('Error scheduling study reminder:', _error);
+      logger.error('Error scheduling study reminder:', _error);
     }
   }
 
@@ -262,7 +262,7 @@ export class NotificationScheduler {
 
       logger.info('Deadline alerts scheduled', { userId, deadline: deadlineDate });
     } catch (_error) {
-      logger._error('Error scheduling deadline alert:', _error);
+      logger.error('Error scheduling deadline alert:', _error);
     }
   }
 
@@ -298,7 +298,7 @@ export class NotificationScheduler {
 
       logger.info('Achievement notification sent', { userId, achievement: achievementTitle });
     } catch (_error) {
-      logger._error('Error sending achievement notification:', _error);
+      logger.error('Error sending achievement notification:', _error);
     }
   }
 
@@ -354,7 +354,7 @@ export class NotificationScheduler {
 
       logger.info('Encouragement notification sent', { userId, context });
     } catch (_error) {
-      logger._error('Error sending encouragement:', _error);
+      logger.error('Error sending encouragement:', _error);
     }
   }
 
@@ -439,7 +439,7 @@ export class NotificationScheduler {
         throw error;
       }
     } catch (_error) {
-      logger._error('Error creating notification:', _error);
+      logger.error('Error creating notification:', _error);
       throw error;
     }
   }
@@ -463,7 +463,7 @@ export class NotificationScheduler {
 
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching pending notifications:', _error);
+      logger.error('Error fetching pending notifications:', _error);
       return [];
     }
   }
@@ -482,7 +482,7 @@ export class NotificationScheduler {
         throw error;
       }
     } catch (_error) {
-      logger._error('Error marking notification as read:', _error);
+      logger.error('Error marking notification as read:', _error);
     }
   }
 
@@ -503,7 +503,7 @@ export class NotificationScheduler {
 
       logger.info('All notifications marked as read', { userId });
     } catch (_error) {
-      logger._error('Error marking all notifications as read:', _error);
+      logger.error('Error marking all notifications as read:', _error);
     }
   }
 
@@ -538,7 +538,7 @@ export class NotificationScheduler {
 
       logger.info('Daily reminders scheduled', { userCount: uniqueUserIds.length });
     } catch (_error) {
-      logger._error('Error scheduling daily reminders:', _error);
+      logger.error('Error scheduling daily reminders:', _error);
     }
   }
 }

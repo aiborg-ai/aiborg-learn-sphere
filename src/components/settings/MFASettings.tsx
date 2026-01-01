@@ -53,7 +53,7 @@ export const MFASettings = () => {
       setFactors(enrolledFactors);
       logger.info('Loaded MFA factors', { count: enrolledFactors.length });
     } catch (_error) {
-      logger._error('Failed to load MFA factors', _error);
+      logger.error('Failed to load MFA factors', _error);
       toast.error('Failed to load 2FA settings');
     } finally {
       setLoading(false);
@@ -74,7 +74,7 @@ export const MFASettings = () => {
 
       toast.success('Scan the QR code with your authenticator app');
     } catch (_error) {
-      logger._error('MFA enrollment start failed', _error);
+      logger.error('MFA enrollment start failed', _error);
       toast.error('Failed to start 2FA enrollment');
     } finally {
       setIsProcessing(false);
@@ -109,7 +109,7 @@ export const MFASettings = () => {
         resetEnrollmentState();
       }, 2000);
     } catch (_error) {
-      logger._error('MFA verification failed', _error);
+      logger.error('MFA verification failed', _error);
       toast.error('Invalid code. Please try again.');
     } finally {
       setIsProcessing(false);
@@ -130,7 +130,7 @@ export const MFASettings = () => {
       toast.success('Two-factor authentication disabled');
       await loadFactors();
     } catch (_error) {
-      logger._error('MFA unenrollment failed', _error);
+      logger.error('MFA unenrollment failed', _error);
       toast.error('Failed to disable 2FA');
     } finally {
       setIsProcessing(false);

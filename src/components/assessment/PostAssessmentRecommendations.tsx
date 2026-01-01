@@ -88,7 +88,7 @@ export function PostAssessmentRecommendations({
       setRecommendations(recs);
       setInsights(insightsData);
     } catch (_error) {
-      logger._error('Error fetching post-assessment recommendations:', _error);
+      logger.error('Error fetching post-assessment recommendations:', _error);
     } finally {
       setLoading(false);
     }

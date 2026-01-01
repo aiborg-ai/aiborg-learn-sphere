@@ -62,7 +62,7 @@ export class ExcelExportService {
 
       logger.info('Analytics exported successfully', { userId, fileName });
     } catch (_error) {
-      logger._error('Error exporting analytics:', _error);
+      logger.error('Error exporting analytics:', _error);
       throw new Error('Failed to export analytics data');
     }
   }
@@ -119,7 +119,7 @@ export class ExcelExportService {
 
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Overview');
     } catch (_error) {
-      logger._error('Error creating overview sheet:', _error);
+      logger.error('Error creating overview sheet:', _error);
     }
   }
 
@@ -213,7 +213,7 @@ export class ExcelExportService {
 
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Performance');
     } catch (_error) {
-      logger._error('Error creating performance sheet:', _error);
+      logger.error('Error creating performance sheet:', _error);
     }
   }
 
@@ -315,7 +315,7 @@ export class ExcelExportService {
 
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Goals');
     } catch (_error) {
-      logger._error('Error creating goals sheet:', _error);
+      logger.error('Error creating goals sheet:', _error);
     }
   }
 
@@ -360,7 +360,7 @@ export class ExcelExportService {
 
       logger.info('CSV exported successfully', { fileName });
     } catch (_error) {
-      logger._error('Error exporting CSV:', _error);
+      logger.error('Error exporting CSV:', _error);
       throw new Error('Failed to export CSV');
     }
   }
@@ -406,7 +406,7 @@ export class ExcelExportService {
 
       await this.exportToCSV(csvData, `performance-summary-${format(new Date(), 'yyyy-MM-dd')}`);
     } catch (_error) {
-      logger._error('Error exporting performance summary:', _error);
+      logger.error('Error exporting performance summary:', _error);
       throw error;
     }
   }
@@ -434,7 +434,7 @@ export class ExcelExportService {
 
       await this.exportToCSV(csvData, `goals-summary-${format(new Date(), 'yyyy-MM-dd')}`);
     } catch (_error) {
-      logger._error('Error exporting goals summary:', _error);
+      logger.error('Error exporting goals summary:', _error);
       throw error;
     }
   }

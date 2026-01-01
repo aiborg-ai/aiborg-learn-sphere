@@ -88,7 +88,7 @@ export function useJobRoleMatch(userId?: string, jobRoleId?: string) {
         // Enhance match with career insights
         return enhanceJobRoleMatch(match, jobRole);
       } catch (_error) {
-        logger._error('Error fetching job role match:', _error);
+        logger.error('Error fetching job role match:', _error);
         throw error;
       }
     },
@@ -108,7 +108,7 @@ export function useJobRoles(options?: { industry?: string; experience_level?: st
       try {
         return await SkillExtractionService.getJobRoles(options);
       } catch (_error) {
-        logger._error('Error fetching job roles:', _error);
+        logger.error('Error fetching job roles:', _error);
         throw error;
       }
     },

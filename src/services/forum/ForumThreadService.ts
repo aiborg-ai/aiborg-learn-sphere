@@ -66,7 +66,7 @@ export class ForumThreadService {
 
       return thread;
     } catch (_error) {
-      logger._error('Error creating thread:', _error);
+      logger.error('Error creating thread:', _error);
       throw error;
     }
   }
@@ -202,7 +202,7 @@ export class ForumThreadService {
         pinned_threads: pinnedThreads,
       };
     } catch (_error) {
-      logger._error('Error fetching threads:', _error);
+      logger.error('Error fetching threads:', _error);
       throw error;
     }
   }
@@ -271,7 +271,7 @@ export class ForumThreadService {
 
       return data as ForumThreadWithDetails;
     } catch (_error) {
-      logger._error('Error fetching thread:', _error);
+      logger.error('Error fetching thread:', _error);
       throw error;
     }
   }
@@ -305,7 +305,7 @@ export class ForumThreadService {
 
       return this.getThreadById(data.id);
     } catch (_error) {
-      logger._error('Error fetching thread by slug:', _error);
+      logger.error('Error fetching thread by slug:', _error);
       throw error;
     }
   }
@@ -350,7 +350,7 @@ export class ForumThreadService {
       logger.log('Thread updated:', threadId);
       return data;
     } catch (_error) {
-      logger._error('Error updating thread:', _error);
+      logger.error('Error updating thread:', _error);
       throw error;
     }
   }
@@ -378,7 +378,7 @@ export class ForumThreadService {
 
       logger.log('Thread deleted:', threadId);
     } catch (_error) {
-      logger._error('Error deleting thread:', _error);
+      logger.error('Error deleting thread:', _error);
       throw error;
     }
   }
@@ -395,7 +395,7 @@ export class ForumThreadService {
         is_pinned: !thread.is_pinned,
       });
     } catch (_error) {
-      logger._error('Error toggling pin:', _error);
+      logger.error('Error toggling pin:', _error);
       throw error;
     }
   }
@@ -412,7 +412,7 @@ export class ForumThreadService {
         is_locked: !thread.is_locked,
       });
     } catch (_error) {
-      logger._error('Error toggling lock:', _error);
+      logger.error('Error toggling lock:', _error);
       throw error;
     }
   }
@@ -426,7 +426,7 @@ export class ForumThreadService {
         ...({ category_id: newCategoryId } as UpdateThreadRequest),
       });
     } catch (_error) {
-      logger._error('Error moving thread:', _error);
+      logger.error('Error moving thread:', _error);
       throw error;
     }
   }
@@ -481,7 +481,7 @@ export class ForumThreadService {
       if (error) throw error;
       return (data || []) as ForumThreadWithDetails[];
     } catch (_error) {
-      logger._error('Error fetching trending threads:', _error);
+      logger.error('Error fetching trending threads:', _error);
       throw error;
     }
   }
@@ -508,7 +508,7 @@ export class ForumThreadService {
       if (error) throw error;
       return (data || []) as ForumThreadWithDetails[];
     } catch (_error) {
-      logger._error('Error fetching hot threads:', _error);
+      logger.error('Error fetching hot threads:', _error);
       throw error;
     }
   }
@@ -559,7 +559,7 @@ export class ForumThreadService {
       if (error) throw error;
       return count || 0;
     } catch (_error) {
-      logger._error('Error getting thread count:', _error);
+      logger.error('Error getting thread count:', _error);
       return 0;
     }
   }

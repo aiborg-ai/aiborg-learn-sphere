@@ -137,7 +137,7 @@ export class AdaptiveQuizEngine extends AdaptiveAssessmentEngine {
 
       return quizQuestion;
     } catch (_error) {
-      logger._error('Error getting next quiz question:', _error);
+      logger.error('Error getting next quiz question:', _error);
       throw _error;
     }
   }
@@ -157,7 +157,7 @@ export class AdaptiveQuizEngine extends AdaptiveAssessmentEngine {
 
       // Calculate quiz-specific bonuses and penalties
       const hintPenalty = this.calculateHintPenalty(hintsUsed);
-      const timeBonus = this.calculateTimeBonus(questionId, timeSpent);
+      const timeBonus = await this.calculateTimeBonus(questionId, timeSpent);
       const streakBonus = this.calculateStreakBonus(baseResult.isCorrect);
 
       // Update quiz state
@@ -209,7 +209,7 @@ export class AdaptiveQuizEngine extends AdaptiveAssessmentEngine {
 
       return quizResult;
     } catch (_error) {
-      logger._error('Error processing quiz answer:', _error);
+      logger.error('Error processing quiz answer:', _error);
       throw _error;
     }
   }
@@ -225,18 +225,36 @@ export class AdaptiveQuizEngine extends AdaptiveAssessmentEngine {
   /**
    * Calculate time bonus for quick correct answers
    */
-  private calculateTimeBonus(questionId: string, timeSpent: number): number {
-    // TODO: Fetch question time_limit from database
-    const timeLimit = 120; // Default 2 minutes
+  private async calculateTimeBonus(questionId: string, timeSpent: number): Promise<number> {
+    try {
+      // Fetch question time_limit from database
+      const { data: questionData } = await supabase
+        .from('quiz_question_enhancements')
+        .select('time_limit')
+        .eq('question_id', questionId)
+        .single();
 
-    // Bonus points for answering quickly (up to 20% of time remaining)
-    if (timeSpent < timeLimit * 0.5) {
-      return 10; // Fast answer bonus
-    } else if (timeSpent < timeLimit * 0.75) {
-      return 5; // Moderate speed bonus
+      const timeLimit = questionData?.time_limit || 120; // Default 2 minutes if not set
+
+      // Bonus points for answering quickly (up to 20% of time remaining)
+      if (timeSpent < timeLimit * 0.5) {
+        return 10; // Fast answer bonus
+      } else if (timeSpent < timeLimit * 0.75) {
+        return 5; // Moderate speed bonus
+      }
+
+      return 0;
+    } catch (_error) {
+      logger.warn('Failed to fetch time_limit, using default:', _error);
+      // Fallback to default 2 minutes
+      const timeLimit = 120;
+      if (timeSpent < timeLimit * 0.5) {
+        return 10;
+      } else if (timeSpent < timeLimit * 0.75) {
+        return 5;
+      }
+      return 0;
     }
-
-    return 0;
   }
 
   /**
@@ -318,7 +336,7 @@ export class AdaptiveQuizEngine extends AdaptiveAssessmentEngine {
         logger.error('Failed to save quiz answer:', error);
       }
     } catch (_error) {
-      logger._error('Error saving quiz answer:', _error);
+      logger.error('Error saving quiz answer:', _error);
     }
   }
 
@@ -440,7 +458,7 @@ export class AdaptiveQuizEngine extends AdaptiveAssessmentEngine {
         accuracy: summary.accuracy,
       });
     } catch (_error) {
-      logger._error('Error saving quiz session:', _error);
+      logger.error('Error saving quiz session:', _error);
       throw _error;
     }
   }

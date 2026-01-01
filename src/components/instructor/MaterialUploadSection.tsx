@@ -92,7 +92,7 @@ export function MaterialUploadSection({
       if (error) throw error;
       setMaterials(data || []);
     } catch (_error) {
-      logger._error('Error fetching materials:', _error);
+      logger.error('Error fetching materials:', _error);
     } finally {
       setLoading(false);
     }
@@ -135,7 +135,7 @@ export function MaterialUploadSection({
 
       return publicUrl;
     } catch (_error) {
-      logger._error('Error uploading file to storage:', _error);
+      logger.error('Error uploading file to storage:', _error);
       throw error; // Re-throw to be caught by handleSubmit
     }
   };
@@ -218,7 +218,7 @@ export function MaterialUploadSection({
       await fetchMaterials();
       onUploadComplete?.();
     } catch (_error) {
-      logger._error('Error uploading material:', _error);
+      logger.error('Error uploading material:', _error);
       toast({
         title: 'Upload Failed',
         description: error.message || 'Failed to upload material',
@@ -248,7 +248,7 @@ export function MaterialUploadSection({
       await fetchMaterials();
       onUploadComplete?.();
     } catch (_error) {
-      logger._error('Error deleting material:', _error);
+      logger.error('Error deleting material:', _error);
       toast({
         title: 'Delete Failed',
         description: 'Failed to delete material',

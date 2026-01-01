@@ -153,7 +153,7 @@ export function ContactSection() {
         });
       }, 3000);
     } catch (_error) {
-      logger._error('Error submitting contact form:', _error);
+      logger.error('Error submitting contact form:', _error);
       setIsSubmitting(false);
 
       toast({

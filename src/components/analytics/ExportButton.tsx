@@ -60,7 +60,7 @@ export function ExportButton({
         description: 'Your analytics have been exported to Excel.',
       });
     } catch (_error) {
-      logger._error('Error exporting to Excel:', _error);
+      logger.error('Error exporting to Excel:', _error);
       toast({
         title: 'Export Failed',
         description: 'Failed to export analytics. Please try again.',
@@ -81,7 +81,7 @@ export function ExportButton({
         description: 'Performance summary exported to CSV.',
       });
     } catch (_error) {
-      logger._error('Error exporting performance CSV:', _error);
+      logger.error('Error exporting performance CSV:', _error);
       toast({
         title: 'Export Failed',
         description: 'Failed to export performance data. Please try again.',
@@ -102,7 +102,7 @@ export function ExportButton({
         description: 'Goals summary exported to CSV.',
       });
     } catch (_error) {
-      logger._error('Error exporting goals CSV:', _error);
+      logger.error('Error exporting goals CSV:', _error);
       toast({
         title: 'Export Failed',
         description: 'Failed to export goals data. Please try again.',

@@ -154,7 +154,7 @@ export class AtRiskDetectionService {
 
       return riskScore;
     } catch (_error) {
-      logger._error('Error calculating risk score:', _error);
+      logger.error('Error calculating risk score:', _error);
       throw error;
     }
   }
@@ -181,7 +181,7 @@ export class AtRiskDetectionService {
 
       return this.mapDatabaseToRiskScore(data);
     } catch (_error) {
-      logger._error('Error getting current risk score:', _error);
+      logger.error('Error getting current risk score:', _error);
       return null;
     }
   }
@@ -222,7 +222,7 @@ export class AtRiskDetectionService {
 
       return riskScores;
     } catch (_error) {
-      logger._error('Error scanning all students:', _error);
+      logger.error('Error scanning all students:', _error);
       return [];
     }
   }
@@ -306,7 +306,7 @@ export class AtRiskDetectionService {
 
       return results;
     } catch (_error) {
-      logger._error('Error getting at-risk students for instructor:', _error);
+      logger.error('Error getting at-risk students for instructor:', _error);
       return [];
     }
   }
@@ -342,7 +342,7 @@ export class AtRiskDetectionService {
 
       return triggeredEvents;
     } catch (_error) {
-      logger._error('Error triggering interventions:', _error);
+      logger.error('Error triggering interventions:', _error);
       return [];
     }
   }
@@ -372,7 +372,7 @@ export class AtRiskDetectionService {
         messageTemplate: t.message_template,
       }));
     } catch (_error) {
-      logger._error('Error getting intervention templates:', _error);
+      logger.error('Error getting intervention templates:', _error);
       return [];
     }
   }
@@ -481,7 +481,7 @@ export class AtRiskDetectionService {
         createdAt: new Date(data.created_at),
       };
     } catch (_error) {
-      logger._error('Error creating intervention event:', _error);
+      logger.error('Error creating intervention event:', _error);
       return null;
     }
   }
@@ -496,7 +496,7 @@ export class AtRiskDetectionService {
         .update({ delivered_at: new Date().toISOString() })
         .eq('id', interventionId);
     } catch (_error) {
-      logger._error('Error marking intervention delivered:', _error);
+      logger.error('Error marking intervention delivered:', _error);
     }
   }
 
@@ -510,7 +510,7 @@ export class AtRiskDetectionService {
         .update({ opened_at: new Date().toISOString() })
         .eq('id', interventionId);
     } catch (_error) {
-      logger._error('Error marking intervention opened:', _error);
+      logger.error('Error marking intervention opened:', _error);
     }
   }
 
@@ -530,7 +530,7 @@ export class AtRiskDetectionService {
         })
         .eq('id', interventionId);
     } catch (_error) {
-      logger._error('Error marking intervention outcome:', _error);
+      logger.error('Error marking intervention outcome:', _error);
     }
   }
 
@@ -1014,7 +1014,7 @@ export class AtRiskDetectionService {
         valid_until: riskScore.validUntil.toISOString(),
       });
     } catch (_error) {
-      logger._error('Error saving risk score:', _error);
+      logger.error('Error saving risk score:', _error);
     }
   }
 
@@ -1069,7 +1069,7 @@ export class AtRiskDetectionService {
         calculatedAt: new Date(d.calculated_at),
       }));
     } catch (_error) {
-      logger._error('Error getting risk score history:', _error);
+      logger.error('Error getting risk score history:', _error);
       return [];
     }
   }
@@ -1107,7 +1107,7 @@ export class AtRiskDetectionService {
         createdAt: new Date(d.created_at),
       }));
     } catch (_error) {
-      logger._error('Error getting intervention history:', _error);
+      logger.error('Error getting intervention history:', _error);
       return [];
     }
   }

@@ -130,7 +130,7 @@ export function IntegrationsDashboard({ organizationId }: IntegrationsDashboardP
       setWebhooks(webhookData);
       setChannels(channelData);
     } catch (_error) {
-      logger._error('Error loading integrations:', _error);
+      logger.error('Error loading integrations:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load integrations',

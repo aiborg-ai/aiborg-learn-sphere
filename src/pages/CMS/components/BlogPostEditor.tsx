@@ -177,7 +177,7 @@ function BlogPostEditor({ post, onClose }: BlogPostEditorProps) {
 
       onClose();
     } catch (_error) {
-      logger._error('Error saving post:', _error);
+      logger.error('Error saving post:', _error);
       toast({
         title: 'Error',
         description: 'Failed to save post',

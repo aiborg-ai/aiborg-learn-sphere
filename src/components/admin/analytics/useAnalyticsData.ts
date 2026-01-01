@@ -133,7 +133,7 @@ export function useAnalyticsData({ dateRange, forecastDays = 30 }: UseAnalyticsD
           enrollmentForecast,
         });
       } catch (_error) {
-        logger._error('Error fetching analytics:', _error);
+        logger.error('Error fetching analytics:', _error);
         toast({
           title: 'Error',
           description: 'Failed to fetch analytics data',

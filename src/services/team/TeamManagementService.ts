@@ -458,7 +458,7 @@ export class TeamManagementService {
         // Don't throw - we don't want to fail the invitation creation if email fails
       }
     } catch (_error) {
-      logger._error('Error in sendInvitationEmail', _error);
+      logger.error('Error in sendInvitationEmail', _error);
       // Don't throw - email failure shouldn't break invitation flow
     }
   }

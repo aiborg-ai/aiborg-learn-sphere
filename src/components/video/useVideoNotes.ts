@@ -38,7 +38,7 @@ export function useVideoNotes(user: User | null, contentId: string, courseId?: n
         );
       }
     } catch (_error) {
-      logger._error('Error loading notes:', _error);
+      logger.error('Error loading notes:', _error);
     }
   }, [user, contentId]);
 
@@ -88,7 +88,7 @@ export function useVideoNotes(user: User | null, contentId: string, courseId?: n
           description: 'Your note has been saved',
         });
       } catch (_error) {
-        logger._error('Error adding note:', _error);
+        logger.error('Error adding note:', _error);
         toast({
           title: 'Error',
           description: 'Failed to save note',
@@ -123,7 +123,7 @@ export function useVideoNotes(user: User | null, contentId: string, courseId?: n
           description: 'Your note has been updated',
         });
       } catch (_error) {
-        logger._error('Error updating note:', _error);
+        logger.error('Error updating note:', _error);
         toast({
           title: 'Error',
           description: 'Failed to update note',
@@ -146,7 +146,7 @@ export function useVideoNotes(user: User | null, contentId: string, courseId?: n
           description: 'Your note has been removed',
         });
       } catch (_error) {
-        logger._error('Error deleting note:', _error);
+        logger.error('Error deleting note:', _error);
         toast({
           title: 'Error',
           description: 'Failed to delete note',

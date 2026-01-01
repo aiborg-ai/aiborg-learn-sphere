@@ -150,7 +150,7 @@ export function OfflineVideoPlayer({
       setCacheState(prev => ({ ...prev, isCached: false }));
       logger.info('[OfflineVideoPlayer] Playing from network');
     } catch (_error) {
-      logger._error('[OfflineVideoPlayer] Failed to load video:', _error);
+      logger.error('[OfflineVideoPlayer] Failed to load video:', _error);
       setState(prev => ({
         ...prev,
         error: 'Failed to load video',
@@ -201,7 +201,7 @@ export function OfflineVideoPlayer({
         description: 'Video is now available offline.',
       });
     } catch (_error) {
-      logger._error('[OfflineVideoPlayer] Download failed:', _error);
+      logger.error('[OfflineVideoPlayer] Download failed:', _error);
       setCacheState(prev => ({ ...prev, isDownloading: false, downloadProgress: 0 }));
 
       toast({
@@ -231,7 +231,7 @@ export function OfflineVideoPlayer({
         });
       }
     } catch (_error) {
-      logger._error('[OfflineVideoPlayer] Failed to delete cache:', _error);
+      logger.error('[OfflineVideoPlayer] Failed to delete cache:', _error);
       toast({
         title: 'Error',
         description: 'Failed to remove cached video.',
@@ -280,7 +280,7 @@ export function OfflineVideoPlayer({
         setState(prev => ({ ...prev, isFullscreen: false }));
       }
     } catch (_error) {
-      logger._error('[OfflineVideoPlayer] Fullscreen _error:', _error);
+      logger.error('[OfflineVideoPlayer] Fullscreen _error:', _error);
     }
   }, []);
 

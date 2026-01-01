@@ -201,7 +201,7 @@ export function AITutor() {
         total_ms: response.performance.total_ms,
       });
     } catch (_error) {
-      logger._error('Error getting RAG response:', _error);
+      logger.error('Error getting RAG response:', _error);
 
       // Fallback response
       setMessages(prev => [
@@ -232,7 +232,7 @@ export function AITutor() {
         await RAGService.submitFeedback(message.analyticsId, rating === 'positive');
         logger.log('Feedback submitted', { messageId, rating });
       } catch (_error) {
-        logger._error('Error submitting feedback:', _error);
+        logger.error('Error submitting feedback:', _error);
       }
     }
   };

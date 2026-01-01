@@ -131,7 +131,7 @@ export default function IndividualLearnerAnalytics() {
 
       toast.success('PDF report generated successfully!');
     } catch (_error) {
-      logger._error('PDF export _error:', _error);
+      logger.error('PDF export _error:', _error);
       toast.error('Failed to generate PDF. Please try again.');
     } finally {
       setIsExportingPDF(false);

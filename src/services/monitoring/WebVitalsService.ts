@@ -329,7 +329,7 @@ class WebVitalsService {
         created_at: new Date(metric.timestamp).toISOString(),
       });
     } catch (_error) {
-      logger._error('Failed to send metric:', _error);
+      logger.error('Failed to send metric:', _error);
     }
   }
 
@@ -370,7 +370,7 @@ class WebVitalsService {
       // Clear sent metrics
       this.customMetrics = [];
     } catch (_error) {
-      logger._error('Failed to send performance report:', _error);
+      logger.error('Failed to send performance report:', _error);
     }
   }
 

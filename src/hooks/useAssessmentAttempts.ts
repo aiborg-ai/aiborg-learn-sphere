@@ -22,7 +22,7 @@ async function fetchAttemptHistory(userId: string, toolId: string): Promise<Atte
     if (error) throw error;
     return data || [];
   } catch (_error) {
-    logger._error('Error fetching attempt history:', _error);
+    logger.error('Error fetching attempt history:', _error);
     throw error;
   }
 }
@@ -58,7 +58,7 @@ async function fetchAttempt(attemptId: string): Promise<AssessmentToolAttempt> {
 
     return data as AssessmentToolAttempt;
   } catch (_error) {
-    logger._error('Error fetching attempt:', _error);
+    logger.error('Error fetching attempt:', _error);
     throw error;
   }
 }
@@ -122,7 +122,7 @@ async function createAttempt({
 
     return newAttempt as AssessmentToolAttempt;
   } catch (_error) {
-    logger._error('Error creating assessment attempt:', _error);
+    logger.error('Error creating assessment attempt:', _error);
     throw error;
   }
 }
@@ -177,7 +177,7 @@ async function updateAttempt({
 
     return data as AssessmentToolAttempt;
   } catch (_error) {
-    logger._error('Error updating attempt:', _error);
+    logger.error('Error updating attempt:', _error);
     throw error;
   }
 }
@@ -258,7 +258,7 @@ async function completeAttempt(params: CompleteAttemptParams): Promise<Assessmen
 
     return data as AssessmentToolAttempt;
   } catch (_error) {
-    logger._error('Error completing attempt:', _error);
+    logger.error('Error completing attempt:', _error);
     throw error;
   }
 }
@@ -317,7 +317,7 @@ async function fetchAllUserAttempts(userId: string): Promise<AssessmentToolAttem
     if (error) throw error;
     return (data || []) as AssessmentToolAttempt[];
   } catch (_error) {
-    logger._error('Error fetching all user attempts:', _error);
+    logger.error('Error fetching all user attempts:', _error);
     throw error;
   }
 }

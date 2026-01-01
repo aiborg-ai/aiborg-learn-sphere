@@ -200,7 +200,7 @@ export default function AIBlogWorkflow() {
         description: `Blog post ${status === 'draft' ? 'saved as draft' : status === 'published' ? 'published' : 'scheduled'} successfully!`,
       });
     } catch (_error) {
-      logger._error('Error publishing blog post:', _error);
+      logger.error('Error publishing blog post:', _error);
       toast({
         title: 'Publishing Failed',
         description: error instanceof Error ? error.message : 'Failed to publish blog post',

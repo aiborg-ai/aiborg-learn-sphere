@@ -84,7 +84,7 @@ export function EnrolledStudents({ courseId, courseName }: EnrolledStudentsProps
 
       setStudents(enrichedStudents);
     } catch (_error) {
-      logger._error('Error fetching students:', _error);
+      logger.error('Error fetching students:', _error);
     } finally {
       setLoading(false);
     }

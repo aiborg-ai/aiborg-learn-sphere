@@ -65,7 +65,7 @@ export function useChatHistory() {
         }));
       }
     } catch (_error) {
-      logger._error('Failed to load chat history from localStorage:', _error);
+      logger.error('Failed to load chat history from localStorage:', _error);
     }
     return [];
   }, []);
@@ -77,7 +77,7 @@ export function useChatHistory() {
       const limited = conversations.slice(0, MAX_STORED_CONVERSATIONS);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(limited));
     } catch (_error) {
-      logger._error('Failed to save chat history to localStorage:', _error);
+      logger.error('Failed to save chat history to localStorage:', _error);
     }
   }, []);
 
@@ -137,7 +137,7 @@ export function useChatHistory() {
 
       return conversationsWithMessages;
     } catch (_error) {
-      logger._error('Failed to load chat history from database:', _error);
+      logger.error('Failed to load chat history from database:', _error);
       return [];
     }
   }, [user?.id]);
@@ -197,7 +197,7 @@ export function useChatHistory() {
           if (error) throw error;
           newConversation.id = data.id;
         } catch (_error) {
-          logger._error('Failed to create conversation in database:', _error);
+          logger.error('Failed to create conversation in database:', _error);
           // Continue with local-only conversation
           newConversation.id = sessionId;
         }
@@ -265,7 +265,7 @@ export function useChatHistory() {
         try {
           await supabase.from('chatbot_conversations').delete().eq('id', conversationId);
         } catch (_error) {
-          logger._error('Failed to delete conversation from database:', _error);
+          logger.error('Failed to delete conversation from database:', _error);
         }
       }
 
@@ -289,7 +289,7 @@ export function useChatHistory() {
       try {
         await supabase.from('chatbot_conversations').delete().eq('user_id', user.id);
       } catch (_error) {
-        logger._error('Failed to clear conversations from database:', _error);
+        logger.error('Failed to clear conversations from database:', _error);
       }
     }
 

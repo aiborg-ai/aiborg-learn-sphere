@@ -114,7 +114,7 @@ export function LTIPlatformManager() {
       const data = await LTIService.listPlatforms();
       setPlatforms(data);
     } catch (_error) {
-      logger._error('Failed to load LTI platforms:', _error);
+      logger.error('Failed to load LTI platforms:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load LTI platforms',
@@ -192,7 +192,7 @@ export function LTIPlatformManager() {
       handleCloseDialog();
       loadPlatforms();
     } catch (_error) {
-      logger._error('Failed to save platform:', _error);
+      logger.error('Failed to save platform:', _error);
       toast({
         title: 'Error',
         description: 'Failed to save platform',
@@ -209,7 +209,7 @@ export function LTIPlatformManager() {
       setCopiedField(field);
       setTimeout(() => setCopiedField(null), 2000);
     } catch (_error) {
-      logger._error('Failed to copy:', _error);
+      logger.error('Failed to copy:', _error);
     }
   };
 

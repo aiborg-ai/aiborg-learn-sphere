@@ -144,7 +144,7 @@ export class PrePostAssessmentService {
 
       return this.mapPair(data);
     } catch (_error) {
-      logger._error('Error creating assessment pair:', _error);
+      logger.error('Error creating assessment pair:', _error);
       return null;
     }
   }
@@ -175,7 +175,7 @@ export class PrePostAssessmentService {
 
       return pair;
     } catch (_error) {
-      logger._error('Error completing assessment pair:', _error);
+      logger.error('Error completing assessment pair:', _error);
       return null;
     }
   }
@@ -195,7 +195,7 @@ export class PrePostAssessmentService {
 
       return this.mapMetrics(data);
     } catch (_error) {
-      logger._error('Error getting improvement metrics:', _error);
+      logger.error('Error getting improvement metrics:', _error);
       return null;
     }
   }
@@ -245,7 +245,7 @@ export class PrePostAssessmentService {
         recommendations,
       };
     } catch (_error) {
-      logger._error('Error getting comparison:', _error);
+      logger.error('Error getting comparison:', _error);
       return null;
     }
   }
@@ -269,7 +269,7 @@ export class PrePostAssessmentService {
 
       return (data || []).map(this.mapMetrics);
     } catch (_error) {
-      logger._error('Error getting improvement history:', _error);
+      logger.error('Error getting improvement history:', _error);
       return [];
     }
   }
@@ -310,7 +310,7 @@ export class PrePostAssessmentService {
         })),
       }));
     } catch (_error) {
-      logger._error('Error getting mastery progression:', _error);
+      logger.error('Error getting mastery progression:', _error);
       return [];
     }
   }
@@ -388,7 +388,7 @@ export class PrePostAssessmentService {
         });
       }
     } catch (_error) {
-      logger._error('Error updating mastery progression:', _error);
+      logger.error('Error updating mastery progression:', _error);
     }
   }
 
@@ -447,7 +447,7 @@ export class PrePostAssessmentService {
         aboveAverage: userImprovement > cohortAvg,
       };
     } catch (_error) {
-      logger._error('Error getting cohort comparison:', _error);
+      logger.error('Error getting cohort comparison:', _error);
       return null;
     }
   }
@@ -487,7 +487,7 @@ export class PrePostAssessmentService {
         percentileRank: data.percentile_rank,
       };
     } catch (_error) {
-      logger._error('Error getting learning outcomes summary:', _error);
+      logger.error('Error getting learning outcomes summary:', _error);
       return null;
     }
   }
@@ -566,7 +566,7 @@ export class PrePostAssessmentService {
         category_improvements: categoryImprovements,
       });
     } catch (_error) {
-      logger._error('Error calculating improvement metrics:', _error);
+      logger.error('Error calculating improvement metrics:', _error);
     }
   }
 
@@ -619,7 +619,7 @@ export class PrePostAssessmentService {
         categoryScores,
       };
     } catch (_error) {
-      logger._error('Error getting assessment summary:', _error);
+      logger.error('Error getting assessment summary:', _error);
       return null;
     }
   }

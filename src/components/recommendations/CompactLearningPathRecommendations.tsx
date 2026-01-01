@@ -46,7 +46,7 @@ export function CompactLearningPathRecommendations({
         setTopRecommendation(recs[0]);
       }
     } catch (_error) {
-      logger._error('Error fetching recommendation:', _error);
+      logger.error('Error fetching recommendation:', _error);
     } finally {
       setLoading(false);
     }

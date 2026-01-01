@@ -25,7 +25,7 @@ export function useUserSkills(userId?: string) {
       try {
         return await SkillExtractionService.getUserSkills(effectiveUserId);
       } catch (_error) {
-        logger._error('Error fetching user skills:', _error);
+        logger.error('Error fetching user skills:', _error);
         throw error;
       }
     },
@@ -52,7 +52,7 @@ export function useSkillsByCategorySummary(userId?: string) {
       try {
         return await SkillExtractionService.getSkillsByCategorySummary(effectiveUserId);
       } catch (_error) {
-        logger._error('Error fetching skills by category:', _error);
+        logger.error('Error fetching skills by category:', _error);
         throw error;
       }
     },

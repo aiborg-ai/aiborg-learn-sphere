@@ -22,7 +22,7 @@ export function ReplyForm({ onSubmit, onCancel }: ReplyFormProps) {
       await onSubmit(content);
       setContent('');
     } catch (_error) {
-      logger._error('Failed to post reply:', _error);
+      logger.error('Failed to post reply:', _error);
     } finally {
       setIsSubmitting(false);
     }

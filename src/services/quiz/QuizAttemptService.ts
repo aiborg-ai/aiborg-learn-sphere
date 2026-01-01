@@ -84,7 +84,7 @@ export class QuizAttemptService {
 
       return data as QuizAttempt;
     } catch (_error) {
-      logger._error('Failed to start quiz', { _error: _error, input });
+      logger.error('Failed to start quiz', { _error: _error, input });
       throw _error;
     }
   }
@@ -152,7 +152,7 @@ export class QuizAttemptService {
 
       return response;
     } catch (_error) {
-      logger._error('Failed to submit answer', { _error: _error, input });
+      logger.error('Failed to submit answer', { _error: _error, input });
       throw _error;
     }
   }
@@ -193,7 +193,7 @@ export class QuizAttemptService {
         })
         .eq('id', responseId);
     } catch (_error) {
-      logger._error('Failed to check answer correctness', { _error: _error, responseId });
+      logger.error('Failed to check answer correctness', { _error: _error, responseId });
       // Don't throw - this is a background operation
     }
   }
@@ -268,7 +268,7 @@ export class QuizAttemptService {
         points_awarded: pointsAwarded,
       };
     } catch (_error) {
-      logger._error('Failed to complete quiz', { _error: _error, attemptId });
+      logger.error('Failed to complete quiz', { _error: _error, attemptId });
       throw _error;
     }
   }
@@ -332,7 +332,7 @@ export class QuizAttemptService {
         })
         .eq('id', attemptId);
     } catch (_error) {
-      logger._error('Failed to calculate score manually', { _error: _error, attemptId });
+      logger.error('Failed to calculate score manually', { _error: _error, attemptId });
       throw _error;
     }
   }
@@ -378,7 +378,7 @@ export class QuizAttemptService {
 
       return points;
     } catch (_error) {
-      logger._error('Failed to award gamification points', { _error: _error, attempt });
+      logger.error('Failed to award gamification points', { _error: _error, attempt });
       return 0; // Don't fail the quiz completion if points award fails
     }
   }
@@ -409,7 +409,7 @@ export class QuizAttemptService {
         responses: responses || [],
       } as QuizAttemptWithDetails;
     } catch (_error) {
-      logger._error('Failed to get quiz attempt', { _error: _error, attemptId });
+      logger.error('Failed to get quiz attempt', { _error: _error, attemptId });
       throw _error;
     }
   }
@@ -430,7 +430,7 @@ export class QuizAttemptService {
 
       return data as QuizAttempt[];
     } catch (_error) {
-      logger._error('Failed to get user attempts', { _error: _error, userId, quizBankId });
+      logger.error('Failed to get user attempts', { _error: _error, userId, quizBankId });
       throw _error;
     }
   }
@@ -472,7 +472,7 @@ export class QuizAttemptService {
         },
       };
     } catch (_error) {
-      logger._error('Failed to get student performance', { _error: _error, userId, quizBankId });
+      logger.error('Failed to get student performance', { _error: _error, userId, quizBankId });
       throw _error;
     }
   }
@@ -501,7 +501,7 @@ export class QuizAttemptService {
         logger.info('Quiz abandoned', { attemptId });
       }
     } catch (_error) {
-      logger._error('Failed to abandon quiz', { _error: _error, attemptId });
+      logger.error('Failed to abandon quiz', { _error: _error, attemptId });
       throw _error;
     }
   }
@@ -529,7 +529,7 @@ export class QuizAttemptService {
         logger.info('Quiz timed out', { attemptId });
       }
     } catch (_error) {
-      logger._error('Failed to handle quiz timeout', { _error: _error, attemptId });
+      logger.error('Failed to handle quiz timeout', { _error: _error, attemptId });
       throw _error;
     }
   }
@@ -587,7 +587,7 @@ export class QuizAttemptService {
         option_distribution: Object.keys(optionDist).length > 0 ? optionDist : undefined,
       };
     } catch (_error) {
-      logger._error('Failed to get question statistics', { _error: _error, questionId });
+      logger.error('Failed to get question statistics', { _error: _error, questionId });
       throw _error;
     }
   }

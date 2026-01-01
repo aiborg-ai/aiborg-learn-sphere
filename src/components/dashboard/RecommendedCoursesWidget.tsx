@@ -82,7 +82,7 @@ export function RecommendedCoursesWidget({
         isHelpful,
       });
     } catch (_error) {
-      logger._error('Error submitting feedback:', _error);
+      logger.error('Error submitting feedback:', _error);
     }
   };
 

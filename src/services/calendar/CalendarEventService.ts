@@ -168,7 +168,7 @@ async function fetchAssignments(
       };
     });
   } catch (_error) {
-    logger._error('Error fetching assignments for calendar:', _error);
+    logger.error('Error fetching assignments for calendar:', _error);
     return [];
   }
 }
@@ -236,7 +236,7 @@ async function fetchEvents(dateRange: DateRange): Promise<CalendarEvent[]> {
       };
     });
   } catch (_error) {
-    logger._error('Error fetching events for calendar:', _error);
+    logger.error('Error fetching events for calendar:', _error);
     return [];
   }
 }
@@ -341,7 +341,7 @@ async function fetchWorkshopSessions(
       };
     });
   } catch (_error) {
-    logger._error('Error fetching workshop sessions for calendar:', _error);
+    logger.error('Error fetching workshop sessions for calendar:', _error);
     return [];
   }
 }
@@ -429,7 +429,7 @@ async function fetchFreeSessions(
       };
     });
   } catch (_error) {
-    logger._error('Error fetching free sessions for calendar:', _error);
+    logger.error('Error fetching free sessions for calendar:', _error);
     return [];
   }
 }
@@ -524,7 +524,7 @@ async function fetchClassroomSessions(
       };
     });
   } catch (_error) {
-    logger._error('Error fetching classroom sessions for calendar:', _error);
+    logger.error('Error fetching classroom sessions for calendar:', _error);
     return [];
   }
 }
@@ -579,7 +579,7 @@ export async function fetchCalendarEvents(
 
     return allEvents;
   } catch (_error) {
-    logger._error('Error fetching calendar events:', _error);
+    logger.error('Error fetching calendar events:', _error);
     return [];
   }
 }

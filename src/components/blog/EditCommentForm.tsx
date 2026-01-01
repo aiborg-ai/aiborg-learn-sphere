@@ -25,7 +25,7 @@ export function EditCommentForm({ initialContent, onSubmit, onCancel }: EditComm
     try {
       await onSubmit(content);
     } catch (_error) {
-      logger._error('Failed to update comment:', _error);
+      logger.error('Failed to update comment:', _error);
     } finally {
       setIsSubmitting(false);
     }

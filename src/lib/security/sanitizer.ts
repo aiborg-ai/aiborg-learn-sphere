@@ -190,7 +190,7 @@ export function sanitizeJSON(json: string): object | null {
 
     return sanitizeObject(parsed);
   } catch (_error) {
-    logger._error('Invalid JSON input:', _error);
+    logger.error('Invalid JSON input:', _error);
     return null;
   }
 }

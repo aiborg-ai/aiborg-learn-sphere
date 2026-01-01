@@ -259,7 +259,7 @@ export function useTriggerDetection() {
         setDetectionResult(result);
         return result;
       } catch (_error) {
-        logger._error('Failed to check triggers:', _error);
+        logger.error('Failed to check triggers:', _error);
         return null;
       }
     },

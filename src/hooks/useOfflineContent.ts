@@ -123,7 +123,7 @@ export function useOfflineDownloads() {
       const userDownloads = await DownloadManager.getUserDownloads();
       setDownloads(userDownloads);
     } catch (_error) {
-      logger._error('Failed to load downloads:', _error);
+      logger.error('Failed to load downloads:', _error);
     } finally {
       setIsLoading(false);
     }
@@ -159,7 +159,7 @@ export function useStorageStats() {
       const storageStats = await OfflineContentService.getStorageStats();
       setStats(storageStats);
     } catch (_error) {
-      logger._error('Failed to load storage stats:', _error);
+      logger.error('Failed to load storage stats:', _error);
     } finally {
       setIsLoading(false);
     }

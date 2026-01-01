@@ -201,7 +201,7 @@ export class AdaptiveAssessmentEngagementService {
         returnRate: returningUsers / uniqueUsers,
       };
     } catch (_error) {
-      logger._error('Error calculating engagement metrics:', _error);
+      logger.error('Error calculating engagement metrics:', _error);
       return null;
     }
   }
@@ -309,7 +309,7 @@ export class AdaptiveAssessmentEngagementService {
 
       return result;
     } catch (_error) {
-      logger._error('Error fetching user engagement data:', _error);
+      logger.error('Error fetching user engagement data:', _error);
       return [];
     }
   }
@@ -384,7 +384,7 @@ export class AdaptiveAssessmentEngagementService {
 
       return result;
     } catch (_error) {
-      logger._error('Error fetching time series data:', _error);
+      logger.error('Error fetching time series data:', _error);
       return [];
     }
   }
@@ -411,7 +411,7 @@ export class AdaptiveAssessmentEngagementService {
         created_at: new Date().toISOString(),
       });
     } catch (_error) {
-      logger._error('Error tracking engagement event:', _error);
+      logger.error('Error tracking engagement event:', _error);
     }
   }
 

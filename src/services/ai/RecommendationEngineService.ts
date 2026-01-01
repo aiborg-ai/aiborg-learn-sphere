@@ -180,7 +180,7 @@ export class RecommendationEngineService {
 
       return rankedRecommendations;
     } catch (_error) {
-      logger._error('Failed to generate course recommendations:', _error);
+      logger.error('Failed to generate course recommendations:', _error);
       return [];
     }
   }
@@ -273,7 +273,7 @@ export class RecommendationEngineService {
         .slice(0, limit)
         .map((rec, index) => ({ ...rec, rank: index + 1 }));
     } catch (_error) {
-      logger._error('Failed to generate learning path recommendations:', _error);
+      logger.error('Failed to generate learning path recommendations:', _error);
       return [];
     }
   }
@@ -338,7 +338,7 @@ export class RecommendationEngineService {
         };
       });
     } catch (_error) {
-      logger._error('Failed to find similar courses:', _error);
+      logger.error('Failed to find similar courses:', _error);
       return [];
     }
   }
@@ -458,7 +458,7 @@ export class RecommendationEngineService {
 
       return skillGaps;
     } catch (_error) {
-      logger._error('Failed to calculate skill gaps:', _error);
+      logger.error('Failed to calculate skill gaps:', _error);
       return [];
     }
   }
@@ -735,7 +735,7 @@ export class RecommendationEngineService {
         logger.error('Failed to record recommendations:', error);
       }
     } catch (_error) {
-      logger._error('Error recording recommendations:', _error);
+      logger.error('Error recording recommendations:', _error);
     }
   }
 
@@ -760,7 +760,7 @@ export class RecommendationEngineService {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Failed to submit recommendation feedback:', _error);
+      logger.error('Failed to submit recommendation feedback:', _error);
       throw error;
     }
   }
@@ -787,7 +787,7 @@ export class RecommendationEngineService {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Failed to update recommendation interaction:', _error);
+      logger.error('Failed to update recommendation interaction:', _error);
     }
   }
 }

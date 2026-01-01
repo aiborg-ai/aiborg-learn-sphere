@@ -120,7 +120,7 @@ export default function CoursePage() {
 
       setAssignments(assignmentsData || []);
     } catch (_error) {
-      logger._error('Error fetching course data:', _error);
+      logger.error('Error fetching course data:', _error);
     } finally {
       setLoading(false);
     }
@@ -145,7 +145,7 @@ export default function CoursePage() {
         }));
       }
     } catch (_error) {
-      logger._error('Error updating progress:', _error);
+      logger.error('Error updating progress:', _error);
     }
   };
 

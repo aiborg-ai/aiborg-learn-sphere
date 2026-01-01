@@ -252,7 +252,7 @@ export class EnhancedPDFExportService {
 
       logger.info('Enhanced PDF export completed', { filename });
     } catch (_error) {
-      logger._error('Error in enhanced PDF export:', _error);
+      logger.error('Error in enhanced PDF export:', _error);
       throw error;
     }
   }

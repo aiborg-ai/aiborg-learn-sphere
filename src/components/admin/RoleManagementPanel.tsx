@@ -122,7 +122,7 @@ export function RoleManagementPanel({ users, onRefresh }: RoleManagementPanelPro
       setSelectedUser(null);
       onRefresh();
     } catch (_error) {
-      logger._error('Error updating user role:', _error);
+      logger.error('Error updating user role:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update user role',

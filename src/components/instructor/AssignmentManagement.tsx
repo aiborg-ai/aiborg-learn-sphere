@@ -85,7 +85,7 @@ export function AssignmentManagement({
 
       setAssignments(enrichedAssignments);
     } catch (_error) {
-      logger._error('Error fetching assignments:', _error);
+      logger.error('Error fetching assignments:', _error);
     } finally {
       setLoading(false);
     }

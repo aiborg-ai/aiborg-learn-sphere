@@ -49,7 +49,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
         onCommentCountChange(totalCount);
       }
     } catch (_error) {
-      logger._error('Failed to load comments:', _error);
+      logger.error('Failed to load comments:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load comments. Please try again.',
@@ -129,7 +129,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
         description: 'Your comment has been posted.',
       });
     } catch (_error) {
-      logger._error('Failed to add comment:', _error);
+      logger.error('Failed to add comment:', _error);
       toast({
         title: 'Error',
         description: 'Failed to post comment. Please try again.',
@@ -152,7 +152,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
       // Reload comments to show the new reply
       loadComments();
     } catch (_error) {
-      logger._error('Failed to add reply:', _error);
+      logger.error('Failed to add reply:', _error);
       toast({
         title: 'Error',
         description: 'Failed to post reply. Please try again.',
@@ -173,7 +173,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
       // Reload comments to show the update
       loadComments();
     } catch (_error) {
-      logger._error('Failed to edit comment:', _error);
+      logger.error('Failed to edit comment:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update comment. Please try again.',
@@ -210,7 +210,7 @@ export function CommentSection({ postId, onCommentCountChange }: CommentSectionP
         onCommentCountChange(newCount);
       }
     } catch (_error) {
-      logger._error('Failed to delete comment:', _error);
+      logger.error('Failed to delete comment:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete comment. Please try again.',

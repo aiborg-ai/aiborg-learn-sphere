@@ -70,7 +70,7 @@ export const SessionNotifications: React.FC<SessionNotificationsProps> = ({
         const data = await getUserRegistrations(user.email);
         setRegistrations(data as RegistrationWithDetails[]);
       } catch (_error) {
-        logger._error('Error fetching registrations:', _error);
+        logger.error('Error fetching registrations:', _error);
       } finally {
         setLoading(false);
       }

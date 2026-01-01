@@ -96,7 +96,7 @@ export class EmbeddingService {
         tokens: Math.ceil(text.length / 4), // Rough estimate: 1 token ≈ 4 chars
       };
     } catch (_error) {
-      logger._error('Failed to generate Ollama embedding:', _error);
+      logger.error('Failed to generate Ollama embedding:', _error);
       throw error;
     }
   }
@@ -135,7 +135,7 @@ export class EmbeddingService {
         tokens: data.usage.total_tokens,
       };
     } catch (_error) {
-      logger._error('Failed to generate OpenAI embedding:', _error);
+      logger.error('Failed to generate OpenAI embedding:', _error);
       throw error;
     }
   }
@@ -178,7 +178,7 @@ export class EmbeddingService {
             await this.sleep(100); // 100ms delay
           }
         } catch (_error) {
-          logger._error(`Error processing item ${i}:`, _error);
+          logger.error(`Error processing item ${i}:`, _error);
         }
       }
     } else {
@@ -229,7 +229,7 @@ export class EmbeddingService {
             await this.sleep(this.rateLimitDelay * BATCH_SIZE);
           }
         } catch (_error) {
-          logger._error(`Error processing batch ${batchIndex}:`, _error);
+          logger.error(`Error processing batch ${batchIndex}:`, _error);
         }
       }
     }
@@ -292,7 +292,7 @@ export class EmbeddingService {
 
       return data.id;
     } catch (_error) {
-      logger._error('Failed to save content embedding:', _error);
+      logger.error('Failed to save content embedding:', _error);
       throw error;
     }
   }
@@ -319,7 +319,7 @@ export class EmbeddingService {
 
       return data as ContentEmbedding;
     } catch (_error) {
-      logger._error('Failed to get content embedding:', _error);
+      logger.error('Failed to get content embedding:', _error);
       return null;
     }
   }
@@ -397,7 +397,7 @@ export class EmbeddingService {
           });
           stats.success++;
         } catch (_error) {
-          logger._error(`Failed to save embedding for course ${courses[i].id}:`, _error);
+          logger.error(`Failed to save embedding for course ${courses[i].id}:`, _error);
           stats.failed++;
         }
       }
@@ -405,7 +405,7 @@ export class EmbeddingService {
       logger.info('Course embeddings update complete:', stats);
       return stats;
     } catch (_error) {
-      logger._error('Failed to update course embeddings:', _error);
+      logger.error('Failed to update course embeddings:', _error);
       throw error;
     }
   }
@@ -463,7 +463,7 @@ export class EmbeddingService {
           });
           stats.success++;
         } catch (_error) {
-          logger._error(`Failed to save embedding for learning path ${paths[i].id}:`, _error);
+          logger.error(`Failed to save embedding for learning path ${paths[i].id}:`, _error);
           stats.failed++;
         }
       }
@@ -471,7 +471,7 @@ export class EmbeddingService {
       logger.info('Learning path embeddings update complete:', stats);
       return stats;
     } catch (_error) {
-      logger._error('Failed to update learning path embeddings:', _error);
+      logger.error('Failed to update learning path embeddings:', _error);
       throw error;
     }
   }
@@ -538,7 +538,7 @@ export class EmbeddingService {
           });
           stats.success++;
         } catch (_error) {
-          logger._error(`Failed to save embedding for blog post ${posts[i].id}:`, _error);
+          logger.error(`Failed to save embedding for blog post ${posts[i].id}:`, _error);
           stats.failed++;
         }
       }
@@ -546,7 +546,7 @@ export class EmbeddingService {
       logger.info('Blog post embeddings update complete:', stats);
       return stats;
     } catch (_error) {
-      logger._error('Failed to update blog post embeddings:', _error);
+      logger.error('Failed to update blog post embeddings:', _error);
       throw error;
     }
   }
@@ -615,7 +615,7 @@ export class EmbeddingService {
 
       return data || [];
     } catch (_error) {
-      logger._error('Failed to find similar content:', _error);
+      logger.error('Failed to find similar content:', _error);
       return [];
     }
   }

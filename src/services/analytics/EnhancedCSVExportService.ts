@@ -193,7 +193,7 @@ export class EnhancedCSVExportService {
 
       logger.info('Enhanced CSV export completed', { filename: config.filename });
     } catch (_error) {
-      logger._error('Error in enhanced CSV export:', _error);
+      logger.error('Error in enhanced CSV export:', _error);
       throw error;
     }
   }
@@ -272,7 +272,7 @@ export class EnhancedCSVExportService {
 
       logger.info('Bulk CSV export completed', { zipFilename: config.zipFilename });
     } catch (_error) {
-      logger._error('Error in bulk CSV export:', _error);
+      logger.error('Error in bulk CSV export:', _error);
       throw error;
     }
   }

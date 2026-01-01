@@ -45,7 +45,7 @@ export class WorkshopService {
       logger.info('Workshop created', { workshopId: data.id, courseId: input.course_id });
       return data as Workshop;
     } catch (_error) {
-      logger._error('Failed to create workshop', { _error, input });
+      logger.error('Failed to create workshop', { _error, input });
       throw error;
     }
   }
@@ -65,7 +65,7 @@ export class WorkshopService {
 
       return data as Workshop;
     } catch (_error) {
-      logger._error('Failed to get workshop', { _error, workshopId });
+      logger.error('Failed to get workshop', { _error, workshopId });
       throw error;
     }
   }
@@ -87,7 +87,7 @@ export class WorkshopService {
 
       return data as Workshop[];
     } catch (_error) {
-      logger._error('Failed to get workshops by course', { _error, courseId });
+      logger.error('Failed to get workshops by course', { _error, courseId });
       throw error;
     }
   }
@@ -117,7 +117,7 @@ export class WorkshopService {
       });
       return data as WorkshopSession;
     } catch (_error) {
-      logger._error('Failed to create session', { _error, input });
+      logger.error('Failed to create session', { _error, input });
       throw error;
     }
   }
@@ -144,7 +144,7 @@ export class WorkshopService {
       logger.info('Workshop session started', { sessionId });
       return data as WorkshopSession;
     } catch (_error) {
-      logger._error('Failed to start session', { _error, sessionId });
+      logger.error('Failed to start session', { _error, sessionId });
       throw error;
     }
   }
@@ -172,7 +172,7 @@ export class WorkshopService {
       });
       return data as WorkshopSession;
     } catch (_error) {
-      logger._error('Failed to update stage', { _error, input });
+      logger.error('Failed to update stage', { _error, input });
       throw error;
     }
   }
@@ -201,7 +201,7 @@ export class WorkshopService {
       logger.info('Workshop session completed', { sessionId });
       return data as WorkshopSession;
     } catch (_error) {
-      logger._error('Failed to complete session', { _error, sessionId });
+      logger.error('Failed to complete session', { _error, sessionId });
       throw error;
     }
   }
@@ -256,7 +256,7 @@ export class WorkshopService {
           .eq('user_id', participant.user_id);
       }
     } catch (_error) {
-      logger._error('Failed to award participant points', { _error, sessionId });
+      logger.error('Failed to award participant points', { _error, sessionId });
     }
   }
 
@@ -311,7 +311,7 @@ export class WorkshopService {
       });
       return data as WorkshopParticipant;
     } catch (_error) {
-      logger._error('Failed to join session', { _error, input });
+      logger.error('Failed to join session', { _error, input });
       throw error;
     }
   }
@@ -368,7 +368,7 @@ export class WorkshopService {
           : undefined,
       };
     } catch (_error) {
-      logger._error('Failed to get workshop statistics', { _error, workshopId });
+      logger.error('Failed to get workshop statistics', { _error, workshopId });
       throw error;
     }
   }

@@ -134,7 +134,7 @@ export class AdaptiveAssessmentEngine {
         this.updateState();
       }
     } catch (_error) {
-      logger._error('Error initializing adaptive assessment state:', _error);
+      logger.error('Error initializing adaptive assessment state:', _error);
       throw error;
     }
   }
@@ -184,7 +184,7 @@ export class AdaptiveAssessmentEngine {
         options,
       };
     } catch (_error) {
-      logger._error('Error in getNextQuestion:', _error);
+      logger.error('Error in getNextQuestion:', _error);
       throw error;
     }
   }
@@ -333,7 +333,7 @@ export class AdaptiveAssessmentEngine {
         }),
       };
     } catch (_error) {
-      logger._error('Error fetching next question for tool:', _error);
+      logger.error('Error fetching next question for tool:', _error);
       throw error;
     }
   }
@@ -409,7 +409,7 @@ export class AdaptiveAssessmentEngine {
         correctOptions,
       };
     } catch (_error) {
-      logger._error('Error in recordAnswer:', _error);
+      logger.error('Error in recordAnswer:', _error);
       throw error;
     }
   }
@@ -483,7 +483,7 @@ export class AdaptiveAssessmentEngine {
         abilityProgression,
       };
     } catch (_error) {
-      logger._error('Error fetching performance summary:', _error);
+      logger.error('Error fetching performance summary:', _error);
       throw error;
     }
   }

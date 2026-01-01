@@ -166,7 +166,7 @@ export function useBulkEnrollment() {
         enrollmentId: enrollment.id,
       };
     } catch (_error) {
-      logger._error('Unexpected _error creating enrollment:', _error);
+      logger.error('Unexpected _error creating enrollment:', _error);
       return {
         row,
         success: false,
@@ -232,7 +232,7 @@ export function useBulkEnrollment() {
 
       return allResults;
     } catch (_error) {
-      logger._error('Bulk enrollment processing _error:', _error);
+      logger.error('Bulk enrollment processing _error:', _error);
       throw error;
     } finally {
       setIsProcessing(false);

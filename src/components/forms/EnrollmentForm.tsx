@@ -158,7 +158,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               return; // Don't proceed with enrollment
             }
           } catch (_error) {
-            logger._error('Error checking prerequisites:', _error);
+            logger.error('Error checking prerequisites:', _error);
             // Don't block enrollment on prerequisite check errors
             // Just log the error and continue
             setCheckingPrerequisites(false);
@@ -272,7 +272,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
 
       onClose();
     } catch (_error) {
-      logger._error('Enrollment/Payment _error:', _error);
+      logger.error('Enrollment/Payment _error:', _error);
       toast({
         title: isFree ? 'Enrollment Error' : 'Payment Error',
         description: `Failed to ${isFree ? 'enroll' : 'create payment session'}: ${error.message}`,

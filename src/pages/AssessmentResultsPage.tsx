@@ -75,7 +75,7 @@ export default function AssessmentResultsPage() {
           const res = await AssessmentToolService.generateAssessmentResults(attempt, tool);
           setResults(res);
         } catch (_error) {
-          logger._error('Error generating results:', _error);
+          logger.error('Error generating results:', _error);
         } finally {
           setIsLoadingResults(false);
         }

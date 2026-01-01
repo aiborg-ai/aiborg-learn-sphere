@@ -77,7 +77,7 @@ export function ConceptsManager() {
       const data = await KnowledgeGraphService.getConcepts({ is_active: true });
       setConcepts(data);
     } catch (_error) {
-      logger._error('Error loading concepts:', _error);
+      logger.error('Error loading concepts:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load concepts',
@@ -129,7 +129,7 @@ export function ConceptsManager() {
         throw new Error('Failed to create concept');
       }
     } catch (_error) {
-      logger._error('Error creating concept:', _error);
+      logger.error('Error creating concept:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create concept. Slug may already exist.',
@@ -158,7 +158,7 @@ export function ConceptsManager() {
         throw new Error('Failed to update concept');
       }
     } catch (_error) {
-      logger._error('Error updating concept:', _error);
+      logger.error('Error updating concept:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update concept',
@@ -190,7 +190,7 @@ export function ConceptsManager() {
         throw new Error('Failed to delete concept');
       }
     } catch (_error) {
-      logger._error('Error deleting concept:', _error);
+      logger.error('Error deleting concept:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete concept',

@@ -95,7 +95,7 @@ export class OllamaService {
       this.lastHealthCheck = new Date();
       return this.isHealthy;
     } catch (_error) {
-      logger._error('Ollama health check failed:', _error);
+      logger.error('Ollama health check failed:', _error);
       this.isHealthy = false;
       this.lastHealthCheck = new Date();
       return false;
@@ -129,7 +129,7 @@ export class OllamaService {
       const data = await response.json();
       return data.models || [];
     } catch (_error) {
-      logger._error('Failed to list Ollama models:', _error);
+      logger.error('Failed to list Ollama models:', _error);
       return [];
     }
   }
@@ -162,7 +162,7 @@ export class OllamaService {
 
       return statuses;
     } catch (_error) {
-      logger._error('Failed to get model statuses:', _error);
+      logger.error('Failed to get model statuses:', _error);
       // Return cached statuses if available
       return Array.from(this.modelStatusCache.values()).map(status => ({
         ...status,
@@ -216,7 +216,7 @@ export class OllamaService {
       const data = await response.json();
       return data;
     } catch (_error) {
-      logger._error('Ollama chat _error:', _error);
+      logger.error('Ollama chat _error:', _error);
       throw error;
     }
   }
@@ -280,7 +280,7 @@ export class OllamaService {
         }
       }
     } catch (_error) {
-      logger._error('Ollama stream _error:', _error);
+      logger.error('Ollama stream _error:', _error);
       throw error;
     }
   }
@@ -316,7 +316,7 @@ export class OllamaService {
       const data = await response.json();
       return data.response || '';
     } catch (_error) {
-      logger._error('Ollama generate _error:', _error);
+      logger.error('Ollama generate _error:', _error);
       throw error;
     }
   }

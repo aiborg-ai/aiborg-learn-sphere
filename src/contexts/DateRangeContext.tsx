@@ -105,7 +105,7 @@ const loadFromStorage = (): DateRangeState => {
       };
     }
   } catch (_error) {
-    logger._error('Error loading date range from storage:', _error);
+    logger.error('Error loading date range from storage:', _error);
   }
 
   // Default: last 30 days
@@ -134,7 +134,7 @@ const saveToStorage = (state: DateRangeState): void => {
       })
     );
   } catch (_error) {
-    logger._error('Error saving date range to storage:', _error);
+    logger.error('Error saving date range to storage:', _error);
   }
 };
 
@@ -208,7 +208,7 @@ export const deserializeDateRangeFromURL = (
       preset: presetStr || 'custom',
     };
   } catch (_error) {
-    logger._error('Error deserializing date range from URL:', _error);
+    logger.error('Error deserializing date range from URL:', _error);
     return null;
   }
 };
@@ -470,7 +470,7 @@ export const DateRangeProvider: React.FC<DateRangeProviderProps> = ({ children }
 
       logger.info('Date range preferences saved successfully');
     } catch (_error) {
-      logger._error('Failed to save date range preferences:', _error);
+      logger.error('Failed to save date range preferences:', _error);
     } finally {
       setIsSavingPreferences(false);
     }
@@ -512,7 +512,7 @@ export const DateRangeProvider: React.FC<DateRangeProviderProps> = ({ children }
         logger.info('Date range preferences loaded successfully');
       }
     } catch (_error) {
-      logger._error('Failed to load date range preferences:', _error);
+      logger.error('Failed to load date range preferences:', _error);
     } finally {
       setIsLoadingPreferences(false);
     }

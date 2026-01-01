@@ -82,7 +82,7 @@ export class AbilityTrajectoryService {
 
       return { ...snapshot, id: data.id };
     } catch (_error) {
-      logger._error('Error recording ability snapshot:', _error);
+      logger.error('Error recording ability snapshot:', _error);
       return null;
     }
   }
@@ -135,7 +135,7 @@ export class AbilityTrajectoryService {
         chartData,
       };
     } catch (_error) {
-      logger._error('Error getting ability trajectory:', _error);
+      logger.error('Error getting ability trajectory:', _error);
       return null;
     }
   }
@@ -177,7 +177,7 @@ export class AbilityTrajectoryService {
 
       return { velocity, trend };
     } catch (_error) {
-      logger._error('Error calculating learning velocity:', _error);
+      logger.error('Error calculating learning velocity:', _error);
       return null;
     }
   }
@@ -218,7 +218,7 @@ export class AbilityTrajectoryService {
         reliability,
       };
     } catch (_error) {
-      logger._error('Error forecasting ability:', _error);
+      logger.error('Error forecasting ability:', _error);
       return null;
     }
   }
@@ -248,7 +248,7 @@ export class AbilityTrajectoryService {
 
       return data || [];
     } catch (_error) {
-      logger._error('Error getting velocity snapshots:', _error);
+      logger.error('Error getting velocity snapshots:', _error);
       return [];
     }
   }

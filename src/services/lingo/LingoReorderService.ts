@@ -37,7 +37,7 @@ export class LingoReorderService {
 
       logger.info('Lessons reordered successfully');
     } catch (_error) {
-      logger._error('Failed to reorder lessons', _error);
+      logger.error('Failed to reorder lessons', _error);
       throw error;
     }
   }
@@ -70,7 +70,7 @@ export class LingoReorderService {
 
       logger.info('Questions reordered successfully');
     } catch (_error) {
-      logger._error('Failed to reorder questions', _error);
+      logger.error('Failed to reorder questions', _error);
       throw error;
     }
   }
@@ -102,7 +102,7 @@ export class LingoReorderService {
 
       logger.info('Courses reordered successfully');
     } catch (_error) {
-      logger._error('Failed to reorder courses', _error);
+      logger.error('Failed to reorder courses', _error);
       throw error;
     }
   }

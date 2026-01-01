@@ -30,7 +30,7 @@ export class SkillGapService {
         businessImpact: gap.gap_size > 60 ? 'critical' : gap.gap_size > 40 ? 'high' : 'medium',
       }));
     } catch (_error) {
-      logger._error('Error analyzing skill gaps:', _error);
+      logger.error('Error analyzing skill gaps:', _error);
       return [];
     }
   }

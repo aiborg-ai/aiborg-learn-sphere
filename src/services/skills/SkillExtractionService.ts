@@ -106,7 +106,7 @@ class SkillExtractionServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching industry skills:', _error);
+      logger.error('Error fetching industry skills:', _error);
       throw error;
     }
   }
@@ -130,7 +130,7 @@ class SkillExtractionServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching user skills:', _error);
+      logger.error('Error fetching user skills:', _error);
       throw error;
     }
   }
@@ -163,7 +163,7 @@ class SkillExtractionServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error updating user skill:', _error);
+      logger.error('Error updating user skill:', _error);
       throw error;
     }
   }
@@ -193,7 +193,7 @@ class SkillExtractionServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching skill recommendations:', _error);
+      logger.error('Error fetching skill recommendations:', _error);
       throw error;
     }
   }
@@ -213,7 +213,7 @@ class SkillExtractionServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error dismissing recommendation:', _error);
+      logger.error('Error dismissing recommendation:', _error);
       throw error;
     }
   }
@@ -237,7 +237,7 @@ class SkillExtractionServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching job roles:', _error);
+      logger.error('Error fetching job roles:', _error);
       throw error;
     }
   }
@@ -264,7 +264,7 @@ class SkillExtractionServiceClass {
         }
       );
     } catch (_error) {
-      logger._error('Error getting job role match:', _error);
+      logger.error('Error getting job role match:', _error);
       throw error;
     }
   }
@@ -289,7 +289,7 @@ class SkillExtractionServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error setting career goal:', _error);
+      logger.error('Error setting career goal:', _error);
       throw error;
     }
   }
@@ -322,7 +322,7 @@ class SkillExtractionServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching career goals:', _error);
+      logger.error('Error fetching career goals:', _error);
       throw error;
     }
   }
@@ -345,7 +345,7 @@ class SkillExtractionServiceClass {
       if (error) throw error;
       return data || 0;
     } catch (_error) {
-      logger._error('Error getting skill percentile:', _error);
+      logger.error('Error getting skill percentile:', _error);
       throw error;
     }
   }
@@ -383,7 +383,7 @@ class SkillExtractionServiceClass {
         verified: true,
       });
     } catch (_error) {
-      logger._error('Error recording skill assessment:', _error);
+      logger.error('Error recording skill assessment:', _error);
       throw error;
     }
   }
@@ -434,7 +434,7 @@ class SkillExtractionServiceClass {
 
       return summary;
     } catch (_error) {
-      logger._error('Error getting skills by category:', _error);
+      logger.error('Error getting skills by category:', _error);
       throw error;
     }
   }
@@ -451,7 +451,7 @@ class SkillExtractionServiceClass {
 
       return allTrending.filter(skill => !userSkillIds.has(skill.id)).slice(0, limit);
     } catch (_error) {
-      logger._error('Error getting trending skills to learn:', _error);
+      logger.error('Error getting trending skills to learn:', _error);
       throw error;
     }
   }

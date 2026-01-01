@@ -222,7 +222,7 @@ export class EnhancedSM2Service {
       logger.info('Synced user ability to flashcards', { userId, updatedCount, newAbility });
       return updatedCount;
     } catch (_error) {
-      logger._error('Error syncing user ability:', _error);
+      logger.error('Error syncing user ability:', _error);
       return 0;
     }
   }
@@ -273,7 +273,7 @@ export class EnhancedSM2Service {
         lastCalibrated: new Date(),
       };
     } catch (_error) {
-      logger._error('Error getting personalized params:', _error);
+      logger.error('Error getting personalized params:', _error);
       return null;
     }
   }
@@ -467,7 +467,7 @@ export class EnhancedSM2Service {
 
       return result;
     } catch (_error) {
-      logger._error('Error processing review:', _error);
+      logger.error('Error processing review:', _error);
       return null;
     }
   }

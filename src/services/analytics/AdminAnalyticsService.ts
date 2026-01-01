@@ -179,7 +179,7 @@ export class AdminAnalyticsService {
         activeUsersMonth: activeMonth || 0,
       };
     } catch (_error) {
-      logger._error('Error fetching platform metrics:', _error);
+      logger.error('Error fetching platform metrics:', _error);
       return null;
     }
   }
@@ -232,7 +232,7 @@ export class AdminAnalyticsService {
 
       return Array.from(growthMap.values());
     } catch (_error) {
-      logger._error('Error fetching user growth:', _error);
+      logger.error('Error fetching user growth:', _error);
       return [];
     }
   }
@@ -292,7 +292,7 @@ export class AdminAnalyticsService {
 
       return analytics.sort((a, b) => b.enrollments - a.enrollments);
     } catch (_error) {
-      logger._error('Error fetching course analytics:', _error);
+      logger.error('Error fetching course analytics:', _error);
       return [];
     }
   }
@@ -360,7 +360,7 @@ export class AdminAnalyticsService {
         revenueByCourse,
       };
     } catch (_error) {
-      logger._error('Error fetching revenue metrics:', _error);
+      logger.error('Error fetching revenue metrics:', _error);
       return null;
     }
   }
@@ -436,7 +436,7 @@ export class AdminAnalyticsService {
         assessmentTakeRate: assessmentTakeRate * 100,
       };
     } catch (_error) {
-      logger._error('Error fetching engagement metrics:', _error);
+      logger.error('Error fetching engagement metrics:', _error);
       return null;
     }
   }
@@ -514,7 +514,7 @@ export class AdminAnalyticsService {
         performanceTrend,
       };
     } catch (_error) {
-      logger._error('Error fetching assessment analytics:', _error);
+      logger.error('Error fetching assessment analytics:', _error);
       return null;
     }
   }
@@ -591,7 +591,7 @@ export class AdminAnalyticsService {
         avgDurationMinutes: Math.round(avgDurationMinutes * 10) / 10, // Round to 1 decimal
       };
     } catch (_error) {
-      logger._error('Error fetching chatbot analytics:', _error);
+      logger.error('Error fetching chatbot analytics:', _error);
       return null;
     }
   }
@@ -631,7 +631,7 @@ export class AdminAnalyticsService {
 
       return trends;
     } catch (_error) {
-      logger._error('Error fetching chatbot trends:', _error);
+      logger.error('Error fetching chatbot trends:', _error);
       return [];
     }
   }
@@ -673,7 +673,7 @@ export class AdminAnalyticsService {
 
       return topQueries;
     } catch (_error) {
-      logger._error('Error fetching top queries:', _error);
+      logger.error('Error fetching top queries:', _error);
       return [];
     }
   }
@@ -731,7 +731,7 @@ export class AdminAnalyticsService {
         activeTeamsWeek,
       };
     } catch (_error) {
-      logger._error('Error fetching team analytics:', _error);
+      logger.error('Error fetching team analytics:', _error);
       return null;
     }
   }
@@ -770,7 +770,7 @@ export class AdminAnalyticsService {
 
       return teamPerformance;
     } catch (_error) {
-      logger._error('Error fetching team performance:', _error);
+      logger.error('Error fetching team performance:', _error);
       return [];
     }
   }

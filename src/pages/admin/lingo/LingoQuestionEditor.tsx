@@ -110,7 +110,7 @@ export function LingoQuestionEditor() {
       if (error) throw error;
       setLessons(data || []);
     } catch (_error) {
-      logger._error('Failed to load lessons', _error);
+      logger.error('Failed to load lessons', _error);
       toast({ title: 'Error', description: 'Failed to load lessons', variant: 'destructive' });
     }
   }, [toast]);
@@ -128,7 +128,7 @@ export function LingoQuestionEditor() {
         if (error) throw error;
         setQuestions(data || []);
       } catch (_error) {
-        logger._error('Failed to load questions', _error);
+        logger.error('Failed to load questions', _error);
         toast({ title: 'Error', description: 'Failed to load questions', variant: 'destructive' });
       } finally {
         setIsLoading(false);
@@ -243,7 +243,7 @@ export function LingoQuestionEditor() {
       setIsDialogOpen(false);
       loadQuestions(selectedLessonId);
     } catch (_error) {
-      logger._error('Failed to save question', _error);
+      logger.error('Failed to save question', _error);
       toast({ title: 'Error', description: 'Failed to save question', variant: 'destructive' });
     }
   }
@@ -258,7 +258,7 @@ export function LingoQuestionEditor() {
       toast({ title: 'Success', description: 'Question deleted' });
       loadQuestions(selectedLessonId);
     } catch (_error) {
-      logger._error('Failed to delete question', _error);
+      logger.error('Failed to delete question', _error);
       toast({ title: 'Error', description: 'Failed to delete question', variant: 'destructive' });
     }
   }
@@ -278,7 +278,7 @@ export function LingoQuestionEditor() {
       setQuestions(reorderedQuestions);
       toast({ title: 'Success', description: 'Questions reordered successfully' });
     } catch (_error) {
-      logger._error('Failed to reorder questions', _error);
+      logger.error('Failed to reorder questions', _error);
       toast({
         title: 'Error',
         description: 'Failed to reorder questions. Please try again.',

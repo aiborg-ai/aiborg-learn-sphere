@@ -88,7 +88,7 @@ export function RelationshipsManager() {
       setConcepts(conceptsData);
       setRelationships(relationshipsData);
     } catch (_error) {
-      logger._error('Error loading data:', _error);
+      logger.error('Error loading data:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load data',
@@ -169,7 +169,7 @@ export function RelationshipsManager() {
         throw new Error('Failed to create relationship - may create circular dependency');
       }
     } catch (_error) {
-      logger._error('Error creating relationship:', _error);
+      logger.error('Error creating relationship:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create relationship. May create circular dependency or duplicate.',
@@ -202,7 +202,7 @@ export function RelationshipsManager() {
         throw new Error('Failed to update relationship');
       }
     } catch (_error) {
-      logger._error('Error updating relationship:', _error);
+      logger.error('Error updating relationship:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update relationship',
@@ -237,7 +237,7 @@ export function RelationshipsManager() {
         throw new Error('Failed to delete relationship');
       }
     } catch (_error) {
-      logger._error('Error deleting relationship:', _error);
+      logger.error('Error deleting relationship:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete relationship',

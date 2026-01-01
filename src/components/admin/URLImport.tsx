@@ -133,7 +133,7 @@ export function URLImport({
       setUrl('');
       setAuthValue('');
     } catch (_error) {
-      logger._error('URL import _error:', _error);
+      logger.error('URL import _error:', _error);
       toast({
         title: 'Import Failed',
         description: error.message || 'Failed to import from URL',

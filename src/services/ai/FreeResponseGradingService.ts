@@ -224,7 +224,7 @@ function parseGradingResponse(
       processingTimeMs,
     };
   } catch (_error) {
-    logger._error('Failed to parse grading response:', _error, responseText);
+    logger.error('Failed to parse grading response:', _error, responseText);
 
     // Return a fallback result
     return {
@@ -284,7 +284,7 @@ export class FreeResponseGradingService {
         try {
           return await this.gradeWithOllama(prompt, passScore, startTime);
         } catch (_error) {
-          logger._error('Ollama grading failed:', _error);
+          logger.error('Ollama grading failed:', _error);
           if (provider === 'ollama') {
             throw error;
           }
@@ -298,7 +298,7 @@ export class FreeResponseGradingService {
       try {
         return await this.gradeWithOpenRouter(prompt, passScore, startTime);
       } catch (_error) {
-        logger._error('OpenRouter grading failed:', _error);
+        logger.error('OpenRouter grading failed:', _error);
         throw error;
       }
     }
@@ -542,7 +542,7 @@ export class FreeResponseGradingService {
             const result = await this.grade(q.options);
             return { id: q.id, result };
           } catch (_error) {
-            logger._error(`Failed to grade question ${q.id}:`, _error);
+            logger.error(`Failed to grade question ${q.id}:`, _error);
             return {
               id: q.id,
               result: {

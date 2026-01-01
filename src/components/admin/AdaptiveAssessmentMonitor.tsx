@@ -72,7 +72,7 @@ export function AdaptiveAssessmentMonitor() {
       setTimeSeries(series);
       setAlerts(alertsData);
     } catch (_error) {
-      logger._error('Error loading monitoring data:', _error);
+      logger.error('Error loading monitoring data:', _error);
     } finally {
       setLoading(false);
     }

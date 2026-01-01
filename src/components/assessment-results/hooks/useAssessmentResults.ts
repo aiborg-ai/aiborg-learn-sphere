@@ -116,7 +116,7 @@ export function useAssessmentResults(assessmentId: string | undefined): UseAsses
         setToolRecommendations(toolsData || []);
       }
     } catch (_error) {
-      logger._error('Error fetching assessment results:', _error);
+      logger.error('Error fetching assessment results:', _error);
     } finally {
       setLoading(false);
     }

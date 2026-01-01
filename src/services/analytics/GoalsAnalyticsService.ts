@@ -90,7 +90,7 @@ class GoalsAnalyticsServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching learning goals:', _error);
+      logger.error('Error fetching learning goals:', _error);
       return [];
     }
   }
@@ -124,7 +124,7 @@ class GoalsAnalyticsServiceClass {
         })) || []
       );
     } catch (_error) {
-      logger._error('Error fetching career goals:', _error);
+      logger.error('Error fetching career goals:', _error);
       return [];
     }
   }
@@ -143,7 +143,7 @@ class GoalsAnalyticsServiceClass {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching study plans:', _error);
+      logger.error('Error fetching study plans:', _error);
       return [];
     }
   }
@@ -201,7 +201,7 @@ class GoalsAnalyticsServiceClass {
         averageCompletionRate: Math.round(averageCompletionRate),
       };
     } catch (_error) {
-      logger._error('Error fetching goals summary:', _error);
+      logger.error('Error fetching goals summary:', _error);
       return {
         totalGoals: 0,
         activeGoals: 0,
@@ -324,7 +324,7 @@ class GoalsAnalyticsServiceClass {
         return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
       });
     } catch (_error) {
-      logger._error('Error fetching goal milestones:', _error);
+      logger.error('Error fetching goal milestones:', _error);
       return [];
     }
   }
@@ -357,7 +357,7 @@ class GoalsAnalyticsServiceClass {
 
       if (error) throw error;
     } catch (_error) {
-      logger._error('Error updating learning goal progress:', _error);
+      logger.error('Error updating learning goal progress:', _error);
       throw error;
     }
   }
@@ -384,7 +384,7 @@ class GoalsAnalyticsServiceClass {
           .eq('id', goalId);
       }
     } catch (_error) {
-      logger._error('Error completing goal:', _error);
+      logger.error('Error completing goal:', _error);
       throw error;
     }
   }

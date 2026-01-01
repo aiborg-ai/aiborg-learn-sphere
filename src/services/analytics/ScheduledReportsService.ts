@@ -93,7 +93,7 @@ export class ScheduledReportsService {
 
       return data || [];
     } catch (_error) {
-      logger._error('Error in getUserScheduledReports:', _error);
+      logger.error('Error in getUserScheduledReports:', _error);
       return [];
     }
   }
@@ -138,7 +138,7 @@ export class ScheduledReportsService {
       logger.info('Scheduled report created', { reportId: data.id, userId });
       return data;
     } catch (_error) {
-      logger._error('Error in createScheduledReport:', _error);
+      logger.error('Error in createScheduledReport:', _error);
       throw error;
     }
   }
@@ -175,7 +175,7 @@ export class ScheduledReportsService {
       logger.info('Scheduled report updated', { reportId, userId });
       return data;
     } catch (_error) {
-      logger._error('Error in updateScheduledReport:', _error);
+      logger.error('Error in updateScheduledReport:', _error);
       throw error;
     }
   }
@@ -199,7 +199,7 @@ export class ScheduledReportsService {
       logger.info('Scheduled report deleted', { reportId, userId });
       return true;
     } catch (_error) {
-      logger._error('Error in deleteScheduledReport:', _error);
+      logger.error('Error in deleteScheduledReport:', _error);
       throw error;
     }
   }
@@ -237,7 +237,7 @@ export class ScheduledReportsService {
 
       return data || [];
     } catch (_error) {
-      logger._error('Error in getReportExecutions:', _error);
+      logger.error('Error in getReportExecutions:', _error);
       return [];
     }
   }
@@ -327,7 +327,7 @@ export class ScheduledReportsService {
         throw error;
       }
     } catch (_error) {
-      logger._error('Error in executeScheduledReport:', _error);
+      logger.error('Error in executeScheduledReport:', _error);
       return null;
     }
   }
@@ -428,7 +428,7 @@ export class ScheduledReportsService {
 
       return data || [];
     } catch (_error) {
-      logger._error('Error in getReportsDueForExecution:', _error);
+      logger.error('Error in getReportsDueForExecution:', _error);
       return [];
     }
   }

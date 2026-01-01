@@ -61,7 +61,7 @@ export class ExportService {
         dateRange: config.dateRange,
       });
     } catch (_error) {
-      logger._error('Error exporting to PDF:', _error);
+      logger.error('Error exporting to PDF:', _error);
       throw new Error(
         `Failed to export PDF: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -99,7 +99,7 @@ export class ExportService {
         dateRange: config.dateRange,
       });
     } catch (_error) {
-      logger._error('Error exporting single section to PDF:', _error);
+      logger.error('Error exporting single section to PDF:', _error);
       throw new Error(
         `Failed to export PDF: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -161,7 +161,7 @@ export class ExportService {
         columnCount: headers?.length || Object.keys(data[0]).length,
       });
     } catch (_error) {
-      logger._error('Error exporting to CSV:', _error);
+      logger.error('Error exporting to CSV:', _error);
       throw new Error(
         `Failed to export CSV: ${error instanceof Error ? error.message : 'Unknown error'}`
       );

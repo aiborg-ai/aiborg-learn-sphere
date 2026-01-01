@@ -89,7 +89,7 @@ export default function Profile() {
       if (error) throw error;
       setAssessments(data || []);
     } catch (_error) {
-      logger._error('Error fetching assessments:', _error);
+      logger.error('Error fetching assessments:', _error);
     } finally {
       setAssessmentsLoading(false);
     }
@@ -161,7 +161,7 @@ export default function Profile() {
         );
       }
     } catch (_error) {
-      logger._error('Error fetching gamification data:', _error);
+      logger.error('Error fetching gamification data:', _error);
     } finally {
       setGamificationLoading(false);
     }

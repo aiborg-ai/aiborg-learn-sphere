@@ -66,7 +66,7 @@ export function BatchJobsHistory() {
       const data = await BatchGenerationService.getJobHistory(50);
       setJobs(data);
     } catch (_error) {
-      logger._error('Error loading jobs:', _error);
+      logger.error('Error loading jobs:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load batch job history',
@@ -82,7 +82,7 @@ export function BatchJobsHistory() {
       const stats = await BatchGenerationService.getBatchStatistics();
       setStatistics(stats);
     } catch (_error) {
-      logger._error('Error loading statistics:', _error);
+      logger.error('Error loading statistics:', _error);
     }
   };
 

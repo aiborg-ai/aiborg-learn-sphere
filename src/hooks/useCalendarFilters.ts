@@ -91,7 +91,7 @@ export function useCalendarFilters(persistToLocalStorage = true): UseCalendarFil
         };
       }
     } catch (_error) {
-      logger._error('Error loading calendar filters from localStorage:', _error);
+      logger.error('Error loading calendar filters from localStorage:', _error);
     }
     return DEFAULT_FILTERS;
   }, [persistToLocalStorage]);
@@ -104,7 +104,7 @@ export function useCalendarFilters(persistToLocalStorage = true): UseCalendarFil
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(filters));
       } catch (_error) {
-        logger._error('Error saving calendar filters to localStorage:', _error);
+        logger.error('Error saving calendar filters to localStorage:', _error);
       }
     }
   }, [filters, persistToLocalStorage]);
@@ -192,7 +192,7 @@ export function useCalendarFilters(persistToLocalStorage = true): UseCalendarFil
         localStorage.setItem(STORAGE_KEY, JSON.stringify(filters));
         logger.info('Calendar filters saved');
       } catch (_error) {
-        logger._error('Error saving calendar filters:', _error);
+        logger.error('Error saving calendar filters:', _error);
       }
     }
   }, [filters, persistToLocalStorage]);

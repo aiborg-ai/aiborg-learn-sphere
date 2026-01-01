@@ -28,7 +28,7 @@ export class BenchmarkService {
 
       return data || [];
     } catch (_error) {
-      logger._error('Error getting performance benchmarks:', _error);
+      logger.error('Error getting performance benchmarks:', _error);
       return [];
     }
   }

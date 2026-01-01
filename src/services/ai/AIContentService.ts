@@ -179,7 +179,7 @@ export class AIContentService {
 
       return data;
     } catch (_error) {
-      logger._error(`[AIContentService] Exception fetching prompt:`, _error);
+      logger.error(`[AIContentService] Exception fetching prompt:`, _error);
       return null;
     }
   }
@@ -227,7 +227,7 @@ export class AIContentService {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error(`[AIContentService] Error fetching prompts by category:`, _error);
+      logger.error(`[AIContentService] Error fetching prompts by category:`, _error);
       return [];
     }
   }
@@ -266,7 +266,7 @@ export class AIContentService {
 
       return data;
     } catch (_error) {
-      logger._error(`[AIContentService] Exception fetching template:`, _error);
+      logger.error(`[AIContentService] Exception fetching template:`, _error);
       return null;
     }
   }
@@ -308,7 +308,7 @@ export class AIContentService {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error(`[AIContentService] Error fetching templates by category:`, _error);
+      logger.error(`[AIContentService] Error fetching templates by category:`, _error);
       return [];
     }
   }
@@ -347,7 +347,7 @@ export class AIContentService {
 
       return data;
     } catch (_error) {
-      logger._error(`[AIContentService] Exception fetching rubric:`, _error);
+      logger.error(`[AIContentService] Exception fetching rubric:`, _error);
       return null;
     }
   }
@@ -379,7 +379,7 @@ export class AIContentService {
 
       return data || null;
     } catch (_error) {
-      logger._error('[AIContentService] Exception fetching default rubric:', _error);
+      logger.error('[AIContentService] Exception fetching default rubric:', _error);
       return null;
     }
   }
@@ -399,7 +399,7 @@ export class AIContentService {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error(`[AIContentService] Error fetching rubrics by subject:`, _error);
+      logger.error(`[AIContentService] Error fetching rubrics by subject:`, _error);
       return [];
     }
   }
@@ -428,7 +428,7 @@ export class AIContentService {
 
       return data;
     } catch (_error) {
-      logger._error('[AIContentService] Error creating prompt:', _error);
+      logger.error('[AIContentService] Error creating prompt:', _error);
       return null;
     }
   }
@@ -455,7 +455,7 @@ export class AIContentService {
 
       return data;
     } catch (_error) {
-      logger._error('[AIContentService] Error updating prompt:', _error);
+      logger.error('[AIContentService] Error updating prompt:', _error);
       return null;
     }
   }
@@ -477,7 +477,7 @@ export class AIContentService {
 
       return true;
     } catch (_error) {
-      logger._error('[AIContentService] Error deleting prompt:', _error);
+      logger.error('[AIContentService] Error deleting prompt:', _error);
       return false;
     }
   }
@@ -500,7 +500,7 @@ export class AIContentService {
       cache.clearAll();
       return data;
     } catch (_error) {
-      logger._error('[AIContentService] Error creating template:', _error);
+      logger.error('[AIContentService] Error creating template:', _error);
       return null;
     }
   }
@@ -525,7 +525,7 @@ export class AIContentService {
       cache.clearAll();
       return data;
     } catch (_error) {
-      logger._error('[AIContentService] Error updating template:', _error);
+      logger.error('[AIContentService] Error updating template:', _error);
       return null;
     }
   }
@@ -548,7 +548,7 @@ export class AIContentService {
       cache.clearAll();
       return data;
     } catch (_error) {
-      logger._error('[AIContentService] Error creating rubric:', _error);
+      logger.error('[AIContentService] Error creating rubric:', _error);
       return null;
     }
   }
@@ -573,7 +573,7 @@ export class AIContentService {
       cache.clearAll();
       return data;
     } catch (_error) {
-      logger._error('[AIContentService] Error updating rubric:', _error);
+      logger.error('[AIContentService] Error updating rubric:', _error);
       return null;
     }
   }

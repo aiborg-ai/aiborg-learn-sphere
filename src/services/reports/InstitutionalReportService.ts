@@ -130,7 +130,7 @@ export class InstitutionalReportService {
 
       return this.mapReportRequest(data);
     } catch (_error) {
-      logger._error('Error requesting report:', _error);
+      logger.error('Error requesting report:', _error);
       return null;
     }
   }
@@ -150,7 +150,7 @@ export class InstitutionalReportService {
 
       return this.mapReportRequest(data);
     } catch (_error) {
-      logger._error('Error getting report status:', _error);
+      logger.error('Error getting report status:', _error);
       return null;
     }
   }
@@ -171,7 +171,7 @@ export class InstitutionalReportService {
 
       return (data || []).map(this.mapReportRequest);
     } catch (_error) {
-      logger._error('Error getting user reports:', _error);
+      logger.error('Error getting user reports:', _error);
       return [];
     }
   }
@@ -238,7 +238,7 @@ export class InstitutionalReportService {
 
       return { headers, rows };
     } catch (_error) {
-      logger._error('Error generating CSV:', _error);
+      logger.error('Error generating CSV:', _error);
       return { headers: [], rows: [] };
     }
   }
@@ -286,7 +286,7 @@ export class InstitutionalReportService {
 
       return { headers, rows };
     } catch (_error) {
-      logger._error('Error generating mastery CSV:', _error);
+      logger.error('Error generating mastery CSV:', _error);
       return { headers: [], rows: [] };
     }
   }
@@ -508,7 +508,7 @@ export class InstitutionalReportService {
         individualData,
       };
     } catch (_error) {
-      logger._error('Error getting aggregate outcomes data:', _error);
+      logger.error('Error getting aggregate outcomes data:', _error);
       return {
         summary: {
           totalStudents: 0,
@@ -854,7 +854,7 @@ export class InstitutionalReportService {
         })
         .eq('id', reportId);
     } catch (_error) {
-      logger._error('Error generating report:', _error);
+      logger.error('Error generating report:', _error);
 
       await supabase
         .from('institutional_reports')

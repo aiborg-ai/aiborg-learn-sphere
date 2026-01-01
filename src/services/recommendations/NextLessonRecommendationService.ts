@@ -113,7 +113,7 @@ export class NextLessonRecommendationService {
 
       return recommendation;
     } catch (_error) {
-      logger._error('Error getting next lesson recommendation:', _error);
+      logger.error('Error getting next lesson recommendation:', _error);
       return null;
     }
   }
@@ -133,7 +133,7 @@ export class NextLessonRecommendationService {
 
       return scoredCandidates.slice(0, limit).map(c => this.buildRecommendation(c, context, state));
     } catch (_error) {
-      logger._error('Error getting recommendations:', _error);
+      logger.error('Error getting recommendations:', _error);
       return [];
     }
   }
@@ -148,7 +148,7 @@ export class NextLessonRecommendationService {
         .update({ shown_at: new Date().toISOString() })
         .eq('id', recommendationId);
     } catch (_error) {
-      logger._error('Error tracking recommendation shown:', _error);
+      logger.error('Error tracking recommendation shown:', _error);
     }
   }
 
@@ -162,7 +162,7 @@ export class NextLessonRecommendationService {
         .update({ clicked_at: new Date().toISOString() })
         .eq('id', recommendationId);
     } catch (_error) {
-      logger._error('Error tracking recommendation clicked:', _error);
+      logger.error('Error tracking recommendation clicked:', _error);
     }
   }
 
@@ -176,7 +176,7 @@ export class NextLessonRecommendationService {
         .update({ completed_at: new Date().toISOString() })
         .eq('id', recommendationId);
     } catch (_error) {
-      logger._error('Error tracking recommendation completed:', _error);
+      logger.error('Error tracking recommendation completed:', _error);
     }
   }
 
@@ -190,7 +190,7 @@ export class NextLessonRecommendationService {
         .update({ dismissed_at: new Date().toISOString() })
         .eq('id', recommendationId);
     } catch (_error) {
-      logger._error('Error dismissing recommendation:', _error);
+      logger.error('Error dismissing recommendation:', _error);
     }
   }
 
@@ -286,7 +286,7 @@ export class NextLessonRecommendationService {
         expiresAt: new Date(Date.now() + RECOMMENDATION_CACHE_TTL).toISOString(),
       };
     } catch (_error) {
-      logger._error('Error getting next Lingo lesson:', _error);
+      logger.error('Error getting next Lingo lesson:', _error);
       return null;
     }
   }
@@ -344,7 +344,7 @@ export class NextLessonRecommendationService {
         strongTopics: avgScore >= 85 ? ['general'] : [],
       };
     } catch (_error) {
-      logger._error('Error getting user learning state:', _error);
+      logger.error('Error getting user learning state:', _error);
       return {
         userId,
         completedLessonIds: [],
@@ -434,7 +434,7 @@ export class NextLessonRecommendationService {
 
       return candidates;
     } catch (_error) {
-      logger._error('Error getting candidate lessons:', _error);
+      logger.error('Error getting candidate lessons:', _error);
       return [];
     }
   }
@@ -712,7 +712,7 @@ export class NextLessonRecommendationService {
         expires_at: recommendation.expiresAt,
       });
     } catch (_error) {
-      logger._error('Error caching recommendation:', _error);
+      logger.error('Error caching recommendation:', _error);
     }
   }
 }

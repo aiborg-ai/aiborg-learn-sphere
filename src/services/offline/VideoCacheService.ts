@@ -213,7 +213,7 @@ class VideoCacheServiceClass {
 
       return videoId;
     } catch (_error) {
-      logger._error('[VideoCacheService] Failed to cache video:', _error);
+      logger.error('[VideoCacheService] Failed to cache video:', _error);
 
       // Update manifest as failed
       await this.updateManifest({
@@ -261,7 +261,7 @@ class VideoCacheServiceClass {
         request.onerror = () => reject(request.error);
       });
     } catch (_error) {
-      logger._error('[VideoCacheService] Failed to get video:', _error);
+      logger.error('[VideoCacheService] Failed to get video:', _error);
       return null;
     }
   }
@@ -282,7 +282,7 @@ class VideoCacheServiceClass {
         request.onerror = () => reject(request.error);
       });
     } catch (_error) {
-      logger._error('[VideoCacheService] Failed to get video by URL:', _error);
+      logger.error('[VideoCacheService] Failed to get video by URL:', _error);
       return null;
     }
   }
@@ -303,7 +303,7 @@ class VideoCacheServiceClass {
         request.onerror = () => reject(request.error);
       });
     } catch (_error) {
-      logger._error('[VideoCacheService] Failed to get videos by lesson:', _error);
+      logger.error('[VideoCacheService] Failed to get videos by lesson:', _error);
       return [];
     }
   }
@@ -356,7 +356,7 @@ class VideoCacheServiceClass {
 
       logger.info('[VideoCacheService] Video deleted:', videoId);
     } catch (_error) {
-      logger._error('[VideoCacheService] Failed to delete video:', _error);
+      logger.error('[VideoCacheService] Failed to delete video:', _error);
       throw error;
     }
   }
@@ -398,7 +398,7 @@ class VideoCacheServiceClass {
 
       logger.info('[VideoCacheService] Cache cleared');
     } catch (_error) {
-      logger._error('[VideoCacheService] Failed to clear cache:', _error);
+      logger.error('[VideoCacheService] Failed to clear cache:', _error);
       throw error;
     }
   }
@@ -434,7 +434,7 @@ class VideoCacheServiceClass {
 
       return deletedCount;
     } catch (_error) {
-      logger._error('[VideoCacheService] Failed to clear expired videos:', _error);
+      logger.error('[VideoCacheService] Failed to clear expired videos:', _error);
       return 0;
     }
   }
@@ -467,7 +467,7 @@ class VideoCacheServiceClass {
 
       return stats;
     } catch (_error) {
-      logger._error('[VideoCacheService] Failed to get cache stats:', _error);
+      logger.error('[VideoCacheService] Failed to get cache stats:', _error);
       return { totalVideos: 0, totalSize: 0 };
     }
   }
@@ -488,7 +488,7 @@ class VideoCacheServiceClass {
         request.onerror = () => reject(request.error);
       });
     } catch (_error) {
-      logger._error('[VideoCacheService] Failed to get lesson manifest:', _error);
+      logger.error('[VideoCacheService] Failed to get lesson manifest:', _error);
       return [];
     }
   }

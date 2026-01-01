@@ -99,7 +99,7 @@ export function SurveyManager({ className }: SurveyManagerProps) {
         setSurveys(surveysData);
         setTemplates(templatesData);
       } catch (_error) {
-        logger._error('Failed to load data:', _error);
+        logger.error('Failed to load data:', _error);
         toast({
           title: 'Error',
           description: 'Failed to load surveys',
@@ -144,7 +144,7 @@ export function SurveyManager({ className }: SurveyManagerProps) {
         description: 'Add questions to your survey to get started.',
       });
     } catch (_error) {
-      logger._error('Failed to create survey:', _error);
+      logger.error('Failed to create survey:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create survey',
@@ -175,7 +175,7 @@ export function SurveyManager({ className }: SurveyManagerProps) {
         description: `Created survey from "${template.name}" template.`,
       });
     } catch (_error) {
-      logger._error('Failed to create survey from template:', _error);
+      logger.error('Failed to create survey from template:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create survey from template',
@@ -196,7 +196,7 @@ export function SurveyManager({ className }: SurveyManagerProps) {
         description: `Survey is now ${status}.`,
       });
     } catch (_error) {
-      logger._error('Failed to update survey status:', _error);
+      logger.error('Failed to update survey status:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update survey status',
@@ -219,7 +219,7 @@ export function SurveyManager({ className }: SurveyManagerProps) {
         description: 'The survey has been permanently deleted.',
       });
     } catch (_error) {
-      logger._error('Failed to delete survey:', _error);
+      logger.error('Failed to delete survey:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete survey',

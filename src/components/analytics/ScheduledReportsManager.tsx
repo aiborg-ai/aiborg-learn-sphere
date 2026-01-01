@@ -73,7 +73,7 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
       const data = await ScheduledReportsService.getUserScheduledReports(userId);
       setReports(data);
     } catch (_error) {
-      logger._error('Error fetching scheduled reports:', _error);
+      logger.error('Error fetching scheduled reports:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load scheduled reports',
@@ -95,7 +95,7 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
       resetForm();
       fetchReports();
     } catch (_error) {
-      logger._error('Error creating scheduled report:', _error);
+      logger.error('Error creating scheduled report:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create scheduled report',
@@ -113,7 +113,7 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
       });
       fetchReports();
     } catch (_error) {
-      logger._error('Error toggling report:', _error);
+      logger.error('Error toggling report:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update report status',
@@ -131,7 +131,7 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
       });
       fetchReports();
     } catch (_error) {
-      logger._error('Error deleting report:', _error);
+      logger.error('Error deleting report:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete report',
@@ -152,7 +152,7 @@ export function ScheduledReportsManager({ userId }: ScheduledReportsManagerProps
         description: 'Report generated successfully',
       });
     } catch (_error) {
-      logger._error('Error executing report:', _error);
+      logger.error('Error executing report:', _error);
       toast({
         title: 'Error',
         description: 'Failed to generate report',

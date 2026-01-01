@@ -136,7 +136,7 @@ async function getExplanationPrompt(questionType: QuestionType): Promise<string>
     logger.warn(`[Explanation] No database prompt for ${questionType}, using fallback`);
     return FALLBACK_SYSTEM_PROMPTS[questionType];
   } catch (_error) {
-    logger._error(`[Explanation] Error fetching prompt for ${questionType}:`, _error);
+    logger.error(`[Explanation] Error fetching prompt for ${questionType}:`, _error);
     return FALLBACK_SYSTEM_PROMPTS[questionType];
   }
 }
@@ -270,7 +270,7 @@ export class WrongAnswerExplanationService {
         tokensUsed: response.tokensUsed?.total,
       };
     } catch (_error) {
-      logger._error('Error generating explanation:', _error);
+      logger.error('Error generating explanation:', _error);
       return this.getFallbackExplanation(request);
     }
   }
@@ -309,7 +309,7 @@ export class WrongAnswerExplanationService {
         }
       }
     } catch (_error) {
-      logger._error('Error rating explanation:', _error);
+      logger.error('Error rating explanation:', _error);
     }
   }
 
@@ -346,7 +346,7 @@ export class WrongAnswerExplanationService {
         createdAt: e.created_at,
       }));
     } catch (_error) {
-      logger._error('Error getting explanation history:', _error);
+      logger.error('Error getting explanation history:', _error);
       return [];
     }
   }
@@ -414,7 +414,7 @@ export class WrongAnswerExplanationService {
         { onConflict: 'question_id,wrong_answer_pattern,learning_style' }
       );
     } catch (_error) {
-      logger._error('Error saving to explanation cache:', _error);
+      logger.error('Error saving to explanation cache:', _error);
     }
   }
 
@@ -441,7 +441,7 @@ export class WrongAnswerExplanationService {
         cache_key: generateExplanationCacheKey(request),
       });
     } catch (_error) {
-      logger._error('Error logging explanation:', _error);
+      logger.error('Error logging explanation:', _error);
     }
   }
 

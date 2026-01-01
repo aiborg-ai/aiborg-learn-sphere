@@ -22,7 +22,7 @@ export class ForumCategoryService {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching forum categories:', _error);
+      logger.error('Error fetching forum categories:', _error);
       throw _error;
     }
   }
@@ -57,7 +57,7 @@ export class ForumCategoryService {
         latest_thread: category.latest_thread?.[0] || undefined,
       })) as ForumCategoryWithStats[];
     } catch (_error) {
-      logger._error('Error fetching categories with stats:', _error);
+      logger.error('Error fetching categories with stats:', _error);
       throw _error;
     }
   }
@@ -81,7 +81,7 @@ export class ForumCategoryService {
 
       return data;
     } catch (_error) {
-      logger._error('Error fetching category by slug:', _error);
+      logger.error('Error fetching category by slug:', _error);
       throw _error;
     }
   }
@@ -104,7 +104,7 @@ export class ForumCategoryService {
 
       return data;
     } catch (_error) {
-      logger._error('Error fetching category by ID:', _error);
+      logger.error('Error fetching category by ID:', _error);
       throw _error;
     }
   }
@@ -160,7 +160,7 @@ export class ForumCategoryService {
         most_active_users: mostActiveUsers || [],
       };
     } catch (_error) {
-      logger._error('Error fetching category stats:', _error);
+      logger.error('Error fetching category stats:', _error);
       throw _error;
     }
   }
@@ -180,7 +180,7 @@ export class ForumCategoryService {
       if (error) throw error;
       return data || [];
     } catch (_error) {
-      logger._error('Error fetching popular categories:', _error);
+      logger.error('Error fetching popular categories:', _error);
       throw _error;
     }
   }
@@ -217,7 +217,7 @@ export class ForumCategoryService {
       logger.log('Category created:', category.slug);
       return category;
     } catch (_error) {
-      logger._error('Error creating category:', _error);
+      logger.error('Error creating category:', _error);
       throw _error;
     }
   }
@@ -250,7 +250,7 @@ export class ForumCategoryService {
       logger.log('Category updated:', categoryId);
       return data;
     } catch (_error) {
-      logger._error('Error updating category:', _error);
+      logger.error('Error updating category:', _error);
       throw _error;
     }
   }
@@ -269,7 +269,7 @@ export class ForumCategoryService {
 
       logger.log('Category deleted:', categoryId);
     } catch (_error) {
-      logger._error('Error deleting category:', _error);
+      logger.error('Error deleting category:', _error);
       throw _error;
     }
   }
@@ -293,7 +293,7 @@ export class ForumCategoryService {
 
       logger.log('Categories reordered');
     } catch (_error) {
-      logger._error('Error reordering categories:', _error);
+      logger.error('Error reordering categories:', _error);
       throw _error;
     }
   }
@@ -311,7 +311,7 @@ export class ForumCategoryService {
       if (error) throw error;
       return count || 0;
     } catch (_error) {
-      logger._error('Error getting category count:', _error);
+      logger.error('Error getting category count:', _error);
       return 0;
     }
   }

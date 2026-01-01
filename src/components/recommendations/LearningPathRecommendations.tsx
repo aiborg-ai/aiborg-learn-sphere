@@ -51,7 +51,7 @@ export function LearningPathRecommendations({
       );
       setRecommendations(recs.slice(0, limit));
     } catch (_error) {
-      logger._error('Error fetching recommendations:', _error);
+      logger.error('Error fetching recommendations:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load recommendations',
@@ -85,7 +85,7 @@ export function LearningPathRecommendations({
         throw new Error('Failed to create learning path');
       }
     } catch (_error) {
-      logger._error('Error enrolling in path:', _error);
+      logger.error('Error enrolling in path:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create learning path',

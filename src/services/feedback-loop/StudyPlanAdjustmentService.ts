@@ -114,7 +114,7 @@ export class StudyPlanAdjustmentService {
         changes,
       };
     } catch (_error) {
-      logger._error('Error reducing difficulty:', _error);
+      logger.error('Error reducing difficulty:', _error);
       return this.createFailureResult('Failed to reduce difficulty');
     }
   }
@@ -171,7 +171,7 @@ export class StudyPlanAdjustmentService {
         changes,
       };
     } catch (_error) {
-      logger._error('Error increasing difficulty:', _error);
+      logger.error('Error increasing difficulty:', _error);
       return this.createFailureResult('Failed to increase difficulty');
     }
   }
@@ -258,7 +258,7 @@ export class StudyPlanAdjustmentService {
         changes,
       };
     } catch (_error) {
-      logger._error('Error adding remedial content:', _error);
+      logger.error('Error adding remedial content:', _error);
       return this.createFailureResult('Failed to add remedial content');
     }
   }
@@ -345,7 +345,7 @@ export class StudyPlanAdjustmentService {
         changes,
       };
     } catch (_error) {
-      logger._error('Error resequencing content:', _error);
+      logger.error('Error resequencing content:', _error);
       return this.createFailureResult('Failed to resequence content');
     }
   }

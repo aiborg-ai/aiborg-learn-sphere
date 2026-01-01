@@ -219,7 +219,7 @@ export function GlobalSearch() {
 
         setResults([...searchResults, ...filteredActions]);
       } catch (_error) {
-        logger._error('Search _error:', _error);
+        logger.error('Search _error:', _error);
       } finally {
         setLoading(false);
       }

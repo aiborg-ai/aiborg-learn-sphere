@@ -118,7 +118,7 @@ export class LearningPathRecommendationEngine {
 
       return recommendations.slice(0, 5); // Return top 5
     } catch (_error) {
-      logger._error('Error generating learning path recommendations:', _error);
+      logger.error('Error generating learning path recommendations:', _error);
       return [];
     }
   }
@@ -526,7 +526,7 @@ export class LearningPathRecommendationEngine {
       logger.log('Learning path saved successfully:', path.id);
       return path.id;
     } catch (_error) {
-      logger._error('Error saving learning path:', _error);
+      logger.error('Error saving learning path:', _error);
       return null;
     }
   }

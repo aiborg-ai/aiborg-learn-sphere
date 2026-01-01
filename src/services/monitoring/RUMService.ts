@@ -414,7 +414,7 @@ class RUMService {
       this.interactions = [];
       this.apiCalls = [];
     } catch (_error) {
-      logger._error('Failed to send RUM report:', _error);
+      logger.error('Failed to send RUM report:', _error);
     }
   }
 

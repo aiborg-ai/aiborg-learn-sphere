@@ -87,7 +87,7 @@ export class ForumVoteService {
 
       return data;
     } catch (_error) {
-      logger._error('Error voting:', _error);
+      logger.error('Error voting:', _error);
       throw _error;
     }
   }
@@ -127,7 +127,7 @@ export class ForumVoteService {
 
       logger.log('Vote removed:', votableType, votableId);
     } catch (_error) {
-      logger._error('Error removing vote:', _error);
+      logger.error('Error removing vote:', _error);
       throw _error;
     }
   }
@@ -153,7 +153,7 @@ export class ForumVoteService {
       if (error) throw error;
       return data?.vote_type || null;
     } catch (_error) {
-      logger._error('Error getting user vote:', _error);
+      logger.error('Error getting user vote:', _error);
       return null;
     }
   }
@@ -188,7 +188,7 @@ export class ForumVoteService {
         score,
       };
     } catch (_error) {
-      logger._error('Error getting vote counts:', _error);
+      logger.error('Error getting vote counts:', _error);
       return { upvotes: 0, downvotes: 0, score: 0 };
     }
   }
@@ -283,7 +283,7 @@ export class ForumVoteService {
 
       return (data || []).map(t => t.id);
     } catch (_error) {
-      logger._error('Error getting top voted threads:', _error);
+      logger.error('Error getting top voted threads:', _error);
       return [];
     }
   }
@@ -349,7 +349,7 @@ export class ForumVoteService {
         karma,
       };
     } catch (_error) {
-      logger._error('Error getting voting stats:', _error);
+      logger.error('Error getting voting stats:', _error);
       return {
         votes_given: 0,
         upvotes_given: 0,

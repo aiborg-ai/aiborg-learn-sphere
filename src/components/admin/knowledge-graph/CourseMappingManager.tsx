@@ -90,7 +90,7 @@ export function CourseMappingManager() {
       setConcepts(conceptsData);
       setCourses(coursesData);
     } catch (_error) {
-      logger._error('Error loading data:', _error);
+      logger.error('Error loading data:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load data',
@@ -117,7 +117,7 @@ export function CourseMappingManager() {
       const data = await KnowledgeGraphService.getCourseConcepts(courseId);
       setCourseConcepts(data);
     } catch (_error) {
-      logger._error('Error loading course concepts:', _error);
+      logger.error('Error loading course concepts:', _error);
     }
   };
 
@@ -158,7 +158,7 @@ export function CourseMappingManager() {
         throw new Error('Failed to link concept');
       }
     } catch (_error) {
-      logger._error('Error linking concept:', _error);
+      logger.error('Error linking concept:', _error);
       toast({
         title: 'Error',
         description: 'Failed to link concept. May already exist.',
@@ -194,7 +194,7 @@ export function CourseMappingManager() {
         throw new Error('Failed to unlink concept');
       }
     } catch (_error) {
-      logger._error('Error unlinking concept:', _error);
+      logger.error('Error unlinking concept:', _error);
       toast({
         title: 'Error',
         description: 'Failed to unlink concept',

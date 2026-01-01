@@ -125,7 +125,7 @@ export function MediaPlayer({
         setState(prev => ({ ...prev, isFullscreen: false }));
       }
     } catch (_error) {
-      logger._error('Fullscreen _error:', _error);
+      logger.error('Fullscreen _error:', _error);
     }
   }, []);
 

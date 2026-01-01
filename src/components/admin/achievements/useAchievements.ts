@@ -20,7 +20,7 @@ export const useAchievements = () => {
       if (error) throw error;
       setAchievements(data || []);
     } catch (_error) {
-      logger._error('Error fetching achievements:', _error);
+      logger.error('Error fetching achievements:', _error);
       toast({
         title: 'Error',
         description: 'Failed to load achievements',
@@ -66,7 +66,7 @@ export const useAchievements = () => {
 
       setUsers(usersWithAchievements);
     } catch (_error) {
-      logger._error('Error fetching users:', _error);
+      logger.error('Error fetching users:', _error);
     }
   }, []);
 
@@ -101,7 +101,7 @@ export const useAchievements = () => {
       await fetchAchievements();
       return true;
     } catch (_error) {
-      logger._error('Error creating achievement:', _error);
+      logger.error('Error creating achievement:', _error);
       toast({
         title: 'Error',
         description: 'Failed to create achievement',
@@ -144,7 +144,7 @@ export const useAchievements = () => {
       await fetchAchievements();
       return true;
     } catch (_error) {
-      logger._error('Error updating achievement:', _error);
+      logger.error('Error updating achievement:', _error);
       toast({
         title: 'Error',
         description: 'Failed to update achievement',
@@ -170,7 +170,7 @@ export const useAchievements = () => {
       await fetchAchievements();
       return true;
     } catch (_error) {
-      logger._error('Error deleting achievement:', _error);
+      logger.error('Error deleting achievement:', _error);
       toast({
         title: 'Error',
         description: 'Failed to delete achievement',
@@ -216,7 +216,7 @@ export const useAchievements = () => {
           variant: 'default',
         });
       } else {
-        logger._error('Error allocating achievement:', _error);
+        logger.error('Error allocating achievement:', _error);
         toast({
           title: 'Error',
           description: 'Failed to allocate achievement',
