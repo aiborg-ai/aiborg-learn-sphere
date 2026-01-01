@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
+import { AllTheProviders } from '@/tests/test-utils';
 import { useEnrollments } from '../useEnrollments';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '../useAuth';
@@ -60,7 +61,7 @@ describe('useEnrollments', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockQuery);
 
-      const { result } = renderHook(() => useEnrollments());
+      const { result } = renderHook(() => useEnrollments(), { wrapper: AllTheProviders });
 
       expect(result.current.loading).toBe(true);
 
@@ -79,7 +80,7 @@ describe('useEnrollments', () => {
         loading: false,
       });
 
-      const { result } = renderHook(() => useEnrollments());
+      const { result } = renderHook(() => useEnrollments(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -107,7 +108,7 @@ describe('useEnrollments', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockQuery);
 
-      const { result } = renderHook(() => useEnrollments());
+      const { result } = renderHook(() => useEnrollments(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -157,7 +158,7 @@ describe('useEnrollments', () => {
         error: null,
       });
 
-      const { result } = renderHook(() => useEnrollments());
+      const { result } = renderHook(() => useEnrollments(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -186,7 +187,7 @@ describe('useEnrollments', () => {
         loading: false,
       });
 
-      const { result } = renderHook(() => useEnrollments());
+      const { result } = renderHook(() => useEnrollments(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -232,7 +233,7 @@ describe('useEnrollments', () => {
       const invokeFunc = vi.fn().mockResolvedValue({ data: {}, error: null });
       (supabase.functions.invoke as ReturnType<typeof vi.fn>) = invokeFunc;
 
-      const { result } = renderHook(() => useEnrollments());
+      const { result } = renderHook(() => useEnrollments(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -290,7 +291,7 @@ describe('useEnrollments', () => {
         new Error('Invoice service unavailable')
       );
 
-      const { result } = renderHook(() => useEnrollments());
+      const { result } = renderHook(() => useEnrollments(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -325,7 +326,7 @@ describe('useEnrollments', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockQuery);
 
-      const { result } = renderHook(() => useEnrollments());
+      const { result } = renderHook(() => useEnrollments(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -351,7 +352,7 @@ describe('useEnrollments', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockQuery);
 
-      const { result } = renderHook(() => useEnrollments());
+      const { result } = renderHook(() => useEnrollments(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -378,7 +379,7 @@ describe('useEnrollments', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockQuery);
 
-      const { result } = renderHook(() => useEnrollments());
+      const { result } = renderHook(() => useEnrollments(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -404,7 +405,7 @@ describe('useEnrollments', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockQuery);
 
-      const { result } = renderHook(() => useEnrollments());
+      const { result } = renderHook(() => useEnrollments(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -431,7 +432,7 @@ describe('useEnrollments', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockQuery);
 
-      const { result } = renderHook(() => useEnrollments());
+      const { result } = renderHook(() => useEnrollments(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -460,7 +461,7 @@ describe('useEnrollments', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockQuery);
 
-      const { result } = renderHook(() => useEnrollments());
+      const { result } = renderHook(() => useEnrollments(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);

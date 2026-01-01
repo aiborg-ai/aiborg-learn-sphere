@@ -267,7 +267,7 @@ class Logger {
       const result = fn();
       this.timeEnd(fnName);
       return result;
-    } catch {
+    } catch (error) {
       this.timeEnd(fnName);
       this.error(`Error in ${fnName}`, error);
       throw error;
@@ -284,7 +284,7 @@ class Logger {
       const result = await fn();
       this.timeEnd(fnName);
       return result;
-    } catch {
+    } catch (error) {
       this.timeEnd(fnName);
       this.error(`Error in ${fnName}`, error);
       throw error;

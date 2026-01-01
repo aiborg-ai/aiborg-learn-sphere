@@ -163,7 +163,7 @@ export class ExportService {
     } catch (_error) {
       logger.error('Error exporting to CSV:', _error);
       throw new Error(
-        `Failed to export CSV: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Failed to export CSV: ${_error instanceof Error ? _error.message : 'Unknown error'}`
       );
     }
   }

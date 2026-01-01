@@ -18,6 +18,7 @@ const CalendarPage = lazy(() => import('@/pages/CalendarPage'));
 const SessionsPage = lazy(() => import('@/pages/SessionsPage'));
 const MyTicketsPage = lazy(() => import('@/pages/MyTicketsPage'));
 const MyEventTicketsPage = lazy(() => import('@/pages/MyEventTicketsPage'));
+const LessonOnDemandWizard = lazy(() => import('@/pages/lessons/LessonOnDemandWizard'));
 
 export const learningRoutes: RouteConfig[] = [
   {
@@ -79,5 +80,13 @@ export const learningRoutes: RouteConfig[] = [
   {
     path: '/my-event-tickets',
     element: <MyEventTicketsPage />,
+  },
+  {
+    path: '/lessons/generate',
+    element: (
+      <RouteWrapper routeName="Generate Lesson">
+        <LessonOnDemandWizard />
+      </RouteWrapper>
+    ),
   },
 ];

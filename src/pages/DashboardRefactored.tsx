@@ -79,6 +79,11 @@ const PersonalizedSection = lazy(() =>
 const WorkshopsWidget = lazy(() =>
   import('@/components/dashboard/WorkshopsWidget').then(m => ({ default: m.WorkshopsWidget }))
 );
+const LessonOnDemandWidget = lazy(() =>
+  import('@/components/dashboard/LessonOnDemandWidget').then(m => ({
+    default: m.LessonOnDemandWidget,
+  }))
+);
 
 // Widget skeleton for AI components
 const WidgetSkeleton = () => (
@@ -567,6 +572,11 @@ export default function DashboardRefactored() {
                 </Suspense>
               )}
             </div>
+
+            {/* Lesson on Demand Widget */}
+            <Suspense fallback={<WidgetSkeleton />}>
+              <LessonOnDemandWidget />
+            </Suspense>
 
             {/* Workshops Widget */}
             <Suspense fallback={<WidgetSkeleton />}>

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
+import { AllTheProviders } from '@/tests/test-utils';
 import { useCourses } from '../useCourses';
 import { supabase } from '@/integrations/supabase/client';
 import { createMockCourse } from '@/tests/mockFactories';
@@ -17,8 +18,8 @@ describe('useCourses', () => {
       ...createMockCourse({
         id: 1,
         title: 'AI Fundamentals',
-        audience: 'professional',
-        audiences: ['professional'],
+        audience: 'professionals',
+        audiences: ['professionals'],
         is_active: true,
         display: true,
         sort_order: 1,
@@ -28,8 +29,8 @@ describe('useCourses', () => {
       ...createMockCourse({
         id: 2,
         title: 'Machine Learning Basics',
-        audience: 'professional',
-        audiences: ['professional', 'student'],
+        audience: 'professionals',
+        audiences: ['professionals', 'students'],
         is_active: true,
         display: true,
         sort_order: 2,
@@ -54,7 +55,7 @@ describe('useCourses', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockQuery);
 
-      const { result } = renderHook(() => useCourses());
+      const { result } = renderHook(() => useCourses(), { wrapper: AllTheProviders });
 
       // Initial state
       expect(result.current.loading).toBe(true);
@@ -97,7 +98,7 @@ describe('useCourses', () => {
         .mockReturnValueOnce(mockViewQuery)
         .mockReturnValueOnce(mockTableQuery);
 
-      const { result } = renderHook(() => useCourses());
+      const { result } = renderHook(() => useCourses(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -113,7 +114,7 @@ describe('useCourses', () => {
         ...createMockCourse({
           id: 1,
           title: 'Old Course',
-          audience: 'professional',
+          audience: 'professionals',
         }),
       };
 
@@ -139,13 +140,13 @@ describe('useCourses', () => {
         .mockReturnValueOnce(mockQuery)
         .mockReturnValueOnce(mockFallbackQuery);
 
-      const { result } = renderHook(() => useCourses());
+      const { result } = renderHook(() => useCourses(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
-      expect(result.current.courses[0].audiences).toEqual(['professional']);
+      expect(result.current.courses[0].audiences).toEqual(['professionals']);
     });
 
     it('should filter only active and displayed courses', async () => {
@@ -214,7 +215,7 @@ describe('useCourses', () => {
         .mockReturnValueOnce(mockViewQuery)
         .mockReturnValueOnce(mockTableQuery);
 
-      const { result } = renderHook(() => useCourses());
+      const { result } = renderHook(() => useCourses(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -233,7 +234,7 @@ describe('useCourses', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockQuery);
 
-      const { result } = renderHook(() => useCourses());
+      const { result } = renderHook(() => useCourses(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -256,7 +257,7 @@ describe('useCourses', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockQuery);
 
-      const { result } = renderHook(() => useCourses());
+      const { result } = renderHook(() => useCourses(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -298,7 +299,7 @@ describe('useCourses', () => {
         .mockReturnValueOnce(mockFailQuery) // Fallback also fails
         .mockReturnValueOnce(mockSuccessQuery);
 
-      const { result } = renderHook(() => useCourses());
+      const { result } = renderHook(() => useCourses(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.error).toBeTruthy();
@@ -320,7 +321,7 @@ describe('useCourses', () => {
         ...createMockCourse({
           id: 1,
           title: 'Universal Course',
-          audiences: ['professional', 'student', 'business'],
+          audiences: ['professionals', 'students', 'enterprises'],
         }),
       };
 
@@ -335,14 +336,14 @@ describe('useCourses', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>).mockReturnValue(mockQuery);
 
-      const { result } = renderHook(() => useCourses());
+      const { result } = renderHook(() => useCourses(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
       expect(result.current.courses[0].audiences).toHaveLength(3);
-      expect(result.current.courses[0].audience).toBe('professional'); // First audience for backward compatibility
+      expect(result.current.courses[0].audience).toBe('professionals'); // First audience for backward compatibility
     });
   });
 });

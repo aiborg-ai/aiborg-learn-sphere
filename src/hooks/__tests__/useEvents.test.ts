@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
+import { AllTheProviders } from '@/tests/test-utils';
 import { useEvents, type Event } from '../useEvents';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -63,7 +64,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       expect(result.current.loading).toBe(true);
       expect(result.current.events).toEqual([]);
@@ -84,7 +85,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -165,7 +166,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -191,7 +192,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -215,7 +216,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -238,7 +239,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -259,7 +260,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -285,7 +286,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -316,7 +317,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -362,7 +363,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -406,7 +407,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -434,7 +435,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -465,7 +466,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -496,7 +497,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -540,7 +541,7 @@ describe('useEvents', () => {
 
       (supabase.from as ReturnType<typeof vi.fn>) = mockFrom;
 
-      const { result } = renderHook(() => useEvents());
+      const { result } = renderHook(() => useEvents(), { wrapper: AllTheProviders });
 
       await waitFor(() => {
         expect(result.current.error).toBe('Connection error');

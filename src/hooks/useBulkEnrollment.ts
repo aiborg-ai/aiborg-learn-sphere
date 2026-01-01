@@ -233,7 +233,7 @@ export function useBulkEnrollment() {
       return allResults;
     } catch (_error) {
       logger.error('Bulk enrollment processing _error:', _error);
-      throw error;
+      throw _error;
     } finally {
       setIsProcessing(false);
     }
