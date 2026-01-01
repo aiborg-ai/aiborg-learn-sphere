@@ -9,7 +9,6 @@ import { useState, useEffect, useRef } from 'react';
 import { X, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Icon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
 import type { OnboardingTooltipProps } from '@/types/onboarding';
 
@@ -112,11 +111,6 @@ export function OnboardingTooltip({
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  {icon && (
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <Icon name={icon as any} size={20} className="text-primary" />
-                    </div>
-                  )}
                   <CardTitle className="text-lg">{title}</CardTitle>
                 </div>
                 <Button
@@ -218,11 +212,6 @@ export function OnboardingHighlight({
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-2">
-              {icon && (
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <Icon name={icon as any} size={20} className="text-primary" />
-                </div>
-              )}
               <CardTitle className="text-lg">{title}</CardTitle>
             </div>
             <Button
