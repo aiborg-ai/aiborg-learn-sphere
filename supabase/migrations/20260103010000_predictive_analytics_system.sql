@@ -15,7 +15,7 @@
 CREATE TABLE IF NOT EXISTS learner_predictions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+  course_id INTEGER REFERENCES courses(id) ON DELETE CASCADE,
 
   -- Prediction Types
   prediction_type VARCHAR(50) NOT NULL, -- 'completion', 'engagement', 'at_risk', 'skills_gap'
@@ -68,7 +68,7 @@ CREATE INDEX idx_learner_predictions_course ON learner_predictions(course_id);
 CREATE INDEX idx_learner_predictions_type ON learner_predictions(prediction_type);
 CREATE INDEX idx_learner_predictions_risk ON learner_predictions(risk_level) WHERE risk_level IN ('high', 'critical');
 CREATE INDEX idx_learner_predictions_alert ON learner_predictions(auto_alert_triggered, alert_sent_at);
-CREATE INDEX idx_learner_predictions_valid ON learner_predictions(valid_until) WHERE valid_until > NOW();
+CREATE INDEX idx_learner_predictions_valid ON learner_predictions(valid_until) WHERE valid_until IS NOT NULL;
 
 COMMENT ON TABLE learner_predictions IS
 'Stores ML-generated predictions for learner success, engagement, and risk';
@@ -80,7 +80,7 @@ COMMENT ON TABLE learner_predictions IS
 CREATE TABLE IF NOT EXISTS at_risk_alerts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  course_id UUID REFERENCES courses(id) ON DELETE SET NULL,
+  course_id INTEGER REFERENCES courses(id) ON DELETE SET NULL,
   prediction_id UUID REFERENCES learner_predictions(id) ON DELETE SET NULL,
 
   -- Alert Details
@@ -141,7 +141,7 @@ COMMENT ON TABLE at_risk_alerts IS
 CREATE TABLE IF NOT EXISTS prediction_features (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+  course_id INTEGER REFERENCES courses(id) ON DELETE CASCADE,
 
   -- Engagement Features
   days_since_last_activity INTEGER,
@@ -267,7 +267,7 @@ CREATE TABLE IF NOT EXISTS learner_interventions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   alert_id UUID REFERENCES at_risk_alerts(id) ON DELETE SET NULL,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  course_id UUID REFERENCES courses(id) ON DELETE SET NULL,
+  course_id INTEGER REFERENCES courses(id) ON DELETE SET NULL,
 
   -- Intervention Details
   intervention_type VARCHAR(50) NOT NULL, -- 'email_reminder', 'instructor_outreach', 'peer_mentor', 'content_recommendation', 'deadline_extension'
@@ -399,7 +399,7 @@ CREATE OR REPLACE VIEW at_risk_learners_summary AS
 SELECT
   p.id as profile_id,
   p.user_id,
-  p.full_name,
+  p.display_name,
   p.email,
   ara.course_id,
   c.title as course_title,
@@ -422,7 +422,7 @@ LEFT JOIN courses c ON c.id = ara.course_id
 LEFT JOIN learner_predictions lp ON lp.user_id = p.user_id AND lp.course_id = ara.course_id AND lp.prediction_type = 'at_risk'
 LEFT JOIN learner_interventions li ON li.alert_id = ara.id
 WHERE ara.status IN ('open', 'investigating')
-GROUP BY p.id, p.user_id, p.full_name, p.email, ara.course_id, c.title, lp.risk_score, lp.risk_level,
+GROUP BY p.id, p.user_id, p.display_name, p.email, ara.course_id, c.title, lp.risk_score, lp.risk_level,
          lp.dropout_probability, lp.engagement_score, lp.engagement_trend, ara.severity, ara.status,
          ara.triggered_at, ara.assigned_to, ara.next_follow_up_date
 ORDER BY lp.risk_score DESC NULLS LAST, ara.triggered_at ASC;

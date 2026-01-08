@@ -7,11 +7,11 @@
 
 CREATE OR REPLACE FUNCTION calculate_prediction_features(
   p_user_id UUID DEFAULT NULL,
-  p_course_id UUID DEFAULT NULL
+  p_course_id INTEGER DEFAULT NULL
 )
 RETURNS TABLE (
   user_id UUID,
-  course_id UUID,
+  course_id INTEGER,
   days_since_last_activity INTEGER,
   total_time_spent_minutes INTEGER,
   avg_session_duration_minutes DECIMAL,
@@ -164,7 +164,7 @@ COMMENT ON FUNCTION calculate_prediction_features IS
 
 CREATE OR REPLACE FUNCTION refresh_prediction_features(
   p_user_id UUID DEFAULT NULL,
-  p_course_id UUID DEFAULT NULL
+  p_course_id INTEGER DEFAULT NULL
 )
 RETURNS INTEGER AS $$
 DECLARE

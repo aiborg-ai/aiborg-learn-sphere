@@ -6,13 +6,13 @@ import { corsHeaders } from '../_shared/cors.ts';
 
 interface PredictionRequest {
   user_id?: string; // Specific user or all users
-  course_id?: string; // Specific course or all courses
+  course_id?: number; // Specific course or all courses
   prediction_types?: string[]; // ['completion', 'engagement', 'at_risk', 'skills_gap']
 }
 
 interface UserFeatures {
   user_id: string;
-  course_id: string | null;
+  course_id: number | null;
   days_since_last_activity: number;
   total_time_spent_minutes: number;
   avg_session_duration_minutes: number;
