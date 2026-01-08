@@ -22,6 +22,7 @@ const TenantManagement = lazy(() => import('@/pages/admin/TenantManagement'));
 const LingoAdmin = lazy(() => import('@/pages/admin/lingo/LingoAdmin'));
 const AdminSurveys = lazy(() => import('@/pages/admin/AdminSurveys'));
 const AIReadinessAdminDashboard = lazy(() => import('@/pages/admin/AIReadinessAdminDashboard'));
+const PredictiveAnalytics = lazy(() => import('@/pages/admin/PredictiveAnalytics'));
 
 export const adminRoutes: RouteConfig[] = [
   {
@@ -151,5 +152,15 @@ export const adminRoutes: RouteConfig[] = [
   {
     path: '/admin/ai-readiness-dashboard',
     element: <AIReadinessAdminDashboard />,
+  },
+  {
+    path: '/admin/predictions',
+    element: (
+      <Suspense fallback={<AdminSkeleton />}>
+        <RouteWrapper routeName="Predictive Analytics">
+          <PredictiveAnalytics />
+        </RouteWrapper>
+      </Suspense>
+    ),
   },
 ];

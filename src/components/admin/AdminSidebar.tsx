@@ -93,6 +93,7 @@ const navigationStructure: NavItem[] = [
       { name: 'AI Content', href: '/admin/ai-content', icon: Brain },
       { name: 'Chatbot Analytics', href: '/admin/chatbot-analytics', icon: MessageSquare },
       { name: 'AI Blog Workflow', href: '/admin/ai-blog-workflow', icon: FileText, badge: 'NEW' },
+      { name: 'Predictive Analytics', href: '/admin/predictions', icon: TrendingUp, badge: 'NEW' },
     ],
   },
   {
