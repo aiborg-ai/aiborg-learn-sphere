@@ -113,7 +113,6 @@ serve(async req => {
     // Send notification email to admin
     const programName =
       data.program === 'under14' ? 'AI Explorers (Under 14)' : 'AI Mastery (14+ & Professionals)';
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const confirmUrl = `${supabaseUrl}/functions/v1/season2-confirm?token=${registration.confirmation_token}&action=confirm`;
     const rejectUrl = `${supabaseUrl}/functions/v1/season2-confirm?token=${registration.confirmation_token}&action=reject`;
 
