@@ -116,6 +116,9 @@ serve(async req => {
     const confirmUrl = `${APP_URL}/api/season2-confirm?token=${registration.confirmation_token}&action=confirm`;
     const rejectUrl = `${APP_URL}/api/season2-confirm?token=${registration.confirmation_token}&action=reject`;
 
+    let emailStatus = 'not_attempted';
+    let emailError = null;
+
     if (resendApiKey) {
       try {
         const emailResponse = await fetch('https://api.resend.com/emails', {
@@ -187,13 +190,22 @@ serve(async req => {
           }),
         });
 
-        if (!emailResponse.ok) {
-          console.error('Email send failed:', await emailResponse.text());
+        if (emailResponse.ok) {
+          emailStatus = 'sent';
+        } else {
+          const errorText = await emailResponse.text();
+          emailStatus = 'failed';
+          emailError = errorText;
+          console.error('Email send failed:', errorText);
         }
-      } catch (emailError) {
-        console.error('Email error:', emailError);
+      } catch (err) {
+        emailStatus = 'error';
+        emailError = err.message;
+        console.error('Email error:', err);
         // Don't fail registration if email fails
       }
+    } else {
+      emailStatus = 'no_api_key';
     }
 
     return new Response(
@@ -202,6 +214,8 @@ serve(async req => {
         message:
           'Registration submitted successfully! You will receive a confirmation email once approved.',
         registrationId: registration.id,
+        emailStatus,
+        emailError,
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
