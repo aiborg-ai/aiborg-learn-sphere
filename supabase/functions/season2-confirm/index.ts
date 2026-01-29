@@ -198,12 +198,10 @@ serve(async req => {
       }
     }
 
-    // Return success HTML page
+    // Redirect to frontend confirmation page
     const successType = action === 'confirm' ? 'confirmed' : 'rejected';
-    return new Response(renderHTML(successType, registration.full_name, registration.email), {
-      status: 200,
-      headers: { 'Content-Type': 'text/html' },
-    });
+    const redirectUrl = `${APP_URL}/season2/status?type=${successType}&name=${encodeURIComponent(registration.full_name)}&email=${encodeURIComponent(registration.email)}`;
+    return Response.redirect(redirectUrl, 302);
   } catch (error) {
     console.error('Error:', error);
     return new Response(renderHTML('error', error.message), {
