@@ -465,7 +465,7 @@ export default function Auth() {
                       description: t('magicLink.checkEmail'),
                     });
                   }}
-                  redirectTo={window.location.origin}
+                  redirectTo={`${window.location.origin}/auth/callback`}
                 />
               </TabsContent>
 
