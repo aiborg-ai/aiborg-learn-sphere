@@ -18,6 +18,7 @@ const OnboardingDemo = lazy(() => import('@/components/onboarding/OnboardingDemo
 const SMELandingPage = lazy(() => import('@/pages/SMELandingPage'));
 const Season2Page = lazy(() => import('@/pages/Season2Page'));
 const Season2StatusPage = lazy(() => import('@/pages/Season2StatusPage'));
+const Season2ReviewPage = lazy(() => import('@/pages/Season2ReviewPage'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
 export const publicRoutes: RouteConfig[] = [
@@ -56,6 +57,10 @@ export const publicRoutes: RouteConfig[] = [
   {
     path: '/season2/status',
     element: <Season2StatusPage />,
+  },
+  {
+    path: '/season2/review',
+    element: <Season2ReviewPage />,
   },
   {
     path: '*',
