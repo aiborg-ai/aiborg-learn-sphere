@@ -30,6 +30,7 @@ import { communityRoutes } from './communityRoutes';
 import { lingoRoutes } from './lingoRoutes';
 import { settingsRoutes } from './settingsRoutes';
 import { publicRoutes } from './publicRoutes';
+import { marketplaceRoutes } from './marketplaceRoutes';
 
 /**
  * All application routes
@@ -42,6 +43,7 @@ export const allRoutes: RouteConfig[] = [
   ...assessmentRoutes,
   ...instructorRoutes,
   ...courseRoutes,
+  ...marketplaceRoutes,
   ...learningRoutes,
   ...lingoRoutes,
   ...settingsRoutes,
@@ -65,6 +67,7 @@ export {
   lingoRoutes,
   settingsRoutes,
   publicRoutes,
+  marketplaceRoutes,
 };
 
 // Type exports

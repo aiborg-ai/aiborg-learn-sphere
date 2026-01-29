@@ -11,7 +11,7 @@ import {
   BarChart3,
 } from '@/components/ui/icons';
 import { usePersonalization } from '@/contexts/PersonalizationContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { HeroImage } from '@/components/shared/OptimizedImage';
 
 const audiences = [
@@ -58,6 +58,7 @@ const audiences = [
 ];
 
 export function HeroSection() {
+  const navigate = useNavigate();
   const { selectedAudience, setSelectedAudience, getPersonalizedContent, getPersonalizedStyles } =
     usePersonalization();
 
@@ -243,6 +244,11 @@ export function HeroSection() {
                           className="w-full btn-hero"
                           onClick={e => {
                             e.stopPropagation();
+                            // SME/Business audience goes to dedicated landing page
+                            if (audience.id === 'business') {
+                              navigate('/for-sme');
+                              return;
+                            }
                             // Set URL hash to pass audience filter
                             window.location.hash = `audience-${audience.id}`;
                             // Scroll to section with a slight delay to ensure hash is processed
@@ -257,7 +263,9 @@ export function HeroSection() {
                             }, 200);
                           }}
                         >
-                          Explore Programs
+                          {audience.id === 'business'
+                            ? 'Explore SME Solutions'
+                            : 'Explore Programs'}
                           <ArrowRight className="ml-2 h-4 w-4 text-white" />
                         </Button>
                       </div>

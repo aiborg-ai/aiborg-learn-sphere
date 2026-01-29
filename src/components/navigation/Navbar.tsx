@@ -189,6 +189,17 @@ export function Navbar() {
             >
               {t('menu.blog')}
             </PrefetchLink>
+            <PrefetchLink
+              to="/marketplace"
+              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
+              aria-label="Explore AI courses from global providers"
+            >
+              <span className="flex items-center gap-1.5">
+                <Icon name="Globe" size={14} aria-hidden="true" />
+                Marketplace
+                <Badge className="bg-green-500 text-white text-[10px] px-1.5 py-0.5">New</Badge>
+              </span>
+            </PrefetchLink>
             {shouldShowTip('nav-events') ? (
               <OnboardingTooltip
                 tipId="nav-events"
@@ -424,6 +435,16 @@ export function Navbar() {
               aria-label={t('aria.goToBlog')}
             >
               {t('menu.blog')}
+            </PrefetchLink>
+            <PrefetchLink
+              to="/marketplace"
+              className="flex items-center gap-2 text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
+              onClick={() => setIsOpen(false)}
+              aria-label="Explore AI courses from global providers"
+            >
+              <Icon name="Globe" size={16} aria-hidden="true" />
+              Marketplace
+              <Badge className="bg-green-500 text-white text-[10px] px-1.5 py-0.5">New</Badge>
             </PrefetchLink>
             <button
               className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"

@@ -127,6 +127,7 @@
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "use-debounce": "^10.1.0",
     "vaul": "^0.9.3",
     "vite-plugin-pwa": "^0.17.5",
     "web-vitals": "^5.1.0",

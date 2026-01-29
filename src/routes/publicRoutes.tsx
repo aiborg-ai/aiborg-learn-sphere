@@ -15,6 +15,7 @@ const IconTest = lazy(() =>
   import('@/components/shared/IconTest').then(m => ({ default: m.IconTest }))
 );
 const OnboardingDemo = lazy(() => import('@/components/onboarding/OnboardingDemo'));
+const SMELandingPage = lazy(() => import('@/pages/SMELandingPage'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
 export const publicRoutes: RouteConfig[] = [
@@ -37,6 +38,14 @@ export const publicRoutes: RouteConfig[] = [
   {
     path: '/onboarding-demo',
     element: <OnboardingDemo />,
+  },
+  {
+    path: '/for-sme',
+    element: <SMELandingPage />,
+  },
+  {
+    path: '/sme',
+    element: <SMELandingPage />,
   },
   {
     path: '*',
