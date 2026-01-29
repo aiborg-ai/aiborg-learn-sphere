@@ -1,14 +1,23 @@
 /**
  * Season 2 Landing Page
- * Free AI Classes Registration - Under 14 & 14+ Professionals
+ * Free AI Classes Registration - Simple form without login
  */
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/navigation/Footer';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   Calendar,
   Clock,
@@ -19,28 +28,175 @@ import {
   GraduationCap,
   Briefcase,
   Globe,
-  Ticket,
-  ArrowRight,
+  Loader2,
+  Phone,
+  Mail,
+  User,
 } from '@/components/ui/icons';
-import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
-import {
-  useEventSeriesDetails,
-  useEventSeriesRegistration,
-  useRegisterEventSeries,
-} from '@/hooks/useEventSeries';
-import { Skeleton } from '@/components/ui/skeleton';
-import { format, parseISO } from 'date-fns';
+import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 
-// Season 2 Event IDs
-const UNDER_14_EVENT_ID = 41;
-const PROFESSIONALS_EVENT_ID = 42;
+type Program = 'under14' | 'professionals';
+
+interface FormData {
+  fullName: string;
+  email: string;
+  whatsappNumber: string;
+  country: string;
+  city: string;
+  ageGroup: string;
+  occupation: string;
+  occupationDetails: string;
+}
 
 export default function Season2Page() {
+  const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const { toast } = useToast();
+
+  const [formData, setFormData] = useState<FormData>({
+    fullName: '',
+    email: '',
+    whatsappNumber: '',
+    country: '',
+    city: '',
+    ageGroup: '',
+    occupation: '',
+    occupationDetails: '',
+  });
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
+
+  const handleInputChange = (field: keyof FormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!selectedProgram) {
+      toast({
+        title: 'Please select a program',
+        description: 'Choose either AI Explorers (Under 14) or AI Mastery (14+)',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate required fields
+    if (
+      !formData.fullName ||
+      !formData.email ||
+      !formData.whatsappNumber ||
+      !formData.country ||
+      !formData.ageGroup ||
+      !formData.occupation
+    ) {
+      toast({
+        title: 'Please fill all required fields',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast({
+        title: 'Invalid email address',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('season2-register', {
+        body: {
+          ...formData,
+          program: selectedProgram,
+        },
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Registration failed');
+      }
+
+      if (data?.error) {
+        toast({
+          title: data.error,
+          description: data.message || 'Please try again',
+          variant: 'destructive',
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      setIsSuccess(true);
+      toast({
+        title: 'Registration Submitted!',
+        description: 'You will receive a confirmation email once approved.',
+      });
+    } catch (error) {
+      logger.error('Registration error:', error);
+      toast({
+        title: 'Registration Failed',
+        description: error instanceof Error ? error.message : 'Please try again later',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isSuccess) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-purple-900 via-indigo-900 to-slate-900">
+        <Navbar />
+        <main className="pt-32 pb-20 px-4">
+          <div className="max-w-lg mx-auto text-center">
+            <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-8">
+              <CheckCircle className="w-14 h-14 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold text-white mb-4">Registration Submitted!</h1>
+            <p className="text-xl text-purple-200 mb-8">
+              Thank you for registering for Season 2. We'll review your registration and send you a
+              confirmation email shortly.
+            </p>
+            <div className="bg-white/10 backdrop-blur rounded-lg p-6 text-left">
+              <h3 className="text-lg font-semibold text-white mb-4">What's Next?</h3>
+              <ul className="space-y-3 text-purple-200">
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-400 mt-0.5" />
+                  <span>Check your email for confirmation (within 24 hours)</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-400 mt-0.5" />
+                  <span>Save our WhatsApp number for session reminders</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-400 mt-0.5" />
+                  <span>Mark February 6, 2026 on your calendar!</span>
+                </li>
+              </ul>
+            </div>
+            <Button
+              onClick={() => (window.location.href = '/')}
+              className="mt-8 bg-white text-purple-600 hover:bg-purple-50"
+            >
+              Back to Home
+            </Button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-900 via-indigo-900 to-slate-900">
@@ -48,152 +204,308 @@ export default function Season2Page() {
 
       <main className="pt-20">
         {/* Hero Section */}
-        <section className="relative py-16 px-4 overflow-hidden">
-          {/* Background Effects */}
+        <section className="relative py-12 px-4 overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-20 left-10 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-pulse" />
             <div className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse delay-700" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-3xl" />
           </div>
 
-          <div className="relative z-10 max-w-5xl mx-auto text-center">
+          <div className="relative z-10 max-w-4xl mx-auto text-center">
             <Badge className="bg-gradient-to-r from-pink-500 to-yellow-500 text-white border-0 px-4 py-2 text-sm font-bold mb-6 animate-pulse">
               <Sparkles className="w-4 h-4 mr-2 inline" />
               100% FREE - NO PAYMENT REQUIRED
             </Badge>
 
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
               Season 2: Free AI Classes
             </h1>
 
-            <p className="text-xl md:text-2xl text-purple-100 mb-8 max-w-3xl mx-auto">
-              12-week AI education programs for all ages. Learn from industry experts, build real
-              projects, and transform your future with AI skills.
+            <p className="text-lg md:text-xl text-purple-100 mb-6 max-w-2xl mx-auto">
+              12-week AI education programs for all ages. Starting February 6, 2026.
             </p>
 
-            <div className="flex flex-wrap justify-center gap-6 text-white/80">
+            <div className="flex flex-wrap justify-center gap-4 text-white/80 text-sm">
               <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-pink-400" />
-                <span>Starts February 6, 2026</span>
+                <Calendar className="w-4 h-4 text-pink-400" />
+                <span>Starts Feb 6, 2026</span>
               </div>
               <div className="flex items-center gap-2">
-                <Globe className="w-5 h-5 text-cyan-400" />
+                <Globe className="w-4 h-4 text-cyan-400" />
                 <span>100% Online</span>
               </div>
               <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-yellow-400" />
+                <Users className="w-4 h-4 text-yellow-400" />
                 <span>Limited Spots</span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Programs Section */}
-        <section className="py-12 px-4">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-white text-center mb-12">Choose Your Program</h2>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Under 14 Program */}
-              <ProgramCard
-                eventId={UNDER_14_EVENT_ID}
-                title="AI Explorers"
-                subtitle="For Kids Under 14"
-                description="Fun, interactive AI learning designed for young minds. Build games, create art, and explore the exciting world of artificial intelligence!"
-                schedule="Saturdays at 11:00 AM UK Time"
-                icon={GraduationCap}
-                gradient="from-pink-500 to-orange-500"
-                features={[
-                  'Age-appropriate content (7-13 years)',
-                  'Fun hands-on AI projects',
-                  'No coding experience needed',
-                  'Global-friendly morning schedule',
-                ]}
-              />
-
-              {/* 14+ & Professionals Program */}
-              <ProgramCard
-                eventId={PROFESSIONALS_EVENT_ID}
-                title="AI Mastery"
-                subtitle="For Teens & Professionals"
-                description="Comprehensive AI training for career advancement. Master practical AI tools, build real applications, and unlock new opportunities."
-                schedule="Fridays at 8:00 PM UK Time"
-                icon={Briefcase}
-                gradient="from-cyan-500 to-blue-600"
-                features={[
-                  'Teenagers (14+) & working professionals',
-                  'Practical AI tools & workflows',
-                  'Career-focused curriculum',
-                  'Evening schedule for busy learners',
-                ]}
-              />
+        {/* Registration Section */}
+        <section className="py-8 px-4">
+          <div className="max-w-4xl mx-auto">
+            {/* Program Selection */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-white text-center mb-6">
+                1. Choose Your Program
+              </h2>
+              <div className="grid md:grid-cols-2 gap-4">
+                <ProgramCard
+                  program="under14"
+                  title="AI Explorers"
+                  subtitle="For Kids Under 14"
+                  schedule="Saturdays at 11:00 AM UK"
+                  icon={GraduationCap}
+                  gradient="from-pink-500 to-orange-500"
+                  selected={selectedProgram === 'under14'}
+                  onSelect={() => setSelectedProgram('under14')}
+                />
+                <ProgramCard
+                  program="professionals"
+                  title="AI Mastery"
+                  subtitle="For Teens (14+) & Professionals"
+                  schedule="Fridays at 8:00 PM UK"
+                  icon={Briefcase}
+                  gradient="from-cyan-500 to-blue-600"
+                  selected={selectedProgram === 'professionals'}
+                  onSelect={() => setSelectedProgram('professionals')}
+                />
+              </div>
             </div>
+
+            {/* Registration Form */}
+            <Card className="bg-white/10 backdrop-blur border-white/20">
+              <CardContent className="p-6 md:p-8">
+                <h2 className="text-2xl font-bold text-white text-center mb-6">
+                  2. Fill Your Details
+                </h2>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* Full Name */}
+                    <div className="space-y-2">
+                      <Label htmlFor="fullName" className="text-white flex items-center gap-2">
+                        <User className="w-4 h-4" />
+                        Full Name *
+                      </Label>
+                      <Input
+                        id="fullName"
+                        placeholder="Enter your full name"
+                        value={formData.fullName}
+                        onChange={e => handleInputChange('fullName', e.target.value)}
+                        className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                        required
+                      />
+                    </div>
+
+                    {/* Email */}
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-white flex items-center gap-2">
+                        <Mail className="w-4 h-4" />
+                        Email Address *
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="your@email.com"
+                        value={formData.email}
+                        onChange={e => handleInputChange('email', e.target.value)}
+                        className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                        required
+                      />
+                    </div>
+
+                    {/* WhatsApp */}
+                    <div className="space-y-2">
+                      <Label htmlFor="whatsapp" className="text-white flex items-center gap-2">
+                        <Phone className="w-4 h-4" />
+                        WhatsApp Number *
+                      </Label>
+                      <Input
+                        id="whatsapp"
+                        placeholder="+44 7123 456789"
+                        value={formData.whatsappNumber}
+                        onChange={e => handleInputChange('whatsappNumber', e.target.value)}
+                        className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                        required
+                      />
+                    </div>
+
+                    {/* Country */}
+                    <div className="space-y-2">
+                      <Label htmlFor="country" className="text-white flex items-center gap-2">
+                        <Globe className="w-4 h-4" />
+                        Country *
+                      </Label>
+                      <Input
+                        id="country"
+                        placeholder="United Kingdom"
+                        value={formData.country}
+                        onChange={e => handleInputChange('country', e.target.value)}
+                        className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                        required
+                      />
+                    </div>
+
+                    {/* City */}
+                    <div className="space-y-2">
+                      <Label htmlFor="city" className="text-white flex items-center gap-2">
+                        <MapPin className="w-4 h-4" />
+                        City (Optional)
+                      </Label>
+                      <Input
+                        id="city"
+                        placeholder="London"
+                        value={formData.city}
+                        onChange={e => handleInputChange('city', e.target.value)}
+                        className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                      />
+                    </div>
+
+                    {/* Age Group */}
+                    <div className="space-y-2">
+                      <Label className="text-white">Age Group *</Label>
+                      <Select
+                        value={formData.ageGroup}
+                        onValueChange={value => handleInputChange('ageGroup', value)}
+                      >
+                        <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                          <SelectValue placeholder="Select age group" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="under14">Under 14</SelectItem>
+                          <SelectItem value="14-18">14 - 18 years</SelectItem>
+                          <SelectItem value="18-25">18 - 25 years</SelectItem>
+                          <SelectItem value="25-40">25 - 40 years</SelectItem>
+                          <SelectItem value="40+">40+ years</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Occupation */}
+                    <div className="space-y-2">
+                      <Label className="text-white">Occupation *</Label>
+                      <Select
+                        value={formData.occupation}
+                        onValueChange={value => handleInputChange('occupation', value)}
+                      >
+                        <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                          <SelectValue placeholder="Select occupation" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="student">Student</SelectItem>
+                          <SelectItem value="professional">Working Professional</SelectItem>
+                          <SelectItem value="business_owner">Business Owner</SelectItem>
+                          <SelectItem value="educator">Educator / Teacher</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Occupation Details */}
+                    <div className="space-y-2">
+                      <Label htmlFor="occupationDetails" className="text-white">
+                        Occupation Details (Optional)
+                      </Label>
+                      <Input
+                        id="occupationDetails"
+                        placeholder="e.g., Software Engineer at Google"
+                        value={formData.occupationDetails}
+                        onChange={e => handleInputChange('occupationDetails', e.target.value)}
+                        className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="pt-4">
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting || !selectedProgram}
+                      className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-6 text-lg"
+                      size="lg"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="w-5 h-5 mr-2" />
+                          Register for Free
+                        </>
+                      )}
+                    </Button>
+                    <p className="text-center text-white/60 text-sm mt-3">
+                      You'll receive a confirmation email once your registration is approved.
+                    </p>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
-        {/* What You'll Learn Section */}
-        <section className="py-16 px-4 bg-white/5">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-bold text-white text-center mb-12">
-              12 Weeks of Transformation
-            </h2>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-pink-400 flex items-center gap-2">
-                  <GraduationCap className="w-6 h-6" />
-                  AI Explorers Curriculum
+        {/* Curriculum Preview */}
+        <section className="py-12 px-4 bg-white/5">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-white text-center mb-8">12 Weeks of Learning</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <h3 className="text-lg font-semibold text-pink-400 flex items-center gap-2">
+                  <GraduationCap className="w-5 h-5" />
+                  AI Explorers (Under 14)
                 </h3>
-                <ul className="space-y-3 text-purple-100">
+                <ul className="space-y-2 text-purple-200 text-sm">
                   {[
-                    'Welcome to AI World!',
-                    'Meet the AI Assistants',
+                    'Welcome to AI World',
+                    'Meet AI Assistants',
                     'AI Art Studio',
-                    'Smart Games with AI',
+                    'Smart Games',
                     'Robot Friends',
                     'AI Music Maker',
                     'Story Time with AI',
                     'AI Detective',
                     'Weather Wizards',
                     'AI in Space',
-                    'Build Your First AI Project',
-                    'AI Showcase & Graduation',
-                  ].map((topic, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <span className="w-6 h-6 rounded-full bg-pink-500/20 text-pink-400 text-xs flex items-center justify-center font-bold">
+                    'Build Your Project',
+                    'Showcase & Graduation',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-pink-500/20 text-pink-400 text-xs flex items-center justify-center">
                         {i + 1}
                       </span>
-                      {topic}
+                      {item}
                     </li>
                   ))}
                 </ul>
               </div>
-
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-cyan-400 flex items-center gap-2">
-                  <Briefcase className="w-6 h-6" />
-                  AI Mastery Curriculum
+              <div className="space-y-3">
+                <h3 className="text-lg font-semibold text-cyan-400 flex items-center gap-2">
+                  <Briefcase className="w-5 h-5" />
+                  AI Mastery (14+ & Professionals)
                 </h3>
-                <ul className="space-y-3 text-purple-100">
+                <ul className="space-y-2 text-purple-200 text-sm">
                   {[
-                    'AI Foundations & Landscape',
-                    'Prompt Engineering Mastery',
+                    'AI Foundations',
+                    'Prompt Engineering',
                     'AI for Productivity',
-                    'Machine Learning Fundamentals',
-                    'Natural Language Processing',
-                    'Computer Vision Basics',
-                    'AI in Business Applications',
-                    'Building AI-Powered Apps',
-                    'AI Ethics & Responsible Use',
-                    'AI Career Pathways',
-                    'Capstone Project Workshop',
+                    'Machine Learning',
+                    'NLP Basics',
+                    'Computer Vision',
+                    'AI in Business',
+                    'Building AI Apps',
+                    'AI Ethics',
+                    'AI Careers',
+                    'Capstone Project',
                     'Showcase & Certification',
-                  ].map((topic, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <span className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 text-xs flex items-center justify-center font-bold">
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-400 text-xs flex items-center justify-center">
                         {i + 1}
                       </span>
-                      {topic}
+                      {item}
                     </li>
                   ))}
                 </ul>
@@ -202,39 +514,29 @@ export default function Season2Page() {
           </div>
         </section>
 
-        {/* FAQ Section */}
-        <section className="py-16 px-4">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold text-white text-center mb-12">
-              Frequently Asked Questions
-            </h2>
-
-            <div className="space-y-6">
+        {/* FAQ */}
+        <section className="py-12 px-4">
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-2xl font-bold text-white text-center mb-8">FAQ</h2>
+            <div className="space-y-4">
               {[
+                { q: 'Is this really free?', a: 'Yes! 100% free. No hidden fees.' },
                 {
-                  q: 'Is this really free?',
-                  a: 'Yes! Season 2 is completely free. No hidden fees, no payment required. Just register and start learning.',
+                  q: 'Do I need any experience?',
+                  a: 'No prior experience required. We start from basics.',
                 },
                 {
                   q: 'What do I need to join?',
-                  a: 'Just a computer or tablet with internet connection. All sessions are online via video conferencing.',
-                },
-                {
-                  q: 'Can I join from any country?',
-                  a: 'Absolutely! Our sessions are timed to accommodate global audiences. Under 14 sessions are Saturday mornings UK time (great for Asia/Australia), and Professional sessions are Friday evenings UK time (great for Americas/Europe).',
-                },
-                {
-                  q: 'What if I miss a session?',
-                  a: 'Recordings will be available for registered participants. However, live attendance is encouraged for the best learning experience.',
+                  a: 'Just a computer/tablet with internet. All sessions are online.',
                 },
                 {
                   q: 'Will I get a certificate?',
-                  a: 'Yes! Participants who complete the 12-week program will receive a certificate of completion.',
+                  a: 'Yes! Complete the 12 weeks to earn your certificate.',
                 },
               ].map((faq, i) => (
-                <div key={i} className="bg-white/5 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-white mb-2">{faq.q}</h3>
-                  <p className="text-purple-200">{faq.a}</p>
+                <div key={i} className="bg-white/5 rounded-lg p-4">
+                  <h3 className="font-semibold text-white mb-1">{faq.q}</h3>
+                  <p className="text-purple-200 text-sm">{faq.a}</p>
                 </div>
               ))}
             </div>
@@ -247,170 +549,52 @@ export default function Season2Page() {
   );
 }
 
-// Program Card Component
-interface ProgramCardProps {
-  eventId: number;
-  title: string;
-  subtitle: string;
-  description: string;
-  schedule: string;
-  icon: React.ComponentType<{ className?: string }>;
-  gradient: string;
-  features: string[];
-}
-
+// Program Selection Card
 function ProgramCard({
-  eventId,
+  program,
   title,
   subtitle,
-  description,
   schedule,
   icon: Icon,
   gradient,
-  features,
-}: ProgramCardProps) {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const navigate = useNavigate();
-
-  const { data: seriesData, isLoading: loadingDetails } = useEventSeriesDetails(eventId);
-  const { data: registration, isLoading: loadingRegistration } =
-    useEventSeriesRegistration(eventId);
-  const registerMutation = useRegisterEventSeries();
-
-  const isRegistered = !!registration;
-  const upcomingSessions = seriesData?.upcomingSessions || [];
-
-  const handleRegister = async () => {
-    if (!user) {
-      toast({
-        title: 'Please log in first',
-        description: 'You need to be logged in to register for the program.',
-        variant: 'destructive',
-      });
-      navigate('/auth');
-      return;
-    }
-
-    try {
-      await registerMutation.mutateAsync({
-        eventId,
-        paymentMethod: 'free',
-      });
-
-      toast({
-        title: 'Registration Successful!',
-        description: `You're now registered for ${title}. Check your email for confirmation.`,
-      });
-    } catch {
-      toast({
-        title: 'Registration Failed',
-        description: 'Something went wrong. Please try again.',
-        variant: 'destructive',
-      });
-    }
-  };
-
+  selected,
+  onSelect,
+}: {
+  program: Program;
+  title: string;
+  subtitle: string;
+  schedule: string;
+  icon: React.ComponentType<{ className?: string }>;
+  gradient: string;
+  selected: boolean;
+  onSelect: () => void;
+}) {
   return (
-    <Card className="overflow-hidden bg-white/10 backdrop-blur border-white/20 hover:bg-white/15 transition-all">
-      <CardHeader className={`bg-gradient-to-r ${gradient} p-6`}>
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center">
-            <Icon className="w-7 h-7 text-white" />
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold text-white">{title}</h3>
-            <p className="text-white/80">{subtitle}</p>
-          </div>
+    <button
+      type="button"
+      onClick={onSelect}
+      className={`w-full p-6 rounded-xl border-2 transition-all text-left ${
+        selected
+          ? `bg-gradient-to-r ${gradient} border-white shadow-lg scale-[1.02]`
+          : 'bg-white/5 border-white/20 hover:border-white/40 hover:bg-white/10'
+      }`}
+    >
+      <div className="flex items-center gap-4">
+        <div
+          className={`w-12 h-12 rounded-full flex items-center justify-center ${selected ? 'bg-white/20' : `bg-gradient-to-r ${gradient}`}`}
+        >
+          <Icon className="w-6 h-6 text-white" />
         </div>
-      </CardHeader>
-
-      <CardContent className="p-6 space-y-6">
-        <p className="text-purple-100">{description}</p>
-
-        <div className="space-y-3">
-          <div className="flex items-center gap-3 text-white">
-            <Clock className="w-5 h-5 text-yellow-400" />
-            <span className="font-medium">{schedule}</span>
-          </div>
-          <div className="flex items-center gap-3 text-white">
-            <MapPin className="w-5 h-5 text-green-400" />
-            <span>Online (Zoom/Google Meet)</span>
-          </div>
-          <div className="flex items-center gap-3 text-white">
-            <Calendar className="w-5 h-5 text-pink-400" />
-            <span>12 weekly sessions</span>
-          </div>
+        <div>
+          <h3 className="text-xl font-bold text-white">{title}</h3>
+          <p className="text-white/80 text-sm">{subtitle}</p>
         </div>
-
-        <div className="space-y-2">
-          <h4 className="font-semibold text-white">What's Included:</h4>
-          <ul className="space-y-2">
-            {features.map((feature, i) => (
-              <li key={i} className="flex items-center gap-2 text-purple-200 text-sm">
-                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-                {feature}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Upcoming Sessions Preview */}
-        {!loadingDetails && upcomingSessions.length > 0 && (
-          <div className="bg-black/20 rounded-lg p-4">
-            <h4 className="font-semibold text-white mb-3">Next Sessions:</h4>
-            <div className="space-y-2">
-              {upcomingSessions.slice(0, 3).map(session => (
-                <div
-                  key={session.id}
-                  className="flex items-center justify-between text-sm text-purple-200"
-                >
-                  <span>{format(parseISO(session.session_date), 'EEE, MMM d, yyyy')}</span>
-                  <span>
-                    {session.start_time} - {session.end_time}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {loadingDetails && (
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-full bg-white/10" />
-            <Skeleton className="h-4 w-full bg-white/10" />
-          </div>
-        )}
-      </CardContent>
-
-      <CardFooter className="p-6 pt-0">
-        {isRegistered ? (
-          <div className="w-full text-center py-4 bg-green-500/20 rounded-lg">
-            <div className="flex items-center justify-center gap-2 text-green-400 font-semibold">
-              <CheckCircle className="w-5 h-5" />
-              You're Registered!
-            </div>
-            <p className="text-sm text-green-300 mt-1">Check your tickets page for details</p>
-          </div>
-        ) : (
-          <Button
-            onClick={handleRegister}
-            disabled={registerMutation.isPending || loadingRegistration}
-            className={`w-full bg-gradient-to-r ${gradient} hover:opacity-90 text-white font-bold py-6 text-lg`}
-            size="lg"
-          >
-            {registerMutation.isPending ? (
-              'Registering...'
-            ) : (
-              <>
-                <Ticket className="w-5 h-5 mr-2" />
-                Register Now - FREE
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </>
-            )}
-          </Button>
-        )}
-      </CardFooter>
-    </Card>
+        {selected && <CheckCircle className="w-6 h-6 text-white ml-auto" />}
+      </div>
+      <div className="mt-4 flex items-center gap-2 text-white/80 text-sm">
+        <Clock className="w-4 h-4" />
+        <span>{schedule}</span>
+      </div>
+    </button>
   );
 }
