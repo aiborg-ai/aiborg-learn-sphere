@@ -34,7 +34,6 @@ import {
   User,
 } from '@/components/ui/icons';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/utils/logger';
 
 type Program = 'under14' | 'professionals';
@@ -116,15 +115,26 @@ export default function Season2Page() {
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('season2-register', {
-        body: {
-          ...formData,
-          program: selectedProgram,
-        },
-      });
+      // Direct fetch to edge function
+      const response = await fetch(
+        'https://afrulkxxzcmngbrdfuzj.supabase.co/functions/v1/season2-register',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmcnVsa3h4emNtbmdicmRmdXpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMxMzcyMTYsImV4cCI6MjA2ODcxMzIxNn0.IdaUilLFJ8wnrok1sMI2peX9hBILeYLBA86caryjCk8`,
+          },
+          body: JSON.stringify({
+            ...formData,
+            program: selectedProgram,
+          }),
+        }
+      );
 
-      if (error) {
-        throw new Error(error.message || 'Registration failed');
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.error || data?.message || 'Registration failed');
       }
 
       if (data?.error) {
