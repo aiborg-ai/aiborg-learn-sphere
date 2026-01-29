@@ -13,14 +13,14 @@ serve(async req => {
     if (!token || !action) {
       return new Response(renderHTML('error', 'Missing token or action'), {
         status: 400,
-        headers: { 'Content-Type': 'text/html' },
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
       });
     }
 
     if (!['confirm', 'reject'].includes(action)) {
       return new Response(renderHTML('error', 'Invalid action'), {
         status: 400,
-        headers: { 'Content-Type': 'text/html' },
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
       });
     }
 
@@ -40,7 +40,7 @@ serve(async req => {
     if (findError || !registration) {
       return new Response(renderHTML('error', 'Registration not found or invalid token'), {
         status: 404,
-        headers: { 'Content-Type': 'text/html' },
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
       });
     }
 
@@ -52,7 +52,7 @@ serve(async req => {
         ),
         {
           status: 200,
-          headers: { 'Content-Type': 'text/html' },
+          headers: { 'Content-Type': 'text/html; charset=utf-8' },
         }
       );
     }
@@ -74,7 +74,7 @@ serve(async req => {
       console.error('Update error:', updateError);
       return new Response(renderHTML('error', 'Failed to update registration'), {
         status: 500,
-        headers: { 'Content-Type': 'text/html' },
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
       });
     }
 
