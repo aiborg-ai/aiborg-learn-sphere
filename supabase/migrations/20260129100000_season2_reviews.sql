@@ -109,5 +109,5 @@ CREATE POLICY "Admins can update reviews"
 
 -- Comments
 COMMENT ON TABLE season2_reviews IS 'Testimonials from verified Season 2 participants';
-COMMENT ON COLUMN season2_reviews.review_token IS 'Secure token for submitting reviews - sent via email';
+COMMENT ON COLUMN season2_registrations.review_token IS 'Secure token for submitting reviews - sent via email';
 COMMENT ON COLUMN season2_reviews.display_name IS 'Public name shown with testimonial (e.g., "Sarah M." or "Parent of Alex")';
