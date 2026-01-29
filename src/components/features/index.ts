@@ -4,6 +4,7 @@
 export { AIChatbot } from './AIChatbot';
 export { LazyAIChatbot } from './LazyAIChatbot';
 export { AIBORGLingoBanner } from './AIBORGLingoBanner';
+export { HeroBannerCarousel } from './HeroBannerCarousel';
 export { AIComputerAssemblyBanner } from './AIComputerAssemblyBanner';
 export { AIStudyAssistant } from './AIStudyAssistant';
 export { CommandPalette } from './CommandPalette';

@@ -8,7 +8,7 @@ import { EventsSection } from '@/components/events';
 import { ReviewsSection } from '@/components/ReviewsSection';
 import {
   LazyAIChatbot,
-  AIBORGLingoBanner,
+  HeroBannerCarousel,
   AIComputerAssemblyBanner,
   DeepawaliBanner,
 } from '@/components/features';
@@ -61,7 +61,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      <AIBORGLingoBanner />
+      <HeroBannerCarousel />
       <AIComputerAssemblyBanner />
       <DeepawaliBanner />
       <Navbar />
