@@ -86,7 +86,18 @@ export function HeroBannerCarousel() {
 
           {/* Slide 2: Season 2 */}
           <CarouselItem className="pl-0">
-            <Season2Slide onNavigate={() => navigate('/events')} />
+            <Season2Slide
+              onNavigate={() => {
+                // Scroll to events section on homepage
+                const eventsSection = document.getElementById('events');
+                if (eventsSection) {
+                  eventsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                  // If not on homepage, navigate there first
+                  navigate('/#events');
+                }
+              }}
+            />
           </CarouselItem>
         </CarouselContent>
       </Carousel>
