@@ -3,12 +3,23 @@
  * Equity-based incubator for early-stage AI startups
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/navigation/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 import {
   Rocket,
   Sparkles,
@@ -57,8 +68,76 @@ interface FAQItem {
   answer: string;
 }
 
+// Application Form Data
+interface ApplicationFormData {
+  founderName: string;
+  email: string;
+  linkedIn: string;
+  companyName: string;
+  website: string;
+  stage: string;
+  teamSize: string;
+  problemDescription: string;
+  aiApproach: string;
+  whyIncubator: string;
+  heardFrom: string;
+}
+
 export default function IncubatorPage() {
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+
+  const [formData, setFormData] = useState<ApplicationFormData>({
+    founderName: '',
+    email: '',
+    linkedIn: '',
+    companyName: '',
+    website: '',
+    stage: '',
+    teamSize: '',
+    problemDescription: '',
+    aiApproach: '',
+    whyIncubator: '',
+    heardFrom: '',
+  });
+
+  const scrollToForm = () => {
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const handleInputChange = (field: keyof ApplicationFormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Simulate submission (replace with actual API call)
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Here you would typically send to Supabase or an API endpoint
+      // await supabase.from('incubator_applications').insert(formData);
+
+      setFormSubmitted(true);
+      toast({
+        title: 'Application Submitted!',
+        description: "We've received your application. We'll be in touch soon.",
+      });
+    } catch {
+      toast({
+        title: 'Submission Failed',
+        description: 'Please try again or email us directly.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -262,6 +341,7 @@ export default function IncubatorPage() {
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button
                 size="lg"
+                onClick={scrollToForm}
                 className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold px-8 py-6 text-lg shadow-lg shadow-purple-500/25"
               >
                 Apply Now
@@ -566,6 +646,308 @@ export default function IncubatorPage() {
           </div>
         </section>
 
+        {/* Application Form Section */}
+        <section ref={formRef} className="py-16 px-4 bg-white/5" id="apply">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-12">
+              <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 mb-4">
+                <Rocket className="w-4 h-4 mr-2 inline" />
+                APPLICATION FORM
+              </Badge>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                Apply to the Programme
+              </h2>
+              <p className="text-purple-200 max-w-2xl mx-auto">
+                Tell us about yourself and your AI startup. Applications are reviewed within 5
+                business days.
+              </p>
+            </div>
+
+            {formSubmitted ? (
+              <Card className="bg-gradient-to-br from-green-900/50 to-emerald-900/50 border-green-500/30">
+                <CardContent className="p-10 text-center">
+                  <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-6" />
+                  <h3 className="text-2xl font-bold text-white mb-4">Application Submitted!</h3>
+                  <p className="text-green-200 mb-6">
+                    Thank you for applying to the AI-First Incubator Programme. Our team will review
+                    your application and get back to you within 5 business days.
+                  </p>
+                  <p className="text-white/60 text-sm">
+                    Check your email for a confirmation. Questions? Email{' '}
+                    <a
+                      href="mailto:incubator@aiborg.ai"
+                      className="text-green-400 hover:text-green-300"
+                    >
+                      incubator@aiborg.ai
+                    </a>
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="bg-white/5 border-white/10">
+                <CardContent className="p-6 md:p-10">
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Founder Information */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                        <Users className="w-5 h-5 text-purple-400" />
+                        Founder Information
+                      </h3>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="founderName" className="text-purple-200">
+                            Full Name <span className="text-pink-400">*</span>
+                          </Label>
+                          <Input
+                            id="founderName"
+                            value={formData.founderName}
+                            onChange={e => handleInputChange('founderName', e.target.value)}
+                            placeholder="Jane Smith"
+                            required
+                            className="bg-white/5 border-white/20 text-white placeholder:text-white/40 focus:border-purple-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email" className="text-purple-200">
+                            Email Address <span className="text-pink-400">*</span>
+                          </Label>
+                          <Input
+                            id="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={e => handleInputChange('email', e.target.value)}
+                            placeholder="jane@startup.com"
+                            required
+                            className="bg-white/5 border-white/20 text-white placeholder:text-white/40 focus:border-purple-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="linkedIn" className="text-purple-200">
+                            LinkedIn Profile <span className="text-pink-400">*</span>
+                          </Label>
+                          <Input
+                            id="linkedIn"
+                            value={formData.linkedIn}
+                            onChange={e => handleInputChange('linkedIn', e.target.value)}
+                            placeholder="linkedin.com/in/janesmith"
+                            required
+                            className="bg-white/5 border-white/20 text-white placeholder:text-white/40 focus:border-purple-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="teamSize" className="text-purple-200">
+                            Team Size <span className="text-pink-400">*</span>
+                          </Label>
+                          <Select
+                            value={formData.teamSize}
+                            onValueChange={value => handleInputChange('teamSize', value)}
+                            required
+                          >
+                            <SelectTrigger className="bg-white/5 border-white/20 text-white focus:border-purple-500">
+                              <SelectValue placeholder="Select team size" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="solo">Solo Founder</SelectItem>
+                              <SelectItem value="2">2 Co-founders</SelectItem>
+                              <SelectItem value="3">3 Co-founders</SelectItem>
+                              <SelectItem value="4+">4+ Team Members</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Startup Information */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                        <Building2 className="w-5 h-5 text-cyan-400" />
+                        Startup Information
+                      </h3>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="companyName" className="text-purple-200">
+                            Company/Project Name <span className="text-pink-400">*</span>
+                          </Label>
+                          <Input
+                            id="companyName"
+                            value={formData.companyName}
+                            onChange={e => handleInputChange('companyName', e.target.value)}
+                            placeholder="AI Startup Inc"
+                            required
+                            className="bg-white/5 border-white/20 text-white placeholder:text-white/40 focus:border-purple-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="website" className="text-purple-200">
+                            Website (if any)
+                          </Label>
+                          <Input
+                            id="website"
+                            value={formData.website}
+                            onChange={e => handleInputChange('website', e.target.value)}
+                            placeholder="https://mystartup.com"
+                            className="bg-white/5 border-white/20 text-white placeholder:text-white/40 focus:border-purple-500"
+                          />
+                        </div>
+                        <div className="space-y-2 md:col-span-2">
+                          <Label htmlFor="stage" className="text-purple-200">
+                            Current Stage <span className="text-pink-400">*</span>
+                          </Label>
+                          <Select
+                            value={formData.stage}
+                            onValueChange={value => handleInputChange('stage', value)}
+                            required
+                          >
+                            <SelectTrigger className="bg-white/5 border-white/20 text-white focus:border-purple-500">
+                              <SelectValue placeholder="Select your startup stage" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="idea">Idea Stage - Concept only</SelectItem>
+                              <SelectItem value="prototype">
+                                Prototype - Basic working demo
+                              </SelectItem>
+                              <SelectItem value="mvp">MVP - Minimum viable product</SelectItem>
+                              <SelectItem value="early-users">
+                                Early Users - Some traction
+                              </SelectItem>
+                              <SelectItem value="revenue">
+                                Early Revenue - Paying customers
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* About Your AI Product */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                        <Brain className="w-5 h-5 text-pink-400" />
+                        About Your AI Product
+                      </h3>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="problemDescription" className="text-purple-200">
+                            What problem are you solving? <span className="text-pink-400">*</span>
+                          </Label>
+                          <Textarea
+                            id="problemDescription"
+                            value={formData.problemDescription}
+                            onChange={e => handleInputChange('problemDescription', e.target.value)}
+                            placeholder="Describe the problem you're addressing and who experiences it..."
+                            required
+                            rows={3}
+                            className="bg-white/5 border-white/20 text-white placeholder:text-white/40 focus:border-purple-500 resize-none"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="aiApproach" className="text-purple-200">
+                            How does AI power your solution?{' '}
+                            <span className="text-pink-400">*</span>
+                          </Label>
+                          <Textarea
+                            id="aiApproach"
+                            value={formData.aiApproach}
+                            onChange={e => handleInputChange('aiApproach', e.target.value)}
+                            placeholder="Describe your AI approach, technology stack, and what makes it unique..."
+                            required
+                            rows={3}
+                            className="bg-white/5 border-white/20 text-white placeholder:text-white/40 focus:border-purple-500 resize-none"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="whyIncubator" className="text-purple-200">
+                            What do you hope to gain from this programme?{' '}
+                            <span className="text-pink-400">*</span>
+                          </Label>
+                          <Textarea
+                            id="whyIncubator"
+                            value={formData.whyIncubator}
+                            onChange={e => handleInputChange('whyIncubator', e.target.value)}
+                            placeholder="Tell us what support you're looking for and your goals for the 12 weeks..."
+                            required
+                            rows={3}
+                            className="bg-white/5 border-white/20 text-white placeholder:text-white/40 focus:border-purple-500 resize-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Additional Information */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                        <Lightbulb className="w-5 h-5 text-yellow-400" />
+                        Additional Information
+                      </h3>
+                      <div className="space-y-2">
+                        <Label htmlFor="heardFrom" className="text-purple-200">
+                          How did you hear about us?
+                        </Label>
+                        <Select
+                          value={formData.heardFrom}
+                          onValueChange={value => handleInputChange('heardFrom', value)}
+                        >
+                          <SelectTrigger className="bg-white/5 border-white/20 text-white focus:border-purple-500">
+                            <SelectValue placeholder="Select an option" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="social">Social Media</SelectItem>
+                            <SelectItem value="search">Search Engine</SelectItem>
+                            <SelectItem value="referral">Friend/Colleague Referral</SelectItem>
+                            <SelectItem value="event">Event or Conference</SelectItem>
+                            <SelectItem value="press">Press/Media</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {/* Terms and Submit */}
+                    <div className="pt-4 border-t border-white/10">
+                      <p className="text-purple-200/70 text-sm mb-6">
+                        By submitting this application, you agree to our{' '}
+                        <a
+                          href="/terms"
+                          className="text-purple-400 hover:text-purple-300 underline"
+                        >
+                          Terms of Service
+                        </a>{' '}
+                        and{' '}
+                        <a
+                          href="/privacy"
+                          className="text-purple-400 hover:text-purple-300 underline"
+                        >
+                          Privacy Policy
+                        </a>
+                        . We'll use your information to evaluate your application and may contact
+                        you for additional details.
+                      </p>
+                      <Button
+                        type="submit"
+                        size="lg"
+                        disabled={isSubmitting}
+                        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-6 text-lg shadow-lg shadow-purple-500/25 disabled:opacity-50"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                            Submitting Application...
+                          </>
+                        ) : (
+                          <>
+                            Submit Application
+                            <ArrowRight className="w-5 h-5 ml-2" />
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </section>
+
         {/* Final CTA */}
         <section className="py-20 px-4">
           <div className="max-w-4xl mx-auto text-center">
@@ -584,6 +966,7 @@ export default function IncubatorPage() {
                   <div className="flex flex-col sm:flex-row justify-center gap-4">
                     <Button
                       size="lg"
+                      onClick={scrollToForm}
                       className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold px-10 py-6 text-lg shadow-lg shadow-purple-500/25"
                     >
                       Start Your Application
