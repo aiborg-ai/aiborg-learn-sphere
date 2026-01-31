@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { Icon } from '@/utils/iconLoader';
 import { PrefetchLink } from '@/components/navigation/PrefetchLink';
-import { OnboardingTooltip } from '@/components/onboarding';
 import { useOnboardingContext } from '@/contexts/OnboardingContext';
 import {
   prefetchDashboard,
@@ -22,6 +21,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '@/components/ui/navigation-menu';
 import { FAQModal, TermsModal } from '@/components/modals';
 import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -29,6 +36,64 @@ import { LanguageSwitcher } from '@/components/shared';
 import { GlobalSearchEnhanced } from '@/components/search/GlobalSearchEnhanced';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { logger } from '@/utils/logger';
+
+// Menu item component for navigation dropdowns
+const MenuLink = ({
+  href,
+  icon,
+  title,
+  description,
+  badge,
+  onClick,
+  external,
+}: {
+  href?: string;
+  icon: string;
+  title: string;
+  description: string;
+  badge?: string;
+  onClick?: () => void;
+  external?: boolean;
+}) => {
+  const content = (
+    <div className="flex items-start gap-3 p-3 rounded-md hover:bg-accent transition-colors cursor-pointer">
+      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+        <Icon name={icon} size={20} className="text-primary" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <span className="font-medium text-sm">{title}</span>
+          {badge && (
+            <Badge className="bg-red-500 text-white text-[10px] px-1.5 py-0">{badge}</Badge>
+          )}
+        </div>
+        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{description}</p>
+      </div>
+    </div>
+  );
+
+  if (onClick) {
+    return (
+      <button onClick={onClick} className="w-full text-left">
+        {content}
+      </button>
+    );
+  }
+
+  if (external) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer">
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <Link to={href || '/'}>
+      <NavigationMenuLink asChild>{content}</NavigationMenuLink>
+    </Link>
+  );
+};
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,7 +116,6 @@ export function Navbar() {
       navigate('/');
     } catch (error) {
       logger.error('Sign out exception:', error);
-      // Still navigate to home even if sign out fails
       navigate('/');
     }
   };
@@ -59,17 +123,14 @@ export function Navbar() {
   // Helper function to handle navigation to home page sections
   const handleNavClick = (sectionId: string) => {
     if (location.pathname === '/') {
-      // If on home page, scroll to section
       const element = document.getElementById(sectionId);
       if (element) {
-        const yOffset = -80; // Account for fixed navbar height
+        const yOffset = -80;
         const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
         window.scrollTo({ top: y, behavior: 'smooth' });
-        // Update the URL hash without triggering navigation
         window.history.pushState(null, '', `#${sectionId}`);
       }
     } else {
-      // If on another page, navigate to home page with hash
       navigate(`/#${sectionId}`);
     }
   };
@@ -93,14 +154,12 @@ export function Navbar() {
       }, 300)
     : null;
 
-  // Admin prefetch handler
   const adminPrefetchHandlers = isAdmin
     ? createPrefetchOnHoverWithDelay(async () => {
         prefetchRouteChunk('/admin');
       }, 300)
     : null;
 
-  // Studio prefetch handler
   const studioPrefetchHandlers = isAdmin
     ? createPrefetchOnHoverWithDelay(async () => {
         prefetchRouteChunk('/studio');
@@ -131,167 +190,164 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            <PrefetchLink
-              to="/ai-assessment"
-              className="relative"
-              aria-label={t('aria.aiAssessmentNewFeature')}
-            >
-              <Button
-                variant="ghost"
-                className="text-foreground/80 hover:text-foreground transition-colors gap-2"
-              >
-                <Icon name="Sparkles" size={16} aria-hidden="true" />
-                {t('aiAssessment.title')}
-                <Badge
-                  className="absolute -top-2 -right-6 bg-red-500 text-white text-[10px] px-1.5 py-0.5"
-                  aria-label={t('aiAssessment.badge')}
-                >
-                  {t('aiAssessment.badge')}
-                </Badge>
-              </Button>
-            </PrefetchLink>
-            {shouldShowTip('nav-courses') ? (
-              <OnboardingTooltip
-                tipId="nav-courses"
-                title="Browse Courses"
-                description="Find and enroll in courses that match your learning goals. Explore our wide range of training programs."
-                placement="bottom"
-              >
-                <button
-                  onClick={() => handleNavClick('training-programs')}
-                  className="navbar relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
-                  aria-label={t('aria.navigateToPrograms')}
-                >
-                  {t('menu.programs')}
-                </button>
-              </OnboardingTooltip>
-            ) : (
-              <button
-                onClick={() => handleNavClick('training-programs')}
-                className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
-                aria-label={t('aria.navigateToPrograms')}
-              >
-                {t('menu.programs')}
-              </button>
-            )}
-            <PrefetchLink
-              to="/workshops"
-              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
-              aria-label={t('aria.goToWorkshops')}
-            >
-              {t('menu.workshops')}
-            </PrefetchLink>
-            <PrefetchLink
-              to="/blog"
-              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
-              aria-label={t('aria.goToBlog')}
-            >
-              {t('menu.blog')}
-            </PrefetchLink>
-            <PrefetchLink
-              to="/marketplace"
-              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
-              aria-label="Explore AI courses from global providers"
-            >
-              <span className="flex items-center gap-1.5">
-                <Icon name="Globe" size={14} aria-hidden="true" />
-                Marketplace
-                <Badge className="bg-green-500 text-white text-[10px] px-1.5 py-0.5">New</Badge>
-              </span>
-            </PrefetchLink>
-            {shouldShowTip('nav-events') ? (
-              <OnboardingTooltip
-                tipId="nav-events"
-                title="Attend Events"
-                description="Join workshops, webinars, and community events. Connect with other learners and experts."
-                placement="bottom"
-              >
-                <button
-                  onClick={() => handleNavClick('events')}
-                  className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
-                  aria-label={t('aria.navigateToEvents')}
-                >
-                  {t('menu.events')}
-                </button>
-              </OnboardingTooltip>
-            ) : (
-              <button
-                onClick={() => handleNavClick('events')}
-                className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
-                aria-label={t('aria.navigateToEvents')}
-              >
-                {t('menu.events')}
-              </button>
-            )}
-            <button
-              onClick={() => handleNavClick('reviews')}
-              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
-              aria-label={t('aria.navigateToReviews')}
-            >
-              {t('menu.reviews')}
-            </button>
-            <button
-              onClick={() => handleNavClick('about')}
-              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
-              aria-label={t('aria.navigateToAbout')}
-            >
-              {t('menu.about')}
-            </button>
-            <button
-              onClick={() => handleNavClick('contact')}
-              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer link-animated"
-              aria-label={t('aria.navigateToContact')}
-            >
-              {t('menu.contact')}
-            </button>
-            <button
-              onClick={() => setIsFAQOpen(true)}
-              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
-              aria-label={t('aria.openFaq')}
-            >
-              {t('menu.faq')}
-            </button>
-            <button
-              onClick={() => setIsTermsOpen(true)}
-              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors link-animated"
-              aria-label={t('aria.openTerms')}
-            >
-              {t('menu.terms')}
-            </button>
+          <div className="hidden md:flex items-center gap-2">
+            <NavigationMenu>
+              <NavigationMenuList>
+                {/* Learn Dropdown */}
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent text-foreground/80 hover:text-foreground hover:bg-accent/50">
+                    <Icon name="GraduationCap" size={16} className="mr-1.5" />
+                    Learn
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="w-[400px] p-4 space-y-1">
+                      <MenuLink
+                        href="/ai-assessment"
+                        icon="Sparkles"
+                        title="AI Assessment"
+                        description="Evaluate your AI knowledge and skills with our comprehensive assessment"
+                        badge="NEW"
+                      />
+                      <MenuLink
+                        icon="BookOpen"
+                        title="Training Programs"
+                        description="Explore our structured AI training courses and learning paths"
+                        onClick={() => handleNavClick('training-programs')}
+                      />
+                      <MenuLink
+                        href="/workshops"
+                        icon="Users"
+                        title="Workshops"
+                        description="Join interactive workshops led by industry experts"
+                      />
+                      <MenuLink
+                        href="/marketplace"
+                        icon="Globe"
+                        title="Marketplace"
+                        description="Discover AI courses from global providers like Coursera, edX, and more"
+                        badge="NEW"
+                      />
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
 
-            {/* Global Search - AI-Powered */}
-            {user && <GlobalSearchEnhanced />}
+                {/* Discover Dropdown */}
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent text-foreground/80 hover:text-foreground hover:bg-accent/50">
+                    <Icon name="Compass" size={16} className="mr-1.5" />
+                    Discover
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="w-[400px] p-4 space-y-1">
+                      <MenuLink
+                        href="/blog"
+                        icon="FileText"
+                        title="Blog"
+                        description="Read articles, insights, and updates on AI and technology"
+                      />
+                      <MenuLink
+                        href="/knowledgebase"
+                        icon="Library"
+                        title="Knowledgebase"
+                        description="Explore AI pioneers, companies, events, and research papers"
+                      />
+                      <MenuLink
+                        href="/summit"
+                        icon="Layers"
+                        title="AI Impact Summit"
+                        description="India AI Impact Summit 2026 - Seven Chakras Resource Hub"
+                        badge="NEW"
+                      />
+                      <MenuLink
+                        icon="Calendar"
+                        title="Events"
+                        description="Upcoming conferences, meetups, and community events"
+                        onClick={() => handleNavClick('events')}
+                      />
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
 
-            {/* Keyboard Shortcuts Help */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => window.dispatchEvent(new CustomEvent('show-shortcuts-help'))}
-                  aria-label={t('features.keyboardShortcuts')}
-                >
-                  <Icon name="Keyboard" size={20} aria-hidden="true" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{t('features.keyboardShortcutsHint')}</p>
-              </TooltipContent>
-            </Tooltip>
+                {/* About Dropdown */}
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent text-foreground/80 hover:text-foreground hover:bg-accent/50">
+                    <Icon name="Info" size={16} className="mr-1.5" />
+                    About
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="w-[350px] p-4 space-y-1">
+                      <MenuLink
+                        icon="Building2"
+                        title="About Us"
+                        description="Learn about our mission to democratize AI education"
+                        onClick={() => handleNavClick('about')}
+                      />
+                      <MenuLink
+                        icon="Star"
+                        title="Reviews"
+                        description="See what our learners say about their experience"
+                        onClick={() => handleNavClick('reviews')}
+                      />
+                      <MenuLink
+                        icon="Mail"
+                        title="Contact"
+                        description="Get in touch with our team for support or inquiries"
+                        onClick={() => handleNavClick('contact')}
+                      />
+                      <MenuLink
+                        icon="HelpCircle"
+                        title="FAQ"
+                        description="Frequently asked questions and answers"
+                        onClick={() => setIsFAQOpen(true)}
+                      />
+                      <MenuLink
+                        icon="ScrollText"
+                        title="Terms & Privacy"
+                        description="Our terms of service and privacy policy"
+                        onClick={() => setIsTermsOpen(true)}
+                      />
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
 
-            {/* Theme Toggle */}
-            <ThemeToggle />
+            {/* Utility Icons */}
+            <div className="flex items-center gap-1 ml-2 pl-2 border-l border-border/50">
+              {/* Global Search - AI-Powered */}
+              {user && <GlobalSearchEnhanced />}
 
-            {/* Language Switcher */}
-            <LanguageSwitcher variant="ghost" showLabel={false} />
+              {/* Keyboard Shortcuts Help */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => window.dispatchEvent(new CustomEvent('show-shortcuts-help'))}
+                    aria-label={t('features.keyboardShortcuts')}
+                  >
+                    <Icon name="Keyboard" size={20} aria-hidden="true" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t('features.keyboardShortcutsHint')}</p>
+                </TooltipContent>
+              </Tooltip>
 
+              {/* Theme Toggle */}
+              <ThemeToggle />
+
+              {/* Language Switcher */}
+              <LanguageSwitcher variant="ghost" showLabel={false} />
+            </div>
+
+            {/* User Menu */}
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="text-foreground hover:bg-muted/10"
+                    className="text-foreground hover:bg-muted/10 ml-2"
                     aria-label={t('aria.userAccountMenu')}
                   >
                     <Icon name="User" size={16} className="mr-2" aria-hidden="true" />
@@ -361,7 +417,7 @@ export function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 ml-2">
                 <PrefetchLink to="/auth">
                   <Button
                     variant="ghost"
@@ -407,128 +463,174 @@ export function Navbar() {
         {isOpen && (
           <nav
             id="mobile-menu"
-            className="md:hidden py-4 space-y-4 border-t border-white/20 animate-in slide-in-from-top duration-300"
+            className="md:hidden py-4 space-y-2 border-t border-white/20 animate-in slide-in-from-top duration-300"
             aria-label={t('aria.mobileMenu')}
           >
-            <button
-              className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
-              onClick={() => {
-                handleNavClick('training-programs');
-                setIsOpen(false);
-              }}
-              aria-label={t('aria.navigateToPrograms')}
-            >
-              {t('menu.programs')}
-            </button>
-            <PrefetchLink
-              to="/workshops"
-              className="block text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
-              onClick={() => setIsOpen(false)}
-              aria-label={t('aria.goToWorkshops')}
-            >
-              {t('menu.workshops')}
-            </PrefetchLink>
-            <PrefetchLink
-              to="/blog"
-              className="block text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
-              onClick={() => setIsOpen(false)}
-              aria-label={t('aria.goToBlog')}
-            >
-              {t('menu.blog')}
-            </PrefetchLink>
-            <PrefetchLink
-              to="/marketplace"
-              className="flex items-center gap-2 text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
-              onClick={() => setIsOpen(false)}
-              aria-label="Explore AI courses from global providers"
-            >
-              <Icon name="Globe" size={16} aria-hidden="true" />
-              Marketplace
-              <Badge className="bg-green-500 text-white text-[10px] px-1.5 py-0.5">New</Badge>
-            </PrefetchLink>
-            <button
-              className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
-              onClick={() => {
-                handleNavClick('events');
-                setIsOpen(false);
-              }}
-              aria-label={t('aria.navigateToEvents')}
-            >
-              {t('menu.events')}
-            </button>
-            <button
-              className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
-              onClick={() => {
-                handleNavClick('reviews');
-                setIsOpen(false);
-              }}
-              aria-label={t('aria.navigateToReviews')}
-            >
-              {t('menu.reviews')}
-            </button>
-            <button
-              className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
-              onClick={() => {
-                handleNavClick('about');
-                setIsOpen(false);
-              }}
-              aria-label={t('aria.navigateToAbout')}
-            >
-              {t('menu.about')}
-            </button>
-            <button
-              className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
-              onClick={() => {
-                handleNavClick('contact');
-                setIsOpen(false);
-              }}
-              aria-label={t('aria.navigateToContact')}
-            >
-              {t('menu.contact')}
-            </button>
-            <button
-              onClick={() => {
-                setIsFAQOpen(true);
-                setIsOpen(false);
-              }}
-              className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
-              aria-label={t('aria.openFaq')}
-            >
-              {t('menu.faq')}
-            </button>
-            <button
-              onClick={() => {
-                setIsTermsOpen(true);
-                setIsOpen(false);
-              }}
-              className="block w-full text-left text-foreground/80 hover:text-foreground active:text-foreground transition-colors py-2 px-3 rounded-lg hover:bg-muted/10 active:bg-muted/20"
-              aria-label={t('aria.openTerms')}
-            >
-              {t('menu.terms')}
-            </button>
+            {/* Learn Section */}
+            <div className="space-y-1">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 py-2">
+                Learn
+              </p>
+              <PrefetchLink
+                to="/ai-assessment"
+                className="flex items-center gap-3 text-foreground/80 hover:text-foreground py-2 px-3 rounded-lg hover:bg-muted/10"
+                onClick={() => setIsOpen(false)}
+              >
+                <Icon name="Sparkles" size={18} />
+                AI Assessment
+                <Badge className="bg-red-500 text-white text-[10px] px-1.5 py-0">NEW</Badge>
+              </PrefetchLink>
+              <button
+                className="flex items-center gap-3 w-full text-left text-foreground/80 hover:text-foreground py-2 px-3 rounded-lg hover:bg-muted/10"
+                onClick={() => {
+                  handleNavClick('training-programs');
+                  setIsOpen(false);
+                }}
+              >
+                <Icon name="BookOpen" size={18} />
+                Programs
+              </button>
+              <PrefetchLink
+                to="/workshops"
+                className="flex items-center gap-3 text-foreground/80 hover:text-foreground py-2 px-3 rounded-lg hover:bg-muted/10"
+                onClick={() => setIsOpen(false)}
+              >
+                <Icon name="Users" size={18} />
+                Workshops
+              </PrefetchLink>
+              <PrefetchLink
+                to="/marketplace"
+                className="flex items-center gap-3 text-foreground/80 hover:text-foreground py-2 px-3 rounded-lg hover:bg-muted/10"
+                onClick={() => setIsOpen(false)}
+              >
+                <Icon name="Globe" size={18} />
+                Marketplace
+                <Badge className="bg-green-500 text-white text-[10px] px-1.5 py-0">NEW</Badge>
+              </PrefetchLink>
+            </div>
 
+            {/* Discover Section */}
+            <div className="space-y-1 pt-2 border-t border-muted/20">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 py-2">
+                Discover
+              </p>
+              <PrefetchLink
+                to="/blog"
+                className="flex items-center gap-3 text-foreground/80 hover:text-foreground py-2 px-3 rounded-lg hover:bg-muted/10"
+                onClick={() => setIsOpen(false)}
+              >
+                <Icon name="FileText" size={18} />
+                Blog
+              </PrefetchLink>
+              <PrefetchLink
+                to="/knowledgebase"
+                className="flex items-center gap-3 text-foreground/80 hover:text-foreground py-2 px-3 rounded-lg hover:bg-muted/10"
+                onClick={() => setIsOpen(false)}
+              >
+                <Icon name="Library" size={18} />
+                Knowledgebase
+              </PrefetchLink>
+              <PrefetchLink
+                to="/summit"
+                className="flex items-center gap-3 text-foreground/80 hover:text-foreground py-2 px-3 rounded-lg hover:bg-muted/10"
+                onClick={() => setIsOpen(false)}
+              >
+                <Icon name="Layers" size={18} />
+                AI Impact Summit
+                <Badge className="bg-purple-500 text-white text-[10px] px-1.5 py-0">NEW</Badge>
+              </PrefetchLink>
+              <button
+                className="flex items-center gap-3 w-full text-left text-foreground/80 hover:text-foreground py-2 px-3 rounded-lg hover:bg-muted/10"
+                onClick={() => {
+                  handleNavClick('events');
+                  setIsOpen(false);
+                }}
+              >
+                <Icon name="Calendar" size={18} />
+                Events
+              </button>
+            </div>
+
+            {/* About Section */}
+            <div className="space-y-1 pt-2 border-t border-muted/20">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 py-2">
+                About
+              </p>
+              <button
+                className="flex items-center gap-3 w-full text-left text-foreground/80 hover:text-foreground py-2 px-3 rounded-lg hover:bg-muted/10"
+                onClick={() => {
+                  handleNavClick('about');
+                  setIsOpen(false);
+                }}
+              >
+                <Icon name="Building2" size={18} />
+                About Us
+              </button>
+              <button
+                className="flex items-center gap-3 w-full text-left text-foreground/80 hover:text-foreground py-2 px-3 rounded-lg hover:bg-muted/10"
+                onClick={() => {
+                  handleNavClick('reviews');
+                  setIsOpen(false);
+                }}
+              >
+                <Icon name="Star" size={18} />
+                Reviews
+              </button>
+              <button
+                className="flex items-center gap-3 w-full text-left text-foreground/80 hover:text-foreground py-2 px-3 rounded-lg hover:bg-muted/10"
+                onClick={() => {
+                  handleNavClick('contact');
+                  setIsOpen(false);
+                }}
+              >
+                <Icon name="Mail" size={18} />
+                Contact
+              </button>
+              <button
+                onClick={() => {
+                  setIsFAQOpen(true);
+                  setIsOpen(false);
+                }}
+                className="flex items-center gap-3 w-full text-left text-foreground/80 hover:text-foreground py-2 px-3 rounded-lg hover:bg-muted/10"
+              >
+                <Icon name="HelpCircle" size={18} />
+                FAQ
+              </button>
+              <button
+                onClick={() => {
+                  setIsTermsOpen(true);
+                  setIsOpen(false);
+                }}
+                className="flex items-center gap-3 w-full text-left text-foreground/80 hover:text-foreground py-2 px-3 rounded-lg hover:bg-muted/10"
+              >
+                <Icon name="ScrollText" size={18} />
+                Terms & Privacy
+              </button>
+            </div>
+
+            {/* User Section */}
             {user ? (
               <section
-                className="space-y-2 pt-4 border-t border-muted/20"
+                className="space-y-1 pt-4 border-t border-muted/20"
                 aria-label={t('aria.userAccountMenu')}
               >
-                <p
-                  className="text-foreground font-medium"
-                  aria-label={t('aria.loggedInAs', { name: profile?.display_name || user.email })}
-                >
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 py-2">
+                  Account
+                </p>
+                <p className="text-foreground font-medium px-3 py-1">
                   {profile?.display_name || user.email}
                 </p>
                 <PrefetchLink
                   to="/dashboard"
                   prefetchFn={async () => user?.id && (await prefetchDashboard(user.id))}
                   prefetchDelay={300}
+                  onClick={() => setIsOpen(false)}
                 >
                   <Button
                     variant="ghost"
                     className="w-full justify-start text-foreground hover:bg-muted/10"
-                    aria-label={t('aria.goToDashboard')}
                   >
-                    <Icon name="LayoutDashboard" size={16} className="mr-2" aria-hidden="true" />
+                    <Icon name="LayoutDashboard" size={16} className="mr-2" />
                     {t('user.dashboard')}
                   </Button>
                 </PrefetchLink>
@@ -544,51 +646,33 @@ export function Navbar() {
                     }
                   }}
                   prefetchDelay={300}
+                  onClick={() => setIsOpen(false)}
                 >
                   <Button
                     variant="ghost"
                     className="w-full justify-start text-foreground hover:bg-muted/10"
-                    aria-label={t('aria.goToProfile')}
                   >
-                    <Icon name="User" size={16} className="mr-2" aria-hidden="true" />
+                    <Icon name="User" size={16} className="mr-2" />
                     {t('user.profile')}
-                  </Button>
-                </PrefetchLink>
-                <PrefetchLink to="/workshops">
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-foreground hover:bg-muted/10"
-                    aria-label={t('aria.goToMyWorkshops')}
-                  >
-                    <Icon name="Users" size={16} className="mr-2" aria-hidden="true" />
-                    {t('user.myWorkshops')}
                   </Button>
                 </PrefetchLink>
                 {isAdmin && (
                   <>
-                    <PrefetchLink to="/admin">
+                    <PrefetchLink to="/admin" onClick={() => setIsOpen(false)}>
                       <Button
                         variant="ghost"
                         className="w-full justify-start text-foreground hover:bg-muted/10"
-                        aria-label={t('aria.goToAdmin')}
                       >
-                        <Icon name="Shield" size={16} className="mr-2" aria-hidden="true" />
+                        <Icon name="Shield" size={16} className="mr-2" />
                         {t('user.adminDashboard')}
                       </Button>
                     </PrefetchLink>
-                    <PrefetchLink
-                      to="/studio"
-                      onPrefetch={async () => {
-                        prefetchRouteChunk('/studio');
-                      }}
-                      prefetchDelay={300}
-                    >
+                    <PrefetchLink to="/studio" onClick={() => setIsOpen(false)}>
                       <Button
                         variant="ghost"
                         className="w-full justify-start text-foreground hover:bg-muted/10"
-                        aria-label="Go to Content Studio"
                       >
-                        <Icon name="Wand2" size={16} className="mr-2" aria-hidden="true" />
+                        <Icon name="Wand2" size={16} className="mr-2" />
                         Content Studio
                         <Badge className="ml-2 bg-purple-500 text-white text-[10px] px-1.5 py-0.5">
                           New
@@ -601,30 +685,20 @@ export function Navbar() {
                   variant="ghost"
                   className="w-full justify-start text-foreground hover:bg-muted/10"
                   onClick={handleSignOut}
-                  aria-label={t('aria.signOutOfAccount')}
                 >
-                  <Icon name="LogOut" size={16} className="mr-2" aria-hidden="true" />
+                  <Icon name="LogOut" size={16} className="mr-2" />
                   {t('user.signOut')}
                 </Button>
               </section>
             ) : (
-              <section
-                className="space-y-2 pt-4 border-t border-muted/20"
-                aria-label={t('aria.userAccountMenu')}
-              >
-                <PrefetchLink to="/auth">
-                  <Button
-                    variant="ghost"
-                    className="w-full text-foreground hover:bg-muted/10"
-                    aria-label={t('aria.signInToAccount')}
-                  >
+              <section className="space-y-2 pt-4 border-t border-muted/20">
+                <PrefetchLink to="/auth" onClick={() => setIsOpen(false)}>
+                  <Button variant="ghost" className="w-full text-foreground hover:bg-muted/10">
                     {t('user.signIn')}
                   </Button>
                 </PrefetchLink>
-                <PrefetchLink to="/auth">
-                  <Button className="w-full btn-hero" aria-label={t('aria.getStartedWithAiborg')}>
-                    {t('user.getStarted')}
-                  </Button>
+                <PrefetchLink to="/auth" onClick={() => setIsOpen(false)}>
+                  <Button className="w-full btn-hero">{t('user.getStarted')}</Button>
                 </PrefetchLink>
               </section>
             )}
