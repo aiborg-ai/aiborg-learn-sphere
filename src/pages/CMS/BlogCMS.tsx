@@ -21,8 +21,9 @@ function BlogCMS() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  // Check if user is admin
-  const isAdmin = user?.email === 'hirendra.vikram@aiborg.ai';
+  // Check if user is admin (includes demo admin for stakeholder demos)
+  const adminEmails = ['hirendra.vikram@aiborg.ai', 'demo-admin@aiborg.ai'];
+  const isAdmin = user?.email && adminEmails.includes(user.email);
 
   if (!isAdmin) {
     return (
