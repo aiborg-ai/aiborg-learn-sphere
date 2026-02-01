@@ -40,6 +40,7 @@ import {
   resetAuthLimit,
 } from '@/utils/rateLimiter';
 import { MagicLinkAuth } from '@/components/auth/MagicLinkAuth';
+import { DemoLoginForm } from '@/components/auth/DemoLoginForm';
 
 export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
@@ -340,7 +341,7 @@ export default function Auth() {
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-3 bg-white/10">
+              <TabsList className="grid w-full grid-cols-4 bg-white/10">
                 <TabsTrigger value="signin" className="text-white data-[state=active]:bg-white/20">
                   {t('signIn.title')}
                 </TabsTrigger>
@@ -352,6 +353,9 @@ export default function Auth() {
                 </TabsTrigger>
                 <TabsTrigger value="signup" className="text-white data-[state=active]:bg-white/20">
                   {t('signUp.title')}
+                </TabsTrigger>
+                <TabsTrigger value="demo" className="text-white data-[state=active]:bg-white/20">
+                  Demo
                 </TabsTrigger>
               </TabsList>
 
@@ -700,6 +704,10 @@ export default function Auth() {
                     {t('signUp.button')}
                   </Button>
                 </form>
+              </TabsContent>
+
+              <TabsContent value="demo" className="space-y-4">
+                <DemoLoginForm />
               </TabsContent>
             </Tabs>
           </CardContent>
