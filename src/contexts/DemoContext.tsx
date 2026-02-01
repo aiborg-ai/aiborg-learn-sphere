@@ -31,7 +31,7 @@ const DEMO_USERS: Record<string, DemoUser & { password: string }> = {
   learner: {
     id: 'demo-learner',
     email: 'demo-learner@aiborg.ai',
-    password: 'demo123!secure',
+    password: 'DemoPass123',
     role: 'learner',
     displayName: 'Demo Learner',
     description: 'Experience the platform as a student exploring AI courses',
@@ -46,7 +46,7 @@ const DEMO_USERS: Record<string, DemoUser & { password: string }> = {
   admin: {
     id: 'demo-admin',
     email: 'demo-admin@aiborg.ai',
-    password: 'demo123!secure',
+    password: 'DemoPass123',
     role: 'admin',
     displayName: 'Demo Admin',
     description: 'Explore full admin capabilities and CMS features',
