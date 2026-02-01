@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { PersonalizationProvider } from '@/contexts/PersonalizationContext';
 import { TenantProvider } from '@/contexts/TenantContext';
 import { OnboardingProvider } from '@/contexts/OnboardingContext';
+import { DemoProvider } from '@/contexts/DemoContext';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Icon } from '@/utils/iconLoader';
 import { useGlobalShortcuts } from '@/hooks/useKeyboardShortcuts';
@@ -18,6 +19,7 @@ import { LoginNotificationChecker } from '@/components/notifications/LoginNotifi
 import { InstallPWAPrompt } from '@/components/pwa/InstallPWAPrompt';
 import { SkipLink } from '@/components/accessibility/SkipLink';
 import { AnnouncerProvider } from '@/components/accessibility/LiveRegion';
+import { DemoModeBadge } from '@/components/demo/DemoModeBadge';
 import { allRoutes } from '@/routes';
 
 // Eagerly load the main page for fast initial load
@@ -56,6 +58,7 @@ const AppWithShortcuts = () => {
       <LoginNotificationChecker />
       <CommandPalette />
       <KeyboardShortcutsHelp shortcuts={shortcuts} />
+      <DemoModeBadge />
       <Toaster />
       <Sonner />
       <ErrorBoundary>
@@ -85,14 +88,16 @@ const App = () => (
       <TenantProvider>
         <PersonalizationProvider>
           <OnboardingProvider>
-            {/* WCAG 4.1.3: Global announcer for screen reader status messages */}
-            <AnnouncerProvider>
-              <TooltipProvider>
-                <BrowserRouter>
-                  <AppWithShortcuts />
-                </BrowserRouter>
-              </TooltipProvider>
-            </AnnouncerProvider>
+            <DemoProvider>
+              {/* WCAG 4.1.3: Global announcer for screen reader status messages */}
+              <AnnouncerProvider>
+                <TooltipProvider>
+                  <BrowserRouter>
+                    <AppWithShortcuts />
+                  </BrowserRouter>
+                </TooltipProvider>
+              </AnnouncerProvider>
+            </DemoProvider>
           </OnboardingProvider>
         </PersonalizationProvider>
       </TenantProvider>

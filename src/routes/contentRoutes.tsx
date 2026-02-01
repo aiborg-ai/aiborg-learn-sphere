@@ -28,6 +28,9 @@ const SummitPage = lazy(() => import('@/pages/Summit'));
 const SummitThemePage = lazy(() => import('@/pages/Summit/ThemePage'));
 const SummitCMS = lazy(() => import('@/pages/CMS/SummitCMS'));
 
+// Demo page for password-free stakeholder demonstrations
+const DemoPage = lazy(() => import('@/pages/Demo'));
+
 export const contentRoutes: RouteConfig[] = [
   {
     path: '/blog',
@@ -110,5 +113,11 @@ export const contentRoutes: RouteConfig[] = [
         <SummitCMS />
       </RouteWrapper>
     ),
+  },
+
+  // Demo page for stakeholder demonstrations
+  {
+    path: '/demo',
+    element: <DemoPage />,
   },
 ];

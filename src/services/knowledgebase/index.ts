@@ -1,0 +1,1 @@
+export { KnowledgebaseService } from './KnowledgebaseService';

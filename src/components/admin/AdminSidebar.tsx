@@ -56,6 +56,8 @@ import {
   FileQuestion,
   ChevronRight,
   ChevronLeft,
+  Library,
+  Landmark,
   type LucideIcon,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -117,6 +119,8 @@ const navigationStructure: NavItem[] = [
       { name: 'Blog', href: '/admin/blog', icon: Newspaper },
       { name: 'Events', href: '/admin/events', icon: Calendar },
       { name: 'Resources', href: '/admin/resources', icon: FolderOpen },
+      { name: 'Knowledgebase', href: '/cms/knowledgebase', icon: Library, badge: 'NEW' },
+      { name: 'Summit Hub', href: '/cms/summit', icon: Landmark, badge: 'NEW' },
       { name: 'Announcements', href: '/admin/announcements', icon: Megaphone },
       { name: 'Reviews', href: '/admin/reviews', icon: Star },
     ],
