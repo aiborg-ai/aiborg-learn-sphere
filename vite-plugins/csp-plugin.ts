@@ -21,8 +21,8 @@ export function cspPlugin(): Plugin {
         // Styles: allow self + inline styles (required for React/Tailwind)
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
 
-        // Images: allow self + data URIs + Supabase storage + lovable uploads
-        "img-src 'self' data: https://*.supabase.co https://lovable-uploads.s3.amazonaws.com blob:",
+        // Images: allow self + data URIs + Supabase storage + lovable uploads + Wikimedia
+        "img-src 'self' data: https://*.supabase.co https://lovable-uploads.s3.amazonaws.com https://upload.wikimedia.org blob:",
 
         // Fonts: allow self + Google Fonts
         "font-src 'self' https://fonts.gstatic.com data:",
@@ -46,7 +46,7 @@ export function cspPlugin(): Plugin {
         "frame-ancestors 'none'",
 
         // Upgrade insecure requests in production
-        ...(process.env.NODE_ENV === 'production' ? ["upgrade-insecure-requests"] : []),
+        ...(process.env.NODE_ENV === 'production' ? ['upgrade-insecure-requests'] : []),
       ];
 
       const csp = cspDirectives.join('; ');
@@ -55,10 +55,7 @@ export function cspPlugin(): Plugin {
       const cspMeta = `<meta http-equiv="Content-Security-Policy" content="${csp}">`;
 
       // Insert after charset/viewport meta tags
-      return html.replace(
-        '</head>',
-        `  ${cspMeta}\n  </head>`
-      );
+      return html.replace('</head>', `  ${cspMeta}\n  </head>`);
     },
   };
 }
