@@ -21,8 +21,8 @@ export function cspPlugin(): Plugin {
         // Styles: allow self + inline styles (required for React/Tailwind)
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
 
-        // Images: allow self + data URIs + Supabase storage + lovable uploads + Wikimedia
-        "img-src 'self' data: https://*.supabase.co https://lovable-uploads.s3.amazonaws.com https://upload.wikimedia.org blob:",
+        // Images: allow self + data URIs + Supabase storage + lovable uploads + Wikimedia + UI Avatars
+        "img-src 'self' data: https://*.supabase.co https://lovable-uploads.s3.amazonaws.com https://upload.wikimedia.org https://ui-avatars.com blob:",
 
         // Fonts: allow self + Google Fonts
         "font-src 'self' https://fonts.gstatic.com data:",
