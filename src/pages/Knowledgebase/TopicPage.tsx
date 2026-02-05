@@ -167,13 +167,16 @@ export default function TopicPage() {
 
               {/* Tag Filter */}
               {allTags.length > 0 && (
-                <Select value={selectedTag} onValueChange={setSelectedTag}>
+                <Select
+                  value={selectedTag || 'all'}
+                  onValueChange={val => setSelectedTag(val === 'all' ? '' : val)}
+                >
                   <SelectTrigger className="w-[180px]">
                     <Filter className="mr-2 h-4 w-4" />
                     <SelectValue placeholder="Filter by tag" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Tags</SelectItem>
+                    <SelectItem value="all">All Tags</SelectItem>
                     {allTags.map(tag => (
                       <SelectItem key={tag} value={tag}>
                         {tag}

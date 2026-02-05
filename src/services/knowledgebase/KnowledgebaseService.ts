@@ -260,61 +260,99 @@ export class KnowledgebaseService {
    * Get knowledgebase statistics
    */
   static async getStats(): Promise<KnowledgebaseStats> {
-    // Get topic stats from view
-    const { data: topicStats } = await supabase.from('knowledgebase_topic_stats').select('*');
+    try {
+      // Try using the RPC function first (has SECURITY DEFINER)
+      const { data: rpcStats, error: rpcError } = await supabase.rpc('get_knowledgebase_stats');
 
-    // Calculate totals
-    const stats: KnowledgebaseStats = {
-      total_entries: 0,
-      total_views: 0,
-      published_count: 0,
-      draft_count: 0,
-      by_topic: (topicStats || []).map(ts => ({
-        topic_type: ts.topic_type,
-        published_count: ts.published_count || 0,
-        draft_count: ts.draft_count || 0,
-        total_count: ts.total_count || 0,
-        total_views: ts.total_views || 0,
-      })),
-      featured_count: 0,
-    };
+      let topicStats = rpcStats;
 
-    // Sum up totals
-    stats.by_topic.forEach(ts => {
-      stats.total_entries += ts.total_count;
-      stats.total_views += ts.total_views;
-      stats.published_count += ts.published_count;
-      stats.draft_count += ts.draft_count;
-    });
+      // Fall back to view if RPC fails
+      if (rpcError || !rpcStats) {
+        logger.warn('RPC get_knowledgebase_stats failed, falling back to view:', rpcError);
+        const { data: viewStats, error: viewError } = await supabase
+          .from('knowledgebase_topic_stats')
+          .select('*');
 
-    // Get featured count
-    const { count: featuredCount } = await supabase
-      .from('knowledgebase_entries')
-      .select('id', { count: 'exact', head: true })
-      .eq('is_featured', true);
+        if (viewError) {
+          logger.warn('View query also failed:', viewError);
+          topicStats = [];
+        } else {
+          topicStats = viewStats;
+        }
+      }
 
-    stats.featured_count = featuredCount || 0;
+      // Calculate totals
+      const stats: KnowledgebaseStats = {
+        total_entries: 0,
+        total_views: 0,
+        published_count: 0,
+        draft_count: 0,
+        by_topic: (topicStats || []).map(ts => ({
+          topic_type: ts.topic_type,
+          published_count: Number(ts.published_count) || 0,
+          draft_count: Number(ts.draft_count) || 0,
+          total_count: Number(ts.total_count) || 0,
+          total_views: Number(ts.total_views) || 0,
+        })),
+        featured_count: 0,
+      };
 
-    return stats;
+      // Sum up totals
+      stats.by_topic.forEach(ts => {
+        stats.total_entries += ts.total_count;
+        stats.total_views += ts.total_views;
+        stats.published_count += ts.published_count;
+        stats.draft_count += ts.draft_count;
+      });
+
+      // Get featured count
+      const { count: featuredCount } = await supabase
+        .from('knowledgebase_entries')
+        .select('id', { count: 'exact', head: true })
+        .eq('is_featured', true);
+
+      stats.featured_count = featuredCount || 0;
+
+      return stats;
+    } catch (err) {
+      logger.error('Error in getStats:', err);
+      // Return empty stats on error
+      return {
+        total_entries: 0,
+        total_views: 0,
+        published_count: 0,
+        draft_count: 0,
+        by_topic: [],
+        featured_count: 0,
+      };
+    }
   }
 
   /**
    * Get all unique tags across entries
    */
   static async getAllTags(): Promise<string[]> {
-    const { data, error } = await supabase
-      .from('knowledgebase_entries')
-      .select('tags')
-      .eq('status', 'published');
+    try {
+      const { data, error } = await supabase
+        .from('knowledgebase_entries')
+        .select('tags')
+        .eq('status', 'published');
 
-    if (error) throw error;
+      if (error) {
+        logger.warn('Error fetching tags:', error);
+        return [];
+      }
 
-    const allTags = new Set<string>();
-    (data || []).forEach(entry => {
-      (entry.tags || []).forEach(tag => allTags.add(tag));
-    });
+      const allTags = new Set<string>();
+      (data || []).forEach(entry => {
+        (entry.tags || []).forEach(tag => allTags.add(tag));
+      });
 
-    return Array.from(allTags).sort();
+      return Array.from(allTags).sort();
+    } catch (err) {
+      logger.error('Error in getAllTags:', err);
+      return [];
+    }
   }
 
   /**
