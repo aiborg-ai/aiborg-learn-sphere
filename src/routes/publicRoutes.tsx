@@ -20,6 +20,7 @@ const Season2Page = lazy(() => import('@/pages/Season2Page'));
 const Season2StatusPage = lazy(() => import('@/pages/Season2StatusPage'));
 const Season2ReviewPage = lazy(() => import('@/pages/Season2ReviewPage'));
 const IncubatorPage = lazy(() => import('@/pages/IncubatorPage'));
+const PublicReviewPage = lazy(() => import('@/pages/PublicReviewPage'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
 export const publicRoutes: RouteConfig[] = [
@@ -66,6 +67,10 @@ export const publicRoutes: RouteConfig[] = [
   {
     path: '/incubator',
     element: <IncubatorPage />,
+  },
+  {
+    path: '/review',
+    element: <PublicReviewPage />,
   },
   {
     path: '*',

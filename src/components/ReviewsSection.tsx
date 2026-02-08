@@ -279,10 +279,11 @@ export function ReviewsSection({ courseFilter }: { courseFilter?: number }) {
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <User className="h-3 w-3" />
                         <span>
-                          {review.display_name_option === 'full_name' ||
-                          review.display_name_option === 'first_name'
-                            ? review.profiles?.display_name || 'Student'
-                            : 'Anonymous Student'}
+                          {review.display_name_option === 'anonymous'
+                            ? 'Anonymous Student'
+                            : review.user_id
+                              ? review.profiles?.display_name || 'Student'
+                              : review.guest_name || 'Student'}
                         </span>
                       </div>
 

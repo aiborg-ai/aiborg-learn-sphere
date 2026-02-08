@@ -1,13 +1,13 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { serve } from 'https://deno.land/std@0.190.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { Resend } from "npm:resend@2.0.0";
+import { Resend } from 'npm:resend@2.0.0';
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
 interface ReviewNotificationRequest {
   reviewId: string;
@@ -15,21 +15,29 @@ interface ReviewNotificationRequest {
   rating: number;
   courseName: string;
   userName: string;
+  guestEmail?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
+  if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { reviewId, reviewContent, rating, courseName, userName }: ReviewNotificationRequest = await req.json();
+    const {
+      reviewId,
+      reviewContent,
+      rating,
+      courseName,
+      userName,
+      guestEmail,
+    }: ReviewNotificationRequest = await req.json();
 
     // Create approval and rejection URLs
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    
+
     const approveUrl = `${supabaseUrl}/functions/v1/approve-review?reviewId=${reviewId}&action=approve&key=${serviceKey}`;
     const rejectUrl = `${supabaseUrl}/functions/v1/approve-review?reviewId=${reviewId}&action=reject&key=${serviceKey}`;
 
@@ -38,6 +46,7 @@ const handler = async (req: Request): Promise<Response> => {
       <div style="border: 1px solid #ddd; padding: 20px; margin: 20px 0; border-radius: 8px;">
         <h3>Course: ${courseName}</h3>
         <p><strong>Student:</strong> ${userName}</p>
+        ${guestEmail ? `<p><strong>Guest Email:</strong> ${guestEmail}</p>` : ''}
         <p><strong>Rating:</strong> ${'⭐'.repeat(rating)} (${rating}/5)</p>
         <p><strong>Review:</strong></p>
         <div style="background: #f9f9f9; padding: 15px; border-radius: 4px; margin: 10px 0;">
@@ -75,26 +84,25 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "AI Learning Platform <onboarding@resend.dev>",
-      to: ["hirendra.vikram@aiborg.ai"],
+      from: 'AI Learning Platform <onboarding@resend.dev>',
+      to: ['hirendra.vikram@aiborg.ai'],
       subject: `New Review Pending Approval - ${courseName}`,
       html: emailHtml,
     });
 
-    console.log("Review notification email sent successfully:", emailResponse);
+    console.log('Review notification email sent successfully:', emailResponse);
 
     return new Response(JSON.stringify({ success: true, emailResponse }), {
       status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
-
   } catch (error) {
-    console.error("Error sending review notification:", error);
+    console.error('Error sending review notification:', error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
       }
     );
   }

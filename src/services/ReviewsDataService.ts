@@ -73,13 +73,24 @@ export class DataService {
     // Enrich with course and profile data
     const enrichedReviews = await Promise.allSettled(
       (reviewsData || []).map(async review => {
+        const coursePromise = supabase
+          .from('courses')
+          .select('title')
+          .eq('id', review.course_id)
+          .maybeSingle();
+
+        // Skip profile lookup for guest reviews (no user_id)
+        const profilePromise = review.user_id
+          ? supabase
+              .from('profiles')
+              .select('display_name')
+              .eq('user_id', review.user_id)
+              .maybeSingle()
+          : Promise.resolve({ data: null });
+
         const [courseResult, profileResult] = await Promise.allSettled([
-          supabase.from('courses').select('title').eq('id', review.course_id).maybeSingle(),
-          supabase
-            .from('profiles')
-            .select('display_name')
-            .eq('user_id', review.user_id)
-            .maybeSingle(),
+          coursePromise,
+          profilePromise,
         ]);
 
         return {

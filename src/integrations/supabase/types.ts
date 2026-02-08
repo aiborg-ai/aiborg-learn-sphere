@@ -5738,12 +5738,14 @@ export type Database = {
           created_at: string;
           display: boolean;
           display_name_option: string;
+          guest_email: string | null;
+          guest_name: string | null;
           id: string;
           rating: number;
           review_type: string;
           tenant_id: string | null;
           updated_at: string;
-          user_id: string;
+          user_id: string | null;
           video_review_url: string | null;
           voice_review_url: string | null;
           written_review: string | null;
@@ -5756,12 +5758,14 @@ export type Database = {
           created_at?: string;
           display?: boolean;
           display_name_option?: string;
+          guest_email?: string | null;
+          guest_name?: string | null;
           id?: string;
           rating: number;
           review_type?: string;
           tenant_id?: string | null;
           updated_at?: string;
-          user_id: string;
+          user_id?: string;
           video_review_url?: string | null;
           voice_review_url?: string | null;
           written_review?: string | null;
@@ -5774,6 +5778,8 @@ export type Database = {
           created_at?: string;
           display?: boolean;
           display_name_option?: string;
+          guest_email?: string | null;
+          guest_name?: string | null;
           id?: string;
           rating?: number;
           review_type?: string;
@@ -8280,6 +8286,18 @@ export type Database = {
       };
       show_limit: { Args: never; Returns: number };
       show_trgm: { Args: { '': string }; Returns: string[] };
+      submit_public_review: {
+        Args: {
+          p_course_id: number;
+          p_course_mode: string;
+          p_course_period: string;
+          p_guest_email: string;
+          p_guest_name: string;
+          p_rating: number;
+          p_written_review: string;
+        };
+        Returns: Json;
+      };
       submit_vault_claim: {
         Args: {
           p_family_members?: Json;

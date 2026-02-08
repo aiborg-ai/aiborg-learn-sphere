@@ -1,9 +1,9 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { serve } from 'https://deno.land/std@0.190.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
 const handler = async (req: Request): Promise<Response> => {
@@ -14,13 +14,13 @@ const handler = async (req: Request): Promise<Response> => {
     const key = url.searchParams.get('key');
 
     if (!reviewId || !action || !key) {
-      return new Response("Missing required parameters", { status: 400, headers: corsHeaders });
+      return new Response('Missing required parameters', { status: 400, headers: corsHeaders });
     }
 
     // Verify the service key
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
     if (key !== serviceKey) {
-      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+      return new Response('Unauthorized', { status: 401, headers: corsHeaders });
     }
 
     // Initialize Supabase client with service role key for admin operations
@@ -53,34 +53,41 @@ const handler = async (req: Request): Promise<Response> => {
         throw error;
       }
 
-      // Get profile and course data separately to avoid foreign key issues
-      const [profileResult, courseResult] = await Promise.allSettled([
-        supabase
+      // Get course data
+      const { data: course } = await supabase
+        .from('courses')
+        .select('title')
+        .eq('id', review.course_id)
+        .single();
+
+      // Get profile/email - use guest fields when user_id is null
+      let notificationEmail: string | null = null;
+      let notificationName: string = 'Student';
+
+      if (review.user_id) {
+        const { data: profile } = await supabase
           .from('profiles')
           .select('display_name, email')
           .eq('user_id', review.user_id)
-          .single(),
-        supabase
-          .from('courses')
-          .select('title')
-          .eq('id', review.course_id)
-          .single()
-      ]);
-
-      const profile = profileResult.status === 'fulfilled' ? profileResult.value.data : null;
-      const course = courseResult.status === 'fulfilled' ? courseResult.value.data : null;
+          .single();
+        notificationEmail = profile?.email || null;
+        notificationName = profile?.display_name || profile?.email || 'Student';
+      } else {
+        notificationEmail = review.guest_email || null;
+        notificationName = review.guest_name || 'Guest';
+      }
 
       // Send acceptance notification email
-      if (profile?.email) {
+      if (notificationEmail) {
         try {
           await supabase.functions.invoke('send-review-acceptance-notification', {
             body: {
               reviewId: review.id,
-              userEmail: profile.email,
-              userName: profile.display_name || profile.email,
+              userEmail: notificationEmail,
+              userName: notificationName,
               courseName: course?.title || 'Course',
-              reviewType: review.review_type
-            }
+              reviewType: review.review_type,
+            },
           });
         } catch (emailError) {
           console.error('Failed to send acceptance notification:', emailError);
@@ -100,13 +107,9 @@ const handler = async (req: Request): Promise<Response> => {
           </body>
         </html>
       `;
-
     } else if (action === 'reject') {
       // Reject the review (delete it)
-      const { error } = await supabase
-        .from('reviews')
-        .delete()
-        .eq('id', reviewId);
+      const { error } = await supabase.from('reviews').delete().eq('id', reviewId);
 
       if (error) {
         throw error;
@@ -125,17 +128,16 @@ const handler = async (req: Request): Promise<Response> => {
         </html>
       `;
     } else {
-      return new Response("Invalid action", { status: 400, headers: corsHeaders });
+      return new Response('Invalid action', { status: 400, headers: corsHeaders });
     }
 
     return new Response(responseHtml, {
       status: 200,
-      headers: { "Content-Type": "text/html", ...corsHeaders },
+      headers: { 'Content-Type': 'text/html', ...corsHeaders },
     });
-
   } catch (error) {
-    console.error("Error processing review action:", error);
-    
+    console.error('Error processing review action:', error);
+
     const errorHtml = `
       <html>
         <head><title>Error</title></head>
@@ -151,7 +153,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     return new Response(errorHtml, {
       status: 500,
-      headers: { "Content-Type": "text/html", ...corsHeaders },
+      headers: { 'Content-Type': 'text/html', ...corsHeaders },
     });
   }
 };

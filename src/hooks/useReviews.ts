@@ -5,7 +5,7 @@ import { DataService, subscribeToReviewChanges } from '@/services/ReviewsDataSer
 import { logger } from '@/utils/logger';
 export interface Review {
   id: string;
-  user_id: string;
+  user_id: string | null;
   course_id: number;
   display_name_option: 'full_name' | 'first_name' | 'anonymous';
   review_type: 'written' | 'voice' | 'video';
@@ -18,6 +18,8 @@ export interface Review {
   approved: boolean;
   created_at: string;
   updated_at: string;
+  guest_name: string | null;
+  guest_email: string | null;
   // Joined data
   profiles?: {
     display_name: string;
